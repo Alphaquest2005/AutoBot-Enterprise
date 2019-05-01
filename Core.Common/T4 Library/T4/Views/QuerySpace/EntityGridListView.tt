@@ -1,0 +1,476 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class EntityGridListViewTPL : CSharpTemplate
+{
+        public string conTextName;
+        public string projectName;
+        public EntityType  mainEntity;
+        public string mainEntitySet;
+        public EntityContainer container;
+        public List<EntityType> entityCollection;
+        public List<EntityType> COREentityCollection;
+        public EntityContainer COREcontainer;
+        public MetadataTools ef;
+        public CodeGenerationTools code;
+        public EntityFrameworkTemplateFileManager fileManager;
+
+	public override string TransformText()
+        {
+            //base.TransformText();
+            string cEntitySet = "";
+            string cEntity = "";
+            EntityType ccEntity = null;
+            string mprop = mainEntitySet;
+            
+           // var mlst= mainEntity.NavigationProperties.Where(np => np.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many).FirstOrDefault();
+           var mlst= mainEntity.NavigationProperties.FirstOrDefault();
+            EntityType MainEntity = entityCollection.Where(x=>x.MetadataProperties.Where(z => z.Name.Contains("MainEntityProperty") && z.Value.ToString().Contains("True")).ToList().Any() == true).FirstOrDefault();
+            if(MainEntity != null && MainEntity.Name == mainEntity.Name) mlst = null;
+
+                EdmType et;
+                if(mlst == null )
+                {
+                   if(MainEntity != null)
+                {
+                  //  cEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == GetBaseEntity(MainEntity)).FirstOrDefault().Name;
+                    cEntity = MainEntity.Name;
+                }
+                    if(COREcontainer.Name != container.Name) mprop = "";//
+                }
+                else
+                {
+                   // et = ((EntityType)mlst.ToEndMember.GetEntityType()).BaseType == null?((EntityType)mlst.ToEndMember.GetEntityType()):((EntityType)mlst.ToEndMember.GetEntityType()).BaseType;
+                   // cEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == et).FirstOrDefault().Name;
+                    cEntity = ((EntityType)mlst.ToEndMember.GetEntityType()).Name;
+                
+                }
+                if(container.Name != COREcontainer.Name)
+                {
+                    ccEntity = entityCollection.Where(x=> x.Name == cEntity).FirstOrDefault();
+                }
+                else
+                {
+                    ccEntity = null;
+                }
+          
+#>
+		
+		<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+	mc:Ignorable="d"
+    xmlns:local="clr-namespace:<#=projectName #>"
+	xmlns:virtual="clr-namespace:Core.Common.UI.DataVirtualization;assembly=Core.Common.UI"
+    xmlns:coreui="clr-namespace:Core.Common.UI;assembly=Core.Common.UI"
+    xmlns:val="clr-namespace:Core.Common.UI.Validation;assembly=Core.Common.UI"
+    xmlns:models="clr-namespace:<#=projectName #>.QuerySpace.<#=conTextName#>.ViewModels;assembly=<#=projectName #>.Client.ViewModels"
+    xmlns:coreModels="clr-namespace:<#=projectName #>.QuerySpace.CoreEntities.ViewModels;assembly=<#=projectName #>.Client.ViewModels"
+    xmlns:datamodels="clr-namespace:<#=projectName #>.QuerySpace.<#=conTextName#>.ViewModels;assembly=<#=projectName #>.Client.ViewModels"
+	xmlns:entities="clr-namespace:<#=conTextName#>.Client.Entities;assembly=<#=projectName #>.Client.Entities"
+    xmlns:xgrid="clr-namespace:ExtendedGrid.Microsoft.Windows.Controls;assembly=ExtendedGrid"
+	x:Class="<#=projectName #>.QuerySpace.<#=conTextName#>.Views.<#=mainEntity.Name#>List_AutoGen" Width="540.609" Height="Auto">
+    <UserControl.Resources>
+        <x:Static Member="models:<#=mainEntity.Name#>ViewModel_AutoGen.Instance" x:Key="<#=mainEntity.Name#>ViewModelDataSource" />
+		<Style TargetType="ListBoxItem">
+            <Setter Property="virtual:VirtualListItemBase.AutoLoad" Value="true" />
+        </Style>
+        <DataTemplate x:Key="<#=mainEntity.Name#>Tpl"  DataType="{x:Type entities:<#=mainEntity.Name#>}">
+            <Grid Height="Auto" Width="497" MouseEnter="SetCurrentItem">
+<#+
+         if(mainEntity.MetadataProperties.FirstOrDefault(x => x.Name.Contains("ReadOnlyProperty")) == null)
+            {
+#>  
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeave">
+                        <ei:CallMethodAction TargetObject="{Binding Source={x:Static Member=datamodels:<#= mainEntity.Name#>ViewModel_AutoGen.Instance}}" MethodName="Save<#=    mainEntity.Name#>"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+<#+            }
+ #>
+
+<#+
+            int top = 0;
+    
+            if(ccEntity != null)
+            {
+                var mp = ccEntity.NavigationProperties.Where(np=>np.Name.Contains(mainEntity.Name) || np.Name.Contains(mainEntitySet)).FirstOrDefault();
+                if(mp != null)
+                {
+                    mprop = mp.Name;
+                }
+                else
+                {
+                    mprop = "no navigation dependent property found with " + mainEntity.Name;
+                }
+            }
+            List<EdmProperty> proplst = new List<EdmProperty>();
+            if(mainEntity.BaseType != null)
+            {
+                EntityType bEntity = mainEntity.BaseType as EntityType;
+                proplst.AddRange(bEntity.Properties.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == bEntity && p.Name!= bEntity.Name + "Id"));
+            }
+                proplst.AddRange(mainEntity.Properties.Where(p => p.TypeUsage.EdmType is SimpleType && p.DeclaringType == mainEntity && p.Name!= mainEntity.Name + "Id"));
+
+            foreach (EdmProperty edmProperty in proplst)
+            {
+
+                if(edmProperty.Name == "EntryTimeStamp" || edmProperty.Name == "EntryDateTimeStamp" || edmProperty.Name == "EntryDateTime" || ef.IsKey(edmProperty)) continue;   //x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many &&     
+
+                string displayName = "";
+                var disprop = edmProperty.MetadataProperties.FirstOrDefault(z => z.Name.Contains("DisplayNameProperty"));
+                if(disprop != null)
+                {
+                    displayName = ((XElement)disprop.Value).Value;
+                }
+                else
+                {
+                    displayName = edmProperty.Name;
+                }
+
+                string toolTip = "";
+                var toolTipProp = edmProperty.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ToolTipProperty"));
+                if(toolTipProp != null)
+                {
+                    toolTip = "ToolTip=\"" + ((XElement)toolTipProp.Value).Value + "\"";
+                }
+
+              //  if(edmProperty.Name == "EntryTimeStamp" || edmProperty.Name == "EntryDateTimeStamp" || edmProperty.Name == "EntryDateTime" ||
+              //         mainEntity.NavigationProperties.Where(x => x.GetDependentProperties().Contains(edmProperty)).Any() == true || ef.IsKey(edmProperty)) continue;   //x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many &&     
+                 
+     
+                top += 25;
+                if (ef.UnderlyingClrType(edmProperty.TypeUsage.EdmType) == typeof(DateTime))
+                {
+#>              <TextBlock Text="<#=AddSpacesToSentence(displayName)#>" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="10,<#=top#>,0,0" VerticalAlignment="Top" Width="Auto" />
+                <DatePicker SelectedDate="{val:ValidationBinding Path=Data.<#=edmProperty.Name#>, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="150,<#=        top#>,0,0" VerticalAlignment="Top" Width="Auto" />
+<#+                    continue;
+                }
+                if (ef.UnderlyingClrType(edmProperty.TypeUsage.EdmType) == typeof(string))
+                {
+#>              <TextBlock Text="<#=AddSpacesToSentence(displayName)#>" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="10,<#=top#>,0,0" VerticalAlignment="Top" Width="Auto" />
+                <TextBox Text="{val:ValidationBinding Path=Data.<#=edmProperty.Name#>, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="150,<#=top#>,0,0" VerticalAlignment="Top" Width="Auto"  MinWidth ="75" />
+<#+                    continue;
+                }
+#>
+<#+ 
+                if (ef.UnderlyingClrType(edmProperty.TypeUsage.EdmType) == typeof(int) && code.FieldName(edmProperty).EndsWith("Id") )
+                {
+                    var baseNav = mainEntity.NavigationProperties.Where(x => x.GetDependentProperties().Contains(edmProperty)).FirstOrDefault();    
+                    
+                    string pSetName= "";
+                    string pSetEntity= "";
+                    string pKey= "";
+                    EntityType pEntity;
+                    pEntity = entityCollection.FirstOrDefault( x => x.Name == edmProperty.Name.Substring(0,edmProperty.Name.Length - 2));
+					EntitySet pSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (pEntity != null?pEntity.Name:edmProperty.Name.Substring(0,edmProperty.Name.Length - 2)) ).FirstOrDefault();
+                    bool notInContainer = pEntity == null;
+                    if(pEntity == null)
+                    {
+                        pEntity = COREentityCollection.FirstOrDefault( x => x.Name == edmProperty.Name.Substring(0,edmProperty.Name.Length - 2));
+                    }
+                    if(pEntity == null && baseNav != null)
+                    {
+                        // search navigation properties
+                        pEntity = mainEntity.NavigationProperties.Where(x => x.GetDependentProperties().Contains(edmProperty)).FirstOrDefault().ToEndMember.GetEntityType();
+                      
+                        pSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (pEntity != null?pEntity.Name:edmProperty.Name.Substring(0,edmProperty.Name.Length - 2)) ).FirstOrDefault();
+                    }
+
+                     if(pEntity == MainEntity || (baseNav != null && baseNav.ToEndMember.GetEntityType().Name == pEntity.Name)) 
+                        {
+                            top -= 25;
+                            continue;
+                        }
+                    if(pEntity != null && pEntity.KeyMembers.Any() == true)
+                    {
+                        pKey = pEntity.KeyMembers[0].Name;
+                    }
+                    else
+                    {
+                        pKey = edmProperty.Name;
+                    }
+
+                    if(pSet == null)
+                        pSet = COREcontainer.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == edmProperty.Name.Substring(0,edmProperty.Name.Length - 2) ).FirstOrDefault();
+                    if(pSet != null)
+                    {
+                        pSetName = pSet.Name;
+                        pSetEntity = pSet.ElementType.Name;
+                      
+                    }
+                    else
+                    {
+                        pSetName = edmProperty.Name.Substring(0,edmProperty.Name.Length - 2);
+                        pSetEntity = edmProperty.Name.Substring(0,edmProperty.Name.Length - 2);
+                        
+                    }
+                    var readOnly = false;
+
+                var rprop = pEntity == null || pEntity.MetadataProperties == null? null : pEntity.MetadataProperties.FirstOrDefault(z => z.Name != null && z.Name.Contains("ReadOnlyProperty"));
+                if(rprop != null)
+                {
+                    readOnly = !Convert.ToBoolean(((XElement)rprop.Value).Value)  ;
+                }
+                else
+                {
+                    readOnly = true;
+                }
+
+                if(baseNav == null || (baseNav.ToEndMember.GetEntityType().Name == mainEntity.Name))
+                    {
+                   #>
+                <TextBlock Text="<#=AddSpacesToSentence(displayName.Replace("Id",""))#>" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="10,<#=top#>,0,0" VerticalAlignment="Top" Width="Auto" MinWidth ="75" />
+                <ComboBox SelectedValue="{val:ValidationBinding Path=Data.<#=edmProperty.Name#>}"                          
+                          DisplayMemberPath="EntityName"  SelectedValuePath="<#=pKey#>" 
+                          ItemsSource="{Binding Source={x:Static Member=coreModels:BaseViewModel.Instance}, Path=<#=pSetEntity#>Cache.Data, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                          <#+if(readOnly){ #>Text="{Binding Data.<#=(notInContainer && pEntity != null?pEntity.Name:"") #>EntityName, UpdateSourceTrigger=LostFocus}"<#+} #>
+                          <#=toolTip#>
+                          IsEditable="<#=readOnly.ToString() #>" HorizontalAlignment="Left" Height="24" Margin="150,<#=top#>,0,0" VerticalAlignment="Top" Width="Auto"  MinWidth ="75" FontSize="14" />  
+<#+       
+                    }
+                    else
+                    {
+#>
+                <TextBlock Text="<#=AddSpacesToSentence(displayName.Replace("Id",""))#>" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="10,<#=top#>,0,0" VerticalAlignment="Top" Width="Auto" MinWidth ="75" />
+                <ComboBox SelectedValue="{val:ValidationBinding Path=Data.<#=edmProperty.Name#>}"                          
+                          DisplayMemberPath="EntityName"  SelectedValuePath="<#=pKey#>" 
+                          ItemsSource="{Binding Source={x:Static Member=models:BaseViewModel.Instance}, Path=<#=pSetEntity#>Cache.Data, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                          <#=toolTip#>
+                          IsEditable="False" HorizontalAlignment="Left" Height="24" Margin="150,<#=top#>,0,0" VerticalAlignment="Top" Width="Auto"  MinWidth ="75" FontSize="14" /> 
+<#+
+                    }
+                continue;
+                }
+#>
+<#+
+                  if (ef.UnderlyingClrType(edmProperty.TypeUsage.EdmType) == typeof(bool))
+                {   
+#>
+                <TextBlock Text="<#=AddSpacesToSentence(displayName)#>" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="10,<#=    top#>,0,0" VerticalAlignment="Top" Width="Auto"  MinWidth ="75"/>
+                <CheckBox IsChecked="{val:ValidationBinding Path=Data.<#=    edmProperty.Name#>, UpdateSourceTrigger=PropertyChanged}" Content="" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="150,<#=    top#>,0,0" VerticalAlignment="Top" Width="100" />
+<#+                    continue;
+                }
+ #>
+                <TextBlock Text="<#=AddSpacesToSentence(displayName)#>" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="10,<#=    top#>,0,0" VerticalAlignment="Top" Width="Auto" />
+                <TextBox Text="{val:ValidationBinding Path=Data.<#=    edmProperty.Name#>, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" <#=toolTip#> HorizontalAlignment="Left" Height="24" Margin="150,<#=    top#>,0,0" VerticalAlignment="Top" Width="100"  MinWidth ="75" />
+<#+          
+            }
+ #>
+                <StackPanel Margin="0,<#=(top + 25)#>,0,0" >
+<#+
+                
+        foreach (var property in mainEntity.NavigationProperties.Where(x =>x.MetadataProperties.FirstOrDefault(z => z.Name.Contains("IncludeNavigationProperty")) != null))
+            {
+                var rrprop = property.MetadataProperties.FirstOrDefault(z => z.Name.Contains("IncludeNavigationProperty"));
+			    string incNav = ((XElement)rrprop.Value).Value;
+                
+                if(incNav == "True")
+                    {
+                    #>
+                <Grid>
+                    <TextBlock Text="<#=AddSpacesToSentence(property.Name)#>" HorizontalAlignment="Left" Height="24" Margin="10,5,0,0" VerticalAlignment="Top" Width="Auto"  MinWidth ="75" FontWeight="Bold"/>
+                    <TextBlock  HorizontalAlignment="Right" Height="25" Margin="0,5,40,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="28" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" FontSize="20" Text="&#xE109;" FontFamily="Segoe UI Symbol" PreviewMouseLeftButtonDown="New<#=property.ToEndMember.GetEntityType().Name #>" />
+                    <TextBlock  HorizontalAlignment="Right" Height="25" Margin="0,5,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="28" TextAlignment="Center" Style="{DynamicResource CloseButtonStyle}" FontSize="20" Text="&#xE106;" FontFamily="Segoe UI Symbol" PreviewMouseLeftButtonDown="Delete<#=property.ToEndMember.GetEntityType().Name #>" />
+               </Grid>
+               
+                <xgrid:DataGrid ItemsSource="{Binding Data.<#=property.Name#>, Mode=OneWay}" AutoGenerateColumns="False" CanUserAddRows="False" Margin="0,0,0,0" Height="Auto"
+                          LoadingRow="<#=property.Name#>DataGrid_OnLoadingRow" CellEditEnding="dataGrid_CellEditEnding" CurrentCellChanged="dataGrid_CurrentCellChanged" 
+                          SelectedValuePath="EntityId" SelectedValue="{Binding Source={x:Static Member=models:BaseViewModel.Instance}, Path=Current<#=property.ToEndMember.GetEntityType().Name#>ID}" 
+					      SelectedItem="{Binding Source={x:Static Member=models:BaseViewModel.Instance}, Path=Current<#=property.ToEndMember.GetEntityType().Name#>}"
+                          GridLinesVisibility="None" RowHeight="30" AlternatingRowBackground="#FFE8F3F9" FontSize="16" Foreground="#FF35448F" Background="#7FF0F0F0">
+                    <xgrid:DataGrid.Columns>
+<#+
+                    foreach(var prop in property.ToEndMember.GetEntityType().Properties)
+                    {
+                        if(prop.Name == "EntryTimeStamp" || prop.Name == "EntryDateTimeStamp" || prop.Name == "EntryDateTime" || ef.IsKey(prop)) continue; 
+                        if (ef.UnderlyingClrType(prop.TypeUsage.EdmType) == typeof(string))
+                        {
+ #>                 
+                        <xgrid:DataGridTextColumn Binding="{Binding <#=prop.Name#>}" Header="<#=AddSpacesToSentence(prop.Name.Replace("Id",""))#>" Width="Auto"/>
+<#+
+                        }
+                if (ef.UnderlyingClrType(prop.TypeUsage.EdmType) == typeof(int) && code.FieldName(prop).EndsWith("Id"))
+                {
+                    var baseNav = mainEntity.NavigationProperties.Where(x => x.GetDependentProperties().Contains(prop)).FirstOrDefault();    
+                    
+                    string pSetName= "";
+                    string pSetEntity= "";
+                    string pKey= "";
+                    EntityType pEntity;
+                    pEntity = entityCollection.FirstOrDefault( x => x.Name == prop.Name.Substring(0,prop.Name.Length - 2));
+					EntitySet pSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (pEntity != null?pEntity.Name:prop.Name.Substring(0,prop.Name.Length - 2)) ).FirstOrDefault();
+                    bool notInContainer = pEntity == null;
+                    if(pEntity == null)
+                    {
+                        pEntity = COREentityCollection.FirstOrDefault( x => x.Name == prop.Name.Substring(0,prop.Name.Length - 2));
+                    }
+                    if(pEntity == null && baseNav != null)
+                    {
+                        // search navigation properties
+                        pEntity = mainEntity.NavigationProperties.Where(x => x.GetDependentProperties().Contains(prop)).FirstOrDefault().ToEndMember.GetEntityType();
+
+                        if(pEntity == MainEntity) continue;
+
+                        pSet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (pEntity != null?pEntity.Name:prop.Name.Substring(0,prop.Name.Length - 2)) ).FirstOrDefault();
+                    }
+
+                    if(pEntity == MainEntity || (MainEntity.BaseType != null && pEntity == MainEntity.BaseType)) continue;
+
+                    if(pEntity != null && pEntity.KeyMembers.Any() == true)
+                    {
+                        pKey = pEntity.KeyMembers[0].Name;
+                    }
+                    else
+                    {
+                        pKey = prop.Name;
+                    }
+
+                    if(pSet == null)
+                        pSet = COREcontainer.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == prop.Name.Substring(0,prop.Name.Length - 2) ).FirstOrDefault();
+                    if(pSet != null)
+                    {
+                        pSetName = pSet.Name;
+                        pSetEntity = pSet.ElementType.Name;
+                      
+                    }
+                    else
+                    {
+                        pSetName = prop.Name.Substring(0,prop.Name.Length - 2);
+                        pSetEntity = prop.Name.Substring(0,prop.Name.Length - 2);
+                        
+                    }
+                    var readOnly = false;
+
+                var rprop = pEntity == null || pEntity.MetadataProperties == null? null : pEntity.MetadataProperties.FirstOrDefault(z => z.Name != null && z.Name.Contains("ReadOnlyProperty"));
+                if(rprop != null)
+                {
+                    readOnly = !Convert.ToBoolean(((XElement)rprop.Value).Value)  ;
+                }
+                else
+                {
+                    readOnly = true;
+                }
+
+                if(baseNav == null)
+                    {
+                   #>
+               
+                <xgrid:DataGridTemplateColumn Header="<#=AddSpacesToSentence(prop.Name.Replace("Id",""))#>">
+                    <xgrid:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox
+                            ItemsSource="{Binding Source={x:Static Member=coreModels:BaseViewModel.Instance}, Path=<#=pSetEntity#>Cache.Data, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                            DisplayMemberPath="EntityName"
+                            SelectedValue="{Binding <#=pKey#>}"
+                            SelectedValuePath="<#=pKey#>"
+                            Text="{Binding <#=pEntity.Name #>EntityName, UpdateSourceTrigger=LostFocus}"
+                            IsEditable="True" />
+                        </DataTemplate>
+                    </xgrid:DataGridTemplateColumn.CellTemplate>
+                </xgrid:DataGridTemplateColumn>
+                
+<#+       
+                    }
+                    else
+                    {
+#>
+               <xgrid:DataGridTemplateColumn Header="<#=AddSpacesToSentence(prop.Name.Replace("Id",""))#>">
+                    <xgrid:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox
+                            ItemsSource="{Binding Source={x:Static Member=coreModels:BaseViewModel.Instance}, Path=<#=pSetEntity#>Cache.Data, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                            DisplayMemberPath="EntityName"
+                            SelectedValue="{Binding <#=prop.Name#>}"
+                            SelectedValuePath="<#=pKey#>"
+                            Text="{Binding <#=pEntity.Name #>EntityName, UpdateSourceTrigger=LostFocus}"
+                            IsEditable="True" />
+                        </DataTemplate>
+                    </xgrid:DataGridTemplateColumn.CellTemplate>
+                </xgrid:DataGridTemplateColumn>
+               
+<#+
+                    }
+               // continue;
+                }
+#>
+<#+
+                    }
+  #>
+                    </xgrid:DataGrid.Columns>
+                </xgrid:DataGrid>            
+<#+
+                }
+            }
+ #>          </StackPanel>
+                
+            </Grid>
+        </DataTemplate>
+   
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource <#=mainEntity.Name#>ViewModelDataSource}}">
+        <TextBlock Text="<#=AddSpacesToSentence(mainEntity.Name)#>" HorizontalAlignment="Left" Height="37.806" Margin="17,14.227,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="Auto" FontSize="18"/>
+       
+<#+
+        if(mainEntity.MetadataProperties.Where(z => z.Name.Contains("ViewTypeProperty") && z.Value.ToString().Contains("EntityView")).ToList().Any() == true)
+            {
+                string prop = (ccEntity == null?"":"Current" + cEntity + ".") + mprop;
+                
+                if(mainEntity.Name == MainEntity.Name) prop = "Current" + MainEntity.Name;
+#>
+                <ContentControl x:Name="ItemEditor"  Background="#FF0B430A" Content="{Binding Source= {x:Static Member= models:BaseViewModel.Instance}, Path = V<#=prop#>}" HorizontalAlignment="Left" Height="Auto" Margin="10,74,0,0" VerticalAlignment="Top" Width="521" ContentTemplate="{DynamicResource <#=mainEntity.Name#>Tpl}"/>
+<#+
+            }
+                else
+            {
+#>
+                <ListBox x:Name="<#=                mainEntity.Name#>Grd" 
+								ItemsSource="{Binding <#=mainEntitySet#>}" 
+								SelectedValuePath="EntityId" SelectedValue="{Binding Source={x:Static Member=models:BaseViewModel.Instance}, Path=Current<#=mainEntity.Name#>ID}" 
+								SelectedItem="{Binding Source={x:Static Member=models:BaseViewModel.Instance}, Path=VCurrent<#=mainEntity.Name#>}"
+								VirtualizingStackPanel.IsVirtualizing="True"
+								VirtualizingStackPanel.VirtualizationMode="Recycling"
+								ScrollViewer.IsDeferredScrollingEnabled="True" 
+								virtual:VirtualListLoadingIndicator.IsAttached="True" 
+								HorizontalAlignment="Left" Margin="10,74,0,0" VerticalAlignment="Top" Width="521" ItemTemplate="{DynamicResource <#=                mainEntity.Name#>Tpl}" Style="{DynamicResource AlphaListBoxStyle}"/>
+<#+         
+            }
+#>
+<#+
+         if(mainEntity.MetadataProperties.FirstOrDefault(x => x.Name.Contains("ReadOnlyProperty")) == null)
+            {
+#>       
+
+         <TextBlock x:Name="NewBtn1" HorizontalAlignment="Right" Height="25" Margin="0,44,64.8,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="28" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" FontSize="20" Text="&#xE109;" FontFamily="Segoe UI Symbol">
+            <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <ei:CallMethodAction TargetObject="{Binding Source={x:Static Member=datamodels:<#=mainEntity.Name#>ViewModel_AutoGen.Instance}}" MethodName="New<#=    mainEntity.Name#>"/>
+                    </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBlock>
+        <TextBlock x:Name="DelBtn" Height="25" Margin="0,44,31.8,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="28" TextAlignment="Center" Style="{DynamicResource CloseButtonStyle}" FontSize="20" Text="&#xE106;" FontFamily="Segoe UI Symbol" Grid.RowSpan="1" HorizontalAlignment="Right">
+                    <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <ei:CallMethodAction TargetObject="{Binding Source={x:Static Member=datamodels:<#=    mainEntity.Name#>ViewModel_AutoGen.Instance}}" MethodName="Delete<#=    mainEntity.Name#>"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+        </TextBlock>
+<#+
+            }
+ #>
+    </Grid>
+</UserControl>
+		
+		
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

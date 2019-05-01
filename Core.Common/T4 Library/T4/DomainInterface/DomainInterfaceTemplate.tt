@@ -1,0 +1,159 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Xml.Linq" #>
+<#@ assembly name="System.Data.Entity" #>
+<#@ assembly name="System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#@ assembly name="System.Xml.Linq, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class DomainInterfaceTPL : CSharpTemplate
+    {
+        public EntityType entity;
+        public EntityContainer container;
+        public string projectName;
+        public MetadataTools ef;
+        public CodeGenerationTools code;
+        public string interfaceName;
+        
+
+        public override string TransformText()
+        {
+
+            base.TransformText();
+            
+            string entitySet =
+                container.BaseEntitySets.OfType<EntitySet>()
+                    .Where(x => x.ElementType.Name == (entity.BaseType == null ? entity.Name : GetBaseEntity(entity).Name))
+                    .FirstOrDefault()
+                    .Name;
+
+
+
+
+
+#>
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+
+
+namespace <#=projectName #>.Interfaces
+{
+
+		public partial interface <#=interfaceName #> //<#=container.Name + "|" + entity.Name #>
+		{
+<#+
+            WriteImp(entity, null, new List<string>());
+            #>
+        }
+
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+
+		public void WriteImp(EntityType entity, NavigationProperty navProp, List<string> processedEntities)
+		{
+
+		    foreach (
+		        var property in
+		            entity.Properties.Where(
+		                x => x.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsProperty")) != null))
+		    {
+		        var rawProperty =
+		            property.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsProperty"));
+		        if (rawProperty == null) continue;
+		        string i = ((XElement) rawProperty.Value).Value;
+		        var typeUsage = code.Escape(property.TypeUsage);
+		        PrimitiveType edmType = (PrimitiveType) property.TypeUsage.EdmType;
+		        if (!string.IsNullOrEmpty(i))
+		        {
+		            string[] propertyList = i.Split(',');
+		            string rawIProperty = propertyList.FirstOrDefault(x => (x.IndexOf(interfaceName) >= 0) && x.Substring(x.IndexOf(interfaceName),x.IndexOf(".")) == interfaceName);
+		            if (string.IsNullOrEmpty(rawIProperty)) continue;
+		            string iProperty = rawIProperty.Trim();
+
+		            #>
+		<#=
+    (property.Nullable == true && edmType.ClrEquivalentType.ToString().Replace("System.", "") != "String"
+        ? edmType.ClrEquivalentType.ToString().Replace("System.", "") + "?"
+        : edmType.ClrEquivalentType.ToString().Replace("System.", "")) #> <#=iProperty.Substring(iProperty.LastIndexOf('.') + 1) #> {get;set;}
+		<#+
+		        }
+		    }
+		#>
+
+		<#+	
+			foreach (
+			    var navprop in
+			        entity.NavigationProperties.Where(
+			            x => x.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsNavigationProperty")) != null))
+			{
+			    var rawNavPropName =
+			        navprop.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ImplementsNavigationProperty"));
+			    string i = ((XElement) rawNavPropName.Value).Value;
+			    if (string.IsNullOrEmpty(i)) continue;
+
+			    string[] navPropLst = i.Split(',');
+			    string rNavPropName = navPropLst.FirstOrDefault(x => (x.IndexOf(interfaceName) >= 0) && x.Substring(x.IndexOf(interfaceName),x.IndexOf(".")) == interfaceName);
+			    if (string.IsNullOrEmpty(rNavPropName)) continue;
+
+			    string iNavPropName = rNavPropName.Trim();
+                 iNavPropName = iNavPropName.Substring(iNavPropName.LastIndexOf('.') + 1);
+			    var eip =
+			        navprop.ToEndMember.GetEntityType()
+			            .MetadataProperties.FirstOrDefault(x => x.Name.Contains("DomainInterfaceProperty"));
+			    string ei = null;
+			    if (eip != null)
+			    {
+			        ei = ((XElement) eip.Value).Value;
+			    }
+			    var typeUsage = code.Escape(navprop.TypeUsage);
+			    var edmType = navprop.TypeUsage.EdmType;
+			    if (!string.IsNullOrEmpty(i))
+			    {
+
+			        #>
+		<#=(navprop.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many
+    ? "List<" + (!string.IsNullOrEmpty(ei) ? ei : "I" + edmType.Name) + ">"//
+    : (string.IsNullOrEmpty(ei) ? ei : "I" + edmType.Name)
+    ) #> <#=iNavPropName #> {get;set;}
+		<#+
+			    }
+			}
+
+		    processedEntities.Add(entity.Name);
+
+		    foreach (
+		        var navprop in
+		            entity.NavigationProperties)//.Where(
+		                //x => x.ToEndMember.RelationshipMultiplicity != RelationshipMultiplicity.Many))
+		    {
+		        var navEntity = navprop.ToEndMember.GetEntityType();
+		        if (processedEntities.Contains(navEntity.Name)) continue;
+		        var n = navEntity.MetadataProperties.FirstOrDefault(x => x.Name.Contains("DomainInterfaceProperty"));
+		        //if (n != null)
+		        //{
+		            //string ni = ((XElement) n.Value).Value;
+		            //if (ni.Contains(interfaceName)) continue;
+		        //}
+
+		        WriteImp(navEntity, navprop, processedEntities);
+		    }
+
+
+		    #>
+
+<#+
+		}
+    }
+#>

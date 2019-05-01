@@ -1,0 +1,127 @@
+﻿<#@ IntelliSenseLanguage processor="tangibleT4Editor" language="C#" #>
+<#@ output extension=".cs"#>
+<#@ include file="EF.Utility.CS.ttinclude" once="true"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\ViewModels\SummaryListViewModel.tt" once="true"#>		
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\ViewModels\EntityViewModel.tt" once="true"#>	
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\ViewModels\BaseViewModel.tt" once="true"#>
+<#@ include file="C:\Prism Projects\Quick Inventory Manager\Core.Common.Data\T4\ViewModels\MessageTokenModel.tt" once="true"#>				
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+
+        
+        public void CreateViewModels(string inputFile)
+        {
+            
+	
+            EntityType MainEntity = null ;
+            string MainEntitySet = "";
+            string coreInputFile= @"C:\Prism Projects\Quick Inventory Manager\CoreEntities\CoreEntities.edmx";
+            
+
+       
+
+            CodeGenerationTools code = new CodeGenerationTools(this);
+            MetadataLoader loader = new MetadataLoader(this);
+            CodeRegion region = new CodeRegion(this, 1);
+            MetadataTools ef = new MetadataTools(this);
+
+       
+            MetadataWorkspace metadataWorkspace = null;
+            bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+            EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+     
+            string namespaceName = code.VsNamespaceSuggestion();
+
+            EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+            MetadataWorkspace COREmetadataWorkspace = null;
+            bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreInputFile, out COREmetadataWorkspace);
+            EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+            EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+
+            MainEntity = code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x=>x.MetadataProperties.Where(z => z.Name.Contains("MainEntityProperty") && z.Value.ToString().Contains("True")).ToList().Any() == true).FirstOrDefault();
+         
+
+            if(MainEntity != null)
+            {
+                MainEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == (MainEntity.BaseType == null?MainEntity:MainEntity.BaseType)).FirstOrDefault().Name;
+               
+                SummaryViewModelTPL sv = new SummaryViewModelTPL();
+                sv.contextName = code.Escape(container);
+                sv.MainEntity = MainEntity.Name;
+                sv.mainEntitySet = MainEntitySet;                
+                sv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager\InvManager.csproj";
+                sv.Output.File = @"ViewModels\Generated Models\" + code.Escape(container) + @"\" + MainEntity.Name + "SummaryListViewModel.cs";
+                sv.Render();
+            }
+            else
+            {
+                SummaryViewModelTPL sv = new SummaryViewModelTPL();
+                sv.contextName = code.Escape(container);
+                sv.MainEntity = "";
+                sv.mainEntitySet = "";                
+                sv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager\InvManager.csproj";
+                sv.Output.File = @"ViewModels\Generated Models\" + code.Escape(container) + @"\" + "SummaryListViewModel.cs";
+                sv.Render();
+            }
+            foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+            {
+                if(container.Name != COREcontainer.Name && code.GetItemsToGenerate<EntityType>(COREItemCollection).FirstOrDefault(x=> x.Name == entity.Name)!=null)continue;
+                if(entity.Abstract) continue;
+
+                List<EntityType> allEntityCollection = new List<EntityType>();
+                allEntityCollection.AddRange(code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList());
+                allEntityCollection.AddRange(code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList());
+
+               EntityViewModelTPL ev = new EntityViewModelTPL();
+                ev.contextName = code.Escape(container);
+                ev.mainEntity = entity;  
+                if(entity.BaseType == null)
+                    {
+                        ev.mainEntitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType == (entity.BaseType == null?entity:entity.BaseType)).FirstOrDefault().Name;
+                    }
+                    else
+                    {
+                         ev.mainEntitySet = entity.Name;
+                    }
+                ev.container = container;
+                ev.COREcontainer = COREcontainer;
+                ev.entityCollection = allEntityCollection;
+                ev.ef = ef;
+                ev.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager\InvManager.csproj";
+                ev.Output.File = @"ViewModels\Generated Models\" + code.Escape(container) + @"\" + entity.Name + "ViewModel.cs";
+                ev.Render();
+                
+            }
+
+            BaseViewTPL bv = new BaseViewTPL();
+            bv.contextName = code.Escape(container);
+            bv.container = container;
+            bv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            bv.COREcontainer = COREcontainer;
+            bv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            bv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager\InvManager.csproj";
+            bv.Output.File = @"ViewModels\Generated Models\" + code.Escape(container) + @"\" + "BaseViewModel.cs";
+            bv.Render();
+    
+
+            MessageTokenTPL mv = new MessageTokenTPL();
+            mv.contextName = code.Escape(container);
+            mv.container = container;
+            mv.entityCollection = code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name).ToList();
+            mv.COREcontainer = COREcontainer;
+            mv.COREentityCollection = code.GetItemsToGenerate<EntityType>(COREItemCollection).OrderBy(e => e.Name).ToList();
+            mv.Output.Project = @"C:\Prism Projects\Quick Inventory Manager\InvManager\InvManager.csproj";
+            mv.Output.File = @"ViewModels\Generated Models\" + code.Escape(container) + @"\" +  "MessageToken.cs";
+            mv.Render();
+
+               
+#>
+<#+
+        }
+
+    #>

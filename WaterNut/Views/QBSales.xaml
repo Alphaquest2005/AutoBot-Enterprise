@@ -1,0 +1,29 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:QS="clr-namespace:WaterNut.QuerySpace.QuickBooksQS.ViewModels"
+	xmlns:local="clr-namespace:WaterNut"
+	xmlns:Converters="clr-namespace:WaterNut.Converters"
+	mc:Ignorable="d"
+	x:Class="WaterNut.Views.QBSales"
+	d:DesignWidth="640" d:DesignHeight="480">
+    <UserControl.Resources>
+        <x:Static Member="QS:QBSalesModel.Instance" x:Key="QBSalesModelDataSource" />
+        <Converters:NotBoolConverter x:Key="NotBoolConverter" />
+
+
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource QBSalesModelDataSource}}">
+        <TextBlock HorizontalAlignment="Right" Height="32.766" Margin="0,14.011,234.383,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="396.779" FontSize="21.333" Text="Download QuickBooks Sales"/>
+        <TextBlock HorizontalAlignment="Left" Height="19.866" Margin="10,89.683,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="70.647" FontSize="16" Text="From" TextAlignment="Center"/>
+        <TextBlock HorizontalAlignment="Left" Height="26" Margin="359.057,138.567,0,0" TextWrapping="Wrap" Text="Import Date Range" VerticalAlignment="Top" Width="138.853" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" MouseLeftButtonDown="ImportSalesDateRange" />
+        <DatePicker  SelectedDate="{Binding StartDate, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="28" Margin="85.647,89.683,0,0" VerticalAlignment="Top" Width="192.806"/>
+        <DatePicker  SelectedDate="{Binding EndDate, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="28" Margin="85.647,136.567,0,0" VerticalAlignment="Top" Width="192.806"/>
+        <TextBlock HorizontalAlignment="Left" Height="19.866" Margin="8.838,136.567,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="70.647" FontSize="16" Text="To" TextAlignment="Center"/>
+        <CheckBox HorizontalAlignment="Left" Height="22" Margin="86,212,0,0" VerticalAlignment="Top" Width="113" Content="Import Inventory" IsChecked="{Binding ImportInventory, UpdateSourceTrigger=PropertyChanged}"/>
+        <CheckBox HorizontalAlignment="Left" Height="22" Margin="86,185,0,0" VerticalAlignment="Top" Width="113" Content="Import Sales" IsChecked="{Binding ImportSales, UpdateSourceTrigger=PropertyChanged}"/>
+    </Grid>
+</UserControl>

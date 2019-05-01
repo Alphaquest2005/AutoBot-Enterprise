@@ -1,0 +1,40 @@
+﻿
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+    public class SummaryViewModelTPL : CSharpTemplate
+    {
+        public string conTextName;
+        public string projectName;
+        public string MainEntity; 
+        public string mainEntitySet; 
+                
+        
+        public override string TransformText()
+        {
+            base.TransformText();
+
+#>
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.ComponentModel;
+using <#=conTextName #>.Client.Entities;
+using SimpleMvvmToolkit;
+
+
+namespace <#=projectName #>.DataSpace.<#=conTextName #>.ViewModels
+{
+    public partial class <#=MainEntity#>SummaryListViewModel : BaseViewModel
+	{
+    }
+}
+		
+		
+<#+
+          return this.GenerationEnvironment.ToString();
+        }
+    }	
+#>

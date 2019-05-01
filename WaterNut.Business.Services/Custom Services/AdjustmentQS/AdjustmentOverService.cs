@@ -1,0 +1,79 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AdjustmentQS.Business.Entities;
+using EntryDataDS.Business.Entities;
+using WaterNut.DataSpace;
+using System.Linq.Dynamic;
+
+namespace AdjustmentQS.Business.Services
+{
+    public partial class AdjustmentOverService
+    {
+        public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
+        {
+            try
+            {
+
+
+                var docSet =
+                    await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId, null)
+                        .ConfigureAwait(false);
+
+                // inject custom procedure in docset
+                docSet.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures.First(x =>
+                    x.DisplayName == BaseDataModel.Instance.ExportTemplates.First(z => z.Description == "OS7")
+                        .Customs_Procedure);
+
+                docSet.Document_Type = docSet.Customs_Procedure.Document_Type;
+
+                using (var ctx = new AdjustmentQSContext())
+                {
+
+                    var olst = ctx.AdjustmentOvers
+                        .Where(filterExpression)
+                        .Where(x => !x.AsycudaDocumentItemEntryDataDetails.Any())
+                        .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
+                        .OrderBy(x => x.EffectiveDate)
+                        .Select(x => new EntryDataDetails()
+                        {
+                            EntryDataDetailsId = x.EntryDataDetailsId,
+                            EntryDataId = x.EntryDataId,
+                            ItemNumber = x.ItemNumber,
+                            ItemDescription = x.ItemDescription,
+                            Cost = x.Cost,
+                            Quantity = (double) x.ReceivedQty - (double) x.InvoiceQty,
+                            EffectiveDate = x.EffectiveDate ?? x.AdjustmentEx.InvoiceDate,
+                            LineNumber = x.LineNumber,
+                            EntryData = new EntryData()
+                            {
+                                EntryDataId = x.EntryDataId,
+                                Currency = x.AdjustmentEx.Currency,
+                                EntryDataDate = x.AdjustmentEx.InvoiceDate
+                            },
+                            InventoryItems = new InventoryItemsEx()
+                            {
+                                TariffCode = x.TariffCode,
+                                ItemNumber = x.ItemNumber,
+                                Description = x.ItemDescription,
+                            }
+
+
+                        }).ToList().GroupBy(x => x.EffectiveDate.GetValueOrDefault().ToString("MM-yyyy"));
+                    foreach (var set in olst)
+                    {
+                        await BaseDataModel.Instance.CreateEntryItems(set.ToList(), docSet, perInvoice, false, true)
+                        .ConfigureAwait(false);
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+    }
+}

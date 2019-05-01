@@ -1,0 +1,97 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class DTOCreateEntityFromStringTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string mainEntitySet;
+        public string conTextName;
+        public string projectName;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+        public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+            var ens = mainEntity.Properties.Where(x => x.MetadataProperties.Where(z => z.Name.Contains("EntityNameProperty") && z.Value.ToString().Contains(">True<")).Any() == true).ToList();
+#>
+using System.Linq;
+using <#=COREcontainer.Name #>.Client.Entities;
+using <#=COREcontainer.Name #>.Client.Services;
+//using <#=projectName#>.Client.Services;
+using <#=conTextName#>.Client.Services;
+using <#=conTextName#>.Client.DTO;
+using <#=projectName#>.QuerySpace.<#=conTextName#>;
+using System;
+using SimpleMvvmToolkit;
+
+namespace <#=conTextName#>.Client.DTO
+{
+    public partial class <#=mainEntity.Name#>
+    {
+
+<#+
+if(mainEntity.Abstract == false )
+    {
+                var readOnly = true;
+                var rprop = mainEntity.MetadataProperties.FirstOrDefault(z => z.Name.Contains("ReadOnlyProperty"));
+                if(rprop != null)
+                {
+                    readOnly = Convert.ToBoolean(((XElement)rprop.Value).Value)  ;
+                }
+                else
+                {
+                    readOnly = false;
+                }
+
+            if(readOnly == false)
+                {
+ #>
+        public override <#=(GetBaseEntity(mainEntity).Name)#> CreateEntityFromString(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return null;
+
+            using (<#=mainEntity.Name#>Client ctx = new <#=mainEntity.Name#>Client())
+            {
+                DTO.<#=mainEntity.Name#> dto = ctx.Get<#=mainEntitySet #>().Result<#=(mainEntity.BaseType == null?"":".OfType<DTO." + mainEntity.Name + ">()") #>.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+
+                if ( dto != null)
+                {
+                    return new <#=mainEntity.Name#>(dto);
+                }
+                dto = new DTO.<#=mainEntity.Name#>() { EntityName = value, TrackingState=TrackableEntities.TrackingState.Added };
+             
+                dto = ctx.Create<#=mainEntity.Name#>(dto).Result;
+
+                MessageBus.Default.BeginNotify(MessageToken.<#=mainEntitySet #>Changed, this, new NotificationEventArgs(MessageToken.<#=mainEntitySet #>Changed));
+                
+                return new <#=mainEntity.Name#>(dto);
+            }
+        }
+<#+ 
+                }
+        }
+ #>
+
+
+
+         
+    }
+   
+}
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+#>
+
+<#+
+	}	
+#>

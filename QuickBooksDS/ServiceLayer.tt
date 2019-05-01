@@ -1,0 +1,11 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Services.tt" #>
+<#
+    //CreateServices( "WaterNut",
+                            //@"QuickBooksDS.edmx",
+                           //@"C:\Prism\WaterNut - Enterprise\QuickBooksDS\QuickBooksDS.edmx",
+                           //@"C:\Prism\WaterNut - Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Prism\WaterNut - Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Prism\WaterNut - Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");          
+#>

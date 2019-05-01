@@ -1,0 +1,27 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+    xmlns:coreui ="clr-namespace:Core.Common.UI;assembly=Core.Common.UI"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	xmlns:local="clr-namespace:WaterNut" 
+	x:Class="WaterNut.Views.Status"
+	d:DesignWidth="601.6" Height="78.806">
+    <UserControl.Resources>
+        <coreui:StatusModel x:Key="StatusModelDataSource" />
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource StatusModelDataSource}}" Visibility="{Binding StatusVisibility, Source={StaticResource StatusModelDataSource}}">
+        <ProgressBar Maximum="{Binding MaxVal}" Value="{Binding StatusValue}" Height="40" VerticalAlignment="Top"  Margin="0,0,0,0" Foreground="#7F152937">
+            <ProgressBar.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#7FB4B4B4"/>
+                    <GradientStop Color="#7FFFFFFF" Offset="1"/>
+                </LinearGradientBrush>
+            </ProgressBar.Background>
+        </ProgressBar>
+        <TextBlock Height="34" Margin="0,45,-0.4,0" TextWrapping="Wrap" Text="{Binding StatusTxt}" Foreground="#FFE4E453" VerticalAlignment="Top" Width="Auto" FontSize="18.667" TextAlignment="Center"/>
+        <TextBlock Height="34" Margin="0,45,-0.4,0" TextWrapping="Wrap" Text="{Binding ErrorTxt}" Foreground="#FF4E0909" VerticalAlignment="Top" Width="Auto" FontSize="11" TextAlignment="Left"/>
+    </Grid>
+</UserControl>

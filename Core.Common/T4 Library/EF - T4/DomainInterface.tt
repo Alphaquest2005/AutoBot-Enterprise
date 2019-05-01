@@ -1,0 +1,128 @@
+﻿
+<#@ output extension=".cs"#>
+<#@ include file="EF.Utility.CS.ttinclude"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\DomainInterface\DomainInterfaceTemplate.tt"#>		
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\DomainInterface\DomainEntityInterfaceTemplate.tt"#>		
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\DomainInterface\DomainClientEntityInterfaceTemplate.tt"#>	
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\DomainInterface\EntityInterfaceTemplate.tt"#>	
+
+
+				
+<#+ 
+  // Note: You can call this method from the outside of the template,
+  //       please add parameters as needed.	
+  // To include this templaate just drag this file on another editor
+  // then call this.Template_NewTemplate1_Render()
+  void CreateDomainInterface(string projectName,string ModelType,string inputFile, string DomainInterfaceProject, string ClientInterfaceProject, string clientEntitiesProject,List<string> processedInterfaces)
+    {	
+        EntityType MainEntity = null;
+        string MainEntitySet = "";
+        
+
+        CodeGenerationTools code = new CodeGenerationTools(this);
+        MetadataLoader loader = new MetadataLoader(this);
+        CodeRegion region = new CodeRegion(this, 1);
+        MetadataTools ef = new MetadataTools(this);
+
+       
+        MetadataWorkspace metadataWorkspace = null;
+        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+        //var processedInterfaces = new List<string>(); 
+      try
+      {
+
+      
+        foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+        {
+            
+           // if(entity.Abstract) continue;
+
+             var vc = new DomainEntityInterfaceTPL();
+                    vc.container = container;
+                    vc.projectName = projectName;
+                    vc.interfaceName = "I" + entity.Name;
+                    vc.entity = entity;
+                   vc.code = code;
+                   vc.ef = ef;
+                    
+					vc.Output.PreserveExistingFile = false;
+                    vc.Output.Project = DomainInterfaceProject;
+                    vc.Output.File = container.Name + @"\Generated Entity Interfaces\" + @"\" + vc.interfaceName + ".cs";
+                    vc.Render();
+
+			 var cc = new DomainClientEntityInterfaceTPL();
+                    cc.container = container;
+                    cc.projectName = projectName;
+                    cc.interfaceName = "I" + entity.Name;
+                    cc.entity = entity;
+                   cc.code = code;
+                   cc.ef = ef;
+                    
+					cc.Output.PreserveExistingFile = false;
+                    cc.Output.Project = ClientInterfaceProject;
+                    cc.Output.File = container.Name + @"\Generated Entity Interfaces\" + @"\" + cc.interfaceName + ".cs";
+                    cc.Render();
+                    
+
+			var i = entity.MetadataProperties.FirstOrDefault(x => x.Name.Contains("DomainInterfaceProperty"));
+			var interfaceNamelst = (i == null || i.Value == null?"": ((XElement)i.Value).Value.ToString());
+            if(string.IsNullOrEmpty(interfaceNamelst)) continue;
+            string[] domainInterfaces =  interfaceNamelst == null || interfaceNamelst == null?"".Split(','): interfaceNamelst.Split(',');
+            foreach (string rawInterfaceName in domainInterfaces)
+            {
+                string interfaceName = rawInterfaceName.Trim();
+                
+                if (!string.IsNullOrEmpty(interfaceName) && !processedInterfaces.Contains(interfaceName))
+                {
+                    
+                    var sc = new DomainInterfaceTPL();
+                    sc.container = container;
+                    sc.projectName = projectName;
+                    sc.interfaceName = interfaceName;
+                    sc.entity = entity;
+                    sc.code = code;
+                    sc.ef = ef;
+                    
+					sc.Output.PreserveExistingFile = false;
+                    sc.Output.Project = DomainInterfaceProject;
+                    sc.Output.File = @"Generated Interfaces\" + @"\" + sc.interfaceName + ".cs";
+                    sc.Render();
+                    processedInterfaces.Add(interfaceName);
+                }
+
+                if (!string.IsNullOrEmpty(interfaceName))
+                {
+                    var ec = new EntityImplementationTPL();
+                    ec.container = container;
+                    ec.projectName = projectName;
+                    ec.interfaceName = interfaceName;
+                    ec.entity = entity;
+                    ec.code = code;
+                    ec.ef = ef;
+                    ec.ModelType = ModelType;
+					ec.Output.PreserveExistingFile = false;
+                    ec.Output.Project = clientEntitiesProject;
+                    ec.Output.File =  @"Generated Interface Implementation\" + container.Name + @"\" + @"\" + ec.interfaceName + @"\" +  entity.Name + ".cs";;
+                    ec.Render();
+                   // processedInterfaces.Add(interfaceName);
+                }
+
+            }
+
+        }
+}
+      catch (Exception)
+      {
+          
+          throw;
+      }
+      
+        
+#>
+<#+
+	}	
+#>

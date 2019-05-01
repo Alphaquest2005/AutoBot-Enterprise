@@ -1,0 +1,78 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:QS="clr-namespace:WaterNut.QuerySpace.CoreEntities.ViewModels"
+	mc:Ignorable="d"
+	xmlns:local="clr-namespace:WaterNut"
+	x:Class="WaterNut.Views.CreateAsycudaDocument" Width="857.705" Height="499.924">
+    <UserControl.Resources>
+        <x:Static Member="QS:CreateAsycudaDocumentModel.Instance" x:Key="CreateAsycudaDocumentModelDataSource" />
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource CreateAsycudaDocumentModelDataSource}}">
+        <TextBlock HorizontalAlignment="Left" Height="32.766" Margin="8.838,14.011,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="396.779" FontSize="21.333" Text="Create/Edit Asycuda Documents &amp; Set"/>
+        <Grid Margin="0,80,-0.4,-0.4" Background="#33FFFFFF" Style="{DynamicResource EditGridData}" DataContext="{Binding}">
+            <ComboBox SelectedValue="{Binding DocumentTypeId}" ItemsSource="{Binding DocumentTypes}" SelectedItem="{Binding VCurrentDocumentType}" DisplayMemberPath="DisplayName" SelectedValuePath="Document_TypeId" HorizontalAlignment="Left" Height="29" Margin="178,5.861,0,0" VerticalAlignment="Top" Width="64"  FontSize="18.667"/>
+            <ComboBox  ItemsSource="{Binding CustomsProcedures}" DisplayMemberPath="DisplayName" SelectedValuePath="Customs_ProcedureId" SelectedItem="{Binding VCurrentCustomsProcedure}" HorizontalAlignment="Left" Height="29" Margin="178,48.861,0,0" VerticalAlignment="Top" Width="125" SelectedValue="{Binding CustomsProcedureId}"  />
+            <TextBlock HorizontalAlignment="Left" Height="29.382" Margin="1.162,5.924,0,0" TextWrapping="Wrap" Text="Document Type" VerticalAlignment="Top" Width="141.2" FontSize="16" TextAlignment="Right"/>
+            <TextBlock HorizontalAlignment="Left" Height="46.182" Margin="1.162,40.306,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141.2" FontSize="16" TextAlignment="Right"><Run Text="Default Customs Procedure"/><LineBreak/><Run/></TextBlock>
+            <ComboBox SelectedValue="{Binding Document_TypeId}" 
+                      ItemsSource="{Binding Document_Types}" 
+                      
+                      DisplayMemberPath="DisplayName" 
+                      SelectedValuePath="Document_TypeId" HorizontalAlignment="Left" Height="29" Margin="178,5.861,0,0" VerticalAlignment="Top" Width="64"  FontSize="18.667"/>
+            <!--SelectedItem="{Binding CurrentDocument_Type}"-->
+            <ComboBox  ItemsSource="{Binding Customs_Procedures}" 
+                       DisplayMemberPath="DisplayName" 
+                       SelectedValuePath="Customs_ProcedureId" 
+                       SelectedValue="{Binding Customs_ProcedureId}"
+                       HorizontalAlignment="Left" Height="29" Margin="178,48.861,0,0" VerticalAlignment="Top" Width="125" />
+            <!--SelectedItem="{Binding CurrentCustoms_Procedure}"-->
+            <TextBlock HorizontalAlignment="Left" Height="29.382" Margin="1.162,5.924,0,0" TextWrapping="Wrap" Text="Document Type" VerticalAlignment="Top" Width="141.2" FontSize="16" TextAlignment="Right"/>
+            <TextBlock HorizontalAlignment="Left" Height="46.182" Margin="1.162,40.306,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141.2" FontSize="16" TextAlignment="Right"><Run Text="Default Customs Procedure"/><LineBreak/><Run/></TextBlock>
+            <TextBox Text="{Binding Declarant_Reference_Number, UpdateSourceTrigger=PropertyChanged}"
+                     HorizontalAlignment="Left"
+                     Height="32"
+                     Margin="178,208.861,0,0"
+                     TextWrapping="Wrap"
+                     VerticalAlignment="Top" Width="279" FontSize="16" MaxLength="15"/>
+
+            <TextBlock HorizontalAlignment="Left" Height="32" Margin="48,204,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="16" TextAlignment="Right" Text="Reference Code"/>
+            <TextBox
+                Text="{Binding Description, UpdateSourceTrigger=PropertyChanged, FallbackValue='Create New Document or Set', TargetNullValue='Please Enter Description'}"
+                HorizontalAlignment="Left"
+                Height="59"
+                     Margin="178,255,0,0"
+                     TextWrapping="Wrap" VerticalAlignment="Top" Width="279" FontSize="16"/>
+            <TextBlock HorizontalAlignment="Left" Height="32" Margin="48,252,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="16" TextAlignment="Right" Text="Description"/>
+            <TextBlock x:Name="SaveBtn" HorizontalAlignment="Left" Height="39" Margin="604,369,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="35" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" FontSize="26.667" MouseLeftButtonDown="SaveBtn_MouseLeftButtonDown"><Span FontFamily="Segoe UI Symbol" Language="en-us"><Run Text="&#xE105;"/></Span></TextBlock>
+            <TextBlock x:Name="DeleteBtn" HorizontalAlignment="Left" Height="39" Margin="803,369,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="35" TextAlignment="Center" Style="{DynamicResource CloseButtonStyle}" FontSize="26.667" MouseLeftButtonDown="DeleteBtn_MouseLeftButtonDown"><Span FontFamily="Segoe UI Symbol" Language="en-us"><Run Text="&#xE106;"/></Span><LineBreak/><Span FontFamily="Segoe UI Symbol" Language="en-us"><Run/></Span></TextBlock>
+            <TextBlock x:Name="NewBtn" HorizontalAlignment="Left" Height="39" Margin="550,371,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="48" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" FontSize="26.667" Text="&#xE109;" FontFamily="Segoe UI Symbol" MouseLeftButtonDown="NewBtn_MouseLeftButtonDown"/>
+            <TextBox HorizontalAlignment="Left" Height="32" Margin="635,141,0,0" TextWrapping="Wrap" Text="{Binding Country_of_origin_code, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="53" FontSize="16" MaxLength="2"/>
+            <TextBlock HorizontalAlignment="Left" Height="41" Margin="482,140,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" FontSize="16" TextAlignment="Right" Text="Default Country of Origin Code"/>
+            <TextBox Text="{Binding Currency_Code, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="32" Margin="635,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="61" FontSize="16" MaxLength="3"/>
+            <TextBlock HorizontalAlignment="Left" Height="29" Margin="483,190,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" FontSize="16" TextAlignment="Right" Text="Currency Code"/>
+            <TextBox Text="{Binding Exchange_Rate, UpdateSourceTrigger=PropertyChanged, StringFormat=c4}" HorizontalAlignment="Left" Height="32" Margin="635,236,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="98" FontSize="16"/>
+            <TextBlock HorizontalAlignment="Left" Height="26" Margin="482,236,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" FontSize="16" TextAlignment="Right" Text="Exchange Rate"/>
+            <TextBox HorizontalAlignment="Left" Height="32" Margin="178,162.861,0,0" TextWrapping="Wrap" Text="{Binding Manifest_Number, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="279" FontSize="16" MaxLength="16"/>
+            <TextBlock HorizontalAlignment="Left" Height="32" Margin="48,163,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="16" TextAlignment="Right" Text="Manifest Code"/>
+            <TextBox HorizontalAlignment="Left" Height="32" Margin="635,282,0,0" TextWrapping="Wrap" Text="{Binding BLNumber, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="146" FontSize="16" MaxLength="16"/>
+            <TextBlock HorizontalAlignment="Left" Height="32" Margin="480,282,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" FontSize="16" TextAlignment="Right" Text="BL Ref. Number"/>
+            <TextBlock x:Name="CreateSetTxt" HorizontalAlignment="Left" Height="39" Margin="492,369,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="53" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" FontSize="26.667" Text="" FontFamily="Segoe UI Symbol" MouseLeftButtonDown="CreateSet"/>
+            <CheckBox IsChecked="{Binding Source={x:Static QS:BaseViewModel.Instance}, Path=CurrentAsycudaDocument.IsManuallyAssessed}" HorizontalAlignment="Left" Height="26" Margin="483,91,0,0" VerticalAlignment="Top" Width="166" FontSize="14" Content="Is Manually Assessed"/>
+            <TextBlock Text="Assess All in Set" x:Name="ManuallyAssessAll" HorizontalAlignment="Left" Height="21" Margin="516,65,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="123" TextAlignment="Center" Style="{DynamicResource TextButtonStyle}" FontSize="16" MouseLeftButtonDown="AssessAll"/>
+            <CheckBox IsChecked="{Binding Source={x:Static QS:BaseViewModel.Instance}, Path=CurrentAsycudaDocument.AutoUpdate}" HorizontalAlignment="Left" Height="26" Margin="483,10,0,0" VerticalAlignment="Top" Width="166" FontSize="14" Content="Auto Update"/>
+            <TextBox HorizontalAlignment="Left" Height="32" Margin="635,329,0,0" TextWrapping="Wrap" Text="{Binding TotalWeight, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="146" FontSize="16" MaxLength="16" Visibility="{Binding Source={x:Static QS:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowAutoWeightCalculation}"/>
+            <TextBlock HorizontalAlignment="Left" Height="32" Margin="484,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" FontSize="16" TextAlignment="Right" Text="Total Gross Weight"  Visibility="{Binding Source={x:Static QS:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowAutoWeightCalculation}"/>
+            <TextBox HorizontalAlignment="Left" Height="32" Margin="313,329,0,0" TextWrapping="Wrap" Text="{Binding TotalFreight, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="146" FontSize="16" MaxLength="16" Visibility="{Binding CurrentApplicationSettings.AllowAutoWeightCalculation, Source={x:Static QS:BaseViewModel.Instance}}"/>
+            <TextBlock HorizontalAlignment="Left" Height="32" Margin="162,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="141" FontSize="16" TextAlignment="Right" Text="Total Freight"  Visibility="{Binding CurrentApplicationSettings.AllowAutoWeightCalculation, Source={x:Static QS:BaseViewModel.Instance}}"/>
+            <ComboBox HorizontalAlignment="Left" Height="32" Margin="178,91,0,0" Text="{Binding ApportionMethod, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="83" FontSize="16">
+                <ComboBoxItem Content="Equal"/>
+                <ComboBoxItem Content="Value"/>
+            </ComboBox>
+            <TextBlock Text="ApportionMethod" HorizontalAlignment="Left" Height="32" Margin="26,91,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="142" FontSize="16" TextAlignment="Right"/>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,138 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class EntityGridListViewCSTPL : CSharpTemplate
+{
+        public string conTextName;
+        public string projectName;
+        public EntityType  mainEntity;
+        public string mainEntitySet;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public MetadataTools ef;
+        public CodeGenerationTools code;
+        public EntityFrameworkTemplateFileManager fileManager;
+		
+
+	public override string TransformText()
+        {
+            //base.TransformText();
+#>
+using System;
+using <#=conTextName#>;
+using <#=projectName#>.QuerySpace.<#=conTextName#>.ViewModels;
+using System.Windows;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
+//using <#=projectName#>.Client.Entities;
+using <#=conTextName#>.Client.Entities;
+using Core.Common.UI.DataVirtualization;
+using DataGrid = ExtendedGrid.Microsoft.Windows.Controls.DataGrid;
+
+namespace <#=projectName#>.QuerySpace.<#=conTextName#>.Views
+{
+	/// <summary>
+	/// Interaction logic for <#=mainEntity.Name#>.xaml
+	/// </summary>
+	public partial class <#=mainEntity.Name#>List_AutoGen : UserControl
+	{
+		public <#=mainEntity.Name#>List_AutoGen()
+		{
+            try
+            {
+			    this.InitializeComponent();
+			    im = this.FindResource("<#=mainEntity.Name#>ViewModelDataSource") as <#=mainEntity.Name#>ViewModel_AutoGen;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message + ex.StackTrace);
+            }
+		}
+        <#=mainEntity.Name#>ViewModel_AutoGen im;
+        private void SetCurrentItem(object sender, MouseEventArgs e)
+        {
+<#+
+             if(mainEntity.MetadataProperties.Where(z => z.Name.Contains("ViewTypeProperty") && z.Value.ToString().Contains("EntityView")).ToList().Any() == false)
+            { 
+ #>
+            <#= mainEntity.Name#>Grd.SelectedItem = (sender as FrameworkElement).DataContext;
+   <#+      }
+            else
+            {
+#>
+               // im.Current<#= mainEntity.Name#> = ((FrameworkElement)sender).DataContext as <#= mainEntity.Name#>;
+<#+
+            }
+ #>    
+        }
+
+       private void dataGrid_CellEditEnding(object sender,
+                                          ExtendedGrid.Microsoft.Windows.Controls.DataGridCellEditEndingEventArgs e)
+        {
+            RefreshGrid(sender);
+        }
+
+
+       private void dataGrid_CurrentCellChanged(object sender, EventArgs e)
+       {
+           RefreshGrid(sender);
+       }
+
+	    private static void RefreshGrid(object sender)
+	    {
+	        var dg = sender as DataGrid;
+	        var itmsource = dg.ItemsSource;
+	        dg.ItemsSource = null;
+	        dg.ItemsSource = itmsource;
+	    }
+
+
+<#+
+                
+        foreach (var property in mainEntity.NavigationProperties.Where(x =>x.MetadataProperties.FirstOrDefault(z => z.Name.Contains("IncludeNavigationProperty")) != null))
+            {
+                var rrprop = property.MetadataProperties.FirstOrDefault(z => z.Name.Contains("IncludeNavigationProperty"));
+                string incNav = ((XElement)rrprop.Value).Value;
+                
+                if(incNav == "True")
+                {
+                    var pEntity= property.ToEndMember.GetEntityType();
+                    NavigationProperty navPropertyBackReference = property.ToEndMember.GetEntityType().NavigationProperties
+                             .Where(npBack => npBack.RelationshipType == property.RelationshipType && npBack != property)
+                             .SingleOrDefault();
+#>
+        private void <#=property.Name#>DataGrid_OnLoadingRow(object sender, ExtendedGrid.Microsoft.Windows.Controls.DataGridRowEventArgs e)
+	    {
+             var i = (e.Row.Item as <#=pEntity.Name #>);
+
+            if (i != null && i.<#=navPropertyBackReference.GetDependentProperties().FirstOrDefault().Name #> == null)
+            {
+                var ec = ((sender as FrameworkElement).DataContext as VirtualListItem<<#=mainEntity.Name#>>).Data;
+                i.<#=navPropertyBackReference.GetDependentProperties().FirstOrDefault().Name #> = ec.<#=mainEntity.KeyMembers[0]#>;
+            }
+	    }
+
+	    private async void New<#=pEntity.Name #>(object sender, MouseButtonEventArgs e)
+	    {
+             await im.New<#=pEntity.Name #>(((sender as FrameworkElement).DataContext as VirtualListItem<<#=mainEntity.Name #>>).Data).ConfigureAwait(false);
+	    }
+
+	    private async void Delete<#=pEntity.Name #>(object sender, MouseButtonEventArgs e)
+	    {
+            await im.Delete<#=pEntity.Name #>(((sender as FrameworkElement).DataContext as VirtualListItem<<#=mainEntity.Name #>>).Data).ConfigureAwait(false);
+	    }
+<#+
+                }
+            }
+#>                 
+	}
+}
+		
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

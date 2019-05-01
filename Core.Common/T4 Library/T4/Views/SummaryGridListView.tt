@@ -1,0 +1,158 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class SummaryGridListViewTPL : CSharpTemplate
+{
+        public string conTextName;
+        public string projectName;
+        public string  mainEntity;
+        public string mainEntitySet;
+        public EntityContainer container;
+        public List<EntityType> entityCollection;
+        public CodeGenerationTools code;
+        
+
+	public override string TransformText()
+        {
+            //base.TransformText();
+#>
+		
+<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:models="clr-namespace:<#=projectName #>.<#=conTextName#>.ViewModels"
+    xmlns:views="clr-namespace:<#=projectName #>.<#=conTextName#>.Views"
+    xmlns:local="clr-namespace:<#=projectName #>"
+    xmlns:coreui="clr-namespace:Core.Common.UI;assembly=Core.Common.UI"
+	xmlns:System="clr-namespace:System;assembly=mscorlib"
+	mc:Ignorable="d"
+	x:Class="<#=projectName #>.<#=conTextName#>.Views.<#=conTextName#>SummaryView" Height="Auto" Width="1385.191" VerticalAlignment="Top">
+    <UserControl.Resources>
+<#+
+           if(entityCollection.FirstOrDefault(x=>x.Name == mainEntity) != null)
+{
+ #>
+
+        <x:Static Member="models:<#=mainEntity#>ViewModel_AutoGen.Instance" x:Key="<#=mainEntity#>SummaryListModelDataSource" />
+<#+
+ }
+#>
+        <DataTemplate x:Key="<#=mainEntity#>SummaryIDT">
+            <Grid Height="80" Width="469">
+<Grid.Background>
+    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#33000000" Offset="0.907"/>
+        <GradientStop Color="#19FFFFFF" Offset="0.069"/>
+    </LinearGradientBrush>
+</Grid.Background>
+<TextBlock Text="{Binding EntityName}" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="37" Width="264" FontSize="18.667"/>
+<TextBlock Text="{Binding LastAddress.DisplayLine, Mode=OneWay}" Margin="10,52,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="264" FontSize="16"/>
+<TextBlock Text="{Binding LastPhoneNumber.PhoneNumber, Mode=OneWay}" Margin="282,52,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="159" FontSize="16"/>
+<TextBlock Text="{Binding LastJobPosition.JobPosition.Title, Mode=OneWay}" Margin="282,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="27" Width="147" TextWrapping="NoWrap" FontSize="14" FontWeight="Bold"/>
+            </Grid>
+        </DataTemplate>
+        <Style TargetType="{x:Type TextBox}" x:Key="TransparentTextBoxStyle">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Template">
+<Setter.Value>
+    <ControlTemplate TargetType="{x:Type TextBox}">
+        <Grid>
+            <ScrollViewer x:Name="PART_ContentHost"
+        						Background="#4CFFFFFF"
+        						Focusable="True"
+        						HorizontalScrollBarVisibility="Hidden"
+        						VerticalScrollBarVisibility="Hidden" />
+        </Grid>
+    </ControlTemplate>
+</Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <System:Double x:Key="ExpHeadFontSize">16</System:Double>
+        <Style x:Key="ExpHeadStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property= "Foreground" Value="#FFECF9A7"/>
+            <Style.Triggers>
+
+<Trigger Property="IsMouseOver" Value="True">
+    <Setter Property="Foreground" Value="#FF8E9600" />
+</Trigger>
+            </Style.Triggers>
+        </Style>
+
+
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" <#+if(entityCollection.FirstOrDefault(x=>x.Name == mainEntity) != null)
+            {
+    #>DataContext="{Binding Source={StaticResource <#=mainEntity#>SummaryListModelDataSource}}"<#+            } #> Margin="0,0,0,0">
+<#+
+           if(entityCollection.FirstOrDefault(x=>x.Name == mainEntity) != null)
+            {
+ #>
+        <ListBox  ItemsSource="{Binding <#=mainEntitySet#>}" ItemTemplate="{DynamicResource <#=mainEntity#>SummaryIDT}"  SelectedValuePath="EntityId" SelectedValue="{Binding Current<#=mainEntity#>ID}" IsSynchronizedWithCurrentItem="True" HorizontalAlignment="Left" Height="388" Margin="10,125,0,0" VerticalAlignment="Top" Width="500" Style="{DynamicResource AlphaListBoxStyle}"/>
+<#+            } #>
+        <TextBlock HorizontalAlignment="Left" Height="44" Margin="22,10,0,0" TextWrapping="Wrap" Text="Employees" VerticalAlignment="Top" Width="281" FontSize="26" Foreground="#FF17204A"/>
+        <TextBox Text="{Binding <#=mainEntity#>Filter, UpdateSourceTrigger=PropertyChanged}" Background="#4CFFFFFF" HorizontalAlignment="Left" Height="23" Margin="189,54,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="304" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}"/>
+        <TextBlock HorizontalAlignment="Left" Height="23" Margin="21,54,0,0" TextWrapping="Wrap" Text="Filter by <#=mainEntity#> Name" VerticalAlignment="Top" Width="168" FontSize="14"/>
+        <coreui:SliderPanel x:Name="<#=mainEntity#>slider" Margin="668,54,0,-10000"  Orientation="Vertical">
+            <StackPanel Orientation="Vertical"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#7FB0CAD3">
+ <#+
+  foreach (EntityType entity in entityCollection)
+    {
+        if(entity.Abstract) continue;
+                if(entity.MetadataProperties.Where(z => z.Name.Contains("ViewTypeProperty") && z.Value.ToString().Contains("None")).ToList().Any() == true) continue;
+ #>   
+               
+<Expander x:Name="<#=code.Escape(entity)#>ListEXP" IsExpanded="True" ExpandDirection="Right" Margin="0,0,0,10"  Width="Auto" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top"  Padding="5,5,5,10" Background="#FFDEAFAF">
+    <Expander.Header>
+        <Grid Height="Auto" MouseEnter="BringIntoView">
+            <TextBlock Height="63" Style="{DynamicResource ExpHeadStyle}" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,23,0" Width="55" FontFamily="Segoe UI Symbol" FontSize="40" Text=""/>
+            <TextBlock Text="<#=code.Escape(entity)#>" Style="{DynamicResource ExpHeadStyle}" HorizontalAlignment="Right" Margin="0,65,0.4,0" TextWrapping="Wrap" Width="78" TextAlignment="Center" RenderTransformOrigin="0.535,1.32" FontSize="{DynamicResource ExpHeadFontSize}" FontWeight="Bold" Height="42" VerticalAlignment="Top"/>
+        </Grid>
+    </Expander.Header>
+    <views:<#=entity.Name#>List_AutoGen Margin="0" />
+</Expander>
+<#+
+    }
+ #> 
+
+            </StackPanel>
+        </coreui:SliderPanel>
+<ScrollViewer HorizontalAlignment="Left" Height="449" Margin="517,54,0,0" VerticalAlignment="Top" Width="142" Padding="0,0,0,0" VerticalScrollBarVisibility="Auto" CanContentScroll="True"  >
+            <StackPanel RenderTransformOrigin="0.5,0.5" Height="449" Width="134" Margin="0,0,0,0">
+ <#+            int top = 10;
+  foreach (EntityType entity in entityCollection.Where(x => x.Name != mainEntity))
+    {
+        if(entity.Abstract) continue;
+top += 28;
+ #> 
+        <TextBlock Text="<#=AddSpacesToSentence(code.Escape(entity).Replace(mainEntity,""))#>" Style="{DynamicResource ExpHeadStyle}" HorizontalAlignment="Right" Height="Auto" Margin="0,10,20,10" TextWrapping="Wrap"  VerticalAlignment="Top" Width="Auto" MaxWidth="110" TextAlignment="Right" RenderTransformOrigin="0.535,1.32" FontSize="{DynamicResource ExpHeadFontSize}" FontWeight="Bold" MouseLeftButtonDown="GoTo<#=code.Escape(entity)#>"/>
+ <#+
+    }
+ #>        
+</StackPanel>
+</ScrollViewer>
+        <Rectangle HorizontalAlignment="Left" Height="459" Margin="659,54,0,0" VerticalAlignment="Top" Width="4">
+            <Rectangle.Fill>
+<RadialGradientBrush>
+    <GradientStop Color="#7F6570B6" Offset="1"/>
+    <GradientStop Color="#FFEDEEF4"/>
+</RadialGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        
+    </Grid>
+</UserControl>
+
+		
+		
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

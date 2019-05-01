@@ -1,0 +1,14 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\DomainInterface.tt" #>
+<#
+    CreateDomainInterface( "WaterNut","Client",
+                           @"C:\prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                           @"C:\prism\WaterNut - Enterprise\DomainInterfaces\InterfacesModel.csproj",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj", new List<string>());    
+    
+        CreateDomainInterface( "WaterNut","Business",
+                           @"C:\prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx",
+                           @"C:\prism\WaterNut - Enterprise\DomainInterfaces\InterfacesModel.csproj",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj", new List<string>()); 
+#>

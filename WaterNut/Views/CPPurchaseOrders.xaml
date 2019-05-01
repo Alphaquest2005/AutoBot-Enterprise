@@ -1,0 +1,43 @@
+﻿<UserControl
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:QS="clr-namespace:WaterNut.QuerySpace.CounterPointQS.ViewModels"
+	mc:Ignorable="d"
+	xmlns:local="clr-namespace:WaterNut"
+    xmlns:converters="clr-namespace:WaterNut.Converters"
+    xmlns:dataVirtualization="clr-namespace:Core.Common.UI.DataVirtualization;assembly=Core.Common.UI"
+    x:Class="WaterNut.Views.CPPurchaseOrders"
+	d:DesignWidth="577.91" d:DesignHeight="480">
+    <UserControl.Resources>
+        <x:Static Member="QS:CPPurchaseOrdersModel.Instance" x:Key="CPPurchaseOrdersModelDataSource" />
+        <Style TargetType="ListBoxItem">
+            <Setter Property="dataVirtualization:VirtualListItemBase.AutoLoad" Value="true" />
+        </Style>
+        <converters:NotBoolConverter x:Key="NotBoolConverter" />
+        <DataTemplate x:Key="CounterPointPurchaseOrdersTemplate">
+            <Grid Height="39.2" Width="492" IsEnabled="{Binding Data.Downloaded,Converter={StaticResource NotBoolConverter}, Mode=OneWay}" >
+                <TextBlock Text="{Binding Data.Date}" Margin="112,6,180,6"/>
+                <CheckBox IsChecked="{Binding Data.Downloaded}" Margin="398,6,76,10.2" PreviewMouseLeftButtonDown="CheckBox_MouseDown" />
+                <TextBlock Text="{Binding Data.LineNumber}" Margin="317,5.2,109.98,10"/>
+                <TextBlock Text="{Binding Data.PurchaseOrderNo}" Margin="10,5.2,368.4,6"/>
+                <TextBlock x:Name="DownloadTxt" Text="Download" Margin="421,5,10,10.2" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonUp="DownloadTxt_MouseLeftButtonUp"/>
+            </Grid>
+        </DataTemplate>
+
+    </UserControl.Resources>
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource CPPurchaseOrdersModelDataSource}}">
+        <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="304" FontSize="21.333" Text="Counter Point Purchase Orders"/>
+        <ListBox x:Name="CPOGrd" HorizontalAlignment="Stretch" Height="335" Margin="0,145,0,0" VerticalAlignment="Top" Width="Auto" ItemTemplate="{DynamicResource CounterPointPurchaseOrdersTemplate}" 
+                 ItemsSource="{Binding CounterPointPOs}"  Style="{DynamicResource AlphaListBoxStyle}" />
+        <TextBlock HorizontalAlignment="Left" Height="33" Margin="10,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16" Text="PO Number" TextAlignment="Center"/>
+        <TextBlock HorizontalAlignment="Left" Height="33" Margin="196,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="237" FontSize="16" Text="Order Date" TextAlignment="Center"/>
+        <TextBox Text="{Binding PurchaseOrderNoFilter, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Background="#7FFFFFFF"  HorizontalAlignment="Left" Height="33" Margin="10,85,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="16"  TextAlignment="Center" Style="{DynamicResource TransparentTextBoxStyle}" PreviewKeyDown="TextBox_PreviewKeyDown"/>
+        <TextBlock HorizontalAlignment="Left" Height="26" Margin="454,114,0,0" TextWrapping="Wrap" Text="View All" VerticalAlignment="Top" Width="75" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" MouseLeftButtonDown="ViewAll" />
+        <DatePicker SelectedDate="{Binding StartDateFilter, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="28" Margin="199,90,0,0" VerticalAlignment="Top" Width="114"/>
+        <DatePicker SelectedDate="{Binding EndDateFilter, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" Height="28" Margin="318,90,0,0" VerticalAlignment="Top" Width="114"/>
+        <TextBlock Text="{Binding CounterPointPOs.Count, StringFormat=0 Filtered Results}" HorizontalAlignment="Left" Height="24" Margin="328,21,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
+    </Grid>
+</UserControl>

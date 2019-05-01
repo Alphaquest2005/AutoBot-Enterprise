@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SfsSolutionSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Models />
+  <Update>
+    <Replacements>
+      <Replacement FilterPattern="*.tt,*.auto.cs" Replace="$namespace$" Value="" />
+    </Replacements>
+  </Update>
+  <AboutInfo>
+    <Author>ALPHAQUEST-PC\joeseph</Author>
+    <Address>Your Address</Address>
+  </AboutInfo>
+  <SolutionTemplates>
+    <SolutionTemplate Name="SFS Module with Shell" Guid="{BF06DA05-E41A-45D1-81FC-A18D57E7D75E}">
+      <ProjectTemplates />
+      <SolutionFolders>
+        <SolutionFolder Name="Library" RelativePath="\Library">
+          <SolutionFolders />
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="CORE">
+          <SolutionFolders>
+            <SolutionFolder Name="BO">
+              <SolutionFolders />
+              <ProjectTemplates>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.zip" IsUnique="false" Name="Entities" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.tt, *.edmx" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference Assembly="System.Runtime.Serialization" Type="AssemblyCache" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.EF4.zip" IsUnique="false" Name="EF4" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects.EF4" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.tt, *.edmx,  *.config" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile IsModel="true" Rename="$safenamespace$Model.edmx" File="ModuleNameModel.edmx">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model.sfsedmx" File="ModuleNameModel.sfsedmx">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model" File="ModuleNameModel">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model.views.tt" File="ModuleNameModel.views.tt">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.EFPocoAdapter.zip" IsUnique="false" Name="EFPocoAdapter" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects.EFPocoAdapter" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.tt, *.config, *.edmx, *.csproj" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference Path="\Library\EFPocoAdapter.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFCachingProvider.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFProviderWrapperToolkit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFTracingProvider.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+              </ProjectTemplates>
+            </SolutionFolder>
+            <SolutionFolder Name="BR">
+              <SolutionFolders />
+              <ProjectTemplates>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BR.zip" IsUnique="false" Name="BR" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BR" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.js, *.css, *.html, *.tt" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.My.BusinessObjects.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.Security.BusinessObjects.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects.EFPocoAdapter" Type="Project" />
+                    <ProjectReference Path="\Library\EFPocoAdapter.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects.EF4" Type="Project" />
+                    <ProjectReference Assembly="System.Data.Entity" Type="AssemblyCache" />
+                    <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFCachingProvider.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFProviderWrapperToolkit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFTracingProvider.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+              </ProjectTemplates>
+            </SolutionFolder>
+          </SolutionFolders>
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="FRONT">
+          <SolutionFolders>
+            <SolutionFolder Name="MVCP">
+              <SolutionFolders />
+              <ProjectTemplates />
+            </SolutionFolder>
+            <SolutionFolder Name="TYPE">
+              <SolutionFolders>
+                <SolutionFolder Name="WEB">
+                  <SolutionFolders />
+                  <ProjectTemplates>
+                    <ProjectTemplate TemplateName="SFS.EFPOCO1.Shell.Web.Mvc.Compiled.zip" IsUnique="true" Name="WebSiteShell" Order="0" RelativePath="\PROJECTS" PhysicalName="SFSdotNet.Framework.Web.Mvc" Language="CSharp">
+                      <ProjectFiles>
+                        <ProjectFile FilterPattern="*.config" ReplaceDefaultParameters="true">
+                          <CustomParameters />
+                        </ProjectFile>
+                        <ProjectFile FilterPattern="*.config">
+                          <CustomParameters>
+                            <Replace Name="{namespace}" Value="$namespace$" />
+                            <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                          </CustomParameters>
+                        </ProjectFile>
+                      </ProjectFiles>
+                      <ReplaceParameters />
+                      <ProjectReferences>
+                        <ProjectReference Path="\Library\Elmah.dll" Type="File" />
+                        <ProjectReference Path="\Library\ExportDLL.dll" Type="File" />
+                        <ProjectReference Path="\Library\itextsharp.dll" Type="File" />
+                        <ProjectReference Path="\Library\AjaxControlToolkit.dll" Type="File" />
+                        <ProjectReference Path="\Library\RouteDebud.dll" Type="File" />
+                        <ProjectReference Path="\Library\itextsharp.dll" Type="File" />
+                        <ProjectReference Path="\Library\ExportHierarchical.dll" Type="File" />
+                        <ProjectReference Path="\Library\SpiceLogicPayPalStd.dll" Type="File" />
+                        <ProjectReference Path="\Library\EFCachingProvider.dll" Type="File" />
+                        <ProjectReference Path="\Library\EFPocoAdapter.dll" Type="File" />
+                        <ProjectReference Path="\Library\EFProviderWrapperToolkit.dll" Type="File" />
+                        <ProjectReference Path="\Library\EFTracingProvider.dll" Type="File" />
+                        <ProjectReference Path="\Library\MvcContrib.dll" Type="File" />
+                        <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+                        <ProjectReference Path="\Library\Rewrite.dll" Type="File" />
+                        <ProjectReference Path="\Library\Recaptcha.dll" Type="File" />
+                        <ProjectReference Path="\Library\MvcReCaptcha.dll" Type="File" />
+                        <ProjectReference Path="\Library\UrlRewritingNet.UrlRewriter.dll" Type="File" />
+                        <ProjectReference Path="\Library\Rpx4Mvc.dll" Type="File" />
+                        <ProjectReference Path="\Library\MvcSiteMapProvider.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.My.BusinessObjects.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.Security.BusinessObjects.dll" Type="File" />
+                        <ProjectReference Assembly="System.ComponentModel.DataAnnotations" Type="AssemblyCache" />
+                      </ProjectReferences>
+                    </ProjectTemplate>
+                    <ProjectTemplate TemplateName="SFS.EFPOCO1.Web.Mvc" IsUnique="false" Name="WebSite" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.Web.Mvc" Language="CSharp">
+                      <ProjectFiles>
+                        <ProjectFile IsModel="false" Rename="$safenamespace$.config" File="ModuleName.config">
+                          <CustomParameters />
+                        </ProjectFile>
+                        <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.js, *.css, *.html, *.tt, *.config, *.aspx, *.ascx, *.resx" ReplaceDefaultParameters="true">
+                          <CustomParameters />
+                        </ProjectFile>
+                        <ProjectFile FilterPattern="*.config">
+                          <CustomParameters>
+                            <Replace Name="{namespace}" Value="$namespace$" />
+                            <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                          </CustomParameters>
+                        </ProjectFile>
+                      </ProjectFiles>
+                      <ReplaceParameters />
+                      <ProjectReferences>
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.My.BusinessObjects.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.Security.BusinessObjects.dll" Type="File" />
+                        <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.Web.Mvc.dll" Type="File" />
+                        <ProjectReference TemplateProject="$namespace$.BR" Type="Project" />
+                        <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                        <ProjectReference Path="\Library\MvcContrib.dll" Type="File" />
+                        <ProjectReference Path="\Library\MvcSiteMapProvider.dll" Type="File" />
+                        <ProjectReference Assembly="System.ComponentModel.DataAnnotations" Type="AssemblyCache" />
+                      </ProjectReferences>
+                    </ProjectTemplate>
+                  </ProjectTemplates>
+                </SolutionFolder>
+              </SolutionFolders>
+              <ProjectTemplates />
+            </SolutionFolder>
+            <SolutionFolder Name="SERVICES">
+              <SolutionFolders />
+              <ProjectTemplates />
+            </SolutionFolder>
+          </SolutionFolders>
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="TESTS">
+          <SolutionFolders />
+          <ProjectTemplates>
+            <ProjectTemplate TemplateName="SFS.EFPOCO1.BR.Tests.zip" IsUnique="false" Name="BR Tests" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BR.Tests" Language="CSharp">
+              <ProjectFiles>
+                <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.tt, *.edmx" ReplaceDefaultParameters="true">
+                  <CustomParameters />
+                </ProjectFile>
+                <ProjectFile IsModel="false" Rename="$safenamespace$.config" File="ModuleName.config">
+                  <CustomParameters />
+                </ProjectFile>
+                <ProjectFile FilterPattern="*.config">
+                  <CustomParameters>
+                    <Replace Name="{namespace}" Value="$namespace$" />
+                    <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                  </CustomParameters>
+                </ProjectFile>
+              </ProjectFiles>
+              <ReplaceParameters />
+              <ProjectReferences>
+                <ProjectReference TemplateProject="$namespace$.BR" Type="Project" />
+                <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                <ProjectReference Path="\Library\ExpressionBuilder.dll" Type="File" />
+                <ProjectReference Path="\Library\ExpressionSerialization.dll" Type="File" />
+                <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+              </ProjectReferences>
+            </ProjectTemplate>
+          </ProjectTemplates>
+        </SolutionFolder>
+      </SolutionFolders>
+      <SolutionFiles>
+        <SourceSolutionFiles FilterPattern="*.dll, *.exe" OriginPath="$sfsdotnetinstallpath$\SFSdotNetLibrary\" SolutionFolder="Library" CopyToLocalFolder="true">
+          <CustomParameters />
+        </SourceSolutionFiles>
+      </SolutionFiles>
+    </SolutionTemplate>
+    <SolutionTemplate Name="Project module only" Guid="{B1EB4F1E-E844-4CB4-8489-298D4675B334}">
+      <ProjectTemplates />
+      <SolutionFolders>
+        <SolutionFolder Name="Library" RelativePath="\Library">
+          <SolutionFolders />
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="CORE">
+          <SolutionFolders>
+            <SolutionFolder Name="BO">
+              <SolutionFolders />
+              <ProjectTemplates>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.zip" IsUnique="false" Name="Entities" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.tt, *.edmx" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference Assembly="System.Runtime.Serialization" Type="AssemblyCache" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.EF4.zip" IsUnique="false" Name="EF4" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects.EF4" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.tt, *.edmx,  *.config" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile IsModel="true" Rename="$safenamespace$Model.edmx" File="ModuleNameModel.edmx">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model.sfsedmx" File="ModuleNameModel.sfsedmx">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model" File="ModuleNameModel">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model.views.tt" File="ModuleNameModel.views.tt">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.EFPocoAdapter.zip" IsUnique="false" Name="EFPocoAdapter" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects.EFPocoAdapter" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.tt, *.config, *.edmx, *.csproj" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference Path="\Library\EFPocoAdapter.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFCachingProvider.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFProviderWrapperToolkit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFTracingProvider.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+              </ProjectTemplates>
+            </SolutionFolder>
+            <SolutionFolder Name="BR">
+              <SolutionFolders />
+              <ProjectTemplates>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BR.zip" IsUnique="false" Name="BR" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BR" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.js, *.css, *.html, *.tt" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.My.BusinessObjects.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.Security.BusinessObjects.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects.EFPocoAdapter" Type="Project" />
+                    <ProjectReference Path="\Library\EFPocoAdapter.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects.EF4" Type="Project" />
+                    <ProjectReference Assembly="System.Data.Entity" Type="AssemblyCache" />
+                    <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFCachingProvider.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFProviderWrapperToolkit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFTracingProvider.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+              </ProjectTemplates>
+            </SolutionFolder>
+          </SolutionFolders>
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="FRONT">
+          <SolutionFolders>
+            <SolutionFolder Name="MVCP">
+              <SolutionFolders />
+              <ProjectTemplates />
+            </SolutionFolder>
+            <SolutionFolder Name="TYPE">
+              <SolutionFolders>
+                <SolutionFolder Name="WEB">
+                  <SolutionFolders />
+                  <ProjectTemplates>
+                    <ProjectTemplate TemplateName="SFS.EFPOCO1.Web.Mvc" IsUnique="false" Name="WebSite" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.Web.Mvc" Language="CSharp">
+                      <ProjectFiles>
+                        <ProjectFile IsModel="false" Rename="$safenamespace$.config" File="ModuleName.config">
+                          <CustomParameters />
+                        </ProjectFile>
+                        <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.js, *.css, *.html, *.tt, *.config, *.aspx, *.ascx, *.resx" ReplaceDefaultParameters="true">
+                          <CustomParameters />
+                        </ProjectFile>
+                        <ProjectFile FilterPattern="*.config">
+                          <CustomParameters>
+                            <Replace Name="{namespace}" Value="$namespace$" />
+                            <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                          </CustomParameters>
+                        </ProjectFile>
+                      </ProjectFiles>
+                      <ReplaceParameters />
+                      <ProjectReferences>
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.My.BusinessObjects.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.Security.BusinessObjects.dll" Type="File" />
+                        <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+                        <ProjectReference Path="\Library\SFSdotNet.Framework.Web.Mvc.dll" Type="File" />
+                        <ProjectReference TemplateProject="$namespace$.BR" Type="Project" />
+                        <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                        <ProjectReference Path="\Library\MvcContrib.dll" Type="File" />
+                        <ProjectReference Path="\Library\MvcSiteMapProvider.dll" Type="File" />
+                        <ProjectReference Assembly="System.ComponentModel.DataAnnotations" Type="AssemblyCache" />
+                      </ProjectReferences>
+                    </ProjectTemplate>
+                  </ProjectTemplates>
+                </SolutionFolder>
+              </SolutionFolders>
+              <ProjectTemplates />
+            </SolutionFolder>
+            <SolutionFolder Name="SERVICES">
+              <SolutionFolders />
+              <ProjectTemplates />
+            </SolutionFolder>
+          </SolutionFolders>
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="TESTS">
+          <SolutionFolders />
+          <ProjectTemplates>
+            <ProjectTemplate TemplateName="SFS.EFPOCO1.BR.Tests.zip" IsUnique="false" Name="BR Tests" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BR.Tests" Language="CSharp">
+              <ProjectFiles>
+                <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.tt, *.edmx" ReplaceDefaultParameters="true">
+                  <CustomParameters />
+                </ProjectFile>
+                <ProjectFile IsModel="false" Rename="$safenamespace$.config" File="ModuleName.config">
+                  <CustomParameters />
+                </ProjectFile>
+                <ProjectFile FilterPattern="*.config">
+                  <CustomParameters>
+                    <Replace Name="{namespace}" Value="$namespace$" />
+                    <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                  </CustomParameters>
+                </ProjectFile>
+              </ProjectFiles>
+              <ReplaceParameters />
+              <ProjectReferences>
+                <ProjectReference TemplateProject="$namespace$.BR" Type="Project" />
+                <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                <ProjectReference Path="\Library\ExpressionBuilder.dll" Type="File" />
+                <ProjectReference Path="\Library\ExpressionSerialization.dll" Type="File" />
+                <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+              </ProjectReferences>
+            </ProjectTemplate>
+          </ProjectTemplates>
+        </SolutionFolder>
+      </SolutionFolders>
+      <SolutionFiles>
+        <SourceSolutionFiles FilterPattern="*.dll, *.exe" OriginPath="$sfsdotnetinstallpath$\SFSdotNetLibrary\" SolutionFolder="Library" CopyToLocalFolder="true">
+          <CustomParameters />
+        </SourceSolutionFiles>
+      </SolutionFiles>
+    </SolutionTemplate>
+    <SolutionTemplate Name="Services module (WCF) only" Guid="{7C19627C-902A-4577-97FA-FEFC7829A8B6}">
+      <ProjectTemplates />
+      <SolutionFolders>
+        <SolutionFolder Name="Library" RelativePath="\Library">
+          <SolutionFolders />
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="CORE">
+          <SolutionFolders>
+            <SolutionFolder Name="BO">
+              <SolutionFolders />
+              <ProjectTemplates>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.zip" IsUnique="false" Name="Entities" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.tt, *.edmx" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference Assembly="System.Runtime.Serialization" Type="AssemblyCache" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.EF4.zip" IsUnique="false" Name="EF4" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects.EF4" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.tt, *.edmx,  *.config" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile IsModel="true" Rename="$safenamespace$Model.edmx" File="ModuleNameModel.edmx">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model.sfsedmx" File="ModuleNameModel.sfsedmx">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model" File="ModuleNameModel">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile Rename="$safenamespace$Model.views.tt" File="ModuleNameModel.views.tt">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BusinessObjects.EFPocoAdapter.zip" IsUnique="false" Name="EFPocoAdapter" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BusinessObjects.EFPocoAdapter" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.tt, *.config, *.edmx, *.csproj" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference Path="\Library\EFPocoAdapter.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFCachingProvider.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFProviderWrapperToolkit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFTracingProvider.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+              </ProjectTemplates>
+            </SolutionFolder>
+            <SolutionFolder Name="BR">
+              <SolutionFolders />
+              <ProjectTemplates>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.BR.zip" IsUnique="false" Name="BR" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BR" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.js, *.css, *.html, *.tt" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.My.BusinessObjects.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.Security.BusinessObjects.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects.EFPocoAdapter" Type="Project" />
+                    <ProjectReference Path="\Library\EFPocoAdapter.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects.EF4" Type="Project" />
+                    <ProjectReference Assembly="System.Data.Entity" Type="AssemblyCache" />
+                    <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFCachingProvider.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFProviderWrapperToolkit.dll" Type="File" />
+                    <ProjectReference Path="\Library\EFTracingProvider.dll" Type="File" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+              </ProjectTemplates>
+            </SolutionFolder>
+          </SolutionFolders>
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="FRONT">
+          <SolutionFolders>
+            <SolutionFolder Name="MVCP">
+              <SolutionFolders />
+              <ProjectTemplates />
+            </SolutionFolder>
+            <SolutionFolder Name="TYPE">
+              <SolutionFolders>
+                <SolutionFolder Name="WEB">
+                  <SolutionFolders />
+                  <ProjectTemplates />
+                </SolutionFolder>
+              </SolutionFolders>
+              <ProjectTemplates />
+            </SolutionFolder>
+            <SolutionFolder Name="SERVICES">
+              <SolutionFolders />
+              <ProjectTemplates>
+                <ProjectTemplate TemplateName="SFS.EFPOCO1.Services" IsUnique="false" Name="Services" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.Services" Language="CSharp">
+                  <ProjectFiles>
+                    <ProjectFile IsModel="false" Rename="$safenamespace$.config" File="ModuleName.config">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.xml, *.js, *.css, *.html, *.tt, *.config, *.aspx, *.ascx, *.resx" ReplaceDefaultParameters="true">
+                      <CustomParameters />
+                    </ProjectFile>
+                    <ProjectFile FilterPattern="*.config">
+                      <CustomParameters>
+                        <Replace Name="{namespace}" Value="$namespace$" />
+                        <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                      </CustomParameters>
+                    </ProjectFile>
+                  </ProjectFiles>
+                  <ReplaceParameters />
+                  <ProjectReferences>
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.My.BusinessObjects.dll" Type="File" />
+                    <ProjectReference Path="\Library\SFSdotNet.Framework.Security.BusinessObjects.dll" Type="File" />
+                    <ProjectReference TemplateProject="$namespace$.BR" Type="Project" />
+                    <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                  </ProjectReferences>
+                </ProjectTemplate>
+              </ProjectTemplates>
+            </SolutionFolder>
+          </SolutionFolders>
+          <ProjectTemplates />
+        </SolutionFolder>
+        <SolutionFolder Name="TESTS">
+          <SolutionFolders />
+          <ProjectTemplates>
+            <ProjectTemplate TemplateName="SFS.EFPOCO1.BR.Tests.zip" IsUnique="false" Name="BR Tests" Order="0" RelativePath="\PROJECTS" PhysicalName="$namespace$.BR.Tests" Language="CSharp">
+              <ProjectFiles>
+                <ProjectFile FilterPattern="*.cs, *.vb, *.cpp, *.config, *.xml, *.tt, *.edmx" ReplaceDefaultParameters="true">
+                  <CustomParameters />
+                </ProjectFile>
+                <ProjectFile IsModel="false" Rename="$safenamespace$.config" File="ModuleName.config">
+                  <CustomParameters />
+                </ProjectFile>
+                <ProjectFile FilterPattern="*.config">
+                  <CustomParameters>
+                    <Replace Name="{namespace}" Value="$namespace$" />
+                    <Replace Name="{safenamespace}" Value="$safenamespace$" />
+                  </CustomParameters>
+                </ProjectFile>
+              </ProjectFiles>
+              <ReplaceParameters />
+              <ProjectReferences>
+                <ProjectReference TemplateProject="$namespace$.BR" Type="Project" />
+                <ProjectReference Path="\Library\SFSdotNet.Framework.dll" Type="File" />
+                <ProjectReference TemplateProject="$namespace$.BusinessObjects" Type="Project" />
+                <ProjectReference Path="\Library\ExpressionBuilder.dll" Type="File" />
+                <ProjectReference Path="\Library\ExpressionSerialization.dll" Type="File" />
+                <ProjectReference Path="\Library\LinqKit.dll" Type="File" />
+              </ProjectReferences>
+            </ProjectTemplate>
+          </ProjectTemplates>
+        </SolutionFolder>
+      </SolutionFolders>
+      <SolutionFiles>
+        <SourceSolutionFiles FilterPattern="*.dll, *.exe" OriginPath="$sfsdotnetinstallpath$\SFSdotNetLibrary\" SolutionFolder="Library" CopyToLocalFolder="true">
+          <CustomParameters />
+        </SourceSolutionFiles>
+      </SolutionFiles>
+    </SolutionTemplate>
+    <SolutionTemplate External="ExternalSfsTemplate.xml">
+      <ProjectTemplates />
+      <SolutionFolders />
+      <SolutionFiles />
+    </SolutionTemplate>
+    <SolutionTemplate>
+      <ProjectTemplates />
+      <SolutionFolders />
+      <SolutionFiles />
+    </SolutionTemplate>
+  </SolutionTemplates>
+</SfsSolutionSettings>

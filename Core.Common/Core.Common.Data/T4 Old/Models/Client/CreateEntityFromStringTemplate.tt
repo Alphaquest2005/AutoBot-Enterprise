@@ -1,0 +1,78 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class CreateEntityFromStringTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string mainEntitySet;
+        public string contextName;
+        public string projectName;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+        public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+            var ens = mainEntity.Properties.Where(x => x.MetadataProperties.Where(z => z.Name.Contains("EntityNameProperty") && z.Value.ToString().Contains(">True<")).Any() == true).ToList();
+#>
+using System.Linq;
+using <#=COREcontainer.Name #>.Client.Entities;
+using <#=COREcontainer.Name #>.Client.Services;
+using <#=projectName#>.Client.Services;
+using <#=contextName#>.Client.Services;
+using <#=contextName#>.Client.DTO;
+using System;
+
+namespace <#=contextName#>.Client.Entities
+{
+    public partial class <#=mainEntity.Name#>
+    {
+
+<#+
+if(mainEntity.Abstract == false)
+    {
+ #>
+        public override <#=mainEntity.Name#> CreateEntityFromString(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return null;
+
+            using (<#=mainEntity.Name#>Client ctx = new <#=mainEntity.Name#>Client())
+            {
+                <#=mainEntity.Name#>DTO dto = ctx.Get<#=mainEntitySet #>().Result<#=(mainEntity.BaseType == null?"":".OfType<" + mainEntity.Name + "DTO>()") #>.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+
+                if (dto != null)
+                {
+                    return new <#=mainEntity.Name#>(dto);
+                }
+                dto = new <#=mainEntity.Name#>DTO() { EntityName = value, TrackingState=TrackableEntities.TrackingState.Added };
+             
+                dto = ctx.Create<#=mainEntity.Name#>(dto).Result;
+                
+                return new <#=mainEntity.Name#>(dto);
+            }
+        }
+<#+ }
+ #>
+
+
+
+         
+    }
+   
+}
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+#>
+
+<#+
+	}	
+#>

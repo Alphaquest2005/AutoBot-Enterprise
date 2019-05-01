@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="90">
+        <EntityTypeShape EntityType="WaterNutDBModel.ApplicationSettings" Width="1.5" PointX="0.5" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument" Width="2.375" PointX="7.75" PointY="1.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItem" Width="2.375" PointX="11.25" PointY="1.5" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentAsycudaDocumentItem" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Customs_Procedure" Width="1.5" PointX="2.875" PointY="5.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Document_Type" Width="1.5" PointX="2.75" PointY="10.625" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEx" Width="2.375" PointX="4.875" PointY="1.5" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocument" />
+        <EntityTypeShape EntityType="WaterNutDBModel.LicenceSummary" Width="2" PointX="2.375" PointY="1.875" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExLicenceSummary" />
+        <EntityTypeShape EntityType="WaterNutDBModel.SubItems" Width="2.375" PointX="14.875" PointY="2.625" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentItemSubItems" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryPreviousItems" Width="1.5" PointX="14.5" PointY="6.375" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentItemEntryPreviousItems" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Supplementary_unit" Width="2" PointX="17.375" PointY="5.5" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentItemxcuda_Supplementary_unit" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="1.5" PointX="7.625" PointY="10.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems" Width="1.5" PointX="5.375" PointY="10" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.InventoryItemsAsycudaDocumentItem" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails" Width="2.375" PointX="15.25" PointY="9.375" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_ApplicationSettings" />
+        <AssociationConnector Association="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

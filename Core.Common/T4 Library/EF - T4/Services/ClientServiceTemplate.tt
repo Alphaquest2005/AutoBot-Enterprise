@@ -1,0 +1,206 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ClientServiceTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public EntityContainer container;
+        public string projectName;
+		public MetadataTools ef;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            
+            string entitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == GetBaseEntity(entity).Name).FirstOrDefault().Name;
+
+       
+#>
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using <#=container.Name#>.Client.DTO;
+using <#=container.Name#>.Client.Contracts;
+using Core.Common.Client.Services;
+using <#=projectName #>.Interfaces.Client;
+
+using Core.Common.Contracts;
+using System.ComponentModel.Composition;
+
+
+namespace <#=container.Name#>.Client.Services
+{
+    [Export (typeof(<#=entity.Name#>Client))]
+    [Export (typeof(I<#=entity.Name#>Service))]
+    [Export(typeof(IClientService))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public partial class <#=entity.Name#>Client :  ClientService<I<#=entity.Name#>Service>, I<#=entity.Name#>Service, IDisposable
+    {
+        
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>(List<string> includesLst = null)
+        {
+            return await Channel.Get<#=entitySet #>(includesLst).ConfigureAwait(false);
+        }
+
+        public async Task<<#="I" + entity.Name#>> Get<#=entity.Name#>ByKey(string id, List<string> includesLst = null)
+        {
+            return await Channel.Get<#= entity.Name#>ByKey(id, includesLst).ConfigureAwait(false);
+        }
+
+		public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpression(string exp, List<string> includesLst = null)
+        {
+            return await Channel.Get<#=entitySet #>ByExpression(exp, includesLst).ConfigureAwait(false);
+        }
+
+		public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpressionLst(List<string> expLst, List<string> includesLst = null)
+        {
+            return await Channel.Get<#=entitySet #>ByExpressionLst(expLst, includesLst).ConfigureAwait(false);
+        }
+
+		public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByExpressionNav(string exp,
+															 Dictionary<string, string> navExp, List<string> includesLst = null)
+		{
+			return await Channel.Get<#=entitySet #>ByExpressionNav(exp, navExp, includesLst).ConfigureAwait(false);
+		}
+
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatch(string exp,
+                                                                        int totalrow, List<string> includesLst = null)
+        {
+            return await Channel.Get<#=entitySet #>ByBatch(exp, totalrow, includesLst).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entitySet #>ByBatchExpressionLst(List<string> expLst,
+                                                                        int totalrow, List<string> includesLst = null)
+        {
+            return await Channel.Get<#=entitySet #>ByBatchExpressionLst(expLst, totalrow, includesLst).ConfigureAwait(false);
+        }
+
+        public async Task<<#="I" + entity.Name#>> Update<#=entity.Name#>(<#="I" + entity.Name#> entity)
+        {
+           return await Channel.Update<#=entity.Name#>(entity).ConfigureAwait(false);
+        }
+
+        public async Task<<#="I" + entity.Name#>> Create<#=entity.Name#>(<#="I" + entity.Name#> entity)
+        {
+           return await Channel.Create<#=entity.Name#>(entity).ConfigureAwait(false);
+        }
+
+        public async Task<bool> Delete<#=entity.Name#>(string id)
+        {
+            return await Channel.Delete<#=entity.Name#>(id).ConfigureAwait(false);
+        }
+
+       // Virtural List implementation
+
+        public async Task<int> CountByExpressionLst(List<string> expLst)
+        {
+            return await Channel.CountByExpressionLst(expLst).ConfigureAwait(continueOnCapturedContext: false);
+        }
+        
+	    public async Task<int> Count(string exp)
+        {
+            return await Channel.Count(exp).ConfigureAwait(continueOnCapturedContext: false);
+        }
+
+		public async Task<int> CountNav(string exp, Dictionary<string, string> navExp)
+        {
+           return await Channel.CountNav(exp, navExp).ConfigureAwait(false);
+        }
+
+        public async Task<IEnumerable<<#="I" + entity.Name#>>> LoadRange(int startIndex, int count, string exp)
+        {
+            return await Channel.LoadRange(startIndex,count,exp).ConfigureAwait(false);
+        }
+
+		public async Task<IEnumerable<<#="I" + entity.Name#>>>  LoadRangeNav(int startIndex, int count, string exp,
+                                                                                 Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+        {
+            return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
+        }
+<#+ 
+	 
+	    var ens = entity.Properties.Where(x => ef.IsKey(x) == false && x.Name.EndsWith("Id"));//  && entity.NavigationProperties.Where(np=>np.GetDependentProperties().Contains(x)).Any()== false);
+			//&& ef.UnderlyingClrType(x.TypeUsage.EdmType) == typeof(int)
+
+		foreach (var p in ens)
+        {
+ #>
+		public async Task<IEnumerable<<#="I" + entity.Name#>>> Get<#=entity.Name#>By<#= p.Name #>(string <#= p.Name #>, List<string> includesLst = null)
+        {
+            return  await Channel.Get<#=entity.Name#>By<#= p.Name #>(<#= p.Name #>, includesLst).ConfigureAwait(false);
+        }
+			 
+  <#+ 
+		}
+  #>
+        public decimal SumField(string whereExp, string sumExp)
+		{
+			return Channel.SumField(whereExp,sumExp);
+		}
+
+        public async Task<decimal> SumNav( string exp, Dictionary<string, string> navExp, string field)
+        {
+            return await Channel.SumNav(exp,navExp,field);
+        }
+
+		public string MinField(string whereExp, string sumExp)
+		{
+			return Channel.MinField(whereExp,sumExp);
+		}
+
+		#region IDisposable implementation
+
+            /// <summary>
+            /// IDisposable.Dispose implementation, calls Dispose(true).
+            /// </summary>
+            void IDisposable.Dispose()
+            {
+                Dispose(true);
+            }
+
+            /// <summary>
+            /// Dispose worker method. Handles graceful shutdown of the
+            /// client even if it is an faulted state.
+            /// </summary>
+            /// <param name="disposing">Are we disposing (alternative
+            /// is to be finalizing)</param>
+            protected new void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    try
+                    {
+                        if (State != CommunicationState.Faulted)
+                        {
+                            Close();
+                        }
+                    }
+                    finally
+                    {
+                        if (State != CommunicationState.Closed)
+                        {
+                            Abort();
+                        }
+                        GC.SuppressFinalize(this);
+                    }
+                }
+            }
+
+
+
+            #endregion
+    }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

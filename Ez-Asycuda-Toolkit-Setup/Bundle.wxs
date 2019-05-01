@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+	<Bundle Name="Ez_Asycuda_Toolkit_Setup" Version="1.0.0.0" Manufacturer="Joseph Bartholomew" UpgradeCode="1c196004-9bae-42bd-9117-33ea69fde4b7">
+	  <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.HyperlinkSidebarLicense">
+	    <bal:WixStandardBootstrapperApplication
+	      LicenseUrl=""
+	      ShowVersion="yes"
+	       />
+	  </BootstrapperApplicationRef>
+	  <Variable Name="LaunchTarget" Value="[ProgramFilesFolder]\Ez_Asycuda_Toolkit\WaterNut.exe"/>
+	  
+		<Chain>
+		  <PackageGroupRef Id="NetFx462Web"/>
+		    <MsiPackage SourceFile="SqlLocalDB.msi" Vital="yes" DisplayInternalUI="no">
+		      <MsiProperty Name="IACCEPTSQLLOCALDBLICENSETERMS" Value="YES"/>
+		    </MsiPackage>
+			 <MsiPackage Id="EzSetup" Name="Ez-Asycuda-Toolkit" SourceFile="$(var.Ez-Asycuda-Toolkit.TargetDir)\Ez_Asycuda_Toolkit.msi" />
+		  
+		  
+		</Chain>
+	</Bundle>
+  
+ 
+</Wix>

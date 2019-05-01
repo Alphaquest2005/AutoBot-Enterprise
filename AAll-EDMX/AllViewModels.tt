@@ -1,0 +1,130 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\QuerySpaceViewModels.tt" #>
+<#
+   
+        CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryQS\InventoryQS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\WaterNut.csproj", false, false );   
+
+            CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\WaterNut.csproj", false, false ); 
+
+			CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\WaterNut.csproj", false, false ); 
+
+    			CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AdjustmentQS\AdjustmentQS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\WaterNut.csproj", false, false ); 
+
+    CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentQS\PreviousDocumentQS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\WaterNut.csproj", false, false ); 
+    CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\WaterNut.csproj", false, false ); 
+
+    //CreateServices("WaterNut", @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",
+						   //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+		//CreateServices("WaterNut", @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CounterPointQS\CounterPointQS.edmx",            
+            //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                            //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+		//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                   
+                    //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",                     
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj");   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryQS\InventoryQS.edmx",                    
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentQS\PreviousDocumentQS.edmx",                    
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );     
+//
+   //CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\SalesDataQS\SalesDataQS.edmx",                     
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
+//
+     //CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AdjustmentQS\AdjustmentQS.edmx",                     
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AdjustmentQS\AdjustmentQS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Services\WaterNut.Client.Services.csproj" );
+//
+////////////////////////////////////////////Data space///////////////////////////////////////
+//
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null);   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null);   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null);   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );   
+//
+	//CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                    //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );     
+//
+    //CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
+                     //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           //null, null );  
+#>

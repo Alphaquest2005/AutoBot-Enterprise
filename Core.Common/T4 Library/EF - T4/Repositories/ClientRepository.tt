@@ -1,0 +1,85 @@
+﻿
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Repositories\ClientEntityRepositoryTemplate.tt"#>
+<#@ assembly name="System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" #>
+<#@ import namespace="System.Data.Metadata.Edm" #>
+<#+ 
+    public class ClientRepositoryTPL : CSharpTemplate
+    {
+      
+        public string inputFile = "";
+        public string projectName = "";
+        public string outputProject ="";
+        EntityContainer container;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            
+
+
+            
+
+            CodeGenerationTools code = new CodeGenerationTools(this);
+            MetadataTools ef = new MetadataTools(this);
+            MetadataLoader loader = new MetadataLoader(this);
+            CodeRegion region = new CodeRegion(this);
+
+            // EntityFrameworkTemplateFileManager fileManager = EntityFrameworkTemplateFileManager.Create(this);
+                
+    
+            EdmItemCollection ItemCollection = loader.CreateEdmItemCollection(inputFile);
+            //ModelNamespace = loader.GetModelNamespace(inputFile);
+            //DefaultSummaryComment = CodeGenerationTools.GetResourceString("Template_CommentNoDocumentation");
+            //string namespaceName = code.VsNamespaceSuggestion();
+            //UpdateObjectNamespaceMap(namespaceName);
+
+            container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+            if (container == null)
+            {
+                // return "// No EntityContainer exists in the model, so no code was generated";
+            }                    
+                
+
+            foreach (EntitySet entitySet in container.BaseEntitySets.OfType<EntitySet>())
+            {
+               // if(entitySet.ElementType.Abstract) continue;
+                ClientEntityRepositoryTPL ce = new ClientEntityRepositoryTPL();       
+                ce.projectName = projectName;
+                ce.entity = entitySet.ElementType;
+                ce.entitySet = entitySet;
+                ce.container = container;
+                ce.code = code;
+				ce.ef = ef;
+
+                 ce.Output.Project = outputProject;
+                 ce.Output.File = @"Generated Repositories\" + container.Name + @"\" + entitySet.ElementType.Name + "Repository.cs";
+                 ce.Render();
+            }  
+
+            foreach (EntityType dEntity in code.GetItemsToGenerate<EntityType>(ItemCollection).Where(x => x.BaseType != null))
+            {
+                EntitySet dset = container.BaseEntitySets.OfType<EntitySet>().FirstOrDefault(x => x.ElementType.Name == GetBaseEntity(dEntity).Name);
+                
+                ClientEntityRepositoryTPL ce = new ClientEntityRepositoryTPL();  
+                ce.projectName = projectName;
+                ce.entity = dEntity;
+                ce.entitySet = dset;
+                ce.container = container;
+                ce.code = code;
+				ce.ef = ef;
+
+                 ce.Output.Project = outputProject;
+                 ce.Output.File = @"Generated Repositories\" + container.Name + @"\" + dEntity.Name + "Repository.cs";
+                 ce.Render();
+            }
+                
+
+#>
+		
+<#+
+            return this.GenerationEnvironment.ToString();
+
+        }
+    }	
+#>

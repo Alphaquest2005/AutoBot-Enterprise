@@ -1,0 +1,78 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class MainWindowModelTPL : CSharpTemplate
+{
+        public string projectName;
+        public List<string> containers;
+
+	public override string TransformText()
+        {
+           
+#>
+using Core.Common.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using SimpleMvvmToolkit;
+
+namespace <#=projectName#>.QuerySpace.CoreEntities.ViewModels
+{
+    public class MainWindowViewModel : ViewModelBase<MainWindowViewModel>
+    {
+         private static readonly MainWindowViewModel instance;
+         static MainWindowViewModel()
+        {
+            instance = new MainWindowViewModel();
+        }
+
+         public static MainWindowViewModel Instance
+        {
+            get { return instance; }
+        }
+
+        public MainWindowViewModel()
+        {
+<#+ 
+		foreach(var c in containers)
+		{
+	#>
+			this.nav<#=c#> = new RelayCommand(OnNav<#=c#>);
+	<#+ 
+		}
+	#>            
+        }
+
+<#+ 
+		foreach(var c in containers)
+		{
+	#>
+		private RelayCommand nav<#=c#>;
+        private void OnNav<#=c#>()
+        {
+            Core.Common.UI.BaseViewModel.Slider.MoveTo("<#=c#>EXP"); 
+        }
+
+		public ICommand Nav<#=c#>
+        {
+            get { return this.nav<#=c#>; }
+        }
+
+	<#+ 
+		}
+	#> 
+        
+    }
+}
+
+		
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

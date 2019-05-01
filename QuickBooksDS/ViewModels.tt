@@ -1,0 +1,8 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\DataSpaceViewModels.tt"#>
+<#
+    CreateViewModels("WaterNut",@"QuickBooksDS.edmx",
+                     @"C:\Prism\WaterNut - Enterprise\QuickBooksDS\QuickBooksDS.edmx",
+                     @"C:\prism\WaterNut - Enterprise\WaterNut.Business.BusinessModels\WaterNut.Business.BusinessModels.csproj", false );           
+#>

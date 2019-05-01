@@ -1,0 +1,13 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\ObjectContexts.tt" #>
+<#
+    string conTextname= "CoreEntities";
+    ObjectContextTPL sv = new ObjectContextTPL();            
+             sv.inputFile = @"C:\Prism\WaterNut - Enterprise\" + conTextname + @"\" + conTextname +".edmx";
+             sv.coreEdmx = @"C:\Prism\WaterNut - Enterprise\CoreEntities\CoreEntities.edmx";
+             sv.Output.Project = @"C:\Prism\WaterNut - Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+            sv.Output.File = @"ObjectContexts\" + conTextname + ".Context.cs";
+            sv.Render();
+#>

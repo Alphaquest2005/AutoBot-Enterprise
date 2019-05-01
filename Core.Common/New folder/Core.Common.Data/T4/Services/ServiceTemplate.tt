@@ -1,0 +1,157 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ServiceTPL : CSharpTemplate
+    {
+        public EntityType entity; 
+        public EntityContainer container;
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            string entitySet = container.BaseEntitySets.OfType<EntitySet>().Where(x => x.ElementType.Name == (entity.BaseType == null?entity.Name:entity.BaseType.Name)).FirstOrDefault().Name;
+
+       
+#>
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.ServiceModel;
+using System.Threading.Tasks;
+using TrackableEntities.EF6;
+using TrackableEntities.Common;
+using System.ComponentModel.Composition;
+using <#=container.Name#>.Business.Entities;
+using Core.Common.Contracts;
+
+namespace InvManager.Business.Services
+{
+   [Export (typeof(I<#=entity.Name#>Service))]
+   [Export(typeof(IBusinessService))]
+   [PartCreationPolicy(CreationPolicy.NonShared)]
+   [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+    public class <#=entity.Name#>Service : I<#=entity.Name#>Service, IDisposable
+    {
+        private readonly <#=container.Name#>Context _dbContext;
+
+        public <#=entity.Name#>Service()
+        {
+            try
+            {
+                 _dbContext = new <#=container.Name#>Context();
+             }
+            catch (Exception updateEx)
+            {
+                throw new FaultException(updateEx.Message);
+            }
+        }
+
+        public async Task<IEnumerable<<#=entity.Name#>DTO>> Get<#=entitySet #>()
+        {
+            try
+            {
+                IEnumerable<<#=entity.Name#>DTO> entities = await _dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + "DTO>()")#>
+                    .ToListAsync();
+                return entities;
+             }
+            catch (Exception updateEx)
+            {
+                throw new FaultException(updateEx.Message);
+            }
+        }
+
+        public async Task<<#=entity.Name#>DTO> Get<#=entity.Name#>(string id)
+        {
+            try
+            {
+                <#=entity.Name#>DTO entity = await _dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + "DTO>()")#>
+                    .SingleOrDefaultAsync(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #>.ToString() == id.ToString());
+                return entity;
+             }
+            catch (Exception updateEx)
+            {
+                throw new FaultException(updateEx.Message);
+            }
+        }
+
+        public async Task<<#=entity.Name#>DTO> Update<#=entity.Name#>(<#=entity.Name#>DTO entity)
+        {
+            try
+            {
+                _dbContext.ApplyChanges(entity);
+                await _dbContext.SaveChangesAsync();
+                entity.AcceptChanges();
+                return entity;
+            }
+            catch (Exception updateEx)
+            {
+                throw new FaultException(updateEx.Message);
+            }
+        }
+
+        public async Task<<#=entity.Name#>DTO> Create<#=entity.Name#>(<#=entity.Name#>DTO entity)
+        {
+            try
+            {
+                _dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + "DTO>()")#>.Add(entity);
+                await _dbContext.SaveChangesAsync();
+                entity.AcceptChanges();
+                return entity;
+            }
+            catch (Exception updateEx)
+            {
+                throw new FaultException(updateEx.Message);
+            }
+        }
+
+        public async Task<bool> Delete<#=entity.Name#>(string id)
+        {
+            try
+            {
+                <#=entity.Name#>DTO entity = await _dbContext.<#=(entity.BaseType == null?entitySet:entitySet + ".OfType<" + entity.Name + "DTO>()")#>
+                    .SingleOrDefaultAsync(x => x.<#=entity.KeyMembers.FirstOrDefault().Name #>.ToString() == id.ToString());
+                if (entity == null)
+                    return false;
+
+                    _dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + "DTO>()")#>.Attach(entity);
+                    _dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + "DTO>()")#>.Remove(entity);
+                    await _dbContext.SaveChangesAsync();
+                    return true;
+            }
+            catch (Exception updateEx)
+            {
+                throw new FaultException(updateEx.Message);
+            }
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                var dispose = _dbContext as IDisposable;
+                if (dispose != null)
+                {
+                    _dbContext.Dispose();
+                }
+            }
+            catch (Exception updateEx)
+            {
+                throw new FaultException(updateEx.Message);
+            }
+
+        }
+    }
+}
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

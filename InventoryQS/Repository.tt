@@ -1,0 +1,12 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Prism\Core.Common\T4 Library\T4\Repository.tt" #>
+<#
+    string conTextname= "InventoryQS";
+    RepositoryTPL sv = new RepositoryTPL();            
+    sv.CreateRepositories("WaterNut",
+                            conTextname,
+                            @"C:\Prism\WaterNut - Enterprise\InventoryQS\InventoryQS.edmx",
+                            @"C:\Prism\WaterNut - Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj");
+#>

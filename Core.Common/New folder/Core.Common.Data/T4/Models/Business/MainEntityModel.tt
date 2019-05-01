@@ -1,0 +1,26 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class SummaryGridListViewTPL : CSharpTemplate
+{
+        public string contextName;
+        public string  mainEntity;
+        public string mainEntitySet;
+        public EntityContainer container;
+        public List<EntityType> entityCollection;
+        public CodeGenerationTools code;
+        
+
+	public override string TransformText()
+        {
+            //base.TransformText();
+#>
+
+		
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

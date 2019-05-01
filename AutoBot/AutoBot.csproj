@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{93BD2EC8-C215-47BF-8A8E-34A27BD55E67}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>AutoBot</RootNamespace>
+    <AssemblyName>AutoBot</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="TrackableEntities.Client">
+      <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.Common">
+      <HintPath>..\WaterNut\TrackableEntities.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Client.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
+      <Project>{D6846386-8741-4619-BAE3-B0CFEDBF2597}</Project>
+      <Name>Core.Common.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj">
+      <Project>{658bb505-087e-48b0-9adc-b227367af83c}</Project>
+      <Name>WaterNut.Client.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj">
+      <Project>{c05bd1be-cb99-451e-845d-077243489c5b}</Project>
+      <Name>WaterNut.Client.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj">
+      <Project>{367497e0-90a4-47bf-b740-717d8769710c}</Project>
+      <Name>WaterNut.Client.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj">
+      <Project>{e16cffe7-8f60-41a8-8895-7cb73fe09399}</Project>
+      <Name>WaterNut.Client.Repositories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Services\WaterNut.Client.Services.csproj">
+      <Project>{ec5d3b67-8bec-4678-a876-ed6ecbbfe59a}</Project>
+      <Name>WaterNut.Client.Services</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

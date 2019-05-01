@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6b887de30bbd42519b141aba9d7b2d1e" Name="Diagram1" ZoomLevel="65" >
+        <EntityTypeShape EntityType="WaterNutEntities.InventoryItemsEx" Width="2.375" PointX="2.875" PointY="8.25" />
+        <EntityTypeShape EntityType="WaterNutEntities.EntryDataEx" Width="2" PointX="0.5" PointY="5" />
+        <EntityTypeShape EntityType="WaterNutEntities.AsycudaDocumentEntryData" Width="2.625" PointX="3" PointY="4.125" />
+        <EntityTypeShape EntityType="WaterNutEntities.AsycudaDocumentSetEntryData" Width="3.25" PointX="3" PointY="12.25" />
+        <EntityTypeShape EntityType="WaterNutEntities.EntryDataDetailsEx" Width="2.5" PointX="6" PointY="6.875" />
+        <EntityTypeShape EntityType="WaterNutEntities.AsycudaDocumentSetEntryDataDetail" Width="4" PointX="9.25" PointY="8.5" />
+        <AssociationConnector Association="WaterNutEntities.InventoryItemsExEntryDataDetailsEx" />
+        <AssociationConnector Association="WaterNutEntities.EntryDataExAsycudaDocumentSetEntryData" />
+        <AssociationConnector Association="WaterNutEntities.EntryDataExAsycudaDocumentEntryData" />
+        <AssociationConnector Association="WaterNutEntities.EntryDataExEntryDataDetailsEx" />
+        <AssociationConnector Association="WaterNutEntities.EntryDataDetailsExAsycudaDocumentSetEntryDataDetail" />
+        <EntityTypeShape EntityType="WaterNutEntities.ContainerEntryData" Width="1.5" PointX="6.375" PointY="3.25" />
+        <AssociationConnector Association="WaterNutEntities.EntryDataExContainerEntryData" />
+        <EntityTypeShape EntityType="WaterNutEntities.ContainerEx" Width="1.5" PointX="9.875" PointY="3.25" />
+        <AssociationConnector Association="WaterNutEntities.ContainerExContainerEntryData" />
+        <EntityTypeShape EntityType="WaterNutEntities.ContainerType" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutEntities.PackageType" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutEntities.EmptyFullCode" Width="2.75" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutEntities.EntryData" Width="1.5" PointX="9.375" PointY="12" />
+        <AssociationConnector Association="WaterNutEntities.FK_AsycudaDocumentEntryData_EntryData" />
+        <AssociationConnector Association="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData" />
+        <AssociationConnector Association="WaterNutEntities.FK_ContainerEntryData_EntryData" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

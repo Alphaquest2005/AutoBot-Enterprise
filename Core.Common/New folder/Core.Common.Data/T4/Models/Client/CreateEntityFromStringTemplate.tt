@@ -1,0 +1,74 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class IIdentifibleEntityTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string mainEntitySet;
+        public string contextName;
+        public EntityContainer container;
+        public EntityContainer COREcontainer;
+        public List<EntityType> entityCollection;
+        public List<EntityType> COREentityCollection;
+        public MetadataTools ef;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+            var ens = mainEntity.Properties.Where(x => x.MetadataProperties.Where(z => z.Name.Contains("EntityNameProperty") && z.Value.ToString().Contains(">True<")).Any() == true).ToList();
+#>
+using System.Linq;
+using CoreEntities.Client.Entities;
+using System;
+
+namespace <#=contextName#>.Client.Entities
+{
+    public partial class <#=mainEntity.Name#>
+    {
+
+<#+
+if(mainEntity.Abstract == false)
+    {
+ #>
+        public override <#=(mainEntity.BaseType == null?mainEntity.Name: mainEntity.BaseType.Name)#> CreateEntityFromString(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return null;
+
+            using (<#=contextName#>Repository ctx = new <#=contextName #>Repository())
+            {
+                <#=mainEntity.Name#> obj = ctx.<#=mainEntitySet #>()<#=(mainEntity.BaseType == null?"":".OfType<" + mainEntity.Name + ">()") #>.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+
+                if (obj != null)
+                {
+                    return obj;
+                }
+                obj = new <#=mainEntity.Name#>() { EntityName = value };
+             
+                ctx.SaveChanges<<#=mainEntity.Name#>>(obj);
+
+                return obj;
+            }
+        }
+<#+ }
+ #>
+
+
+
+         #endregion
+    }
+   
+}
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+#>
+
+<#+
+	}	
+#>
+

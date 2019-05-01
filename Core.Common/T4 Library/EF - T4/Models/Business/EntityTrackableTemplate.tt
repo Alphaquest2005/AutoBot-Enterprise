@@ -1,0 +1,56 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class EntityTrackableTPL : CSharpTemplate
+{
+      
+        public EntityType  mainEntity;
+        public string conTextName;
+        
+        
+
+	public override string TransformText()
+        {
+            base.TransformText();
+           
+#>
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.Serialization;
+using TrackableEntities.Client;
+
+		namespace <#=conTextName#>.Business.Entities
+{
+    public partial class <#=mainEntity.Name#>
+    {
+       
+         partial void TrackableStartUp()
+         {
+           // _changeTracker = new ChangeTrackingCollection<<#=mainEntity.Name #>>(this);
+         }
+
+        ChangeTrackingCollection<<#=mainEntity.Name #>> _changeTracker;
+
+        [NotMapped]
+        [IgnoreDataMember]
+        public new ChangeTrackingCollection<<#=mainEntity.Name #>> ChangeTracker
+        {
+            get
+            {
+                return _changeTracker;
+            }
+        }
+
+         public new void StartTracking()
+        {
+            _changeTracker = new ChangeTrackingCollection<<#=mainEntity.Name #>>(this);
+        }
+   
+    }
+}
+		<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

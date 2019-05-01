@@ -1,0 +1,81 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\BusinessEntities.tt" #>
+<#
+
+    CreateBusinessEntities("WaterNut", @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",  
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",  
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut", @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CounterPointQS\CounterPointQS.edmx",  
+			@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",          
+             @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",   
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",    
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                 
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryQS\InventoryQS.edmx",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                    
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentQS\PreviousDocumentQS.edmx", 
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                   
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );     
+
+   CreateBusinessEntities("WaterNut",
+				     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\SalesDataQS\SalesDataQS.edmx", 
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                    
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );
+       CreateBusinessEntities("WaterNut",
+				     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AdjustmentQS\AdjustmentQS.edmx", 
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                    
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );
+
+   
+//////////////////////////////////////////Data space///////////////////////////////////////
+
+
+	CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationDS\AllocationDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentDS\DocumentDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DocumentItemDS\DocumentItemDS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataDS\EntryDataDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryDS\InventoryDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );   
+
+	CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentDS\PreviousDocumentDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );     
+
+    CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );  
+#>

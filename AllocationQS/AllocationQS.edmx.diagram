@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="39fd18a6e6f946f68d889e4b9e6b3d6b" Name="Diagram1" ZoomLevel="62">
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocationsEx" Width="2.625" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AdjustmentShortAllocation" Width="2.375" PointX="10.125" PointY="1.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAndAdjustmentAllocationsEx" Width="3" PointX="4.375" PointY="0.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

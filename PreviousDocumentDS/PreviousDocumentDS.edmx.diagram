@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bacb844f562c464eb762f722d4e71b90" Name="Diagram1" ZoomLevel="72">
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_HScode" Width="1.5" PointX="5.25" PointY="7.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.PreviousEntry" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_PreviousItem" Width="1.5" PointX="3" PointY="1.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Tarification" Width="1.5" PointX="3" PointY="7.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Valuation_item" Width="1.5" PointX="3" PointY="10.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Tarification_HScode" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Tarification" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Item_Valuation_item" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_PreviousItem_xcuda_Item" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="1.5" PointX="6.8910939762792989" PointY="16.152512125741929" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryPreviousItems" Width="1.5" PointX="3" PointY="14.625" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_Item" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

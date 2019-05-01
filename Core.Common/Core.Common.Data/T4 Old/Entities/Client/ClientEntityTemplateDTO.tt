@@ -1,0 +1,160 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+    public class ClientEntityDTOTPL : CSharpTemplate
+    {
+        public string projectName;
+        public EntityType entity; 
+        public CodeGenerationTools code;
+        public MetadataLoader loader;
+        public CodeRegion region;
+        public MetadataTools ef;
+
+        public string inputFile;
+        public MetadataWorkspace metadataWorkspace;
+        public bool allMetadataLoaded;
+        public EdmItemCollection ItemCollection;
+        public OriginalValueMembers originalValueMembers;
+        public string namespaceName;
+        public EntityContainer container;
+
+        public MetadataWorkspace COREmetadataWorkspace;
+        public bool COREallMetadataLoaded;
+        public EdmItemCollection COREItemCollection;
+        public EntityContainer COREcontainer;
+
+ 
+       
+        
+        
+
+        public override string TransformText()
+        {
+            base.TransformText();
+            var collectionNavigations = entity.NavigationProperties.Where(
+                np => np.DeclaringType == entity
+                && np.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many);
+#>
+
+using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using TrackableEntities;
+using TrackableEntities.Client;
+using <#=projectName #>.Client.DTO;
+
+namespace <#=                code.EscapeNamespace(namespaceName)#>.Client.DTO
+{
+   <#+ //[JsonObject(IsReference = true)]
+    #>
+    [DataContract(IsReference = true, Namespace="http://www.insight-software.com/<#=projectName #>")]
+    public partial class <#=            entity.Name #>DTO : <#=entity.BaseType == null?"BaseEntity<" + entity.Name + "DTO>":entity.BaseType.Name + "DTO"#>, ITrackable
+    {
+<#+
+           
+        
+            foreach (var property in entity.Properties)
+            {
+                if(entity.BaseType != null && ((EntityType)entity.BaseType).Properties.Contains(property)) continue;
+                var typeUsage = code.Escape(property.TypeUsage);
+
+                // Fix-up spatial types for EF6
+                if (//efHost.EntityFrameworkVersion >= new Version(6, 0) && 
+typeUsage.StartsWith("System.Data.Spatial."))
+                {
+typeUsage = typeUsage.Replace(
+    "System.Data.Spatial.",
+    "System.Data.Entity.Spatial.");
+                }
+                   #>
+        [DataMember]
+        <#=                Accessibility.ForProperty(property) #> <#=                typeUsage #> <#=                code.Escape(property) #>
+		{ 
+		    get { return _<#=                code.Escape(property) #>; }
+			set
+			{
+			    if (value == _<#=                code.Escape(property) #>) return;
+				_<#=                code.Escape(property) #> = value;
+				NotifyPropertyChanged(m => this.<#=                code.Escape(property) #>);
+			}
+		}
+        private <#=                typeUsage #> _<#=                code.Escape(property) #>;
+
+<#+
+            }
+
+           
+#>
+       
+<#+
+
+
+            foreach (var navProperty in entity.NavigationProperties.Where(np => np.DeclaringType == entity))
+            {
+                if(entity.BaseType != null && ((EntityType)entity.BaseType).NavigationProperties.Contains(navProperty)) continue;
+                if (navProperty.ToEndMember.RelationshipMultiplicity == RelationshipMultiplicity.Many)
+                {
+#>
+        [DataMember]
+        public List<<#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>DTO> <#=code.Escape(navProperty) #>
+		{
+		    get { return _<#=code.Escape(navProperty) #>; }
+			set
+			{
+			    if (Equals(value, _<#=code.Escape(navProperty) #>)) return;
+				_<#=code.Escape(navProperty) #> = value;
+				NotifyPropertyChanged(m => this.<#=code.Escape(navProperty) #>);
+			}
+		}
+        private List<<#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>DTO> _<#=code.Escape(navProperty) #> = new List<<#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>DTO>();
+
+<#+
+                }
+                else
+                {
+#>
+        [DataMember]
+        public <#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>DTO <#=code.Escape(navProperty) #>
+		{
+		    get { return _<#=code.Escape(navProperty) #>; }
+			set
+			{
+			    if (value == _<#=code.Escape(navProperty) #>) return;
+				_<#=code.Escape(navProperty) #> = value;
+				NotifyPropertyChanged(m => this.<#=code.Escape(navProperty) #>);
+			}
+		}
+        private <#=code.Escape(navProperty.ToEndMember.GetEntityType()) #>DTO _<#=code.Escape(navProperty) #>;
+
+<#+
+                }
+            }
+#>
+
+<#+ 
+      if(entity.BaseType == null)
+            {
+#>
+        [DataMember]
+        public TrackingState TrackingState { get; set; }
+
+        [DataMember]
+        public ICollection<string> ModifiedProperties { get; set; }
+<#+
+            }
+#>
+    }
+}
+
+
+
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+        
+    }
+
+#>

@@ -1,0 +1,346 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{63B2F41C-0D4F-4ECE-A177-81E2766C0FCE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>WaterNut.Business.BusinessModels</RootNamespace>
+    <AssemblyName>WaterNut.Business.BusinessModels</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Omu.ValueInjecter">
+      <HintPath>..\packages\valueinjecter.2.3.3\lib\net35\Omu.ValueInjecter.dll</HintPath>
+    </Reference>
+    <Reference Include="ParallelExtensionsExtras">
+      <HintPath>..\packages\MSFT.ParallelExtensionsExtras.1.2.0\lib\ParallelExtensionsExtras.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SimpleMvvmToolkit-Common">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-WPF">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-WPF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Custom DataModels\AllocationsModelDS.cs" />
+    <Compile Include="Custom DataModels\AsycudaEntrySummaryListModelDS.cs" />
+    <Compile Include="Custom DataModels\Asycuda\Allocation.cs" />
+    <Compile Include="Custom DataModels\Asycuda\Asycuda.designer.cs" />
+    <Compile Include="Custom DataModels\Asycuda\AsycudaToDataBase.cs" />
+    <Compile Include="Custom DataModels\Asycuda\DatabasetoAsycuda.cs" />
+    <Compile Include="Custom DataModels\BaseBusinessLayerDS.cs" />
+    <Compile Include="Custom DataModels\BuildSalesReportClass.cs" />
+    <Compile Include="Custom DataModels\CPPurchaseOrdersModelDS.cs" />
+    <Compile Include="Custom DataModels\CPSalesModelDS.cs" />
+    <Compile Include="Custom DataModels\CreateAsycudaDocumentModelDS.cs" />
+    <Compile Include="Custom DataModels\CreateErrOPS.cs" />
+    <Compile Include="Custom DataModels\CreateEx9Class.cs" />
+    <Compile Include="Custom DataModels\CreateIncompOPSClass.cs" />
+    <Compile Include="Custom DataModels\CreateOPSClass.cs" />
+    <Compile Include="Custom DataModels\DocumentItemModelDS.cs" />
+    <Compile Include="Custom DataModels\EntryDataDetailsModelDS.cs" />
+    <Compile Include="Custom DataModels\EntryDataModelDS.cs" />
+    <Compile Include="Custom DataModels\EX9SalesDataDetailsModelDS.cs" />
+    <Compile Include="Custom DataModels\EX9SalesDataModelDS.cs" />
+    <Compile Include="Custom DataModels\InterFaceBased\BaseBusinessLayerDS.cs" />
+    <Compile Include="Custom DataModels\LicenceSummaryModelDS.cs" />
+    <Compile Include="Custom DataModels\NullTarifInventoryItemsModelDS.cs" />
+    <Compile Include="Custom DataModels\OverShortModelDS.cs" />
+    <Compile Include="Custom DataModels\PreviousEntriesModelDS.cs" />
+    <Compile Include="Custom DataModels\SaleReportLine.cs" />
+    <Compile Include="Custom DataModels\SalesReportModelDS.cs" />
+    <Compile Include="Custom DataModels\SaveCSV\SaveCSV.cs" />
+    <Compile Include="Custom DataModels\SaveCSV\SaveCsvEntryData.cs" />
+    <Compile Include="Custom DataModels\SaveCSV\SaveCsvSubItems.cs" />
+    <Compile Include="Custom DataModels\SubItemsDS.cs" />
+    <Compile Include="Custom DataModels\TariffCodesModelDS.cs" />
+    <Compile Include="Custom DataModels\TariffSuppUnitModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\AsycudaDocumentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\AsycudaSalesAllocationsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\EntryDataDetailsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\InventoryItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\SalesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\SubItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\TariffCategoryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\TariffCodesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\TariffSupUnitLkpsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Goods_descriptionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_HScodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_ItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Item_InvoiceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_PreviousItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Supplementary_unitDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_TarificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_TaxationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Taxation_lineDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Valuation_itemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_WeightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\AllocationDS\xcuda_Weight_itmDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\AsycudaDocumentSetDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\Customs_ProcedureDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\Document_TypeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\ExportTemplateDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_AssessmentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Assessment_noticeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ASYCUDADataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ASYCUDAExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ASYCUDA_ExtendedPropertiesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Border_informationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Border_officeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ConsigneeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ContainerDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_CountryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_DeclarantDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Delivery_termsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Departure_arrival_informationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_DestinationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ExportDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ExporterDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Export_releaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_FinancialDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Financial_AmountsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Financial_GuaranteeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_FormsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_General_informationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Global_taxesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_deductionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_external_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_insuranceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_internal_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_InvoiceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Gs_other_costDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_IdentificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Means_of_transportDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_NbersDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Office_segmentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Place_of_loadingDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_PreviousItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_PrincipalDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_PropertyDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_receiptDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_RegistrationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_SealsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_SignatureDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Suppliers_documentsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TotalDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TradersDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Traders_FinancialDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TransitDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_Transit_DestinationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TransportDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_TypeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_ValuationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_WarehouseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentDS\xcuda_WeightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\EntryPreviousItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\PreviousItemsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\SubItemsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xBondAllocationsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Attached_documentsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Goods_descriptionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_HScodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Inventory_ItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_ItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_ItemEntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_deductionDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_external_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_insuranceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_internal_freightDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Item_InvoiceDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_item_other_costDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_PackagesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_PreviousItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Previous_docDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Supplementary_unitDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Suppliers_linkDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_TarificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_TaxationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Taxation_lineDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Valuation_itemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\DocumentItemDS\xcuda_Weight_itmDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\AsycudaDocumentEntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\AsycudaDocumentSetEntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\EntryDataDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\EntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\EntryDataDetailsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\InventoryItemsExDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\OpeningStockDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\PurchaseOrdersDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\EntryDataDS\SalesDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\InventoryItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\TariffCategoryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\TariffCodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\InventoryDS\TariffSupUnitLkpDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\AsycudaDocumentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\AsycudaDocumentItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\InventoryItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\OverShortAllocationsEXDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\OverShortDetailAllocationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\OverShortDetailDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\OverShortDetailsEXDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\OverShortSuggestedDocumentDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\OversShortDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\OversShortQS\OversShortEXDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\EntryDataDetailsDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\PreviousEntryDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_HScodeDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_PreviousItemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_TarificationDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\PreviousDocumentDS\xcuda_Valuation_itemDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\QuickBooksDS\BaseDataModel.cs" />
+    <Compile Include="Generated Models\DataSpace\QuickBooksDS\InventoryItemsDataModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0DD350C7-3CBE-4791-A9B5-332BF3F1B756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
+      <Project>{D6846386-8741-4619-BAE3-B0CFEDBF2597}</Project>
+      <Name>Core.Common.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core.Common\Core.Common.UI\Core.Common.UI.csproj">
+      <Project>{5dd82ad7-f344-45e3-92cc-96f8d07700af}</Project>
+      <Name>Core.Common.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4D734EAC-E84B-40A2-9726-D17263B0FF4A}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TrackableEntities-Source 2.5\Source\TrackableEntities.Common\TrackableEntities.Common.csproj">
+      <Project>{A59939C3-B823-43D1-84F1-74D6A9DDC598}</Project>
+      <Name>TrackableEntities.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{11bb58a0-1c42-49d9-bf54-ea05ecc74719}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
+      <Project>{11235D24-1165-4DC4-B91B-0426EA669451}</Project>
+      <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj">
+      <Project>{978b7943-bd11-41eb-91c9-59a09c6f0ecc}</Project>
+      <Name>WaterNut.Business.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj">
+      <Project>{02885f55-31e7-48fb-9944-df99540f3270}</Project>
+      <Name>WaterNut.Business.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Data\WaterNut.Data.csproj">
+      <Project>{92eb0cbf-4018-427b-aa8b-13b088650db8}</Project>
+      <Name>WaterNut.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Custom DataModels\Asycuda\Asycuda.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Custom DataModels\Asycuda\exbond example total.xml">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Custom DataModels\Asycuda\new3.xml">
+      <SubType>Designer</SubType>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Custom DataModels\Asycuda\XSLTFile1.xslt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

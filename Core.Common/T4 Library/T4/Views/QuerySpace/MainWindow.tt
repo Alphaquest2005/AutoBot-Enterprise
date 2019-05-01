@@ -1,0 +1,101 @@
+﻿<#+
+// <copyright file="Template1.tt" company="">
+//  Copyright © . All Rights Reserved.
+// </copyright>
+
+public class MainWindowTPL : CSharpTemplate
+{
+		public string projectName;
+        public List<string> containers;
+
+
+	public override string TransformText()
+        {
+            
+#>
+
+<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+   	xmlns:autoviews="clr-namespace:<#=projectName#>.QuerySpace.Views" 
+	xmlns:automodels="clr-namespace:<#=projectName#>.QuerySpace.CoreEntities.ViewModels;assembly=<#=projectName#>.Client.ViewModels" 
+    xmlns:ui="clr-namespace:Core.Common.UI;assembly=Core.Common.UI"
+	xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d" 
+
+	x:Class="<#=projectName#>.QuerySpace.Views.MainWindow_AutoGen"
+	x:Name="Window"
+    
+    
+    
+	Title="MainWindow"
+	Width="1609.91" Height="480"  WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" WindowStyle="None" BorderBrush="#FF3F3F3F" WindowState="Maximized">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF783A00" Offset="0.98"/>
+            <GradientStop Color="#FFECC058"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Window.Resources>
+        <x:Static Member="automodels:MainWindowViewModel.Instance" x:Key="MainWindowViewModelDataSource"/>
+    </Window.Resources>
+
+
+    <Grid x:Name="LayoutRoot"  DataContext="{Binding Source={StaticResource MainWindowViewModelDataSource}}">
+        <autoviews:MainView_AutoGen Margin="0,0,0,105"  />
+        <Border Height="80" Margin="0,0,0,25" VerticalAlignment="Bottom" BorderThickness="2" Background="#4CFAFAFA"   >
+            <Border.Effect>
+                <DropShadowEffect Color="#FF805E00"/>
+            </Border.Effect>
+
+            <DockPanel LastChildFill="False" x:Name="FooterBar"  PreviewMouseLeftButtonDown="Window_PreviewMouseLeftButtonDown"  Height="80">
+
+                <Expander Name="homeexpand" IsExpanded="True" ExpandDirection="Right" Width="Auto" VerticalAlignment="Top" DockPanel.Dock="Left" Collapsed="HomeExpander_Collapsed" Expanded="HomeExpander_Expanded_1">
+                    <Expander.Header>
+                        <Grid Width="365">
+                            <TextBlock x:Name="HomeBtn" Height="63" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,6,0,0" Width="55" Style="{StaticResource TextButtonStyle}" FontFamily="Segoe UI Symbol" FontSize="40"  Text="" />
+                            <TextBlock Text="Home" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" Margin="4,0,0,-1" TextWrapping="Wrap"  VerticalAlignment="Bottom" Width="82" TextAlignment="Center"/>
+
+                        </Grid>
+                    </Expander.Header>
+                    <Grid Width="1074">
+                        <Grid Margin="0,7,295,3">
+                            <TextBlock Text="Common Tasks"  HorizontalAlignment="Left" Height="49" Margin="0,5,25,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="82" TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FFFDFFB9"/>
+							<StackPanel Orientation="Horizontal">
+								<#+ 
+		foreach(var c in containers)
+		{
+	#>
+							<TextBlock  Text="<#=AddSpacesToSentence(c)#>"  Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Right" Height="40"  TextWrapping="Wrap"  VerticalAlignment="Bottom" Width="82" TextAlignment="Center">
+								<TextBlock.InputBindings>
+									<MouseBinding Command="{Binding Nav<#=c#>}" MouseAction="LeftClick"/>
+								</TextBlock.InputBindings>
+							</TextBlock>
+	<#+ 
+		}
+	#>
+							 </StackPanel>
+                            
+                        </Grid>
+
+                    </Grid>
+                </Expander>
+
+            </DockPanel>
+        </Border>
+        <Grid x:Name="HeaderBar" Height="35" Margin="0,0,-0.49,0" VerticalAlignment="Top" Background="#00000000">
+
+            <Grid PreviewMouseLeftButtonDown="Grid_PreviewMouseLeftButtonDown_1" Background="#00000000" Margin="0,0,-0.49,0"/>
+
+            <TextBlock Text="&#xE10A;" Style="{StaticResource CloseButtonStyle}"  HorizontalAlignment="Right" Height="50" VerticalAlignment="Top" Width="35" FontFamily="Segoe UI Symbol" FontSize="24" Margin="0,10,0.4,0" MouseLeftButtonDown="Button_Click_1"/>
+            <TextBlock Text="&#xE155;" Style="{DynamicResource TextButtonStyle}"  HorizontalAlignment="Right" Height="32" VerticalAlignment="Top" Width="30" FontFamily="Segoe UI Symbol" FontSize="24" Margin="0,8,39.69,-5" MouseLeftButtonDown="SwitchWindowState" />
+            <TextBlock Text="&#xE108;" Style="{DynamicResource TextButtonStyle}"  HorizontalAlignment="Right" Height="25" VerticalAlignment="Top" Width="30" FontFamily="Segoe UI Symbol" FontSize="24" Margin="0,16,69.69,-6" MouseLeftButtonDown="MinimizeWindow" />
+        </Grid>
+    </Grid>
+</Window>
+		
+<#+
+            return this.GenerationEnvironment.ToString();
+        }
+	}	
+#>

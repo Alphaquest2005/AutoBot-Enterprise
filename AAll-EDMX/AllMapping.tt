@@ -1,0 +1,26 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\DbContextMappings.tt" #>
+<#
+	
+    string[] strs = new string[] {  "AllocationDS","AllocationQS","CounterPointQS","CoreEntities", "EntryDataQS"
+                                    , "InventoryQS", "PreviousDocumentQS", "SalesDataQS", "DocumentDS", "DocumentItemDS",
+                                    "EntryDataDS", "InventoryDS", "PreviousDocumentDS", "QuickBooksDS", "AdjustmentQS"
+                                 };
+
+    foreach (var conTextname in strs)
+    {
+        DbContextMappingsTPL sv = new DbContextMappingsTPL(); 
+        sv.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\" + conTextname + @"\" + conTextname +".edmx";
+        sv.coreEdmx = string.Format(@"C:\Users\josep\OneDrive\AutoBot-Enterprise\{0}\{0}.edmx", conTextname);
+        sv.outputProject = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
+        sv.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+        sv.Output.File = @"DbContextMappings\" + conTextname + ".Mappings.cs";
+        sv.Render();
+        
+    }
+
+
+
+#>

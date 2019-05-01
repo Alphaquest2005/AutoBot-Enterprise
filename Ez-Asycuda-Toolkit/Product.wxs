@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension">
+  <?define WaterNut_TargetDir=$(var.WaterNut.TargetDir)?><?define System.Linq.Dynamic_TargetDir=$(var.System.Linq.Dynamic.TargetDir)?><?define Core.Common_TargetDir=$(var.Core.Common.TargetDir)?><?define Core.Common.Contracts_TargetDir=$(var.Core.Common.Contracts.TargetDir)?><?define WaterNut.Data_TargetDir=$(var.WaterNut.Data.TargetDir)?><?define WaterNut.Business.Entities_TargetDir=$(var.WaterNut.Business.Entities.TargetDir)?><?define Core.Common.UI_TargetDir=$(var.Core.Common.UI.TargetDir)?><?define Core.Common.Data_TargetDir=$(var.Core.Common.Data.TargetDir)?><?define WaterNut.Client.Services_TargetDir=$(var.WaterNut.Client.Services.TargetDir)?><?define WaterNut.Client.DTO_TargetDir=$(var.WaterNut.Client.DTO.TargetDir)?><?define InterfacesModel_TargetDir=$(var.InterfacesModel.TargetDir)?><?define WaterNut.Client.Entities_TargetDir=$(var.WaterNut.Client.Entities.TargetDir)?><?define WaterNut.Client.Contracts_TargetDir=$(var.WaterNut.Client.Contracts.TargetDir)?><?define WaterNut.Client.Bootstraper_TargetDir=$(var.WaterNut.Client.Bootstraper.TargetDir)?><?define WaterNut.Client.Repositories_TargetDir=$(var.WaterNut.Client.Repositories.TargetDir)?><?define WaterNut.Business.Services_TargetDir=$(var.WaterNut.Business.Services.TargetDir)?><?define AllocationQS_TargetDir=$(var.AllocationQS.TargetDir)?><?define AsycudaWorld421_TargetDir=$(var.AsycudaWorld421.TargetDir)?><?define DataLayer_TargetDir=$(var.DataLayer.TargetDir)?><?define Core.Common.PDF2TXT_TargetDir=$(var.Core.Common.PDF2TXT.TargetDir)?><?define WCFConsoleHost_TargetDir=$(var.WCFConsoleHost.TargetDir)?><?define WaterNut.Business.Bootstraper_TargetDir=$(var.WaterNut.Business.Bootstraper.TargetDir)?>
+  <Product Id="*" Name="Ez_Asycuda_Toolkit" Language="1033" Version="1.0.0.0" Manufacturer="Joseph Bartholomew" UpgradeCode="0a32779b-0ff2-41ae-b457-19a6b503e730">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+    <UIRef Id="MyWixUI_FeatureTree" />
+    <Feature Id="ProductFeature" Title="Ez_Asycuda_Toolkit" Level="1">
+      <ComponentGroupRef Id="INSTALLFOLDER_files" />
+      <ComponentRef Id="UnInstallShortCuts" />
+    </Feature>
+
+
+  </Product>
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="Ez_Asycuda_Toolkit">
+          
+        </Directory>
+        
+        <Directory Id="ProgramMenuFolder">
+          <Directory Id="ShortCutDir" Name="Ez_Asycuda_Toolkit" />
+        </Directory>
+      </Directory>
+      
+
+    </Directory>
+  </Fragment>
+  
+      <Fragment>
+        <UI Id="MyWixUI_FeatureTree">
+            <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+            <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+            <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+            <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+            <Property Id="WixUI_Mode" Value="FeatureTree" />
+
+            <DialogRef Id="ErrorDlg" />
+            <DialogRef Id="FatalError" />
+            <DialogRef Id="FilesInUse" />
+            <DialogRef Id="MsiRMFilesInUse" />
+            <DialogRef Id="PrepareDlg" />
+            <DialogRef Id="ProgressDlg" />
+            <DialogRef Id="ResumeDlg" />
+            <DialogRef Id="UserExit" />
+
+            <!--<Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999" >1</Publish>-->
+          <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg">NOT Installed</Publish>
+            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
+
+            <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="CustomizeDlg">LicenseAccepted = "1"</Publish>
+
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">Installed</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">NOT Installed</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">NOT Installed OR WixUI_InstallMode = "Change"</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">Installed AND NOT PATCH</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="3">Installed AND PATCH</Publish>
+
+            <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
+
+            <Publish Dialog="MaintenanceTypeDlg" Control="ChangeButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+            <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
+        </UI>
+        <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Ez Asycuda Toolkit" />
+        <Property Id="WixShellExecTarget" Value="[#WaterNut.exe]" />
+        <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+        <UIRef Id="WixUI_Common" />
+    </Fragment>
+
+  <Fragment>
+    <Icon Id="icon.ico" SourceFile="icon.ico" />
+    <Component Id="UnInstallShortCuts" Guid="21380e15-9d8f-4510-ac21-8f614c524372" Directory="ShortCutDir">
+      
+      <!--<Property Id="ARPPRODUCTICON" Value="icon.ico" />-->
+      <Shortcut Id="UnInstallShortCut" Name="Uninstall Ez_Asycuda_Toolkit" Icon="icon.ico" Directory="ShortCutDir" Target="[System64Folder]msiexec.exe" Arguments="/x [ProductCode]" />
+      <RegistryValue Root="HKCU" Key="Software\Ez_Asycuda_Toolkit" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <ComponentGroup Id="INSTALLFOLDER_files" Directory="INSTALLFOLDER">
+
+      <Component Id="WaterNut.exe" Guid="21380e15-9d8f-4510-ac21-8f614c524373">
+        <File Id="WaterNut.exe" Name="WaterNut.exe" Source="$(var.WaterNut_TargetDir)WaterNut.exe" />
+        <Shortcut Id="ShortCut" Name="Ez_Asycuda_Toolkit" Advertise="yes" Directory="ShortCutDir" WorkingDirectory="INSTALLFOLDER" Icon="icon.ico" />
+        <RemoveFolder Id="RemoveShortCut" Directory="ShortCutDir" On="uninstall" />
+      </Component>
+      <Component Id="WaterNut.exe.config" Guid="ad493cf2-549f-4b2f-933e-2c6751c7f731">
+        <File Id="WaterNut.exe.config" Name="WaterNut.exe.config" Source="$(var.WaterNut_TargetDir)WaterNut.exe.config" />
+      </Component>
+      <Component Id="EntityFramework.dll" Guid="c89e579e-8caf-45f1-88db-f3fdb5d71634">
+        <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.WaterNut_TargetDir)EntityFramework.dll" />
+      </Component>
+      <Component Id="EntityFramework.SqlServer.dll" Guid="247567ce-f7fc-418b-8f52-12de4c13e568">
+        <File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.WaterNut_TargetDir)EntityFramework.SqlServer.dll" />
+      </Component>
+      <Component Id="Microsoft.Expression.Interactions.dll" Guid="1e2bee19-2bc8-475f-bf97-b64fda93a908">
+        <File Id="Microsoft.Expression.Interactions.dll" Name="Microsoft.Expression.Interactions.dll" Source="$(var.WaterNut_TargetDir)Microsoft.Expression.Interactions.dll" />
+      </Component>
+      <Component Id="Newtonsoft.Json.dll" Guid="24890714-809d-4592-b1ba-967abbdb2fee">
+        <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.WaterNut_TargetDir)Newtonsoft.Json.dll" />
+      </Component>
+      <Component Id="Omu.ValueInjecter.dll" Guid="a52a41e9-2258-429c-9ef1-45533331ab46">
+        <File Id="Omu.ValueInjecter.dll" Name="Omu.ValueInjecter.dll" Source="$(var.WaterNut_TargetDir)Omu.ValueInjecter.dll" />
+      </Component>
+      <Component Id="ParallelExtensionsExtras.dll" Guid="72649051-c73c-47f9-8eb5-24c187058efb">
+        <File Id="ParallelExtensionsExtras.dll" Name="ParallelExtensionsExtras.dll" Source="$(var.WaterNut_TargetDir)ParallelExtensionsExtras.dll" />
+      </Component>
+      <Component Id="Serialize.Linq.dll" Guid="bdb48716-afa3-424b-8f2a-dccd2d0ba5c9">
+        <File Id="Serialize.Linq.dll" Name="Serialize.Linq.dll" Source="$(var.WaterNut_TargetDir)Serialize.Linq.dll" />
+      </Component>
+      <Component Id="SimpleMvvmToolkit_Common.dll" Guid="765a81f6-c860-44a5-8086-610e9b5be457">
+        <File Id="SimpleMvvmToolkit_Common.dll" Name="SimpleMvvmToolkit-Common.dll" Source="$(var.WaterNut_TargetDir)SimpleMvvmToolkit-Common.dll" />
+      </Component>
+      <Component Id="SimpleMvvmToolkit_WPF.dll" Guid="d6b50382-2ce2-4499-885c-8d1c40108b37">
+        <File Id="SimpleMvvmToolkit_WPF.dll" Name="SimpleMvvmToolkit-WPF.dll" Source="$(var.WaterNut_TargetDir)SimpleMvvmToolkit-WPF.dll" />
+      </Component>
+      <Component Id="System.dll" Guid="332b9ab9-ca7e-4c99-b728-0b8650588afa">
+        <File Id="System.dll" Name="System.dll" Source="$(var.WaterNut_TargetDir)System.dll" />
+      </Component>
+      <Component Id="System.ComponentModel.Composition.dll" Guid="51c1c9c7-b55a-4335-a5b2-d365210c1e15">
+        <File Id="System.ComponentModel.Composition.dll" Name="System.ComponentModel.Composition.dll" Source="$(var.WaterNut_TargetDir)System.ComponentModel.Composition.dll" />
+      </Component>
+      <Component Id="System.Data.dll" Guid="7978c007-bca3-474d-882f-15e0758e547e">
+        <File Id="System.Data.dll" Name="System.Data.dll" Source="$(var.WaterNut_TargetDir)System.Data.dll" />
+      </Component>
+      <Component Id="System.Linq.Dynamic.dll" Guid="4ba62173-f828-40ab-9035-c56d57f65e56">
+        <File Id="System.Linq.Dynamic.dll" Name="System.Linq.Dynamic.dll" Source="$(var.System.Linq.Dynamic_TargetDir)System.Linq.Dynamic.dll" />
+      </Component>
+      <Component Id="System.Runtime.Serialization.dll" Guid="9c7bb743-cebe-4e12-b2c0-dcd7aaa4cb32">
+        <File Id="System.Runtime.Serialization.dll" Name="System.Runtime.Serialization.dll" Source="$(var.WaterNut_TargetDir)System.Runtime.Serialization.dll" />
+      </Component>
+      <Component Id="System.Windows.Interactivity.dll" Guid="fa68467e-7308-4b5a-bebb-fcc8d7ec83c0">
+        <File Id="System.Windows.Interactivity.dll" Name="System.Windows.Interactivity.dll" Source="$(var.WaterNut_TargetDir)System.Windows.Interactivity.dll" />
+      </Component>
+      <Component Id="System.Xml.dll" Guid="1e6d364c-7f7e-487e-a17d-49e6e4a04684">
+        <File Id="System.Xml.dll" Name="System.Xml.dll" Source="$(var.WaterNut_TargetDir)System.Xml.dll" />
+      </Component>
+      <Component Id="System.Core.dll" Guid="ce82abc5-6fae-432f-a816-4d6eb8c05fa8">
+        <File Id="System.Core.dll" Name="System.Core.dll" Source="$(var.WaterNut_TargetDir)System.Core.dll" />
+      </Component>
+      <Component Id="System.Data.DataSetExtensions.dll" Guid="ded8a136-833d-4b55-bb60-c2a1e2c00254">
+        <File Id="System.Data.DataSetExtensions.dll" Name="System.Data.DataSetExtensions.dll" Source="$(var.WaterNut_TargetDir)System.Data.DataSetExtensions.dll" />
+      </Component>
+      <Component Id="TrackableEntities.Client.dll" Guid="2fa42a47-41ef-4632-a726-fb5f8bd756ec">
+        <File Id="TrackableEntities.Client.dll" Name="TrackableEntities.Client.dll" Source="$(var.WaterNut_TargetDir)TrackableEntities.Client.dll" />
+      </Component>
+      <Component Id="System.Xaml.dll" Guid="9bd45edb-531b-4a13-9ddc-9e12e38c10fb">
+        <File Id="System.Xaml.dll" Name="System.Xaml.dll" Source="$(var.WaterNut_TargetDir)System.Xaml.dll" />
+      </Component>
+      <Component Id="TrackableEntities.Common.dll" Guid="97b608be-515b-4a22-b3fa-19306be70c29">
+        <File Id="TrackableEntities.Common.dll" Name="TrackableEntities.Common.dll" Source="$(var.WaterNut_TargetDir)TrackableEntities.Common.dll" />
+      </Component>
+      <Component Id="TrackableEntities.EF.6.dll" Guid="c3bf2896-b5da-4bd1-9887-e1abf3a308b7">
+        <File Id="TrackableEntities.EF.6.dll" Name="TrackableEntities.EF.6.dll" Source="$(var.WaterNut_TargetDir)TrackableEntities.EF.6.dll" />
+      </Component>
+      <Component Id="WindowsBase.dll" Guid="a1d4bfcd-1e31-4623-bbd9-1d4a309476b4">
+        <File Id="WindowsBase.dll" Name="WindowsBase.dll" Source="$(var.WaterNut_TargetDir)WindowsBase.dll" />
+      </Component>
+      <Component Id="PresentationCore.dll" Guid="28f111bb-3657-4ad9-9da4-f5ab0cca84e1">
+        <File Id="PresentationCore.dll" Name="PresentationCore.dll" Source="$(var.WaterNut_TargetDir)PresentationCore.dll" />
+      </Component>
+      <Component Id="PresentationFramework.dll" Guid="e095207a-2bdb-4027-b346-e8f0d40d4e7f">
+        <File Id="PresentationFramework.dll" Name="PresentationFramework.dll" Source="$(var.WaterNut_TargetDir)PresentationFramework.dll" />
+      </Component>
+      <Component Id="Core.Common.dll" Guid="332f5838-f05a-4bcc-9896-3069a01c3163">
+        <File Id="Core.Common.dll" Name="Core.Common.dll" Source="$(var.Core.Common_TargetDir)Core.Common.dll" />
+      </Component>
+      <Component Id="Core.Common.Contracts.dll" Guid="278b13b1-c743-4dba-a048-147d178686d3">
+        <File Id="Core.Common.Contracts.dll" Name="Core.Common.Contracts.dll" Source="$(var.Core.Common.Contracts_TargetDir)Core.Common.Contracts.dll" />
+      </Component>
+      <Component Id="WaterNut.Data.dll" Guid="e543e777-9839-4cec-a300-84c608cd7d55">
+        <File Id="WaterNut.Data.dll" Name="WaterNut.Data.dll" Source="$(var.WaterNut.Data_TargetDir)WaterNut.Data.dll" />
+      </Component>
+      <Component Id="WaterNut.Business.Entities.dll" Guid="bd2ba5d7-72f4-454f-a3e0-cdbf257c3d46">
+        <File Id="WaterNut.Business.Entities.dll" Name="WaterNut.Business.Entities.dll" Source="$(var.WaterNut.Business.Entities_TargetDir)WaterNut.Business.Entities.dll" />
+      </Component>
+      <Component Id="Core.Common.UI.dll" Guid="c0d5caf3-c955-4032-b8af-533580ac57f4">
+        <File Id="Core.Common.UI.dll" Name="Core.Common.UI.dll" Source="$(var.Core.Common.UI_TargetDir)Core.Common.UI.dll" />
+      </Component>
+      <Component Id="Core.Common.Data.dll" Guid="68daa839-7e77-4003-9e8b-b832a5d8634b">
+        <File Id="Core.Common.Data.dll" Name="Core.Common.Data.dll" Source="$(var.Core.Common.Data_TargetDir)Core.Common.Data.dll" />
+      </Component>
+      <Component Id="WaterNut.Client.Services.dll" Guid="e4979c72-de11-43ed-a47b-05caf5db48bf">
+        <File Id="WaterNut.Client.Services.dll" Name="WaterNut.Client.Services.dll" Source="$(var.WaterNut.Client.Services_TargetDir)WaterNut.Client.Services.dll" />
+      </Component>
+      <Component Id="WaterNut.Client.DTO.dll" Guid="26e3ea07-b10d-43b0-aa52-2ae3743bcee3">
+        <File Id="WaterNut.Client.DTO.dll" Name="WaterNut.Client.DTO.dll" Source="$(var.WaterNut.Client.DTO_TargetDir)WaterNut.Client.DTO.dll" />
+      </Component>
+      <Component Id="WaterNut.Interfaces.dll" Guid="b128acd7-9a78-4210-bcc1-3cf62dce5e85">
+        <File Id="WaterNut.Interfaces.dll" Name="WaterNut.Interfaces.dll" Source="$(var.InterfacesModel_TargetDir)WaterNut.Interfaces.dll" />
+      </Component>
+      <Component Id="WaterNut.Client.Entities.dll" Guid="d2c601d3-1de9-4ca6-a59c-952420e8fc9f">
+        <File Id="WaterNut.Client.Entities.dll" Name="WaterNut.Client.Entities.dll" Source="$(var.WaterNut.Client.Entities_TargetDir)WaterNut.Client.Entities.dll" />
+      </Component>
+      <Component Id="WaterNut.Client.Contracts.dll" Guid="2f7ba07b-5b04-4387-a036-f9a25d285bac">
+        <File Id="WaterNut.Client.Contracts.dll" Name="WaterNut.Client.Contracts.dll" Source="$(var.WaterNut.Client.Contracts_TargetDir)WaterNut.Client.Contracts.dll" />
+      </Component>
+      
+      <Component Id="System.Composition.AttributedModel.dll" Guid="986faabc-7861-4bb4-8883-8b30e1ce2c02">
+        <File Id="System.Composition.AttributedModel.dll" Name="System.Composition.AttributedModel.dll" Source="$(var.WaterNut_TargetDir)System.Composition.AttributedModel.dll" />
+      </Component>
+      <Component Id="System.Composition.Convention.dll" Guid="e1164514-6a19-4f00-84e0-dd66a044bf39">
+        <File Id="System.Composition.Convention.dll" Name="System.Composition.Convention.dll" Source="$(var.WaterNut_TargetDir)System.Composition.Convention.dll" />
+      </Component>
+      <Component Id="System.Composition.Hosting.dll" Guid="9691d01a-5afc-42ac-a60b-c7ef6af34ce5">
+        <File Id="System.Composition.Hosting.dll" Name="System.Composition.Hosting.dll" Source="$(var.WaterNut_TargetDir)System.Composition.Hosting.dll" />
+      </Component>
+      <Component Id="System.Composition.Runtime.dll" Guid="45957553-6637-4d8f-92d1-1aeefe2b0d68">
+        <File Id="System.Composition.Runtime.dll" Name="System.Composition.Runtime.dll" Source="$(var.WaterNut_TargetDir)System.Composition.Runtime.dll" />
+      </Component>
+      <Component Id="System.Composition.TypedParts.dll" Guid="e9129db0-b98c-4881-b668-72e75ba7ee7d">
+        <File Id="System.Composition.TypedParts.dll" Name="System.Composition.TypedParts.dll" Source="$(var.WaterNut_TargetDir)System.Composition.TypedParts.dll" />
+      </Component>
+    
+      <Component Id="WaterNut.Client.Bootstraper.dll" Guid="20e95f28-3bff-42c6-aa22-da24a4072831">
+        <File Id="WaterNut.Client.Bootstraper.dll" Name="WaterNut.Client.Bootstraper.dll" Source="$(var.WaterNut.Client.Bootstraper_TargetDir)WaterNut.Client.Bootstraper.dll" />
+      </Component>
+      <Component Id="System.ComponentModel.DataAnnotations.dll" Guid="95d71411-91c0-444e-8961-cb9478a2e787">
+        <File Id="System.ComponentModel.DataAnnotations.dll" Name="System.ComponentModel.DataAnnotations.dll" Source="$(var.WaterNut_TargetDir)System.ComponentModel.DataAnnotations.dll" />
+      </Component>
+      <Component Id="WaterNut.Client.Repositories.dll" Guid="1a45d468-a396-4dff-9513-4e80c45404d5">
+        <File Id="WaterNut.Client.Repositories.dll" Name="WaterNut.Client.Repositories.dll" Source="$(var.WaterNut.Client.Repositories_TargetDir)WaterNut.Client.Repositories.dll" />
+      </Component>
+      <Component Id="WaterNut.Business.Services.dll" Guid="aa624e84-addc-4263-8530-f64dac6b3ae9">
+        <File Id="WaterNut.Business.Services.dll" Name="WaterNut.Business.Services.dll" Source="$(var.WaterNut.Business.Services_TargetDir)WaterNut.Business.Services.dll" />
+      </Component>
+      <Component Id="MoreLinq.dll" Guid="0f2145b6-a038-4e3f-9642-4a3833b9705f">
+        <File Id="MoreLinq.dll" Name="MoreLinq.dll" Source="$(var.WaterNut_TargetDir)MoreLinq.dll" />
+      </Component>
+      <Component Id="AllocationQS.dll" Guid="9688e805-0458-43d6-9fd4-d7667ded217f">
+        <File Id="AllocationQS.dll" Name="AllocationQS.dll" Source="$(var.AllocationQS_TargetDir)AllocationQS.dll" />
+      </Component>
+      <Component Id="System.ValueTuple.dll" Guid="d133d1a0-f9c7-41b2-83ce-b1912b0f61e4">
+        <File Id="System.ValueTuple.dll" Name="System.ValueTuple.dll" Source="$(var.WaterNut_TargetDir)System.ValueTuple.dll" />
+      </Component>
+     
+      <Component Id="AsycudaWorld421.dll" Guid="905efdd8-1552-4edf-90f5-a5bd8ad66e3a">
+        <File Id="AsycudaWorld421.dll" Name="AsycudaWorld421.dll" Source="$(var.AsycudaWorld421_TargetDir)AsycudaWorld421.dll" />
+      </Component>
+      <Component Id="DataLayer.dll" Guid="1f7f4a41-f8cb-4c75-a144-97e2332f2227">
+        <File Id="DataLayer.dll" Name="DataLayer.dll" Source="$(var.DataLayer_TargetDir)DataLayer.dll" />
+      </Component>
+      <Component Id="Core.Common.PDF2TXT.dll" Guid="91288d7f-faf6-4421-9ba1-c2ae76be5a41">
+        <File Id="Core.Common.PDF2TXT.dll" Name="Core.Common.PDF2TXT.dll" Source="$(var.Core.Common.PDF2TXT_TargetDir)Core.Common.PDF2TXT.dll" />
+      </Component>
+      <Component Id="commons_logging.dll" Guid="eadf19b1-456c-4570-ba31-b533fb5e5faa">
+        <File Id="commons_logging.dll" Name="commons-logging.dll" Source="$(var.WaterNut_TargetDir)commons-logging.dll" />
+      </Component>
+      <Component Id="fontbox_1.8.7.dll" Guid="12128a2e-8d36-42bf-999b-f524e9816ba9">
+        <File Id="fontbox_1.8.7.dll" Name="fontbox-1.8.7.dll" Source="$(var.WaterNut_TargetDir)fontbox-1.8.7.dll" />
+      </Component>
+      <Component Id="IKVM.OpenJDK.Core.dll" Guid="58a0ad93-c28f-4b2c-b8b4-272149f5085f">
+        <File Id="IKVM.OpenJDK.Core.dll" Name="IKVM.OpenJDK.Core.dll" Source="$(var.WaterNut_TargetDir)IKVM.OpenJDK.Core.dll" />
+      </Component>
+      <Component Id="IKVM.OpenJDK.SwingAWT.dll" Guid="b697b4cc-d1a7-4025-86d5-be6ef2bcd47d">
+        <File Id="IKVM.OpenJDK.SwingAWT.dll" Name="IKVM.OpenJDK.SwingAWT.dll" Source="$(var.WaterNut_TargetDir)IKVM.OpenJDK.SwingAWT.dll" />
+      </Component>
+      <Component Id="IKVM.Runtime.dll" Guid="942bb326-309a-4841-8730-be8b62ffd16a">
+        <File Id="IKVM.Runtime.dll" Name="IKVM.Runtime.dll" Source="$(var.WaterNut_TargetDir)IKVM.Runtime.dll" />
+      </Component>
+      <Component Id="itextsharp.dll" Guid="4b2b59f6-a57e-440d-8bd3-eb987b571c11">
+        <File Id="itextsharp.dll" Name="itextsharp.dll" Source="$(var.WaterNut_TargetDir)itextsharp.dll" />
+      </Component>
+      <Component Id="pdfbox_1.8.7.dll" Guid="dd8bf6ab-4d36-41e1-9198-0046ec07110a">
+        <File Id="pdfbox_1.8.7.dll" Name="pdfbox-1.8.7.dll" Source="$(var.WaterNut_TargetDir)pdfbox-1.8.7.dll" />
+      </Component>
+      <Component Id="WCFConsoleHost.exe" Guid="41e1d72f-7034-496a-a2de-abdbf9bf1466">
+        <File Id="WCFConsoleHost.exe" Name="WCFConsoleHost.exe" Source="$(var.WCFConsoleHost_TargetDir)WCFConsoleHost.exe" />
+      </Component>
+      <Component Id="WCFConsoleHost.exe.config" Guid="f1e28e70-a177-4e85-ad34-e87b2ada6b0f">
+        <File Id="WCFConsoleHost.exe.config" Name="WCFConsoleHost.exe.config" Source="$(var.WCFConsoleHost_TargetDir)WCFConsoleHost.exe.config" />
+      </Component>
+      <Component Id="WaterNut.Business.Bootstraper.dll" Guid="e6c111c2-16fb-43b4-bc3d-0562980478ba">
+        <File Id="WaterNut.Business.Bootstraper.dll" Name="WaterNut.Business.Bootstraper.dll" Source="$(var.WaterNut.Business.Bootstraper_TargetDir)WaterNut.Business.Bootstraper.dll" />
+      </Component>
+      <Component Id="WaterNut_EnterpriseDB_log.ldf" Guid="c66f8fb0-39c8-4d05-aeba-d36a6cc577ee">
+        <File Id="WaterNut_EnterpriseDB_log.ldf" Name="AutoBot-EnterpriseDB_log.ldf" Source="$(var.WCFConsoleHost_TargetDir)AutoBot-EnterpriseDB_log.ldf">
+          <Permission User="Everyone" GenericAll="yes" />
+        </File>
+      </Component>
+      <Component Id="WaterNut_EnterpriseDB.mdf" Guid="c0b446d4-10cb-4c50-9a65-c876ad687522">
+        <File Id="WaterNut_EnterpriseDB.mdf" Name="AutoBot-EnterpriseDB.mdf" Source="$(var.WCFConsoleHost_TargetDir)AutoBot-EnterpriseDB.mdf">
+          <Permission User="Everyone" GenericAll="yes" />
+        </File>
+      </Component>
+      <Component Id="Asycuda421.xsd" Guid="12a885c3-435f-4331-a542-95dc87e7964c">
+        <File Id="Asycuda421.xsd" Name="Asycuda421.xsd" Source="$(var.AsycudaWorld421_TargetDir)Asycuda421.xsd" />
+      </Component>
+     
+     
+    </ComponentGroup>
+  </Fragment>
+
+ 
+</Wix>

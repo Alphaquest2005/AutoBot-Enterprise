@@ -1,0 +1,10 @@
+﻿<#@ template language="C#" debug="true" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="C:\prism\Core.Common\T4 Library\T4\DomainInterface.tt" #>
+<#
+    var processedInterfaces = new List<string>();
+    CreateDomainInterface( "WaterNut","Business",
+                            @"AllocationDS.edmx",
+                           @"C:\prism\WaterNut - Enterprise\DomainInterfaces\InterfacesModel.csproj",
+                           @"C:\Prism\WaterNut - Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",processedInterfaces);          
+#>

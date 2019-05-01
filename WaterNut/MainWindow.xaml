@@ -1,0 +1,170 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"   
+	xmlns:local="clr-namespace:WaterNut" 
+    xmlns:views="clr-namespace:WaterNut.Views"
+    xmlns:coreEntities="clr-namespace:WaterNut.QuerySpace.CoreEntities.ViewModels"
+	xmlns:i="http://schemas.microsoft.com/Expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/Expression/2010/interactions"
+	xmlns:d="http://schemas.microsoft.com/Expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:Custom="http://www.galasoft.ch/mvvmlight" mc:Ignorable="d"     
+	x:Class="WaterNut.MainWindow"
+	x:Name="Window"    
+	Title="WaterNut"
+	Width="1310.969" Height="783.169" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" ResizeMode="CanResizeWithGrip" WindowStyle="None"  WindowState="Maximized" AllowsTransparency="True" BorderBrush="#CC3233C4" BorderThickness="5" >
+    <Window.Resources>
+        <local:MainWindowModel x:Key="MainWindowModelDataSource" />
+    </Window.Resources>
+
+
+
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FF783A00" Offset="0.98"/>
+            <GradientStop Color="#FFECC058"/>
+        </LinearGradientBrush>
+    </Window.Background>
+
+
+
+
+
+    <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource MainWindowModelDataSource}}" d:DataContext="{d:DesignData /SampleData/MainWindowModelSampleData.xaml}" >
+        <views:Status Height="71" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Margin="271,0,315.6,108"   />
+        <views:MainView Margin="0,0,0,125"  />      
+        <Border Height="95" Margin="0,0,0,25" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" BorderThickness="2" Background="#4CFAFAFA"   >
+            <Border.Effect>
+                <DropShadowEffect Color="Green"/>
+            </Border.Effect>
+
+            <ScrollViewer HorizontalAlignment="Stretch" Margin="0.4,-1.6,0.4,-14.4" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Padding="0,0,0,0" >
+
+                <DockPanel LastChildFill="False" x:Name="FooterBar" Height="76" Width="Auto" >
+
+                    <Expander x:Name="homeExpand" IsExpanded="True"  ExpandDirection="Right" Margin="0,0,0,0" VerticalAlignment="Top" DockPanel.Dock="Left" Collapsed="HomeExpander_Collapsed" Expanded="Expander_Expanded_1" HorizontalAlignment="Stretch" Width="Auto" >
+                        <Expander.Header>
+                            <Grid Width="75">
+                                <TextBlock x:Name="HomeBtn" Height="63" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="3,6,0,-0.2" Width="55" Style="{StaticResource TextButtonStyle}" FontFamily="Segoe UI Symbol" FontSize="40"  Text="⛴" MouseLeftButtonDown="HomeBtn_MouseLeftButtonDown" />
+                                <TextBlock Text="Imports" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" Margin="-15,0,0,-1.2" TextWrapping="Wrap"  VerticalAlignment="Bottom" Width="82" TextAlignment="Center"/>
+
+                            </Grid>
+                        </Expander.Header>
+                        <Grid  HorizontalAlignment="Stretch"  >
+                            <Grid>
+                                <TextBlock Text="Getting Started"  HorizontalAlignment="Left" Height="49" Margin="-27,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="82" TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FFFDFFB9"/>
+                                <TextBlock  Text="1. Create Document Set" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="CreateDocument" Margin="51,3,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  x:Name="downloadCounterPountTxt" Text="2. Download CounterPoint PO" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="DownloadCPO" Margin="51,25,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="2. View New Items" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewNullTariffCode" Margin="315,22,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="3. View Unkwn. TariffCodes" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewUnknowTariff" Margin="315,41,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="4. View TariffCode Categories" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewTarifCategory" Margin="468,3,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="6. Review Asycuda Documents" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="26" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ReviewDocuments" Margin="704,5,-2.4,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="7. Export Asycuda Documents" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="30" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ExportDocuments" Margin="704,26,-2.4,0" FontFamily="Segoe UI Symbol" Visibility="Hidden"/>
+                                <TextBlock Text="Review Entry Data"  HorizontalAlignment="Left" Height="49" Margin="220,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="82" TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FFFDFFB9"/>
+                                <TextBlock  HorizontalAlignment="Left" Height="49" Margin="623,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="82" TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FFFDFFB9"><Run Text="Review "/><LineBreak/><Run Text="Export"/></TextBlock>
+                                <TextBlock  Text="1. View Entry Data" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewEntryData" Margin="315,5,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="5. View Licence Info" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewLicenceSummary" Margin="468,22,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock x:Name="viewContainersTxt" Text="6. View Container" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewContainers" Margin="468,41,0,0" FontFamily="Segoe UI Symbol"/>
+
+                            </Grid>
+
+                        </Grid>
+                    </Expander>
+
+                    <Expander x:Name="TariffCodes" IsExpanded="False" ExpandDirection="Right" Visibility="{Binding Source={x:Static coreEntities:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowTariffCodes}" Width="Auto" VerticalAlignment="Top" DockPanel.Dock="Right"  Expanded="Expander_Expanded_1">
+                        <Expander.Header>
+                            <Grid Width="75">
+                                <TextBlock x:Name="TariffCodesBtn" Height="63" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,6,0,0" Width="55" Style="{StaticResource TextButtonStyle}" FontFamily="Segoe UI Symbol" FontSize="35"  Text="&#xE1CB;" MouseLeftButtonDown="TariffCodesBtn_MouseLeftButtonDown" />
+                                <TextBlock Text="TariffCodes" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" Margin="4,0,0,-1" TextWrapping="Wrap"  VerticalAlignment="Bottom" Width="82" TextAlignment="Center"/>
+
+                            </Grid>
+                        </Expander.Header>
+                        <Grid Width="800" >
+                            <TextBlock  Text="1. View Invenory" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="GotoInventory" Margin="51,3,0,0" FontFamily="Segoe UI Symbol"/>
+                            <TextBlock  Text="2. View Tariff Codes" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="GotoTariffCodes" Margin="51,26,0,0" FontFamily="Segoe UI Symbol"/>
+                            <TextBlock  Text="1. View Tariff Categories" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="GotoTariffCategories" Margin="51,50,0,0" FontFamily="Segoe UI Symbol"/>
+                        </Grid>
+                    </Expander>
+
+                    
+                    <Expander x:Name="AsycudaDoc" IsExpanded="False" ExpandDirection="Right" Width="Auto" VerticalAlignment="Top" DockPanel.Dock="Right" Expanded="Expander_Expanded_1" Background="#FFFBC4C4" >
+                        <Expander.Header>
+                            <Grid Width="75">
+                                <TextBlock x:Name="AsycudaDocBtn" Height="63" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,1,0,0" Width="55" Style="{StaticResource TextButtonStyle}" FontFamily="Segoe UI Symbol" FontSize="35"  Text="&#xE128;" MouseLeftButtonDown="AsycudaDocBtn_MouseLeftButtonDown" Grid.RowSpan="2" />
+                                <TextBlock Text="Asycuda Documents" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="36" Margin="-1,0,-17.8,-14" TextWrapping="Wrap"  VerticalAlignment="Bottom" Width="94" TextAlignment="Center" Grid.Row="1"/>
+
+                            </Grid>
+                        </Expander.Header>
+                        <Grid Width="800">
+                            <TextBlock  Text="1. Create Document Set" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="CreateDocument2" FontFamily="Segoe UI Symbol"/>
+                            <TextBlock  Text="2. View Documents" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewDocuments" FontFamily="Segoe UI Symbol" Margin="3,22,0,0"/>
+                            <TextBlock  Text="3. View Document Details" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewDocumentDetails" FontFamily="Segoe UI Symbol" Margin="1,45,0,0"/>
+                            <TextBlock  Text="4. Convert IM7 to Ex9" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="IM72Ex9" FontFamily="Segoe UI Symbol" Margin="364,0,0,0" Visibility="Visible"/>
+                            <TextBlock  Text="4. IM9 all Entries" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="CleanBond" FontFamily="Segoe UI Symbol" Margin="164,0,0,0" Visibility="{Binding Source={x:Static coreEntities:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowCleanBond}"/>
+                            <TextBlock  Text="5. IM9 Selected Entries" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="CleanSelectedBond" FontFamily="Segoe UI Symbol" Margin="164,20,0,0" Visibility="{Binding Source={x:Static coreEntities:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowCleanBond}"/>
+                            <TextBlock  Text="5. IM9 Selected Lines" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="CleanSelectedLines" FontFamily="Segoe UI Symbol" Margin="164,40,0,0" Visibility="{Binding Source={x:Static coreEntities:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowCleanBond}"/>
+                            <CheckBox x:Name="PerIM7Chk" Content="Per IM7" HorizontalAlignment="Left" Height="20"  VerticalAlignment="Top" Width="164" FontFamily="Segoe UI Symbol" Margin="300,20,0,0" Visibility="{Binding Source={x:Static coreEntities:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowCleanBond}"/>
+                            
+                        </Grid>
+                    </Expander>
+
+                    <Expander x:Name="Adjustments" IsExpanded="False" ExpandDirection="Right" Visibility="{Binding Source={x:Static coreEntities:BaseViewModel.Instance}, Path=CurrentApplicationSettings.AllowOversShort}" Width="Auto" VerticalAlignment="Top" DockPanel.Dock="Right"  Expanded="Expander_Expanded_1">
+                        <Expander.Header>
+                            <Grid Width="75">
+                                <TextBlock x:Name="OversShortBtn" Height="63" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="22,6,0,0" Width="55" Style="{StaticResource TextButtonStyle}" FontFamily="Segoe UI Symbol" FontSize="35"  Text="+/-" MouseLeftButtonDown="OversShortBtn_OnMouseLeftButtonDownBtn_MouseLeftButtonDown" />
+                                <TextBlock Text="Overs/Shorts" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" Margin="4,0,0,-1" TextWrapping="Wrap"  VerticalAlignment="Bottom" Width="82" TextAlignment="Center"/>
+
+                            </Grid>
+                        </Expander.Header>
+                        <Grid Width="800" >
+                            <TextBlock  Text="1. View Overs/Shorts" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="GotoOversShort" Margin="51,3,0,0" FontFamily="Segoe UI Symbol"/>
+                            <TextBlock  Text="2. View O/S Details" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="GotoOSDetails" Margin="51,26,0,0" FontFamily="Segoe UI Symbol"/>
+                            <TextBlock  Text="3. O/S Allocations" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="GotoOSAllocations" Margin="51,50,0,0" FontFamily="Segoe UI Symbol"/>
+                        </Grid>
+                    </Expander>
+
+
+                    <Expander x:Name="Ex9"  IsExpanded="False" Margin="0"  ExpandDirection="Right" Width="Auto"  VerticalAlignment="Top" DockPanel.Dock="Right"  Expanded="Expander_Expanded_1" HorizontalAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid Width="63">
+                               
+                                <TextBlock x:Name="ExpBtn" Height="63" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="-6,2,0,-0.2" Width="55" Style="{StaticResource TextButtonStyle}" FontFamily="Segoe UI Symbol" FontSize="40"  Text="&#xE14D;" MouseLeftButtonDown="ViewEx9" Grid.RowSpan="2" />
+                                <TextBlock Text="x Bond" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" Margin="-24,0,0,-1.2" TextWrapping="Wrap"  VerticalAlignment="Bottom" Width="82" TextAlignment="Center" Grid.Row="1"/>
+
+                            </Grid>
+                        </Expander.Header>
+                        <Grid Margin="0" HorizontalAlignment="Stretch" >
+                            <Grid >
+                                <TextBlock Text="Getting Started"  HorizontalAlignment="Left" Height="49" Margin="0,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="82" TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FFFDFFB9"/>
+                                <TextBlock  Text="1. Create/View Document Set" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="CreateDocument2" Margin="93,3,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock x:Name="CPSalesTxt" Text="2. Download CounterPoint Sales" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="175" MouseLeftButtonDown="DownloadCPSales" Margin="93,25,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="3. Allocate Sales" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="101" MouseLeftButtonDown="AllocateSales" Margin="93,44,0,0" FontFamily="Segoe UI Symbol" FontWeight="Bold" FontSize="13"/>
+                                <TextBlock Text="Review Data"  HorizontalAlignment="Left" Height="49" Margin="292,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="82" TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FFFDFFB9"/>
+                                <TextBlock  Text="1. View Sales Data" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewSalesData" Margin="385,3,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="2. View Allocations" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewAllocations" Margin="385,26,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="3. View Previous Entries" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="ViewPreviousEntries" Margin="385,44,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock Text="Export"  HorizontalAlignment="Left" Height="49" Margin="575,5,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="82" TextAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FFFDFFB9"/>
+                                <TextBlock  Text="1. Create OPS Entries" Style="{StaticResource TextButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="164" MouseLeftButtonDown="CreatOPSEntries" Margin="668,3,0,0" FontFamily="Segoe UI Symbol" Visibility="Hidden"/>
+                                <TextBlock  Text="2. Create Error OPS Entries" Style="{StaticResource TextButtonStyle}" Visibility="Hidden" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="175" MouseLeftButtonDown="CreateErrOPS" Margin="668,25,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="3. Create ExBond Entries" Style="{StaticResource TextButtonStyle}" Visibility="Hidden" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="175" MouseLeftButtonDown="CreateEx9" Margin="668,45,0,0" FontFamily="Segoe UI Symbol"/>
+                                <TextBlock  Text="5. Clear All" Style="{StaticResource CloseButtonStyle}" HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="129" MouseLeftButtonDown="ClearAllocations" Margin="199,48,0,-0.8" FontFamily="Segoe UI Symbol" FontWeight="Bold" FontSize="13" Visibility="Collapsed"/>
+                                <TextBlock  Text="4. Clear Allocations" Style="{StaticResource CloseButtonStyle}"  HorizontalAlignment="Left" Height="20" TextWrapping="Wrap"  VerticalAlignment="Top" Width="129" MouseLeftButtonDown="ClearSomeAllocations" Margin="199,35,0,0" FontFamily="Segoe UI Symbol" FontWeight="Bold" FontSize="13" Visibility="Collapsed"/>
+
+                            </Grid>
+
+                        </Grid>
+                    </Expander>
+
+                </DockPanel>
+            </ScrollViewer>
+        </Border>
+        <Grid x:Name="HeaderBar" Height="35" Margin="0,0,-0.49,0" VerticalAlignment="Top"  Background="#00000000" >
+            <Grid Background="#00000000" Margin="0,0,0,0" PreviewMouseLeftButtonDown="MoveWindow"/>
+
+            <TextBlock Text="&#xE10A;" Style="{StaticResource CloseButtonStyle}"  HorizontalAlignment="Right" Height="32" VerticalAlignment="Top" Width="35" FontFamily="Segoe UI Symbol" FontSize="24" Margin="0,3,0,0" MouseLeftButtonDown="CloseWindow" />
+            <TextBlock Text="&#xE155;" Style="{DynamicResource TextButtonStyle}"  HorizontalAlignment="Right" Height="32" VerticalAlignment="Top" Width="30" FontFamily="Segoe UI Symbol" FontSize="24" Margin="0,3,36.69,0" MouseLeftButtonDown="SwitchWindowState" />
+            <TextBlock Text="&#xE108;" Style="{DynamicResource TextButtonStyle}"  HorizontalAlignment="Right" Height="25" VerticalAlignment="Top" Width="30" FontFamily="Segoe UI Symbol" FontSize="24" Margin="0,10,66.69,0" MouseLeftButtonDown="MinimizeWindow" />
+        </Grid>
+    </Grid>
+
+
+
+
+</Window>

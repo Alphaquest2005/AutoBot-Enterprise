@@ -1,0 +1,881 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Model1.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AsycudaDocumentEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentId" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentSetEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ContainerEntryData">
+          <Key>
+            <PropertyRef Name="ContainerEntryData" />
+          </Key>
+          <Property Name="Container_Id" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ContainerEntryData" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ContainerTypes">
+          <Key>
+            <PropertyRef Name="ContainerCode" />
+          </Key>
+          <Property Name="ContainerCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ContainerTypeDescription" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="EmptyFullCodes">
+          <Key>
+            <PropertyRef Name="EmptyFullCodeId" />
+          </Key>
+          <Property Name="EmptyFullCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="EmptyFullDescription" Type="nvarchar" MaxLength="100" />
+          <Property Name="EmptyFullCodeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="EntryData">
+          <Key>
+            <PropertyRef Name="EntryDataId" />
+          </Key>
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ImportedTotal" Type="float" />
+          <Property Name="ImportedLines" Type="int" />
+          <Property Name="SupplierId" Type="int" />
+          <Property Name="TotalFreight" Type="float" />
+          <Property Name="TotalInternalFreight" Type="float" />
+          <Property Name="TotalWeight" Type="float" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="TaxAmount" Type="float" />
+        </EntityType>
+        <EntityType Name="PackageTypes">
+          <Key>
+            <PropertyRef Name="PackageType" />
+          </Key>
+          <Property Name="PackageType" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentSetEntryDataDetails">
+          
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="Id" Type="bigint" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ContainerEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ContainerEx">
+          <Key>
+            
+            
+            <PropertyRef Name="Container_Id" />
+          </Key>
+          <Property Name="Container_identity" Type="nvarchar" MaxLength="255" />
+          <Property Name="Container_type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Empty_full_indicator" Type="nvarchar" MaxLength="255" />
+          <Property Name="Gross_weight" Type="float" Nullable="false" />
+          <Property Name="Goods_description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Packages_number" Type="nvarchar" MaxLength="3" />
+          <Property Name="Packages_type" Type="nvarchar" MaxLength="4" />
+          <Property Name="Packages_weight" Type="float" Nullable="false" />
+          <Property Name="Container_Id" Type="int" Nullable="false" />
+          <Property Name="TotalValue" Type="float" />
+          <Property Name="ShipDate" Type="date" />
+          <Property Name="DeliveryDate" Type="date" />
+          <Property Name="Seal" Type="nvarchar" MaxLength="100" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" />
+          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
+          <Property Name="ContainerTypeDescription" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="EntryDataDetailsEx">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="UnitWeight" Type="float" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="CLineNumber" Type="int" />
+          <Property Name="Downloaded" Type="bit" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="Total" Type="float" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="IsReconciled" Type="bit" />
+          <Property Name="ApplicationSettingsId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="EntryDataEx">
+          <Key>
+            
+            <PropertyRef Name="InvoiceNo" />
+          </Key>
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="5" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="Total" Type="float" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ImportedTotal" Type="float" />
+          <Property Name="ImportedLines" Type="int" />
+          <Property Name="TotalLines" Type="int" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="nvarchar" MaxLength="50" />
+          <Property Name="SuppQty" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocumentEntryData_EntryData">
+          <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocumentEntryData" Type="Self.AsycudaDocumentEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSetEntryData_EntryData">
+          <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocumentSetEntryData" Type="Self.AsycudaDocumentSetEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSetEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ContainerEntryData_EntryData">
+          <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ContainerEntryData" Type="Self.ContainerEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Principal>
+            <Dependent Role="ContainerEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Model1StoreContainer">
+          <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ContainerEntryData" EntityType="Self.ContainerEntryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ContainerTypes" EntityType="Self.ContainerTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmptyFullCodes" EntityType="Self.EmptyFullCodes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntryData" EntityType="Self.EntryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentSetEntryDataDetails" EntityType="Self.AsycudaDocumentSetEntryDataDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaDocumentSetEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentSetEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AsycudaDocumentSetEntryDataDetails].[Id] AS [Id]
+FROM [dbo].[AsycudaDocumentSetEntryDataDetails] AS [AsycudaDocumentSetEntryDataDetails]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ContainerEx" EntityType="Self.ContainerEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ContainerEx].[Container_identity] AS [Container_identity], 
+[ContainerEx].[Container_type] AS [Container_type], 
+[ContainerEx].[Empty_full_indicator] AS [Empty_full_indicator], 
+[ContainerEx].[Gross_weight] AS [Gross_weight], 
+[ContainerEx].[Goods_description] AS [Goods_description], 
+[ContainerEx].[Packages_number] AS [Packages_number], 
+[ContainerEx].[Packages_type] AS [Packages_type], 
+[ContainerEx].[Packages_weight] AS [Packages_weight], 
+[ContainerEx].[Container_Id] AS [Container_Id], 
+[ContainerEx].[TotalValue] AS [TotalValue], 
+[ContainerEx].[ShipDate] AS [ShipDate], 
+[ContainerEx].[DeliveryDate] AS [DeliveryDate], 
+[ContainerEx].[Seal] AS [Seal], 
+[ContainerEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[ContainerEx].[EntryDataId] AS [EntryDataId], 
+[ContainerEx].[PackageDescription] AS [PackageDescription], 
+[ContainerEx].[ContainerTypeDescription] AS [ContainerTypeDescription]
+FROM [dbo].[ContainerEx] AS [ContainerEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[EntryDataDetailsEx].[EntryDataId] AS [EntryDataId], 
+[EntryDataDetailsEx].[LineNumber] AS [LineNumber], 
+[EntryDataDetailsEx].[ItemNumber] AS [ItemNumber], 
+[EntryDataDetailsEx].[Quantity] AS [Quantity], 
+[EntryDataDetailsEx].[Units] AS [Units], 
+[EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
+[EntryDataDetailsEx].[Cost] AS [Cost], 
+[EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
+[EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
+[EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
+[EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
+[EntryDataDetailsEx].[CNumber] AS [CNumber], 
+[EntryDataDetailsEx].[CLineNumber] AS [CLineNumber], 
+[EntryDataDetailsEx].[Downloaded] AS [Downloaded], 
+[EntryDataDetailsEx].[DutyFreePaid] AS [DutyFreePaid], 
+[EntryDataDetailsEx].[Total] AS [Total], 
+[EntryDataDetailsEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[EntryDataDetailsEx].[InvoiceQty] AS [InvoiceQty], 
+[EntryDataDetailsEx].[ReceivedQty] AS [ReceivedQty], 
+[EntryDataDetailsEx].[Status] AS [Status], 
+[EntryDataDetailsEx].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[EntryDataDetailsEx].[PreviousCNumber] AS [PreviousCNumber], 
+[EntryDataDetailsEx].[Comment] AS [Comment], 
+[EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
+[EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
+[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EntryDataEx" EntityType="Self.EntryDataEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[EntryDataEx].[InvoiceDate] AS [InvoiceDate], 
+[EntryDataEx].[Type] AS [Type], 
+[EntryDataEx].[DutyFreePaid] AS [DutyFreePaid], 
+[EntryDataEx].[Total] AS [Total], 
+[EntryDataEx].[InvoiceNo] AS [InvoiceNo], 
+[EntryDataEx].[ImportedTotal] AS [ImportedTotal], 
+[EntryDataEx].[ImportedLines] AS [ImportedLines], 
+[EntryDataEx].[TotalLines] AS [TotalLines], 
+[EntryDataEx].[Currency] AS [Currency], 
+[EntryDataEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemsEx].[Description] AS [Description], 
+[InventoryItemsEx].[Category] AS [Category], 
+[InventoryItemsEx].[TariffCode] AS [TariffCode], 
+[InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+[InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+[InventoryItemsEx].[SuppQty] AS [SuppQty], 
+[InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData" Association="Self.FK_AsycudaDocumentEntryData_EntryData">
+            <End Role="EntryData" EntitySet="EntryData" />
+            <End Role="AsycudaDocumentEntryData" EntitySet="AsycudaDocumentEntryData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSetEntryData_EntryData" Association="Self.FK_AsycudaDocumentSetEntryData_EntryData">
+            <End Role="EntryData" EntitySet="EntryData" />
+            <End Role="AsycudaDocumentSetEntryData" EntitySet="AsycudaDocumentSetEntryData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ContainerEntryData_EntryData" Association="Self.FK_ContainerEntryData_EntryData">
+            <End Role="EntryData" EntitySet="EntryData" />
+            <End Role="ContainerEntryData" EntitySet="ContainerEntryData" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="WaterNutEntities" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="EntryDataQS" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="InventoryItemsEx" EntityType="WaterNutEntities.InventoryItemsEx" />
+          <EntitySet Name="EntryDataEx" EntityType="WaterNutEntities.EntryDataEx" />
+          <EntitySet Name="AsycudaDocumentEntryDatas" EntityType="WaterNutEntities.AsycudaDocumentEntryData" />
+          <EntitySet Name="AsycudaDocumentSetEntryDatas" EntityType="WaterNutEntities.AsycudaDocumentSetEntryData" />
+          <EntitySet Name="EntryDataDetailsExes" EntityType="WaterNutEntities.EntryDataDetailsEx" />
+          <EntitySet Name="AsycudaDocumentSetEntryDataDetails" EntityType="WaterNutEntities.AsycudaDocumentSetEntryDataDetail" />
+          <AssociationSet Name="InventoryItemsExEntryDataDetailsEx" Association="WaterNutEntities.InventoryItemsExEntryDataDetailsEx">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsEx" />
+            <End Role="EntryDataDetailsEx" EntitySet="EntryDataDetailsExes" />
+          </AssociationSet>
+          <AssociationSet Name="EntryDataExAsycudaDocumentSetEntryData" Association="WaterNutEntities.EntryDataExAsycudaDocumentSetEntryData">
+            <End Role="EntryDataEx" EntitySet="EntryDataEx" />
+            <End Role="AsycudaDocumentSetEntryData" EntitySet="AsycudaDocumentSetEntryDatas" />
+          </AssociationSet>
+          <AssociationSet Name="EntryDataExAsycudaDocumentEntryData" Association="WaterNutEntities.EntryDataExAsycudaDocumentEntryData">
+            <End Role="EntryDataEx" EntitySet="EntryDataEx" />
+            <End Role="AsycudaDocumentEntryData" EntitySet="AsycudaDocumentEntryDatas" />
+          </AssociationSet>
+          <AssociationSet Name="EntryDataExEntryDataDetailsEx" Association="WaterNutEntities.EntryDataExEntryDataDetailsEx">
+            <End Role="EntryDataEx" EntitySet="EntryDataEx" />
+            <End Role="EntryDataDetailsEx" EntitySet="EntryDataDetailsExes" />
+          </AssociationSet>
+          <AssociationSet Name="EntryDataDetailsExAsycudaDocumentSetEntryDataDetail" Association="WaterNutEntities.EntryDataDetailsExAsycudaDocumentSetEntryDataDetail">
+            <End Role="EntryDataDetailsEx" EntitySet="EntryDataDetailsExes" />
+            <End Role="AsycudaDocumentSetEntryDataDetail" EntitySet="AsycudaDocumentSetEntryDataDetails" />
+          </AssociationSet>
+          <EntitySet Name="ContainerEntryDatas" EntityType="WaterNutEntities.ContainerEntryData" />
+          <AssociationSet Name="EntryDataExContainerEntryData" Association="WaterNutEntities.EntryDataExContainerEntryData">
+            <End Role="EntryDataEx" EntitySet="EntryDataEx" />
+            <End Role="ContainerEntryData" EntitySet="ContainerEntryDatas" />
+          </AssociationSet>
+          <EntitySet Name="ContainerExes" EntityType="WaterNutEntities.ContainerEx" />
+          <AssociationSet Name="ContainerExContainerEntryData" Association="WaterNutEntities.ContainerExContainerEntryData">
+            <End Role="ContainerEx" EntitySet="ContainerExes" />
+            <End Role="ContainerEntryData" EntitySet="ContainerEntryDatas" />
+          </AssociationSet>
+          <EntitySet Name="ContainerTypes" EntityType="WaterNutEntities.ContainerType" />
+          <EntitySet Name="PackageTypes" EntityType="WaterNutEntities.PackageType" />
+          <EntitySet Name="EmptyFullCodes" EntityType="WaterNutEntities.EmptyFullCode" />
+          <EntitySet Name="EntryDatas" EntityType="WaterNutEntities.EntryData" />
+          <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData" Association="WaterNutEntities.FK_AsycudaDocumentEntryData_EntryData">
+            <End Role="EntryData" EntitySet="EntryDatas" />
+            <End Role="AsycudaDocumentEntryData" EntitySet="AsycudaDocumentEntryDatas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSetEntryData_EntryData" Association="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData">
+            <End Role="EntryData" EntitySet="EntryDatas" />
+            <End Role="AsycudaDocumentSetEntryData" EntitySet="AsycudaDocumentSetEntryDatas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ContainerEntryData_EntryData" Association="WaterNutEntities.FK_ContainerEntryData_EntryData">
+            <End Role="EntryData" EntitySet="EntryDatas" />
+            <End Role="ContainerEntryData" EntitySet="ContainerEntryDatas" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EntryDataDetailsExs" Relationship="WaterNutEntities.InventoryItemsExEntryDataDetailsEx" FromRole="InventoryItemsEx" ToRole="EntryDataDetailsEx" />
+          <Property Name="SuppUnitCode2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SuppQty" Type="Double" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+        <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty></EntityType>
+        <EntityType Name="EntryDataEx">
+          <Key>
+            <PropertyRef Name="InvoiceNo" />
+          </Key>
+          <Property Name="Type" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="Total" Type="Double"><a:DisplayTotalsProperty xmlns:a="http://schemas.tempuri.com/DisplayTotalsProperty">True</a:DisplayTotalsProperty></Property>
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Desc</a:OrderByProperty></Property>
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentSetEntryData" FromRole="EntryDataEx" ToRole="AsycudaDocumentSetEntryData" />
+          <NavigationProperty Name="AsycudaDocuments" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentEntryData" FromRole="EntryDataEx" ToRole="AsycudaDocumentEntryData" />
+          <NavigationProperty Name="EntryDataDetailsExs" Relationship="WaterNutEntities.EntryDataExEntryDataDetailsEx" FromRole="EntryDataEx" ToRole="EntryDataDetailsEx" />
+          <NavigationProperty Name="ContainerEntryDatas" Relationship="WaterNutEntities.EntryDataExContainerEntryData" FromRole="EntryDataEx" ToRole="ContainerEntryData" />
+          <Property Name="ImportedTotal" Type="Double" />
+          <Property Name="ImportedLines" Type="Int32" />
+          <Property Name="TotalLines" Type="Int32" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="EntryDataEx" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentEntryData" FromRole="AsycudaDocumentEntryData" ToRole="EntryDataEx" />
+          <NavigationProperty Name="EntryData" Relationship="WaterNutEntities.FK_AsycudaDocumentEntryData_EntryData" FromRole="AsycudaDocumentEntryData" ToRole="EntryData" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentSetEntryData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="EntryDataEx" Relationship="WaterNutEntities.EntryDataExAsycudaDocumentSetEntryData" FromRole="AsycudaDocumentSetEntryData" ToRole="EntryDataEx" />
+          <NavigationProperty Name="EntryData" Relationship="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData" FromRole="AsycudaDocumentSetEntryData" ToRole="EntryData" />
+        </EntityType>
+        <EntityType Name="EntryDataDetailsEx">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.EntryDataDetailsId</a:ImplementsProperty></Property>
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.EntryDataId</a:ImplementsProperty></Property>
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemNumber</a:ImplementsProperty></Property>
+          <Property Name="Quantity" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Quantity</a:ImplementsProperty></Property>
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Units</a:ImplementsProperty></Property>
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.ItemDescription</a:ImplementsProperty></Property>
+          <Property Name="Cost" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.Cost</a:ImplementsProperty></Property>
+          <Property Name="QtyAllocated" Type="Double" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.QtyAllocated</a:ImplementsProperty></Property>
+          <Property Name="UnitWeight" Type="Double" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CLineNumber" Type="Int32" />
+          <Property Name="Downloaded" Type="Boolean" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="Total" Type="Double"><a:DisplayTotalsProperty xmlns:a="http://schemas.tempuri.com/DisplayTotalsProperty">True</a:DisplayTotalsProperty></Property>
+          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutEntities.InventoryItemsExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="InventoryItemsEx" />
+          <NavigationProperty Name="EntryDataEx" Relationship="WaterNutEntities.EntryDataExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="EntryDataEx" />
+          <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutEntities.EntryDataDetailsExAsycudaDocumentSetEntryDataDetail" FromRole="EntryDataDetailsEx" ToRole="AsycudaDocumentSetEntryDataDetail" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="IsReconciled" Type="Boolean" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+        <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty></EntityType>
+        <EntityType Name="AsycudaDocumentSetEntryDataDetail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntryDataDetailsEx" Relationship="WaterNutEntities.EntryDataDetailsExAsycudaDocumentSetEntryDataDetail" FromRole="AsycudaDocumentSetEntryDataDetail" ToRole="EntryDataDetailsEx" />
+          <Property Name="Id" Type="Int64" Nullable="false" />
+        </EntityType>
+        <Association Name="InventoryItemsExEntryDataDetailsEx">
+          <End Type="WaterNutEntities.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="WaterNutEntities.EntryDataDetailsEx" Role="EntryDataDetailsEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="ItemNumber" />
+            </Principal>
+            <Dependent Role="EntryDataDetailsEx">
+              <PropertyRef Name="ItemNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EntryDataExAsycudaDocumentSetEntryData">
+          <End Type="WaterNutEntities.EntryDataEx" Role="EntryDataEx" Multiplicity="1" />
+          <End Type="WaterNutEntities.AsycudaDocumentSetEntryData" Role="AsycudaDocumentSetEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataEx">
+              <PropertyRef Name="InvoiceNo" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSetEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EntryDataExAsycudaDocumentEntryData">
+          <End Type="WaterNutEntities.EntryDataEx" Role="EntryDataEx" Multiplicity="1" />
+          <End Type="WaterNutEntities.AsycudaDocumentEntryData" Role="AsycudaDocumentEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataEx">
+              <PropertyRef Name="InvoiceNo" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EntryDataExEntryDataDetailsEx">
+          <End Type="WaterNutEntities.EntryDataEx" Role="EntryDataEx" Multiplicity="1" />
+          <End Type="WaterNutEntities.EntryDataDetailsEx" Role="EntryDataDetailsEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataEx">
+              <PropertyRef Name="InvoiceNo" />
+            </Principal>
+            <Dependent Role="EntryDataDetailsEx">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="EntryDataDetailsExAsycudaDocumentSetEntryDataDetail">
+          <End Type="WaterNutEntities.EntryDataDetailsEx" Role="EntryDataDetailsEx" Multiplicity="1" />
+          <End Type="WaterNutEntities.AsycudaDocumentSetEntryDataDetail" Role="AsycudaDocumentSetEntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetailsEx">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSetEntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ContainerEntryData">
+          <Key>
+            <PropertyRef Name="ContainerEntryData1" />
+          </Key>
+          <Property Name="Container_Id" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ContainerEntryData1" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EntryDataEx" Relationship="WaterNutEntities.EntryDataExContainerEntryData" FromRole="ContainerEntryData" ToRole="EntryDataEx" />
+          <NavigationProperty Name="ContainerEx" Relationship="WaterNutEntities.ContainerExContainerEntryData" FromRole="ContainerEntryData" ToRole="ContainerEx" />
+          <NavigationProperty Name="EntryData" Relationship="WaterNutEntities.FK_ContainerEntryData_EntryData" FromRole="ContainerEntryData" ToRole="EntryData" />
+        </EntityType>
+        <Association Name="EntryDataExContainerEntryData">
+          <End Type="WaterNutEntities.EntryDataEx" Role="EntryDataEx" Multiplicity="1" />
+          <End Type="WaterNutEntities.ContainerEntryData" Role="ContainerEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataEx">
+              <PropertyRef Name="InvoiceNo" />
+            </Principal>
+            <Dependent Role="ContainerEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ContainerEx">
+          <Key>
+            <PropertyRef Name="Container_Id" />
+          </Key>
+          <Property Name="Container_identity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Container_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Empty_full_indicator" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Gross_weight" Type="Double" Nullable="false" />
+          <Property Name="Goods_description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_number" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_type" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_weight" Type="Double" Nullable="false" />
+          <Property Name="Container_Id" Type="Int32" Nullable="false" />
+          <Property Name="TotalValue" Type="Double"><a:DisplayTotalsProperty xmlns:a="http://schemas.tempuri.com/DisplayTotalsProperty">True</a:DisplayTotalsProperty></Property>
+          <Property Name="ShipDate" Type="DateTime" Precision="0" />
+          <Property Name="DeliveryDate" Type="DateTime" Precision="0" />
+          <Property Name="Seal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="EntryDataId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ContainerTypeDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ContainerEntryDatas" Relationship="WaterNutEntities.ContainerExContainerEntryData" FromRole="ContainerEx" ToRole="ContainerEntryData" />
+        </EntityType>
+        <Association Name="ContainerExContainerEntryData">
+          <End Type="WaterNutEntities.ContainerEx" Role="ContainerEx" Multiplicity="1" />
+          <End Type="WaterNutEntities.ContainerEntryData" Role="ContainerEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ContainerEx">
+              <PropertyRef Name="Container_Id" />
+            </Principal>
+            <Dependent Role="ContainerEntryData">
+              <PropertyRef Name="Container_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ContainerType">
+          <Key>
+            <PropertyRef Name="ContainerCode" />
+          </Key>
+          <Property Name="ContainerCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ContainerTypeDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PackageType">
+          <Key>
+            <PropertyRef Name="PackageCode" />
+          </Key>
+          <Property Name="PackageCode" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EmptyFullCode">
+          <Key>
+            <PropertyRef Name="EmptyFullCodeId" />
+          </Key>
+          <Property Name="EmptyFullCodeName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="EmptyFullDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="EmptyFullCodeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="EntryData">
+          <Key>
+            <PropertyRef Name="EntryDataId" />
+          </Key>
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ImportedTotal" Type="Double" />
+          <Property Name="ImportedLines" Type="Int32" />
+          <Property Name="SupplierId" Type="Int32" />
+          <Property Name="TotalFreight" Type="Double" />
+          <Property Name="TotalInternalFreight" Type="Double" />
+          <Property Name="TotalWeight" Type="Double" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentEntryDatas" Relationship="WaterNutEntities.FK_AsycudaDocumentEntryData_EntryData" FromRole="EntryData" ToRole="AsycudaDocumentEntryData" />
+          <NavigationProperty Name="AsycudaDocumentSetEntryDatas" Relationship="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData" FromRole="EntryData" ToRole="AsycudaDocumentSetEntryData" />
+          <NavigationProperty Name="ContainerEntryDatas" Relationship="WaterNutEntities.FK_ContainerEntryData_EntryData" FromRole="EntryData" ToRole="ContainerEntryData" />
+          <Property Name="TaxAmount" Type="Double" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocumentEntryData_EntryData">
+          <End Type="WaterNutEntities.EntryData" Role="EntryData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutEntities.AsycudaDocumentEntryData" Role="AsycudaDocumentEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSetEntryData_EntryData">
+          <End Type="WaterNutEntities.EntryData" Role="EntryData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutEntities.AsycudaDocumentSetEntryData" Role="AsycudaDocumentSetEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSetEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ContainerEntryData_EntryData">
+          <End Type="WaterNutEntities.EntryData" Role="EntryData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutEntities.ContainerEntryData" Role="ContainerEntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Principal>
+            <Dependent Role="ContainerEntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs" Space="C-S">
+        <Alias Key="Model" Value="Model1" />
+        <Alias Key="Target" Value="Model1.Store" />
+        <EntityContainerMapping CdmEntityContainer="EntryDataQS" StorageEntityContainer="Model1StoreContainer">
+          <EntitySetMapping Name="AsycudaDocumentEntryDatas">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.AsycudaDocumentEntryData)">
+              <MappingFragment StoreEntitySet="AsycudaDocumentEntryData">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="AsycudaDocumentId" ColumnName="AsycudaDocumentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemsEx">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.InventoryItemsEx)">
+              <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
+                <ScalarProperty Name="SuppUnitCode2" ColumnName="SuppUnitCode2" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSetEntryDataDetails">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.AsycudaDocumentSetEntryDataDetail)">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSetEntryDataDetails">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntryDataDetailsExes">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.EntryDataDetailsEx)">
+              <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="PreviousCNumber" ColumnName="PreviousCNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Downloaded" ColumnName="Downloaded" />
+                <ScalarProperty Name="CLineNumber" ColumnName="CLineNumber" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="UnitWeight" ColumnName="UnitWeight" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSetEntryDatas">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.AsycudaDocumentSetEntryData)">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSetEntryData">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntryDataEx">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.EntryDataEx)">
+              <MappingFragment StoreEntitySet="EntryDataEx">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="TotalLines" ColumnName="TotalLines" />
+                <ScalarProperty Name="ImportedLines" ColumnName="ImportedLines" />
+                <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContainerEntryDatas">
+            <EntityTypeMapping TypeName="WaterNutEntities.ContainerEntryData">
+              <MappingFragment StoreEntitySet="ContainerEntryData">
+                <ScalarProperty Name="ContainerEntryData1" ColumnName="ContainerEntryData" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="Container_Id" ColumnName="Container_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContainerExes">
+            <EntityTypeMapping TypeName="WaterNutEntities.ContainerEx">
+              <MappingFragment StoreEntitySet="ContainerEx">
+                <ScalarProperty Name="ContainerTypeDescription" ColumnName="ContainerTypeDescription" />
+                <ScalarProperty Name="PackageDescription" ColumnName="PackageDescription" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Seal" ColumnName="Seal" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+                <ScalarProperty Name="ShipDate" ColumnName="ShipDate" />
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
+                <ScalarProperty Name="Container_Id" ColumnName="Container_Id" />
+                <ScalarProperty Name="Packages_weight" ColumnName="Packages_weight" />
+                <ScalarProperty Name="Packages_type" ColumnName="Packages_type" />
+                <ScalarProperty Name="Packages_number" ColumnName="Packages_number" />
+                <ScalarProperty Name="Goods_description" ColumnName="Goods_description" />
+                <ScalarProperty Name="Gross_weight" ColumnName="Gross_weight" />
+                <ScalarProperty Name="Empty_full_indicator" ColumnName="Empty_full_indicator" />
+                <ScalarProperty Name="Container_type" ColumnName="Container_type" />
+                <ScalarProperty Name="Container_identity" ColumnName="Container_identity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContainerTypes">
+            <EntityTypeMapping TypeName="WaterNutEntities.ContainerType">
+              <MappingFragment StoreEntitySet="ContainerTypes">
+                <ScalarProperty Name="ContainerTypeDescription" ColumnName="ContainerTypeDescription" />
+                <ScalarProperty Name="ContainerCode" ColumnName="ContainerCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageTypes">
+            <EntityTypeMapping TypeName="WaterNutEntities.PackageType">
+              <MappingFragment StoreEntitySet="PackageTypes">
+                <ScalarProperty Name="PackageDescription" ColumnName="PackageDescription" />
+                <ScalarProperty Name="PackageCode" ColumnName="PackageType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmptyFullCodes">
+            <EntityTypeMapping TypeName="WaterNutEntities.EmptyFullCode">
+              <MappingFragment StoreEntitySet="EmptyFullCodes">
+                <ScalarProperty Name="EmptyFullCodeId" ColumnName="EmptyFullCodeId" />
+                <ScalarProperty Name="EmptyFullDescription" ColumnName="EmptyFullDescription" />
+                <ScalarProperty Name="EmptyFullCodeName" ColumnName="EmptyFullCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EntryDatas">
+            <EntityTypeMapping TypeName="WaterNutEntities.EntryData">
+              <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
+                <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
+                <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
+                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+                <ScalarProperty Name="ImportedLines" ColumnName="ImportedLines" />
+                <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
+                <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams>
+    </Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,43 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true"#>
+<#@ output extension=".cs"#>
+<#@ include file="T4Toolbox.tt" #>
+<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Repository.tt" #>
+<#
+
+
+    RepositoryTPL sv = new RepositoryTPL();            
+    
+
+    sv.CreateRepositories("WaterNut","AllocationQS",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",                     
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   
+
+		sv.CreateRepositories("WaterNut","CounterPointQS",
+			@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CounterPointQS\CounterPointQS.edmx",            
+            @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   
+
+		sv.CreateRepositories("WaterNut","CoreEntities",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                   
+                    @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   
+
+	sv.CreateRepositories("WaterNut","EntryDataQS",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",                     
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   
+
+	sv.CreateRepositories("WaterNut","InventoryQS",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\InventoryQS\InventoryQS.edmx",                    
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   
+
+	sv.CreateRepositories("WaterNut","PreviousDocumentQS",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\PreviousDocumentQS\PreviousDocumentQS.edmx",                    
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );     
+
+   sv.CreateRepositories("WaterNut","SalesDataQS",
+				     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\SalesDataQS\SalesDataQS.edmx",                     
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );
+   sv.CreateRepositories("WaterNut","SalesDataQS",
+				     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AdjustmentQS\AdjustmentQS.edmx",                     
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );
+  
+
+#>
