@@ -239,6 +239,12 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AdjustmentShort>(dbContext, exp, itm.Value, "ShortAllocations", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AdjustmentDetail":
+                                return
+                                    await
+                                        GetWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "ShortAllocations", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace AdjustmentQS.Business.Services
                             case "AdjustmentShort":
                                 return await CountWhere<AdjustmentShort>(dbContext, exp, itm.Value, "ShortAllocations", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentDetail":
+                                return await CountWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "ShortAllocations", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.ShortAllocations.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
@@ -845,6 +854,12 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AdjustmentShort>(startIndex, count, dbContext, exp, itm.Value, "ShortAllocations", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AdjustmentDetail":
+                                return
+                                    await
+                                        LoadRangeWhere<AdjustmentDetail>(startIndex, count, dbContext, exp, itm.Value, "ShortAllocations", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1280,6 +1295,9 @@ namespace AdjustmentQS.Business.Services
                         {
                             case "AdjustmentShort":
                                 return await SumWhere<AdjustmentShort>(dbContext, exp, itm.Value, "ShortAllocations", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentDetail":
+                                return await SumWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "ShortAllocations", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

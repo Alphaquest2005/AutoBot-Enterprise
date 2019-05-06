@@ -843,6 +843,59 @@ public int ApplicationSettingsId
 		}
         
 
+       private AdjustmentDetail _AdjustmentDetail;
+        public  AdjustmentDetail AdjustmentDetail
+		{
+		    get
+               { 
+                  if (this.shortallocation != null)
+                   {
+                       if (_AdjustmentDetail != null)
+                       {
+                           if (this.shortallocation.AdjustmentDetail !=
+                               _AdjustmentDetail.DTO)
+                           {
+                                if (this.shortallocation.AdjustmentDetail  != null)
+                               _AdjustmentDetail = new AdjustmentDetail(this.shortallocation.AdjustmentDetail);
+                           }
+                       }
+                       else
+                       {
+                             if (this.shortallocation.AdjustmentDetail  != null)
+                           _AdjustmentDetail = new AdjustmentDetail(this.shortallocation.AdjustmentDetail);
+                       }
+                   }
+
+
+             //       if (_AdjustmentDetail != null) return _AdjustmentDetail;
+                       
+             //       var i = new AdjustmentDetail(){TrackingState = TrackingState.Added};
+			//		//if (this.shortallocation.AdjustmentDetail == null) Debugger.Break();
+			//		if (this.shortallocation.AdjustmentDetail != null)
+            //        {
+            //           i. = this.shortallocation.AdjustmentDetail;
+            //        }
+            //        else
+            //        {
+            //            this.shortallocation.AdjustmentDetail = i.;
+             //       }
+                           
+            //        _AdjustmentDetail = i;
+                     
+                    return _AdjustmentDetail;
+               }
+			set
+			{
+			    if (value == _AdjustmentDetail) return;
+                _AdjustmentDetail = value;
+                if(value != null)
+                     this.shortallocation.AdjustmentDetail = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("AdjustmentDetail");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.ShortAllocation> _changeTracker;    
         public ChangeTrackingCollection<DTO.ShortAllocation> ChangeTracker

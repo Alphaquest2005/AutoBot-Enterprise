@@ -72,7 +72,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task BaseDataModelInitialize(ApplicationSettings appSettings)
+        public async Task BaseDataModelInitialize()
         {
           
           await WaterNut.DataSpace.BaseDataModel.Initialization.ConfigureAwait(false);

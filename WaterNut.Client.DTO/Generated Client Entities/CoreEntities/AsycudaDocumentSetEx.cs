@@ -243,7 +243,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _TotalWeight;
 
         [DataMember]
-        public int ApplicationSettingsId
+        public Nullable<int> ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -253,7 +253,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private int _ApplicationSettingsId;
+        private Nullable<int> _ApplicationSettingsId;
 
        
         [DataMember]

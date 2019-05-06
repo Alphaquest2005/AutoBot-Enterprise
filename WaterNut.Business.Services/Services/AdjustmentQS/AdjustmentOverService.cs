@@ -239,12 +239,6 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AdjustmentEx>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItem":
-                                return
-                                    await
-                                        GetWhere<InventoryItem>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return
                                     await
@@ -255,6 +249,12 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         GetWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItemsEx":
+                                return
+                                    await
+                                        GetWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -754,14 +754,14 @@ namespace AdjustmentQS.Business.Services
                             case "AdjustmentEx":
                                 return await CountWhere<AdjustmentEx>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return await CountWhere<AsycudaDocumentItemEntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentOver", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentDetail":
                                 return await CountWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemsEx":
+                                return await CountWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -874,12 +874,6 @@ namespace AdjustmentQS.Business.Services
                                         LoadRangeWhere<AdjustmentEx>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItem":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return
                                     await
@@ -890,6 +884,12 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AdjustmentDetail>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItemsEx":
+                                return
+                                    await
+                                        LoadRangeWhere<InventoryItemsEx>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentOvers", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1242,14 +1242,14 @@ namespace AdjustmentQS.Business.Services
                             case "AdjustmentEx":
                                 return await SumWhere<AdjustmentEx>(dbContext, exp, itm.Value, "AdjustmentOvers", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "AdjustmentOvers", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return await SumWhere<AsycudaDocumentItemEntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentOver", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentDetail":
                                 return await SumWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AdjustmentOvers", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemsEx":
+                                return await SumWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "AdjustmentOvers", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

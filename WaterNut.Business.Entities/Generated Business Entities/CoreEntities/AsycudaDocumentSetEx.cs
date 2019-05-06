@@ -281,7 +281,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _totalweight;
         [DataMember]
-        public int ApplicationSettingsId 
+        public Nullable<int> ApplicationSettingsId 
         {
             get
             {
@@ -294,7 +294,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _applicationsettingsid;
+        Nullable<int> _applicationsettingsid;
         [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]

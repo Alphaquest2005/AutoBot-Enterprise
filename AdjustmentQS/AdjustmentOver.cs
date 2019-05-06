@@ -45,8 +45,8 @@ namespace AdjustmentQS
         public int ApplicationSettingsId { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
-        public virtual InventoryItem InventoryItem { get; set; }
         public virtual ICollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
         public virtual AdjustmentDetail AdjustmentDetail { get; set; }
+        public virtual InventoryItemsEx InventoryItemsEx { get; set; }
     }
 }

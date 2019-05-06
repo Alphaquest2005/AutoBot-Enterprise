@@ -251,6 +251,18 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AdjustmentOver>(dbContext, exp, itm.Value, "AdjustmentDetail", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocumentItemEntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentDetail", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShortAllocations":
+                                return
+                                    await
+                                        GetWhere<ShortAllocation>(dbContext, exp, itm.Value, "AdjustmentDetail", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -754,6 +766,12 @@ namespace AdjustmentQS.Business.Services
                             case "AdjustmentOvers":
                                 return await CountWhere<AdjustmentOver>(dbContext, exp, itm.Value, "AdjustmentDetail", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return await CountWhere<AsycudaDocumentItemEntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentDetail", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShortAllocations":
+                                return await CountWhere<ShortAllocation>(dbContext, exp, itm.Value, "AdjustmentDetail", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AdjustmentDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -875,6 +893,18 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AdjustmentOver>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentDetail", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocumentItemEntryDataDetail>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentDetail", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShortAllocations":
+                                return
+                                    await
+                                        LoadRangeWhere<ShortAllocation>(startIndex, count, dbContext, exp, itm.Value, "AdjustmentDetail", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1090,6 +1120,8 @@ namespace AdjustmentQS.Business.Services
                 var i = EntryDataId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
+                                                    // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
@@ -1119,6 +1151,8 @@ namespace AdjustmentQS.Business.Services
                 var i = Convert.ToInt32(AsycudaDocumentSetId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
+                                                    // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
@@ -1148,6 +1182,8 @@ namespace AdjustmentQS.Business.Services
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
+                                                    // .Include(x => x.ShortAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1229,6 +1265,12 @@ namespace AdjustmentQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentOvers":
                                 return await SumWhere<AdjustmentOver>(dbContext, exp, itm.Value, "AdjustmentDetail", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentItemEntryDataDetails":
+                                return await SumWhere<AsycudaDocumentItemEntryDataDetail>(dbContext, exp, itm.Value, "AdjustmentDetail", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShortAllocations":
+                                return await SumWhere<ShortAllocation>(dbContext, exp, itm.Value, "AdjustmentDetail", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

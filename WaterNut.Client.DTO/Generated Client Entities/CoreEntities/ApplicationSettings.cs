@@ -478,19 +478,6 @@ namespace CoreEntities.Client.DTO
 
        
         [DataMember]
-        public ChangeTrackingCollection<InventoryItems> InventoryItems
-		{
-		    get { return _InventoryItems; }
-			set
-			{
-			    if (Equals(value, _InventoryItems)) return;
-				_InventoryItems = value;
-				NotifyPropertyChanged();//m => this.InventoryItems
-			}
-		}
-        private ChangeTrackingCollection<InventoryItems> _InventoryItems = new ChangeTrackingCollection<InventoryItems>();
-
-        [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{
 		    get { return _AsycudaDocumentSetEx; }
@@ -502,6 +489,45 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = new ChangeTrackingCollection<AsycudaDocumentSetEx>();
+
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocument> AsycudaDocument
+		{
+		    get { return _AsycudaDocument; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocument)) return;
+				_AsycudaDocument = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocument
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocument> _AsycudaDocument = new ChangeTrackingCollection<AsycudaDocument>();
+
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocumentItem> AsycudaDocumentItem
+		{
+		    get { return _AsycudaDocumentItem; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentItem)) return;
+				_AsycudaDocumentItem = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentItem
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocumentItem> _AsycudaDocumentItem = new ChangeTrackingCollection<AsycudaDocumentItem>();
+
+        [DataMember]
+        public ChangeTrackingCollection<InventoryItemX> InventoryItemsEx
+		{
+		    get { return _InventoryItemsEx; }
+			set
+			{
+			    if (Equals(value, _InventoryItemsEx)) return;
+				_InventoryItemsEx = value;
+				NotifyPropertyChanged();//m => this.InventoryItemsEx
+			}
+		}
+        private ChangeTrackingCollection<InventoryItemX> _InventoryItemsEx = new ChangeTrackingCollection<InventoryItemX>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

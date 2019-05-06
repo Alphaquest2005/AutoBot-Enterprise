@@ -233,16 +233,28 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return
-                                    await
-                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "AsycudaDocumentSetEx":
                                 return
                                     await
                                         GetWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocument":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocument>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocumentItem":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItemsEx":
+                                return
+                                    await
+                                        GetWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -739,11 +751,17 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentSetEx":
                                 return await CountWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocument":
+                                return await CountWhere<AsycudaDocument>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentItem":
+                                return await CountWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemsEx":
+                                return await CountWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -850,16 +868,28 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "AsycudaDocumentSetEx":
                                 return
                                     await
                                         LoadRangeWhere<AsycudaDocumentSetEx>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocument":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocument>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocumentItem":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocumentItem>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItemsEx":
+                                return
+                                    await
+                                        LoadRangeWhere<InventoryItemX>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1119,11 +1149,17 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentSetEx":
                                 return await SumWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocument":
+                                return await SumWhere<AsycudaDocument>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentItem":
+                                return await SumWhere<AsycudaDocumentItem>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemsEx":
+                                return await SumWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

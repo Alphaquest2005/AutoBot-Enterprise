@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             StatusModel.Timer("AutoMatching");
             using (var ctx = new AdjustmentShortRepository())
             {
-                await ctx.AutoMatch().ConfigureAwait(false);
+                await ctx.AutoMatch(CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
             }
 
             

@@ -105,6 +105,9 @@
     <Compile Include="AsycudaDocumentItemEntryDataDetail.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>
+    <Compile Include="AsycudaDocumentItemLastItemCost.cs">
+      <DependentUpon>OversShortQS.tt</DependentUpon>
+    </Compile>
     <Compile Include="AsycudaDocumentSetEntryData.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>
@@ -114,10 +117,10 @@
     <Compile Include="EntryDataDetail.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>
-    <Compile Include="InventoryItem.cs">
+    <Compile Include="InventoryItemAliasEx.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>
-    <Compile Include="InventoryItemAlia.cs">
+    <Compile Include="InventoryItemsEx.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>
     <Compile Include="OversShortQS.cs">

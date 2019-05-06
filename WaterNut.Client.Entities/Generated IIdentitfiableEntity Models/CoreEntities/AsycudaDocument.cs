@@ -66,6 +66,44 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string ApplicationSettingsEntityName
+        {
+            get
+            {
+                return this.ApplicationSettings == null ? "" : this.ApplicationSettings.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ApplicationSettingsClient ctx = new ApplicationSettingsClient())
+                    {
+                        var dto = ctx.GetApplicationSettings().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
+							
+							this.ASYCUDA_Id = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddApplicationSettings");
+                        }
+                        else
+                        {
+                            var obj = new ApplicationSettings(dto);
+                           if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
         public string Customs_ProcedureEntityName
         {
             get
@@ -132,44 +170,6 @@ namespace CoreEntities.Client.Entities
                         {
                             var obj = new Document_Type(dto);
                            if (this.Document_Type == null || this.Document_Type.EntityId != obj.EntityId) this.Document_Type = obj;
-                           
-                        }
-                         
-
-
-                    }
-            
-            }
-
-      }
-        public string ApplicationSettingsEntityName
-        {
-            get
-            {
-                return this.ApplicationSettings == null ? "" : this.ApplicationSettings.EntityName;
-            }
-            set
-            {
-                                if (string.IsNullOrEmpty(value)) return;
-                string[] vals = value.Split(',');
-               
-                    using (ApplicationSettingsClient ctx = new ApplicationSettingsClient())
-                    {
-                        var dto = ctx.GetApplicationSettings().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
-                        
-
-                        if ( dto == null)
-                        {
-                            this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
-							
-							this.ApplicationSettingsId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
-                            this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddApplicationSettings");
-                        }
-                        else
-                        {
-                            var obj = new ApplicationSettings(dto);
-                           if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
                            
                         }
                          

@@ -239,10 +239,10 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AsycudaSalesAllocation>(dbContext, exp, itm.Value, "EntryDataDetail", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItem":
+                            case "InventoryItemsEx":
                                 return
                                     await
-                                        GetWhere<InventoryItem>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
+                                        GetWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -742,8 +742,8 @@ namespace AdjustmentQS.Business.Services
                             case "AsycudaSalesAllocations":
                                 return await CountWhere<AsycudaSalesAllocation>(dbContext, exp, itm.Value, "EntryDataDetail", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+                            case "InventoryItemsEx":
+                                return await CountWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -856,10 +856,10 @@ namespace AdjustmentQS.Business.Services
                                         LoadRangeWhere<AsycudaSalesAllocation>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetail", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItem":
+                            case "InventoryItemsEx":
                                 return
                                     await
-                                        LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+                                        LoadRangeWhere<InventoryItemsEx>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1152,8 +1152,8 @@ namespace AdjustmentQS.Business.Services
                             case "AsycudaSalesAllocations":
                                 return await SumWhere<AsycudaSalesAllocation>(dbContext, exp, itm.Value, "EntryDataDetail", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
+                            case "InventoryItemsEx":
+                                return await SumWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

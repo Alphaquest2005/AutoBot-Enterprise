@@ -16,7 +16,7 @@
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.AsycudaDocumentId).HasColumnName("AsycudaDocumentId");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId");
-              this.Property(t => t.LineNumber).HasColumnName("LineNumber");
+              this.Property(t => t.LineNumber).HasColumnName("LineNumber").HasMaxLength(50);
               this.Property(t => t.IsAssessed).HasColumnName("IsAssessed");
               this.Property(t => t.DoNotAllocate).HasColumnName("DoNotAllocate");
               this.Property(t => t.DoNotEX).HasColumnName("DoNotEX");
@@ -59,7 +59,8 @@
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasOptional(t => t.AsycudaDocument).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItems).HasForeignKey(d => d.AsycudaDocumentId);
-              this.HasOptional(t => t.InventoryItems).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => d.ItemNumber);
+              this.HasOptional(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => d.ApplicationSettingsId);
+              this.HasOptional(t => t.InventoryItemsEx).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
               this.HasMany(t => t.SubItems).WithRequired(t => (AsycudaDocumentItem)t.AsycudaDocumentItem);
               this.HasMany(t => t.PreviousItems).WithRequired(t => (AsycudaDocumentItem)t.AsycudaDocumentItem);
               this.HasMany(t => t.xcuda_Supplementary_unit).WithRequired(t => (AsycudaDocumentItem)t.AsycudaDocumentItem);

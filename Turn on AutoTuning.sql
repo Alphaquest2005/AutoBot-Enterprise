@@ -1,0 +1,2 @@
+ALTER DATABASE [autobot-enterprisedb]
+SET AUTOMATIC_TUNING ( FORCE_LAST_GOOD_PLAN = ON ); 

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Core.Common.UI;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
 using EntryDataQS.Client.Repositories;
@@ -78,6 +79,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
         internal async Task AddDocToEntry(System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataEx> lst, bool perInvoice = false)
         {
+            StatusModel.Timer($"Creating Entries");
             var docSet = CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx;
             if ( docSet == null)
             {
@@ -91,12 +93,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
               new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, null,
                 new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
-
+            StatusModel.StopStatusUpdate();
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
         public async Task SaveCSV(string fileType)
         {
+            StatusModel.Timer($"Importing {fileType}");
             var docSet = CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx;
             if (docSet == null)
             {
@@ -113,17 +116,21 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, null,
                 new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
 
+            StatusModel.StopStatusUpdate();
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            
         }
 
         internal async Task RemoveSelectedEntryData(
             System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataEx> list)
         {
+
             var res = MessageBox.Show("Are you sure you want to delete all Selected Items?", "Delete selected Items",
                 MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
-               await EntryDataRepository.Instance.RemoveSelectedEntryData(SelectedEntryDataEx.Select(x => x.InvoiceNo)).ConfigureAwait(false);
+                StatusModel.Timer($"Deleting Data");
+                await EntryDataRepository.Instance.RemoveSelectedEntryData(SelectedEntryDataEx.Select(x => x.InvoiceNo)).ConfigureAwait(false);
 
                 MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
                     new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));
@@ -139,7 +146,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
                 MessageBus.Default.BeginNotify(MessageToken.EntryDataExFilterExpressionChanged, null,
                    new NotificationEventArgs(MessageToken.EntryDataExFilterExpressionChanged));
-
+                StatusModel.StopStatusUpdate();
                 MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
                 //EntryDataEx.Refresh();

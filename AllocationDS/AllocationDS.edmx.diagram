@@ -4,13 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="14775e46e99344e3ac5eb3107bbe5d04" Name="Diagram1" ZoomLevel="73">
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocations" Width="2.5" PointX="6.625" PointY="19.625" IsExpanded="true" FillColor="Olive" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="2.625" PointX="3.25" PointY="14.125" />
+      <Diagram DiagramId="14775e46e99344e3ac5eb3107bbe5d04" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaSalesAllocations" Width="2.5" PointX="6.75" PointY="20.125" IsExpanded="true" FillColor="Olive" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="2.625" PointX="4.375" PointY="13.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaSalesAllocations_EntryDataDetails" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Item" Width="2.375" PointX="3.625" PointY="20.875" FillColor="Olive" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaSalesAllocations_xcuda_Item" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetailsEx" PointX="6.625" PointY="13.125" Width="2.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetailsEx" PointX="7.875" PointY="13.375" Width="2.5" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryData" Width="1.5" PointX="7.875" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Sales" Width="1.5" PointX="5.25" PointY="3.625" />
@@ -22,12 +22,9 @@
         <EntityTypeShape EntityType="WaterNutDBModel.SubItems" Width="1.5" PointX="6.625" PointY="10.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_SubItems_xcuda_Item" />
         <AssociationConnector Association="WaterNutDBModel.SalesEntryDataDetails" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems" Width="1.5" PointX="1" PointY="14.875" />
-        <AssociationConnector Association="WaterNutDBModel.FK_PurchaseOrderDetails_InventoryItems" />
         <EntityTypeShape EntityType="WaterNutDBModel.TariffCategory" Width="1.5" PointX="1.75" PointY="6.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.TariffCodes" Width="1.5" PointX="1.75" PointY="9.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.TariffSupUnitLkps" Width="2.625" PointX="4" PointY="6" />
-        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_TariffCodes" />
         <AssociationConnector Association="WaterNutDBModel.FK_TariffCodes_TariffCategory" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Goods_description" Width="1.5" PointX="6.625" PointY="39.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_HScode" Width="1.5" PointX="8.875" PointY="45.5" />
@@ -52,11 +49,8 @@
         <EntityTypeShape EntityType="WaterNutDBModel.xBondAllocations" Width="2.875" PointX="13.875" PointY="20.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_xBondAllocations_AsycudaSalesAllocations" />
         <AssociationConnector Association="WaterNutDBModel.FK_xBondAllocations_xcuda_Item" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="1.5" PointX="11.75" PointY="45" />
         <EntityTypeShape EntityType="WaterNutDBModel.EX9AsycudaSalesAllocations" Width="2.5" PointX="10.625" PointY="18.625" />
-        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" />
         <AssociationConnector Association="WaterNutDBModel.xcuda_ItemEX9AsycudaSalesAllocations" />
-        <AssociationConnector Association="WaterNutDBModel.InventoryItemsEX9AsycudaSalesAllocations" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryPreviousItems" Width="2.5" PointX="14.75" PointY="23.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_Item" />
         <AssociationConnector Association="WaterNutDBModel.xcuda_PreviousItemEntryPreviousItems" />
@@ -75,6 +69,12 @@
         <AssociationConnector Association="WaterNutDBModel.AscyudaItemPiQuantityAdjustmentShortAllocations" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaItemPiQuantityData" Width="1.5" PointX="11.5" PointY="15.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.PreviousItemsEx" Width="3.625" PointX="10.375" PointY="3.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItem" Width="1.5" PointX="0.5" PointY="15.125" />
+        <AssociationConnector Association="WaterNutDBModel.TariffCodesInventoryItemsEx" />
+        <AssociationConnector Association="WaterNutDBModel.InventoryItemsExEX9AsycudaSalesAllocations" />
+        <AssociationConnector Association="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="1.5" PointX="2.625" PointY="15.5" />
+        <AssociationConnector Association="WaterNutDBModel.InventoryItemInventoryItemAliasEx" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

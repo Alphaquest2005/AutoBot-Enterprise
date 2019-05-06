@@ -658,6 +658,59 @@ public Nullable<int> ApplicationSettingsId
 		}
         
 
+       private ApplicationSettings _ApplicationSettings;
+        public  ApplicationSettings ApplicationSettings
+		{
+		    get
+               { 
+                  if (this.asycudadocument != null)
+                   {
+                       if (_ApplicationSettings != null)
+                       {
+                           if (this.asycudadocument.ApplicationSettings !=
+                               _ApplicationSettings.DTO)
+                           {
+                                if (this.asycudadocument.ApplicationSettings  != null)
+                               _ApplicationSettings = new ApplicationSettings(this.asycudadocument.ApplicationSettings);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocument.ApplicationSettings  != null)
+                           _ApplicationSettings = new ApplicationSettings(this.asycudadocument.ApplicationSettings);
+                       }
+                   }
+
+
+             //       if (_ApplicationSettings != null) return _ApplicationSettings;
+                       
+             //       var i = new ApplicationSettings(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocument.ApplicationSettings == null) Debugger.Break();
+			//		if (this.asycudadocument.ApplicationSettings != null)
+            //        {
+            //           i. = this.asycudadocument.ApplicationSettings;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocument.ApplicationSettings = i.;
+             //       }
+                           
+            //        _ApplicationSettings = i;
+                     
+                    return _ApplicationSettings;
+               }
+			set
+			{
+			    if (value == _ApplicationSettings) return;
+                _ApplicationSettings = value;
+                if(value != null)
+                     this.asycudadocument.ApplicationSettings = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("ApplicationSettings");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.AsycudaDocument> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaDocument> ChangeTracker

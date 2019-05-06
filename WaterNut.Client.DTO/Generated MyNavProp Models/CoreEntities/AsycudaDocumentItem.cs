@@ -14,28 +14,7 @@ namespace CoreEntities.Client.DTO
     {
        #region MyNavProp Entities
 
-        ApplicationSettings _applicationSettings = null;
-
-        public ApplicationSettings ApplicationSettings
-        {
-            get
-            {
-                return _applicationSettings;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    _applicationSettings = value;
-
-                    ApplicationSettingsId = _applicationSettings.ApplicationSettingsId;
-
-                    NotifyPropertyChanged("ApplicationSettings");
-                }
-            }
-
-        }
-        
+       
 
         
  

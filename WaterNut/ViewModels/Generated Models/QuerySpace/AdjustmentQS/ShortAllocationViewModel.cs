@@ -55,6 +55,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 			RegisterToReceiveMessages<AdjustmentShort>(MessageToken.CurrentAdjustmentShortChanged, OnCurrentAdjustmentShortChanged);
+ 
+			RegisterToReceiveMessages<AdjustmentDetail>(MessageToken.CurrentAdjustmentDetailChanged, OnCurrentAdjustmentDetailChanged);
 
  			// Recieve messages for Core Current Entities Changed
                         RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
@@ -142,6 +144,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(AdjustmentShorts.Contains(CurrentShortAllocation.AdjustmentShort) == false) AdjustmentShorts.Add(CurrentShortAllocation.AdjustmentShort);
                     //}
+                    //if (e.PropertyName == "AddAdjustmentDetail")
+                   // {
+                   //    if(AdjustmentDetails.Contains(CurrentShortAllocation.AdjustmentDetail) == false) AdjustmentDetails.Add(CurrentShortAllocation.AdjustmentDetail);
+                    //}
                     //if (e.PropertyName == "AddApplicationSettings")
                    // {
                    //    if(ApplicationSettings.Contains(CurrentShortAllocation.ApplicationSettings) == false) ApplicationSettings.Add(CurrentShortAllocation.ApplicationSettings);
@@ -158,6 +164,23 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 		 internal void OnCurrentAdjustmentShortChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentShort> e)
 			{
 			if(ViewCurrentAdjustmentShort == false) return;
+			if (e.Data == null || e.Data.EntryDataDetailsId == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("EntryDataDetailsId == {0}", e.Data.EntryDataDetailsId.ToString());
+                 }
+
+				ShortAllocations.Refresh();
+				NotifyPropertyChanged(x => this.ShortAllocations);
+                // SendMessage(MessageToken.ShortAllocationsChanged, new NotificationEventArgs(MessageToken.ShortAllocationsChanged));
+                			}
+	
+		 internal void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
+			{
+			if(ViewCurrentAdjustmentDetail == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)
                 {
                     vloader.FilterExpression = "None";
@@ -202,6 +225,21 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
              {
                  _viewCurrentAdjustmentShort = value;
                  NotifyPropertyChanged(x => x.ViewCurrentAdjustmentShort);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentAdjustmentDetail = false;
+         public bool ViewCurrentAdjustmentDetail
+         {
+             get
+             {
+                 return _viewCurrentAdjustmentDetail;
+             }
+             set
+             {
+                 _viewCurrentAdjustmentDetail = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentAdjustmentDetail);
                 FilterData();
              }
          }

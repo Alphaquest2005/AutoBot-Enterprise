@@ -711,9 +711,11 @@ namespace CoreEntities.Business.Entities
         [DataMember]
         public List<xcuda_Supplementary_unit> xcuda_Supplementary_unit { get; set; }
         [DataMember]
-        public InventoryItems InventoryItems { get; set; }
-        [DataMember]
         public List<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails { get; set; }
+        [DataMember]
+        public ApplicationSettings ApplicationSettings { get; set; }
+        [DataMember]
+        public InventoryItemX InventoryItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

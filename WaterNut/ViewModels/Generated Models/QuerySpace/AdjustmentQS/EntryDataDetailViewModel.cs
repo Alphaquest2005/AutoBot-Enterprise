@@ -54,7 +54,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 			RegisterToReceiveMessages(MessageToken.EntryDataDetailsFilterExpressionChanged, OnEntryDataDetailsFilterExpressionChanged);
 
  
-			RegisterToReceiveMessages<InventoryItem>(MessageToken.CurrentInventoryItemChanged, OnCurrentInventoryItemChanged);
+			RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -137,9 +137,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
             void CurrentEntryDataDetail__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
-                    //if (e.PropertyName == "AddInventoryItem")
+                    //if (e.PropertyName == "AddInventoryItemsEx")
                    // {
-                   //    if(InventoryItems.Contains(CurrentEntryDataDetail.InventoryItem) == false) InventoryItems.Add(CurrentEntryDataDetail.InventoryItem);
+                   //    if(InventoryItemsExes.Contains(CurrentEntryDataDetail.InventoryItemsEx) == false) InventoryItemsExes.Add(CurrentEntryDataDetail.InventoryItemsEx);
                     //}
                  } 
         internal void OnEntryDataDetailsChanged(object sender, NotificationEventArgs e)
@@ -150,9 +150,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  	
-		 internal void OnCurrentInventoryItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItem> e)
+		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
-			if(ViewCurrentInventoryItem == false) return;
+			if(ViewCurrentInventoryItemsEx == false) return;
 			if (e.Data == null || e.Data.ItemNumber == null)
                 {
                     vloader.FilterExpression = "None";
@@ -173,17 +173,17 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
   
 // Filtering Each Field except IDs
  	
-		 bool _viewCurrentInventoryItem = false;
-         public bool ViewCurrentInventoryItem
+		 bool _viewCurrentInventoryItemsEx = false;
+         public bool ViewCurrentInventoryItemsEx
          {
              get
              {
-                 return _viewCurrentInventoryItem;
+                 return _viewCurrentInventoryItemsEx;
              }
              set
              {
-                 _viewCurrentInventoryItem = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentInventoryItem);
+                 _viewCurrentInventoryItemsEx = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentInventoryItemsEx);
                 FilterData();
              }
          }

@@ -131,11 +131,11 @@
     <Compile Include="Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentItemLastItemCostService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IAsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IAsycudaSalesAllocationService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IEntryDataDetailService.cs" />
-    <Compile Include="Contracts\AdjustmentQS\IInventoryItemAliaService.cs" />
-    <Compile Include="Contracts\AdjustmentQS\IInventoryItemService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\IInventoryItemsExService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IShortAllocationService.cs" />
     <Compile Include="Contracts\AdjustmentQS\Ixcuda_ItemService.cs" />
     <Compile Include="Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs" />
@@ -152,7 +152,7 @@
     <Compile Include="Contracts\AllocationDS\IEntryPreviousItemsService.cs" />
     <Compile Include="Contracts\AllocationDS\IEX9AsycudaSalesAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\IInventoryItemAliasService.cs" />
-    <Compile Include="Contracts\AllocationDS\IInventoryItemsService.cs" />
+    <Compile Include="Contracts\AllocationDS\IInventoryItemService.cs" />
     <Compile Include="Contracts\AllocationDS\IPreviousItemsExService.cs" />
     <Compile Include="Contracts\AllocationDS\ISalesService.cs" />
     <Compile Include="Contracts\AllocationDS\ISubItemsService.cs" />
@@ -184,8 +184,8 @@
     <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureService.cs" />
     <Compile Include="Contracts\CoreEntities\IDocument_TypeService.cs" />
     <Compile Include="Contracts\CoreEntities\IEntryPreviousItemsService.cs" />
-    <Compile Include="Contracts\CoreEntities\IInventoryItemAliasService.cs" />
-    <Compile Include="Contracts\CoreEntities\IInventoryItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IInventoryItemAliasExService.cs" />
+    <Compile Include="Contracts\CoreEntities\IInventoryItemXService.cs" />
     <Compile Include="Contracts\CoreEntities\ILicenceSummaryService.cs" />
     <Compile Include="Contracts\CoreEntities\ISubItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\Ixcuda_Supplementary_unitService.cs" />
@@ -555,11 +555,11 @@
     <Compile Include="Services\AdjustmentQS\AdjustmentShortService.cs" />
     <Compile Include="Services\AdjustmentQS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\AdjustmentQS\AsycudaDocumentItemEntryDataDetailService.cs" />
+    <Compile Include="Services\AdjustmentQS\AsycudaDocumentItemLastItemCostService.cs" />
     <Compile Include="Services\AdjustmentQS\AsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="Services\AdjustmentQS\AsycudaSalesAllocationService.cs" />
     <Compile Include="Services\AdjustmentQS\EntryDataDetailService.cs" />
-    <Compile Include="Services\AdjustmentQS\InventoryItemAliaService.cs" />
-    <Compile Include="Services\AdjustmentQS\InventoryItemService.cs" />
+    <Compile Include="Services\AdjustmentQS\InventoryItemsExService.cs" />
     <Compile Include="Services\AdjustmentQS\ShortAllocationService.cs" />
     <Compile Include="Services\AdjustmentQS\xcuda_ItemService.cs" />
     <Compile Include="Services\AllocationDS\AdjustmentShortAllocationsService.cs" />
@@ -576,7 +576,7 @@
     <Compile Include="Services\AllocationDS\EntryPreviousItemsService.cs" />
     <Compile Include="Services\AllocationDS\EX9AsycudaSalesAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\InventoryItemAliasService.cs" />
-    <Compile Include="Services\AllocationDS\InventoryItemsService.cs" />
+    <Compile Include="Services\AllocationDS\InventoryItemService.cs" />
     <Compile Include="Services\AllocationDS\PreviousItemsExService.cs" />
     <Compile Include="Services\AllocationDS\SalesService.cs" />
     <Compile Include="Services\AllocationDS\SubItemsService.cs" />
@@ -608,8 +608,8 @@
     <Compile Include="Services\CoreEntities\Customs_ProcedureService.cs" />
     <Compile Include="Services\CoreEntities\Document_TypeService.cs" />
     <Compile Include="Services\CoreEntities\EntryPreviousItemsService.cs" />
-    <Compile Include="Services\CoreEntities\InventoryItemAliasService.cs" />
-    <Compile Include="Services\CoreEntities\InventoryItemsService.cs" />
+    <Compile Include="Services\CoreEntities\InventoryItemAliasExService.cs" />
+    <Compile Include="Services\CoreEntities\InventoryItemXService.cs" />
     <Compile Include="Services\CoreEntities\LicenceSummaryService.cs" />
     <Compile Include="Services\CoreEntities\SubItemsService.cs" />
     <Compile Include="Services\CoreEntities\xcuda_Supplementary_unitService.cs" />

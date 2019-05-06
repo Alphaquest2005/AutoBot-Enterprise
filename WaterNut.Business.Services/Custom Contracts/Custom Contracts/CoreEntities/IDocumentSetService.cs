@@ -37,7 +37,7 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task BaseDataModelInitialize(ApplicationSettings appSettings);
+        Task BaseDataModelInitialize();
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]

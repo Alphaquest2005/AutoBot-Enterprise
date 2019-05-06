@@ -42,6 +42,9 @@ namespace AdjustmentQS.Client.Entities
                 adjustmentdetail = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= "EntryDataDetails is required")]
        
 public int EntryDataDetailsId
@@ -661,6 +664,114 @@ public int ApplicationSettingsId
 			}
 		}
         
+
+        ObservableCollection<AsycudaDocumentItemEntryDataDetail> _AsycudaDocumentItemEntryDataDetails = null;
+        public  ObservableCollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocumentItemEntryDataDetails != null) return _AsycudaDocumentItemEntryDataDetails;
+					//if (this.adjustmentdetail.AsycudaDocumentItemEntryDataDetails == null) Debugger.Break();
+					if(this.adjustmentdetail.AsycudaDocumentItemEntryDataDetails != null)
+					{
+						_AsycudaDocumentItemEntryDataDetails = new ObservableCollection<AsycudaDocumentItemEntryDataDetail>(this.adjustmentdetail.AsycudaDocumentItemEntryDataDetails.Select(x => new AsycudaDocumentItemEntryDataDetail(x)));
+					}
+					
+						_AsycudaDocumentItemEntryDataDetails.CollectionChanged += AsycudaDocumentItemEntryDataDetails_CollectionChanged; 
+					
+					return _AsycudaDocumentItemEntryDataDetails; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentItemEntryDataDetails)) return;
+				if (value != null)
+					this.adjustmentdetail.AsycudaDocumentItemEntryDataDetails = new ChangeTrackingCollection<DTO.AsycudaDocumentItemEntryDataDetail>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocumentItemEntryDataDetails = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocumentItemEntryDataDetails != null)
+				_AsycudaDocumentItemEntryDataDetails.CollectionChanged += AsycudaDocumentItemEntryDataDetails_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocumentItemEntryDataDetails");
+			}
+		}
+        
+        void AsycudaDocumentItemEntryDataDetails_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocumentItemEntryDataDetail itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        adjustmentdetail.AsycudaDocumentItemEntryDataDetails.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocumentItemEntryDataDetail itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        adjustmentdetail.AsycudaDocumentItemEntryDataDetails.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<ShortAllocation> _ShortAllocations = null;
+        public  ObservableCollection<ShortAllocation> ShortAllocations
+		{
+            
+		    get 
+				{ 
+					if(_ShortAllocations != null) return _ShortAllocations;
+					//if (this.adjustmentdetail.ShortAllocations == null) Debugger.Break();
+					if(this.adjustmentdetail.ShortAllocations != null)
+					{
+						_ShortAllocations = new ObservableCollection<ShortAllocation>(this.adjustmentdetail.ShortAllocations.Select(x => new ShortAllocation(x)));
+					}
+					
+						_ShortAllocations.CollectionChanged += ShortAllocations_CollectionChanged; 
+					
+					return _ShortAllocations; 
+				}
+			set
+			{
+			    if (Equals(value, _ShortAllocations)) return;
+				if (value != null)
+					this.adjustmentdetail.ShortAllocations = new ChangeTrackingCollection<DTO.ShortAllocation>(value.Select(x => x.DTO).ToList());
+                _ShortAllocations = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_ShortAllocations != null)
+				_ShortAllocations.CollectionChanged += ShortAllocations_CollectionChanged;               
+				NotifyPropertyChanged("ShortAllocations");
+			}
+		}
+        
+        void ShortAllocations_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ShortAllocation itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        adjustmentdetail.ShortAllocations.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ShortAllocation itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        adjustmentdetail.ShortAllocations.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.AdjustmentDetail> _changeTracker;    

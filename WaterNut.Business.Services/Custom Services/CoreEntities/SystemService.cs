@@ -1,10 +1,12 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.ServiceModel;
 using AllocationQS.Business.Services;
 using Core.Common.Business.Services;
 using Core.Common.Contracts;
-
+using CoreEntities.Business.Entities;
+using WaterNut.DataSpace;
 
 
 namespace CoreEntities.Business.Services
@@ -16,6 +18,7 @@ namespace CoreEntities.Business.Services
                      ConcurrencyMode = ConcurrencyMode.Multiple)]
     public partial class SystemService : ISystemService, IDisposable
     {
+
 
         public bool ValidateInstallation()
         {
@@ -52,6 +55,15 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault, ex.Message);
             }
 
+        }
+
+        public void SetCurrentApplicationSettings(int applicationSettingId)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                BaseDataModel.Instance.CurrentApplicationSettings =
+                    ctx.ApplicationSettings.First(x => x.ApplicationSettingsId == applicationSettingId);
+            }
         }
 
         private static void RunCmd(string cmd)

@@ -21,7 +21,7 @@ namespace AllocationDS.Business.Entities
     {
         partial void AutoGenStartUp() //TariffCodes()
         {
-            this.InventoryItems = new List<InventoryItems>();
+            this.InventoryItemsEx = new List<InventoryItem>();
         }
 
         [DataMember]
@@ -220,9 +220,9 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<bool> _invalid;
         [DataMember]
-        public List<InventoryItems> InventoryItems { get; set; }
-        [DataMember]
         public TariffCategory TariffCategory { get; set; }
+        [DataMember]
+        public List<InventoryItem> InventoryItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

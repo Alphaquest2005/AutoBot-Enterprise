@@ -351,22 +351,6 @@ namespace AdjustmentQS.Client.DTO
         private ChangeTrackingCollection<AdjustmentEx> AdjustmentExChangeTracker { get; set; }
 
         [DataMember]
-        public InventoryItem InventoryItem
-		{
-		    get { return _InventoryItem; }
-			set
-			{
-			    if (value == _InventoryItem) return;
-				_InventoryItem = value;
-                InventoryItemChangeTracker = _InventoryItem == null ? null
-                    : new ChangeTrackingCollection<InventoryItem> { _InventoryItem };
-				NotifyPropertyChanged();//m => this.InventoryItem
-			}
-		}
-        private InventoryItem _InventoryItem;
-        private ChangeTrackingCollection<InventoryItem> InventoryItemChangeTracker { get; set; }
-
-        [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails
 		{
 		    get { return _AsycudaDocumentItemEntryDataDetails; }
@@ -394,6 +378,22 @@ namespace AdjustmentQS.Client.DTO
 		}
         private AdjustmentDetail _AdjustmentDetail;
         private ChangeTrackingCollection<AdjustmentDetail> AdjustmentDetailChangeTracker { get; set; }
+
+        [DataMember]
+        public InventoryItemsEx InventoryItemsEx
+		{
+		    get { return _InventoryItemsEx; }
+			set
+			{
+			    if (value == _InventoryItemsEx) return;
+				_InventoryItemsEx = value;
+                InventoryItemsExChangeTracker = _InventoryItemsEx == null ? null
+                    : new ChangeTrackingCollection<InventoryItemsEx> { _InventoryItemsEx };
+				NotifyPropertyChanged();//m => this.InventoryItemsEx
+			}
+		}
+        private InventoryItemsEx _InventoryItemsEx;
+        private ChangeTrackingCollection<InventoryItemsEx> InventoryItemsExChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

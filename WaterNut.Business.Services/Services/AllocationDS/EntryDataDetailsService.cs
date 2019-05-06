@@ -251,12 +251,6 @@ namespace AllocationDS.Business.Services
                                         GetWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItem":
-                                return
-                                    await
-                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "AdjustmentShortAllocations":
                                 return
                                     await
@@ -778,9 +772,6 @@ namespace AllocationDS.Business.Services
                             case "Sales":
                                 return await CountWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentShortAllocations":
                                 return await CountWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -911,12 +902,6 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Sales>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItem":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "AdjustmentShortAllocations":
@@ -1234,9 +1219,6 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Sales":
                                 return await SumWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentShortAllocations":
                                 return await SumWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")

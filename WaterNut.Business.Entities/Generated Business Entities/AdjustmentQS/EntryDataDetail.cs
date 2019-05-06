@@ -372,7 +372,7 @@ namespace AdjustmentQS.Business.Entities
         [DataMember]
         public List<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         [DataMember]
-        public InventoryItem InventoryItem { get; set; }
+        public InventoryItemsEx InventoryItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

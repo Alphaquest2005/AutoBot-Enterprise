@@ -59,11 +59,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAdjustmentShortIDChanged, OnCurrentAdjustmentShortIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentEntryDataIDChanged, OnCurrentAsycudaDocumentEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemLastItemCostIDChanged, OnCurrentAsycudaDocumentItemLastItemCostIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataIDChanged, OnCurrentAsycudaDocumentSetEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaSalesAllocationIDChanged, OnCurrentAsycudaSalesAllocationIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryDataDetailIDChanged, OnCurrentEntryDataDetailIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemIDChanged, OnCurrentInventoryItemIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliaIDChanged, OnCurrentInventoryItemAliaIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliasExIDChanged, OnCurrentInventoryItemAliasExIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemsExIDChanged, OnCurrentInventoryItemsExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentShortAllocationIDChanged, OnCurrentShortAllocationIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.Currentxcuda_ItemIDChanged, OnCurrentxcuda_ItemIDChanged);
        
@@ -75,11 +76,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<AdjustmentShort>(MessageToken.CurrentAdjustmentShortChanged, OnCurrentAdjustmentShortChanged);
                         RegisterToReceiveMessages<AsycudaDocumentEntryData>(MessageToken.CurrentAsycudaDocumentEntryDataChanged, OnCurrentAsycudaDocumentEntryDataChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetail>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailChanged, OnCurrentAsycudaDocumentItemEntryDataDetailChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentItemLastItemCost>(MessageToken.CurrentAsycudaDocumentItemLastItemCostChanged, OnCurrentAsycudaDocumentItemLastItemCostChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryData>(MessageToken.CurrentAsycudaDocumentSetEntryDataChanged, OnCurrentAsycudaDocumentSetEntryDataChanged);
                         RegisterToReceiveMessages<AsycudaSalesAllocation>(MessageToken.CurrentAsycudaSalesAllocationChanged, OnCurrentAsycudaSalesAllocationChanged);
                         RegisterToReceiveMessages<EntryDataDetail>(MessageToken.CurrentEntryDataDetailChanged, OnCurrentEntryDataDetailChanged);
-                        RegisterToReceiveMessages<InventoryItem>(MessageToken.CurrentInventoryItemChanged, OnCurrentInventoryItemChanged);
-                        RegisterToReceiveMessages<InventoryItemAlia>(MessageToken.CurrentInventoryItemAliaChanged, OnCurrentInventoryItemAliaChanged);
+                        RegisterToReceiveMessages<InventoryItemAliasEx>(MessageToken.CurrentInventoryItemAliasExChanged, OnCurrentInventoryItemAliasExChanged);
+                        RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
                         RegisterToReceiveMessages<ShortAllocation>(MessageToken.CurrentShortAllocationChanged, OnCurrentShortAllocationChanged);
                         RegisterToReceiveMessages<xcuda_Item>(MessageToken.Currentxcuda_ItemChanged, OnCurrentxcuda_ItemChanged);
     
@@ -263,6 +265,33 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentAsycudaDocumentItemLastItemCostIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaDocumentItemLastItemCostRepository ctx = new AsycudaDocumentItemLastItemCostRepository())
+                            {
+                                CurrentAsycudaDocumentItemLastItemCost = await ctx.GetAsycudaDocumentItemLastItemCost(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaDocumentItemLastItemCost);
+                        }
+
+                        private  string _currentAsycudaDocumentItemLastItemCostID = "";
+                        public string CurrentAsycudaDocumentItemLastItemCostID
+                        {
+                            get
+                            {
+                                return _currentAsycudaDocumentItemLastItemCostID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaDocumentItemLastItemCostID != value)
+                                {
+                                    _currentAsycudaDocumentItemLastItemCostID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaDocumentItemLastItemCostID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentItemLastItemCostIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentItemLastItemCostIDChanged, _currentAsycudaDocumentItemLastItemCostID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentItemLastItemCostID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentAsycudaDocumentSetEntryDataIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (AsycudaDocumentSetEntryDataRepository ctx = new AsycudaDocumentSetEntryDataRepository())
@@ -344,57 +373,57 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentInventoryItemIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentInventoryItemAliasExIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (InventoryItemRepository ctx = new InventoryItemRepository())
+                            using (InventoryItemAliasExRepository ctx = new InventoryItemAliasExRepository())
                             {
-                                CurrentInventoryItem = await ctx.GetInventoryItem(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentInventoryItemAliasEx = await ctx.GetInventoryItemAliasEx(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentInventoryItem);
+                            NotifyPropertyChanged(m => CurrentInventoryItemAliasEx);
                         }
 
-                        private  string _currentInventoryItemID = "";
-                        public string CurrentInventoryItemID
+                        private  string _currentInventoryItemAliasExID = "";
+                        public string CurrentInventoryItemAliasExID
                         {
                             get
                             {
-                                return _currentInventoryItemID;
+                                return _currentInventoryItemAliasExID;
                             }
                             set
                             {
-                                if (_currentInventoryItemID != value)
+                                if (_currentInventoryItemAliasExID != value)
                                 {
-                                    _currentInventoryItemID = value;
-                                    if (!string.IsNullOrEmpty(_currentInventoryItemID)) BeginSendMessage(MessageToken.CurrentInventoryItemIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentInventoryItemIDChanged, _currentInventoryItemID));
-                                    NotifyPropertyChanged(x => this.CurrentInventoryItemID);  
+                                    _currentInventoryItemAliasExID = value;
+                                    if (!string.IsNullOrEmpty(_currentInventoryItemAliasExID)) BeginSendMessage(MessageToken.CurrentInventoryItemAliasExIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentInventoryItemAliasExIDChanged, _currentInventoryItemAliasExID));
+                                    NotifyPropertyChanged(x => this.CurrentInventoryItemAliasExID);  
                                 }
                             }
                         }
-                        internal async void OnCurrentInventoryItemAliaIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentInventoryItemsExIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (InventoryItemAliaRepository ctx = new InventoryItemAliaRepository())
+                            using (InventoryItemsExRepository ctx = new InventoryItemsExRepository())
                             {
-                                CurrentInventoryItemAlia = await ctx.GetInventoryItemAlia(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentInventoryItemsEx = await ctx.GetInventoryItemsEx(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentInventoryItemAlia);
+                            NotifyPropertyChanged(m => CurrentInventoryItemsEx);
                         }
 
-                        private  string _currentInventoryItemAliaID = "";
-                        public string CurrentInventoryItemAliaID
+                        private  string _currentInventoryItemsExID = "";
+                        public string CurrentInventoryItemsExID
                         {
                             get
                             {
-                                return _currentInventoryItemAliaID;
+                                return _currentInventoryItemsExID;
                             }
                             set
                             {
-                                if (_currentInventoryItemAliaID != value)
+                                if (_currentInventoryItemsExID != value)
                                 {
-                                    _currentInventoryItemAliaID = value;
-                                    if (!string.IsNullOrEmpty(_currentInventoryItemAliaID)) BeginSendMessage(MessageToken.CurrentInventoryItemAliaIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentInventoryItemAliaIDChanged, _currentInventoryItemAliaID));
-                                    NotifyPropertyChanged(x => this.CurrentInventoryItemAliaID);  
+                                    _currentInventoryItemsExID = value;
+                                    if (!string.IsNullOrEmpty(_currentInventoryItemsExID)) BeginSendMessage(MessageToken.CurrentInventoryItemsExIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentInventoryItemsExIDChanged, _currentInventoryItemsExID));
+                                    NotifyPropertyChanged(x => this.CurrentInventoryItemsExID);  
                                 }
                             }
                         }
@@ -483,6 +512,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     // all current navigation properties = null
                  CurrentAdjustmentShort = null;
                  CurrentAdjustmentOver = null;
+                 CurrentAsycudaDocumentItemEntryDataDetail = null;
+                 CurrentShortAllocation = null;
    
                 }
             }
@@ -771,6 +802,56 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                      
        
 
+        internal void OnCurrentAsycudaDocumentItemLastItemCostChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItemLastItemCost> e)
+        {
+            //CurrentAsycudaDocumentItemLastItemCost = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaDocumentItemLastItemCost);
+        }
+
+        private  AsycudaDocumentItemLastItemCost _currentAsycudaDocumentItemLastItemCost;
+        public AsycudaDocumentItemLastItemCost CurrentAsycudaDocumentItemLastItemCost
+        {
+            get
+            {
+                return _currentAsycudaDocumentItemLastItemCost;
+            }
+            set
+            {
+                if (_currentAsycudaDocumentItemLastItemCost != value)
+                {
+                    _currentAsycudaDocumentItemLastItemCost = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaDocumentItemLastItemCostChanged,
+                                                     new NotificationEventArgs<AsycudaDocumentItemLastItemCost>(MessageToken.CurrentAsycudaDocumentItemLastItemCostChanged, _currentAsycudaDocumentItemLastItemCost)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentItemLastItemCost);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaDocumentItemLastItemCost> _vcurrentAsycudaDocumentItemLastItemCost;
+        public VirtualListItem<AsycudaDocumentItemLastItemCost> VCurrentAsycudaDocumentItemLastItemCost
+        {
+            get
+            {
+                return _vcurrentAsycudaDocumentItemLastItemCost;
+            }
+            set
+            {
+                if (_vcurrentAsycudaDocumentItemLastItemCost != value)
+                {
+                    _vcurrentAsycudaDocumentItemLastItemCost = value;
+					if(_vcurrentAsycudaDocumentItemLastItemCost != null) CurrentAsycudaDocumentItemLastItemCost = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentItemLastItemCost);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentAsycudaDocumentSetEntryDataChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEntryData> e)
         {
             //CurrentAsycudaDocumentSetEntryData = e.Data;
@@ -922,100 +1003,50 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                      
        
 
-        internal void OnCurrentInventoryItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItem> e)
+        internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
         {
-            //CurrentInventoryItem = e.Data;
-            NotifyPropertyChanged(m => this.CurrentInventoryItem);
+            //CurrentInventoryItemsEx = e.Data;
+            NotifyPropertyChanged(m => this.CurrentInventoryItemsEx);
         }
 
-        private  InventoryItem _currentInventoryItem;
-        public InventoryItem CurrentInventoryItem
+        private  InventoryItemsEx _currentInventoryItemsEx;
+        public InventoryItemsEx CurrentInventoryItemsEx
         {
             get
             {
-                return _currentInventoryItem;
+                return _currentInventoryItemsEx;
             }
             set
             {
-                if (_currentInventoryItem != value)
+                if (_currentInventoryItemsEx != value)
                 {
-                    _currentInventoryItem = value;
-                    BeginSendMessage(MessageToken.CurrentInventoryItemChanged,
-                                                     new NotificationEventArgs<InventoryItem>(MessageToken.CurrentInventoryItemChanged, _currentInventoryItem)); 
-                    NotifyPropertyChanged(x => this.CurrentInventoryItem);    
+                    _currentInventoryItemsEx = value;
+                    BeginSendMessage(MessageToken.CurrentInventoryItemsExChanged,
+                                                     new NotificationEventArgs<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, _currentInventoryItemsEx)); 
+                    NotifyPropertyChanged(x => this.CurrentInventoryItemsEx);    
                     // all current navigation properties = null
-                 CurrentAdjustmentOver = null;
+                 CurrentInventoryItemAliasEx = null;
                  CurrentEntryDataDetail = null;
-                 CurrentInventoryItemAlia = null;
+                 CurrentAdjustmentOver = null;
    
                 }
             }
         }
 
-		VirtualListItem<InventoryItem> _vcurrentInventoryItem;
-        public VirtualListItem<InventoryItem> VCurrentInventoryItem
+		VirtualListItem<InventoryItemsEx> _vcurrentInventoryItemsEx;
+        public VirtualListItem<InventoryItemsEx> VCurrentInventoryItemsEx
         {
             get
             {
-                return _vcurrentInventoryItem;
+                return _vcurrentInventoryItemsEx;
             }
             set
             {
-                if (_vcurrentInventoryItem != value)
+                if (_vcurrentInventoryItemsEx != value)
                 {
-                    _vcurrentInventoryItem = value;
-					if(_vcurrentInventoryItem != null) CurrentInventoryItem = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentInventoryItem);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentInventoryItemAliaChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemAlia> e)
-        {
-            //CurrentInventoryItemAlia = e.Data;
-            NotifyPropertyChanged(m => this.CurrentInventoryItemAlia);
-        }
-
-        private  InventoryItemAlia _currentInventoryItemAlia;
-        public InventoryItemAlia CurrentInventoryItemAlia
-        {
-            get
-            {
-                return _currentInventoryItemAlia;
-            }
-            set
-            {
-                if (_currentInventoryItemAlia != value)
-                {
-                    _currentInventoryItemAlia = value;
-                    BeginSendMessage(MessageToken.CurrentInventoryItemAliaChanged,
-                                                     new NotificationEventArgs<InventoryItemAlia>(MessageToken.CurrentInventoryItemAliaChanged, _currentInventoryItemAlia)); 
-                    NotifyPropertyChanged(x => this.CurrentInventoryItemAlia);    
-                    // all current navigation properties = null
-   
-                }
-            }
-        }
-
-		VirtualListItem<InventoryItemAlia> _vcurrentInventoryItemAlia;
-        public VirtualListItem<InventoryItemAlia> VCurrentInventoryItemAlia
-        {
-            get
-            {
-                return _vcurrentInventoryItemAlia;
-            }
-            set
-            {
-                if (_vcurrentInventoryItemAlia != value)
-                {
-                    _vcurrentInventoryItemAlia = value;
-					if(_vcurrentInventoryItemAlia != null) CurrentInventoryItemAlia = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentInventoryItemAlia);                    
+                    _vcurrentInventoryItemsEx = value;
+					if(_vcurrentInventoryItemsEx != null) CurrentInventoryItemsEx = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentInventoryItemsEx);                    
                 }
             }
         }

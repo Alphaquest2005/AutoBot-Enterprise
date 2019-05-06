@@ -35,6 +35,21 @@ namespace AllocationDS.Business.Entities
         }
         int _aliasid;
         [DataMember]
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
+        [DataMember]
         public string ItemNumber 
         {
             get
@@ -65,7 +80,22 @@ namespace AllocationDS.Business.Entities
         }
         string _aliasname;
         [DataMember]
-        public InventoryItems InventoryItems { get; set; }
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
+        public InventoryItem InventoryItem { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

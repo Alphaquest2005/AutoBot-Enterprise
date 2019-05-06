@@ -233,10 +233,10 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
+                            case "InventoryItem":
                                 return
                                     await
-                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany", includesLst)
+                                        GetWhere<InventoryItem>(dbContext, exp, itm.Value, "InventoryItemAliasEx", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -733,8 +733,8 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
+                            case "InventoryItem":
+                                return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "InventoryItemAliasEx", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -841,10 +841,10 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
+                            case "InventoryItem":
                                 return
                                     await
-                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
+                                        LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemAliasEx", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1051,7 +1051,65 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<InventoryItemAlias> entities = await set//dbContext.InventoryItemAlias
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<InventoryItemAlias> entities = await set//dbContext.InventoryItemAlias
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1104,8 +1162,8 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", field, "SelectMany")
+                            case "InventoryItem":
+                                return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "InventoryItemAliasEx", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

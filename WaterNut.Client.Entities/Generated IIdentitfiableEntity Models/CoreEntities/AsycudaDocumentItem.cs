@@ -66,44 +66,6 @@ namespace CoreEntities.Client.Entities
             }
 
       }
-        public string InventoryItemsEntityName
-        {
-            get
-            {
-                return this.InventoryItems == null ? "" : this.InventoryItems.EntityName;
-            }
-            set
-            {
-                                if (string.IsNullOrEmpty(value)) return;
-                string[] vals = value.Split(',');
-               
-                    using (InventoryItemsClient ctx = new InventoryItemsClient())
-                    {
-                        var dto = ctx.GetInventoryItems().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
-                        
-
-                        if ( dto == null)
-                        {
-                            this.InventoryItems = (InventoryItems)new InventoryItems().CreateEntityFromString(value);
-							
-							this.Item_Id = Convert.ToInt32(this.InventoryItems.ItemNumber);
-                            this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddInventoryItems");
-                        }
-                        else
-                        {
-                            var obj = new InventoryItems(dto);
-                           if (this.InventoryItems == null || this.InventoryItems.EntityId != obj.EntityId) this.InventoryItems = obj;
-                           
-                        }
-                         
-
-
-                    }
-            
-            }
-
-      }
         public string ApplicationSettingsEntityName
         {
             get
@@ -124,7 +86,7 @@ namespace CoreEntities.Client.Entities
                         {
                             this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
 							
-							this.ApplicationSettingsId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
+							this.Item_Id = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddApplicationSettings");
                         }
@@ -132,6 +94,44 @@ namespace CoreEntities.Client.Entities
                         {
                             var obj = new ApplicationSettings(dto);
                            if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string InventoryItemsExEntityName
+        {
+            get
+            {
+                return this.InventoryItemsEx == null ? "" : this.InventoryItemsEx.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (InventoryItemXClient ctx = new InventoryItemXClient())
+                    {
+                        var dto = ctx.GetInventoryItemX().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.InventoryItemsEx = (InventoryItemX)new InventoryItemX().CreateEntityFromString(value);
+							
+							this.Item_Id = Convert.ToInt32(this.InventoryItemsEx.ItemNumber);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddInventoryItemsEx");
+                        }
+                        else
+                        {
+                            var obj = new InventoryItemX(dto);
+                           if (this.InventoryItemsEx == null || this.InventoryItemsEx.EntityId != obj.EntityId) this.InventoryItemsEx = obj;
                            
                         }
                          

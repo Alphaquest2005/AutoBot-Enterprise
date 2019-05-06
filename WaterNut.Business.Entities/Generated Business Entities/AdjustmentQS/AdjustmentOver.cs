@@ -387,11 +387,11 @@ namespace AdjustmentQS.Business.Entities
         [DataMember]
         public AdjustmentEx AdjustmentEx { get; set; }
         [DataMember]
-        public InventoryItem InventoryItem { get; set; }
-        [DataMember]
         public List<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
         [DataMember]
         public AdjustmentDetail AdjustmentDetail { get; set; }
+        [DataMember]
+        public InventoryItemsEx InventoryItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

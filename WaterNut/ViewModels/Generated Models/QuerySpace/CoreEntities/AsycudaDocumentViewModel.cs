@@ -53,6 +53,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
+ 
+			RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -139,6 +141,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(AsycudaDocumentSetExs.Contains(CurrentAsycudaDocument.AsycudaDocumentSetEx) == false) AsycudaDocumentSetExs.Add(CurrentAsycudaDocument.AsycudaDocumentSetEx);
                     //}
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentAsycudaDocument.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaDocument.ApplicationSettings);
+                    //}
                     //if (e.PropertyName == "AddCustoms_Procedure")
                    // {
                    //    if(Customs_Procedure.Contains(CurrentAsycudaDocument.Customs_Procedure) == false) Customs_Procedure.Add(CurrentAsycudaDocument.Customs_Procedure);
@@ -146,10 +152,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     //if (e.PropertyName == "AddDocument_Type")
                    // {
                    //    if(Document_Type.Contains(CurrentAsycudaDocument.Document_Type) == false) Document_Type.Add(CurrentAsycudaDocument.Document_Type);
-                    //}
-                    //if (e.PropertyName == "AddApplicationSettings")
-                   // {
-                   //    if(ApplicationSettings.Contains(CurrentAsycudaDocument.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaDocument.ApplicationSettings);
                     //}
                  } 
         internal void OnAsycudaDocumentsChanged(object sender, NotificationEventArgs e)
@@ -170,6 +172,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 else
                 {
 				vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.AsycudaDocumentSetId.ToString());
+                 }
+
+				AsycudaDocuments.Refresh();
+				NotifyPropertyChanged(x => this.AsycudaDocuments);
+                // SendMessage(MessageToken.AsycudaDocumentsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentsChanged));
+                                          
+                BaseViewModel.Instance.CurrentAsycudaDocument = null;
+			}
+	
+		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+			{
+			if(ViewCurrentApplicationSettings == false) return;
+			if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
                  }
 
 				AsycudaDocuments.Refresh();
@@ -209,20 +230,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AsycudaDocuments.Refresh();
 					NotifyPropertyChanged(x => this.AsycudaDocuments);
 				}
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
-				{
-				if (e.Data == null || e.Data.ApplicationSettingsId == null)
-                {
-                    vloader.FilterExpression = null;
-                }
-                else
-                {
-                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
-                }
-					
-                    AsycudaDocuments.Refresh();
-					NotifyPropertyChanged(x => this.AsycudaDocuments);
-				}
   
 // Filtering Each Field except IDs
  	
@@ -237,6 +244,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentAsycudaDocumentSetEx = value;
                  NotifyPropertyChanged(x => x.ViewCurrentAsycudaDocumentSetEx);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentApplicationSettings = false;
+         public bool ViewCurrentApplicationSettings
+         {
+             get
+             {
+                 return _viewCurrentApplicationSettings;
+             }
+             set
+             {
+                 _viewCurrentApplicationSettings = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentApplicationSettings);
                 FilterData();
              }
          }

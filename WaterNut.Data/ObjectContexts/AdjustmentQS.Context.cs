@@ -47,8 +47,6 @@ namespace AdjustmentQS.Business.Entities
             if (StartTracking == true) ((dynamic)e.Entity).StartTracking();
         }
 
-        public DbSet<InventoryItem> InventoryItems { get; set; }
-     
         public DbSet<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
      
         public DbSet<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas { get; set; }
@@ -67,18 +65,20 @@ namespace AdjustmentQS.Business.Entities
      
         public DbSet<xcuda_Item> xcuda_Item { get; set; }
      
-        public DbSet<InventoryItemAlia> InventoryItemAlias { get; set; }
-     
         public DbSet<AdjustmentDetail> AdjustmentDetails { get; set; }
      
         public DbSet<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
+     
+        public DbSet<AsycudaDocumentItemLastItemCost> AsycudaDocumentItemLastItemCosts { get; set; }
+     
+        public DbSet<InventoryItemAliasEx> InventoryItemAliasExes { get; set; }
+     
+        public DbSet<InventoryItemsEx> InventoryItemsExes { get; set; }
      
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.Add(new InventoryItemMap());
-         
             modelBuilder.Configurations.Add(new AsycudaSalesAllocationMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentEntryDataMap());
@@ -97,11 +97,15 @@ namespace AdjustmentQS.Business.Entities
          
             modelBuilder.Configurations.Add(new xcuda_ItemMap());
          
-            modelBuilder.Configurations.Add(new InventoryItemAliaMap());
-         
             modelBuilder.Configurations.Add(new AdjustmentDetailMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentItemEntryDataDetailMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentItemLastItemCostMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemAliasExMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemsExMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

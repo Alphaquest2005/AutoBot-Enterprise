@@ -15,6 +15,7 @@ using WaterNut.QuerySpace.PreviousDocumentQS.ViewModels;
 using AsycudaDocumentItem = CoreEntities.Client.Entities.AsycudaDocumentItem;
 using System.Data.Entity;
 using Core.Common.UI.DataVirtualization;
+using CoreEntities.Client.Entities;
 
 namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 {
@@ -63,13 +64,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             RegisterToReceiveMessages<PreviousDocument>(PreviousDocumentQS.MessageToken.CurrentPreviousDocumentChanged, OnCurrentPreviousDocumentChanged);
             RegisterToReceiveMessages<AsycudaSalesAndAdjustmentAllocationsEx>(MessageToken.CurrentAsycudaSalesAllocationsExChanged, OnCurrentAsycudaSalesAllocationsExChanged1);
             RegisterToReceiveMessages<AsycudaDocumentItem>(CoreEntities.MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
-            RegisterToReceiveMessages<AsycudaDocumentItem>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+            RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
 
 
             this.PropertyChanged += AllocationsModel_PropertyChanged;
         }
 
-        private void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<AsycudaDocumentItem> e)
+        private void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<ApplicationSettings> e)
         {
             FilterData();
             
@@ -664,14 +665,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             var res = MessageBox.Show("Clear Allocations?", "Delete Existing Sales Allocations", MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
-                await AsycudaSalesAllocationsExRepository.Instance.ClearAllocations().ConfigureAwait(false);
+                await AsycudaSalesAllocationsExRepository.Instance.ClearAllocations(CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 
             }
             
 
             await AsycudaSalesAllocationsExRepository.Instance.AllocateSales(
-                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings
-                    .ItemDescriptionContainsAsycudaAttribute.GetValueOrDefault(), allocateToLastAdjustment).ConfigureAwait(false);
+                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings, allocateToLastAdjustment).ConfigureAwait(false);
 
             MessageBus.Default.BeginNotify(MessageToken.AsycudaSalesAllocationsExsChanged, null,
                         new NotificationEventArgs(MessageToken.AsycudaSalesAllocationsExsChanged));

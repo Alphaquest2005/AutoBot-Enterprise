@@ -233,16 +233,16 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return
-                                    await
-                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "TariffCodes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "TariffCategory":
                                 return
                                     await
                                         GetWhere<TariffCategory>(dbContext, exp, itm.Value, "TariffCodes", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItemsEx":
+                                return
+                                    await
+                                        GetWhere<InventoryItem>(dbContext, exp, itm.Value, "TariffCodes", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -739,11 +739,11 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "TariffCodes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "TariffCategory":
                                 return await CountWhere<TariffCategory>(dbContext, exp, itm.Value, "TariffCodes", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemsEx":
+                                return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "TariffCodes", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -850,16 +850,16 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "TariffCodes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "TariffCategory":
                                 return
                                     await
                                         LoadRangeWhere<TariffCategory>(startIndex, count, dbContext, exp, itm.Value, "TariffCodes", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItemsEx":
+                                return
+                                    await
+                                        LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "TariffCodes", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1119,11 +1119,11 @@ namespace AllocationDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems":
-                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "TariffCodes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "TariffCategory":
                                 return await SumWhere<TariffCategory>(dbContext, exp, itm.Value, "TariffCodes", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemsEx":
+                                return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "TariffCodes", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -378,8 +378,6 @@ namespace AllocationDS.Business.Entities
         [DataMember]
         public Sales Sales { get; set; }
         [DataMember]
-        public InventoryItems InventoryItem { get; set; }
-        [DataMember]
         public List<AdjustmentShortAllocations> AdjustmentShortAllocations { get; set; }
         [DataMember]
         public Adjustments Adjustments { get; set; }

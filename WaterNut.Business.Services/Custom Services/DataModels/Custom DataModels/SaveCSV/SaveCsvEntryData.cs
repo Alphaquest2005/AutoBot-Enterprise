@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Core.Common.CSV;
+using Core.Common.Utils;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
@@ -253,7 +254,7 @@ namespace WaterNut.DataSpace
                             await ctx.CreateEntryDataDetails(new EntryDataDetails(true)
                             {
                                 EntryDataId = e.EntryDataId,
-                                ItemNumber = e.ItemNumber,
+                                ItemNumber = e.ItemNumber.Truncate(20),
                                 ItemDescription = e.ItemDescription,
                                 Quantity = e.Quantity,
                                 Cost = e.Cost,
@@ -282,7 +283,7 @@ namespace WaterNut.DataSpace
                            var inventoryItem = ctx.InventoryItems
                                .Include("InventoryItemAlias")
                                .First(x => x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId &&
-                                           x.ItemNumber == item.InventoryItems.First().ItemNumber);
+                                           x.ItemNumber == e.ItemNumber);
                            if (inventoryItem == null) continue;
                            {
                                if (inventoryItem.InventoryItemAlias.FirstOrDefault(x => x.AliasName == e.ItemAlias) ==
@@ -291,7 +292,7 @@ namespace WaterNut.DataSpace
                                    inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
                                    {
                                        InventoryItemId = inventoryItem.Id,
-                                       AliasName = e.ItemAlias,
+                                       AliasName = e.ItemAlias.Truncate(20),
 
                                    });
                                     
@@ -620,7 +621,7 @@ namespace WaterNut.DataSpace
                         {
                             ApplicationSettingsId = docSet.ApplicationSettingsId,
                             Description = item.ItemDescription,
-                            ItemNumber = item.ItemNumber,
+                            ItemNumber = item.ItemNumber.Truncate(20),
                            TrackingState = TrackingState.Added
                         };
                         if (!string.IsNullOrEmpty(item.TariffCode)) i.TariffCode = item.TariffCode;

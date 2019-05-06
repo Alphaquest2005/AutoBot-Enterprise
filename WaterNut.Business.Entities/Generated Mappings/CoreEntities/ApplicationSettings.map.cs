@@ -48,8 +48,10 @@
               this.Property(t => t.DataFolder).HasColumnName("DataFolder").HasMaxLength(999);
               this.Property(t => t.CompanyName).HasColumnName("CompanyName").HasMaxLength(50);
               this.Property(t => t.IsActive).HasColumnName("IsActive");
-              this.HasMany(t => t.InventoryItems).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
-              this.HasMany(t => t.AsycudaDocumentSetEx).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
+              this.HasMany(t => t.AsycudaDocumentSetEx).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
+              this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
+              this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
+              this.HasMany(t => t.InventoryItemsEx).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

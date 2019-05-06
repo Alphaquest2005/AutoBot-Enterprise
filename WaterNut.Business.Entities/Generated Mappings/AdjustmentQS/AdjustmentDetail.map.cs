@@ -45,6 +45,8 @@
               this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<AdjustmentDetail>) t.AdjustmentDetails).HasForeignKey(d => d.EntryDataId);
               this.HasOptional(t => t.AdjustmentShorts).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
               this.HasOptional(t => t.AdjustmentOvers).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
+              this.HasMany(t => t.AsycudaDocumentItemEntryDataDetails).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
+              this.HasMany(t => t.ShortAllocations).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

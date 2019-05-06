@@ -220,29 +220,61 @@ namespace WaterNut.DataSpace
             await ClearAllocations(lst).ConfigureAwait(false);
         }
 
-        public async Task ClearAllAllocations()
+        public async Task ClearAllAllocations(int appSettingsId)
         {
-            StatusModel.Timer("Clear All Existing Allocations");
-
-            using (var ctx = new AllocationDSContext())
+            try
             {
-               await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction,
-                    @"delete from AsycudaSalesAllocations
-
-                update xcuda_Item
-                set DFQtyAllocated = 0, DPQtyAllocated = 0
 
 
-                update EntryDataDetails
-                set QtyAllocated = 0, [Status] = null, EffectiveDate = null
+                StatusModel.Timer("Clear All Existing Allocations");
 
-                update xcuda_PreviousItem
-                set QtyAllocated = 0
+                using (var ctx = new AllocationDSContext())
+                {
+                    await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction,
+                        $@"DELETE FROM AsycudaSalesAllocations
+FROM    AsycudaSalesAllocations INNER JOIN
+                 EntryDataDetails ON AsycudaSalesAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
+                 EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId
+WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
 
-                update SubItems
-                set QtyAllocated = 0").ConfigureAwait(false);
+UPDATE xcuda_Item
+SET         DFQtyAllocated = 0, DPQtyAllocated = 0
+FROM    xcuda_ASYCUDA_ExtendedProperties INNER JOIN
+                 AsycudaDocumentSet ON xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = AsycudaDocumentSet.AsycudaDocumentSetId INNER JOIN
+                 xcuda_Item ON xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id = xcuda_Item.ASYCUDA_Id
+WHERE (AsycudaDocumentSet.ApplicationSettingsId = {appSettingsId})
+
+
+UPDATE EntryDataDetails
+SET         QtyAllocated = 0, Status = NULL, EffectiveDate = NULL
+FROM    EntryDataDetails INNER JOIN
+                 EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId
+WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
+
+UPDATE xcuda_PreviousItem
+SET         QtyAllocated = 0
+FROM    xcuda_ASYCUDA_ExtendedProperties INNER JOIN
+                 AsycudaDocumentSet ON xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = AsycudaDocumentSet.AsycudaDocumentSetId INNER JOIN
+                 xcuda_PreviousItem ON xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id = xcuda_PreviousItem.ASYCUDA_Id
+WHERE (AsycudaDocumentSet.ApplicationSettingsId = {appSettingsId})
+
+UPDATE SubItems
+SET         QtyAllocated = 0
+FROM    xcuda_Item INNER JOIN
+                 SubItems ON xcuda_Item.Item_Id = SubItems.Item_Id INNER JOIN
+                 AsycudaDocumentSet INNER JOIN
+                 xcuda_ASYCUDA_ExtendedProperties ON AsycudaDocumentSet.AsycudaDocumentSetId = xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId ON 
+                 xcuda_Item.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id
+WHERE (AsycudaDocumentSet.ApplicationSettingsId = {appSettingsId})").ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
+
 
 
         public  async Task ClearAllocations(IEnumerable<AsycudaSalesAllocations> alst)

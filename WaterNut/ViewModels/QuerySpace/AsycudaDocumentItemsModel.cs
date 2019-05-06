@@ -25,6 +25,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             instance = new AsycudaDocumentItemsModel()
             {
                 ViewCurrentAsycudaDocument = true,
+                ViewCurrentApplicationSettings = true,
                 StartRegistrationDateFilter = DateTime.MinValue,
                 EndRegistrationDateFilter = DateTime.MinValue
             };
@@ -165,6 +166,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
             var res = GetAutoPropertyFilterString();
             var navexp = new StringBuilder();
+
             if (ViewIM7 == true)
             {
                 navexp.Append("|| DocumentType == \"IM7\" || DocumentType == \"OS7\"");

@@ -245,6 +245,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "AsycudaDocuments", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ApplicationSettings":
+                                return
+                                    await
+                                        GetWhere<ApplicationSettings>(dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -745,6 +751,9 @@ namespace CoreEntities.Business.Services
                             case "AsycudaDocumentSetEx":
                                 return await CountWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "AsycudaDocuments", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ApplicationSettings":
+                                return await CountWhere<ApplicationSettings>(dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocuments.Where(exp == "All" || exp == null ? "ASYCUDA_Id != null" : exp)
@@ -860,6 +869,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AsycudaDocumentSetEx>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocuments", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ApplicationSettings":
+                                return
+                                    await
+                                        LoadRangeWhere<ApplicationSettings>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1244,6 +1259,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentSetEx":
                                 return await SumWhere<AsycudaDocumentSetEx>(dbContext, exp, itm.Value, "AsycudaDocuments", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ApplicationSettings":
+                                return await SumWhere<ApplicationSettings>(dbContext, exp, itm.Value, "AsycudaDocument", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

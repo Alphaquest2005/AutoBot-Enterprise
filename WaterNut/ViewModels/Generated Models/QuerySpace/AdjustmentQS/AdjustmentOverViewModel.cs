@@ -56,12 +56,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 			RegisterToReceiveMessages<AdjustmentEx>(MessageToken.CurrentAdjustmentExChanged, OnCurrentAdjustmentExChanged);
  
-			RegisterToReceiveMessages<InventoryItem>(MessageToken.CurrentInventoryItemChanged, OnCurrentInventoryItemChanged);
- 
 			RegisterToReceiveMessages<AdjustmentDetail>(MessageToken.CurrentAdjustmentDetailChanged, OnCurrentAdjustmentDetailChanged);
+ 
+			RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
 
  			// Recieve messages for Core Current Entities Changed
-                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			AdjustmentOvers = new VirtualList<AdjustmentOver>(vloader);
@@ -146,17 +145,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(AdjustmentExes.Contains(CurrentAdjustmentOver.AdjustmentEx) == false) AdjustmentExes.Add(CurrentAdjustmentOver.AdjustmentEx);
                     //}
-                    //if (e.PropertyName == "AddInventoryItem")
-                   // {
-                   //    if(InventoryItems.Contains(CurrentAdjustmentOver.InventoryItem) == false) InventoryItems.Add(CurrentAdjustmentOver.InventoryItem);
-                    //}
                     //if (e.PropertyName == "AddAdjustmentDetail")
                    // {
                    //    if(AdjustmentDetails.Contains(CurrentAdjustmentOver.AdjustmentDetail) == false) AdjustmentDetails.Add(CurrentAdjustmentOver.AdjustmentDetail);
                     //}
-                    //if (e.PropertyName == "AddApplicationSettings")
+                    //if (e.PropertyName == "AddInventoryItemsEx")
                    // {
-                   //    if(ApplicationSettings.Contains(CurrentAdjustmentOver.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAdjustmentOver.ApplicationSettings);
+                   //    if(InventoryItemsExes.Contains(CurrentAdjustmentOver.InventoryItemsEx) == false) InventoryItemsExes.Add(CurrentAdjustmentOver.InventoryItemsEx);
                     //}
                  } 
         internal void OnAdjustmentOversChanged(object sender, NotificationEventArgs e)
@@ -185,24 +180,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 // SendMessage(MessageToken.AdjustmentOversChanged, new NotificationEventArgs(MessageToken.AdjustmentOversChanged));
                 			}
 	
-		 internal void OnCurrentInventoryItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItem> e)
-			{
-			if(ViewCurrentInventoryItem == false) return;
-			if (e.Data == null || e.Data.ItemNumber == null)
-                {
-                    vloader.FilterExpression = "None";
-                }
-                else
-                {
-				
-				vloader.FilterExpression = string.Format("ItemNumber == \"{0}\"", e.Data.ItemNumber.ToString());
-                }
-
-				AdjustmentOvers.Refresh();
-				NotifyPropertyChanged(x => this.AdjustmentOvers);
-                // SendMessage(MessageToken.AdjustmentOversChanged, new NotificationEventArgs(MessageToken.AdjustmentOversChanged));
-                			}
-	
 		 internal void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
 			{
 			if(ViewCurrentAdjustmentDetail == false) return;
@@ -219,23 +196,27 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 				NotifyPropertyChanged(x => this.AdjustmentOvers);
                 // SendMessage(MessageToken.AdjustmentOversChanged, new NotificationEventArgs(MessageToken.AdjustmentOversChanged));
                 			}
-
-  			// Core Current Entities Changed
-			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
-				{
-				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+	
+		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
+			{
+			if(ViewCurrentInventoryItemsEx == false) return;
+			if (e.Data == null || e.Data.ItemNumber == null)
                 {
-                    vloader.FilterExpression = null;
+                    vloader.FilterExpression = "None";
                 }
                 else
                 {
-                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+				
+				vloader.FilterExpression = string.Format("ItemNumber == \"{0}\"", e.Data.ItemNumber.ToString());
                 }
-					
-                    AdjustmentOvers.Refresh();
-					NotifyPropertyChanged(x => this.AdjustmentOvers);
-				}
+
+				AdjustmentOvers.Refresh();
+				NotifyPropertyChanged(x => this.AdjustmentOvers);
+                // SendMessage(MessageToken.AdjustmentOversChanged, new NotificationEventArgs(MessageToken.AdjustmentOversChanged));
+                			}
+
+  			// Core Current Entities Changed
+			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
   
 // Filtering Each Field except IDs
  	
@@ -254,21 +235,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
              }
          }
  	
-		 bool _viewCurrentInventoryItem = false;
-         public bool ViewCurrentInventoryItem
-         {
-             get
-             {
-                 return _viewCurrentInventoryItem;
-             }
-             set
-             {
-                 _viewCurrentInventoryItem = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentInventoryItem);
-                FilterData();
-             }
-         }
- 	
 		 bool _viewCurrentAdjustmentDetail = false;
          public bool ViewCurrentAdjustmentDetail
          {
@@ -280,6 +246,21 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
              {
                  _viewCurrentAdjustmentDetail = value;
                  NotifyPropertyChanged(x => x.ViewCurrentAdjustmentDetail);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentInventoryItemsEx = false;
+         public bool ViewCurrentInventoryItemsEx
+         {
+             get
+             {
+                 return _viewCurrentInventoryItemsEx;
+             }
+             set
+             {
+                 _viewCurrentInventoryItemsEx = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentInventoryItemsEx);
                 FilterData();
              }
          }

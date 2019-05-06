@@ -14,18 +14,11 @@ using System.Collections.ObjectModel;
 namespace WaterNut.Interfaces
 {
 
-		public partial interface IInventoryItem //AdjustmentQS|InventoryItem
+		public partial interface IInventoryItem //InventoryDS|InventoryItem
 		{
 		String ItemNumber {get;set;}
 				String Description {get;set;}
 				String TariffCode {get;set;}
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		

@@ -204,7 +204,9 @@ namespace AdjustmentQS.Client.Repositories
                     {
                   // AdjustmentEx = (res.AdjustmentEx != null?new AdjustmentEx(res.AdjustmentEx): null),    
                   // AdjustmentShorts = (res.AdjustmentShorts != null?new AdjustmentShort(res.AdjustmentShorts): null),    
-                  // AdjustmentOvers = (res.AdjustmentOvers != null?new AdjustmentOver(res.AdjustmentOvers): null)    
+                  // AdjustmentOvers = (res.AdjustmentOvers != null?new AdjustmentOver(res.AdjustmentOvers): null),    
+                     // AsycudaDocumentItemEntryDataDetails = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItemEntryDataDetail>(res.AsycudaDocumentItemEntryDataDetails.Select(y => new AsycudaDocumentItemEntryDataDetail(y))),    
+                     // ShortAllocations = new System.Collections.ObjectModel.ObservableCollection<ShortAllocation>(res.ShortAllocations.Select(y => new ShortAllocation(y)))    
                   };
                     }
                     else

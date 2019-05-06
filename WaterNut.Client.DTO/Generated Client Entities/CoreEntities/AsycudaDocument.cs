@@ -467,6 +467,22 @@ namespace CoreEntities.Client.DTO
         private AsycudaDocumentSetEx _AsycudaDocumentSetEx;
         private ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetExChangeTracker { get; set; }
 
+        [DataMember]
+        public ApplicationSettings ApplicationSettings
+		{
+		    get { return _ApplicationSettings; }
+			set
+			{
+			    if (value == _ApplicationSettings) return;
+				_ApplicationSettings = value;
+                ApplicationSettingsChangeTracker = _ApplicationSettings == null ? null
+                    : new ChangeTrackingCollection<ApplicationSettings> { _ApplicationSettings };
+				NotifyPropertyChanged();//m => this.ApplicationSettings
+			}
+		}
+        private ApplicationSettings _ApplicationSettings;
+        private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

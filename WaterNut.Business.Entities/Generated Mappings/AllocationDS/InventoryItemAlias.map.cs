@@ -12,11 +12,13 @@
         public InventoryItemAliasMap()
         {                        
               this.HasKey(t => t.AliasId);        
-              this.ToTable("InventoryItemAlias");
-              this.Property(t => t.AliasId).HasColumnName("AliasId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.ToTable("InventoryItemAliasEx");
+              this.Property(t => t.AliasId).HasColumnName("AliasId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.AliasName).HasColumnName("AliasName").IsRequired().HasMaxLength(20);
-              this.HasRequired(t => t.InventoryItems).WithMany(t =>(ICollection<InventoryItemAlias>) t.InventoryItemAlias).HasForeignKey(d => d.ItemNumber);
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.HasRequired(t => t.InventoryItem).WithMany(t =>(ICollection<InventoryItemAlias>) t.InventoryItemAliasEx).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

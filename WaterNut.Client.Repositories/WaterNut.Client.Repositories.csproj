@@ -119,11 +119,12 @@
     <Compile Include="Generated Repositories\AdjustmentQS\AdjustmentShortRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AsycudaDocumentEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AsycudaDocumentItemEntryDataDetailRepository.cs" />
+    <Compile Include="Generated Repositories\AdjustmentQS\AsycudaDocumentItemLastItemCostRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AsycudaDocumentSetEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AsycudaSalesAllocationRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\EntryDataDetailRepository.cs" />
-    <Compile Include="Generated Repositories\AdjustmentQS\InventoryItemAliaRepository.cs" />
-    <Compile Include="Generated Repositories\AdjustmentQS\InventoryItemRepository.cs" />
+    <Compile Include="Generated Repositories\AdjustmentQS\InventoryItemAliasExRepository.cs" />
+    <Compile Include="Generated Repositories\AdjustmentQS\InventoryItemsExRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\ShortAllocationRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\xcuda_ItemRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQSRepository.cs" />
@@ -139,8 +140,8 @@
     <Compile Include="Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Document_TypeRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs" />
-    <Compile Include="Generated Repositories\CoreEntities\InventoryItemAliasRepository.cs" />
-    <Compile Include="Generated Repositories\CoreEntities\InventoryItemsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\InventoryItemAliasExRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\InventoryItemXRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\LicenceSummaryRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SubItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\xcuda_Supplementary_unitRepository.cs" />

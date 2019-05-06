@@ -13,10 +13,13 @@ using Core.Common.Data;
 using InventoryDS.Business.Entities;
 using Core.Common.UI;
 using AllocationDS.Business.Services;
+using CoreEntities.Business.Entities;
 using MoreLinq;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
+using InventoryItem = AllocationDS.Business.Entities.InventoryItem;
+using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
 using SubItems = AllocationDS.Business.Entities.SubItems;
 using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 using xcuda_ItemService = AllocationDS.Business.Services.xcuda_ItemService;
@@ -78,14 +81,14 @@ namespace WaterNut.DataSpace
         }
 
 
-        public async Task AllocateSales(bool itemDescriptionContainsAsycudaAttribute, bool allocateToLastAdjustment)
+        public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
         {
             try
             {
                 StatusModel.Timer("Auto Match Adjustments");
                 using (var ctx = new AdjustmentShortService())
                 {
-                    await ctx.AutoMatch().ConfigureAwait(false);
+                    await ctx.AutoMatch(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 }
 
            //     StatusModel.Timer("Allocating Sales");
@@ -95,10 +98,10 @@ namespace WaterNut.DataSpace
                 //}
                 //else
                 //{
-                    await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(allocateToLastAdjustment).ConfigureAwait(false);
+                    await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment).ConfigureAwait(false);
                 //}
 
-                await MarkErrors().ConfigureAwait(false);
+                await MarkErrors(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
 
                 StatusModel.StopStatusUpdate();
             }
@@ -110,20 +113,21 @@ namespace WaterNut.DataSpace
 
         }
 
-        private async Task MarkErrors()
+        private async Task MarkErrors(int applicationSettingsId)
         {
            // MarkNoAsycudaEntry();
                 
-            MarkOverAllocatedEntries();
+            MarkOverAllocatedEntries(applicationSettingsId);
 
-            MarkUnderAllocatedEntries();
+            MarkUnderAllocatedEntries(applicationSettingsId);
 
 
         }
 
-        private async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(bool allocateToLastAdjustment)
+        private async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+            int applicationSettingsId, bool allocateToLastAdjustment)
         {
-            var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber().ConfigureAwait(false);
+            var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber(applicationSettingsId).ConfigureAwait(false);
             StatusModel.StopStatusUpdate();
             
             StatusModel.StartStatusUpdate("Allocating Item Sales", itemSets.Count());
@@ -331,7 +335,7 @@ namespace WaterNut.DataSpace
         //    //  );
         //}
 
-        private void MarkOverAllocatedEntries()
+        private void MarkOverAllocatedEntries(int applicationSettingsId)
         {
 
 
@@ -346,6 +350,7 @@ namespace WaterNut.DataSpace
                         .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
                         .Include(x => x.SubItems)
                         .Include(x => x.xcuda_Goods_description)
+                        .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
                                     (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" ||
                                      x.AsycudaDocument.Extended_customs_procedure == "9000") &&
@@ -472,7 +477,7 @@ namespace WaterNut.DataSpace
         }
 
         
-        private void MarkUnderAllocatedEntries()
+        private void MarkUnderAllocatedEntries(int applicationSettingsId)
         {
 
 
@@ -487,6 +492,7 @@ namespace WaterNut.DataSpace
                         .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
                         .Include(x => x.SubItems)
                         .Include(x => x.xcuda_Goods_description)
+                        .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
                                     (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" ||
                                      x.AsycudaDocument.Extended_customs_procedure == "9000") &&
@@ -836,13 +842,13 @@ namespace WaterNut.DataSpace
                 }
         }
 
-        private  async Task<ConcurrentDictionary<string,ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber()
+        private  async Task<ConcurrentDictionary<string, ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber(int applicationSettingsId)
         {
-            var asycudaEntries = await GetAsycudaEntriesWithItemNumber().ConfigureAwait(false);
+            var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId).ConfigureAwait(false);
 
-            var saleslst = await GetSaleslstWithItemNumber().ConfigureAwait(false);
+            var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
 
-            var adjlst = await GetAdjustmentslstWithItemNumber().ConfigureAwait(false);
+            var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
             saleslst.AddRange(adjlst);
 
             var itmLst = CreateItemSetsWithItemNumbers(saleslst, asycudaEntries);
@@ -939,7 +945,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithItemNumber()
+        private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithItemNumber(int applicationSettingsId)
         {
             StatusModel.Timer("Getting Data - Asycuda Entries...");
             //string itmnumber = "WMHP24-72";
@@ -951,6 +957,7 @@ namespace WaterNut.DataSpace
                     .Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
                     .Include(x => x.SubItems)
                     .Include("EntryPreviousItems.xcuda_PreviousItem")
+                    .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                     .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
                                 (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" ) &&
                                 // x.WarehouseError == null && 
@@ -1026,7 +1033,7 @@ namespace WaterNut.DataSpace
             return asycudaEntries;
         }
 
-        private static async Task<List<ItemSales>> GetSaleslstWithItemNumber()
+        private static async Task<List<ItemSales>> GetSaleslstWithItemNumber(int applicationSettingsId)
         {
             StatusModel.Timer("Getting Data - Sales Entries...");
 
@@ -1039,6 +1046,7 @@ namespace WaterNut.DataSpace
                         ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"PNW/30-53700\" &&" +
                                                                 (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Sales.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
                                                                     : "") +
+
                                                                "QtyAllocated != Quantity " +
                                                                //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
                                                                "&& DoNotAllocate != true", new Dictionary<string, string>()
@@ -1059,7 +1067,7 @@ namespace WaterNut.DataSpace
             return saleslst.ToList();
         }
 
-        private static async Task<List<ItemSales>> GetAdjustmentslstWithItemNumber()
+        private static async Task<List<ItemSales>> GetAdjustmentslstWithItemNumber(int applicationSettingsId)
         {
             StatusModel.Timer("Getting Data - Adjustments Entries...");
 
@@ -1073,6 +1081,7 @@ namespace WaterNut.DataSpace
                                                                 (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Adjustments.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
                                                                     : "") +
                                                                "QtyAllocated != Quantity && " +
+                                                                $"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
                                                                 "((CNumber == null && PreviousInvoiceNumber == null) ||" +
                                                                 " ((CNumber != null || PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments
                                                                 " && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"": "") +  ")" +

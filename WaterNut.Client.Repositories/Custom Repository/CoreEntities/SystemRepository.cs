@@ -35,6 +35,14 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
+        public void SetCurrentApplicationSettings(int applicationSettingsId)
+        {
+            using (var ctx = new SystemClient())
+            {
+                ctx.SetCurrentApplicationSettings(applicationSettingsId);
+            }
+        }
+
         private static bool loaded = false;
 
         private void WaitForServiceToStart()
@@ -64,6 +72,7 @@ namespace CoreEntities.Client.Repositories
             loaded = true;
         }
 
+    
     }
 }
 

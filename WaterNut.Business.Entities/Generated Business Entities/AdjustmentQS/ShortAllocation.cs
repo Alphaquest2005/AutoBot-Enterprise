@@ -741,6 +741,8 @@ namespace AdjustmentQS.Business.Entities
         int _applicationsettingsid;
         [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }
+        [DataMember]
+        public AdjustmentDetail AdjustmentDetail { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

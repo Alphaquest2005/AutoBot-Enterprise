@@ -460,55 +460,55 @@ public Nullable<double> TaxAmount
             }
         }
 
-       private InventoryItem _InventoryItem;
-        public  InventoryItem InventoryItem
+       private InventoryItemsEx _InventoryItemsEx;
+        public  InventoryItemsEx InventoryItemsEx
 		{
 		    get
                { 
                   if (this.entrydatadetail != null)
                    {
-                       if (_InventoryItem != null)
+                       if (_InventoryItemsEx != null)
                        {
-                           if (this.entrydatadetail.InventoryItem !=
-                               _InventoryItem.DTO)
+                           if (this.entrydatadetail.InventoryItemsEx !=
+                               _InventoryItemsEx.DTO)
                            {
-                                if (this.entrydatadetail.InventoryItem  != null)
-                               _InventoryItem = new InventoryItem(this.entrydatadetail.InventoryItem);
+                                if (this.entrydatadetail.InventoryItemsEx  != null)
+                               _InventoryItemsEx = new InventoryItemsEx(this.entrydatadetail.InventoryItemsEx);
                            }
                        }
                        else
                        {
-                             if (this.entrydatadetail.InventoryItem  != null)
-                           _InventoryItem = new InventoryItem(this.entrydatadetail.InventoryItem);
+                             if (this.entrydatadetail.InventoryItemsEx  != null)
+                           _InventoryItemsEx = new InventoryItemsEx(this.entrydatadetail.InventoryItemsEx);
                        }
                    }
 
 
-             //       if (_InventoryItem != null) return _InventoryItem;
+             //       if (_InventoryItemsEx != null) return _InventoryItemsEx;
                        
-             //       var i = new InventoryItem(){TrackingState = TrackingState.Added};
-			//		//if (this.entrydatadetail.InventoryItem == null) Debugger.Break();
-			//		if (this.entrydatadetail.InventoryItem != null)
+             //       var i = new InventoryItemsEx(){TrackingState = TrackingState.Added};
+			//		//if (this.entrydatadetail.InventoryItemsEx == null) Debugger.Break();
+			//		if (this.entrydatadetail.InventoryItemsEx != null)
             //        {
-            //           i. = this.entrydatadetail.InventoryItem;
+            //           i. = this.entrydatadetail.InventoryItemsEx;
             //        }
             //        else
             //        {
-            //            this.entrydatadetail.InventoryItem = i.;
+            //            this.entrydatadetail.InventoryItemsEx = i.;
              //       }
                            
-            //        _InventoryItem = i;
+            //        _InventoryItemsEx = i;
                      
-                    return _InventoryItem;
+                    return _InventoryItemsEx;
                }
 			set
 			{
-			    if (value == _InventoryItem) return;
-                _InventoryItem = value;
+			    if (value == _InventoryItemsEx) return;
+                _InventoryItemsEx = value;
                 if(value != null)
-                     this.entrydatadetail.InventoryItem = value.DTO;
+                     this.entrydatadetail.InventoryItemsEx = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("InventoryItem");
+                NotifyPropertyChanged("InventoryItemsEx");
 			}
 		}
         

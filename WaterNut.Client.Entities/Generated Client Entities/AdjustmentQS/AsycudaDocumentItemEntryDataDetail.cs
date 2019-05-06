@@ -244,6 +244,59 @@ public Nullable<double> Quantity
 		}
         
 
+       private AdjustmentDetail _AdjustmentDetail;
+        public  AdjustmentDetail AdjustmentDetail
+		{
+		    get
+               { 
+                  if (this.asycudadocumentitementrydatadetail != null)
+                   {
+                       if (_AdjustmentDetail != null)
+                       {
+                           if (this.asycudadocumentitementrydatadetail.AdjustmentDetail !=
+                               _AdjustmentDetail.DTO)
+                           {
+                                if (this.asycudadocumentitementrydatadetail.AdjustmentDetail  != null)
+                               _AdjustmentDetail = new AdjustmentDetail(this.asycudadocumentitementrydatadetail.AdjustmentDetail);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocumentitementrydatadetail.AdjustmentDetail  != null)
+                           _AdjustmentDetail = new AdjustmentDetail(this.asycudadocumentitementrydatadetail.AdjustmentDetail);
+                       }
+                   }
+
+
+             //       if (_AdjustmentDetail != null) return _AdjustmentDetail;
+                       
+             //       var i = new AdjustmentDetail(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocumentitementrydatadetail.AdjustmentDetail == null) Debugger.Break();
+			//		if (this.asycudadocumentitementrydatadetail.AdjustmentDetail != null)
+            //        {
+            //           i. = this.asycudadocumentitementrydatadetail.AdjustmentDetail;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocumentitementrydatadetail.AdjustmentDetail = i.;
+             //       }
+                           
+            //        _AdjustmentDetail = i;
+                     
+                    return _AdjustmentDetail;
+               }
+			set
+			{
+			    if (value == _AdjustmentDetail) return;
+                _AdjustmentDetail = value;
+                if(value != null)
+                     this.asycudadocumentitementrydatadetail.AdjustmentDetail = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("AdjustmentDetail");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.AsycudaDocumentItemEntryDataDetail> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaDocumentItemEntryDataDetail> ChangeTracker

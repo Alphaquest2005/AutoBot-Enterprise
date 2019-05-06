@@ -304,16 +304,16 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\WaterNut\WaterNut.csproj">
-      <Name>WaterNut</Name>
+    <ProjectReference Include="..\WaterNut\AutoWaterNut.csproj">
+      <Name>AutoWaterNut</Name>
       <Project>{8b598ca2-f2e0-48d8-b7a9-85c4a2837355}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\WCFConsoleHost\WCFConsoleHost.csproj">
-      <Name>WCFConsoleHost</Name>
+    <ProjectReference Include="..\WCFConsoleHost\AutoWaterNutServer.csproj">
+      <Name>AutoWaterNutServer</Name>
       <Project>{3637ee04-d702-45e8-a713-18b2793c57ed}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>

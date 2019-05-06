@@ -93,7 +93,7 @@ public Nullable<int> EntryDataDetailsId
        
        
                 
-                
+                [MaxLength(50, ErrorMessage = "LineNumber has a max length of 50 letters ")]
 public string LineNumber
 		{ 
 		    get { return this.asycudadocumentitem.LineNumber; }
@@ -965,59 +965,6 @@ public Nullable<int> ApplicationSettingsId
             }
         }
 
-       private InventoryItems _InventoryItems;
-        public  InventoryItems InventoryItems
-		{
-		    get
-               { 
-                  if (this.asycudadocumentitem != null)
-                   {
-                       if (_InventoryItems != null)
-                       {
-                           if (this.asycudadocumentitem.InventoryItems !=
-                               _InventoryItems.DTO)
-                           {
-                                if (this.asycudadocumentitem.InventoryItems  != null)
-                               _InventoryItems = new InventoryItems(this.asycudadocumentitem.InventoryItems);
-                           }
-                       }
-                       else
-                       {
-                             if (this.asycudadocumentitem.InventoryItems  != null)
-                           _InventoryItems = new InventoryItems(this.asycudadocumentitem.InventoryItems);
-                       }
-                   }
-
-
-             //       if (_InventoryItems != null) return _InventoryItems;
-                       
-             //       var i = new InventoryItems(){TrackingState = TrackingState.Added};
-			//		//if (this.asycudadocumentitem.InventoryItems == null) Debugger.Break();
-			//		if (this.asycudadocumentitem.InventoryItems != null)
-            //        {
-            //           i. = this.asycudadocumentitem.InventoryItems;
-            //        }
-            //        else
-            //        {
-            //            this.asycudadocumentitem.InventoryItems = i.;
-             //       }
-                           
-            //        _InventoryItems = i;
-                     
-                    return _InventoryItems;
-               }
-			set
-			{
-			    if (value == _InventoryItems) return;
-                _InventoryItems = value;
-                if(value != null)
-                     this.asycudadocumentitem.InventoryItems = value.DTO;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("InventoryItems");
-			}
-		}
-        
-
         ObservableCollection<AsycudaDocumentItemEntryDataDetails> _AsycudaDocumentItemEntryDataDetails = null;
         public  ObservableCollection<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails
 		{
@@ -1071,6 +1018,112 @@ public Nullable<int> ApplicationSettingsId
                 
             }
         }
+
+       private ApplicationSettings _ApplicationSettings;
+        public  ApplicationSettings ApplicationSettings
+		{
+		    get
+               { 
+                  if (this.asycudadocumentitem != null)
+                   {
+                       if (_ApplicationSettings != null)
+                       {
+                           if (this.asycudadocumentitem.ApplicationSettings !=
+                               _ApplicationSettings.DTO)
+                           {
+                                if (this.asycudadocumentitem.ApplicationSettings  != null)
+                               _ApplicationSettings = new ApplicationSettings(this.asycudadocumentitem.ApplicationSettings);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocumentitem.ApplicationSettings  != null)
+                           _ApplicationSettings = new ApplicationSettings(this.asycudadocumentitem.ApplicationSettings);
+                       }
+                   }
+
+
+             //       if (_ApplicationSettings != null) return _ApplicationSettings;
+                       
+             //       var i = new ApplicationSettings(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocumentitem.ApplicationSettings == null) Debugger.Break();
+			//		if (this.asycudadocumentitem.ApplicationSettings != null)
+            //        {
+            //           i. = this.asycudadocumentitem.ApplicationSettings;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocumentitem.ApplicationSettings = i.;
+             //       }
+                           
+            //        _ApplicationSettings = i;
+                     
+                    return _ApplicationSettings;
+               }
+			set
+			{
+			    if (value == _ApplicationSettings) return;
+                _ApplicationSettings = value;
+                if(value != null)
+                     this.asycudadocumentitem.ApplicationSettings = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("ApplicationSettings");
+			}
+		}
+        
+
+       private InventoryItemX _InventoryItemsEx;
+        public  InventoryItemX InventoryItemsEx
+		{
+		    get
+               { 
+                  if (this.asycudadocumentitem != null)
+                   {
+                       if (_InventoryItemsEx != null)
+                       {
+                           if (this.asycudadocumentitem.InventoryItemsEx !=
+                               _InventoryItemsEx.DTO)
+                           {
+                                if (this.asycudadocumentitem.InventoryItemsEx  != null)
+                               _InventoryItemsEx = new InventoryItemX(this.asycudadocumentitem.InventoryItemsEx);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocumentitem.InventoryItemsEx  != null)
+                           _InventoryItemsEx = new InventoryItemX(this.asycudadocumentitem.InventoryItemsEx);
+                       }
+                   }
+
+
+             //       if (_InventoryItemsEx != null) return _InventoryItemsEx;
+                       
+             //       var i = new InventoryItemX(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocumentitem.InventoryItemsEx == null) Debugger.Break();
+			//		if (this.asycudadocumentitem.InventoryItemsEx != null)
+            //        {
+            //           i. = this.asycudadocumentitem.InventoryItemsEx;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocumentitem.InventoryItemsEx = i.;
+             //       }
+                           
+            //        _InventoryItemsEx = i;
+                     
+                    return _InventoryItemsEx;
+               }
+			set
+			{
+			    if (value == _InventoryItemsEx) return;
+                _InventoryItemsEx = value;
+                if(value != null)
+                     this.asycudadocumentitem.InventoryItemsEx = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("InventoryItemsEx");
+			}
+		}
+        
 
 
         ChangeTrackingCollection<DTO.AsycudaDocumentItem> _changeTracker;    

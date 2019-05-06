@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterNut", "WaterNut\WaterNut.csproj", "{8B598CA2-F2E0-48D8-B7A9-85C4A2837355}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoWaterNut", "WaterNut\AutoWaterNut.csproj", "{8B598CA2-F2E0-48D8-B7A9-85C4A2837355}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3637EE04-D702-45E8-A713-18B2793C57ED} = {3637EE04-D702-45E8-A713-18B2793C57ED}
 	EndProjectSection
@@ -40,7 +40,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterNut.Client.Repositorie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterNut.Client.Services", "WaterNut.Client.Services\WaterNut.Client.Services.csproj", "{EC5D3B67-8BEC-4678-A876-ED6ECBBFE59A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WCFConsoleHost", "WCFConsoleHost\WCFConsoleHost.csproj", "{3637EE04-D702-45E8-A713-18B2793C57ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoWaterNutServer", "WCFConsoleHost\AutoWaterNutServer.csproj", "{3637EE04-D702-45E8-A713-18B2793C57ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreEntities", "CoreEntities\CoreEntities.csproj", "{86A8EF70-1196-4073-BECA-3343883DEC96}"
 EndProject

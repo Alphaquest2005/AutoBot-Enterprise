@@ -7,6 +7,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System;
+using CoreEntities.Client.Entities;
 
 namespace AllocationQS.Client.Repositories 
 {
@@ -82,19 +83,19 @@ namespace AllocationQS.Client.Repositories
             }
         }
 
-        public async Task AllocateSales(bool itemDescriptionContainsAsycudaAttribute, bool allocateToLastAdjustment)
+        public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
         {
             using (var t = new AllocationsClient())
             {
-                await t.AllocateSales(itemDescriptionContainsAsycudaAttribute, allocateToLastAdjustment).ConfigureAwait(false);
+                await t.AllocateSales(applicationSettings.DTO, allocateToLastAdjustment).ConfigureAwait(false);
             }
         }
 
-        public async Task ClearAllocations()
+        public async Task ClearAllocations(int applicationSettingsId)
         {
             using (var t = new AllocationsClient())
             {
-                await t.ClearAllAllocations().ConfigureAwait(false);
+                await t.ClearAllAllocations(applicationSettingsId).ConfigureAwait(false);
             }
         }
 

@@ -46,6 +46,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS
 			public const string AsycudaDocumentItemEntryDataDetailsDeleted = "AsycudaDocumentItemEntryDataDetailsDeleted";
 			public const string AsycudaDocumentItemEntryDataDetailsCreated = "AsycudaDocumentItemEntryDataDetailsCreated";
 			public const string AsycudaDocumentItemEntryDataDetailsUpdated = "AsycudaDocumentItemEntryDataDetailsUpdated";
+			public const string AsycudaDocumentItemLastItemCostsFilterExpressionChanged = "AsycudaDocumentItemLastItemCostsFilterExpressionChanged";
+			public const string SelectedAsycudaDocumentItemLastItemCostsChanged = "SelectedAsycudaDocumentItemLastItemCostsChanged";
+            public const string AsycudaDocumentItemLastItemCostsChanged = "AsycudaDocumentItemLastItemCostsChanged";
+			public const string AsycudaDocumentItemLastItemCostsDeleted = "AsycudaDocumentItemLastItemCostsDeleted";
+			public const string AsycudaDocumentItemLastItemCostsCreated = "AsycudaDocumentItemLastItemCostsCreated";
+			public const string AsycudaDocumentItemLastItemCostsUpdated = "AsycudaDocumentItemLastItemCostsUpdated";
 			public const string AsycudaDocumentSetEntryDatasFilterExpressionChanged = "AsycudaDocumentSetEntryDatasFilterExpressionChanged";
 			public const string SelectedAsycudaDocumentSetEntryDatasChanged = "SelectedAsycudaDocumentSetEntryDatasChanged";
             public const string AsycudaDocumentSetEntryDatasChanged = "AsycudaDocumentSetEntryDatasChanged";
@@ -64,18 +70,18 @@ namespace WaterNut.QuerySpace.AdjustmentQS
 			public const string EntryDataDetailsDeleted = "EntryDataDetailsDeleted";
 			public const string EntryDataDetailsCreated = "EntryDataDetailsCreated";
 			public const string EntryDataDetailsUpdated = "EntryDataDetailsUpdated";
-			public const string InventoryItemsFilterExpressionChanged = "InventoryItemsFilterExpressionChanged";
-			public const string SelectedInventoryItemsChanged = "SelectedInventoryItemsChanged";
-            public const string InventoryItemsChanged = "InventoryItemsChanged";
-			public const string InventoryItemsDeleted = "InventoryItemsDeleted";
-			public const string InventoryItemsCreated = "InventoryItemsCreated";
-			public const string InventoryItemsUpdated = "InventoryItemsUpdated";
-			public const string InventoryItemAliasFilterExpressionChanged = "InventoryItemAliasFilterExpressionChanged";
-			public const string SelectedInventoryItemAliasChanged = "SelectedInventoryItemAliasChanged";
-            public const string InventoryItemAliasChanged = "InventoryItemAliasChanged";
-			public const string InventoryItemAliasDeleted = "InventoryItemAliasDeleted";
-			public const string InventoryItemAliasCreated = "InventoryItemAliasCreated";
-			public const string InventoryItemAliasUpdated = "InventoryItemAliasUpdated";
+			public const string InventoryItemAliasExesFilterExpressionChanged = "InventoryItemAliasExesFilterExpressionChanged";
+			public const string SelectedInventoryItemAliasExesChanged = "SelectedInventoryItemAliasExesChanged";
+            public const string InventoryItemAliasExesChanged = "InventoryItemAliasExesChanged";
+			public const string InventoryItemAliasExesDeleted = "InventoryItemAliasExesDeleted";
+			public const string InventoryItemAliasExesCreated = "InventoryItemAliasExesCreated";
+			public const string InventoryItemAliasExesUpdated = "InventoryItemAliasExesUpdated";
+			public const string InventoryItemsExesFilterExpressionChanged = "InventoryItemsExesFilterExpressionChanged";
+			public const string SelectedInventoryItemsExesChanged = "SelectedInventoryItemsExesChanged";
+            public const string InventoryItemsExesChanged = "InventoryItemsExesChanged";
+			public const string InventoryItemsExesDeleted = "InventoryItemsExesDeleted";
+			public const string InventoryItemsExesCreated = "InventoryItemsExesCreated";
+			public const string InventoryItemsExesUpdated = "InventoryItemsExesUpdated";
 			public const string ShortAllocationsFilterExpressionChanged = "ShortAllocationsFilterExpressionChanged";
 			public const string SelectedShortAllocationsChanged = "SelectedShortAllocationsChanged";
             public const string ShortAllocationsChanged = "ShortAllocationsChanged";
@@ -96,11 +102,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS
           // public const string AdjustmentShortChanged = "AdjustmentShortChanged";
           // public const string AsycudaDocumentEntryDataChanged = "AsycudaDocumentEntryDataChanged";
           // public const string AsycudaDocumentItemEntryDataDetailChanged = "AsycudaDocumentItemEntryDataDetailChanged";
+          // public const string AsycudaDocumentItemLastItemCostChanged = "AsycudaDocumentItemLastItemCostChanged";
           // public const string AsycudaDocumentSetEntryDataChanged = "AsycudaDocumentSetEntryDataChanged";
           // public const string AsycudaSalesAllocationChanged = "AsycudaSalesAllocationChanged";
           // public const string EntryDataDetailChanged = "EntryDataDetailChanged";
-          // public const string InventoryItemChanged = "InventoryItemChanged";
-          // public const string InventoryItemAliaChanged = "InventoryItemAliaChanged";
+          // public const string InventoryItemsExChanged = "InventoryItemsExChanged";
           // public const string ShortAllocationChanged = "ShortAllocationChanged";
           // public const string xcuda_ItemChanged = "xcuda_ItemChanged";
  
@@ -118,15 +124,15 @@ namespace WaterNut.QuerySpace.AdjustmentQS
    
            public const string CurrentAsycudaDocumentItemEntryDataDetailChanged = "CurrentAsycudaDocumentItemEntryDataDetailChanged";
    
+           public const string CurrentAsycudaDocumentItemLastItemCostChanged = "CurrentAsycudaDocumentItemLastItemCostChanged";
+   
            public const string CurrentAsycudaDocumentSetEntryDataChanged = "CurrentAsycudaDocumentSetEntryDataChanged";
    
            public const string CurrentAsycudaSalesAllocationChanged = "CurrentAsycudaSalesAllocationChanged";
    
            public const string CurrentEntryDataDetailChanged = "CurrentEntryDataDetailChanged";
    
-           public const string CurrentInventoryItemChanged = "CurrentInventoryItemChanged";
-   
-           public const string CurrentInventoryItemAliaChanged = "CurrentInventoryItemAliaChanged";
+           public const string CurrentInventoryItemsExChanged = "CurrentInventoryItemsExChanged";
    
            public const string CurrentShortAllocationChanged = "CurrentShortAllocationChanged";
    
@@ -146,15 +152,15 @@ namespace WaterNut.QuerySpace.AdjustmentQS
    
            public const string CurrentAsycudaDocumentItemEntryDataDetailIDChanged = "OnCurrentAsycudaDocumentItemEntryDataDetailIDChanged";
    
+           public const string CurrentAsycudaDocumentItemLastItemCostIDChanged = "OnCurrentAsycudaDocumentItemLastItemCostIDChanged";
+   
            public const string CurrentAsycudaDocumentSetEntryDataIDChanged = "OnCurrentAsycudaDocumentSetEntryDataIDChanged";
    
            public const string CurrentAsycudaSalesAllocationIDChanged = "OnCurrentAsycudaSalesAllocationIDChanged";
    
            public const string CurrentEntryDataDetailIDChanged = "OnCurrentEntryDataDetailIDChanged";
    
-           public const string CurrentInventoryItemIDChanged = "OnCurrentInventoryItemIDChanged";
-   
-           public const string CurrentInventoryItemAliaIDChanged = "OnCurrentInventoryItemAliaIDChanged";
+           public const string CurrentInventoryItemsExIDChanged = "OnCurrentInventoryItemsExIDChanged";
    
            public const string CurrentShortAllocationIDChanged = "OnCurrentShortAllocationIDChanged";
    

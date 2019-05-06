@@ -239,10 +239,10 @@ namespace AllocationDS.Business.Services
                                         GetWhere<xcuda_Item>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItem":
+                            case "InventoryItemsEx":
                                 return
                                     await
-                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany", includesLst)
+                                        GetWhere<InventoryItem>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -742,8 +742,8 @@ namespace AllocationDS.Business.Services
                             case "PreviousDocumentItem":
                                 return await CountWhere<xcuda_Item>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
+                            case "InventoryItemsEx":
+                                return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -856,10 +856,10 @@ namespace AllocationDS.Business.Services
                                         LoadRangeWhere<xcuda_Item>(startIndex, count, dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItem":
+                            case "InventoryItemsEx":
                                 return
                                     await
-                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
+                                        LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1267,8 +1267,8 @@ namespace AllocationDS.Business.Services
                             case "PreviousDocumentItem":
                                 return await SumWhere<xcuda_Item>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItem":
-                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", field, "SelectMany")
+                            case "InventoryItemsEx":
+                                return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

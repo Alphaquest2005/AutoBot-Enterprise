@@ -185,20 +185,20 @@ namespace WaterNut.DataSpace.AllocationDS.DataModels
             }
         }
    
-        public async Task<IEnumerable<InventoryItems>> SearchInventoryItems(List<string> lst, List<string> includeLst = null )
+        public async Task<IEnumerable<InventoryItem>> SearchInventoryItems(List<string> lst, List<string> includeLst = null )
         {
-            using (var ctx = new InventoryItemsService())
+            using (var ctx = new InventoryItemService())
             {
                 return await ctx.GetInventoryItemsByExpressionLst(lst, includeLst).ConfigureAwait(false);
             }
         }
 
-        public async Task SaveInventoryItems(InventoryItems i)
+        public async Task SaveInventoryItems(InventoryItem i)
         {
             if (i == null) return;
-            using (var ctx = new InventoryItemsService())
+            using (var ctx = new InventoryItemService())
             {
-                await ctx.UpdateInventoryItems(i).ConfigureAwait(false);
+                await ctx.UpdateInventoryItem(i).ConfigureAwait(false);
             }
         }
    

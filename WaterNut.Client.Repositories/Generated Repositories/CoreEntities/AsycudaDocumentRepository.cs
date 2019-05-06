@@ -203,7 +203,8 @@ namespace CoreEntities.Client.Repositories
                             return new AsycudaDocument(res)
                     {
                      // AsycudaDocumentItems = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItem>(res.AsycudaDocumentItems.Select(y => new AsycudaDocumentItem(y))),    
-                  // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null)    
+                  // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null),    
+                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null)    
                   };
                     }
                     else

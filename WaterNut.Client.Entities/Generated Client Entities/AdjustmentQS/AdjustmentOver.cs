@@ -480,59 +480,6 @@ public int ApplicationSettingsId
 		}
         
 
-       private InventoryItem _InventoryItem;
-        public  InventoryItem InventoryItem
-		{
-		    get
-               { 
-                  if (this.adjustmentover != null)
-                   {
-                       if (_InventoryItem != null)
-                       {
-                           if (this.adjustmentover.InventoryItem !=
-                               _InventoryItem.DTO)
-                           {
-                                if (this.adjustmentover.InventoryItem  != null)
-                               _InventoryItem = new InventoryItem(this.adjustmentover.InventoryItem);
-                           }
-                       }
-                       else
-                       {
-                             if (this.adjustmentover.InventoryItem  != null)
-                           _InventoryItem = new InventoryItem(this.adjustmentover.InventoryItem);
-                       }
-                   }
-
-
-             //       if (_InventoryItem != null) return _InventoryItem;
-                       
-             //       var i = new InventoryItem(){TrackingState = TrackingState.Added};
-			//		//if (this.adjustmentover.InventoryItem == null) Debugger.Break();
-			//		if (this.adjustmentover.InventoryItem != null)
-            //        {
-            //           i. = this.adjustmentover.InventoryItem;
-            //        }
-            //        else
-            //        {
-            //            this.adjustmentover.InventoryItem = i.;
-             //       }
-                           
-            //        _InventoryItem = i;
-                     
-                    return _InventoryItem;
-               }
-			set
-			{
-			    if (value == _InventoryItem) return;
-                _InventoryItem = value;
-                if(value != null)
-                     this.adjustmentover.InventoryItem = value.DTO;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("InventoryItem");
-			}
-		}
-        
-
         ObservableCollection<AsycudaDocumentItemEntryDataDetail> _AsycudaDocumentItemEntryDataDetails = null;
         public  ObservableCollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails
 		{
@@ -636,6 +583,59 @@ public int ApplicationSettingsId
                      this.adjustmentover.AdjustmentDetail = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("AdjustmentDetail");
+			}
+		}
+        
+
+       private InventoryItemsEx _InventoryItemsEx;
+        public  InventoryItemsEx InventoryItemsEx
+		{
+		    get
+               { 
+                  if (this.adjustmentover != null)
+                   {
+                       if (_InventoryItemsEx != null)
+                       {
+                           if (this.adjustmentover.InventoryItemsEx !=
+                               _InventoryItemsEx.DTO)
+                           {
+                                if (this.adjustmentover.InventoryItemsEx  != null)
+                               _InventoryItemsEx = new InventoryItemsEx(this.adjustmentover.InventoryItemsEx);
+                           }
+                       }
+                       else
+                       {
+                             if (this.adjustmentover.InventoryItemsEx  != null)
+                           _InventoryItemsEx = new InventoryItemsEx(this.adjustmentover.InventoryItemsEx);
+                       }
+                   }
+
+
+             //       if (_InventoryItemsEx != null) return _InventoryItemsEx;
+                       
+             //       var i = new InventoryItemsEx(){TrackingState = TrackingState.Added};
+			//		//if (this.adjustmentover.InventoryItemsEx == null) Debugger.Break();
+			//		if (this.adjustmentover.InventoryItemsEx != null)
+            //        {
+            //           i. = this.adjustmentover.InventoryItemsEx;
+            //        }
+            //        else
+            //        {
+            //            this.adjustmentover.InventoryItemsEx = i.;
+             //       }
+                           
+            //        _InventoryItemsEx = i;
+                     
+                    return _InventoryItemsEx;
+               }
+			set
+			{
+			    if (value == _InventoryItemsEx) return;
+                _InventoryItemsEx = value;
+                if(value != null)
+                     this.adjustmentover.InventoryItemsEx = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("InventoryItemsEx");
 			}
 		}
         

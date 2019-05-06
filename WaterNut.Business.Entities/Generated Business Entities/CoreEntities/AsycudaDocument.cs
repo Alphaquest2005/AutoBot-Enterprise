@@ -508,6 +508,8 @@ namespace CoreEntities.Business.Entities
         public List<AsycudaDocumentItem> AsycudaDocumentItems { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
+        [DataMember]
+        public ApplicationSettings ApplicationSettings { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

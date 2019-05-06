@@ -9,6 +9,7 @@ using CoreEntities.Client.Repositories;
 
 using System.ComponentModel;
 using CoreEntities.Client.Entities;
+using SimpleMvvmToolkit;
 
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
@@ -33,6 +34,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     MessageBox.Show("No Default Application Settings Defined");
                 }
             }
+            RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged1);
+        }
+
+        private void OnCurrentApplicationSettingsChanged1(object sender, NotificationEventArgs<ApplicationSettings> e)
+        {
+            SystemRepository.Instance.SetCurrentApplicationSettings(e.Data.ApplicationSettingsId);
         }
 
         public List<ApplicationSettings> ApplicationSettings

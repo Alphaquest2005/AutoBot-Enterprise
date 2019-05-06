@@ -10,5 +10,9 @@ namespace CoreEntities.Business.Services
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
         bool ValidateInstallation();
+
+        [OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        void SetCurrentApplicationSettings(int applicationSettingId);
     }
 }

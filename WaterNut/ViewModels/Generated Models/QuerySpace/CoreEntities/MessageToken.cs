@@ -58,18 +58,18 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string EntryPreviousItemsDeleted = "EntryPreviousItemsDeleted";
 			public const string EntryPreviousItemsCreated = "EntryPreviousItemsCreated";
 			public const string EntryPreviousItemsUpdated = "EntryPreviousItemsUpdated";
-			public const string InventoryItemAliasFilterExpressionChanged = "InventoryItemAliasFilterExpressionChanged";
-			public const string SelectedInventoryItemAliasChanged = "SelectedInventoryItemAliasChanged";
-            public const string InventoryItemAliasChanged = "InventoryItemAliasChanged";
-			public const string InventoryItemAliasDeleted = "InventoryItemAliasDeleted";
-			public const string InventoryItemAliasCreated = "InventoryItemAliasCreated";
-			public const string InventoryItemAliasUpdated = "InventoryItemAliasUpdated";
-			public const string InventoryItemsFilterExpressionChanged = "InventoryItemsFilterExpressionChanged";
-			public const string SelectedInventoryItemsChanged = "SelectedInventoryItemsChanged";
-            public const string InventoryItemsChanged = "InventoryItemsChanged";
-			public const string InventoryItemsDeleted = "InventoryItemsDeleted";
-			public const string InventoryItemsCreated = "InventoryItemsCreated";
-			public const string InventoryItemsUpdated = "InventoryItemsUpdated";
+			public const string InventoryItemAliasExFilterExpressionChanged = "InventoryItemAliasExFilterExpressionChanged";
+			public const string SelectedInventoryItemAliasExChanged = "SelectedInventoryItemAliasExChanged";
+            public const string InventoryItemAliasExChanged = "InventoryItemAliasExChanged";
+			public const string InventoryItemAliasExDeleted = "InventoryItemAliasExDeleted";
+			public const string InventoryItemAliasExCreated = "InventoryItemAliasExCreated";
+			public const string InventoryItemAliasExUpdated = "InventoryItemAliasExUpdated";
+			public const string InventoryItemXFilterExpressionChanged = "InventoryItemXFilterExpressionChanged";
+			public const string SelectedInventoryItemXChanged = "SelectedInventoryItemXChanged";
+            public const string InventoryItemXChanged = "InventoryItemXChanged";
+			public const string InventoryItemXDeleted = "InventoryItemXDeleted";
+			public const string InventoryItemXCreated = "InventoryItemXCreated";
+			public const string InventoryItemXUpdated = "InventoryItemXUpdated";
 			public const string LicenceSummaryFilterExpressionChanged = "LicenceSummaryFilterExpressionChanged";
 			public const string SelectedLicenceSummaryChanged = "SelectedLicenceSummaryChanged";
             public const string LicenceSummaryChanged = "LicenceSummaryChanged";
@@ -98,8 +98,8 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
-          // public const string InventoryItemAliasChanged = "InventoryItemAliasChanged";
-          // public const string InventoryItemsChanged = "InventoryItemsChanged";
+          // public const string InventoryItemAliasExChanged = "InventoryItemAliasExChanged";
+          // public const string InventoryItemXChanged = "InventoryItemXChanged";
           // public const string LicenceSummaryChanged = "LicenceSummaryChanged";
           // public const string SubItemsChanged = "SubItemsChanged";
           // public const string xcuda_Supplementary_unitChanged = "xcuda_Supplementary_unitChanged";
@@ -122,9 +122,9 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentEntryPreviousItemsChanged = "CurrentEntryPreviousItemsChanged";
    
-           public const string CurrentInventoryItemAliasChanged = "CurrentInventoryItemAliasChanged";
+           public const string CurrentInventoryItemAliasExChanged = "CurrentInventoryItemAliasExChanged";
    
-           public const string CurrentInventoryItemsChanged = "CurrentInventoryItemsChanged";
+           public const string CurrentInventoryItemXChanged = "CurrentInventoryItemXChanged";
    
            public const string CurrentLicenceSummaryChanged = "CurrentLicenceSummaryChanged";
    
@@ -150,9 +150,9 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentEntryPreviousItemsIDChanged = "OnCurrentEntryPreviousItemsIDChanged";
    
-           public const string CurrentInventoryItemAliasIDChanged = "OnCurrentInventoryItemAliasIDChanged";
+           public const string CurrentInventoryItemAliasExIDChanged = "OnCurrentInventoryItemAliasExIDChanged";
    
-           public const string CurrentInventoryItemsIDChanged = "OnCurrentInventoryItemsIDChanged";
+           public const string CurrentInventoryItemXIDChanged = "OnCurrentInventoryItemXIDChanged";
    
            public const string CurrentLicenceSummaryIDChanged = "OnCurrentLicenceSummaryIDChanged";
    

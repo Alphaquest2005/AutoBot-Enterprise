@@ -3,6 +3,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using Core.Common.Business.Services;
 using Core.Common.Contracts;
+using CoreEntities.Business.Entities;
 
 namespace AllocationQS.Business.Services
 {
@@ -20,13 +21,13 @@ namespace AllocationQS.Business.Services
         Task ClearAllocations(IEnumerable<int> alst);
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task ClearAllAllocations();
+        Task ClearAllAllocations(int applicationSettingsId);
         [OperationContract][FaultContract(typeof(ValidationFault))]
         Task ClearAllocationsByFilter(string filterExpression);
         //[OperationContract][FaultContract(typeof(ValidationFault))]
         //Task CreateIncompOPS(string filterExpression, int AsycudaDocumentSetId);
         [OperationContract][FaultContract(typeof(ValidationFault))]
-        Task AllocateSales(bool itemDescriptionContainsAsycudaAttribute, bool allocateToLastAdjustment);
+        Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment);
 
         [OperationContract][FaultContract(typeof(ValidationFault))]
          Task ReBuildSalesReports();

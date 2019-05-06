@@ -426,6 +426,8 @@ namespace AllocationDS.Business.Entities
         Nullable<int> _applicationsettingsid;
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
+        [DataMember]
+        public InventoryItem InventoryItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

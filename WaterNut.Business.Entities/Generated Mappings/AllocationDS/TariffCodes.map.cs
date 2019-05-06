@@ -27,7 +27,7 @@
               this.Property(t => t.LicenseRequired).HasColumnName("LicenseRequired");
               this.Property(t => t.Invalid).HasColumnName("Invalid");
               this.HasOptional(t => t.TariffCategory).WithMany(t =>(ICollection<TariffCodes>) t.TariffCodes).HasForeignKey(d => d.TariffCategoryCode);
-              this.HasMany(t => t.InventoryItems).WithOptional(t => t.TariffCodes).HasForeignKey(d => d.TariffCode);
+              this.HasMany(t => t.InventoryItemsEx).WithOptional(t => t.TariffCodes).HasForeignKey(d => d.TariffCode);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -6,6 +6,7 @@ using AdjustmentQS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using WaterNut.DataSpace;
 using System.Linq.Dynamic;
+using InventoryItemsEx = EntryDataDS.Business.Entities.InventoryItemsEx;
 
 namespace AdjustmentQS.Business.Services
 {
@@ -32,6 +33,7 @@ namespace AdjustmentQS.Business.Services
                 {
 
                     var olst = ctx.AdjustmentOvers
+                        .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
                         .Where(x => !x.AsycudaDocumentItemEntryDataDetails.Any())
                         .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))

@@ -57,9 +57,10 @@ namespace AllocationQS.Client.Services
             await Channel.CreateIncompOPS(filterExpression, AsycudaDocumentSetId).ConfigureAwait(false);
         }
 
-        public async Task AllocateSales(bool itemDescriptionContainsAsycudaAttribute, bool allocateToLastAdjustment)
+        public async Task AllocateSales(ApplicationSettings applicationSettings,
+            bool allocateToLastAdjustment)
         {
-            await Channel.AllocateSales(itemDescriptionContainsAsycudaAttribute, allocateToLastAdjustment).ConfigureAwait(false);
+            await Channel.AllocateSales(applicationSettings, allocateToLastAdjustment).ConfigureAwait(false);
         }
 
         public async Task ReBuildSalesReports()
@@ -67,9 +68,9 @@ namespace AllocationQS.Client.Services
             await Channel.ReBuildSalesReports().ConfigureAwait(false);
         }
 
-        public async Task ClearAllAllocations()
+        public async Task ClearAllAllocations(int applicationSettingsId)
         {
-            await Channel.ClearAllAllocations().ConfigureAwait(false);
+            await Channel.ClearAllAllocations(applicationSettingsId).ConfigureAwait(false);
         }
 
         public async Task ReBuildSalesReports(int asycuda_Id)

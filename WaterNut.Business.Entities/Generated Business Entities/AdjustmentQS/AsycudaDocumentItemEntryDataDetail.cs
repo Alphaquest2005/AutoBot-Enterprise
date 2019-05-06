@@ -113,6 +113,8 @@ namespace AdjustmentQS.Business.Entities
         public AdjustmentOver AdjustmentOver { get; set; }
         [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }
+        [DataMember]
+        public AdjustmentDetail AdjustmentDetail { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -88,7 +88,7 @@ namespace WaterNut.DataSpace
                             s.EntryDataDetails.ItemNumber,
                             s.EntryDataDetails.ItemDescription,
                             s.EntryDataDetails.Cost,
-                            s.EntryDataDetails.InventoryItem.TariffCode
+                            s.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCode
                             //,
                           //  s.EntryDataDetails.InventoryItem
                         }
@@ -99,7 +99,7 @@ namespace WaterNut.DataSpace
                             ItemDescription = g.Key.ItemDescription,
                             Cost = g.Key.Cost,
                             TariffCode = g.Key.TariffCode,
-                            InventoryItem = g.First().EntryDataDetails.InventoryItem as IInventoryItem,
+                            InventoryItem = g.First().EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx as IInventoryItem,
                             Quantity = g.Sum(x => x.QtyAllocated),
                             EntryDataDetails = g.Select(x => new EntryDataDetailSummary()
                             {

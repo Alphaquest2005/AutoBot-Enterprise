@@ -14,6 +14,12 @@ namespace AdjustmentQS
     
     public partial class AdjustmentDetail
     {
+        public AdjustmentDetail()
+        {
+            this.AsycudaDocumentItemEntryDataDetails = new HashSet<AsycudaDocumentItemEntryDataDetail>();
+            this.ShortAllocations = new HashSet<ShortAllocation>();
+        }
+    
         public int EntryDataDetailsId { get; set; }
         public string EntryDataId { get; set; }
         public Nullable<int> LineNumber { get; set; }
@@ -47,5 +53,7 @@ namespace AdjustmentQS
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual AdjustmentShort AdjustmentShorts { get; set; }
         public virtual AdjustmentOver AdjustmentOvers { get; set; }
+        public virtual ICollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
+        public virtual ICollection<ShortAllocation> ShortAllocations { get; set; }
     }
 }

@@ -86,7 +86,7 @@ namespace WCFConsoleHost
                 // configure endpoint
                 var _netTcpBinding = ConfigNetTcpBinding();
 
-                host.AddServiceEndpoint(host.Description.ServiceType.FullName.Replace(".Business.Services.", ".Business.Services.I"), _netTcpBinding, "net.tcp://localhost:8733/" + host.Description.ServiceType.FullName);
+                host.AddServiceEndpoint(host.Description.ServiceType.FullName.Replace(".Business.Services.", ".Business.Services.I"), _netTcpBinding, "net.tcp://localhost:8734/" + host.Description.ServiceType.FullName);
                 host.Faulted += host_Faulted;
                 host.UnknownMessageReceived +=host_UnknownMessageReceived;
                 host.Closed += host_Closed;

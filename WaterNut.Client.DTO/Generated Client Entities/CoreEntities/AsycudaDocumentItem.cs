@@ -663,22 +663,6 @@ namespace CoreEntities.Client.DTO
         private ChangeTrackingCollection<xcuda_Supplementary_unit> _xcuda_Supplementary_unit = new ChangeTrackingCollection<xcuda_Supplementary_unit>();
 
         [DataMember]
-        public InventoryItems InventoryItems
-		{
-		    get { return _InventoryItems; }
-			set
-			{
-			    if (value == _InventoryItems) return;
-				_InventoryItems = value;
-                InventoryItemsChangeTracker = _InventoryItems == null ? null
-                    : new ChangeTrackingCollection<InventoryItems> { _InventoryItems };
-				NotifyPropertyChanged();//m => this.InventoryItems
-			}
-		}
-        private InventoryItems _InventoryItems;
-        private ChangeTrackingCollection<InventoryItems> InventoryItemsChangeTracker { get; set; }
-
-        [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails
 		{
 		    get { return _AsycudaDocumentItemEntryDataDetails; }
@@ -690,6 +674,38 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<AsycudaDocumentItemEntryDataDetails> _AsycudaDocumentItemEntryDataDetails = new ChangeTrackingCollection<AsycudaDocumentItemEntryDataDetails>();
+
+        [DataMember]
+        public ApplicationSettings ApplicationSettings
+		{
+		    get { return _ApplicationSettings; }
+			set
+			{
+			    if (value == _ApplicationSettings) return;
+				_ApplicationSettings = value;
+                ApplicationSettingsChangeTracker = _ApplicationSettings == null ? null
+                    : new ChangeTrackingCollection<ApplicationSettings> { _ApplicationSettings };
+				NotifyPropertyChanged();//m => this.ApplicationSettings
+			}
+		}
+        private ApplicationSettings _ApplicationSettings;
+        private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
+
+        [DataMember]
+        public InventoryItemX InventoryItemsEx
+		{
+		    get { return _InventoryItemsEx; }
+			set
+			{
+			    if (value == _InventoryItemsEx) return;
+				_InventoryItemsEx = value;
+                InventoryItemsExChangeTracker = _InventoryItemsEx == null ? null
+                    : new ChangeTrackingCollection<InventoryItemX> { _InventoryItemsEx };
+				NotifyPropertyChanged();//m => this.InventoryItemsEx
+			}
+		}
+        private InventoryItemX _InventoryItemsEx;
+        private ChangeTrackingCollection<InventoryItemX> InventoryItemsExChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

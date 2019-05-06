@@ -203,9 +203,9 @@ namespace AdjustmentQS.Client.Repositories
                             return new AdjustmentOver(res)
                     {
                   // AdjustmentEx = (res.AdjustmentEx != null?new AdjustmentEx(res.AdjustmentEx): null),    
-                  // InventoryItem = (res.InventoryItem != null?new InventoryItem(res.InventoryItem): null),    
                      // AsycudaDocumentItemEntryDataDetails = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItemEntryDataDetail>(res.AsycudaDocumentItemEntryDataDetails.Select(y => new AsycudaDocumentItemEntryDataDetail(y))),    
-                  // AdjustmentDetail = (res.AdjustmentDetail != null?new AdjustmentDetail(res.AdjustmentDetail): null)    
+                  // AdjustmentDetail = (res.AdjustmentDetail != null?new AdjustmentDetail(res.AdjustmentDetail): null),    
+                  // InventoryItemsEx = (res.InventoryItemsEx != null?new InventoryItemsEx(res.InventoryItemsEx): null)    
                   };
                     }
                     else

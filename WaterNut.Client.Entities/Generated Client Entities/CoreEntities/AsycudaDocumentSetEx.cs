@@ -314,9 +314,9 @@ public Nullable<double> TotalWeight
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-public int ApplicationSettingsId
+       
+public Nullable<int> ApplicationSettingsId
 		{ 
 		    get { return this.asycudadocumentsetex.ApplicationSettingsId; }
 			set

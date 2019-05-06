@@ -36,7 +36,7 @@ namespace Core.Common.Client.Services
                                       SendTimeout = new TimeSpan(0, 60, 0),
                                     
                                     },
-                  new EndpointAddress("net.tcp://localhost:8733/" + typeof(T).FullName.Replace(".Client.Contracts.I", ".Business.Services."))
+                  new EndpointAddress("net.tcp://localhost:8734/" + typeof(T).FullName.Replace(".Client.Contracts.I", ".Business.Services."))
                   )
         {
             

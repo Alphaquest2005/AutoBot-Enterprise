@@ -245,6 +245,12 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AdjustmentShort>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AdjustmentDetail":
+                                return
+                                    await
+                                        GetWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -745,6 +751,9 @@ namespace AdjustmentQS.Business.Services
                             case "AdjustmentShort":
                                 return await CountWhere<AdjustmentShort>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentDetail":
+                                return await CountWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocumentItemEntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -860,6 +869,12 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AdjustmentShort>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AdjustmentDetail":
+                                return
+                                    await
+                                        LoadRangeWhere<AdjustmentDetail>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1124,6 +1139,9 @@ namespace AdjustmentQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentShort":
                                 return await SumWhere<AdjustmentShort>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentDetail":
+                                return await SumWhere<AdjustmentDetail>(dbContext, exp, itm.Value, "AsycudaDocumentItemEntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -83,11 +83,11 @@
     <Compile Include="AdjustmentQS\AdjustmentShortClient.cs" />
     <Compile Include="AdjustmentQS\AsycudaDocumentEntryDataClient.cs" />
     <Compile Include="AdjustmentQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
+    <Compile Include="AdjustmentQS\AsycudaDocumentItemLastItemCostClient.cs" />
     <Compile Include="AdjustmentQS\AsycudaDocumentSetEntryDataClient.cs" />
     <Compile Include="AdjustmentQS\AsycudaSalesAllocationClient.cs" />
     <Compile Include="AdjustmentQS\EntryDataDetailClient.cs" />
-    <Compile Include="AdjustmentQS\InventoryItemAliaClient.cs" />
-    <Compile Include="AdjustmentQS\InventoryItemClient.cs" />
+    <Compile Include="AdjustmentQS\InventoryItemsExClient.cs" />
     <Compile Include="AdjustmentQS\ShortAllocationClient.cs" />
     <Compile Include="AdjustmentQS\xcuda_ItemClient.cs" />
     <Compile Include="AllocationQS\AdjustmentShortAllocationClient.cs" />
@@ -102,8 +102,8 @@
     <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />
     <Compile Include="CoreEntities\Document_TypeClient.cs" />
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
-    <Compile Include="CoreEntities\InventoryItemAliasClient.cs" />
-    <Compile Include="CoreEntities\InventoryItemsClient.cs" />
+    <Compile Include="CoreEntities\InventoryItemAliasExClient.cs" />
+    <Compile Include="CoreEntities\InventoryItemXClient.cs" />
     <Compile Include="CoreEntities\LicenceSummaryClient.cs" />
     <Compile Include="CoreEntities\SubItemsClient.cs" />
     <Compile Include="CoreEntities\xcuda_Supplementary_unitClient.cs" />

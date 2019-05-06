@@ -36,7 +36,7 @@
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
-              this.HasRequired(t => t.InventoryItem).WithMany(t =>(ICollection<EntryDataDetail>) t.EntryDataDetails).HasForeignKey(d => d.ItemNumber);
+              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetail>) t.EntryDataDetails).HasForeignKey(d => new {d.ItemNumber, d.EntryDataDetailsId});
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.EntryDataDetail).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

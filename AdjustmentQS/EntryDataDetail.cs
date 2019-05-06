@@ -44,6 +44,6 @@ namespace AdjustmentQS
         public Nullable<double> TaxAmount { get; set; }
     
         public virtual ICollection<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
-        public virtual InventoryItem InventoryItem { get; set; }
+        public virtual InventoryItemsEx InventoryItemsEx { get; set; }
     }
 }

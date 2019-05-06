@@ -624,60 +624,6 @@ public Nullable<bool> IsActive
 		}
      
 
-        ObservableCollection<InventoryItems> _InventoryItems = null;
-        public  ObservableCollection<InventoryItems> InventoryItems
-		{
-            
-		    get 
-				{ 
-					if(_InventoryItems != null) return _InventoryItems;
-					//if (this.applicationsettings.InventoryItems == null) Debugger.Break();
-					if(this.applicationsettings.InventoryItems != null)
-					{
-						_InventoryItems = new ObservableCollection<InventoryItems>(this.applicationsettings.InventoryItems.Select(x => new InventoryItems(x)));
-					}
-					
-						_InventoryItems.CollectionChanged += InventoryItems_CollectionChanged; 
-					
-					return _InventoryItems; 
-				}
-			set
-			{
-			    if (Equals(value, _InventoryItems)) return;
-				if (value != null)
-					this.applicationsettings.InventoryItems = new ChangeTrackingCollection<DTO.InventoryItems>(value.Select(x => x.DTO).ToList());
-                _InventoryItems = value;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_InventoryItems != null)
-				_InventoryItems.CollectionChanged += InventoryItems_CollectionChanged;               
-				NotifyPropertyChanged("InventoryItems");
-			}
-		}
-        
-        void InventoryItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (InventoryItems itm in e.NewItems)
-                    {
-                        if (itm != null)
-                        applicationsettings.InventoryItems.Add(itm.DTO);
-                    }
-                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (InventoryItems itm in e.OldItems)
-                    {
-                        if (itm != null)
-                        applicationsettings.InventoryItems.Remove(itm.DTO);
-                    }
-					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                
-            }
-        }
-
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{
@@ -725,6 +671,168 @@ public Nullable<bool> IsActive
                     {
                         if (itm != null)
                         applicationsettings.AsycudaDocumentSetEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<AsycudaDocument> _AsycudaDocument = null;
+        public  ObservableCollection<AsycudaDocument> AsycudaDocument
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocument != null) return _AsycudaDocument;
+					//if (this.applicationsettings.AsycudaDocument == null) Debugger.Break();
+					if(this.applicationsettings.AsycudaDocument != null)
+					{
+						_AsycudaDocument = new ObservableCollection<AsycudaDocument>(this.applicationsettings.AsycudaDocument.Select(x => new AsycudaDocument(x)));
+					}
+					
+						_AsycudaDocument.CollectionChanged += AsycudaDocument_CollectionChanged; 
+					
+					return _AsycudaDocument; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocument)) return;
+				if (value != null)
+					this.applicationsettings.AsycudaDocument = new ChangeTrackingCollection<DTO.AsycudaDocument>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocument = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocument != null)
+				_AsycudaDocument.CollectionChanged += AsycudaDocument_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocument");
+			}
+		}
+        
+        void AsycudaDocument_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocument itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.AsycudaDocument.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocument itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.AsycudaDocument.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<AsycudaDocumentItem> _AsycudaDocumentItem = null;
+        public  ObservableCollection<AsycudaDocumentItem> AsycudaDocumentItem
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocumentItem != null) return _AsycudaDocumentItem;
+					//if (this.applicationsettings.AsycudaDocumentItem == null) Debugger.Break();
+					if(this.applicationsettings.AsycudaDocumentItem != null)
+					{
+						_AsycudaDocumentItem = new ObservableCollection<AsycudaDocumentItem>(this.applicationsettings.AsycudaDocumentItem.Select(x => new AsycudaDocumentItem(x)));
+					}
+					
+						_AsycudaDocumentItem.CollectionChanged += AsycudaDocumentItem_CollectionChanged; 
+					
+					return _AsycudaDocumentItem; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentItem)) return;
+				if (value != null)
+					this.applicationsettings.AsycudaDocumentItem = new ChangeTrackingCollection<DTO.AsycudaDocumentItem>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocumentItem = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocumentItem != null)
+				_AsycudaDocumentItem.CollectionChanged += AsycudaDocumentItem_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocumentItem");
+			}
+		}
+        
+        void AsycudaDocumentItem_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocumentItem itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.AsycudaDocumentItem.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocumentItem itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.AsycudaDocumentItem.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<InventoryItemX> _InventoryItemsEx = null;
+        public  ObservableCollection<InventoryItemX> InventoryItemsEx
+		{
+            
+		    get 
+				{ 
+					if(_InventoryItemsEx != null) return _InventoryItemsEx;
+					//if (this.applicationsettings.InventoryItemsEx == null) Debugger.Break();
+					if(this.applicationsettings.InventoryItemsEx != null)
+					{
+						_InventoryItemsEx = new ObservableCollection<InventoryItemX>(this.applicationsettings.InventoryItemsEx.Select(x => new InventoryItemX(x)));
+					}
+					
+						_InventoryItemsEx.CollectionChanged += InventoryItemsEx_CollectionChanged; 
+					
+					return _InventoryItemsEx; 
+				}
+			set
+			{
+			    if (Equals(value, _InventoryItemsEx)) return;
+				if (value != null)
+					this.applicationsettings.InventoryItemsEx = new ChangeTrackingCollection<DTO.InventoryItemX>(value.Select(x => x.DTO).ToList());
+                _InventoryItemsEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_InventoryItemsEx != null)
+				_InventoryItemsEx.CollectionChanged += InventoryItemsEx_CollectionChanged;               
+				NotifyPropertyChanged("InventoryItemsEx");
+			}
+		}
+        
+        void InventoryItemsEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InventoryItemX itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.InventoryItemsEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InventoryItemX itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.InventoryItemsEx.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

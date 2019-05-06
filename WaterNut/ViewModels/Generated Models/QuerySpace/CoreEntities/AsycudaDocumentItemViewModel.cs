@@ -54,7 +54,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 			RegisterToReceiveMessages<AsycudaDocument>(MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
  
-			RegisterToReceiveMessages<InventoryItems>(MessageToken.CurrentInventoryItemsChanged, OnCurrentInventoryItemsChanged);
+			RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+ 
+			RegisterToReceiveMessages<InventoryItemX>(MessageToken.CurrentInventoryItemXChanged, OnCurrentInventoryItemsExChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -141,13 +143,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(AsycudaDocuments.Contains(CurrentAsycudaDocumentItem.AsycudaDocument) == false) AsycudaDocuments.Add(CurrentAsycudaDocumentItem.AsycudaDocument);
                     //}
-                    //if (e.PropertyName == "AddInventoryItems")
-                   // {
-                   //    if(InventoryItems.Contains(CurrentAsycudaDocumentItem.InventoryItems) == false) InventoryItems.Add(CurrentAsycudaDocumentItem.InventoryItems);
-                    //}
                     //if (e.PropertyName == "AddApplicationSettings")
                    // {
                    //    if(ApplicationSettings.Contains(CurrentAsycudaDocumentItem.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaDocumentItem.ApplicationSettings);
+                    //}
+                    //if (e.PropertyName == "AddInventoryItemsEx")
+                   // {
+                   //    if(InventoryItemX.Contains(CurrentAsycudaDocumentItem.InventoryItemsEx) == false) InventoryItemX.Add(CurrentAsycudaDocumentItem.InventoryItemsEx);
                     //}
                  } 
         internal void OnAsycudaDocumentItemsChanged(object sender, NotificationEventArgs e)
@@ -177,9 +179,28 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentAsycudaDocumentItem = null;
 			}
 	
-		 internal void OnCurrentInventoryItemsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItems> e)
+		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 			{
-			if(ViewCurrentInventoryItems == false) return;
+			if(ViewCurrentApplicationSettings == false) return;
+			if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                 }
+
+				AsycudaDocumentItems.Refresh();
+				NotifyPropertyChanged(x => this.AsycudaDocumentItems);
+                // SendMessage(MessageToken.AsycudaDocumentItemsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentItemsChanged));
+                                          
+                BaseViewModel.Instance.CurrentAsycudaDocumentItem = null;
+			}
+	
+		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemX> e)
+			{
+			if(ViewCurrentInventoryItemsEx == false) return;
 			if (e.Data == null || e.Data.ItemNumber == null)
                 {
                     vloader.FilterExpression = "None";
@@ -199,20 +220,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
-				{
-				if (e.Data == null || e.Data.ApplicationSettingsId == null)
-                {
-                    vloader.FilterExpression = null;
-                }
-                else
-                {
-                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
-                }
-					
-                    AsycudaDocumentItems.Refresh();
-					NotifyPropertyChanged(x => this.AsycudaDocumentItems);
-				}
   
 // Filtering Each Field except IDs
  	
@@ -231,17 +238,32 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              }
          }
  	
-		 bool _viewCurrentInventoryItems = false;
-         public bool ViewCurrentInventoryItems
+		 bool _viewCurrentApplicationSettings = false;
+         public bool ViewCurrentApplicationSettings
          {
              get
              {
-                 return _viewCurrentInventoryItems;
+                 return _viewCurrentApplicationSettings;
              }
              set
              {
-                 _viewCurrentInventoryItems = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentInventoryItems);
+                 _viewCurrentApplicationSettings = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentApplicationSettings);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentInventoryItemsEx = false;
+         public bool ViewCurrentInventoryItemsEx
+         {
+             get
+             {
+                 return _viewCurrentInventoryItemsEx;
+             }
+             set
+             {
+                 _viewCurrentInventoryItemsEx = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentInventoryItemsEx);
                 FilterData();
              }
          }

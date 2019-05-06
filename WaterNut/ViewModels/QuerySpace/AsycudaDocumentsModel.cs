@@ -23,6 +23,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             instance = new AsycudaDocumentsModel
             {
                 ViewCurrentAsycudaDocumentSetEx = true,
+                ViewCurrentApplicationSettings = true,
                 
                 EffectiveRegistrationDateFilter = DateTime.MinValue,
                 StartEffectiveRegistrationDateFilter = DateTime.MinValue,
@@ -51,6 +52,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetChanged);
             RegisterToReceiveMessages<AsycudaDocumentItem>(MessageToken.CurrentAsycudaDocumentItemChanged,
                 OnCurrentAsycudaDocumentItemChanged);
+            RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+            vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
         }
 
         private new void OnCurrentAsycudaDocumentItemChanged(object sender,

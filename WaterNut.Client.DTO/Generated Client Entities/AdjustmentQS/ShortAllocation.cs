@@ -662,6 +662,22 @@ namespace AdjustmentQS.Client.DTO
         private AdjustmentShort _AdjustmentShort;
         private ChangeTrackingCollection<AdjustmentShort> AdjustmentShortChangeTracker { get; set; }
 
+        [DataMember]
+        public AdjustmentDetail AdjustmentDetail
+		{
+		    get { return _AdjustmentDetail; }
+			set
+			{
+			    if (value == _AdjustmentDetail) return;
+				_AdjustmentDetail = value;
+                AdjustmentDetailChangeTracker = _AdjustmentDetail == null ? null
+                    : new ChangeTrackingCollection<AdjustmentDetail> { _AdjustmentDetail };
+				NotifyPropertyChanged();//m => this.AdjustmentDetail
+			}
+		}
+        private AdjustmentDetail _AdjustmentDetail;
+        private ChangeTrackingCollection<AdjustmentDetail> AdjustmentDetailChangeTracker { get; set; }
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

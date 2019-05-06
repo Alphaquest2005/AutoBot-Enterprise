@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Core.Common.UI;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Entities;
+using WaterNut.Interfaces;
 
 namespace WaterNut.DataSpace
 {
@@ -59,8 +60,8 @@ namespace WaterNut.DataSpace
                     {
                         ItemNumber = g.First().ItemNumber,
                         ItemDescription = g.First().ItemDescription,
-                        InventoryItem = g.First().InventoryItem,
-                        TariffCode = g.First().InventoryItem.TariffCode,
+                        InventoryItem =(IInventoryItem) g.First().EntryDataDetailsEx.InventoryItemsEx,
+                        TariffCode = g.First().EntryDataDetailsEx.InventoryItemsEx.TariffCode,
                         Cost = g.First().Cost,
                         Quantity = g.Sum(x =>x.Quantity - x.QtyAllocated),//First().Quantity
                         EntryDataDetails = new List<EntryDataDetailSummary>() { new EntryDataDetailSummary()

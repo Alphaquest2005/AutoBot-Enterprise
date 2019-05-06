@@ -447,6 +447,32 @@ namespace AdjustmentQS.Client.DTO
         private AdjustmentOver _AdjustmentOvers;
         private ChangeTrackingCollection<AdjustmentOver> AdjustmentOversChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails
+		{
+		    get { return _AsycudaDocumentItemEntryDataDetails; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentItemEntryDataDetails)) return;
+				_AsycudaDocumentItemEntryDataDetails = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentItemEntryDataDetails
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocumentItemEntryDataDetail> _AsycudaDocumentItemEntryDataDetails = new ChangeTrackingCollection<AsycudaDocumentItemEntryDataDetail>();
+
+        [DataMember]
+        public ChangeTrackingCollection<ShortAllocation> ShortAllocations
+		{
+		    get { return _ShortAllocations; }
+			set
+			{
+			    if (Equals(value, _ShortAllocations)) return;
+				_ShortAllocations = value;
+				NotifyPropertyChanged();//m => this.ShortAllocations
+			}
+		}
+        private ChangeTrackingCollection<ShortAllocation> _ShortAllocations = new ChangeTrackingCollection<ShortAllocation>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

@@ -335,20 +335,20 @@ namespace AdjustmentQS.Client.DTO
         private ChangeTrackingCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = new ChangeTrackingCollection<AsycudaSalesAllocation>();
 
         [DataMember]
-        public InventoryItem InventoryItem
+        public InventoryItemsEx InventoryItemsEx
 		{
-		    get { return _InventoryItem; }
+		    get { return _InventoryItemsEx; }
 			set
 			{
-			    if (value == _InventoryItem) return;
-				_InventoryItem = value;
-                InventoryItemChangeTracker = _InventoryItem == null ? null
-                    : new ChangeTrackingCollection<InventoryItem> { _InventoryItem };
-				NotifyPropertyChanged();//m => this.InventoryItem
+			    if (value == _InventoryItemsEx) return;
+				_InventoryItemsEx = value;
+                InventoryItemsExChangeTracker = _InventoryItemsEx == null ? null
+                    : new ChangeTrackingCollection<InventoryItemsEx> { _InventoryItemsEx };
+				NotifyPropertyChanged();//m => this.InventoryItemsEx
 			}
 		}
-        private InventoryItem _InventoryItem;
-        private ChangeTrackingCollection<InventoryItem> InventoryItemChangeTracker { get; set; }
+        private InventoryItemsEx _InventoryItemsEx;
+        private ChangeTrackingCollection<InventoryItemsEx> InventoryItemsExChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

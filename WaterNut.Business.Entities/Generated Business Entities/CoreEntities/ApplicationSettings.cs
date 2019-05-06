@@ -21,8 +21,10 @@ namespace CoreEntities.Business.Entities
     {
         partial void AutoGenStartUp() //ApplicationSettings()
         {
-            this.InventoryItems = new List<InventoryItems>();
             this.AsycudaDocumentSetEx = new List<AsycudaDocumentSetEx>();
+            this.AsycudaDocument = new List<AsycudaDocument>();
+            this.AsycudaDocumentItem = new List<AsycudaDocumentItem>();
+            this.InventoryItemsEx = new List<InventoryItemX>();
         }
 
         [DataMember]
@@ -551,9 +553,13 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _isactive;
         [DataMember]
-        public List<InventoryItems> InventoryItems { get; set; }
-        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
+        [DataMember]
+        public List<AsycudaDocument> AsycudaDocument { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentItem> AsycudaDocumentItem { get; set; }
+        [DataMember]
+        public List<InventoryItemX> InventoryItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

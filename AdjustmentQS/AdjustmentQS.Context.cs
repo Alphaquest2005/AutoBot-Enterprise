@@ -25,7 +25,6 @@ namespace AdjustmentQS
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<InventoryItem> InventoryItems { get; set; }
         public DbSet<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         public DbSet<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas { get; set; }
         public DbSet<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryDatas { get; set; }
@@ -35,8 +34,10 @@ namespace AdjustmentQS
         public DbSet<EntryDataDetail> EntryDataDetails { get; set; }
         public DbSet<ShortAllocation> ShortAllocations { get; set; }
         public DbSet<xcuda_Item> xcuda_Item { get; set; }
-        public DbSet<InventoryItemAlia> InventoryItemAlias { get; set; }
         public DbSet<AdjustmentDetail> AdjustmentDetails { get; set; }
         public DbSet<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
+        public DbSet<AsycudaDocumentItemLastItemCost> AsycudaDocumentItemLastItemCosts { get; set; }
+        public DbSet<InventoryItemAliasEx> InventoryItemAliasExes { get; set; }
+        public DbSet<InventoryItemsEx> InventoryItemsExes { get; set; }
     }
 }

@@ -62,6 +62,7 @@
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasRequired(t => t.AdjustmentShort).WithMany(t =>(ICollection<ShortAllocation>) t.ShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
+              this.HasRequired(t => t.AdjustmentDetail).WithMany(t =>(ICollection<ShortAllocation>) t.ShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

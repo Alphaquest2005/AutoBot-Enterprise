@@ -38,8 +38,8 @@
               this.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(4);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<AdjustmentOver>) t.AdjustmentOvers).HasForeignKey(d => d.EntryDataId);
-              this.HasRequired(t => t.InventoryItem).WithMany(t =>(ICollection<AdjustmentOver>) t.AdjustmentOvers).HasForeignKey(d => d.ItemNumber);
               this.HasRequired(t => t.AdjustmentDetail).WithOptional(t => (AdjustmentOver)t.AdjustmentOvers);
+              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<AdjustmentOver>) t.AdjustmentOvers).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
               this.HasMany(t => t.AsycudaDocumentItemEntryDataDetails).WithRequired(t => (AdjustmentOver)t.AdjustmentOver);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

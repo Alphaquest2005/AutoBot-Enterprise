@@ -14,33 +14,9 @@ using System.Collections.ObjectModel;
 namespace WaterNut.Interfaces
 {
 
-		public partial interface ITariffUnit //AllocationDS|InventoryItems
+		public partial interface ITariffUnit //InventoryDS|InventoryItem
 		{
 
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		
 		

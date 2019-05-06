@@ -233,6 +233,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
         public async Task CreateOPS()
         {
+            if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx == null)
+            {
+                MessageBox.Show("Please Select Asycuda Document Set!");
+                return;
+            }
             StatusModel.Timer("Creating IM9");
             using (var ctx = new AdjustmentOverRepository())
             {

@@ -667,7 +667,7 @@ namespace AllocationDS.Business.Entities
         [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
-        public InventoryItems InventoryItem { get; set; }
+        public InventoryItem InventoryItemsEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

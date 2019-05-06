@@ -19,6 +19,12 @@ namespace AdjustmentQS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class AdjustmentDetail : BaseEntity<AdjustmentDetail>, ITrackable 
     {
+        partial void AutoGenStartUp() //AdjustmentDetail()
+        {
+            this.AsycudaDocumentItemEntryDataDetails = new List<AsycudaDocumentItemEntryDataDetail>();
+            this.ShortAllocations = new List<ShortAllocation>();
+        }
+
         [DataMember]
         public int EntryDataDetailsId 
         {
@@ -460,6 +466,10 @@ namespace AdjustmentQS.Business.Entities
         public AdjustmentShort AdjustmentShorts { get; set; }
         [DataMember]
         public AdjustmentOver AdjustmentOvers { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
+        [DataMember]
+        public List<ShortAllocation> ShortAllocations { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -206,8 +206,9 @@ namespace CoreEntities.Client.Repositories
                      // SubItems = new System.Collections.ObjectModel.ObservableCollection<SubItems>(res.SubItems.Select(y => new SubItems(y))),    
                      // PreviousItems = new System.Collections.ObjectModel.ObservableCollection<EntryPreviousItems>(res.PreviousItems.Select(y => new EntryPreviousItems(y))),    
                      // xcuda_Supplementary_unit = new System.Collections.ObjectModel.ObservableCollection<xcuda_Supplementary_unit>(res.xcuda_Supplementary_unit.Select(y => new xcuda_Supplementary_unit(y))),    
-                  // InventoryItems = (res.InventoryItems != null?new InventoryItems(res.InventoryItems): null),    
-                     // AsycudaDocumentItemEntryDataDetails = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItemEntryDataDetails>(res.AsycudaDocumentItemEntryDataDetails.Select(y => new AsycudaDocumentItemEntryDataDetails(y)))    
+                     // AsycudaDocumentItemEntryDataDetails = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItemEntryDataDetails>(res.AsycudaDocumentItemEntryDataDetails.Select(y => new AsycudaDocumentItemEntryDataDetails(y))),    
+                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
+                  // InventoryItemsEx = (res.InventoryItemsEx != null?new InventoryItemX(res.InventoryItemsEx): null)    
                   };
                     }
                     else

@@ -64,5 +64,6 @@ namespace AdjustmentQS
         public int ApplicationSettingsId { get; set; }
     
         public virtual AdjustmentShort AdjustmentShort { get; set; }
+        public virtual AdjustmentDetail AdjustmentDetail { get; set; }
     }
 }

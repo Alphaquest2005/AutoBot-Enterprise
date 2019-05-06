@@ -72,7 +72,7 @@
             <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
         </UI>
         <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Ez Asycuda Toolkit" />
-        <Property Id="WixShellExecTarget" Value="[#WaterNut.exe]" />
+        <Property Id="WixShellExecTarget" Value="[#AutoWaterNut.exe]" />
         <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
         <UIRef Id="WixUI_Common" />
     </Fragment>
@@ -88,13 +88,13 @@
 
     <ComponentGroup Id="INSTALLFOLDER_files" Directory="INSTALLFOLDER">
 
-      <Component Id="WaterNut.exe" Guid="21380e15-9d8f-4510-ac21-8f614c524373">
-        <File Id="WaterNut.exe" Name="WaterNut.exe" Source="$(var.WaterNut_TargetDir)WaterNut.exe" />
+      <Component Id="AutoWaterNut.exe" Guid="21380e15-9d8f-4510-ac21-8f614c524373">
+        <File Id="AutoWaterNut.exe" Name="AutoWaterNut.exe" Source="$(var.WaterNut_TargetDir)AutoWaterNut.exe" />
         <Shortcut Id="ShortCut" Name="Ez_Asycuda_Toolkit" Advertise="yes" Directory="ShortCutDir" WorkingDirectory="INSTALLFOLDER" Icon="icon.ico" />
         <RemoveFolder Id="RemoveShortCut" Directory="ShortCutDir" On="uninstall" />
       </Component>
-      <Component Id="WaterNut.exe.config" Guid="ad493cf2-549f-4b2f-933e-2c6751c7f731">
-        <File Id="WaterNut.exe.config" Name="WaterNut.exe.config" Source="$(var.WaterNut_TargetDir)WaterNut.exe.config" />
+      <Component Id="AutoWaterNut.exe.config" Guid="ad493cf2-549f-4b2f-933e-2c6751c7f731">
+        <File Id="AutoWaterNut.exe.config" Name="AutoWaterNut.exe.config" Source="$(var.WaterNut_TargetDir)AutoWaterNut.exe.config" />
       </Component>
       <Component Id="EntityFramework.dll" Guid="c89e579e-8caf-45f1-88db-f3fdb5d71634">
         <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.WaterNut_TargetDir)EntityFramework.dll" />
@@ -273,11 +273,11 @@
       <Component Id="pdfbox_1.8.7.dll" Guid="dd8bf6ab-4d36-41e1-9198-0046ec07110a">
         <File Id="pdfbox_1.8.7.dll" Name="pdfbox-1.8.7.dll" Source="$(var.WaterNut_TargetDir)pdfbox-1.8.7.dll" />
       </Component>
-      <Component Id="WCFConsoleHost.exe" Guid="41e1d72f-7034-496a-a2de-abdbf9bf1466">
-        <File Id="WCFConsoleHost.exe" Name="WCFConsoleHost.exe" Source="$(var.WCFConsoleHost_TargetDir)WCFConsoleHost.exe" />
+      <Component Id="AutoWaterNutServer.exe" Guid="41e1d72f-7034-496a-a2de-abdbf9bf1466">
+        <File Id="AutoWaterNutServer.exe" Name="AutoWaterNutServer.exe" Source="$(var.WCFConsoleHost_TargetDir)AutoWaterNutServer.exe" />
       </Component>
-      <Component Id="WCFConsoleHost.exe.config" Guid="f1e28e70-a177-4e85-ad34-e87b2ada6b0f">
-        <File Id="WCFConsoleHost.exe.config" Name="WCFConsoleHost.exe.config" Source="$(var.WCFConsoleHost_TargetDir)WCFConsoleHost.exe.config" />
+      <Component Id="AutoWaterNutServer.exe.config" Guid="f1e28e70-a177-4e85-ad34-e87b2ada6b0f">
+        <File Id="AutoWaterNutServer.exe.config" Name="AutoWaterNutServer.exe.config" Source="$(var.WCFConsoleHost_TargetDir)AutoWaterNutServer.exe.config" />
       </Component>
       <Component Id="WaterNut.Business.Bootstraper.dll" Guid="e6c111c2-16fb-43b4-bc3d-0562980478ba">
         <File Id="WaterNut.Business.Bootstraper.dll" Name="WaterNut.Business.Bootstraper.dll" Source="$(var.WaterNut.Business.Bootstraper_TargetDir)WaterNut.Business.Bootstraper.dll" />

@@ -28,9 +28,9 @@ namespace WaterNut.DataSpace.AllocationDS.DataModels
         }
 
        //Search Entities 
-        public async Task<IEnumerable<InventoryItems>> SearchInventoryItems(List<string> lst, List<string> includeLst = null )
+        public async Task<IEnumerable<InventoryItem>> SearchInventoryItems(List<string> lst, List<string> includeLst = null )
         {
-            using (var ctx = new InventoryItemsService())
+            using (var ctx = new InventoryItemService())
             {
                 return await ctx.GetInventoryItemsByExpressionLst(lst, includeLst).ConfigureAwait(false);
             }

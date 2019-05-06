@@ -48,6 +48,7 @@ using EntryDataDetailsEx = EntryDataQS.Business.Entities.EntryDataDetailsEx;
 using EntryDataDetailsService = EntryDataDS.Business.Services.EntryDataDetailsService;
 using EntryDataService = EntryDataDS.Business.Services.EntryDataService;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
+using InventoryItem = InventoryDS.Business.Entities.InventoryItem;
 using WaterNutDBEntities = WaterNut.DataLayer.WaterNutDBEntities;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using xcuda_ItemService = DocumentItemDS.Business.Services.xcuda_ItemService;
@@ -70,10 +71,8 @@ namespace WaterNut.DataSpace
 
 
             instance = new BaseDataModel();
-            using (var ctx = new CoreEntitiesContext())
-            {
-                instance.CurrentApplicationSettings = ctx.ApplicationSettings.FirstOrDefault();
-            }
+           
+            instance.CurrentApplicationSettings = null;
 
             Initialization = InitializationAsync();
         }
@@ -122,8 +121,8 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        public static DataCache<InventoryItem> _inventoryCache;
-        public static DataCache<TariffCode> _tariffCodeCache;
+        //public static DataCache<InventoryItem> _inventoryCache;
+        //public static DataCache<TariffCode> _tariffCodeCache;
         public static DataCache<Customs_Procedure> _customs_ProcedureCache;
         public static DataCache<Document_Type> _document_TypeCache;
      
@@ -292,10 +291,12 @@ namespace WaterNut.DataSpace
                     {
                         if (_itemNumber != null)
                         {
-                            InventoryItem = ctx.GetInventoryItemByKey(_itemNumber, new List<string>()
+                            InventoryItem = ctx.GetInventoryItemsByExpression(
+                                $"ItemNumber == \"{_itemNumber}\" && ApplicationSettingsId == {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}"
+                                , new List<string>()
                             {
                                 "TariffCodes.TariffCategory.TariffCategoryCodeSuppUnits.TariffSupUnitLkp"
-                            } ).Result;
+                            }, false ).Result.FirstOrDefault();
                         }
                         else
                         {
@@ -344,7 +345,7 @@ namespace WaterNut.DataSpace
             public double Weight { get; set; }
 
             public double InternalFreight { get; set; }
-            public InventoryItemsEx InventoryItemEx { get; set; }
+            public global::EntryDataDS.Business.Entities.InventoryItemsEx InventoryItemEx { get; set; }
         }
 
 

@@ -9,6 +9,8 @@ namespace CoreEntities.Client.Contracts
         [OperationContract]
         bool ValidateInstallation();
 
+        [OperationContract]
+        void SetCurrentApplicationSettings(int applicationSettingId);
     }
 }
 

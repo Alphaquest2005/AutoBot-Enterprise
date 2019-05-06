@@ -104,6 +104,44 @@ namespace AdjustmentQS.Client.Entities
             }
 
       }
+        public string AdjustmentDetailEntityName
+        {
+            get
+            {
+                return this.AdjustmentDetail == null ? "" : this.AdjustmentDetail.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (AdjustmentDetailClient ctx = new AdjustmentDetailClient())
+                    {
+                        var dto = ctx.GetAdjustmentDetails().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.AdjustmentDetail = (AdjustmentDetail)new AdjustmentDetail().CreateEntityFromString(value);
+							
+							this.EntryDataDetailsId = Convert.ToInt32(this.AdjustmentDetail.EntryDataDetailsId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddAdjustmentDetail");
+                        }
+                        else
+                        {
+                            var obj = new AdjustmentDetail(dto);
+                           if (this.AdjustmentDetail == null || this.AdjustmentDetail.EntityId != obj.EntityId) this.AdjustmentDetail = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

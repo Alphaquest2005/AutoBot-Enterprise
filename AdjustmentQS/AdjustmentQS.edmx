@@ -63,25 +63,6 @@
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="TaxAmount" Type="float" />
         </EntityType>
-        <EntityType Name="InventoryItemAlias">
-          <Key>
-            <PropertyRef Name="AliasId" />
-          </Key>
-          <Property Name="AliasId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
-        </EntityType>
-        <EntityType Name="InventoryItems">
-          <Key>
-            <PropertyRef Name="ItemNumber" />
-          </Key>
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Category" Type="nvarchar" MaxLength="60" />
-          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
-        </EntityType>
         <EntityType Name="xcuda_Item">
           <Key>
             <PropertyRef Name="Item_Id" />
@@ -114,6 +95,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
         <EntityType Name="AdjustmentDetails">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -151,6 +140,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentEx' does not ha
           <Key>
             
             <PropertyRef Name="InvoiceNo" />
+            
           </Key>
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Type" Type="varchar" MaxLength="5" />
@@ -168,6 +158,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
         <EntityType Name="AdjustmentOvers">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -199,6 +197,22 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
         <EntityType Name="AdjustmentShortAllocations">
           <Key>
             <PropertyRef Name="AllocationId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="TotalValue" Type="float" Nullable="false" />
@@ -254,6 +268,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
         <EntityType Name="AdjustmentShorts">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -298,6 +320,44 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="Quantity" Type="float" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemLastItemCost' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentItemLastItemCost">
+          <Key>
+            <PropertyRef Name="applicationsettingsid" />
+          </Key>
+          <Property Name="applicationsettingsid" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="LocalItemCost" Type="float" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemAliasEx">
+          <Key>
+            <PropertyRef Name="AliasId" />
+          </Key>
+          <Property Name="AliasId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="nvarchar" MaxLength="50" />
+          <Property Name="SuppQty" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -324,41 +384,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_InventoryItemAlias_InventoryItems">
-          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="InventoryItemAlias" Type="Self.InventoryItemAlias" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItems">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="InventoryItemAlias">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PurchaseOrderDetails_InventoryItems">
-          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItems">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="EntryDataDetails">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaSalesAllocations" EntityType="Self.AsycudaSalesAllocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InventoryItemAlias" EntityType="Self.InventoryItemAlias" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Item" EntityType="Self.xcuda_Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AdjustmentDetails" EntityType="Self.AdjustmentDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -528,6 +558,34 @@ FROM [dbo].[AdjustmentShorts] AS [AdjustmentShorts]</DefiningQuery>
 [AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity]
 FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="AsycudaDocumentItemLastItemCost" EntityType="Self.AsycudaDocumentItemLastItemCost" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaDocumentItemLastItemCost].[applicationsettingsid] AS [applicationsettingsid], 
+[AsycudaDocumentItemLastItemCost].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentItemLastItemCost].[LocalItemCost] AS [LocalItemCost]
+FROM [dbo].[AsycudaDocumentItemLastItemCost] AS [AsycudaDocumentItemLastItemCost]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[InventoryItemAliasEx].[AliasId] AS [AliasId], 
+[InventoryItemAliasEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[InventoryItemAliasEx].[InventoryItemId] AS [InventoryItemId], 
+[InventoryItemAliasEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemAliasEx].[AliasName] AS [AliasName]
+FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemsEx].[Description] AS [Description], 
+[InventoryItemsEx].[Category] AS [Category], 
+[InventoryItemsEx].[TariffCode] AS [TariffCode], 
+[InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+[InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+[InventoryItemsEx].[SuppQty] AS [SuppQty], 
+[InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_AsycudaSalesAllocations_EntryDataDetails" Association="Self.FK_AsycudaSalesAllocations_EntryDataDetails">
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
             <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
@@ -536,36 +594,12 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
             <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
           </AssociationSet>
-          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems" Association="Self.FK_InventoryItemAlias_InventoryItems">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PurchaseOrderDetails_InventoryItems" Association="Self.FK_PurchaseOrderDetails_InventoryItems">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
-          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="InventoryItem">
-          <Key>
-            <PropertyRef Name="ItemNumber" />
-          </Key>
-          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IInventoryItem.ItemNumber</a:ImplementsProperty></Property>
-          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IInventoryItem.Description</a:ImplementsProperty></Property>
-          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
-          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IInventoryItem.TariffCode</a:ImplementsProperty></Property>
-          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
-          <NavigationProperty Name="AdjustmentOvers" Relationship="Model.InventoryItemAdjustmentOver" FromRole="InventoryItem" ToRole="AdjustmentOver" />
-          <NavigationProperty Name="EntryDataDetails" Relationship="Model.FK_PurchaseOrderDetails_InventoryItems" FromRole="InventoryItem" ToRole="EntryDataDetail" />
-          <NavigationProperty Name="InventoryItemAlias" Relationship="Model.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItem" ToRole="InventoryItemAlia" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem</a:DomainInterfaceProperty>
-        </EntityType>
         <EntityContainer Name="AdjustmentQS" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="InventoryItems" EntityType="Self.InventoryItem" />
           <EntitySet Name="AsycudaSalesAllocations" EntityType="Model.AsycudaSalesAllocation" />
           <EntitySet Name="AsycudaDocumentEntryDatas" EntityType="Model.AsycudaDocumentEntryData" />
           <EntitySet Name="AsycudaDocumentSetEntryDatas" EntityType="Model.AsycudaDocumentSetEntryData" />
@@ -588,18 +622,10 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
             <End Role="AdjustmentEx" EntitySet="AdjustmentExes" />
             <End Role="AdjustmentShort" EntitySet="AdjustmentShorts" />
           </AssociationSet>
-          <AssociationSet Name="InventoryItemAdjustmentOver" Association="Model.InventoryItemAdjustmentOver">
-            <End Role="InventoryItem" EntitySet="InventoryItems" />
-            <End Role="AdjustmentOver" EntitySet="AdjustmentOvers" />
-          </AssociationSet>
           <EntitySet Name="EntryDataDetails" EntityType="Model.EntryDataDetail" />
           <AssociationSet Name="FK_AsycudaSalesAllocations_EntryDataDetails" Association="Model.FK_AsycudaSalesAllocations_EntryDataDetails">
             <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
             <End Role="AsycudaSalesAllocation" EntitySet="AsycudaSalesAllocations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PurchaseOrderDetails_InventoryItems" Association="Model.FK_PurchaseOrderDetails_InventoryItems">
-            <End Role="InventoryItem" EntitySet="InventoryItems" />
-            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
           </AssociationSet>
           <EntitySet Name="ShortAllocations" EntityType="Model.ShortAllocation" />
           <AssociationSet Name="AdjustmentShortAdjustmentShortAllocation" Association="Model.AdjustmentShortAdjustmentShortAllocation">
@@ -610,11 +636,6 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <AssociationSet Name="FK_AsycudaSalesAllocations_xcuda_Item" Association="Model.FK_AsycudaSalesAllocations_xcuda_Item">
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
             <End Role="AsycudaSalesAllocation" EntitySet="AsycudaSalesAllocations" />
-          </AssociationSet>
-          <EntitySet Name="InventoryItemAlias" EntityType="Model.InventoryItemAlia" />
-          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems" Association="Model.FK_InventoryItemAlias_InventoryItems">
-            <End Role="InventoryItem" EntitySet="InventoryItems" />
-            <End Role="InventoryItemAlia" EntitySet="InventoryItemAlias" />
           </AssociationSet>
           <EntitySet Name="AdjustmentDetails" EntityType="Model.AdjustmentDetail" />
           <AssociationSet Name="AdjustmentExAdjustmentDetail" Association="Model.AdjustmentExAdjustmentDetail">
@@ -637,6 +658,29 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <AssociationSet Name="AdjustmentShortAsycudaDocumentItemEntryDataDetail" Association="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail">
             <End Role="AdjustmentShort" EntitySet="AdjustmentShorts" />
             <End Role="AsycudaDocumentItemEntryDataDetail" EntitySet="AsycudaDocumentItemEntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentDetailAsycudaDocumentItemEntryDataDetail" Association="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail">
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+            <End Role="AsycudaDocumentItemEntryDataDetail" EntitySet="AsycudaDocumentItemEntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="AdjustmentDetailShortAllocation" Association="Model.AdjustmentDetailShortAllocation">
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+            <End Role="ShortAllocation" EntitySet="ShortAllocations" />
+          </AssociationSet>
+          <EntitySet Name="AsycudaDocumentItemLastItemCosts" EntityType="Model.AsycudaDocumentItemLastItemCost" />
+          <EntitySet Name="InventoryItemAliasExes" EntityType="Model.InventoryItemAliasEx" />
+          <EntitySet Name="InventoryItemsExes" EntityType="Model.InventoryItemsEx" />
+          <AssociationSet Name="InventoryItemsExInventoryItemAliasEx" Association="Model.InventoryItemsExInventoryItemAliasEx">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsExes" />
+            <End Role="InventoryItemAliasEx" EntitySet="InventoryItemAliasExes" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItemsExEntryDataDetail" Association="Model.InventoryItemsExEntryDataDetail">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsExes" />
+            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItemsExAdjustmentOver" Association="Model.InventoryItemsExAdjustmentOver">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsExes" />
+            <End Role="AdjustmentOver" EntitySet="AdjustmentOvers" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocation">
@@ -740,7 +784,6 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AdjustmentEx" Relationship="Model.AdjustmentExAdjustmentOver" FromRole="AdjustmentOver" ToRole="AdjustmentEx" />
-          <NavigationProperty Name="InventoryItem" Relationship="Model.InventoryItemAdjustmentOver" FromRole="AdjustmentOver" ToRole="InventoryItem" />
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -749,6 +792,7 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentOverAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentOver" ToRole="AsycudaDocumentItemEntryDataDetail" />
           <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAdjustmentOver" FromRole="AdjustmentOver" ToRole="AdjustmentDetail" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExAdjustmentOver" FromRole="AdjustmentOver" ToRole="InventoryItemsEx" />
         </EntityType>
         <EntityType Name="AdjustmentShort">
           <Key>
@@ -808,18 +852,6 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="InventoryItemAdjustmentOver">
-          <End Type="Model.InventoryItem" Role="InventoryItem" Multiplicity="1" />
-          <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItem">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="AdjustmentOver">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="EntryDataDetail">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
@@ -842,13 +874,13 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <NavigationProperty Name="AsycudaSalesAllocations" Relationship="Model.FK_AsycudaSalesAllocations_EntryDataDetails" FromRole="EntryDataDetail" ToRole="AsycudaSalesAllocation" />
-          <NavigationProperty Name="InventoryItem" Relationship="Model.FK_PurchaseOrderDetails_InventoryItems" FromRole="EntryDataDetail" ToRole="InventoryItem" />
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="TaxAmount" Type="Double" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExEntryDataDetail" FromRole="EntryDataDetail" ToRole="InventoryItemsEx" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="0..1">
@@ -861,20 +893,6 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
             </Principal>
             <Dependent Role="AsycudaSalesAllocation">
               <PropertyRef Name="EntryDataDetailsId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_PurchaseOrderDetails_InventoryItems">
-          <End Type="Model.InventoryItem" Role="InventoryItem" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItem">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="EntryDataDetail">
-              <PropertyRef Name="ItemNumber" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -931,6 +949,7 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="ShortAllocation" ToRole="AdjustmentDetail" />
         </EntityType>
         <Association Name="AdjustmentShortAdjustmentShortAllocation">
           <End Type="Model.AdjustmentShort" Role="AdjustmentShort" Multiplicity="1" />
@@ -984,29 +1003,6 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="InventoryItemAlia">
-          <Key>
-            <PropertyRef Name="AliasId" />
-          </Key>
-          <Property Name="AliasId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="InventoryItem" Relationship="Model.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlia" ToRole="InventoryItem" />
-        </EntityType>
-        <Association Name="FK_InventoryItemAlias_InventoryItems">
-          <End Type="Model.InventoryItem" Role="InventoryItem" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="Model.InventoryItemAlia" Role="InventoryItemAlia" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItem">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="InventoryItemAlia">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="AdjustmentDetail">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
@@ -1043,6 +1039,8 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <NavigationProperty Name="AdjustmentOvers" Relationship="Model.AdjustmentDetailAdjustmentOver" FromRole="AdjustmentDetail" ToRole="AdjustmentOver" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentDetail" ToRole="AsycudaDocumentItemEntryDataDetail" />
+          <NavigationProperty Name="ShortAllocations" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="AdjustmentDetail" ToRole="ShortAllocation" />
         </EntityType>
         <Association Name="AdjustmentExAdjustmentDetail">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -1069,6 +1067,7 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
           <NavigationProperty Name="AdjustmentShort" Relationship="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail" FromRole="AsycudaDocumentItemEntryDataDetail" ToRole="AdjustmentShort" />
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" />
+          <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" FromRole="AsycudaDocumentItemEntryDataDetail" ToRole="AdjustmentDetail" />
         </EntityType>
         <Association Name="AdjustmentOverAsycudaDocumentItemEntryDataDetail">
           <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="1" />
@@ -1118,24 +1117,114 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="AdjustmentDetailAsycudaDocumentItemEntryDataDetail">
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="1" />
+          <End Type="Model.AsycudaDocumentItemEntryDataDetail" Role="AsycudaDocumentItemEntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentItemEntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AdjustmentDetailShortAllocation">
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="1" />
+          <End Type="Model.ShortAllocation" Role="ShortAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdjustmentDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="ShortAllocation">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AsycudaDocumentItemLastItemCost">
+          <Key>
+            <PropertyRef Name="applicationsettingsid" />
+          </Key>
+          <Property Name="applicationsettingsid" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LocalItemCost" Type="Double" />
+        </EntityType>
+        <EntityType Name="InventoryItemAliasEx">
+          <Key>
+            <PropertyRef Name="AliasId" />
+          </Key>
+          <Property Name="AliasId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExInventoryItemAliasEx" FromRole="InventoryItemAliasEx" ToRole="InventoryItemsEx" />
+        </EntityType>
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SuppQty" Type="Double" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItemAliasExes" Relationship="Model.InventoryItemsExInventoryItemAliasEx" FromRole="InventoryItemsEx" ToRole="InventoryItemAliasEx" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="Model.InventoryItemsExEntryDataDetail" FromRole="InventoryItemsEx" ToRole="EntryDataDetail" />
+          <NavigationProperty Name="AdjustmentOvers" Relationship="Model.InventoryItemsExAdjustmentOver" FromRole="InventoryItemsEx" ToRole="AdjustmentOver" />
+        </EntityType>
+        <Association Name="InventoryItemsExInventoryItemAliasEx">
+          <End Type="Model.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="Model.InventoryItemAliasEx" Role="InventoryItemAliasEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="InventoryItemAliasEx">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsExEntryDataDetail">
+          <End Type="Model.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="EntryDataDetail">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsExAdjustmentOver">
+          <End Type="Model.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="AdjustmentOver">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="AdjustmentQS">
-          <EntitySetMapping Name="InventoryItems">
-            <EntityTypeMapping TypeName="Model.InventoryItem">
-              <MappingFragment StoreEntitySet="InventoryItems">
-                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
-                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AsycudaSalesAllocations">
             <EntityTypeMapping TypeName="Model.AsycudaSalesAllocation">
               <MappingFragment StoreEntitySet="AsycudaSalesAllocations">
@@ -1357,15 +1446,6 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="InventoryItemAlias">
-            <EntityTypeMapping TypeName="Model.InventoryItemAlia">
-              <MappingFragment StoreEntitySet="InventoryItemAlias">
-                <ScalarProperty Name="AliasName" ColumnName="AliasName" />
-                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
-                <ScalarProperty Name="AliasId" ColumnName="AliasId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AdjustmentDetails">
             <EntityTypeMapping TypeName="Model.AdjustmentDetail">
               <MappingFragment StoreEntitySet="AdjustmentDetails">
@@ -1410,6 +1490,40 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
                 <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentItemLastItemCosts">
+            <EntityTypeMapping TypeName="Model.AsycudaDocumentItemLastItemCost">
+              <MappingFragment StoreEntitySet="AsycudaDocumentItemLastItemCost">
+                <ScalarProperty Name="LocalItemCost" ColumnName="LocalItemCost" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="applicationsettingsid" ColumnName="applicationsettingsid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemAliasExes">
+            <EntityTypeMapping TypeName="Model.InventoryItemAliasEx">
+              <MappingFragment StoreEntitySet="InventoryItemAliasEx">
+                <ScalarProperty Name="AliasName" ColumnName="AliasName" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AliasId" ColumnName="AliasId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemsExes">
+            <EntityTypeMapping TypeName="Model.InventoryItemsEx">
+              <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
+                <ScalarProperty Name="SuppUnitCode2" ColumnName="SuppUnitCode2" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

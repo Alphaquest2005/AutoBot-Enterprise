@@ -203,7 +203,8 @@ namespace AdjustmentQS.Client.Repositories
                             return new AsycudaDocumentItemEntryDataDetail(res)
                     {
                   // AdjustmentOver = (res.AdjustmentOver != null?new AdjustmentOver(res.AdjustmentOver): null),    
-                  // AdjustmentShort = (res.AdjustmentShort != null?new AdjustmentShort(res.AdjustmentShort): null)    
+                  // AdjustmentShort = (res.AdjustmentShort != null?new AdjustmentShort(res.AdjustmentShort): null),    
+                  // AdjustmentDetail = (res.AdjustmentDetail != null?new AdjustmentDetail(res.AdjustmentDetail): null)    
                   };
                     }
                     else

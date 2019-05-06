@@ -13,9 +13,9 @@ namespace AdjustmentQS.Client.Services
 {
     public partial class AdjustmentShortClient
     {
-        public async Task AutoMatch()
+        public async Task AutoMatch(int applicationSettingsId)
         {
-            await Channel.AutoMatch().ConfigureAwait(false);
+            await Channel.AutoMatch(applicationSettingsId).ConfigureAwait(false);
         }
 
         public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)

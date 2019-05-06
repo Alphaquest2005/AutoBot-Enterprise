@@ -67,11 +67,11 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<xcuda_Supplementary_unit> xcuda_Supplementary_unit { get; set; }
      
-        public DbSet<InventoryItemAlias> InventoryItemAlias { get; set; }
-     
-        public DbSet<InventoryItems> InventoryItems { get; set; }
-     
         public DbSet<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails { get; set; }
+     
+        public DbSet<InventoryItemX> InventoryItemX { get; set; }
+     
+        public DbSet<InventoryItemAliasEx> InventoryItemAliasEx { get; set; }
      
 
 
@@ -97,11 +97,11 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new xcuda_Supplementary_unitMap());
          
-            modelBuilder.Configurations.Add(new InventoryItemAliasMap());
-         
-            modelBuilder.Configurations.Add(new InventoryItemsMap());
-         
             modelBuilder.Configurations.Add(new AsycudaDocumentItemEntryDataDetailsMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemXMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemAliasExMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

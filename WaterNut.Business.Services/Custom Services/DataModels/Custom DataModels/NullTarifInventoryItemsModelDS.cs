@@ -8,6 +8,7 @@ using InventoryDS.Business.Entities;
 using InventoryDS.Business.Services;
 using TrackableEntities;
 using TrackableEntities.EF6;
+using InventoryItemService = InventoryDS.Business.Services.InventoryItemService;
 
 
 namespace WaterNut.DataSpace
@@ -36,7 +37,7 @@ namespace WaterNut.DataSpace
              {
                  foreach (string item in lst)
                  {
-                     var itm = await ctx.GetInventoryItemByKey(item).ConfigureAwait(false);
+                     var itm = (await ctx.GetInventoryItemsByExpression($"ItemNumber == \"{item}\"").ConfigureAwait(false)).FirstOrDefault();
                      itm.TariffCode = tariffCode;
                      await ctx.UpdateInventoryItem(itm).ConfigureAwait(false);
                  }

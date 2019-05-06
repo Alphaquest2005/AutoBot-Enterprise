@@ -202,7 +202,8 @@ namespace AdjustmentQS.Client.Repositories
                         {
                             return new ShortAllocation(res)
                     {
-                  // AdjustmentShort = (res.AdjustmentShort != null?new AdjustmentShort(res.AdjustmentShort): null)    
+                  // AdjustmentShort = (res.AdjustmentShort != null?new AdjustmentShort(res.AdjustmentShort): null),    
+                  // AdjustmentDetail = (res.AdjustmentDetail != null?new AdjustmentDetail(res.AdjustmentDetail): null)    
                   };
                     }
                     else

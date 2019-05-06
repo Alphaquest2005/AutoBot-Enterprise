@@ -931,7 +931,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                         Suplementary_Quantity = z.Suplementary_Quantity
                                     }).ToList(),
                             TariffSupUnitLkps =
-                                c.x.EntryDataDetails.InventoryItem.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList()
+                                c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList()
                             //.Select(x => (ITariffSupUnitLkp)x)
 
                         }

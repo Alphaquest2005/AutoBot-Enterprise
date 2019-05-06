@@ -8,6 +8,8 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
 using Core.Common.Contracts;
+using CoreEntities.Business.Entities;
+using AsycudaDocument = AllocationDS.Business.Entities.AsycudaDocument;
 using ConcurrencyMode = System.ServiceModel.ConcurrencyMode;
 
 
@@ -70,9 +72,9 @@ namespace AllocationQS.Business.Services
             await WaterNut.DataSpace.AllocationsModel.Instance.ClearAllocations(allst).ConfigureAwait(false);
         }
 
-       public async Task ClearAllAllocations()
+       public async Task ClearAllAllocations(int appSettings)
        {
-           await WaterNut.DataSpace.AllocationsModel.Instance.ClearAllAllocations().ConfigureAwait(false);
+           await WaterNut.DataSpace.AllocationsModel.Instance.ClearAllAllocations(appSettings).ConfigureAwait(false);
 
        }
 
@@ -91,10 +93,10 @@ namespace AllocationQS.Business.Services
         //            .ConfigureAwait(false);
         //}
 
-        public async Task AllocateSales(bool itemDescriptionContainsAsycudaAttribute, bool allocateToLastAdjustment)
+        public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
         {
             await
-                WaterNut.DataSpace.AllocationsBaseModel.Instance.AllocateSales(itemDescriptionContainsAsycudaAttribute, allocateToLastAdjustment)
+                WaterNut.DataSpace.AllocationsBaseModel.Instance.AllocateSales(applicationSettings, allocateToLastAdjustment)
                     .ConfigureAwait(false);
         }
 

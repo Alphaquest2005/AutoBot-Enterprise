@@ -1,0 +1,879 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8B598CA2-F2E0-48D8-B7A9-85C4A2837355}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>AutoWaterNut</RootNamespace>
+    <AssemblyName>AutoWaterNut</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <ExpressionBlendVersion>5.0.40218.0</ExpressionBlendVersion>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\..\DisposableRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>WaterNut.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>small_globe_GNR_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>..\..\DisposableRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Omu.ValueInjecter, Version=3.1.3.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
+      <HintPath>..\packages\ValueInjecter.3.1.3\lib\net45\Omu.ValueInjecter.dll</HintPath>
+    </Reference>
+    <Reference Include="ParallelExtensionsExtras">
+      <HintPath>..\packages\MSFT.ParallelExtensionsExtras.1.2.0\lib\ParallelExtensionsExtras.dll</HintPath>
+    </Reference>
+    <Reference Include="Serialize.Linq, Version=1.7.1.0, Culture=neutral, PublicKeyToken=25bcc11ba213b377, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serialize.Linq.1.7.1\lib\net45\Serialize.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-Common">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-WPF">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-WPF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic">
+      <HintPath>Dlls\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="TrackableEntities.Client, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls2\TrackableEntities.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.Common, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls2\TrackableEntities.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="TrackableEntities.EF.6, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Dlls2\TrackableEntities.EF.6.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentDetailViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentOverViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AdjustmentShortViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentEntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentItemEntryDataDetailViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentItemLastItemCostViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaDocumentSetEntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\AsycudaSalesAllocationViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\EntryDataDetailViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\InventoryItemsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\ShortAllocationViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\xcuda_ItemViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AdjustmentShortAllocationViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAllocationsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsSummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\InventoryItemAliasExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\InventoryItemXViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\LicenceSummaryViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\SubItemsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\xcuda_Supplementary_unitViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerEntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerTypeViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EmptyFullCodeViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataDetailsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\InventoryItemsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\PackageTypeViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\EntryDataDetailsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\InventoryItemsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategoryCodeSuppUnitViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategorySummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCategoryViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCodesViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\TariffSupUnitLkpsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentItemViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousDocumentViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\PreviousItemsExViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\PreviousDocumentQS\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\AsycudaDocumentEntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\AsycudaDocumentSetEntryDataDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\AsycudaDocumentSetEntryDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\MessageToken.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\SalesDataAllocationsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\SalesDataDetailViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\SalesDataViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\SalesDataQS\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentDetailTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentOverTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AdjustmentShortTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentEntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentItemEntryDataDetailTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentItemLastItemCostTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaDocumentSetEntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\AsycudaSalesAllocationTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\EntryDataDetailTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\ShortAllocationTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\xcuda_ItemTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAllocationsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ApplicationSettingsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemAliasExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemXTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\LicenceSummaryTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SubItemsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\xcuda_Supplementary_unitTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CounterPointQS\CounterPointPODetailsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CounterPointQS\CounterPointPOsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CounterPointQS\CounterPointSalesDetailsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CounterPointQS\CounterPointSalesTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerEntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerTypeTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EmptyFullCodeTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataDetailsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\InventoryItemsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\PackageTypeTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\EntryDataDetailsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\InventoryItemsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryCodeSuppUnitTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCodesTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffSupUnitLkpsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentItemTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousItemsExTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\SalesDataQS\AsycudaDocumentEntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\SalesDataQS\AsycudaDocumentSetEntryDataDetailsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\SalesDataQS\AsycudaDocumentSetEntryDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\SalesDataQS\SalesDataAllocationsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\SalesDataQS\SalesDataDetailTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\SalesDataQS\SalesDataTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentDetailVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentOverVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AdjustmentShortVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentEntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentItemLastItemCostVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\AsycudaSalesAllocationVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\EntryDataDetailVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\ShortAllocationVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\xcuda_ItemVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAllocationsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ApplicationSettingsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemAliasExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemXVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\LicenceSummaryVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SubItemsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\xcuda_Supplementary_unitVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerEntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerTypeVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EmptyFullCodeVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataDetailsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\InventoryItemsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\PackageTypeVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\EntryDataDetailsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\InventoryItemsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryCodeSuppUnitVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCodesVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffSupUnitLkpsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentItemVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousItemsExVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\SalesDataQS\AsycudaDocumentEntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\SalesDataQS\AsycudaDocumentSetEntryDataDetailsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\SalesDataQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\SalesDataQS\SalesDataAllocationsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\SalesDataQS\SalesDataDetailVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\SalesDataQS\SalesDataVirturalListLoader.cs" />
+    <Compile Include="ViewModels\QuerySpace\AdjustmentOverDetailsModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\AdjustmentExModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\EntryDataContainersModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\EntryDataModelQS.cs" />
+    <Compile Include="Converters\NotBoolConverter.cs" />
+    <Compile Include="Custom DataLayer Classes\CounterPointSales.cs" />
+    <Compile Include="SplashScreen.cs" />
+    <Compile Include="ViewModels\DomainEventsMessages.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\CounterPointPODetailsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\CounterPointPOsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\CounterPointSalesDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\CounterPointSalesViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CounterPointQS\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\MainViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\MainWindowModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CounterPointQS\CounterPointPODetailsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CounterPointQS\CounterPointPOsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CounterPointQS\CounterPointSalesDetailsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CounterPointQS\CounterPointSalesVirturalListLoader.cs" />
+    <Compile Include="ViewModels\MainWindowModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\AsycudaDocumentsModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\AsycudaDocumentItemsModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\BaseBusinesLayerQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\AsycudaDocumentSetsModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\CPPurchaseOrdersModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\EX9SalesDataModelQS.cs" />
+    <Compile Include="Converters\NullStringConverter.cs" />
+    <Compile Include="ViewModels\QuerySpace\NullTarifInventoryItemsModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\CreateAsycudaDocumentModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\EntryDataDetailsModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\OverShortDetailAllocationsModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\AdjustmentShortDetailsModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\PreviousDocumentsModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\PreviousItemsViewModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\AllocationsModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\CPSalesModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\EX9SalesDataDetailsModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\LicenceSummaryModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\PreviousEntriesModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\QBSalesModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\SalesReportModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\SaveCSV.cs" />
+    <Compile Include="ViewModels\QuerySpace\ShortAllocationsModel.cs" />
+    <Compile Include="ViewModels\QuerySpace\SubItemsModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\TariffCategoryModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\TariffCodesModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\TariffSuppUnitModelQS.cs" />
+    <Compile Include="ViewModels\QuerySpace\VLoaders\InventoryItemsExVirturalListLoader.cs" />
+    <Compile Include="Views\Adjustments.xaml.cs">
+      <DependentUpon>Adjustments.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AdjustmentShortDetails.xaml.cs" />
+    <Compile Include="Views\Allocations.xaml.cs">
+      <DependentUpon>Allocations.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AsycudaDocuments.xaml.cs">
+      <DependentUpon>AsycudaDocuments.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AsycudaDocumentSummaryList.xaml.cs">
+      <DependentUpon>AsycudaDocumentSummaryList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AsycudaEntryDetails.xaml.cs">
+      <DependentUpon>AsycudaEntryDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AsycudaEntrySummaryList.xaml.cs">
+      <DependentUpon>AsycudaEntrySummaryList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CPPurchaseOrders.xaml.cs">
+      <DependentUpon>CPPurchaseOrders.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CPSales.xaml.cs">
+      <DependentUpon>CPSales.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CreateAsycudaDocument.xaml.cs">
+      <DependentUpon>CreateAsycudaDocument.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EntryDataContainers.xaml.cs">
+      <DependentUpon>EntryDataContainers.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EX9SalesData.xaml.cs">
+      <DependentUpon>EX9SalesData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EX9SalesDataDetails.xaml.cs">
+      <DependentUpon>EX9SalesDataDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Licences.xaml.cs">
+      <DependentUpon>Licences.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LicenceSummary.xaml.cs">
+      <DependentUpon>LicenceSummary.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainView.xaml.cs">
+      <DependentUpon>MainView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NullTarifInventoryItems.xaml.cs">
+      <DependentUpon>NullTarifInventoryItems.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EntryDataDetails.xaml.cs">
+      <DependentUpon>EntryDataDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EntryData.xaml.cs">
+      <DependentUpon>EntryData.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OverShortDetailAllocations.xaml.cs" />
+    <Compile Include="Views\AdjustmentOversDetails.xaml.cs" />
+    <Compile Include="Views\PreviousDocuments.xaml.cs">
+      <DependentUpon>PreviousDocuments.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PreviousEntries.xaml.cs">
+      <DependentUpon>PreviousEntries.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PreviousItems.xaml.cs">
+      <DependentUpon>PreviousItems.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\QBSales.xaml.cs">
+      <DependentUpon>QBSales.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SalesReport.xaml.cs">
+      <DependentUpon>SalesReport.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScratchPad.xaml.cs">
+      <DependentUpon>ScratchPad.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Status.xaml.cs">
+      <DependentUpon>Status.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SubItemsView.xaml.cs">
+      <DependentUpon>SubItemsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TariffCategory.xaml.cs">
+      <DependentUpon>TariffCategory.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TariffCodes.xaml.cs">
+      <DependentUpon>TariffCodes.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TariffSuppUnit.xaml.cs">
+      <DependentUpon>TariffSuppUnit.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Styles\Copy of Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\DataGridCustomizations.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ViewModels\DataGridCustomizations.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Adjustments.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AdjustmentOversDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Allocations.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AsycudaDocuments.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AsycudaDocumentSummaryList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AsycudaEntryDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AsycudaEntrySummaryList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CPPurchaseOrders.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CPSales.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CreateAsycudaDocument.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EntryDataContainers.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EX9SalesData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EX9SalesDataDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Licences.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\LicenceSummary.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\NullTarifInventoryItems.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EntryDataDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\EntryData.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\OverShortDetailAllocations.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AdjustmentShortDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PreviousDocuments.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PreviousEntries.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\PreviousItems.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\QBSales.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SalesReport.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ScratchPad.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Status.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SubItemsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TariffCategory.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TariffCodes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\TariffSuppUnit.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="app.manifest" />
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\WaterNut.DataLayer.WaterNutDBEntities.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <Page Include="Views\MainView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0dd350c7-3cbe-4791-a9b5-332bf3f1b756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
+      <Project>{d6846386-8741-4619-bae3-b0cfedbf2597}</Project>
+      <Name>Core.Common.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.UI\Core.Common.UI.csproj">
+      <Project>{5dd82ad7-f344-45e3-92cc-96f8d07700af}</Project>
+      <Name>Core.Common.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4d734eac-e84b-40a2-9726-d17263b0ff4a}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
+      <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
+      <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Bootstraper\WaterNut.Client.Bootstraper.csproj">
+      <Project>{6ed70b7d-cd5e-4bdd-9bcb-84f5fa2850a3}</Project>
+      <Name>WaterNut.Client.Bootstraper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj">
+      <Project>{658BB505-087E-48B0-9ADC-B227367AF83C}</Project>
+      <Name>WaterNut.Client.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj">
+      <Project>{C05BD1BE-CB99-451E-845D-077243489C5B}</Project>
+      <Name>WaterNut.Client.DTO</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj">
+      <Project>{367497e0-90a4-47bf-b740-717d8769710c}</Project>
+      <Name>WaterNut.Client.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj">
+      <Project>{e16cffe7-8f60-41a8-8895-7cb73fe09399}</Project>
+      <Name>WaterNut.Client.Repositories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Client.Services\WaterNut.Client.Services.csproj">
+      <Project>{EC5D3B67-8BEC-4678-A876-ED6ECBBFE59A}</Project>
+      <Name>WaterNut.Client.Services</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WaterNut.Data\WaterNut.Data.csproj">
+      <Project>{92eb0cbf-4018-427b-aa8b-13b088650db8}</Project>
+      <Name>WaterNut.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="coconut-water-splash.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Views\header.PNG" />
+    <Resource Include="Views\itemdetails.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <DesignData Include="Styles\SampleData\MainWindowModelSampleData.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Generated Models\" />
+    <Folder Include="Views\Generated Views\QuerySpace\" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="commons-logging.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core.Common.PDF2TXT.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fontbox-1.8.7.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="IKVM.OpenJDK.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="IKVM.OpenJDK.SwingAWT.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="IKVM.Runtime.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="itextsharp.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MoreLinq.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Omu.ValueInjecter.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="pdfbox-1.8.7.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.ComponentModel.DataAnnotations.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.Composition.AttributedModel.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.Composition.Convention.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.Composition.Hosting.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.Composition.Runtime.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.Composition.TypedParts.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.Core.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.Linq.Dynamic.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="System.ValueTuple.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TrackableEntities.Client.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TrackableEntities.Common.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TrackableEntities.EF.6.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.6.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="small_globe_GNR_icon.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -25,6 +25,11 @@ namespace CoreEntities.Client.Services
             return Channel.ValidateInstallation();
         }
 
+        public void SetCurrentApplicationSettings(int applicationSettingId)
+        {
+             Channel.SetCurrentApplicationSettings(applicationSettingId);
+        }
+
 
         #region IDisposable implementation
 

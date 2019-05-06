@@ -21,6 +21,7 @@
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.HasRequired(t => t.AdjustmentOver).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetail>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AdjustmentShort).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetail>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
+              this.HasRequired(t => t.AdjustmentDetail).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetail>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

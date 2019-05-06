@@ -25,13 +25,13 @@ namespace AllocationQS.Client.Contracts
         [OperationContract]
         Task ClearAllocations(IEnumerable<int> alst);
         [OperationContract]
-        Task ClearAllAllocations();
+        Task ClearAllAllocations(int applicationSettingsId);
         [OperationContract]
         Task ClearAllocationsByFilter(string filterExpression);
         [OperationContract]
         Task CreateIncompOPS(string filterExpression, int AsycudaDocumentSetId);
         [OperationContract]
-        Task AllocateSales(bool itemDescriptionContainsAsycudaAttribute, bool allocateToLastAdjustment);
+        Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment);
 
         [OperationContract]
         Task ReBuildSalesReports();

@@ -28,34 +28,34 @@ namespace AdjustmentQS.Client.Entities
                 this.EntryDataDetailsId = Convert.ToInt32(value);
             }
         }
-        public string InventoryItemEntityName
+        public string InventoryItemsExEntityName
         {
             get
             {
-                return this.InventoryItem == null ? "" : this.InventoryItem.EntityName;
+                return this.InventoryItemsEx == null ? "" : this.InventoryItemsEx.EntityName;
             }
             set
             {
                                 if (string.IsNullOrEmpty(value)) return;
                 string[] vals = value.Split(',');
                
-                    using (InventoryItemClient ctx = new InventoryItemClient())
+                    using (InventoryItemsExClient ctx = new InventoryItemsExClient())
                     {
-                        var dto = ctx.GetInventoryItems().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        var dto = ctx.GetInventoryItemsExes().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
                         
 
                         if ( dto == null)
                         {
-                            this.InventoryItem = (InventoryItem)new InventoryItem().CreateEntityFromString(value);
+                            this.InventoryItemsEx = (InventoryItemsEx)new InventoryItemsEx().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.InventoryItem.ItemNumber);
+							this.EntryDataDetailsId = Convert.ToInt32(this.InventoryItemsEx.ItemNumber);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddInventoryItem");
+                           NotifyPropertyChanged("AddInventoryItemsEx");
                         }
                         else
                         {
-                            var obj = new InventoryItem(dto);
-                           if (this.InventoryItem == null || this.InventoryItem.EntityId != obj.EntityId) this.InventoryItem = obj;
+                            var obj = new InventoryItemsEx(dto);
+                           if (this.InventoryItemsEx == null || this.InventoryItemsEx.EntityId != obj.EntityId) this.InventoryItemsEx = obj;
                            
                         }
                          

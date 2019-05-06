@@ -71,25 +71,6 @@
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="EntryPreviousItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <EntityType Name="InventoryItemAlias">
-          <Key>
-            <PropertyRef Name="AliasId" />
-          </Key>
-          <Property Name="AliasId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
-        </EntityType>
-        <EntityType Name="InventoryItems">
-          <Key>
-            <PropertyRef Name="ItemNumber" />
-          </Key>
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Category" Type="nvarchar" MaxLength="60" />
-          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
-        </EntityType>
         <EntityType Name="SubItems">
           <Key>
             <PropertyRef Name="SubItem_Id" />
@@ -246,6 +227,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="ApplicationSettingsId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemAliasEx">
+          <Key>
+            <PropertyRef Name="AliasId" />
+          </Key>
+          <Property Name="AliasId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="nvarchar" MaxLength="50" />
+          <Property Name="SuppQty" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="LicenceSummary">
           
@@ -271,39 +280,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_InventoryItemAlias_InventoryItems">
-          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="InventoryItemAlias" Type="Self.InventoryItemAlias" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItems">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="InventoryItemAlias">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_InventoryItems_ApplicationSettings">
-          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1" />
-          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ApplicationSettings">
-              <PropertyRef Name="ApplicationSettingsId" />
-            </Principal>
-            <Dependent Role="InventoryItems">
-              <PropertyRef Name="ApplicationSettingsId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="ApplicationSettings" EntityType="Self.ApplicationSettings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InventoryItemAlias" EntityType="Self.InventoryItemAlias" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubItems" EntityType="Self.SubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Supplementary_unit" EntityType="Self.xcuda_Supplementary_unit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocument" EntityType="Self.AsycudaDocument" store:Type="Views" store:Schema="dbo">
@@ -423,6 +404,27 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaDocumentSetEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[AsycudaDocumentSetEx] AS [AsycudaDocumentSetEx]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[InventoryItemAliasEx].[AliasId] AS [AliasId], 
+[InventoryItemAliasEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[InventoryItemAliasEx].[InventoryItemId] AS [InventoryItemId], 
+[InventoryItemAliasEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemAliasEx].[AliasName] AS [AliasName]
+FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+[InventoryItemsEx].[Description] AS [Description], 
+[InventoryItemsEx].[Category] AS [Category], 
+[InventoryItemsEx].[TariffCode] AS [TariffCode], 
+[InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+[InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+[InventoryItemsEx].[SuppQty] AS [SuppQty], 
+[InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="LicenceSummary" EntityType="Self.LicenceSummary" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [LicenceSummary].[TariffCode] AS [TariffCode], 
@@ -436,14 +438,6 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
-          </AssociationSet>
-          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems" Association="Self.FK_InventoryItemAlias_InventoryItems">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
-          </AssociationSet>
-          <AssociationSet Name="FK_InventoryItems_ApplicationSettings" Association="Self.FK_InventoryItems_ApplicationSettings">
-            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -489,28 +483,36 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
             <End Role="AsycudaDocumentItem" EntitySet="AsycudaDocumentItems" />
             <End Role="xcuda_Supplementary_unit" EntitySet="xcuda_Supplementary_unit" />
           </AssociationSet>
-          <EntitySet Name="InventoryItemAlias" EntityType="WaterNutDBModel.InventoryItemAlias" />
-          <EntitySet Name="InventoryItems" EntityType="WaterNutDBModel.InventoryItems" />
-          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems" Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
-          </AssociationSet>
-          <AssociationSet Name="InventoryItemsAsycudaDocumentItem" Association="WaterNutDBModel.InventoryItemsAsycudaDocumentItem">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="AsycudaDocumentItem" EntitySet="AsycudaDocumentItems" />
-          </AssociationSet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails" />
           <AssociationSet Name="AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails" Association="WaterNutDBModel.AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails">
             <End Role="AsycudaDocumentItem" EntitySet="AsycudaDocumentItems" />
             <End Role="AsycudaDocumentItemEntryDataDetails" EntitySet="AsycudaDocumentItemEntryDataDetails" />
           </AssociationSet>
-          <AssociationSet Name="FK_InventoryItems_ApplicationSettings" Association="WaterNutDBModel.FK_InventoryItems_ApplicationSettings">
-            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-          </AssociationSet>
           <AssociationSet Name="ApplicationSettingsAsycudaDocumentSetEx" Association="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx">
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="AsycudaDocumentSetEx" EntitySet="AsycudaDocumentSetExs" />
+          </AssociationSet>
+          <AssociationSet Name="ApplicationSettingsAsycudaDocument" Association="WaterNutDBModel.ApplicationSettingsAsycudaDocument">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="AsycudaDocument" EntitySet="AsycudaDocuments" />
+          </AssociationSet>
+          <AssociationSet Name="ApplicationSettingsAsycudaDocumentItem" Association="WaterNutDBModel.ApplicationSettingsAsycudaDocumentItem">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="AsycudaDocumentItem" EntitySet="AsycudaDocumentItems" />
+          </AssociationSet>
+          <EntitySet Name="InventoryItemX" EntityType="WaterNutDBModel.InventoryItemX" />
+          <EntitySet Name="InventoryItemAliasEx" EntityType="WaterNutDBModel.InventoryItemAliasEx" />
+          <AssociationSet Name="InventoryItemsExInventoryItemAliasEx" Association="WaterNutDBModel.InventoryItemsExInventoryItemAliasEx">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemX" />
+            <End Role="InventoryItemAliasEx" EntitySet="InventoryItemAliasEx" />
+          </AssociationSet>
+          <AssociationSet Name="ApplicationSettingsInventoryItemsEx" Association="WaterNutDBModel.ApplicationSettingsInventoryItemsEx">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemX" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItemsExAsycudaDocumentItem" Association="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemX" />
+            <End Role="AsycudaDocumentItem" EntitySet="AsycudaDocumentItems" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -552,8 +554,10 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Name="DataFolder" Type="String" MaxLength="999" FixedLength="false" Unicode="true" />
           <Property Name="CompanyName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" />
-          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItems_ApplicationSettings" FromRole="ApplicationSettings" ToRole="InventoryItems" />
-          <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSetEx" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSetEx" />
+          <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocument" FromRole="ApplicationSettings" ToRole="AsycudaDocument" />
+          <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentItem" FromRole="ApplicationSettings" ToRole="AsycudaDocumentItem" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.ApplicationSettingsInventoryItemsEx" FromRole="ApplicationSettings" ToRole="InventoryItemsEx" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -592,7 +596,8 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
-          <Property Name="ApplicationSettingsId" Type="Int32" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocument" FromRole="AsycudaDocument" ToRole="ApplicationSettings" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="AsycudaDocumentItem">
           <Key>
@@ -601,7 +606,7 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Type="Int32" Name="Item_Id" Nullable="false"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IDocumentItem.Item_Id</a:ImplementsProperty></Property>
           <Property Type="Int32" Name="AsycudaDocumentId" />
           <Property Type="Int32" Name="EntryDataDetailsId" />
-          <Property Type="String" Name="LineNumber"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Asc</a:OrderByProperty></Property>
+          <Property Type="String" Name="LineNumber" MaxLength="50" Unicode="true" FixedLength="false"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Asc</a:OrderByProperty></Property>
           <Property Type="Boolean" Name="IsAssessed" />
           <Property Type="Boolean" Name="DoNotAllocate"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IDocumentItem.DoNotAllocate</a:ImplementsProperty></Property>
           <Property Type="Boolean" Name="DoNotEX" />
@@ -643,12 +648,13 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Name="SalesFactor" Type="Double" />
           <Property Name="ReferenceNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
-          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.InventoryItemsAsycudaDocumentItem" FromRole="AsycudaDocumentItem" ToRole="InventoryItems" />
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="WaterNutDBModel.AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails" FromRole="AsycudaDocumentItem" ToRole="AsycudaDocumentItemEntryDataDetails" />
-          <Property Name="ApplicationSettingsId" Type="Int32" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocumentItem,IWeightItem</a:DomainInterfaceProperty>
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentItem" FromRole="AsycudaDocumentItem" ToRole="ApplicationSettings" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem" FromRole="AsycudaDocumentItem" ToRole="InventoryItemsEx" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocumentItem,IWeightItem</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="AsycudaDocumentAsycudaDocumentItem">
           <End Type="WaterNutDBModel.AsycudaDocument" Role="AsycudaDocument" Multiplicity="0..1" />
@@ -717,7 +723,7 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="TotalWeight" Type="Double" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" FromRole="AsycudaDocumentSetEx" ToRole="ApplicationSettings" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <Association Name="AsycudaDocumentSetExAsycudaDocument">
@@ -825,55 +831,6 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="InventoryItemAlias">
-          <Key>
-            <PropertyRef Name="AliasId" />
-          </Key>
-          <Property Name="AliasId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
-        </EntityType>
-        <EntityType Name="InventoryItems">
-          <Key>
-            <PropertyRef Name="ItemNumber" />
-          </Key>
-          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
-          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
-          <NavigationProperty Name="InventoryItemAlias" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
-          <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.InventoryItemsAsycudaDocumentItem" FromRole="InventoryItems" ToRole="AsycudaDocumentItem" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_InventoryItems_ApplicationSettings" FromRole="InventoryItems" ToRole="ApplicationSettings" />
-        </EntityType>
-        <Association Name="FK_InventoryItemAlias_InventoryItems">
-          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.InventoryItemAlias" Role="InventoryItemAlias" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItems">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="InventoryItemAlias">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="InventoryItemsAsycudaDocumentItem">
-          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.AsycudaDocumentItem" Role="AsycudaDocumentItem" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItems">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="AsycudaDocumentItem">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
@@ -899,26 +856,106 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_InventoryItems_ApplicationSettings">
-          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1" />
-          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="ApplicationSettings">
-              <PropertyRef Name="ApplicationSettingsId" />
-            </Principal>
-            <Dependent Role="InventoryItems">
-              <PropertyRef Name="ApplicationSettingsId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="ApplicationSettingsAsycudaDocumentSetEx">
-          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="0..1" />
           <End Type="WaterNutDBModel.AsycudaDocumentSetEx" Role="AsycudaDocumentSetEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApplicationSettings">
               <PropertyRef Name="ApplicationSettingsId" />
             </Principal>
             <Dependent Role="AsycudaDocumentSetEx">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApplicationSettingsAsycudaDocument">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocument" Role="AsycudaDocument" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocument">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApplicationSettingsAsycudaDocumentItem">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentItem" Role="AsycudaDocumentItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentItem">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InventoryItemX">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SuppQty" Type="Double" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItemAliasEx" Relationship="WaterNutDBModel.InventoryItemsExInventoryItemAliasEx" FromRole="InventoryItemsEx" ToRole="InventoryItemAliasEx" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsInventoryItemsEx" FromRole="InventoryItemsEx" ToRole="ApplicationSettings" />
+          <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem" FromRole="InventoryItemsEx" ToRole="AsycudaDocumentItem" />
+        </EntityType>
+        <EntityType Name="InventoryItemAliasEx">
+          <Key>
+            <PropertyRef Name="AliasId" />
+          </Key>
+          <Property Name="AliasId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExInventoryItemAliasEx" FromRole="InventoryItemAliasEx" ToRole="InventoryItemsEx" />
+        </EntityType>
+        <Association Name="InventoryItemsExInventoryItemAliasEx">
+          <End Type="WaterNutDBModel.InventoryItemX" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="WaterNutDBModel.InventoryItemAliasEx" Role="InventoryItemAliasEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="InventoryItemAliasEx">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="ApplicationSettingsInventoryItemsEx">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1" />
+          <End Type="WaterNutDBModel.InventoryItemX" Role="InventoryItemsEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="InventoryItemsEx">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsExAsycudaDocumentItem">
+          <End Type="WaterNutDBModel.InventoryItemX" Role="InventoryItemsEx" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentItem" Role="AsycudaDocumentItem" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentItem">
+              <PropertyRef Name="ItemNumber" />
               <PropertyRef Name="ApplicationSettingsId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1148,27 +1185,6 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="InventoryItemAlias">
-            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemAlias">
-              <MappingFragment StoreEntitySet="InventoryItemAlias">
-                <ScalarProperty Name="AliasName" ColumnName="AliasName" />
-                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
-                <ScalarProperty Name="AliasId" ColumnName="AliasId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="InventoryItems">
-            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItems">
-              <MappingFragment StoreEntitySet="InventoryItems">
-                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
-                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
@@ -1178,6 +1194,31 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
                 <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemX">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemX">
+              <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
+                <ScalarProperty Name="SuppUnitCode2" ColumnName="SuppUnitCode2" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemAliasEx">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemAliasEx">
+              <MappingFragment StoreEntitySet="InventoryItemAliasEx">
+                <ScalarProperty Name="AliasName" ColumnName="AliasName" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AliasId" ColumnName="AliasId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

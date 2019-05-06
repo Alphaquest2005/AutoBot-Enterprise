@@ -63,8 +63,6 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<SubItems> SubItems { get; set; }
      
-        public DbSet<InventoryItems> InventoryItems { get; set; }
-     
         public DbSet<TariffCategory> TariffCategory { get; set; }
      
         public DbSet<TariffCodes> TariffCodes { get; set; }
@@ -95,8 +93,6 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<xBondAllocations> xBondAllocations { get; set; }
      
-        public DbSet<InventoryItemAlias> InventoryItemAlias { get; set; }
-     
         public DbSet<EX9AsycudaSalesAllocations> EX9AsycudaSalesAllocations { get; set; }
      
         public DbSet<EntryPreviousItems> EntryPreviousItems { get; set; }
@@ -112,6 +108,10 @@ namespace AllocationDS.Business.Entities
         public DbSet<AsycudaItemPiQuantityData> AsycudaItemPiQuantityData { get; set; }
      
         public DbSet<PreviousItemsEx> PreviousItemsEx { get; set; }
+     
+        public DbSet<InventoryItem> InventoryItems { get; set; }
+     
+        public DbSet<InventoryItemAlias> InventoryItemAlias { get; set; }
      
 
 
@@ -132,8 +132,6 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new AsycudaDocumentMap());
          
             modelBuilder.Configurations.Add(new SubItemsMap());
-         
-            modelBuilder.Configurations.Add(new InventoryItemsMap());
          
             modelBuilder.Configurations.Add(new TariffCategoryMap());
          
@@ -165,8 +163,6 @@ namespace AllocationDS.Business.Entities
          
             modelBuilder.Configurations.Add(new xBondAllocationsMap());
          
-            modelBuilder.Configurations.Add(new InventoryItemAliasMap());
-         
             modelBuilder.Configurations.Add(new EX9AsycudaSalesAllocationsMap());
          
             modelBuilder.Configurations.Add(new EntryPreviousItemsMap());
@@ -182,6 +178,10 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new AsycudaItemPiQuantityDataMap());
          
             modelBuilder.Configurations.Add(new PreviousItemsExMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemAliasMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       
