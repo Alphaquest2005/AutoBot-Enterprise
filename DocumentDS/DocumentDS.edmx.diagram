@@ -121,6 +121,13 @@
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument_Attachments" Width="1.5" PointX="10.875" PointY="30.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet_Attachments" Width="1.5" PointX="10.875" PointY="34.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Attachment" Width="1.5" PointX="8.625" PointY="2.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

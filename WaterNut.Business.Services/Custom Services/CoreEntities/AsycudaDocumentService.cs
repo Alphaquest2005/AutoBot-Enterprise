@@ -87,7 +87,7 @@ namespace CoreEntities.Business.Services
 
         public async Task<AsycudaDocument> NewDocument(int docSetId)
         {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId, null).ConfigureAwait(false);
+            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             var doc = WaterNut.DataSpace.BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
             using (var ctx = new AsycudaDocumentService())
             {

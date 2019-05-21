@@ -430,6 +430,36 @@ namespace EntryDataQS.Business.Entities
         }
         Nullable<int> _applicationsettingsid;
         [DataMember]
+        public Nullable<double> LastCost 
+        {
+            get
+            {
+                return _lastcost;
+            }
+            set
+            {
+                _lastcost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _lastcost;
+        [DataMember]
+        public Nullable<double> TaxAmount 
+        {
+            get
+            {
+                return _taxamount;
+            }
+            set
+            {
+                _taxamount = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _taxamount;
+        [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
         [DataMember]
         public EntryDataEx EntryDataEx { get; set; }

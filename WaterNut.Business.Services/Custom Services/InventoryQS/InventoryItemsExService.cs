@@ -18,7 +18,7 @@ namespace InventoryQS.Business.Services
 
         public async Task ValidateExistingTariffCodes(int docSetId)
         {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId, null).ConfigureAwait(false);
+            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             await WaterNut.DataSpace.BaseDataModel.Instance.ValidateExistingTariffCodes(docSet).ConfigureAwait(false);
         }
 

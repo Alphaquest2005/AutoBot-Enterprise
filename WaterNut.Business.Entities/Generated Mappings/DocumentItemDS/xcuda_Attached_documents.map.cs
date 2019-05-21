@@ -21,6 +21,7 @@
               this.Property(t => t.Attached_document_reference).HasColumnName("Attached_document_reference").HasMaxLength(100);
               this.Property(t => t.Attached_document_from_rule).HasColumnName("Attached_document_from_rule");
               this.HasOptional(t => t.xcuda_Item).WithMany(t =>(ICollection<xcuda_Attached_documents>) t.xcuda_Attached_documents).HasForeignKey(d => d.Item_Id);
+              this.HasMany(t => t.xcuda_Attachments).WithRequired(t => (xcuda_Attached_documents)t.xcuda_Attached_documents);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

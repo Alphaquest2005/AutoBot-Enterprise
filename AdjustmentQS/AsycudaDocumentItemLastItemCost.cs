@@ -17,5 +17,6 @@ namespace AdjustmentQS
         public int applicationsettingsid { get; set; }
         public string ItemNumber { get; set; }
         public Nullable<double> LocalItemCost { get; set; }
+        public System.DateTime assessmentdate { get; set; }
     }
 }

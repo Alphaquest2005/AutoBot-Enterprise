@@ -127,7 +127,7 @@ namespace CoreEntities.Client.DTO
 
        
         [DataMember]
-        public ChangeTrackingCollection<InventoryItemAliasEx> InventoryItemAliasEx
+        public ChangeTrackingCollection<InventoryItemAliasX> InventoryItemAliasEx
 		{
 		    get { return _InventoryItemAliasEx; }
 			set
@@ -137,7 +137,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.InventoryItemAliasEx
 			}
 		}
-        private ChangeTrackingCollection<InventoryItemAliasEx> _InventoryItemAliasEx = new ChangeTrackingCollection<InventoryItemAliasEx>();
+        private ChangeTrackingCollection<InventoryItemAliasX> _InventoryItemAliasEx = new ChangeTrackingCollection<InventoryItemAliasX>();
 
         [DataMember]
         public ApplicationSettings ApplicationSettings

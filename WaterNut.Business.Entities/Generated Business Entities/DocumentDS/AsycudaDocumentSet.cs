@@ -23,6 +23,7 @@ namespace DocumentDS.Business.Entities
         {
             this.AsycudaDocumentSetEntryDatas = new List<AsycudaDocumentSetEntryData>();
             this.xcuda_ASYCUDA_ExtendedProperties = new List<xcuda_ASYCUDA_ExtendedProperties>();
+            this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
         }
 
         [DataMember]
@@ -303,6 +304,8 @@ namespace DocumentDS.Business.Entities
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryDatas { get; set; }
         [DataMember]
         public List<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

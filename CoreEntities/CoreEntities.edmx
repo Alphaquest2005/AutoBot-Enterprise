@@ -44,6 +44,27 @@
           <Property Name="DataFolder" Type="nvarchar" MaxLength="999" />
           <Property Name="CompanyName" Type="nvarchar" MaxLength="50" />
           <Property Name="IsActive" Type="bit" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" />
+          <Property Name="EmailPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="AsycudaLogin" Type="nvarchar" MaxLength="50" />
+          <Property Name="AsycudaPassword" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentSet_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -70,6 +91,40 @@
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="EntryPreviousItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FileTypeMappings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="OriginalName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DestinationName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Required" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FileTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="FilePattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
+          <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="InfoMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Key" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Field" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EntityType" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="SubItems">
           <Key>
@@ -206,6 +261,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
         <EntityType Name="AsycudaDocumentSetEx">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
+            
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
@@ -224,13 +280,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="TotalCIF" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="TotalFreight" Type="float" />
-          <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="TotalInternalFreight" Type="float" />
+          <Property Name="TotalPackages" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="InventoryItemAliasEx">
           <Key>
             <PropertyRef Name="AliasId" />
+            
+            
+            
+            
           </Key>
           <Property Name="AliasId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -243,6 +305,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="InventoryItemsEx">
           <Key>
             <PropertyRef Name="ItemNumber" />
+            
             <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
@@ -268,6 +331,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not 
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="RowNumber" Type="bigint" Nullable="false" />
         </EntityType>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Customs_Procedure_Document_Type">
           <End Role="Document_Type" Type="Self.Document_Type" Multiplicity="1" />
           <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="*" />
@@ -280,11 +357,58 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not 
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FileTypeMappings_FileTypes">
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="FileTypeMappings" Type="Self.FileTypeMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeMappings">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypes_ApplicationSettings">
+          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InfoMapping_ApplicationSettings">
+          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InfoMapping" Type="Self.InfoMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="InfoMapping">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="ApplicationSettings" EntityType="Self.ApplicationSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubItems" EntityType="Self.SubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Supplementary_unit" EntityType="Self.xcuda_Supplementary_unit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocument" EntityType="Self.AsycudaDocument" store:Type="Views" store:Schema="dbo">
@@ -401,7 +525,9 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaDocumentSetEx].[TotalCIF] AS [TotalCIF], 
 [AsycudaDocumentSetEx].[TotalWeight] AS [TotalWeight], 
 [AsycudaDocumentSetEx].[TotalFreight] AS [TotalFreight], 
-[AsycudaDocumentSetEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[AsycudaDocumentSetEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentSetEx].[TotalInternalFreight] AS [TotalInternalFreight], 
+[AsycudaDocumentSetEx].[TotalPackages] AS [TotalPackages]
 FROM [dbo].[AsycudaDocumentSetEx] AS [AsycudaDocumentSetEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -435,9 +561,25 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
 [LicenceSummary].[RowNumber] AS [RowNumber]
 FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Attachments" Association="Self.FK_AsycudaDocumentSet_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypeMappings_FileTypes" Association="Self.FK_FileTypeMappings_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypeMappings" EntitySet="FileTypeMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypes_ApplicationSettings" Association="Self.FK_FileTypes_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InfoMapping_ApplicationSettings" Association="Self.FK_InfoMapping_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="InfoMapping" EntitySet="InfoMapping" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -501,10 +643,10 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
             <End Role="AsycudaDocumentItem" EntitySet="AsycudaDocumentItems" />
           </AssociationSet>
           <EntitySet Name="InventoryItemX" EntityType="WaterNutDBModel.InventoryItemX" />
-          <EntitySet Name="InventoryItemAliasEx" EntityType="WaterNutDBModel.InventoryItemAliasEx" />
+          <EntitySet Name="InventoryItemAliasX" EntityType="WaterNutDBModel.InventoryItemAliasX" />
           <AssociationSet Name="InventoryItemsExInventoryItemAliasEx" Association="WaterNutDBModel.InventoryItemsExInventoryItemAliasEx">
             <End Role="InventoryItemsEx" EntitySet="InventoryItemX" />
-            <End Role="InventoryItemAliasEx" EntitySet="InventoryItemAliasEx" />
+            <End Role="InventoryItemAliasEx" EntitySet="InventoryItemAliasX" />
           </AssociationSet>
           <AssociationSet Name="ApplicationSettingsInventoryItemsEx" Association="WaterNutDBModel.ApplicationSettingsInventoryItemsEx">
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
@@ -513,6 +655,35 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <AssociationSet Name="InventoryItemsExAsycudaDocumentItem" Association="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem">
             <End Role="InventoryItemsEx" EntitySet="InventoryItemX" />
             <End Role="AsycudaDocumentItem" EntitySet="AsycudaDocumentItems" />
+          </AssociationSet>
+          <EntitySet Name="FileTypes" EntityType="WaterNutDBModel.FileTypes" />
+          <AssociationSet Name="FK_FileTypes_ApplicationSettings" Association="WaterNutDBModel.FK_FileTypes_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
+          <AssociationSet Name="AsycudaDocumentSetExFileTypes" Association="WaterNutDBModel.AsycudaDocumentSetExFileTypes">
+            <End Role="AsycudaDocumentSetEx" EntitySet="AsycudaDocumentSetExs" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
+          <EntitySet Name="FileTypeMappings" EntityType="WaterNutDBModel.FileTypeMappings" />
+          <AssociationSet Name="FK_FileTypeMappings_FileTypes" Association="WaterNutDBModel.FK_FileTypeMappings_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypeMappings" EntitySet="FileTypeMappings" />
+          </AssociationSet>
+          <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="WaterNutDBModel.AsycudaDocumentSet_Attachments" />
+          <EntitySet Name="InfoMapping" EntityType="WaterNutDBModel.InfoMapping" />
+          <AssociationSet Name="FK_InfoMapping_ApplicationSettings" Association="WaterNutDBModel.FK_InfoMapping_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="InfoMapping" EntitySet="InfoMapping" />
+          </AssociationSet>
+          <EntitySet Name="Attachments" EntityType="WaterNutDBModel.Attachments" />
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Attachments" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="AsycudaDocumentSetExAsycudaDocumentSet_Attachments" Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments">
+            <End Role="AsycudaDocumentSetEx" EntitySet="AsycudaDocumentSetExs" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
@@ -557,7 +728,13 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" FromRole="ApplicationSettings" ToRole="AsycudaDocumentSetEx" />
           <NavigationProperty Name="AsycudaDocument" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocument" FromRole="ApplicationSettings" ToRole="AsycudaDocument" />
           <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentItem" FromRole="ApplicationSettings" ToRole="AsycudaDocumentItem" />
-          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.ApplicationSettingsInventoryItemsEx" FromRole="ApplicationSettings" ToRole="InventoryItemsEx" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.ApplicationSettingsInventoryItemsEx" FromRole="ApplicationSettings" ToRole="InventoryItemsEx" />
+          <Property Name="Email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmailPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaLogin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_ApplicationSettings" FromRole="ApplicationSettings" ToRole="FileTypes" />
+          <NavigationProperty Name="InfoMapping" Relationship="WaterNutDBModel.FK_InfoMapping_ApplicationSettings" FromRole="ApplicationSettings" ToRole="InfoMapping" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -597,7 +774,8 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
-          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocument" FromRole="AsycudaDocument" ToRole="ApplicationSettings" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocument" FromRole="AsycudaDocument" ToRole="ApplicationSettings" />
+          <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="AsycudaDocumentItem">
           <Key>
@@ -723,8 +901,13 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="TotalWeight" Type="Double" />
-          <Property Name="ApplicationSettingsId" Type="Int32" />
-          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" FromRole="AsycudaDocumentSetEx" ToRole="ApplicationSettings" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" FromRole="AsycudaDocumentSetEx" ToRole="ApplicationSettings" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.AsycudaDocumentSetExFileTypes" FromRole="AsycudaDocumentSetEx" ToRole="FileTypes" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSetEx" ToRole="AsycudaDocumentSet_Attachments" />
+          <Property Name="TotalInternalFreight" Type="Double" />
+          <Property Name="TotalPackages" Type="Int32" />
+          <a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <Association Name="AsycudaDocumentSetExAsycudaDocument">
           <End Type="WaterNutDBModel.AsycudaDocumentSetEx" Role="AsycudaDocumentSetEx" Multiplicity="0..1" />
@@ -857,7 +1040,7 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           </ReferentialConstraint>
         </Association>
         <Association Name="ApplicationSettingsAsycudaDocumentSetEx">
-          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1" />
           <End Type="WaterNutDBModel.AsycudaDocumentSetEx" Role="AsycudaDocumentSetEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ApplicationSettings">
@@ -909,7 +1092,7 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsInventoryItemsEx" FromRole="InventoryItemsEx" ToRole="ApplicationSettings" />
           <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem" FromRole="InventoryItemsEx" ToRole="AsycudaDocumentItem" />
         </EntityType>
-        <EntityType Name="InventoryItemAliasEx">
+        <EntityType Name="InventoryItemAliasX">
           <Key>
             <PropertyRef Name="AliasId" />
           </Key>
@@ -922,7 +1105,7 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
         </EntityType>
         <Association Name="InventoryItemsExInventoryItemAliasEx">
           <End Type="WaterNutDBModel.InventoryItemX" Role="InventoryItemsEx" Multiplicity="1" />
-          <End Type="WaterNutDBModel.InventoryItemAliasEx" Role="InventoryItemAliasEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.InventoryItemAliasX" Role="InventoryItemAliasEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="InventoryItemsEx">
               <PropertyRef Name="ItemNumber" />
@@ -960,6 +1143,145 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="FileTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="FilePattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_FileTypes_ApplicationSettings" FromRole="FileTypes" ToRole="ApplicationSettings" />
+          <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExFileTypes" FromRole="FileTypes" ToRole="AsycudaDocumentSetEx" />
+          <NavigationProperty Name="FileTypeMappings" Relationship="WaterNutDBModel.FK_FileTypeMappings_FileTypes" FromRole="FileTypes" ToRole="FileTypeMappings" />
+          <Property Name="CreateDocumentSet" Type="Boolean" Nullable="false" />
+          <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
+          <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_FileTypes_ApplicationSettings">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AsycudaDocumentSetExFileTypes">
+          <End Type="WaterNutDBModel.AsycudaDocumentSetEx" Role="AsycudaDocumentSetEx" Multiplicity="1" />
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSetEx">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FileTypeMappings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+          <Property Name="OriginalName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DestinationName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypeMappings_FileTypes" FromRole="FileTypeMappings" ToRole="FileTypes" />
+          <Property Name="DataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Required" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_FileTypeMappings_FileTypes">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.FileTypeMappings" Role="FileTypeMappings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeMappings">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AsycudaDocumentSet_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="Attachments" />
+          <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="AsycudaDocumentSetEx" />
+          <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InfoMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Key" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Field" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntityType" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_InfoMapping_ApplicationSettings" FromRole="InfoMapping" ToRole="ApplicationSettings" />
+        </EntityType>
+        <Association Name="FK_InfoMapping_ApplicationSettings">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InfoMapping" Role="InfoMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="InfoMapping">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="Attachments" ToRole="AsycudaDocumentSet_Attachments" />
+          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
+          <End Type="WaterNutDBModel.Attachments" Role="Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AsycudaDocumentSetExAsycudaDocumentSet_Attachments">
+          <End Type="WaterNutDBModel.AsycudaDocumentSetEx" Role="AsycudaDocumentSetEx" Multiplicity="1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSetEx">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -969,6 +1291,10 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="AsycudaPassword" ColumnName="AsycudaPassword" />
+                <ScalarProperty Name="AsycudaLogin" ColumnName="AsycudaLogin" />
+                <ScalarProperty Name="EmailPassword" ColumnName="EmailPassword" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
                 <ScalarProperty Name="DataFolder" ColumnName="DataFolder" />
@@ -1119,6 +1445,8 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSetExs">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSetEx">
               <MappingFragment StoreEntitySet="AsycudaDocumentSetEx">
+                <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
+                <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
@@ -1211,14 +1539,70 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="InventoryItemAliasEx">
-            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemAliasEx">
+          <EntitySetMapping Name="InventoryItemAliasX">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemAliasX">
               <MappingFragment StoreEntitySet="InventoryItemAliasEx">
                 <ScalarProperty Name="AliasName" ColumnName="AliasName" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AliasId" ColumnName="AliasId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileTypes">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
+              <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
+                <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
+                <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileTypeMappings">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeMappings">
+              <MappingFragment StoreEntitySet="FileTypeMappings">
+                <ScalarProperty Name="Required" ColumnName="Required" />
+                <ScalarProperty Name="DataType" ColumnName="DataType" />
+                <ScalarProperty Name="DestinationName" ColumnName="DestinationName" />
+                <ScalarProperty Name="OriginalName" ColumnName="OriginalName" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSet_Attachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet_Attachments">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSet_Attachments">
+                <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InfoMapping">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InfoMapping">
+              <MappingFragment StoreEntitySet="InfoMapping">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
+                <ScalarProperty Name="Field" ColumnName="Field" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Attachments">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

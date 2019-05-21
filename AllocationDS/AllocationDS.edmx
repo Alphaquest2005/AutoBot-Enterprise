@@ -1489,6 +1489,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <End Role="InventoryItem" EntitySet="InventoryItems" />
             <End Role="InventoryItemAliasEx" EntitySet="InventoryItemAlias" />
           </AssociationSet>
+          <AssociationSet Name="AsycudaSalesAllocationsEX9AsycudaSalesAllocations" Association="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations">
+            <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
+            <End Role="EX9AsycudaSalesAllocations" EntitySet="EX9AsycudaSalesAllocations" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -1506,6 +1510,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.FK_AsycudaSalesAllocations_EntryDataDetails" FromRole="AsycudaSalesAllocations" ToRole="EntryDataDetails" />
           <NavigationProperty Name="PreviousDocumentItem" Relationship="WaterNutDBModel.FK_AsycudaSalesAllocations_xcuda_Item" FromRole="AsycudaSalesAllocations" ToRole="xcuda_Item" />
           <NavigationProperty Name="xBondAllocations" Relationship="WaterNutDBModel.FK_xBondAllocations_AsycudaSalesAllocations" FromRole="AsycudaSalesAllocations" ToRole="xBondAllocations" />
+          <NavigationProperty Name="EX9AsycudaSalesAllocations" Relationship="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations" FromRole="AsycudaSalesAllocations" ToRole="EX9AsycudaSalesAllocations" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -2196,6 +2201,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="xBond_Item_Id" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExEX9AsycudaSalesAllocations" FromRole="EX9AsycudaSalesAllocations" ToRole="InventoryItemsEx" />
+          <NavigationProperty Name="AsycudaSalesAllocations" Relationship="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations" FromRole="EX9AsycudaSalesAllocations" ToRole="AsycudaSalesAllocations" />
         </EntityType>
         <Association Name="xcuda_ItemEX9AsycudaSalesAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1" />
@@ -2565,6 +2571,18 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <Dependent Role="InventoryItemAliasEx">
               <PropertyRef Name="ItemNumber" />
               <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AsycudaSalesAllocationsEX9AsycudaSalesAllocations">
+          <End Type="WaterNutDBModel.AsycudaSalesAllocations" Role="AsycudaSalesAllocations" Multiplicity="1" />
+          <End Type="WaterNutDBModel.EX9AsycudaSalesAllocations" Role="EX9AsycudaSalesAllocations" Multiplicity="1" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaSalesAllocations">
+              <PropertyRef Name="AllocationId" />
+            </Principal>
+            <Dependent Role="EX9AsycudaSalesAllocations">
+              <PropertyRef Name="AllocationId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

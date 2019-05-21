@@ -41,11 +41,29 @@ namespace WaterNut.DataSpace
             //MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
-        internal  async Task ProcessDroppedFile(string droppedFilePath, string fileType, AsycudaDocumentSet docSet,bool overWriteExisting)
+        public async Task ProcessDroppedFile(string droppedFilePath, string fileType, AsycudaDocumentSet docSet, bool overWriteExisting)
         {
             try
             {
                 await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
+            }
+            catch (Exception Ex)
+            {
+                throw new ApplicationException($"Problem importing File '{droppedFilePath}'. - Error: {Ex.Message}");
+            }
+
+        }
+        public  async Task ProcessDroppedFile(string droppedFilePath, string fileType, int asycudaDocumentSetId, bool overWriteExisting)
+        {
+            try
+            {
+                using (var ctx = new DocumentDSContext())
+                {
+                    var docSet =
+                        ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
+                    if (docSet == null) throw new ApplicationException("Document Set with reference not found");
+                    await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
+                }
             }
             catch (Exception Ex)
             {

@@ -36,7 +36,7 @@ namespace CoreEntities.Business.Services
         public async Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames, bool onlyRegisteredDocuments, bool importTariffCodes, bool noMessages, bool overwriteExisting, bool linkPi)
         {
             var docset =
-                await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId, null)
+                await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                     .ConfigureAwait(false);
             await
                 WaterNut.DataSpace.BaseDataModel.Instance.ImportDocuments(docset, fileNames, onlyRegisteredDocuments,
@@ -51,7 +51,7 @@ namespace CoreEntities.Business.Services
 
         public async Task ExportDocSet(int docSetId, string directoryName)
         {
-            await WaterNut.DataSpace.BaseDataModel.Instance.ExportDocSet(docSetId, directoryName).ConfigureAwait(false);
+            await WaterNut.DataSpace.BaseDataModel.Instance.ExportDocSet(docSetId, directoryName, true).ConfigureAwait(false);
         }
 
         public async Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx)
@@ -81,19 +81,19 @@ namespace CoreEntities.Business.Services
 
         public async Task CleanEntries(int docSetId, IEnumerable<int> lst, bool perIM7)
         {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId, null).ConfigureAwait(false);
+            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             await WaterNut.DataSpace.CreateIM9.Instance.CleanEntries(docSet,lst, perIM7).ConfigureAwait(false);
         }
 
         public async Task CleanLines(int docSetId, IEnumerable<int> lst, bool perIM7)
         {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId, null).ConfigureAwait(false);
+            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             await WaterNut.DataSpace.CreateIM9.Instance.CleanLines(docSet, lst, perIM7).ConfigureAwait(false);
         }
 
         public async Task CleanBond(int docSetId, bool perIM7)
         {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId,null).ConfigureAwait(false);
+            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             await WaterNut.DataSpace.CreateIM9.Instance.CleanBond(docSet, perIM7).ConfigureAwait(false);
         }
 

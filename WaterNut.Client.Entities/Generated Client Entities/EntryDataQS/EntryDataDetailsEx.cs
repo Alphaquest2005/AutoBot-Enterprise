@@ -472,6 +472,36 @@ public Nullable<int> ApplicationSettingsId
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> LastCost
+		{ 
+		    get { return this.entrydatadetailsex.LastCost; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.LastCost) return;
+				this.entrydatadetailsex.LastCost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LastCost");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TaxAmount
+		{ 
+		    get { return this.entrydatadetailsex.TaxAmount; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.TaxAmount) return;
+				this.entrydatadetailsex.TaxAmount = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TaxAmount");
+			}
+		}
+     
+
        private InventoryItemsEx _InventoryItemsEx;
         public  InventoryItemsEx InventoryItemsEx
 		{

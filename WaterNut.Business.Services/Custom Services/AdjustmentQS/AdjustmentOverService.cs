@@ -19,7 +19,7 @@ namespace AdjustmentQS.Business.Services
 
 
                 var docSet =
-                    await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId, null)
+                    await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                         .ConfigureAwait(false);
 
                 // inject custom procedure in docset
@@ -44,7 +44,7 @@ namespace AdjustmentQS.Business.Services
                             EntryDataId = x.EntryDataId,
                             ItemNumber = x.ItemNumber,
                             ItemDescription = x.ItemDescription,
-                            Cost = x.Cost,
+                            Cost = (double)x.Cost,
                             Quantity = (double) x.ReceivedQty - (double) x.InvoiceQty,
                             EffectiveDate = x.EffectiveDate ?? x.AdjustmentEx.InvoiceDate,
                             LineNumber = x.LineNumber,

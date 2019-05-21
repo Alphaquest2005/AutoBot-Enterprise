@@ -370,6 +370,21 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<double> _taxamount;
         [DataMember]
+        public Nullable<double> LastCost 
+        {
+            get
+            {
+                return _lastcost;
+            }
+            set
+            {
+                _lastcost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _lastcost;
+        [DataMember]
         public List<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }

@@ -406,6 +406,21 @@ public Nullable<double> TaxAmount
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> LastCost
+		{ 
+		    get { return this.entrydatadetail.LastCost; }
+			set
+			{
+			    if (value == this.entrydatadetail.LastCost) return;
+				this.entrydatadetail.LastCost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LastCost");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

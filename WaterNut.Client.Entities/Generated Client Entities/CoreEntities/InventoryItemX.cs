@@ -175,8 +175,8 @@ public int ApplicationSettingsId
 		}
      
 
-        ObservableCollection<InventoryItemAliasEx> _InventoryItemAliasEx = null;
-        public  ObservableCollection<InventoryItemAliasEx> InventoryItemAliasEx
+        ObservableCollection<InventoryItemAliasX> _InventoryItemAliasEx = null;
+        public  ObservableCollection<InventoryItemAliasX> InventoryItemAliasEx
 		{
             
 		    get 
@@ -185,7 +185,7 @@ public int ApplicationSettingsId
 					//if (this.inventoryitemx.InventoryItemAliasEx == null) Debugger.Break();
 					if(this.inventoryitemx.InventoryItemAliasEx != null)
 					{
-						_InventoryItemAliasEx = new ObservableCollection<InventoryItemAliasEx>(this.inventoryitemx.InventoryItemAliasEx.Select(x => new InventoryItemAliasEx(x)));
+						_InventoryItemAliasEx = new ObservableCollection<InventoryItemAliasX>(this.inventoryitemx.InventoryItemAliasEx.Select(x => new InventoryItemAliasX(x)));
 					}
 					
 						_InventoryItemAliasEx.CollectionChanged += InventoryItemAliasEx_CollectionChanged; 
@@ -196,7 +196,7 @@ public int ApplicationSettingsId
 			{
 			    if (Equals(value, _InventoryItemAliasEx)) return;
 				if (value != null)
-					this.inventoryitemx.InventoryItemAliasEx = new ChangeTrackingCollection<DTO.InventoryItemAliasEx>(value.Select(x => x.DTO).ToList());
+					this.inventoryitemx.InventoryItemAliasEx = new ChangeTrackingCollection<DTO.InventoryItemAliasX>(value.Select(x => x.DTO).ToList());
                 _InventoryItemAliasEx = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				if (_InventoryItemAliasEx != null)
@@ -210,7 +210,7 @@ public int ApplicationSettingsId
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (InventoryItemAliasEx itm in e.NewItems)
+                    foreach (InventoryItemAliasX itm in e.NewItems)
                     {
                         if (itm != null)
                         inventoryitemx.InventoryItemAliasEx.Add(itm.DTO);
@@ -218,7 +218,7 @@ public int ApplicationSettingsId
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (InventoryItemAliasEx itm in e.OldItems)
+                    foreach (InventoryItemAliasX itm in e.OldItems)
                     {
                         if (itm != null)
                         inventoryitemx.InventoryItemAliasEx.Remove(itm.DTO);

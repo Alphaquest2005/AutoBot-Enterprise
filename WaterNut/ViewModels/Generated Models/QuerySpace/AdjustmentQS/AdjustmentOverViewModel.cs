@@ -940,7 +940,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public string ItemDescription { get; set; } 
                     
  
-                    public double Cost { get; set; } 
+                    public Nullable<double> Cost { get; set; } 
                     
  
                     public double QtyAllocated { get; set; } 

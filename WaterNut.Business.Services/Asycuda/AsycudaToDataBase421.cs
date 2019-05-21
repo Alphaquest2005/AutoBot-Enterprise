@@ -184,11 +184,7 @@ namespace WaterNut.DataSpace.Asycuda
             {
                 ads =
                     await
-                        BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId,
-                            new List<string>()
-                            {
-                                "ASYCUDA_ExtendedProperties"
-                            }).ConfigureAwait(false);
+                        BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             }
             return ads;
         }

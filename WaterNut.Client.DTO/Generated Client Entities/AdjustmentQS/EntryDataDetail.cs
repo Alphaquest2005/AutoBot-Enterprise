@@ -320,6 +320,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<double> _TaxAmount;
 
+        [DataMember]
+        public Nullable<double> LastCost
+		{ 
+		    get { return _LastCost; }
+			set
+			{
+			    if (value == _LastCost) return;
+				_LastCost = value;
+				NotifyPropertyChanged();//m => this.LastCost
+			}
+		}
+        private Nullable<double> _LastCost;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

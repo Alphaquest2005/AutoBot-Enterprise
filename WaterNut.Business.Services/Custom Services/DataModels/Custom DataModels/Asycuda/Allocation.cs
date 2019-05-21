@@ -137,7 +137,7 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
             Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-                                    // .Where(x => x.Key.Contains("CLS/8536")) // 
+                                     //.Where(x => x.Key.Contains("HCLAMP/060")) // 
                                      // .Where(x => "337493".Contains(x.Key))
                                      //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
                                      , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
@@ -149,10 +149,10 @@ namespace WaterNut.DataSpace
                     t += 1;
                    // Debug.WriteLine($"Processing {itm.Key} - {t} with {itm.SalesList.Count} Sales: {0} of {itm.SalesList.Count}");
                     //StatusModel.Refresh();
-                var sales = itm.SalesList.OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId).ThenBy(x => x.EntryDataDetailsId).ThenByDescending(x => x.Quantity)/**/.ToList();
+                var sales = itm.SalesList.OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId).ThenBy(x => x.LineNumber ?? x.EntryDataDetailsId).ThenByDescending(x => x.Quantity)/**/.ToList();
                 var asycudaItems = itm.EntriesList.OrderBy(x => x.AsycudaDocument.AssessmentDate).ThenBy(x => x.IsAssessed == null).ThenBy(x => x.AsycudaDocument.RegistrationDate)
                     .ThenByDescending(x => x.EntryPreviousItems.Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum())//NUO/44545 2 items with same date choose pIed one first
-                    .ThenBy(x => x.ASYCUDA_Id).ToList();
+                    .ThenBy(x => x.AsycudaDocument.ReferenceNumber).ToList();
                     
                     AllocateSalestoAsycudaByKey(sales, asycudaItems, t, count, allocateToLastAdjustment).Wait();
                         //.SalesList.Where(x => x.DoNotAllocate != true).ToList()

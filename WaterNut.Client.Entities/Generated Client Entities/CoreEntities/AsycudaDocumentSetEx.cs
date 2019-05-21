@@ -314,9 +314,9 @@ public Nullable<double> TotalWeight
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-       
-public Nullable<int> ApplicationSettingsId
+public int ApplicationSettingsId
 		{ 
 		    get { return this.asycudadocumentsetex.ApplicationSettingsId; }
 			set
@@ -325,6 +325,36 @@ public Nullable<int> ApplicationSettingsId
 				this.asycudadocumentsetex.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalInternalFreight
+		{ 
+		    get { return this.asycudadocumentsetex.TotalInternalFreight; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.TotalInternalFreight) return;
+				this.asycudadocumentsetex.TotalInternalFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalInternalFreight");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> TotalPackages
+		{ 
+		    get { return this.asycudadocumentsetex.TotalPackages; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.TotalPackages) return;
+				this.asycudadocumentsetex.TotalPackages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalPackages");
 			}
 		}
      
@@ -489,6 +519,114 @@ public Nullable<int> ApplicationSettingsId
 			}
 		}
         
+
+        ObservableCollection<FileTypes> _FileTypes = null;
+        public  ObservableCollection<FileTypes> FileTypes
+		{
+            
+		    get 
+				{ 
+					if(_FileTypes != null) return _FileTypes;
+					//if (this.asycudadocumentsetex.FileTypes == null) Debugger.Break();
+					if(this.asycudadocumentsetex.FileTypes != null)
+					{
+						_FileTypes = new ObservableCollection<FileTypes>(this.asycudadocumentsetex.FileTypes.Select(x => new FileTypes(x)));
+					}
+					
+						_FileTypes.CollectionChanged += FileTypes_CollectionChanged; 
+					
+					return _FileTypes; 
+				}
+			set
+			{
+			    if (Equals(value, _FileTypes)) return;
+				if (value != null)
+					this.asycudadocumentsetex.FileTypes = new ChangeTrackingCollection<DTO.FileTypes>(value.Select(x => x.DTO).ToList());
+                _FileTypes = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FileTypes != null)
+				_FileTypes.CollectionChanged += FileTypes_CollectionChanged;               
+				NotifyPropertyChanged("FileTypes");
+			}
+		}
+        
+        void FileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FileTypes itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentsetex.FileTypes.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FileTypes itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentsetex.FileTypes.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = null;
+        public  ObservableCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocumentSet_Attachments != null) return _AsycudaDocumentSet_Attachments;
+					//if (this.asycudadocumentsetex.AsycudaDocumentSet_Attachments == null) Debugger.Break();
+					if(this.asycudadocumentsetex.AsycudaDocumentSet_Attachments != null)
+					{
+						_AsycudaDocumentSet_Attachments = new ObservableCollection<AsycudaDocumentSet_Attachments>(this.asycudadocumentsetex.AsycudaDocumentSet_Attachments.Select(x => new AsycudaDocumentSet_Attachments(x)));
+					}
+					
+						_AsycudaDocumentSet_Attachments.CollectionChanged += AsycudaDocumentSet_Attachments_CollectionChanged; 
+					
+					return _AsycudaDocumentSet_Attachments; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSet_Attachments)) return;
+				if (value != null)
+					this.asycudadocumentsetex.AsycudaDocumentSet_Attachments = new ChangeTrackingCollection<DTO.AsycudaDocumentSet_Attachments>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocumentSet_Attachments = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocumentSet_Attachments != null)
+				_AsycudaDocumentSet_Attachments.CollectionChanged += AsycudaDocumentSet_Attachments_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocumentSet_Attachments");
+			}
+		}
+        
+        void AsycudaDocumentSet_Attachments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocumentSet_Attachments itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentsetex.AsycudaDocumentSet_Attachments.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocumentSet_Attachments itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentsetex.AsycudaDocumentSet_Attachments.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.AsycudaDocumentSetEx> _changeTracker;    

@@ -29,7 +29,7 @@ namespace AllocationQS.Business.Services
             int AsycudaDocumentSetId)
         {
             var docset =
-                await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(AsycudaDocumentSetId, null)
+                await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(AsycudaDocumentSetId)
                     .ConfigureAwait(false);
            await WaterNut.DataSpace.CreateEx9Class.Instance.CreateEx9(filterExpression, perIM7, process7100,
                 applyCurrentChecks, docset).ConfigureAwait(false);
@@ -38,7 +38,7 @@ namespace AllocationQS.Business.Services
         public async Task CreateOPS(string filterExpression, int AsycudaDocumentSetId)
         {
             var docset =
-               await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(AsycudaDocumentSetId, null)
+               await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(AsycudaDocumentSetId)
                    .ConfigureAwait(false);
 
             //await WaterNut.DataSpace.CreateOPSClass.Instance.CreateOPS(filterExpression, docset).ConfigureAwait(false);

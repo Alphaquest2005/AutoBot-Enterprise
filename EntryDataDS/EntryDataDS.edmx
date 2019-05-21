@@ -133,6 +133,7 @@
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="LastCost" Type="float" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -193,12 +194,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="LastCost" Type="float" />
+          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="InventoryItemsEx">
           <Key>
             <PropertyRef Name="ItemNumber" />
+            
+            
           </Key>
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
@@ -416,7 +421,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
 [EntryDataDetailsEx].[Comment] AS [Comment], 
 [EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
-[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EntryDataDetailsEx].[LastCost] AS [LastCost], 
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -606,7 +613,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
-          <Property Name="TaxAmount" Type="Double" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
+          <Property Name="TaxAmount" Type="Double" />
+          <Property Name="LastCost" Type="Double" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1">
@@ -680,6 +688,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="LastCost" Type="Double" />
+          <Property Name="TaxAmount" Type="Double" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -939,6 +949,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
@@ -982,6 +993,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />

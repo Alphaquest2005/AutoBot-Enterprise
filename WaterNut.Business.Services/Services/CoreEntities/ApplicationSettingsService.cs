@@ -257,6 +257,18 @@ namespace CoreEntities.Business.Services
                                         GetWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileTypes":
+                                return
+                                    await
+                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InfoMapping":
+                                return
+                                    await
+                                        GetWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -763,6 +775,12 @@ namespace CoreEntities.Business.Services
                             case "InventoryItemsEx":
                                 return await CountWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InfoMapping":
+                                return await CountWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.ApplicationSettings.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
@@ -890,6 +908,18 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<InventoryItemX>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InfoMapping":
+                                return
+                                    await
+                                        LoadRangeWhere<InfoMapping>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1160,6 +1190,12 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InventoryItemsEx":
                                 return await SumWhere<InventoryItemX>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InfoMapping":
+                                return await SumWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

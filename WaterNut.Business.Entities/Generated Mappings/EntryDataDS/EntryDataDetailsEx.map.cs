@@ -40,6 +40,8 @@
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.LastCost).HasColumnName("LastCost");
+              this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

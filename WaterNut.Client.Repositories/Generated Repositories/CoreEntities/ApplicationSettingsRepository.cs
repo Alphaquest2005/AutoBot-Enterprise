@@ -205,7 +205,9 @@ namespace CoreEntities.Client.Repositories
                      // AsycudaDocumentSetEx = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetEx>(res.AsycudaDocumentSetEx.Select(y => new AsycudaDocumentSetEx(y))),    
                      // AsycudaDocument = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument>(res.AsycudaDocument.Select(y => new AsycudaDocument(y))),    
                      // AsycudaDocumentItem = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItem>(res.AsycudaDocumentItem.Select(y => new AsycudaDocumentItem(y))),    
-                     // InventoryItemsEx = new System.Collections.ObjectModel.ObservableCollection<InventoryItemX>(res.InventoryItemsEx.Select(y => new InventoryItemX(y)))    
+                     // InventoryItemsEx = new System.Collections.ObjectModel.ObservableCollection<InventoryItemX>(res.InventoryItemsEx.Select(y => new InventoryItemX(y))),    
+                     // FileTypes = new System.Collections.ObjectModel.ObservableCollection<FileTypes>(res.FileTypes.Select(y => new FileTypes(y))),    
+                     // InfoMapping = new System.Collections.ObjectModel.ObservableCollection<InfoMapping>(res.InfoMapping.Select(y => new InfoMapping(y)))    
                   };
                     }
                     else

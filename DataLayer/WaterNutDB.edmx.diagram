@@ -4,14 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f32200512a8740a58b3d2ed4e56b5dcb" Name="xcuda" ZoomLevel="78" >
+      <Diagram DiagramId="f32200512a8740a58b3d2ed4e56b5dcb" Name="xcuda" ZoomLevel="100" >
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Manifest_reference_number" Width="1.5" PointX="5.25" PointY="39.75" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Manifest_reference_number" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.AsycudaDocumentSet" Width="1.5" PointX="3.75" PointY="20.5" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.Customs_Procedure" Width="1.5" PointX="1.5" PointY="18.125" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.Document_Type" Width="1.5" PointX="1.5" PointY="14.375" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.ExportTemplate" Width="1.5" PointX="1.5" PointY="21.375" />
-        <EntityTypeShape EntityType="WaterNutDB.DataLayer.InventoryItems" Width="1.5" PointX="3.75" PointY="9.75" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.TariffCategory" Width="2.125" PointX="1.5" PointY="5.875" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.TariffCodes" Width="1.5" PointX="1.5" PointY="9.125" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.TariffSupUnitLkps" Width="2.25" PointX="4.375" PointY="5.875" />
@@ -70,7 +69,6 @@
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" />
-        <AssociationConnector Association="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_TariffCodes_TariffCategory" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Identification_Assessment" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_ASYCUDA_Assessment_notice" />
@@ -118,7 +116,6 @@
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Tarification_Supplementary_unit" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_Taxation_Taxation_line" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Transit_Destination_xcuda_Transit" />
-        <AssociationConnector Association="WaterNutDB.DataLayer.xcuda_Inventory_Item" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_item_internal_freight" Width="1.5" PointX="8.375" PointY="9.75" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_item_other_cost" Width="1.5" PointX="10.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Market_valuer" Width="1.5" PointX="10.375" PointY="3.75" />
@@ -142,6 +139,15 @@
           <ConnectorPoint PointX="2.875" PointY="3.1811933844537976" />
           <ConnectorPoint PointX="3.25" PointY="3.1811933844537976" />
         </AssociationConnector>
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.InventoryItemsEx" Width="1.875" PointX="5.625" PointY="8.625" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.TariffCodesInventoryItemsEx" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Inventory_Item" Width="2.125" PointX="10.25" PointY="103.125" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.Attachments" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Attachments" Width="1.5" PointX="7.5" PointY="53.125" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents" />
         </Diagram>
       <Diagram DiagramId="b567f2678d3d49a3818d4cb1141ba6eb" Name="WaterNut" ZoomLevel="74" >
         </Diagram>

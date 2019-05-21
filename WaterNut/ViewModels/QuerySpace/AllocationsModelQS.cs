@@ -56,7 +56,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         {
 
             Process7100 = false;
-            ApplyCurrentChecks = true;            
+            ApplyCurrentChecks = false;            
             //FilterData();
 
             RegisterToReceiveMessages<SalesDataDetail>(SalesDataQS.MessageToken.CurrentSalesDataDetailChanged, OnCurrentSalesDataDetailChanged);
@@ -410,6 +410,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
                     //"&& (pRegistrationDate != DateTime.MinValue)" +
                     //"&& (pCNumber != null)" +
+                    "&& (PiQuantity < pQtyAllocated)" +
                     "&& (Status == null || Status == \"\")" +
                     (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
                         : ""));

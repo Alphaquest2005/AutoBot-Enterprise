@@ -382,7 +382,7 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("Manufact. SKU|ItemAlias".ToUpper().Contains(h.ToUpper()))
+                if ("ItemAlias".ToUpper().Contains(h.ToUpper()))//Manufact. SKU|
                 {
                     mapping.Add("ItemAlias", i);
                     continue;
@@ -411,7 +411,7 @@ namespace WaterNut.DataSpace
                     mapping.Add("CustomerName", i);
                     continue;
                 }
-                if ("Tax".ToUpper().Contains(h.ToUpper()))
+                if ("TAX1|Tax".ToUpper().Contains(h.ToUpper()))
                 {
                     mapping.Add("Tax", i);
                     continue;

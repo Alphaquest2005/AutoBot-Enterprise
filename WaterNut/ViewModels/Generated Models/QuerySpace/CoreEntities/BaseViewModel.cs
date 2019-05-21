@@ -57,11 +57,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentIDChanged, OnCurrentAsycudaDocumentIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemIDChanged, OnCurrentAsycudaDocumentItemIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, OnCurrentAsycudaDocumentSet_AttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, OnCurrentAsycudaDocumentSetExIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAttachmentsIDChanged, OnCurrentAttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustoms_ProcedureIDChanged, OnCurrentCustoms_ProcedureIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDocument_TypeIDChanged, OnCurrentDocument_TypeIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, OnCurrentEntryPreviousItemsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliasExIDChanged, OnCurrentInventoryItemAliasExIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingsIDChanged, OnCurrentFileTypeMappingsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypesIDChanged, OnCurrentFileTypesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentInfoMappingIDChanged, OnCurrentInfoMappingIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliasXIDChanged, OnCurrentInventoryItemAliasXIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemXIDChanged, OnCurrentInventoryItemXIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLicenceSummaryIDChanged, OnCurrentLicenceSummaryIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSubItemsIDChanged, OnCurrentSubItemsIDChanged);
@@ -73,11 +78,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<AsycudaDocument>(MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItem>(MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetails>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
+                        RegisterToReceiveMessages<Attachments>(MessageToken.CurrentAttachmentsChanged, OnCurrentAttachmentsChanged);
                         RegisterToReceiveMessages<Customs_Procedure>(MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
                         RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
                         RegisterToReceiveMessages<EntryPreviousItems>(MessageToken.CurrentEntryPreviousItemsChanged, OnCurrentEntryPreviousItemsChanged);
-                        RegisterToReceiveMessages<InventoryItemAliasEx>(MessageToken.CurrentInventoryItemAliasExChanged, OnCurrentInventoryItemAliasExChanged);
+                        RegisterToReceiveMessages<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, OnCurrentFileTypeMappingsChanged);
+                        RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
+                        RegisterToReceiveMessages<InfoMapping>(MessageToken.CurrentInfoMappingChanged, OnCurrentInfoMappingChanged);
+                        RegisterToReceiveMessages<InventoryItemAliasX>(MessageToken.CurrentInventoryItemAliasXChanged, OnCurrentInventoryItemAliasXChanged);
                         RegisterToReceiveMessages<InventoryItemX>(MessageToken.CurrentInventoryItemXChanged, OnCurrentInventoryItemXChanged);
                         RegisterToReceiveMessages<LicenceSummary>(MessageToken.CurrentLicenceSummaryChanged, OnCurrentLicenceSummaryChanged);
                         RegisterToReceiveMessages<SubItems>(MessageToken.CurrentSubItemsChanged, OnCurrentSubItemsChanged);
@@ -209,6 +219,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentAsycudaDocumentSet_AttachmentsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaDocumentSet_AttachmentsRepository ctx = new AsycudaDocumentSet_AttachmentsRepository())
+                            {
+                                CurrentAsycudaDocumentSet_Attachments = await ctx.GetAsycudaDocumentSet_Attachments(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaDocumentSet_Attachments);
+                        }
+
+                        private  string _currentAsycudaDocumentSet_AttachmentsID = "";
+                        public string CurrentAsycudaDocumentSet_AttachmentsID
+                        {
+                            get
+                            {
+                                return _currentAsycudaDocumentSet_AttachmentsID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaDocumentSet_AttachmentsID != value)
+                                {
+                                    _currentAsycudaDocumentSet_AttachmentsID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaDocumentSet_AttachmentsID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, _currentAsycudaDocumentSet_AttachmentsID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSet_AttachmentsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentAsycudaDocumentSetExIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (AsycudaDocumentSetExRepository ctx = new AsycudaDocumentSetExRepository())
@@ -233,6 +270,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAsycudaDocumentSetExID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSetExIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, _currentAsycudaDocumentSetExID));
                                     NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetExID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAttachmentsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AttachmentsRepository ctx = new AttachmentsRepository())
+                            {
+                                CurrentAttachments = await ctx.GetAttachments(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAttachments);
+                        }
+
+                        private  string _currentAttachmentsID = "";
+                        public string CurrentAttachmentsID
+                        {
+                            get
+                            {
+                                return _currentAttachmentsID;
+                            }
+                            set
+                            {
+                                if (_currentAttachmentsID != value)
+                                {
+                                    _currentAttachmentsID = value;
+                                    if (!string.IsNullOrEmpty(_currentAttachmentsID)) BeginSendMessage(MessageToken.CurrentAttachmentsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAttachmentsIDChanged, _currentAttachmentsID));
+                                    NotifyPropertyChanged(x => this.CurrentAttachmentsID);  
                                 }
                             }
                         }
@@ -317,30 +381,111 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentInventoryItemAliasExIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentFileTypeMappingsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (InventoryItemAliasExRepository ctx = new InventoryItemAliasExRepository())
+                            using (FileTypeMappingsRepository ctx = new FileTypeMappingsRepository())
                             {
-                                CurrentInventoryItemAliasEx = await ctx.GetInventoryItemAliasEx(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentFileTypeMappings = await ctx.GetFileTypeMappings(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentInventoryItemAliasEx);
+                            NotifyPropertyChanged(m => CurrentFileTypeMappings);
                         }
 
-                        private  string _currentInventoryItemAliasExID = "";
-                        public string CurrentInventoryItemAliasExID
+                        private  string _currentFileTypeMappingsID = "";
+                        public string CurrentFileTypeMappingsID
                         {
                             get
                             {
-                                return _currentInventoryItemAliasExID;
+                                return _currentFileTypeMappingsID;
                             }
                             set
                             {
-                                if (_currentInventoryItemAliasExID != value)
+                                if (_currentFileTypeMappingsID != value)
                                 {
-                                    _currentInventoryItemAliasExID = value;
-                                    if (!string.IsNullOrEmpty(_currentInventoryItemAliasExID)) BeginSendMessage(MessageToken.CurrentInventoryItemAliasExIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentInventoryItemAliasExIDChanged, _currentInventoryItemAliasExID));
-                                    NotifyPropertyChanged(x => this.CurrentInventoryItemAliasExID);  
+                                    _currentFileTypeMappingsID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileTypeMappingsID)) BeginSendMessage(MessageToken.CurrentFileTypeMappingsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileTypeMappingsIDChanged, _currentFileTypeMappingsID));
+                                    NotifyPropertyChanged(x => this.CurrentFileTypeMappingsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentFileTypesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (FileTypesRepository ctx = new FileTypesRepository())
+                            {
+                                CurrentFileTypes = await ctx.GetFileTypes(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentFileTypes);
+                        }
+
+                        private  string _currentFileTypesID = "";
+                        public string CurrentFileTypesID
+                        {
+                            get
+                            {
+                                return _currentFileTypesID;
+                            }
+                            set
+                            {
+                                if (_currentFileTypesID != value)
+                                {
+                                    _currentFileTypesID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileTypesID)) BeginSendMessage(MessageToken.CurrentFileTypesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileTypesIDChanged, _currentFileTypesID));
+                                    NotifyPropertyChanged(x => this.CurrentFileTypesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentInfoMappingIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (InfoMappingRepository ctx = new InfoMappingRepository())
+                            {
+                                CurrentInfoMapping = await ctx.GetInfoMapping(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentInfoMapping);
+                        }
+
+                        private  string _currentInfoMappingID = "";
+                        public string CurrentInfoMappingID
+                        {
+                            get
+                            {
+                                return _currentInfoMappingID;
+                            }
+                            set
+                            {
+                                if (_currentInfoMappingID != value)
+                                {
+                                    _currentInfoMappingID = value;
+                                    if (!string.IsNullOrEmpty(_currentInfoMappingID)) BeginSendMessage(MessageToken.CurrentInfoMappingIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentInfoMappingIDChanged, _currentInfoMappingID));
+                                    NotifyPropertyChanged(x => this.CurrentInfoMappingID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentInventoryItemAliasXIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (InventoryItemAliasXRepository ctx = new InventoryItemAliasXRepository())
+                            {
+                                CurrentInventoryItemAliasX = await ctx.GetInventoryItemAliasX(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentInventoryItemAliasX);
+                        }
+
+                        private  string _currentInventoryItemAliasXID = "";
+                        public string CurrentInventoryItemAliasXID
+                        {
+                            get
+                            {
+                                return _currentInventoryItemAliasXID;
+                            }
+                            set
+                            {
+                                if (_currentInventoryItemAliasXID != value)
+                                {
+                                    _currentInventoryItemAliasXID = value;
+                                    if (!string.IsNullOrEmpty(_currentInventoryItemAliasXID)) BeginSendMessage(MessageToken.CurrentInventoryItemAliasXIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentInventoryItemAliasXIDChanged, _currentInventoryItemAliasXID));
+                                    NotifyPropertyChanged(x => this.CurrentInventoryItemAliasXID);  
                                 }
                             }
                         }
@@ -485,6 +630,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                  CurrentAsycudaDocument = null;
                  CurrentAsycudaDocumentItem = null;
                  CurrentInventoryItemX = null;
+                 CurrentFileTypes = null;
+                 CurrentInfoMapping = null;
    
                 }
             }
@@ -668,6 +815,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentAsycudaDocumentSet_AttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet_Attachments> e)
+        {
+            //CurrentAsycudaDocumentSet_Attachments = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaDocumentSet_Attachments);
+        }
+
+        private  AsycudaDocumentSet_Attachments _currentAsycudaDocumentSet_Attachments;
+        public AsycudaDocumentSet_Attachments CurrentAsycudaDocumentSet_Attachments
+        {
+            get
+            {
+                return _currentAsycudaDocumentSet_Attachments;
+            }
+            set
+            {
+                if (_currentAsycudaDocumentSet_Attachments != value)
+                {
+                    _currentAsycudaDocumentSet_Attachments = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged,
+                                                     new NotificationEventArgs<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, _currentAsycudaDocumentSet_Attachments)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSet_Attachments);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaDocumentSet_Attachments> _vcurrentAsycudaDocumentSet_Attachments;
+        public VirtualListItem<AsycudaDocumentSet_Attachments> VCurrentAsycudaDocumentSet_Attachments
+        {
+            get
+            {
+                return _vcurrentAsycudaDocumentSet_Attachments;
+            }
+            set
+            {
+                if (_vcurrentAsycudaDocumentSet_Attachments != value)
+                {
+                    _vcurrentAsycudaDocumentSet_Attachments = value;
+					if(_vcurrentAsycudaDocumentSet_Attachments != null) CurrentAsycudaDocumentSet_Attachments = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentSet_Attachments);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
         {
             //CurrentAsycudaDocumentSetEx = e.Data;
@@ -692,6 +889,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     // all current navigation properties = null
                  CurrentAsycudaDocument = null;
                  CurrentLicenceSummary = null;
+                 CurrentFileTypes = null;
+                 CurrentAsycudaDocumentSet_Attachments = null;
    
                 }
             }
@@ -711,6 +910,57 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentAsycudaDocumentSetEx = value;
 					if(_vcurrentAsycudaDocumentSetEx != null) CurrentAsycudaDocumentSetEx = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentSetEx);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Attachments> e)
+        {
+            //CurrentAttachments = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAttachments);
+        }
+
+        private  Attachments _currentAttachments;
+        public Attachments CurrentAttachments
+        {
+            get
+            {
+                return _currentAttachments;
+            }
+            set
+            {
+                if (_currentAttachments != value)
+                {
+                    _currentAttachments = value;
+                    BeginSendMessage(MessageToken.CurrentAttachmentsChanged,
+                                                     new NotificationEventArgs<Attachments>(MessageToken.CurrentAttachmentsChanged, _currentAttachments)); 
+                    NotifyPropertyChanged(x => this.CurrentAttachments);    
+                    // all current navigation properties = null
+                 CurrentAsycudaDocumentSet_Attachments = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<Attachments> _vcurrentAttachments;
+        public VirtualListItem<Attachments> VCurrentAttachments
+        {
+            get
+            {
+                return _vcurrentAttachments;
+            }
+            set
+            {
+                if (_vcurrentAttachments != value)
+                {
+                    _vcurrentAttachments = value;
+					if(_vcurrentAttachments != null) CurrentAttachments = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAttachments);                    
                 }
             }
         }
@@ -871,47 +1121,198 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
-        internal void OnCurrentInventoryItemAliasExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemAliasEx> e)
+        internal void OnCurrentFileTypeMappingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypeMappings> e)
         {
-            //CurrentInventoryItemAliasEx = e.Data;
-            NotifyPropertyChanged(m => this.CurrentInventoryItemAliasEx);
+            //CurrentFileTypeMappings = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileTypeMappings);
         }
 
-        private  InventoryItemAliasEx _currentInventoryItemAliasEx;
-        public InventoryItemAliasEx CurrentInventoryItemAliasEx
+        private  FileTypeMappings _currentFileTypeMappings;
+        public FileTypeMappings CurrentFileTypeMappings
         {
             get
             {
-                return _currentInventoryItemAliasEx;
+                return _currentFileTypeMappings;
             }
             set
             {
-                if (_currentInventoryItemAliasEx != value)
+                if (_currentFileTypeMappings != value)
                 {
-                    _currentInventoryItemAliasEx = value;
-                    BeginSendMessage(MessageToken.CurrentInventoryItemAliasExChanged,
-                                                     new NotificationEventArgs<InventoryItemAliasEx>(MessageToken.CurrentInventoryItemAliasExChanged, _currentInventoryItemAliasEx)); 
-                    NotifyPropertyChanged(x => this.CurrentInventoryItemAliasEx);    
+                    _currentFileTypeMappings = value;
+                    BeginSendMessage(MessageToken.CurrentFileTypeMappingsChanged,
+                                                     new NotificationEventArgs<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, _currentFileTypeMappings)); 
+                    NotifyPropertyChanged(x => this.CurrentFileTypeMappings);    
                     // all current navigation properties = null
    
                 }
             }
         }
 
-		VirtualListItem<InventoryItemAliasEx> _vcurrentInventoryItemAliasEx;
-        public VirtualListItem<InventoryItemAliasEx> VCurrentInventoryItemAliasEx
+		VirtualListItem<FileTypeMappings> _vcurrentFileTypeMappings;
+        public VirtualListItem<FileTypeMappings> VCurrentFileTypeMappings
         {
             get
             {
-                return _vcurrentInventoryItemAliasEx;
+                return _vcurrentFileTypeMappings;
             }
             set
             {
-                if (_vcurrentInventoryItemAliasEx != value)
+                if (_vcurrentFileTypeMappings != value)
                 {
-                    _vcurrentInventoryItemAliasEx = value;
-					if(_vcurrentInventoryItemAliasEx != null) CurrentInventoryItemAliasEx = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentInventoryItemAliasEx);                    
+                    _vcurrentFileTypeMappings = value;
+					if(_vcurrentFileTypeMappings != null) CurrentFileTypeMappings = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileTypeMappings);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
+        {
+            //CurrentFileTypes = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileTypes);
+        }
+
+        private  FileTypes _currentFileTypes;
+        public FileTypes CurrentFileTypes
+        {
+            get
+            {
+                return _currentFileTypes;
+            }
+            set
+            {
+                if (_currentFileTypes != value)
+                {
+                    _currentFileTypes = value;
+                    BeginSendMessage(MessageToken.CurrentFileTypesChanged,
+                                                     new NotificationEventArgs<FileTypes>(MessageToken.CurrentFileTypesChanged, _currentFileTypes)); 
+                    NotifyPropertyChanged(x => this.CurrentFileTypes);    
+                    // all current navigation properties = null
+                 CurrentFileTypeMappings = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<FileTypes> _vcurrentFileTypes;
+        public VirtualListItem<FileTypes> VCurrentFileTypes
+        {
+            get
+            {
+                return _vcurrentFileTypes;
+            }
+            set
+            {
+                if (_vcurrentFileTypes != value)
+                {
+                    _vcurrentFileTypes = value;
+					if(_vcurrentFileTypes != null) CurrentFileTypes = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileTypes);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentInfoMappingChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InfoMapping> e)
+        {
+            //CurrentInfoMapping = e.Data;
+            NotifyPropertyChanged(m => this.CurrentInfoMapping);
+        }
+
+        private  InfoMapping _currentInfoMapping;
+        public InfoMapping CurrentInfoMapping
+        {
+            get
+            {
+                return _currentInfoMapping;
+            }
+            set
+            {
+                if (_currentInfoMapping != value)
+                {
+                    _currentInfoMapping = value;
+                    BeginSendMessage(MessageToken.CurrentInfoMappingChanged,
+                                                     new NotificationEventArgs<InfoMapping>(MessageToken.CurrentInfoMappingChanged, _currentInfoMapping)); 
+                    NotifyPropertyChanged(x => this.CurrentInfoMapping);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<InfoMapping> _vcurrentInfoMapping;
+        public VirtualListItem<InfoMapping> VCurrentInfoMapping
+        {
+            get
+            {
+                return _vcurrentInfoMapping;
+            }
+            set
+            {
+                if (_vcurrentInfoMapping != value)
+                {
+                    _vcurrentInfoMapping = value;
+					if(_vcurrentInfoMapping != null) CurrentInfoMapping = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentInfoMapping);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentInventoryItemAliasXChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemAliasX> e)
+        {
+            //CurrentInventoryItemAliasX = e.Data;
+            NotifyPropertyChanged(m => this.CurrentInventoryItemAliasX);
+        }
+
+        private  InventoryItemAliasX _currentInventoryItemAliasX;
+        public InventoryItemAliasX CurrentInventoryItemAliasX
+        {
+            get
+            {
+                return _currentInventoryItemAliasX;
+            }
+            set
+            {
+                if (_currentInventoryItemAliasX != value)
+                {
+                    _currentInventoryItemAliasX = value;
+                    BeginSendMessage(MessageToken.CurrentInventoryItemAliasXChanged,
+                                                     new NotificationEventArgs<InventoryItemAliasX>(MessageToken.CurrentInventoryItemAliasXChanged, _currentInventoryItemAliasX)); 
+                    NotifyPropertyChanged(x => this.CurrentInventoryItemAliasX);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<InventoryItemAliasX> _vcurrentInventoryItemAliasX;
+        public VirtualListItem<InventoryItemAliasX> VCurrentInventoryItemAliasX
+        {
+            get
+            {
+                return _vcurrentInventoryItemAliasX;
+            }
+            set
+            {
+                if (_vcurrentInventoryItemAliasX != value)
+                {
+                    _vcurrentInventoryItemAliasX = value;
+					if(_vcurrentInventoryItemAliasX != null) CurrentInventoryItemAliasX = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentInventoryItemAliasX);                    
                 }
             }
         }
@@ -943,7 +1344,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                                      new NotificationEventArgs<InventoryItemX>(MessageToken.CurrentInventoryItemXChanged, _currentInventoryItemX)); 
                     NotifyPropertyChanged(x => this.CurrentInventoryItemX);    
                     // all current navigation properties = null
-                 CurrentInventoryItemAliasEx = null;
+                 CurrentInventoryItemAliasX = null;
                  CurrentAsycudaDocumentItem = null;
    
                 }

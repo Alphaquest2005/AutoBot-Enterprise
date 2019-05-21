@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
             <PropertyRef Name="EntryPreviousItemId" />
@@ -43,6 +51,14 @@
           <Property Name="Attached_document_name" Type="nvarchar" MaxLength="100" />
           <Property Name="Attached_document_reference" Type="nvarchar" MaxLength="100" />
           <Property Name="Attached_document_from_rule" Type="int" />
+        </EntityType>
+        <EntityType Name="xcuda_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="Attached_documents_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Goods_description">
           <Key>
@@ -294,6 +310,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             
             
             <PropertyRef Name="PreviousItem_Id" />
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
@@ -624,6 +646,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_xcuda_Attachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xcuda_Attachments" Type="Self.xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xcuda_Attachments_xcuda_Attached_documents">
+          <End Role="xcuda_Attached_documents" Type="Self.xcuda_Attached_documents" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xcuda_Attachments" Type="Self.xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Attached_documents">
+              <PropertyRef Name="Attached_documents_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="Attached_documents_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode">
           <End Role="xcuda_HScode" Type="Self.xcuda_HScode" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -667,10 +717,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubItems" EntityType="Self.SubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xBondAllocations" EntityType="Self.xBondAllocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Attached_documents" EntityType="Self.xcuda_Attached_documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xcuda_Attachments" EntityType="Self.xcuda_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Goods_description" EntityType="Self.xcuda_Goods_description" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_HScode" EntityType="Self.xcuda_HScode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Inventory_Item" EntityType="Self.xcuda_Inventory_Item" Schema="dbo" store:Type="Tables" />
@@ -813,6 +865,14 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <AssociationSet Name="FK_xBondAllocations_xcuda_Item" Association="Self.FK_xBondAllocations_xcuda_Item">
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
             <End Role="xBondAllocations" EntitySet="xBondAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Attachments_Attachments" Association="Self.FK_xcuda_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Attachments_xcuda_Attached_documents" Association="Self.FK_xcuda_Attachments_xcuda_Attached_documents">
+            <End Role="xcuda_Attached_documents" EntitySet="xcuda_Attached_documents" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
           </AssociationSet>
           <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode" Association="Self.FK_xcuda_Inventory_Item_xcuda_HScode">
             <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
@@ -1069,6 +1129,16 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <End Role="xcuda_PreviousItem" EntitySet="xcuda_PreviousItem" />
             <End Role="EntryPreviousItems" EntitySet="EntryPreviousItems" />
           </AssociationSet>
+          <EntitySet Name="Attachments" EntityType="WaterNutDBModel.Attachments" />
+          <EntitySet Name="xcuda_Attachments" EntityType="WaterNutDBModel.xcuda_Attachments" />
+          <AssociationSet Name="FK_xcuda_Attachments_Attachments" Association="WaterNutDBModel.FK_xcuda_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Attachments_xcuda_Attached_documents" Association="WaterNutDBModel.FK_xcuda_Attachments_xcuda_Attached_documents">
+            <End Role="xcuda_Attached_documents" EntitySet="xcuda_Attached_documents" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="SubItems">
           <Key>
@@ -1103,6 +1173,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Attached_document_reference" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Attached_document_from_rule" Type="Int32" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDBModel.FK_Item_Attached_documents" FromRole="xcuda_Attached_documents" ToRole="xcuda_Item" />
+          <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDBModel.FK_xcuda_Attachments_xcuda_Attached_documents" FromRole="xcuda_Attached_documents" ToRole="xcuda_Attachments" />
         </EntityType>
         <EntityType Name="xcuda_Goods_description">
           <Key>
@@ -1693,6 +1764,53 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDBModel.FK_xcuda_Attachments_Attachments" FromRole="Attachments" ToRole="xcuda_Attachments" />
+        </EntityType>
+        <EntityType Name="xcuda_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="Attached_documents_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Attachments" Relationship="WaterNutDBModel.FK_xcuda_Attachments_Attachments" FromRole="xcuda_Attachments" ToRole="Attachments" />
+          <NavigationProperty Name="xcuda_Attached_documents" Relationship="WaterNutDBModel.FK_xcuda_Attachments_xcuda_Attached_documents" FromRole="xcuda_Attachments" ToRole="xcuda_Attached_documents" />
+        </EntityType>
+        <Association Name="FK_xcuda_Attachments_Attachments">
+          <End Type="WaterNutDBModel.Attachments" Role="Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Attachments" Role="xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xcuda_Attachments_xcuda_Attached_documents">
+          <End Type="WaterNutDBModel.xcuda_Attached_documents" Role="xcuda_Attached_documents" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.xcuda_Attachments" Role="xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Attached_documents">
+              <PropertyRef Name="Attached_documents_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="Attached_documents_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2041,6 +2159,24 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Attachments">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xcuda_Attachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Attachments">
+              <MappingFragment StoreEntitySet="xcuda_Attachments">
+                <ScalarProperty Name="Attached_documents_Id" ColumnName="Attached_documents_Id" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -2116,6 +2252,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
         <EntityTypeShape EntityType="WaterNutDBModel.EntryPreviousItems" Width="3.375" PointX="3.25" PointY="0.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_Item" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_PreviousItem" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Attachments" Width="1.5" PointX="3" PointY="36.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Attachments" Width="1.5" PointX="5.25" PointY="9.375" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Attachments_Attachments" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Attachments_xcuda_Attached_documents" />
       </Diagram>
     </Diagrams>
   </Designer>

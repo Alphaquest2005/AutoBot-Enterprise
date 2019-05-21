@@ -55,10 +55,10 @@ namespace WaterNut.DataLayer
         {
             get
             {
-                if ((IsAssessed == null || IsAssessed == false) && xcuda_Tarification.xcuda_HScode.InventoryItems.Count > 0 
-                            && xcuda_Tarification.xcuda_HScode.InventoryItems.FirstOrDefault().TariffCode != null)
+                if ((IsAssessed == null || IsAssessed == false) && xcuda_Tarification.xcuda_HScode.xcuda_Inventory_Item.Count > 0 
+                            && xcuda_Tarification.xcuda_HScode.xcuda_Inventory_Item.FirstOrDefault().InventoryItemsEx.TariffCode != null)
                 {
-                    return xcuda_Tarification.xcuda_HScode.InventoryItems.FirstOrDefault().TariffCode.ToString();
+                    return xcuda_Tarification.xcuda_HScode.xcuda_Inventory_Item.FirstOrDefault().InventoryItemsEx.TariffCode.ToString();
                 }
                 else
                 {

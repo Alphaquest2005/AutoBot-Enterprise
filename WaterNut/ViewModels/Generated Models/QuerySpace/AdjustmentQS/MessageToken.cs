@@ -106,6 +106,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS
           // public const string AsycudaDocumentSetEntryDataChanged = "AsycudaDocumentSetEntryDataChanged";
           // public const string AsycudaSalesAllocationChanged = "AsycudaSalesAllocationChanged";
           // public const string EntryDataDetailChanged = "EntryDataDetailChanged";
+          // public const string InventoryItemAliasExChanged = "InventoryItemAliasExChanged";
           // public const string InventoryItemsExChanged = "InventoryItemsExChanged";
           // public const string ShortAllocationChanged = "ShortAllocationChanged";
           // public const string xcuda_ItemChanged = "xcuda_ItemChanged";
@@ -131,6 +132,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentAsycudaSalesAllocationChanged = "CurrentAsycudaSalesAllocationChanged";
    
            public const string CurrentEntryDataDetailChanged = "CurrentEntryDataDetailChanged";
+   
+           public const string CurrentInventoryItemAliasExChanged = "CurrentInventoryItemAliasExChanged";
    
            public const string CurrentInventoryItemsExChanged = "CurrentInventoryItemsExChanged";
    
@@ -159,6 +162,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentAsycudaSalesAllocationIDChanged = "OnCurrentAsycudaSalesAllocationIDChanged";
    
            public const string CurrentEntryDataDetailIDChanged = "OnCurrentEntryDataDetailIDChanged";
+   
+           public const string CurrentInventoryItemAliasExIDChanged = "OnCurrentInventoryItemAliasExIDChanged";
    
            public const string CurrentInventoryItemsExIDChanged = "OnCurrentInventoryItemsExIDChanged";
    

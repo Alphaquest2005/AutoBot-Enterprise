@@ -225,6 +225,56 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+		private DateTime? _startassessmentdateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartassessmentdateFilter
+        {
+            get
+            {
+                return _startassessmentdateFilter;
+            }
+            set
+            {
+                _startassessmentdateFilter = value;
+				NotifyPropertyChanged(x => StartassessmentdateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endassessmentdateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndassessmentdateFilter
+        {
+            get
+            {
+                return _endassessmentdateFilter;
+            }
+            set
+            {
+                _endassessmentdateFilter = value;
+				NotifyPropertyChanged(x => EndassessmentdateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _assessmentdateFilter;
+        public DateTime? assessmentdateFilter
+        {
+            get
+            {
+                return _assessmentdateFilter;
+            }
+            set
+            {
+                _assessmentdateFilter = value;
+				NotifyPropertyChanged(x => assessmentdateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -263,7 +313,36 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 
 					if(LocalItemCostFilter.HasValue)
-						res.Append(" && " + string.Format("LocalItemCost == {0}",  LocalItemCostFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("LocalItemCost == {0}",  LocalItemCostFilter.ToString()));				 
+
+ 
+
+				if (Convert.ToDateTime(StartassessmentdateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndassessmentdateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartassessmentdateFilter).Date != DateTime.MinValue)
+						{
+							if(StartassessmentdateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndassessmentdateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("assessmentdate >= \"{0}\"",  Convert.ToDateTime(StartassessmentdateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndassessmentdateFilter).Date != DateTime.MinValue)
+						{
+							if(EndassessmentdateFilter.HasValue)
+								res.Append(" && " + string.Format("assessmentdate <= \"{0}\"",  Convert.ToDateTime(EndassessmentdateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartassessmentdateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndassessmentdateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_assessmentdateFilter).Date != DateTime.MinValue)
+						{
+							if(assessmentdateFilter.HasValue)
+								res.Append(" && " + string.Format("assessmentdate == \"{0}\"",  Convert.ToDateTime(assessmentdateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -292,7 +371,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     ItemNumber = x.ItemNumber ,
                     
  
-                    LocalItemCost = x.LocalItemCost 
+                    LocalItemCost = x.LocalItemCost ,
+                    
+ 
+                    assessmentdate = x.assessmentdate 
                     
                 }).ToList()
             };
@@ -312,6 +394,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<double> LocalItemCost { get; set; } 
+                    
+ 
+                    public System.DateTime assessmentdate { get; set; } 
                     
         }
 

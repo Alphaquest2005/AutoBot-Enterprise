@@ -638,6 +638,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Double? _lastCostFilter;
+        public Double? LastCostFilter
+        {
+            get
+            {
+                return _lastCostFilter;
+            }
+            set
+            {
+                _lastCostFilter = value;
+				NotifyPropertyChanged(x => LastCostFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -768,7 +786,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 
 					if(TaxAmountFilter.HasValue)
-						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
+
+					if(LastCostFilter.HasValue)
+						res.Append(" && " + string.Format("LastCost == {0}",  LastCostFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -854,7 +875,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     IsReconciled = x.IsReconciled ,
                     
  
-                    TaxAmount = x.TaxAmount 
+                    TaxAmount = x.TaxAmount ,
+                    
+ 
+                    LastCost = x.LastCost 
                     
                 }).ToList()
             };
@@ -931,6 +955,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<double> TaxAmount { get; set; } 
+                    
+ 
+                    public Nullable<double> LastCost { get; set; } 
                     
         }
 

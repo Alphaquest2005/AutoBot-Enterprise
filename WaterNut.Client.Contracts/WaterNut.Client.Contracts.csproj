@@ -82,6 +82,7 @@
     <Compile Include="AdjustmentQS\IAsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="AdjustmentQS\IAsycudaSalesAllocationService.cs" />
     <Compile Include="AdjustmentQS\IEntryDataDetailService.cs" />
+    <Compile Include="AdjustmentQS\IInventoryItemAliasExService.cs" />
     <Compile Include="AdjustmentQS\IInventoryItemsExService.cs" />
     <Compile Include="AdjustmentQS\IShortAllocationService.cs" />
     <Compile Include="AdjustmentQS\Ixcuda_ItemService.cs" />
@@ -93,10 +94,15 @@
     <Compile Include="CoreEntities\IAsycudaDocumentItemService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentSetExService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="CoreEntities\IAttachmentsService.cs" />
     <Compile Include="CoreEntities\ICustoms_ProcedureService.cs" />
     <Compile Include="CoreEntities\IDocument_TypeService.cs" />
     <Compile Include="CoreEntities\IEntryPreviousItemsService.cs" />
-    <Compile Include="CoreEntities\IInventoryItemAliasExService.cs" />
+    <Compile Include="CoreEntities\IFileTypeMappingsService.cs" />
+    <Compile Include="CoreEntities\IFileTypesService.cs" />
+    <Compile Include="CoreEntities\IInfoMappingService.cs" />
+    <Compile Include="CoreEntities\IInventoryItemAliasXService.cs" />
     <Compile Include="CoreEntities\IInventoryItemXService.cs" />
     <Compile Include="CoreEntities\ILicenceSummaryService.cs" />
     <Compile Include="CoreEntities\ISubItemsService.cs" />
@@ -121,6 +127,7 @@
     <Compile Include="Custom Contracts\SalesDataQS\ISalesDataService.cs" />
     <Compile Include="Custom Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
+    <Compile Include="EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataService.cs" />
     <Compile Include="EntryDataQS\IContainerEntryDataService.cs" />
@@ -132,6 +139,7 @@
     <Compile Include="EntryDataQS\IEntryDataService.cs" />
     <Compile Include="EntryDataQS\IInventoryItemsExService.cs" />
     <Compile Include="EntryDataQS\IPackageTypeService.cs" />
+    <Compile Include="EntryDataQS\IToDo_POToXMLService.cs" />
     <Compile Include="InventoryQS\IEntryDataDetailsExService.cs" />
     <Compile Include="InventoryQS\IInventoryItemsExService.cs" />
     <Compile Include="InventoryQS\ITariffCategoryCodeSuppUnitService.cs" />

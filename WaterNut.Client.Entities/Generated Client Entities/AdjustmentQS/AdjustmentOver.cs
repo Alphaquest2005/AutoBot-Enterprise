@@ -158,9 +158,9 @@ public string ItemDescription
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Cost is required")]
+       
        [NumberValidationAttribute]
-public double Cost
+public Nullable<double> Cost
 		{ 
 		    get { return this.adjustmentover.Cost; }
 			set

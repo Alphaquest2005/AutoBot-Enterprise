@@ -204,7 +204,9 @@ namespace CoreEntities.Client.Repositories
                     {
                      // AsycudaDocuments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument>(res.AsycudaDocuments.Select(y => new AsycudaDocument(y))),    
                      // LicenceSummary = new System.Collections.ObjectModel.ObservableCollection<LicenceSummary>(res.LicenceSummary.Select(y => new LicenceSummary(y))),    
-                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null)    
+                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
+                     // FileTypes = new System.Collections.ObjectModel.ObservableCollection<FileTypes>(res.FileTypes.Select(y => new FileTypes(y))),    
+                     // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y)))    
                   };
                     }
                     else

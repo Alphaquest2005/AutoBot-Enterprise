@@ -26,7 +26,7 @@ namespace AdjustmentQS
         public double Quantity { get; set; }
         public string Units { get; set; }
         public string ItemDescription { get; set; }
-        public double Cost { get; set; }
+        public Nullable<double> Cost { get; set; }
         public double QtyAllocated { get; set; }
         public double UnitWeight { get; set; }
         public Nullable<bool> DoNotAllocate { get; set; }

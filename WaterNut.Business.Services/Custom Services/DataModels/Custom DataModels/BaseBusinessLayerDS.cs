@@ -194,12 +194,7 @@ namespace WaterNut.DataSpace
 
         public  async Task ClearAsycudaDocumentSet(int AsycudaDocumentSetId)
         {
-            var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId, new List<string>()
-            {
-                 "xcuda_ASYCUDA_ExtendedProperties",
-                 "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
-                 "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant"
-            }).ConfigureAwait(false);
+            var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
             await ClearAsycudaDocumentSet(docset).ConfigureAwait(false);
         }
 
@@ -479,6 +474,29 @@ namespace WaterNut.DataSpace
             }
         }
 
+        public async Task AddToEntry(IEnumerable<int> entryDatalst, int docSetId, bool perInvoice)
+        {
+            try
+            {
+
+                var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
+                if (!IsValidDocument(docSet)) return;
+
+                var slstSource =
+                    (from s in await GetSelectedPODetails(entryDatalst).ConfigureAwait(false)
+                        //.Where(p => p.Downloaded == false)
+                        select s).ToList();
+                ;
+                if (!IsValidEntryData(slstSource)) return;
+
+                await CreateEntryItems(slstSource, docSet, perInvoice, true, false).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task ValidateExistingTariffCodes(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
            
@@ -586,32 +604,30 @@ namespace WaterNut.DataSpace
             var oldentryData = "";
             foreach (var pod in entryLineDatas)//
             {
-                
 
-                if (perInvoice )
+                if (oldentryData != pod.EntryData.EntryDataId)
                 {
-                    if (oldentryData == "") oldentryData = pod.EntryData.EntryDataId;
-                    if (cdoc.DocumentItems.Any() && oldentryData != pod.EntryData.EntryDataId)
+                    if (perInvoice)
                     {
-                        SetEffectiveAssessmentDate(cdoc);
+                        if (cdoc.DocumentItems.Any() && oldentryData != pod.EntryData.EntryDataId)
+                        {
+                            SetEffectiveAssessmentDate(cdoc);
 
-                        await SaveDocumentCT(cdoc).ConfigureAwait(false);
-                        cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
+                            await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                            cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
 
-                        //BaseDataModel.Instance.CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Add(cdoc.xcuda_ASYCUDA_ExtendedProperties);
-                        IntCdoc(cdoc, currentAsycudaDocumentSet);
-                        cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
-                        if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
-                        AttachCustomProcedure(cdoc, currentAsycudaDocumentSet.Customs_Procedure);
-                        oldentryData = pod.EntryData.EntryDataId;
-                        
-                        itmcount = 0;
+                            //BaseDataModel.Instance.CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Add(cdoc.xcuda_ASYCUDA_ExtendedProperties);
+                            IntCdoc(cdoc, currentAsycudaDocumentSet);
+                            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
+                            if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
+                            AttachCustomProcedure(cdoc, currentAsycudaDocumentSet.Customs_Procedure);
+                            
+                            itmcount = 0;
+                        }
                     }
-
-                    
-                       
                     
                 }
+
                 //invoice dictates currency to prevent currencies mismatch
                  if (curLst.Any() && cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code != curLst.First())
                         {
@@ -661,19 +677,56 @@ namespace WaterNut.DataSpace
 
              
                 if (itm == null) continue;
+                itmcount += 1;
 
-                if (itmcount == 0)
+                if (oldentryData != pod.EntryData.EntryDataId)
                 {
+                    if(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Document_Type.DisplayName != "IM7")
                     itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
                     {
                         Attached_document_code = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x => x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.DisplayName)?.AttachedDocumentCode ?? "IV05",
                         Attached_document_date = DateTime.Today.Date.ToShortDateString(),
                         Attached_document_reference = pod.EntryData.EntryDataId,
-                        TrackingState=TrackingState.Added
+                        TrackingState = TrackingState.Added
                     });
+
+                    var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
+                        .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) || (x.DocumentSpecific == false && !cdoc.Document.AsycudaDocument_Attachments.Any(z => z.AttachmentId == x.AttachmentId) ))
+                        .Select(x => x.Attachment);
+                    foreach (var att in alst)
+                    {
+                        cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
+                        {
+                            AttachmentId = att.Id, AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
+                            //Attachment = att,
+                            //xcuda_ASYCUDA = cdoc.Document,
+                            TrackingState = TrackingState.Added
+                        });
+
+                        var f = new FileInfo(att.FilePath);
+                        itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                        {
+                            Attached_document_code = att.DocumentCode,
+                            Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                            Attached_document_reference = f.Name.Replace(f.Extension, ""),//pod.EntryData.EntryDataId,
+                            xcuda_Attachments = new List<xcuda_Attachments>()
+                            {
+                                new xcuda_Attachments(true)
+                                {
+                                    AttachmentId = att.Id,
+                                    TrackingState = TrackingState.Added
+                                }
+                            },
+                            TrackingState = TrackingState.Added
+                        });
+                    }
+                    
+
+                    oldentryData = pod.EntryData.EntryDataId;
                 }
 
-                itmcount += 1;
+
+
                 if (itmcount%CurrentApplicationSettings.MaxEntryLines == 0)
                 {
                     if (cdoc.DocumentItems.Any())
@@ -1461,7 +1514,7 @@ namespace WaterNut.DataSpace
 
             if (currentDocument != null)
             {
-                DocToXML(currentDocument, f);
+                DocToXML(currentDocument, new FileInfo(f));
                // ExportDocumentToExcel(currentDocument, f);
             }
             else
@@ -1563,12 +1616,24 @@ namespace WaterNut.DataSpace
         //}
 
 
-        internal  void DocToXML(xcuda_ASYCUDA doc, string f)
+        internal  void DocToXML(xcuda_ASYCUDA doc, FileInfo f)
         {
-
+            File.AppendAllText(Path.Combine(f.DirectoryName, "Instructions.txt"), $"File\t{f.FullName}\r\n");
             var a = new Asycuda421.ASYCUDA();
-            a.LoadFromDataBase(doc.ASYCUDA_Id, a);
-            a.SaveToFile(f);
+            a.LoadFromDataBase(doc.ASYCUDA_Id, a, f);
+            a.SaveToFile(f.FullName);
+        }
+
+        public async Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames, bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting, bool linkPi)
+        {
+            using (var ctx = new DocumentDSContext())
+            {
+                var docSet = ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
+                if (docSet == null) throw new ApplicationException("Document Set with reference not found");
+                await Task.Run(() =>
+                        ImportDocuments(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages, overwriteExisting, linkPi, fileNames))
+                    .ConfigureAwait(false);
+            }
         }
 
         public async Task ImportDocuments(AsycudaDocumentSet docSet, IEnumerable<string> fileNames, bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting ,bool linkPi)
@@ -1595,7 +1660,7 @@ namespace WaterNut.DataSpace
                         if (ASYCUDA.CanLoadFromFile(f))
                         {
                             LoadAsycuda421(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages,
-                                overwriteExisting, linkPi, f, exceptions);
+                                overwriteExisting, linkPi, f,ref exceptions);
                         }
                         else
                         {
@@ -1617,7 +1682,7 @@ namespace WaterNut.DataSpace
 
 
         private void LoadAsycuda421(AsycudaDocumentSet docSet, bool importOnlyRegisteredDocument, bool importTariffCodes,
-           bool noMessages, bool overwriteExisting, bool linkPi, string f, ConcurrentQueue<Exception> exceptions)
+           bool noMessages, bool overwriteExisting, bool linkPi, string f,ref ConcurrentQueue<Exception> exceptions)
         {
             StatusModel.StatusUpdate();
             try
@@ -1810,60 +1875,57 @@ namespace WaterNut.DataSpace
 
         }
 
-        internal async Task ExportDocSet(int AsycudaDocumentSetId, string directoryName)
+        public async Task ExportDocSet(int AsycudaDocumentSetId, string directoryName, bool overWrite)
         {
-           var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId,  new List<string>()
-                   {
-                       "xcuda_ASYCUDA_ExtendedProperties",
-                       "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
-                       "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant"
-                       }).ConfigureAwait(false);
-           ExportDocSet(docset, directoryName);
+           var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
+           ExportDocSet(docset, directoryName, overWrite);
         }
 
-        public  async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int AsycudaDocumentSetId, List<string> includesLst )
+        public  async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int asycudaDocumentSetId )
         {
             
             using (var ctx = new AsycudaDocumentSetService())
             {
-               return await ctx.GetAsycudaDocumentSetByKey(AsycudaDocumentSetId.ToString(),
+               return await ctx.GetAsycudaDocumentSetByKey(asycudaDocumentSetId.ToString(),
                    new List<string>()
                    {
                        "xcuda_ASYCUDA_ExtendedProperties",
                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant",
-
+                       "AsycudaDocumentSet_Attachments.Attachment",
                         "Customs_Procedure.Document_Type",
                         "Document_Type"
                    }).ConfigureAwait(false);
             }
         }
 
-        internal  void ExportDocSet(AsycudaDocumentSet docSet, string directoryName)
+        internal void ExportDocSet(AsycudaDocumentSet docSet, string directoryName, bool overWrite)
         {
             
                             StatusModel.StartStatusUpdate("Exporting Files", docSet.Documents.Count());
             var exceptions = new ConcurrentQueue<Exception>();
-            Parallel.ForEach(docSet.Documents, doc =>
-                            {
-                                //if (doc.xcuda_Item.Any() == true)
-                                //{
-                                try
-                                {
-                                     Instance.DocToXML(doc, Path.Combine(directoryName, doc.ReferenceNumber + ".xml"));
-                                                                    StatusModel.StatusUpdate();
-                                   // ExportDocumentToExcel(doc, directoryName);
-                                }
-                                catch (Exception ex)
-                                {
+            foreach (var doc in docSet.Documents)
+            {
+                //if (doc.xcuda_Item.Any() == true)
+                //{
+                try
+                {
+                    if (overWrite == true || !File.Exists(Path.Combine(directoryName, doc.ReferenceNumber + ".xml")))
+                        Instance.DocToXML(doc, new FileInfo(Path.Combine(directoryName, doc.ReferenceNumber + ".xml")));
+                    StatusModel.StatusUpdate();
+                    // ExportDocumentToExcel(doc, directoryName);
+                }
+                catch (Exception ex)
+                {
 
-                                    exceptions.Enqueue(
-                                        new ApplicationException(
-                                            $"Could not import file - '{doc.ReferenceNumber}. Error:{ex.Message} Stacktrace:{ex.StackTrace}"));
-                                }
-                               
-                                ////}
-                            });
+                    exceptions.Enqueue(
+                        new ApplicationException(
+                            $"Could not import file - '{doc.ReferenceNumber}. Error:{ex.Message} Stacktrace:{ex.StackTrace}"));
+                }
+
+                ////}
+            }
+
             if (exceptions.Count <= 0) return;
             var fault = new ValidationFault
             {
@@ -2088,6 +2150,31 @@ namespace WaterNut.DataSpace
              return res.OrderBy(x => x.EntryDataDetailsId);
         }
 
+        public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(IEnumerable<int> lst)
+        {
+            var res = new List<EntryDataDetails>();
+            if (lst.Any())
+            {
+                using (var ctx = new EntryDataDetailsService())
+                {
+                    foreach (var item in lst.Where(x => x != 0))
+                    {
+
+                        res.Add(await ctx.GetEntryDataDetailsByKey(item.ToString(),
+                            new List<string>()
+                            {
+                                "EntryDataDetailsEx",
+                                "InventoryItems",
+                                "EntryData.ContainerEntryData"
+                                // , "InventoryItem.TariffCodes.TariffCategory.TariffSupUnitLkps"
+                            }).ConfigureAwait(false));
+                    }
+                }
+
+            }
+            return res.OrderBy(x => x.EntryDataDetailsId);
+        }
+
         public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(IEnumerable<string> elst )
         {
                 
@@ -2289,8 +2376,7 @@ namespace WaterNut.DataSpace
         #endregion
 
 
-
-     
+        
     }
 
     public class SaleReportLine

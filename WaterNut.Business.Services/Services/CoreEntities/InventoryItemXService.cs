@@ -236,7 +236,7 @@ namespace CoreEntities.Business.Services
                             case "InventoryItemAliasEx":
                                 return
                                     await
-                                        GetWhere<InventoryItemAliasEx>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select", includesLst)
+                                        GetWhere<InventoryItemAliasX>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "ApplicationSettings":
@@ -746,7 +746,7 @@ namespace CoreEntities.Business.Services
                         switch (itm.Key)
                         {
                             case "InventoryItemAliasEx":
-                                return await CountWhere<InventoryItemAliasEx>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
+                                return await CountWhere<InventoryItemAliasX>(dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ApplicationSettings":
                                 return await CountWhere<ApplicationSettings>(dbContext, exp, itm.Value, "InventoryItemsEx", "SelectMany")
@@ -862,7 +862,7 @@ namespace CoreEntities.Business.Services
                             case "InventoryItemAliasEx":
                                 return
                                     await
-                                        LoadRangeWhere<InventoryItemAliasEx>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
+                                        LoadRangeWhere<InventoryItemAliasX>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemsEx", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "ApplicationSettings":
@@ -1135,7 +1135,7 @@ namespace CoreEntities.Business.Services
                         switch (itm.Key)
                         {
                             case "InventoryItemAliasEx":
-                                return await SumWhere<InventoryItemAliasEx>(dbContext, exp, itm.Value, "InventoryItemsEx", field, "Select")
+                                return await SumWhere<InventoryItemAliasX>(dbContext, exp, itm.Value, "InventoryItemsEx", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ApplicationSettings":
                                 return await SumWhere<ApplicationSettings>(dbContext, exp, itm.Value, "InventoryItemsEx", field, "SelectMany")

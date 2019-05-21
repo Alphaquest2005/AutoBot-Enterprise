@@ -239,6 +239,12 @@ namespace DocumentItemDS.Business.Services
                                         GetWhere<xcuda_Item>(dbContext, exp, itm.Value, "xcuda_Attached_documents", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "xcuda_Attachments":
+                                return
+                                    await
+                                        GetWhere<xcuda_Attachments>(dbContext, exp, itm.Value, "xcuda_Attached_documents", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace DocumentItemDS.Business.Services
                             case "xcuda_Item":
                                 return await CountWhere<xcuda_Item>(dbContext, exp, itm.Value, "xcuda_Attached_documents", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_Attachments":
+                                return await CountWhere<xcuda_Attachments>(dbContext, exp, itm.Value, "xcuda_Attached_documents", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.xcuda_Attached_documents.Where(exp == "All" || exp == null ? "Attached_documents_Id != null" : exp)
@@ -845,6 +854,12 @@ namespace DocumentItemDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<xcuda_Item>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Attached_documents", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "xcuda_Attachments":
+                                return
+                                    await
+                                        LoadRangeWhere<xcuda_Attachments>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Attached_documents", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1060,6 +1075,7 @@ namespace DocumentItemDS.Business.Services
                 var i = Convert.ToInt32(Item_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<xcuda_Attached_documents> entities = await set//dbContext.xcuda_Attached_documents
+                                                    // .Include(x => x.xcuda_Attachments)									  
                                       .AsNoTracking()
                                         .Where(x => x.Item_Id.ToString() == Item_Id.ToString())
 										.ToListAsync()
@@ -1135,6 +1151,9 @@ namespace DocumentItemDS.Business.Services
                         {
                             case "xcuda_Item":
                                 return await SumWhere<xcuda_Item>(dbContext, exp, itm.Value, "xcuda_Attached_documents", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_Attachments":
+                                return await SumWhere<xcuda_Attachments>(dbContext, exp, itm.Value, "xcuda_Attached_documents", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

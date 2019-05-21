@@ -130,7 +130,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _itemdescription;
         [DataMember]
-        public double Cost 
+        public Nullable<double> Cost 
         {
             get
             {
@@ -143,7 +143,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _cost;
+        Nullable<double> _cost;
         [DataMember]
         public double QtyAllocated 
         {

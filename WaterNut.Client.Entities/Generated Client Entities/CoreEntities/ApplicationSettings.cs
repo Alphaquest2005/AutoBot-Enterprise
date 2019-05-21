@@ -624,6 +624,74 @@ public Nullable<bool> IsActive
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Email has a max length of 255 letters ")]
+public string Email
+		{ 
+		    get { return this.applicationsettings.Email; }
+			set
+			{
+			    if (value == this.applicationsettings.Email) return;
+				this.applicationsettings.Email = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Email");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EmailPassword has a max length of 50 letters ")]
+public string EmailPassword
+		{ 
+		    get { return this.applicationsettings.EmailPassword; }
+			set
+			{
+			    if (value == this.applicationsettings.EmailPassword) return;
+				this.applicationsettings.EmailPassword = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailPassword");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "AsycudaLogin has a max length of 50 letters ")]
+public string AsycudaLogin
+		{ 
+		    get { return this.applicationsettings.AsycudaLogin; }
+			set
+			{
+			    if (value == this.applicationsettings.AsycudaLogin) return;
+				this.applicationsettings.AsycudaLogin = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaLogin");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "AsycudaPassword has a max length of 50 letters ")]
+public string AsycudaPassword
+		{ 
+		    get { return this.applicationsettings.AsycudaPassword; }
+			set
+			{
+			    if (value == this.applicationsettings.AsycudaPassword) return;
+				this.applicationsettings.AsycudaPassword = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaPassword");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{
@@ -833,6 +901,114 @@ public Nullable<bool> IsActive
                     {
                         if (itm != null)
                         applicationsettings.InventoryItemsEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<FileTypes> _FileTypes = null;
+        public  ObservableCollection<FileTypes> FileTypes
+		{
+            
+		    get 
+				{ 
+					if(_FileTypes != null) return _FileTypes;
+					//if (this.applicationsettings.FileTypes == null) Debugger.Break();
+					if(this.applicationsettings.FileTypes != null)
+					{
+						_FileTypes = new ObservableCollection<FileTypes>(this.applicationsettings.FileTypes.Select(x => new FileTypes(x)));
+					}
+					
+						_FileTypes.CollectionChanged += FileTypes_CollectionChanged; 
+					
+					return _FileTypes; 
+				}
+			set
+			{
+			    if (Equals(value, _FileTypes)) return;
+				if (value != null)
+					this.applicationsettings.FileTypes = new ChangeTrackingCollection<DTO.FileTypes>(value.Select(x => x.DTO).ToList());
+                _FileTypes = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FileTypes != null)
+				_FileTypes.CollectionChanged += FileTypes_CollectionChanged;               
+				NotifyPropertyChanged("FileTypes");
+			}
+		}
+        
+        void FileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FileTypes itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.FileTypes.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FileTypes itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.FileTypes.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<InfoMapping> _InfoMapping = null;
+        public  ObservableCollection<InfoMapping> InfoMapping
+		{
+            
+		    get 
+				{ 
+					if(_InfoMapping != null) return _InfoMapping;
+					//if (this.applicationsettings.InfoMapping == null) Debugger.Break();
+					if(this.applicationsettings.InfoMapping != null)
+					{
+						_InfoMapping = new ObservableCollection<InfoMapping>(this.applicationsettings.InfoMapping.Select(x => new InfoMapping(x)));
+					}
+					
+						_InfoMapping.CollectionChanged += InfoMapping_CollectionChanged; 
+					
+					return _InfoMapping; 
+				}
+			set
+			{
+			    if (Equals(value, _InfoMapping)) return;
+				if (value != null)
+					this.applicationsettings.InfoMapping = new ChangeTrackingCollection<DTO.InfoMapping>(value.Select(x => x.DTO).ToList());
+                _InfoMapping = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_InfoMapping != null)
+				_InfoMapping.CollectionChanged += InfoMapping_CollectionChanged;               
+				NotifyPropertyChanged("InfoMapping");
+			}
+		}
+        
+        void InfoMapping_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InfoMapping itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.InfoMapping.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InfoMapping itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.InfoMapping.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

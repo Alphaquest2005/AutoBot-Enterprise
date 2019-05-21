@@ -19,6 +19,11 @@ namespace DocumentItemDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class xcuda_Attached_documents : BaseEntity<xcuda_Attached_documents>, ITrackable 
     {
+        partial void AutoGenStartUp() //xcuda_Attached_documents()
+        {
+            this.xcuda_Attachments = new List<xcuda_Attachments>();
+        }
+
         [DataMember]
         public string Attached_document_date 
         {
@@ -126,6 +131,8 @@ namespace DocumentItemDS.Business.Entities
         Nullable<int> _attached_document_from_rule;
         [DataMember]
         public xcuda_Item xcuda_Item { get; set; }
+        [DataMember]
+        public List<xcuda_Attachments> xcuda_Attachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

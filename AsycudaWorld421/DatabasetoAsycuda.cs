@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.ServiceModel;
 using System.Text;
@@ -18,14 +19,17 @@ namespace Asycuda421
     {
         //easier to do this so because of the deep layers rather than calling each one
          WaterNutDBEntities db = new WaterNutDBEntities();
+        private FileInfo _destinatonFile;
 
-        public  void LoadFromDataBase(int ASYCUDA_Id, ASYCUDA a)
+        public void LoadFromDataBase(int ASYCUDA_Id, ASYCUDA a, FileInfo fileInfo)
         {
+            _destinatonFile = fileInfo;
             var doc = db.xcuda_ASYCUDA.FirstOrDefault(x => x.ASYCUDA_Id == ASYCUDA_Id);
-            LoadFromDataBase(doc,a);
+            LoadFromDataBase(doc,a,fileInfo);
+
         }
 
-        public  void LoadFromDataBase(xcuda_ASYCUDA da, ASYCUDA a)
+        public void LoadFromDataBase(xcuda_ASYCUDA da, ASYCUDA a, FileInfo fileInfo)
         {
             try
             {
@@ -290,9 +294,11 @@ namespace Asycuda421
 
         private  void SetupProperties(ASYCUDA a, xcuda_ASYCUDA da)
         {
-            ExportTemplate Exp;
-
-            Exp = db.ExportTemplate.AsEnumerable().Where(x => da.xcuda_ASYCUDA_ExtendedProperties.Document_Type != null && x.Description == da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName).FirstOrDefault();
+            ExportTemplate Exp = null;
+            if(da.xcuda_ASYCUDA_ExtendedProperties.Document_Type != null)
+                Exp = db.ExportTemplate
+                    .Where(x => x.ApplicationSettingsId == da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId)
+                    .FirstOrDefault(x =>  x.Description == da.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName);
 
             //if (Exp == null && da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet != null && da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ExportTemplate != null)
             //{
@@ -507,7 +513,8 @@ namespace Asycuda421
                 if (doc.Attached_document_name != null)
                     adoc.Attached_document_name.Text.Add(doc.Attached_document_name);
                 ai.Attached_documents.Add(adoc);
-                
+                if(doc.xcuda_Attachments.Any())
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{doc.xcuda_Attachments.FirstOrDefault().Attachments.FilePath}\r\n");
             }
         }
 

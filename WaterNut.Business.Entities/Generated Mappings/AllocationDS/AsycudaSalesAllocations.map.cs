@@ -25,6 +25,7 @@
               this.HasOptional(t => t.EntryDataDetails).WithMany(t =>(ICollection<AsycudaSalesAllocations>) t.AsycudaSalesAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasOptional(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<AsycudaSalesAllocations>) t.AsycudaSalesAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasMany(t => t.xBondAllocations).WithRequired(t => (AsycudaSalesAllocations)t.AsycudaSalesAllocations);
+              this.HasOptional(t => t.EX9AsycudaSalesAllocations).WithRequired(t => (AsycudaSalesAllocations) t.AsycudaSalesAllocations);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -23,6 +23,8 @@ namespace CoreEntities.Business.Entities
         {
             this.AsycudaDocuments = new List<AsycudaDocument>();
             this.LicenceSummary = new List<LicenceSummary>();
+            this.FileTypes = new List<FileTypes>();
+            this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
         }
 
         [DataMember]
@@ -281,7 +283,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _totalweight;
         [DataMember]
-        public Nullable<int> ApplicationSettingsId 
+        public int ApplicationSettingsId 
         {
             get
             {
@@ -294,13 +296,47 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _applicationsettingsid;
+        int _applicationsettingsid;
+        [DataMember]
+        public Nullable<double> TotalInternalFreight 
+        {
+            get
+            {
+                return _totalinternalfreight;
+            }
+            set
+            {
+                _totalinternalfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalinternalfreight;
+        [DataMember]
+        public Nullable<int> TotalPackages 
+        {
+            get
+            {
+                return _totalpackages;
+            }
+            set
+            {
+                _totalpackages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _totalpackages;
         [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]
         public List<LicenceSummary> LicenceSummary { get; set; }
         [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
+        [DataMember]
+        public List<FileTypes> FileTypes { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

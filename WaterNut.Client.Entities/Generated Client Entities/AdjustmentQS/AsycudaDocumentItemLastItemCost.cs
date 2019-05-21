@@ -57,7 +57,7 @@ public int applicationsettingsid
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "ItemNumber is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "ItemNumber has a max length of 50 letters ")]
@@ -85,6 +85,21 @@ public Nullable<double> LocalItemCost
 				this.asycudadocumentitemlastitemcost.LocalItemCost = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("LocalItemCost");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "assessmentdate is required")]
+       
+public System.DateTime assessmentdate
+		{ 
+		    get { return this.asycudadocumentitemlastitemcost.assessmentdate; }
+			set
+			{
+			    if (value == this.asycudadocumentitemlastitemcost.assessmentdate) return;
+				this.asycudadocumentitemlastitemcost.assessmentdate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("assessmentdate");
 			}
 		}
      

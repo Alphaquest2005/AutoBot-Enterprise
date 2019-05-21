@@ -243,7 +243,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _TotalWeight;
 
         [DataMember]
-        public Nullable<int> ApplicationSettingsId
+        public int ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -253,7 +253,33 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private Nullable<int> _ApplicationSettingsId;
+        private int _ApplicationSettingsId;
+
+        [DataMember]
+        public Nullable<double> TotalInternalFreight
+		{ 
+		    get { return _TotalInternalFreight; }
+			set
+			{
+			    if (value == _TotalInternalFreight) return;
+				_TotalInternalFreight = value;
+				NotifyPropertyChanged();//m => this.TotalInternalFreight
+			}
+		}
+        private Nullable<double> _TotalInternalFreight;
+
+        [DataMember]
+        public Nullable<int> TotalPackages
+		{ 
+		    get { return _TotalPackages; }
+			set
+			{
+			    if (value == _TotalPackages) return;
+				_TotalPackages = value;
+				NotifyPropertyChanged();//m => this.TotalPackages
+			}
+		}
+        private Nullable<int> _TotalPackages;
 
        
         [DataMember]
@@ -297,6 +323,32 @@ namespace CoreEntities.Client.DTO
 		}
         private ApplicationSettings _ApplicationSettings;
         private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
+
+        [DataMember]
+        public ChangeTrackingCollection<FileTypes> FileTypes
+		{
+		    get { return _FileTypes; }
+			set
+			{
+			    if (Equals(value, _FileTypes)) return;
+				_FileTypes = value;
+				NotifyPropertyChanged();//m => this.FileTypes
+			}
+		}
+        private ChangeTrackingCollection<FileTypes> _FileTypes = new ChangeTrackingCollection<FileTypes>();
+
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
+		{
+		    get { return _AsycudaDocumentSet_Attachments; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSet_Attachments)) return;
+				_AsycudaDocumentSet_Attachments = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSet_Attachments
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = new ChangeTrackingCollection<AsycudaDocumentSet_Attachments>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

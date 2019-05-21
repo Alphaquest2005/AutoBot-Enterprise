@@ -33,12 +33,11 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Traders_Financial", "xcuda_Traders", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Traders), "xcuda_Traders_Financial", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_Traders_Financial), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_AsycudaDocumentSet_Customs_Procedure", "Customs_Procedure", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Customs_Procedure), "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.AsycudaDocumentSet), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_AsycudaDocumentSet_Document_Type", "Document_Type", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Document_Type), "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.AsycudaDocumentSet), true)]
-[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet", "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.AsycudaDocumentSet), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet", "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.AsycudaDocumentSet), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Customs_Procedure_Document_Type", "Document_Type", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.Document_Type), "Customs_Procedure", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.Customs_Procedure), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure", "Customs_Procedure", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Customs_Procedure), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type", "Document_Type", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Document_Type), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate", "ExportTemplate", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.ExportTemplate), "xcuda_ASYCUDA_ExtendedProperties", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_ASYCUDA_ExtendedProperties), true)]
-[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_InventoryItems_TariffCodes", "TariffCodes", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.TariffCodes), "InventoryItems", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.InventoryItems), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_TariffCodes_TariffCategory", "TariffCategory", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.TariffCategory), "TariffCodes", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.TariffCodes), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Identification_Assessment", "xcuda_Identification", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Identification), "xcuda_Assessment", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_Assessment), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_ASYCUDA_Assessment_notice", "xcuda_ASYCUDA", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_ASYCUDA), "xcuda_Assessment_notice", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Assessment_notice), true)]
@@ -99,24 +98,28 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Total_xcuda_Valuation", "xcuda_Valuation", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Valuation), "xcuda_Total", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_Total), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Transit_Destination_xcuda_Transit", "xcuda_Transit", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Transit), "xcuda_Transit_Destination", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Transit_Destination), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Weight_xcuda_Valuation", "xcuda_Valuation", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Valuation), "xcuda_Weight", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.xcuda_Weight), true)]
-[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "xcuda_Inventory_Item", "InventoryItems", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.InventoryItems), "xcuda_HScode", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_HScode))]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_EntryPreviousItems_xcuda_Item", "xcuda_Item", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Item), "EntryPreviousItems", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.EntryPreviousItems), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_TariffCategoryCodeSuppUnit_TariffCategory", "TariffCategory", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.TariffCategory), "TariffCategoryCodeSuppUnit", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.TariffCategoryCodeSuppUnit), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps", "TariffSupUnitLkps", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.TariffSupUnitLkps), "TariffCategoryCodeSuppUnit", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.TariffCategoryCodeSuppUnit), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "TariffCodesInventoryItemsEx", "TariffCodes", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.TariffCodes), "InventoryItemsEx", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.InventoryItemsEx), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_HScode", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_HScode), "xcuda_Inventory_Item", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Inventory_Item), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "InventoryItemsExxcuda_Inventory_Item", "InventoryItemsEx", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.InventoryItemsEx), "xcuda_Inventory_Item", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Inventory_Item), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_Attachments", "Attachments", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.Attachments), "xcuda_Attachments", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Attachments), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attached_documents", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Attached_documents), "xcuda_Attachments", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Attachments), true)]
 
 #endregion
 
 namespace WaterNut.DataLayer
 {
     #region Contexts
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
     public partial class WaterNutDBEntities : ObjectContext
     {
         #region Constructors
-
+    
         /// <summary>
         /// Initializes a new WaterNutDBEntities object using the connection string found in the 'WaterNutDBEntities' section of the application configuration file.
         /// </summary>
@@ -125,7 +128,7 @@ namespace WaterNut.DataLayer
             this.ContextOptions.LazyLoadingEnabled = true;
             OnContextCreated();
         }
-
+    
         /// <summary>
         /// Initialize a new WaterNutDBEntities object.
         /// </summary>
@@ -134,7 +137,7 @@ namespace WaterNut.DataLayer
             this.ContextOptions.LazyLoadingEnabled = true;
             OnContextCreated();
         }
-
+    
         /// <summary>
         /// Initialize a new WaterNutDBEntities object.
         /// </summary>
@@ -143,17 +146,17 @@ namespace WaterNut.DataLayer
             this.ContextOptions.LazyLoadingEnabled = true;
             OnContextCreated();
         }
-
+    
         #endregion
-
+    
         #region Partial Methods
-
+    
         partial void OnContextCreated();
-
+    
         #endregion
-
+    
         #region ObjectSet Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -169,7 +172,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_item_external_freight> _xcuda_item_external_freight;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -185,7 +188,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_item_internal_freight> _xcuda_item_internal_freight;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -201,7 +204,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Item_Invoice> _xcuda_Item_Invoice;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -217,7 +220,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_item_other_cost> _xcuda_item_other_cost;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -233,7 +236,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Market_valuer> _xcuda_Market_valuer;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -249,7 +252,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Valuation_item> _xcuda_Valuation_item;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -265,7 +268,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Weight_itm> _xcuda_Weight_itm;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -281,7 +284,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Gs_deduction> _xcuda_Gs_deduction;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -297,7 +300,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Gs_external_freight> _xcuda_Gs_external_freight;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -313,7 +316,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Gs_insurance> _xcuda_Gs_insurance;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -329,7 +332,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Gs_internal_freight> _xcuda_Gs_internal_freight;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -345,7 +348,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Gs_other_cost> _xcuda_Gs_other_cost;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -361,7 +364,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Total> _xcuda_Total;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -377,7 +380,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Weight> _xcuda_Weight;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -393,7 +396,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Country> _xcuda_Country;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -409,7 +412,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Destination> _xcuda_Destination;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -425,7 +428,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Export> _xcuda_Export;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -441,7 +444,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_General_information> _xcuda_General_information;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -457,7 +460,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Consignee> _xcuda_Consignee;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -473,7 +476,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Exporter> _xcuda_Exporter;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -489,7 +492,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Traders> _xcuda_Traders;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -505,7 +508,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Traders_Financial> _xcuda_Traders_Financial;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -521,7 +524,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Forms> _xcuda_Forms;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -537,7 +540,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<AsycudaDocumentSet> _AsycudaDocumentSet;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -553,7 +556,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<Customs_Procedure> _Customs_Procedure;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -569,7 +572,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<Document_Type> _Document_Type;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -585,23 +588,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<ExportTemplate> _ExportTemplate;
-
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        public ObjectSet<InventoryItems> InventoryItems
-        {
-            get
-            {
-                if ((_InventoryItems == null))
-                {
-                    _InventoryItems = base.CreateObjectSet<InventoryItems>("InventoryItems");
-                }
-                return _InventoryItems;
-            }
-        }
-        private ObjectSet<InventoryItems> _InventoryItems;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -617,7 +604,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<TariffCategory> _TariffCategory;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -633,7 +620,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<TariffCodes> _TariffCodes;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -649,7 +636,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<TariffSupUnitLkps> _TariffSupUnitLkps;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -665,7 +652,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Assessment> _xcuda_Assessment;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -681,7 +668,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Assessment_notice> _xcuda_Assessment_notice;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -697,7 +684,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_ASYCUDA> _xcuda_ASYCUDA;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -713,7 +700,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_ASYCUDA_ExtendedProperties> _xcuda_ASYCUDA_ExtendedProperties;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -729,7 +716,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Attached_documents> _xcuda_Attached_documents;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -745,7 +732,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Border_information> _xcuda_Border_information;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -761,7 +748,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Border_office> _xcuda_Border_office;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -777,7 +764,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Container> _xcuda_Container;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -793,7 +780,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Declarant> _xcuda_Declarant;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -809,7 +796,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Delivery_terms> _xcuda_Delivery_terms;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -825,7 +812,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Departure_arrival_information> _xcuda_Departure_arrival_information;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -841,7 +828,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Export_release> _xcuda_Export_release;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -857,7 +844,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Financial> _xcuda_Financial;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -873,7 +860,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Financial_Amounts> _xcuda_Financial_Amounts;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -889,7 +876,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Financial_Guarantee> _xcuda_Financial_Guarantee;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -905,7 +892,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Global_taxes> _xcuda_Global_taxes;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -921,7 +908,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Goods_description> _xcuda_Goods_description;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -937,7 +924,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Gs_Invoice> _xcuda_Gs_Invoice;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -953,7 +940,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_HScode> _xcuda_HScode;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -969,7 +956,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Identification> _xcuda_Identification;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -985,7 +972,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Item> _xcuda_Item;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1001,7 +988,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_item_deduction> _xcuda_item_deduction;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1017,7 +1004,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_item_insurance> _xcuda_item_insurance;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1033,7 +1020,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Means_of_transport> _xcuda_Means_of_transport;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1049,7 +1036,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Nbers> _xcuda_Nbers;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1065,7 +1052,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Office_segment> _xcuda_Office_segment;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1081,7 +1068,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Packages> _xcuda_Packages;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1097,7 +1084,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Place_of_loading> _xcuda_Place_of_loading;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1113,7 +1100,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Previous_doc> _xcuda_Previous_doc;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1129,7 +1116,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_PreviousItem> _xcuda_PreviousItem;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1145,7 +1132,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Principal> _xcuda_Principal;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1161,7 +1148,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Property> _xcuda_Property;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1177,7 +1164,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_receipt> _xcuda_receipt;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1193,7 +1180,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Registration> _xcuda_Registration;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1209,7 +1196,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Seals> _xcuda_Seals;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1225,7 +1212,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Signature> _xcuda_Signature;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1241,7 +1228,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Supplementary_unit> _xcuda_Supplementary_unit;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1257,7 +1244,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Suppliers_documents> _xcuda_Suppliers_documents;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1273,7 +1260,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Suppliers_link> _xcuda_Suppliers_link;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1289,7 +1276,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Tarification> _xcuda_Tarification;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1305,7 +1292,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Taxation> _xcuda_Taxation;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1321,7 +1308,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Taxation_line> _xcuda_Taxation_line;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1337,7 +1324,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Transit> _xcuda_Transit;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1353,7 +1340,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Transit_Destination> _xcuda_Transit_Destination;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1369,7 +1356,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Transport> _xcuda_Transport;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1385,7 +1372,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Type> _xcuda_Type;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1401,7 +1388,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Valuation> _xcuda_Valuation;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1417,7 +1404,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Warehouse> _xcuda_Warehouse;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1433,7 +1420,7 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<EntryPreviousItems> _EntryPreviousItems;
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -1449,11 +1436,75 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<TariffCategoryCodeSuppUnit> _TariffCategoryCodeSuppUnit;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<InventoryItemsEx> InventoryItemsEx
+        {
+            get
+            {
+                if ((_InventoryItemsEx == null))
+                {
+                    _InventoryItemsEx = base.CreateObjectSet<InventoryItemsEx>("InventoryItemsEx");
+                }
+                return _InventoryItemsEx;
+            }
+        }
+        private ObjectSet<InventoryItemsEx> _InventoryItemsEx;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<xcuda_Inventory_Item> xcuda_Inventory_Item
+        {
+            get
+            {
+                if ((_xcuda_Inventory_Item == null))
+                {
+                    _xcuda_Inventory_Item = base.CreateObjectSet<xcuda_Inventory_Item>("xcuda_Inventory_Item");
+                }
+                return _xcuda_Inventory_Item;
+            }
+        }
+        private ObjectSet<xcuda_Inventory_Item> _xcuda_Inventory_Item;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Attachments> Attachments
+        {
+            get
+            {
+                if ((_Attachments == null))
+                {
+                    _Attachments = base.CreateObjectSet<Attachments>("Attachments");
+                }
+                return _Attachments;
+            }
+        }
+        private ObjectSet<Attachments> _Attachments;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<xcuda_Attachments> xcuda_Attachments
+        {
+            get
+            {
+                if ((_xcuda_Attachments == null))
+                {
+                    _xcuda_Attachments = base.CreateObjectSet<xcuda_Attachments>("xcuda_Attachments");
+                }
+                return _xcuda_Attachments;
+            }
+        }
+        private ObjectSet<xcuda_Attachments> _xcuda_Attachments;
 
         #endregion
 
         #region AddTo Methods
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_item_external_freight EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1461,7 +1512,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_item_external_freight", xcuda_item_external_freight);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_item_internal_freight EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1469,7 +1520,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_item_internal_freight", xcuda_item_internal_freight);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Item_Invoice EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1477,7 +1528,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Item_Invoice", xcuda_Item_Invoice);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_item_other_cost EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1485,7 +1536,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_item_other_cost", xcuda_item_other_cost);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Market_valuer EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1493,7 +1544,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Market_valuer", xcuda_Market_valuer);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Valuation_item EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1501,7 +1552,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Valuation_item", xcuda_Valuation_item);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Weight_itm EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1509,7 +1560,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Weight_itm", xcuda_Weight_itm);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Gs_deduction EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1517,7 +1568,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Gs_deduction", xcuda_Gs_deduction);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Gs_external_freight EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1525,7 +1576,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Gs_external_freight", xcuda_Gs_external_freight);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Gs_insurance EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1533,7 +1584,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Gs_insurance", xcuda_Gs_insurance);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Gs_internal_freight EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1541,7 +1592,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Gs_internal_freight", xcuda_Gs_internal_freight);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Gs_other_cost EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1549,7 +1600,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Gs_other_cost", xcuda_Gs_other_cost);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Total EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1557,7 +1608,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Total", xcuda_Total);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Weight EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1565,7 +1616,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Weight", xcuda_Weight);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Country EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1573,7 +1624,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Country", xcuda_Country);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Destination EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1581,7 +1632,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Destination", xcuda_Destination);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Export EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1589,7 +1640,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Export", xcuda_Export);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_General_information EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1597,7 +1648,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_General_information", xcuda_General_information);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Consignee EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1605,7 +1656,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Consignee", xcuda_Consignee);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Exporter EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1613,7 +1664,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Exporter", xcuda_Exporter);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Traders EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1621,7 +1672,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Traders", xcuda_Traders);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Traders_Financial EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1629,7 +1680,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Traders_Financial", xcuda_Traders_Financial);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Forms EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1637,7 +1688,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Forms", xcuda_Forms);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the AsycudaDocumentSet EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1645,7 +1696,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("AsycudaDocumentSet", asycudaDocumentSet);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the Customs_Procedure EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1653,7 +1704,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("Customs_Procedure", customs_Procedure);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the Document_Type EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1661,7 +1712,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("Document_Type", document_Type);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the ExportTemplate EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1669,15 +1720,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("ExportTemplate", exportTemplate);
         }
-
-        /// <summary>
-        /// Deprecated Method for adding a new object to the InventoryItems EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
-        /// </summary>
-        public void AddToInventoryItems(InventoryItems inventoryItems)
-        {
-            base.AddObject("InventoryItems", inventoryItems);
-        }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the TariffCategory EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1685,7 +1728,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("TariffCategory", tariffCategory);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the TariffCodes EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1693,7 +1736,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("TariffCodes", tariffCodes);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the TariffSupUnitLkps EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1701,7 +1744,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("TariffSupUnitLkps", tariffSupUnitLkps);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Assessment EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1709,7 +1752,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Assessment", xcuda_Assessment);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Assessment_notice EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1717,7 +1760,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Assessment_notice", xcuda_Assessment_notice);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_ASYCUDA EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1725,7 +1768,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_ASYCUDA", xcuda_ASYCUDA);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_ASYCUDA_ExtendedProperties EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1733,7 +1776,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_ASYCUDA_ExtendedProperties", xcuda_ASYCUDA_ExtendedProperties);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Attached_documents EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1741,7 +1784,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Attached_documents", xcuda_Attached_documents);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Border_information EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1749,7 +1792,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Border_information", xcuda_Border_information);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Border_office EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1757,7 +1800,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Border_office", xcuda_Border_office);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Container EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1765,7 +1808,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Container", xcuda_Container);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Declarant EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1773,7 +1816,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Declarant", xcuda_Declarant);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Delivery_terms EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1781,7 +1824,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Delivery_terms", xcuda_Delivery_terms);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Departure_arrival_information EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1789,7 +1832,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Departure_arrival_information", xcuda_Departure_arrival_information);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Export_release EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1797,7 +1840,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Export_release", xcuda_Export_release);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Financial EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1805,7 +1848,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Financial", xcuda_Financial);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Financial_Amounts EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1813,7 +1856,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Financial_Amounts", xcuda_Financial_Amounts);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Financial_Guarantee EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1821,7 +1864,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Financial_Guarantee", xcuda_Financial_Guarantee);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Global_taxes EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1829,7 +1872,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Global_taxes", xcuda_Global_taxes);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Goods_description EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1837,7 +1880,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Goods_description", xcuda_Goods_description);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Gs_Invoice EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1845,7 +1888,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Gs_Invoice", xcuda_Gs_Invoice);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_HScode EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1853,7 +1896,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_HScode", xcuda_HScode);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Identification EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1861,7 +1904,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Identification", xcuda_Identification);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Item EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1869,7 +1912,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Item", xcuda_Item);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_item_deduction EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1877,7 +1920,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_item_deduction", xcuda_item_deduction);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_item_insurance EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1885,7 +1928,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_item_insurance", xcuda_item_insurance);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Means_of_transport EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1893,7 +1936,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Means_of_transport", xcuda_Means_of_transport);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Nbers EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1901,7 +1944,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Nbers", xcuda_Nbers);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Office_segment EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1909,7 +1952,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Office_segment", xcuda_Office_segment);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Packages EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1917,7 +1960,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Packages", xcuda_Packages);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Place_of_loading EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1925,7 +1968,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Place_of_loading", xcuda_Place_of_loading);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Previous_doc EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1933,7 +1976,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Previous_doc", xcuda_Previous_doc);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_PreviousItem EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1941,7 +1984,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_PreviousItem", xcuda_PreviousItem);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Principal EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1949,7 +1992,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Principal", xcuda_Principal);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Property EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1957,7 +2000,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Property", xcuda_Property);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_receipt EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1965,7 +2008,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_receipt", xcuda_receipt);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Registration EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1973,7 +2016,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Registration", xcuda_Registration);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Seals EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1981,7 +2024,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Seals", xcuda_Seals);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Signature EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1989,7 +2032,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Signature", xcuda_Signature);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Supplementary_unit EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -1997,7 +2040,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Supplementary_unit", xcuda_Supplementary_unit);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Suppliers_documents EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2005,7 +2048,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Suppliers_documents", xcuda_Suppliers_documents);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Suppliers_link EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2013,7 +2056,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Suppliers_link", xcuda_Suppliers_link);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Tarification EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2021,7 +2064,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Tarification", xcuda_Tarification);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Taxation EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2029,7 +2072,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Taxation", xcuda_Taxation);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Taxation_line EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2037,7 +2080,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Taxation_line", xcuda_Taxation_line);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Transit EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2045,7 +2088,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Transit", xcuda_Transit);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Transit_Destination EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2053,7 +2096,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Transit_Destination", xcuda_Transit_Destination);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Transport EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2061,7 +2104,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Transport", xcuda_Transport);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Type EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2069,7 +2112,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Type", xcuda_Type);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Valuation EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2077,7 +2120,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Valuation", xcuda_Valuation);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the xcuda_Warehouse EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2085,7 +2128,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("xcuda_Warehouse", xcuda_Warehouse);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the EntryPreviousItems EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2093,7 +2136,7 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("EntryPreviousItems", entryPreviousItems);
         }
-
+    
         /// <summary>
         /// Deprecated Method for adding a new object to the TariffCategoryCodeSuppUnit EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
         /// </summary>
@@ -2101,11 +2144,43 @@ namespace WaterNut.DataLayer
         {
             base.AddObject("TariffCategoryCodeSuppUnit", tariffCategoryCodeSuppUnit);
         }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the InventoryItemsEx EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToInventoryItemsEx(InventoryItemsEx inventoryItemsEx)
+        {
+            base.AddObject("InventoryItemsEx", inventoryItemsEx);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the xcuda_Inventory_Item EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToxcuda_Inventory_Item(xcuda_Inventory_Item xcuda_Inventory_Item)
+        {
+            base.AddObject("xcuda_Inventory_Item", xcuda_Inventory_Item);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Attachments EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToAttachments(Attachments attachments)
+        {
+            base.AddObject("Attachments", attachments);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the xcuda_Attachments EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToxcuda_Attachments(xcuda_Attachments xcuda_Attachments)
+        {
+            base.AddObject("xcuda_Attachments", xcuda_Attachments);
+        }
 
         #endregion
 
         #region Function Imports
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2124,7 +2199,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2134,7 +2209,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter versionParameter;
             if (version.HasValue)
             {
@@ -2144,7 +2219,7 @@ namespace WaterNut.DataLayer
             {
                 versionParameter = new ObjectParameter("version", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter definitionParameter;
             if (definition != null)
             {
@@ -2154,10 +2229,10 @@ namespace WaterNut.DataLayer
             {
                 definitionParameter = new ObjectParameter("definition", typeof(global::System.Byte[]));
             }
-
+    
             return base.ExecuteFunction("sp_alterdiagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2176,7 +2251,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2186,7 +2261,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter versionParameter;
             if (version.HasValue)
             {
@@ -2196,7 +2271,7 @@ namespace WaterNut.DataLayer
             {
                 versionParameter = new ObjectParameter("version", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter definitionParameter;
             if (definition != null)
             {
@@ -2206,10 +2281,10 @@ namespace WaterNut.DataLayer
             {
                 definitionParameter = new ObjectParameter("definition", typeof(global::System.Byte[]));
             }
-
+    
             return base.ExecuteFunction("sp_creatediagram", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2226,7 +2301,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2236,10 +2311,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction("sp_dropdiagram", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2256,7 +2331,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2266,10 +2341,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction<sp_helpdiagramdefinition_Result>("sp_helpdiagramdefinition", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2286,7 +2361,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2296,10 +2371,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction<sp_helpdiagrams_Result>("sp_helpdiagrams", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2317,7 +2392,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2327,7 +2402,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter new_diagramnameParameter;
             if (new_diagramname != null)
             {
@@ -2337,10 +2412,10 @@ namespace WaterNut.DataLayer
             {
                 new_diagramnameParameter = new ObjectParameter("new_diagramname", typeof(global::System.String));
             }
-
+    
             return base.ExecuteFunction("sp_renamediagram", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2348,7 +2423,7 @@ namespace WaterNut.DataLayer
         {
             return base.ExecuteFunction("sp_upgraddiagrams");
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2367,7 +2442,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2377,7 +2452,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter versionParameter;
             if (version.HasValue)
             {
@@ -2387,7 +2462,7 @@ namespace WaterNut.DataLayer
             {
                 versionParameter = new ObjectParameter("version", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter definitionParameter;
             if (definition != null)
             {
@@ -2397,10 +2472,10 @@ namespace WaterNut.DataLayer
             {
                 definitionParameter = new ObjectParameter("definition", typeof(global::System.Byte[]));
             }
-
+    
             return base.ExecuteFunction("sp_alterdiagram1", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2419,7 +2494,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2429,7 +2504,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter versionParameter;
             if (version.HasValue)
             {
@@ -2439,7 +2514,7 @@ namespace WaterNut.DataLayer
             {
                 versionParameter = new ObjectParameter("version", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter definitionParameter;
             if (definition != null)
             {
@@ -2449,10 +2524,10 @@ namespace WaterNut.DataLayer
             {
                 definitionParameter = new ObjectParameter("definition", typeof(global::System.Byte[]));
             }
-
+    
             return base.ExecuteFunction("sp_creatediagram1", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2469,7 +2544,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2479,10 +2554,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction("sp_dropdiagram1", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2499,7 +2574,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2509,10 +2584,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction<sp_helpdiagramdefinition1_Result>("sp_helpdiagramdefinition1", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2529,7 +2604,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2539,10 +2614,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction<sp_helpdiagrams1_Result>("sp_helpdiagrams1", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2560,7 +2635,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2570,7 +2645,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter new_diagramnameParameter;
             if (new_diagramname != null)
             {
@@ -2580,10 +2655,10 @@ namespace WaterNut.DataLayer
             {
                 new_diagramnameParameter = new ObjectParameter("new_diagramname", typeof(global::System.String));
             }
-
+    
             return base.ExecuteFunction("sp_renamediagram1", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2591,7 +2666,7 @@ namespace WaterNut.DataLayer
         {
             return base.ExecuteFunction("sp_upgraddiagrams1");
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2610,7 +2685,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2620,7 +2695,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter versionParameter;
             if (version.HasValue)
             {
@@ -2630,7 +2705,7 @@ namespace WaterNut.DataLayer
             {
                 versionParameter = new ObjectParameter("version", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter definitionParameter;
             if (definition != null)
             {
@@ -2640,10 +2715,10 @@ namespace WaterNut.DataLayer
             {
                 definitionParameter = new ObjectParameter("definition", typeof(global::System.Byte[]));
             }
-
+    
             return base.ExecuteFunction("sp_alterdiagram2", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2662,7 +2737,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2672,7 +2747,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter versionParameter;
             if (version.HasValue)
             {
@@ -2682,7 +2757,7 @@ namespace WaterNut.DataLayer
             {
                 versionParameter = new ObjectParameter("version", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter definitionParameter;
             if (definition != null)
             {
@@ -2692,10 +2767,10 @@ namespace WaterNut.DataLayer
             {
                 definitionParameter = new ObjectParameter("definition", typeof(global::System.Byte[]));
             }
-
+    
             return base.ExecuteFunction("sp_creatediagram2", diagramnameParameter, owner_idParameter, versionParameter, definitionParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2712,7 +2787,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2722,10 +2797,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction("sp_dropdiagram2", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2742,7 +2817,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2752,10 +2827,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction<sp_helpdiagramdefinition2_Result>("sp_helpdiagramdefinition2", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2772,7 +2847,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2782,10 +2857,10 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             return base.ExecuteFunction<sp_helpdiagrams2_Result>("sp_helpdiagrams2", diagramnameParameter, owner_idParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2803,7 +2878,7 @@ namespace WaterNut.DataLayer
             {
                 diagramnameParameter = new ObjectParameter("diagramname", typeof(global::System.String));
             }
-
+    
             ObjectParameter owner_idParameter;
             if (owner_id.HasValue)
             {
@@ -2813,7 +2888,7 @@ namespace WaterNut.DataLayer
             {
                 owner_idParameter = new ObjectParameter("owner_id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter new_diagramnameParameter;
             if (new_diagramname != null)
             {
@@ -2823,10 +2898,10 @@ namespace WaterNut.DataLayer
             {
                 new_diagramnameParameter = new ObjectParameter("new_diagramname", typeof(global::System.String));
             }
-
+    
             return base.ExecuteFunction("sp_renamediagram2", diagramnameParameter, owner_idParameter, new_diagramnameParameter);
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2834,7 +2909,7 @@ namespace WaterNut.DataLayer
         {
             return base.ExecuteFunction("sp_upgraddiagrams2");
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -2852,7 +2927,7 @@ namespace WaterNut.DataLayer
             {
                 item_IdParameter = new ObjectParameter("Item_Id", typeof(global::System.Int32));
             }
-
+    
             ObjectParameter dFQtyAllocatedParameter;
             if (dFQtyAllocated.HasValue)
             {
@@ -2862,7 +2937,7 @@ namespace WaterNut.DataLayer
             {
                 dFQtyAllocatedParameter = new ObjectParameter("DFQtyAllocated", typeof(global::System.Double));
             }
-
+    
             ObjectParameter dPQtyAllocatedParameter;
             if (dPQtyAllocated.HasValue)
             {
@@ -2872,7 +2947,7 @@ namespace WaterNut.DataLayer
             {
                 dPQtyAllocatedParameter = new ObjectParameter("DPQtyAllocated", typeof(global::System.Double));
             }
-
+    
             return base.ExecuteFunction("UpdateAsycudaEntry", item_IdParameter, dFQtyAllocatedParameter, dPQtyAllocatedParameter);
         }
 
@@ -2883,38 +2958,40 @@ namespace WaterNut.DataLayer
     #endregion
 
     #region Entities
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "AsycudaDocumentSet")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="AsycudaDocumentSet")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class AsycudaDocumentSet : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new AsycudaDocumentSet object.
         /// </summary>
         /// <param name="asycudaDocumentSetId">Initial value of the AsycudaDocumentSetId property.</param>
         /// <param name="exchange_Rate">Initial value of the Exchange_Rate property.</param>
-        public static AsycudaDocumentSet CreateAsycudaDocumentSet(global::System.Int32 asycudaDocumentSetId, global::System.Double exchange_Rate)
+        /// <param name="applicationSettingsId">Initial value of the ApplicationSettingsId property.</param>
+        public static AsycudaDocumentSet CreateAsycudaDocumentSet(global::System.Int32 asycudaDocumentSetId, global::System.Double exchange_Rate, global::System.Int32 applicationSettingsId)
         {
             AsycudaDocumentSet asycudaDocumentSet = new AsycudaDocumentSet();
             asycudaDocumentSet.AsycudaDocumentSetId = asycudaDocumentSetId;
             asycudaDocumentSet.Exchange_Rate = exchange_Rate;
+            asycudaDocumentSet.ApplicationSettingsId = applicationSettingsId;
             return asycudaDocumentSet;
         }
 
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 AsycudaDocumentSetId
         {
@@ -2937,11 +3014,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _AsycudaDocumentSetId;
         partial void OnAsycudaDocumentSetIdChanging(global::System.Int32 value);
         partial void OnAsycudaDocumentSetIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Declarant_Reference_Number
         {
@@ -2961,11 +3038,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Declarant_Reference_Number;
         partial void OnDeclarant_Reference_NumberChanging(global::System.String value);
         partial void OnDeclarant_Reference_NumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Exchange_Rate
         {
@@ -2985,11 +3062,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Exchange_Rate;
         partial void OnExchange_RateChanging(global::System.Double value);
         partial void OnExchange_RateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Customs_ProcedureId
         {
@@ -3009,11 +3086,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Customs_ProcedureId;
         partial void OnCustoms_ProcedureIdChanging(Nullable<global::System.Int32> value);
         partial void OnCustoms_ProcedureIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Country_of_origin_code
         {
@@ -3033,11 +3110,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Country_of_origin_code;
         partial void OnCountry_of_origin_codeChanging(global::System.String value);
         partial void OnCountry_of_origin_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_Code
         {
@@ -3057,11 +3134,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_Code;
         partial void OnCurrency_CodeChanging(global::System.String value);
         partial void OnCurrency_CodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Document_TypeId
         {
@@ -3081,11 +3158,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Document_TypeId;
         partial void OnDocument_TypeIdChanging(Nullable<global::System.Int32> value);
         partial void OnDocument_TypeIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Description
         {
@@ -3105,11 +3182,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Description;
         partial void OnDescriptionChanging(global::System.String value);
         partial void OnDescriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Manifest_Number
         {
@@ -3129,11 +3206,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Manifest_Number;
         partial void OnManifest_NumberChanging(global::System.String value);
         partial void OnManifest_NumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String BLNumber
         {
@@ -3153,11 +3230,11 @@ namespace WaterNut.DataLayer
         private global::System.String _BLNumber;
         partial void OnBLNumberChanging(global::System.String value);
         partial void OnBLNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> EntryTimeStamp
         {
@@ -3177,11 +3254,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.DateTime> _EntryTimeStamp;
         partial void OnEntryTimeStampChanging(Nullable<global::System.DateTime> value);
         partial void OnEntryTimeStampChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> StartingFileCount
         {
@@ -3201,13 +3278,13 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _StartingFileCount;
         partial void OnStartingFileCountChanging(Nullable<global::System.Int32> value);
         partial void OnStartingFileCountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Int32> ApportionMethod
+        public global::System.String ApportionMethod
         {
             get
             {
@@ -3217,19 +3294,19 @@ namespace WaterNut.DataLayer
             {
                 OnApportionMethodChanging(value);
                 ReportPropertyChanging("ApportionMethod");
-                _ApportionMethod = StructuralObject.SetValidValue(value);
+                _ApportionMethod = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("ApportionMethod");
                 OnApportionMethodChanged();
             }
         }
-        private Nullable<global::System.Int32> _ApportionMethod;
-        partial void OnApportionMethodChanging(Nullable<global::System.Int32> value);
+        private global::System.String _ApportionMethod;
+        partial void OnApportionMethodChanging(global::System.String value);
         partial void OnApportionMethodChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> TotalWeight
         {
@@ -3249,11 +3326,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _TotalWeight;
         partial void OnTotalWeightChanging(Nullable<global::System.Double> value);
         partial void OnTotalWeightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> TotalFreight
         {
@@ -3273,11 +3350,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _TotalFreight;
         partial void OnTotalFreightChanging(Nullable<global::System.Double> value);
         partial void OnTotalFreightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> TotalInternalFreight
         {
@@ -3297,11 +3374,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _TotalInternalFreight;
         partial void OnTotalInternalFreightChanging(Nullable<global::System.Double> value);
         partial void OnTotalInternalFreightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> TotalPackages
         {
@@ -3321,11 +3398,35 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _TotalPackages;
         partial void OnTotalPackagesChanging(Nullable<global::System.Int32> value);
         partial void OnTotalPackagesChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ApplicationSettingsId
+        {
+            get
+            {
+                return _ApplicationSettingsId;
+            }
+            set
+            {
+                OnApplicationSettingsIdChanging(value);
+                ReportPropertyChanging("ApplicationSettingsId");
+                _ApplicationSettingsId = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ApplicationSettingsId");
+                OnApplicationSettingsIdChanged();
+            }
+        }
+        private global::System.Int32 _ApplicationSettingsId;
+        partial void OnApplicationSettingsIdChanging(global::System.Int32 value);
+        partial void OnApplicationSettingsIdChanged();
 
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3363,7 +3464,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3401,7 +3502,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3427,17 +3528,151 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "Customs_Procedure")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="Attachments")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Attachments : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Attachments object.
+        /// </summary>
+        /// <param name="id">Initial value of the Id property.</param>
+        /// <param name="filePath">Initial value of the FilePath property.</param>
+        /// <param name="documentCode">Initial value of the DocumentCode property.</param>
+        public static Attachments CreateAttachments(global::System.Int32 id, global::System.String filePath, global::System.String documentCode)
+        {
+            Attachments attachments = new Attachments();
+            attachments.Id = id;
+            attachments.FilePath = filePath;
+            attachments.DocumentCode = documentCode;
+            return attachments;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String FilePath
+        {
+            get
+            {
+                return _FilePath;
+            }
+            set
+            {
+                OnFilePathChanging(value);
+                ReportPropertyChanging("FilePath");
+                _FilePath = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("FilePath");
+                OnFilePathChanged();
+            }
+        }
+        private global::System.String _FilePath;
+        partial void OnFilePathChanging(global::System.String value);
+        partial void OnFilePathChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String DocumentCode
+        {
+            get
+            {
+                return _DocumentCode;
+            }
+            set
+            {
+                OnDocumentCodeChanging(value);
+                ReportPropertyChanging("DocumentCode");
+                _DocumentCode = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("DocumentCode");
+                OnDocumentCodeChanged();
+            }
+        }
+        private global::System.String _DocumentCode;
+        partial void OnDocumentCodeChanging(global::System.String value);
+        partial void OnDocumentCodeChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_Attachments", "xcuda_Attachments")]
+        public EntityCollection<xcuda_Attachments> xcuda_Attachments
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<xcuda_Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments", "xcuda_Attachments");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments", "xcuda_Attachments", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="Customs_Procedure")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
     public partial class Customs_Procedure : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new Customs_Procedure object.
         /// </summary>
@@ -3454,11 +3689,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Document_TypeId
         {
@@ -3478,11 +3713,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Document_TypeId;
         partial void OnDocument_TypeIdChanging(global::System.Int32 value);
         partial void OnDocument_TypeIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Customs_ProcedureId
         {
@@ -3505,11 +3740,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Customs_ProcedureId;
         partial void OnCustoms_ProcedureIdChanging(global::System.Int32 value);
         partial void OnCustoms_ProcedureIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Extended_customs_procedure
         {
@@ -3529,11 +3764,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Extended_customs_procedure;
         partial void OnExtended_customs_procedureChanging(global::System.String value);
         partial void OnExtended_customs_procedureChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String National_customs_procedure
         {
@@ -3553,11 +3788,11 @@ namespace WaterNut.DataLayer
         private global::System.String _National_customs_procedure;
         partial void OnNational_customs_procedureChanging(global::System.String value);
         partial void OnNational_customs_procedureChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> IsDefault
         {
@@ -3581,7 +3816,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3603,7 +3838,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3641,7 +3876,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3667,17 +3902,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "Document_Type")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="Document_Type")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class Document_Type : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new Document_Type object.
         /// </summary>
@@ -3692,11 +3927,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Document_TypeId
         {
@@ -3719,11 +3954,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Document_TypeId;
         partial void OnDocument_TypeIdChanging(global::System.Int32 value);
         partial void OnDocument_TypeIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Type_of_declaration
         {
@@ -3743,11 +3978,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Type_of_declaration;
         partial void OnType_of_declarationChanging(global::System.String value);
         partial void OnType_of_declarationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Declaration_gen_procedure_code
         {
@@ -3771,7 +4006,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3793,7 +4028,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3815,7 +4050,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3841,17 +4076,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "EntryPreviousItems")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="EntryPreviousItems")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class EntryPreviousItems : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new EntryPreviousItems object.
         /// </summary>
@@ -3870,11 +4105,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 PreviousItem_Id
         {
@@ -3894,11 +4129,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _PreviousItem_Id;
         partial void OnPreviousItem_IdChanging(global::System.Int32 value);
         partial void OnPreviousItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Item_Id
         {
@@ -3918,11 +4153,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Item_Id;
         partial void OnItem_IdChanging(global::System.Int32 value);
         partial void OnItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 EntryPreviousItemId
         {
@@ -3949,7 +4184,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -3991,36 +4226,38 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "ExportTemplate")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="ExportTemplate")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class ExportTemplate : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new ExportTemplate object.
         /// </summary>
         /// <param name="exportTemplateId">Initial value of the ExportTemplateId property.</param>
-        public static ExportTemplate CreateExportTemplate(global::System.Int32 exportTemplateId)
+        /// <param name="applicationSettingsId">Initial value of the ApplicationSettingsId property.</param>
+        public static ExportTemplate CreateExportTemplate(global::System.Int32 exportTemplateId, global::System.Int32 applicationSettingsId)
         {
             ExportTemplate exportTemplate = new ExportTemplate();
             exportTemplate.ExportTemplateId = exportTemplateId;
+            exportTemplate.ApplicationSettingsId = applicationSettingsId;
             return exportTemplate;
         }
 
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ExportTemplateId
         {
@@ -4043,11 +4280,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ExportTemplateId;
         partial void OnExportTemplateIdChanging(global::System.Int32 value);
         partial void OnExportTemplateIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Description
         {
@@ -4067,11 +4304,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Description;
         partial void OnDescriptionChanging(global::System.String value);
         partial void OnDescriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Exporter_code
         {
@@ -4091,11 +4328,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Exporter_code;
         partial void OnExporter_codeChanging(global::System.String value);
         partial void OnExporter_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Exporter_name
         {
@@ -4115,11 +4352,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Exporter_name;
         partial void OnExporter_nameChanging(global::System.String value);
         partial void OnExporter_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Consignee_code
         {
@@ -4139,11 +4376,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Consignee_code;
         partial void OnConsignee_codeChanging(global::System.String value);
         partial void OnConsignee_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Consignee_name
         {
@@ -4163,11 +4400,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Consignee_name;
         partial void OnConsignee_nameChanging(global::System.String value);
         partial void OnConsignee_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Financial_code
         {
@@ -4187,11 +4424,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Financial_code;
         partial void OnFinancial_codeChanging(global::System.String value);
         partial void OnFinancial_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Customs_clearance_office_code
         {
@@ -4211,11 +4448,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Customs_clearance_office_code;
         partial void OnCustoms_clearance_office_codeChanging(global::System.String value);
         partial void OnCustoms_clearance_office_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Customs_Procedure
         {
@@ -4235,11 +4472,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Customs_Procedure;
         partial void OnCustoms_ProcedureChanging(global::System.String value);
         partial void OnCustoms_ProcedureChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Declarant_code
         {
@@ -4259,11 +4496,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Declarant_code;
         partial void OnDeclarant_codeChanging(global::System.String value);
         partial void OnDeclarant_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Country_first_destination
         {
@@ -4283,11 +4520,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Country_first_destination;
         partial void OnCountry_first_destinationChanging(global::System.String value);
         partial void OnCountry_first_destinationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Trading_country
         {
@@ -4307,11 +4544,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Trading_country;
         partial void OnTrading_countryChanging(global::System.String value);
         partial void OnTrading_countryChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Export_country_code
         {
@@ -4331,11 +4568,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Export_country_code;
         partial void OnExport_country_codeChanging(global::System.String value);
         partial void OnExport_country_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Destination_country_code
         {
@@ -4355,11 +4592,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Destination_country_code;
         partial void OnDestination_country_codeChanging(global::System.String value);
         partial void OnDestination_country_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String TransportName
         {
@@ -4379,11 +4616,11 @@ namespace WaterNut.DataLayer
         private global::System.String _TransportName;
         partial void OnTransportNameChanging(global::System.String value);
         partial void OnTransportNameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String TransportNationality
         {
@@ -4403,11 +4640,11 @@ namespace WaterNut.DataLayer
         private global::System.String _TransportNationality;
         partial void OnTransportNationalityChanging(global::System.String value);
         partial void OnTransportNationalityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Location_of_goods
         {
@@ -4427,11 +4664,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Location_of_goods;
         partial void OnLocation_of_goodsChanging(global::System.String value);
         partial void OnLocation_of_goodsChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Border_information_Mode
         {
@@ -4451,11 +4688,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Border_information_Mode;
         partial void OnBorder_information_ModeChanging(global::System.String value);
         partial void OnBorder_information_ModeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Delivery_terms_Code
         {
@@ -4475,11 +4712,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Delivery_terms_Code;
         partial void OnDelivery_terms_CodeChanging(global::System.String value);
         partial void OnDelivery_terms_CodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Border_office_Code
         {
@@ -4499,11 +4736,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Border_office_Code;
         partial void OnBorder_office_CodeChanging(global::System.String value);
         partial void OnBorder_office_CodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Gs_Invoice_Currency_code
         {
@@ -4523,11 +4760,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Gs_Invoice_Currency_code;
         partial void OnGs_Invoice_Currency_codeChanging(global::System.String value);
         partial void OnGs_Invoice_Currency_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Warehouse_Identification
         {
@@ -4547,11 +4784,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Warehouse_Identification;
         partial void OnWarehouse_IdentificationChanging(global::System.String value);
         partial void OnWarehouse_IdentificationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Warehouse_Delay
         {
@@ -4571,11 +4808,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Warehouse_Delay;
         partial void OnWarehouse_DelayChanging(global::System.String value);
         partial void OnWarehouse_DelayChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Number_of_packages
         {
@@ -4595,11 +4832,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Number_of_packages;
         partial void OnNumber_of_packagesChanging(global::System.String value);
         partial void OnNumber_of_packagesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Total_number_of_packages
         {
@@ -4619,11 +4856,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Total_number_of_packages;
         partial void OnTotal_number_of_packagesChanging(global::System.String value);
         partial void OnTotal_number_of_packagesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Deffered_payment_reference
         {
@@ -4643,11 +4880,59 @@ namespace WaterNut.DataLayer
         private global::System.String _Deffered_payment_reference;
         partial void OnDeffered_payment_referenceChanging(global::System.String value);
         partial void OnDeffered_payment_referenceChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ApplicationSettingsId
+        {
+            get
+            {
+                return _ApplicationSettingsId;
+            }
+            set
+            {
+                OnApplicationSettingsIdChanging(value);
+                ReportPropertyChanging("ApplicationSettingsId");
+                _ApplicationSettingsId = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ApplicationSettingsId");
+                OnApplicationSettingsIdChanged();
+            }
+        }
+        private global::System.Int32 _ApplicationSettingsId;
+        partial void OnApplicationSettingsIdChanging(global::System.Int32 value);
+        partial void OnApplicationSettingsIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String AttachedDocumentCode
+        {
+            get
+            {
+                return _AttachedDocumentCode;
+            }
+            set
+            {
+                OnAttachedDocumentCodeChanging(value);
+                ReportPropertyChanging("AttachedDocumentCode");
+                _AttachedDocumentCode = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("AttachedDocumentCode");
+                OnAttachedDocumentCodeChanged();
+            }
+        }
+        private global::System.String _AttachedDocumentCode;
+        partial void OnAttachedDocumentCodeChanging(global::System.String value);
+        partial void OnAttachedDocumentCodeChanged();
 
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -4673,38 +4958,40 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "InventoryItems")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="InventoryItemsEx")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
-    public partial class InventoryItems : EntityObject
+    [DataContractAttribute(IsReference=true)]
+    public partial class InventoryItemsEx : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
-        /// Create a new InventoryItems object.
+        /// Create a new InventoryItemsEx object.
         /// </summary>
         /// <param name="itemNumber">Initial value of the ItemNumber property.</param>
         /// <param name="description">Initial value of the Description property.</param>
-        public static InventoryItems CreateInventoryItems(global::System.String itemNumber, global::System.String description)
+        /// <param name="applicationSettingsId">Initial value of the ApplicationSettingsId property.</param>
+        public static InventoryItemsEx CreateInventoryItemsEx(global::System.String itemNumber, global::System.String description, global::System.Int32 applicationSettingsId)
         {
-            InventoryItems inventoryItems = new InventoryItems();
-            inventoryItems.ItemNumber = itemNumber;
-            inventoryItems.Description = description;
-            return inventoryItems;
+            InventoryItemsEx inventoryItemsEx = new InventoryItemsEx();
+            inventoryItemsEx.ItemNumber = itemNumber;
+            inventoryItemsEx.Description = description;
+            inventoryItemsEx.ApplicationSettingsId = applicationSettingsId;
+            return inventoryItemsEx;
         }
 
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String ItemNumber
         {
@@ -4727,11 +5014,11 @@ namespace WaterNut.DataLayer
         private global::System.String _ItemNumber;
         partial void OnItemNumberChanging(global::System.String value);
         partial void OnItemNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String Description
         {
@@ -4751,11 +5038,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Description;
         partial void OnDescriptionChanging(global::System.String value);
         partial void OnDescriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Category
         {
@@ -4775,11 +5062,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Category;
         partial void OnCategoryChanging(global::System.String value);
         partial void OnCategoryChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String TariffCode
         {
@@ -4799,11 +5086,11 @@ namespace WaterNut.DataLayer
         private global::System.String _TariffCode;
         partial void OnTariffCodeChanging(global::System.String value);
         partial void OnTariffCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> EntryTimeStamp
         {
@@ -4823,51 +5110,99 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.DateTime> _EntryTimeStamp;
         partial void OnEntryTimeStampChanging(Nullable<global::System.DateTime> value);
         partial void OnEntryTimeStampChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Int32> Quantity
+        public global::System.String SuppUnitCode2
         {
             get
             {
-                return _Quantity;
+                return _SuppUnitCode2;
             }
             set
             {
-                OnQuantityChanging(value);
-                ReportPropertyChanging("Quantity");
-                _Quantity = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("Quantity");
-                OnQuantityChanged();
+                OnSuppUnitCode2Changing(value);
+                ReportPropertyChanging("SuppUnitCode2");
+                _SuppUnitCode2 = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("SuppUnitCode2");
+                OnSuppUnitCode2Changed();
             }
         }
-        private Nullable<global::System.Int32> _Quantity;
-        partial void OnQuantityChanging(Nullable<global::System.Int32> value);
-        partial void OnQuantityChanged();
+        private global::System.String _SuppUnitCode2;
+        partial void OnSuppUnitCode2Changing(global::System.String value);
+        partial void OnSuppUnitCode2Changed();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Double> SuppQty
+        {
+            get
+            {
+                return _SuppQty;
+            }
+            set
+            {
+                OnSuppQtyChanging(value);
+                ReportPropertyChanging("SuppQty");
+                _SuppQty = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("SuppQty");
+                OnSuppQtyChanged();
+            }
+        }
+        private Nullable<global::System.Double> _SuppQty;
+        partial void OnSuppQtyChanging(Nullable<global::System.Double> value);
+        partial void OnSuppQtyChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 ApplicationSettingsId
+        {
+            get
+            {
+                return _ApplicationSettingsId;
+            }
+            set
+            {
+                OnApplicationSettingsIdChanging(value);
+                ReportPropertyChanging("ApplicationSettingsId");
+                _ApplicationSettingsId = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ApplicationSettingsId");
+                OnApplicationSettingsIdChanged();
+            }
+        }
+        private global::System.Int32 _ApplicationSettingsId;
+        partial void OnApplicationSettingsIdChanging(global::System.Int32 value);
+        partial void OnApplicationSettingsIdChanged();
 
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_InventoryItems_TariffCodes", "TariffCodes")]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "TariffCodesInventoryItemsEx", "TariffCodes")]
         public TariffCodes TariffCodes
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<TariffCodes>("WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes", "TariffCodes").Value;
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<TariffCodes>("WaterNutDB.DataLayer.TariffCodesInventoryItemsEx", "TariffCodes").Value;
             }
             set
             {
-                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<TariffCodes>("WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes", "TariffCodes").Value = value;
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<TariffCodes>("WaterNutDB.DataLayer.TariffCodesInventoryItemsEx", "TariffCodes").Value = value;
             }
         }
         /// <summary>
@@ -4879,35 +5214,35 @@ namespace WaterNut.DataLayer
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<TariffCodes>("WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes", "TariffCodes");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<TariffCodes>("WaterNutDB.DataLayer.TariffCodesInventoryItemsEx", "TariffCodes");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<TariffCodes>("WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes", "TariffCodes", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<TariffCodes>("WaterNutDB.DataLayer.TariffCodesInventoryItemsEx", "TariffCodes", value);
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "xcuda_Inventory_Item", "xcuda_HScode")]
-        public EntityCollection<xcuda_HScode> xcuda_HScode
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "InventoryItemsExxcuda_Inventory_Item", "xcuda_Inventory_Item")]
+        public EntityCollection<xcuda_Inventory_Item> xcuda_Inventory_Item
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<xcuda_HScode>("WaterNutDB.DataLayer.xcuda_Inventory_Item", "xcuda_HScode");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<xcuda_Inventory_Item>("WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item", "xcuda_Inventory_Item");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_HScode>("WaterNutDB.DataLayer.xcuda_Inventory_Item", "xcuda_HScode", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_Inventory_Item>("WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item", "xcuda_Inventory_Item", value);
                 }
             }
         }
@@ -4915,17 +5250,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "TariffCategory")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="TariffCategory")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class TariffCategory : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new TariffCategory object.
         /// </summary>
@@ -4940,11 +5275,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String TariffCategoryCode
         {
@@ -4967,11 +5302,11 @@ namespace WaterNut.DataLayer
         private global::System.String _TariffCategoryCode;
         partial void OnTariffCategoryCodeChanging(global::System.String value);
         partial void OnTariffCategoryCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Description
         {
@@ -4991,11 +5326,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Description;
         partial void OnDescriptionChanging(global::System.String value);
         partial void OnDescriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String ParentTariffCategoryCode
         {
@@ -5015,11 +5350,11 @@ namespace WaterNut.DataLayer
         private global::System.String _ParentTariffCategoryCode;
         partial void OnParentTariffCategoryCodeChanging(global::System.String value);
         partial void OnParentTariffCategoryCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> LicenseRequired
         {
@@ -5043,7 +5378,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -5065,7 +5400,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -5091,17 +5426,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "TariffCategoryCodeSuppUnit")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="TariffCategoryCodeSuppUnit")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class TariffCategoryCodeSuppUnit : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new TariffCategoryCodeSuppUnit object.
         /// </summary>
@@ -5120,11 +5455,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Id
         {
@@ -5147,11 +5482,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Id;
         partial void OnIdChanging(global::System.Int32 value);
         partial void OnIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String TariffCategoryCode
         {
@@ -5171,11 +5506,11 @@ namespace WaterNut.DataLayer
         private global::System.String _TariffCategoryCode;
         partial void OnTariffCategoryCodeChanging(global::System.String value);
         partial void OnTariffCategoryCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 TariffSupUnitId
         {
@@ -5199,7 +5534,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -5237,7 +5572,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -5279,17 +5614,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "TariffCodes")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="TariffCodes")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class TariffCodes : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new TariffCodes object.
         /// </summary>
@@ -5304,11 +5639,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String TariffCode
         {
@@ -5331,11 +5666,11 @@ namespace WaterNut.DataLayer
         private global::System.String _TariffCode;
         partial void OnTariffCodeChanging(global::System.String value);
         partial void OnTariffCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Description
         {
@@ -5355,11 +5690,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Description;
         partial void OnDescriptionChanging(global::System.String value);
         partial void OnDescriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String RateofDuty
         {
@@ -5379,11 +5714,11 @@ namespace WaterNut.DataLayer
         private global::System.String _RateofDuty;
         partial void OnRateofDutyChanging(global::System.String value);
         partial void OnRateofDutyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String EnvironmentalLevy
         {
@@ -5403,11 +5738,11 @@ namespace WaterNut.DataLayer
         private global::System.String _EnvironmentalLevy;
         partial void OnEnvironmentalLevyChanging(global::System.String value);
         partial void OnEnvironmentalLevyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String CustomsServiceCharge
         {
@@ -5427,11 +5762,11 @@ namespace WaterNut.DataLayer
         private global::System.String _CustomsServiceCharge;
         partial void OnCustomsServiceChargeChanging(global::System.String value);
         partial void OnCustomsServiceChargeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String ExciseTax
         {
@@ -5451,11 +5786,11 @@ namespace WaterNut.DataLayer
         private global::System.String _ExciseTax;
         partial void OnExciseTaxChanging(global::System.String value);
         partial void OnExciseTaxChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String VatRate
         {
@@ -5475,11 +5810,11 @@ namespace WaterNut.DataLayer
         private global::System.String _VatRate;
         partial void OnVatRateChanging(global::System.String value);
         partial void OnVatRateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String PetrolTax
         {
@@ -5499,11 +5834,11 @@ namespace WaterNut.DataLayer
         private global::System.String _PetrolTax;
         partial void OnPetrolTaxChanging(global::System.String value);
         partial void OnPetrolTaxChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Units
         {
@@ -5523,11 +5858,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Units;
         partial void OnUnitsChanging(global::System.String value);
         partial void OnUnitsChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String SiteRev3
         {
@@ -5547,11 +5882,11 @@ namespace WaterNut.DataLayer
         private global::System.String _SiteRev3;
         partial void OnSiteRev3Changing(global::System.String value);
         partial void OnSiteRev3Changed();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String TariffCategoryCode
         {
@@ -5571,11 +5906,11 @@ namespace WaterNut.DataLayer
         private global::System.String _TariffCategoryCode;
         partial void OnTariffCategoryCodeChanging(global::System.String value);
         partial void OnTariffCategoryCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> LicenseRequired
         {
@@ -5595,11 +5930,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _LicenseRequired;
         partial void OnLicenseRequiredChanging(Nullable<global::System.Boolean> value);
         partial void OnLicenseRequiredChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> Invalid
         {
@@ -5623,29 +5958,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [XmlIgnoreAttribute()]
-        [SoapIgnoreAttribute()]
-        [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_InventoryItems_TariffCodes", "InventoryItems")]
-        public EntityCollection<InventoryItems> InventoryItems
-        {
-            get
-            {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<InventoryItems>("WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes", "InventoryItems");
-            }
-            set
-            {
-                if ((value != null))
-                {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<InventoryItems>("WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes", "InventoryItems", value);
-                }
-            }
-        }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -5683,21 +5996,43 @@ namespace WaterNut.DataLayer
                 }
             }
         }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "TariffCodesInventoryItemsEx", "InventoryItemsEx")]
+        public EntityCollection<InventoryItemsEx> InventoryItemsEx
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<InventoryItemsEx>("WaterNutDB.DataLayer.TariffCodesInventoryItemsEx", "InventoryItemsEx");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<InventoryItemsEx>("WaterNutDB.DataLayer.TariffCodesInventoryItemsEx", "InventoryItemsEx", value);
+                }
+            }
+        }
 
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "TariffSupUnitLkps")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="TariffSupUnitLkps")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class TariffSupUnitLkps : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new TariffSupUnitLkps object.
         /// </summary>
@@ -5716,11 +6051,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String SuppUnitCode2
         {
@@ -5740,11 +6075,11 @@ namespace WaterNut.DataLayer
         private global::System.String _SuppUnitCode2;
         partial void OnSuppUnitCode2Changing(global::System.String value);
         partial void OnSuppUnitCode2Changed();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String SuppUnitName2
         {
@@ -5764,11 +6099,11 @@ namespace WaterNut.DataLayer
         private global::System.String _SuppUnitName2;
         partial void OnSuppUnitName2Changing(global::System.String value);
         partial void OnSuppUnitName2Changed();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double SuppQty
         {
@@ -5788,11 +6123,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _SuppQty;
         partial void OnSuppQtyChanging(global::System.Double value);
         partial void OnSuppQtyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Id
         {
@@ -5819,7 +6154,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -5845,17 +6180,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Assessment")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Assessment")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Assessment : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Assessment object.
         /// </summary>
@@ -5870,11 +6205,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Number
         {
@@ -5894,11 +6229,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Number;
         partial void OnNumberChanging(global::System.String value);
         partial void OnNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Date
         {
@@ -5918,11 +6253,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Date;
         partial void OnDateChanging(global::System.String value);
         partial void OnDateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -5949,7 +6284,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -5991,17 +6326,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Assessment_notice")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Assessment_notice")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Assessment_notice : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Assessment_notice object.
         /// </summary>
@@ -6016,11 +6351,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Assessment_notice_Id
         {
@@ -6043,11 +6378,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Assessment_notice_Id;
         partial void OnAssessment_notice_IdChanging(global::System.Int32 value);
         partial void OnAssessment_notice_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -6071,7 +6406,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6113,17 +6448,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_ASYCUDA")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_ASYCUDA")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_ASYCUDA : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_ASYCUDA object.
         /// </summary>
@@ -6138,11 +6473,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String id
         {
@@ -6162,11 +6497,11 @@ namespace WaterNut.DataLayer
         private global::System.String _id;
         partial void OnidChanging(global::System.String value);
         partial void OnidChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -6189,11 +6524,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> EntryTimeStamp
         {
@@ -6217,7 +6552,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6239,7 +6574,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6261,7 +6596,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6299,7 +6634,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6321,7 +6656,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6343,7 +6678,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6381,7 +6716,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6403,7 +6738,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6441,7 +6776,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6463,7 +6798,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6485,7 +6820,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6523,7 +6858,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6545,7 +6880,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6567,7 +6902,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6589,7 +6924,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6627,7 +6962,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6649,7 +6984,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6687,7 +7022,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -6729,26 +7064,28 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_ASYCUDA_ExtendedProperties")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_ASYCUDA_ExtendedProperties")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_ASYCUDA_ExtendedProperties : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_ASYCUDA_ExtendedProperties object.
         /// </summary>
         /// <param name="aSYCUDA_Id">Initial value of the ASYCUDA_Id property.</param>
+        /// <param name="asycudaDocumentSetId">Initial value of the AsycudaDocumentSetId property.</param>
         /// <param name="importComplete">Initial value of the ImportComplete property.</param>
-        public static xcuda_ASYCUDA_ExtendedProperties Createxcuda_ASYCUDA_ExtendedProperties(global::System.Int32 aSYCUDA_Id, global::System.Boolean importComplete)
+        public static xcuda_ASYCUDA_ExtendedProperties Createxcuda_ASYCUDA_ExtendedProperties(global::System.Int32 aSYCUDA_Id, global::System.Int32 asycudaDocumentSetId, global::System.Boolean importComplete)
         {
             xcuda_ASYCUDA_ExtendedProperties xcuda_ASYCUDA_ExtendedProperties = new xcuda_ASYCUDA_ExtendedProperties();
             xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id = aSYCUDA_Id;
+            xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = asycudaDocumentSetId;
             xcuda_ASYCUDA_ExtendedProperties.ImportComplete = importComplete;
             return xcuda_ASYCUDA_ExtendedProperties;
         }
@@ -6756,11 +7093,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -6783,13 +7120,13 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Int32> AsycudaDocumentSetId
+        public global::System.Int32 AsycudaDocumentSetId
         {
             get
             {
@@ -6804,14 +7141,14 @@ namespace WaterNut.DataLayer
                 OnAsycudaDocumentSetIdChanged();
             }
         }
-        private Nullable<global::System.Int32> _AsycudaDocumentSetId;
-        partial void OnAsycudaDocumentSetIdChanging(Nullable<global::System.Int32> value);
+        private global::System.Int32 _AsycudaDocumentSetId;
+        partial void OnAsycudaDocumentSetIdChanging(global::System.Int32 value);
         partial void OnAsycudaDocumentSetIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> FileNumber
         {
@@ -6831,11 +7168,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _FileNumber;
         partial void OnFileNumberChanging(Nullable<global::System.Int32> value);
         partial void OnFileNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> IsManuallyAssessed
         {
@@ -6855,11 +7192,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _IsManuallyAssessed;
         partial void OnIsManuallyAssessedChanging(Nullable<global::System.Boolean> value);
         partial void OnIsManuallyAssessedChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String CNumber
         {
@@ -6879,11 +7216,11 @@ namespace WaterNut.DataLayer
         private global::System.String _CNumber;
         partial void OnCNumberChanging(global::System.String value);
         partial void OnCNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> RegistrationDate
         {
@@ -6903,11 +7240,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.DateTime> _RegistrationDate;
         partial void OnRegistrationDateChanging(Nullable<global::System.DateTime> value);
         partial void OnRegistrationDateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String ReferenceNumber
         {
@@ -6927,11 +7264,11 @@ namespace WaterNut.DataLayer
         private global::System.String _ReferenceNumber;
         partial void OnReferenceNumberChanging(global::System.String value);
         partial void OnReferenceNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Customs_ProcedureId
         {
@@ -6951,11 +7288,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Customs_ProcedureId;
         partial void OnCustoms_ProcedureIdChanging(Nullable<global::System.Int32> value);
         partial void OnCustoms_ProcedureIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Document_TypeId
         {
@@ -6975,11 +7312,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Document_TypeId;
         partial void OnDocument_TypeIdChanging(Nullable<global::System.Int32> value);
         partial void OnDocument_TypeIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Description
         {
@@ -6999,11 +7336,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Description;
         partial void OnDescriptionChanging(global::System.String value);
         partial void OnDescriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ExportTemplateId
         {
@@ -7023,11 +7360,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ExportTemplateId;
         partial void OnExportTemplateIdChanging(Nullable<global::System.Int32> value);
         partial void OnExportTemplateIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String BLNumber
         {
@@ -7047,11 +7384,11 @@ namespace WaterNut.DataLayer
         private global::System.String _BLNumber;
         partial void OnBLNumberChanging(global::System.String value);
         partial void OnBLNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> AutoUpdate
         {
@@ -7071,11 +7408,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _AutoUpdate;
         partial void OnAutoUpdateChanging(Nullable<global::System.Boolean> value);
         partial void OnAutoUpdateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> EffectiveRegistrationDate
         {
@@ -7095,11 +7432,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.DateTime> _EffectiveRegistrationDate;
         partial void OnEffectiveRegistrationDateChanging(Nullable<global::System.DateTime> value);
         partial void OnEffectiveRegistrationDateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> DoNotAllocate
         {
@@ -7119,11 +7456,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _DoNotAllocate;
         partial void OnDoNotAllocateChanging(Nullable<global::System.Boolean> value);
         partial void OnDoNotAllocateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ApportionMethod
         {
@@ -7143,11 +7480,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ApportionMethod;
         partial void OnApportionMethodChanging(Nullable<global::System.Int32> value);
         partial void OnApportionMethodChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Boolean ImportComplete
         {
@@ -7167,11 +7504,11 @@ namespace WaterNut.DataLayer
         private global::System.Boolean _ImportComplete;
         partial void OnImportCompleteChanging(global::System.Boolean value);
         partial void OnImportCompleteChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> DocumentLines
         {
@@ -7191,11 +7528,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _DocumentLines;
         partial void OnDocumentLinesChanging(Nullable<global::System.Int32> value);
         partial void OnDocumentLinesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> Cancelled
         {
@@ -7215,11 +7552,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _Cancelled;
         partial void OnCancelledChanging(Nullable<global::System.Boolean> value);
         partial void OnCancelledChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> TotalWeight
         {
@@ -7239,11 +7576,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _TotalWeight;
         partial void OnTotalWeightChanging(Nullable<global::System.Double> value);
         partial void OnTotalWeightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> TotalFreight
         {
@@ -7263,11 +7600,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _TotalFreight;
         partial void OnTotalFreightChanging(Nullable<global::System.Double> value);
         partial void OnTotalFreightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> TotalInternalFreight
         {
@@ -7287,11 +7624,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _TotalInternalFreight;
         partial void OnTotalInternalFreightChanging(Nullable<global::System.Double> value);
         partial void OnTotalInternalFreightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> TotalPackages
         {
@@ -7311,11 +7648,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _TotalPackages;
         partial void OnTotalPackagesChanging(Nullable<global::System.Int32> value);
         partial void OnTotalPackagesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> EffectiveExpiryDate
         {
@@ -7339,7 +7676,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -7377,7 +7714,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -7415,7 +7752,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -7453,7 +7790,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -7491,7 +7828,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -7533,17 +7870,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Attached_documents")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Attached_documents")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Attached_documents : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Attached_documents object.
         /// </summary>
@@ -7558,11 +7895,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Attached_document_date
         {
@@ -7582,11 +7919,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Attached_document_date;
         partial void OnAttached_document_dateChanging(global::System.String value);
         partial void OnAttached_document_dateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Attached_documents_Id
         {
@@ -7609,11 +7946,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Attached_documents_Id;
         partial void OnAttached_documents_IdChanging(global::System.Int32 value);
         partial void OnAttached_documents_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Item_Id
         {
@@ -7633,11 +7970,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Item_Id;
         partial void OnItem_IdChanging(Nullable<global::System.Int32> value);
         partial void OnItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Attached_document_code
         {
@@ -7657,11 +7994,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Attached_document_code;
         partial void OnAttached_document_codeChanging(global::System.String value);
         partial void OnAttached_document_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Attached_document_name
         {
@@ -7681,11 +8018,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Attached_document_name;
         partial void OnAttached_document_nameChanging(global::System.String value);
         partial void OnAttached_document_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Attached_document_reference
         {
@@ -7705,11 +8042,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Attached_document_reference;
         partial void OnAttached_document_referenceChanging(global::System.String value);
         partial void OnAttached_document_referenceChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Attached_document_from_rule
         {
@@ -7733,7 +8070,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -7771,21 +8108,231 @@ namespace WaterNut.DataLayer
                 }
             }
         }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attachments")]
+        public EntityCollection<xcuda_Attachments> xcuda_Attachments
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<xcuda_Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attachments");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attachments", value);
+                }
+            }
+        }
 
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Border_information")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Attachments")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
+    public partial class xcuda_Attachments : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new xcuda_Attachments object.
+        /// </summary>
+        /// <param name="id">Initial value of the Id property.</param>
+        /// <param name="attachmentId">Initial value of the AttachmentId property.</param>
+        /// <param name="attached_documents_Id">Initial value of the Attached_documents_Id property.</param>
+        public static xcuda_Attachments Createxcuda_Attachments(global::System.Int32 id, global::System.Int32 attachmentId, global::System.Int32 attached_documents_Id)
+        {
+            xcuda_Attachments xcuda_Attachments = new xcuda_Attachments();
+            xcuda_Attachments.Id = id;
+            xcuda_Attachments.AttachmentId = attachmentId;
+            xcuda_Attachments.Attached_documents_Id = attached_documents_Id;
+            return xcuda_Attachments;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 AttachmentId
+        {
+            get
+            {
+                return _AttachmentId;
+            }
+            set
+            {
+                OnAttachmentIdChanging(value);
+                ReportPropertyChanging("AttachmentId");
+                _AttachmentId = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("AttachmentId");
+                OnAttachmentIdChanged();
+            }
+        }
+        private global::System.Int32 _AttachmentId;
+        partial void OnAttachmentIdChanging(global::System.Int32 value);
+        partial void OnAttachmentIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Attached_documents_Id
+        {
+            get
+            {
+                return _Attached_documents_Id;
+            }
+            set
+            {
+                OnAttached_documents_IdChanging(value);
+                ReportPropertyChanging("Attached_documents_Id");
+                _Attached_documents_Id = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Attached_documents_Id");
+                OnAttached_documents_IdChanged();
+            }
+        }
+        private global::System.Int32 _Attached_documents_Id;
+        partial void OnAttached_documents_IdChanging(global::System.Int32 value);
+        partial void OnAttached_documents_IdChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_Attachments", "Attachments")]
+        public Attachments Attachments
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments", "Attachments").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments", "Attachments").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Attachments> AttachmentsReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments", "Attachments");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments", "Attachments", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attached_documents")]
+        public xcuda_Attached_documents xcuda_Attached_documents
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<xcuda_Attached_documents>("WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attached_documents").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<xcuda_Attached_documents>("WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attached_documents").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<xcuda_Attached_documents> xcuda_Attached_documentsReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<xcuda_Attached_documents>("WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attached_documents");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<xcuda_Attached_documents>("WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attached_documents", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Border_information")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Border_information : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Border_information object.
         /// </summary>
@@ -7800,11 +8347,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Border_information_Id
         {
@@ -7827,11 +8374,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Border_information_Id;
         partial void OnBorder_information_IdChanging(global::System.Int32 value);
         partial void OnBorder_information_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Means_of_transport_Id
         {
@@ -7851,11 +8398,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Means_of_transport_Id;
         partial void OnMeans_of_transport_IdChanging(Nullable<global::System.Int32> value);
         partial void OnMeans_of_transport_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Identity
         {
@@ -7875,11 +8422,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Identity;
         partial void OnIdentityChanging(global::System.String value);
         partial void OnIdentityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Nationality
         {
@@ -7899,11 +8446,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Nationality;
         partial void OnNationalityChanging(global::System.String value);
         partial void OnNationalityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Mode
         {
@@ -7927,7 +8474,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -7969,17 +8516,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Border_office")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Border_office")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Border_office : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Border_office object.
         /// </summary>
@@ -7994,11 +8541,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Border_office_Id
         {
@@ -8021,11 +8568,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Border_office_Id;
         partial void OnBorder_office_IdChanging(global::System.Int32 value);
         partial void OnBorder_office_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Transport_Id
         {
@@ -8045,11 +8592,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Transport_Id;
         partial void OnTransport_IdChanging(Nullable<global::System.Int32> value);
         partial void OnTransport_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Code
         {
@@ -8069,11 +8616,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Code;
         partial void OnCodeChanging(global::System.String value);
         partial void OnCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Name
         {
@@ -8097,7 +8644,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -8139,17 +8686,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Consignee")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Consignee")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Consignee : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Consignee object.
         /// </summary>
@@ -8164,11 +8711,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Traders_Id
         {
@@ -8191,11 +8738,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Traders_Id;
         partial void OnTraders_IdChanging(global::System.Int32 value);
         partial void OnTraders_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Consignee_code
         {
@@ -8215,11 +8762,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Consignee_code;
         partial void OnConsignee_codeChanging(global::System.String value);
         partial void OnConsignee_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Consignee_name
         {
@@ -8243,7 +8790,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -8285,17 +8832,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Container")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Container")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Container : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Container object.
         /// </summary>
@@ -8314,11 +8861,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Item_Number
         {
@@ -8338,11 +8885,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Item_Number;
         partial void OnItem_NumberChanging(global::System.String value);
         partial void OnItem_NumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Container_identity
         {
@@ -8362,11 +8909,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Container_identity;
         partial void OnContainer_identityChanging(global::System.String value);
         partial void OnContainer_identityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Container_type
         {
@@ -8386,11 +8933,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Container_type;
         partial void OnContainer_typeChanging(global::System.String value);
         partial void OnContainer_typeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Empty_full_indicator
         {
@@ -8410,11 +8957,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Empty_full_indicator;
         partial void OnEmpty_full_indicatorChanging(global::System.String value);
         partial void OnEmpty_full_indicatorChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Gross_weight
         {
@@ -8434,11 +8981,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Gross_weight;
         partial void OnGross_weightChanging(global::System.Single value);
         partial void OnGross_weightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Goods_description
         {
@@ -8458,11 +9005,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Goods_description;
         partial void OnGoods_descriptionChanging(global::System.String value);
         partial void OnGoods_descriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Packages_type
         {
@@ -8482,11 +9029,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Packages_type;
         partial void OnPackages_typeChanging(global::System.String value);
         partial void OnPackages_typeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Packages_number
         {
@@ -8506,11 +9053,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Packages_number;
         partial void OnPackages_numberChanging(global::System.String value);
         partial void OnPackages_numberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Packages_weight
         {
@@ -8530,11 +9077,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Packages_weight;
         partial void OnPackages_weightChanging(global::System.Single value);
         partial void OnPackages_weightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -8554,11 +9101,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(Nullable<global::System.Int32> value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Container_Id
         {
@@ -8585,7 +9132,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -8627,17 +9174,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Country")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Country")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Country : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Country object.
         /// </summary>
@@ -8652,11 +9199,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Country_first_destination
         {
@@ -8676,11 +9223,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Country_first_destination;
         partial void OnCountry_first_destinationChanging(global::System.String value);
         partial void OnCountry_first_destinationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Country_of_origin_name
         {
@@ -8700,11 +9247,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Country_of_origin_name;
         partial void OnCountry_of_origin_nameChanging(global::System.String value);
         partial void OnCountry_of_origin_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Country_Id
         {
@@ -8727,11 +9274,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Country_Id;
         partial void OnCountry_IdChanging(global::System.Int32 value);
         partial void OnCountry_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Place_of_loading_Id
         {
@@ -8751,11 +9298,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Place_of_loading_Id;
         partial void OnPlace_of_loading_IdChanging(Nullable<global::System.Int32> value);
         partial void OnPlace_of_loading_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Trading_country
         {
@@ -8779,7 +9326,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -8817,7 +9364,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -8855,7 +9402,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -8897,17 +9444,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Declarant")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Declarant")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Declarant : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Declarant object.
         /// </summary>
@@ -8922,11 +9469,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Declarant_code
         {
@@ -8946,11 +9493,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Declarant_code;
         partial void OnDeclarant_codeChanging(global::System.String value);
         partial void OnDeclarant_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Declarant_name
         {
@@ -8970,11 +9517,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Declarant_name;
         partial void OnDeclarant_nameChanging(global::System.String value);
         partial void OnDeclarant_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Declarant_representative
         {
@@ -8994,11 +9541,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Declarant_representative;
         partial void OnDeclarant_representativeChanging(global::System.String value);
         partial void OnDeclarant_representativeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -9021,11 +9568,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Number
         {
@@ -9049,7 +9596,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -9091,17 +9638,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Delivery_terms")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Delivery_terms")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Delivery_terms : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Delivery_terms object.
         /// </summary>
@@ -9116,11 +9663,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Delivery_terms_Id
         {
@@ -9143,11 +9690,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Delivery_terms_Id;
         partial void OnDelivery_terms_IdChanging(global::System.Int32 value);
         partial void OnDelivery_terms_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Transport_Id
         {
@@ -9167,11 +9714,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Transport_Id;
         partial void OnTransport_IdChanging(Nullable<global::System.Int32> value);
         partial void OnTransport_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Code
         {
@@ -9191,11 +9738,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Code;
         partial void OnCodeChanging(global::System.String value);
         partial void OnCodeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Place
         {
@@ -9215,11 +9762,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Place;
         partial void OnPlaceChanging(global::System.String value);
         partial void OnPlaceChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Situation
         {
@@ -9243,7 +9790,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -9285,17 +9832,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Departure_arrival_information")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Departure_arrival_information")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Departure_arrival_information : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Departure_arrival_information object.
         /// </summary>
@@ -9310,11 +9857,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Departure_arrival_information_Id
         {
@@ -9337,11 +9884,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Departure_arrival_information_Id;
         partial void OnDeparture_arrival_information_IdChanging(global::System.Int32 value);
         partial void OnDeparture_arrival_information_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Means_of_transport_Id
         {
@@ -9361,11 +9908,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Means_of_transport_Id;
         partial void OnMeans_of_transport_IdChanging(Nullable<global::System.Int32> value);
         partial void OnMeans_of_transport_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Identity
         {
@@ -9385,11 +9932,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Identity;
         partial void OnIdentityChanging(global::System.String value);
         partial void OnIdentityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Nationality
         {
@@ -9413,7 +9960,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -9455,17 +10002,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Destination")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Destination")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Destination : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Destination object.
         /// </summary>
@@ -9480,11 +10027,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Destination_country_code
         {
@@ -9504,11 +10051,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Destination_country_code;
         partial void OnDestination_country_codeChanging(global::System.String value);
         partial void OnDestination_country_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Destination_country_name
         {
@@ -9528,11 +10075,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Destination_country_name;
         partial void OnDestination_country_nameChanging(global::System.String value);
         partial void OnDestination_country_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Country_Id
         {
@@ -9559,7 +10106,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -9601,17 +10148,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Export")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Export")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Export : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Export object.
         /// </summary>
@@ -9626,11 +10173,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Export_country_code
         {
@@ -9650,11 +10197,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Export_country_code;
         partial void OnExport_country_codeChanging(global::System.String value);
         partial void OnExport_country_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Export_country_name
         {
@@ -9674,11 +10221,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Export_country_name;
         partial void OnExport_country_nameChanging(global::System.String value);
         partial void OnExport_country_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Country_Id
         {
@@ -9701,11 +10248,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Country_Id;
         partial void OnCountry_IdChanging(global::System.Int32 value);
         partial void OnCountry_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Export_country_region
         {
@@ -9729,7 +10276,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -9771,17 +10318,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Export_release")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Export_release")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Export_release : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Export_release object.
         /// </summary>
@@ -9796,11 +10343,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Date_of_exit
         {
@@ -9820,11 +10367,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Date_of_exit;
         partial void OnDate_of_exitChanging(global::System.String value);
         partial void OnDate_of_exitChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Time_of_exit
         {
@@ -9844,11 +10391,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Time_of_exit;
         partial void OnTime_of_exitChanging(global::System.String value);
         partial void OnTime_of_exitChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Export_release_Id
         {
@@ -9871,11 +10418,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Export_release_Id;
         partial void OnExport_release_IdChanging(global::System.Int32 value);
         partial void OnExport_release_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -9899,7 +10446,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -9941,17 +10488,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Exporter")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Exporter")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Exporter : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Exporter object.
         /// </summary>
@@ -9966,11 +10513,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Exporter_name
         {
@@ -9990,11 +10537,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Exporter_name;
         partial void OnExporter_nameChanging(global::System.String value);
         partial void OnExporter_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Traders_Id
         {
@@ -10017,11 +10564,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Traders_Id;
         partial void OnTraders_IdChanging(global::System.Int32 value);
         partial void OnTraders_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Exporter_code
         {
@@ -10045,7 +10592,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -10087,17 +10634,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Financial")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Financial")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Financial : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Financial object.
         /// </summary>
@@ -10112,11 +10659,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Financial_Id
         {
@@ -10139,11 +10686,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Financial_Id;
         partial void OnFinancial_IdChanging(global::System.Int32 value);
         partial void OnFinancial_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -10163,11 +10710,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(Nullable<global::System.Int32> value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Deffered_payment_reference
         {
@@ -10187,11 +10734,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Deffered_payment_reference;
         partial void OnDeffered_payment_referenceChanging(global::System.String value);
         partial void OnDeffered_payment_referenceChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Mode_of_payment
         {
@@ -10211,11 +10758,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Mode_of_payment;
         partial void OnMode_of_paymentChanging(global::System.String value);
         partial void OnMode_of_paymentChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Financial_Code
         {
@@ -10239,7 +10786,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -10277,7 +10824,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -10299,7 +10846,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -10325,17 +10872,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Financial_Amounts")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Financial_Amounts")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Financial_Amounts : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Financial_Amounts object.
         /// </summary>
@@ -10352,11 +10899,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Amounts_Id
         {
@@ -10379,11 +10926,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Amounts_Id;
         partial void OnAmounts_IdChanging(global::System.Int32 value);
         partial void OnAmounts_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Financial_Id
         {
@@ -10403,11 +10950,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Financial_Id;
         partial void OnFinancial_IdChanging(global::System.Int32 value);
         partial void OnFinancial_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Decimal> Total_manual_taxes
         {
@@ -10427,11 +10974,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Decimal> _Total_manual_taxes;
         partial void OnTotal_manual_taxesChanging(Nullable<global::System.Decimal> value);
         partial void OnTotal_manual_taxesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Decimal> Global_taxes
         {
@@ -10451,11 +10998,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Decimal> _Global_taxes;
         partial void OnGlobal_taxesChanging(Nullable<global::System.Decimal> value);
         partial void OnGlobal_taxesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Decimal> Totals_taxes
         {
@@ -10479,7 +11026,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -10521,17 +11068,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Financial_Guarantee")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Financial_Guarantee")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Financial_Guarantee : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Financial_Guarantee object.
         /// </summary>
@@ -10548,11 +11095,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Guarantee_Id
         {
@@ -10575,11 +11122,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Guarantee_Id;
         partial void OnGuarantee_IdChanging(global::System.Int32 value);
         partial void OnGuarantee_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Financial_Id
         {
@@ -10599,11 +11146,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Financial_Id;
         partial void OnFinancial_IdChanging(global::System.Int32 value);
         partial void OnFinancial_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Decimal> Amount
         {
@@ -10623,11 +11170,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Decimal> _Amount;
         partial void OnAmountChanging(Nullable<global::System.Decimal> value);
         partial void OnAmountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> Date
         {
@@ -10651,7 +11198,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -10693,17 +11240,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Forms")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Forms")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Forms : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Forms object.
         /// </summary>
@@ -10718,11 +11265,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -10745,11 +11292,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Number_of_the_form
         {
@@ -10769,11 +11316,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Number_of_the_form;
         partial void OnNumber_of_the_formChanging(Nullable<global::System.Int32> value);
         partial void OnNumber_of_the_formChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Total_number_of_forms
         {
@@ -10797,7 +11344,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -10839,17 +11386,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_General_information")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_General_information")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_General_information : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_General_information object.
         /// </summary>
@@ -10864,11 +11411,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Value_details
         {
@@ -10888,11 +11435,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Value_details;
         partial void OnValue_detailsChanging(global::System.String value);
         partial void OnValue_detailsChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -10915,11 +11462,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String CAP
         {
@@ -10939,11 +11486,11 @@ namespace WaterNut.DataLayer
         private global::System.String _CAP;
         partial void OnCAPChanging(global::System.String value);
         partial void OnCAPChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Additional_information
         {
@@ -10963,11 +11510,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Additional_information;
         partial void OnAdditional_informationChanging(global::System.String value);
         partial void OnAdditional_informationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Comments_free_text
         {
@@ -10991,7 +11538,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -11029,7 +11576,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -11071,17 +11618,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Global_taxes")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Global_taxes")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Global_taxes : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Global_taxes object.
         /// </summary>
@@ -11096,11 +11643,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Global_taxes_Id
         {
@@ -11123,11 +11670,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Global_taxes_Id;
         partial void OnGlobal_taxes_IdChanging(global::System.Int32 value);
         partial void OnGlobal_taxes_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -11151,7 +11698,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -11193,17 +11740,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Goods_description")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Goods_description")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Goods_description : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Goods_description object.
         /// </summary>
@@ -11218,11 +11765,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Country_of_origin_code
         {
@@ -11242,11 +11789,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Country_of_origin_code;
         partial void OnCountry_of_origin_codeChanging(global::System.String value);
         partial void OnCountry_of_origin_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Description_of_goods
         {
@@ -11266,11 +11813,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Description_of_goods;
         partial void OnDescription_of_goodsChanging(global::System.String value);
         partial void OnDescription_of_goodsChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Commercial_Description
         {
@@ -11290,11 +11837,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Commercial_Description;
         partial void OnCommercial_DescriptionChanging(global::System.String value);
         partial void OnCommercial_DescriptionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Item_Id
         {
@@ -11321,7 +11868,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -11363,17 +11910,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Gs_deduction")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Gs_deduction")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Gs_deduction : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Gs_deduction object.
         /// </summary>
@@ -11394,11 +11941,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_national_currency
         {
@@ -11418,11 +11965,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Single value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_foreign_currency
         {
@@ -11442,11 +11989,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Single value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -11466,11 +12013,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Currency_rate
         {
@@ -11490,11 +12037,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Single value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -11521,7 +12068,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -11563,17 +12110,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Gs_external_freight")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Gs_external_freight")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Gs_external_freight : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Gs_external_freight object.
         /// </summary>
@@ -11594,11 +12141,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_national_currency
         {
@@ -11618,11 +12165,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Single value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_foreign_currency
         {
@@ -11642,11 +12189,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Single value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -11666,11 +12213,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Currency_rate
         {
@@ -11690,11 +12237,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Single value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -11717,11 +12264,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Valuation_Id;
         partial void OnValuation_IdChanging(global::System.Int32 value);
         partial void OnValuation_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_code
         {
@@ -11745,7 +12292,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -11787,17 +12334,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Gs_insurance")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Gs_insurance")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Gs_insurance : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Gs_insurance object.
         /// </summary>
@@ -11818,11 +12365,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_national_currency
         {
@@ -11842,11 +12389,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Single value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_foreign_currency
         {
@@ -11866,11 +12413,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Single value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -11890,11 +12437,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Currency_rate
         {
@@ -11914,11 +12461,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Single value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -11945,7 +12492,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -11987,17 +12534,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Gs_internal_freight")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Gs_internal_freight")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Gs_internal_freight : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Gs_internal_freight object.
         /// </summary>
@@ -12018,11 +12565,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_national_currency
         {
@@ -12042,11 +12589,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Single value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_foreign_currency
         {
@@ -12066,11 +12613,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Single value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -12090,11 +12637,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Currency_rate
         {
@@ -12114,11 +12661,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Single value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -12145,7 +12692,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -12187,17 +12734,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Gs_Invoice")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Gs_Invoice")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Gs_Invoice : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Gs_Invoice object.
         /// </summary>
@@ -12218,11 +12765,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_national_currency
         {
@@ -12242,11 +12789,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Double value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_foreign_currency
         {
@@ -12266,11 +12813,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Double value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_code
         {
@@ -12290,11 +12837,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_code;
         partial void OnCurrency_codeChanging(global::System.String value);
         partial void OnCurrency_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Currency_rate
         {
@@ -12314,11 +12861,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Double value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -12341,11 +12888,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Valuation_Id;
         partial void OnValuation_IdChanging(global::System.Int32 value);
         partial void OnValuation_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -12369,7 +12916,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -12411,17 +12958,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Gs_other_cost")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Gs_other_cost")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Gs_other_cost : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Gs_other_cost object.
         /// </summary>
@@ -12442,11 +12989,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_national_currency
         {
@@ -12466,11 +13013,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Single value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_foreign_currency
         {
@@ -12490,11 +13037,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Single value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -12514,11 +13061,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Currency_rate
         {
@@ -12538,11 +13085,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Single value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -12569,7 +13116,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -12611,17 +13158,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_HScode")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_HScode")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_HScode : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_HScode object.
         /// </summary>
@@ -12638,11 +13185,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String Commodity_code
         {
@@ -12662,11 +13209,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Commodity_code;
         partial void OnCommodity_codeChanging(global::System.String value);
         partial void OnCommodity_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Precision_1
         {
@@ -12686,11 +13233,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Precision_1;
         partial void OnPrecision_1Changing(global::System.String value);
         partial void OnPrecision_1Changed();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Precision_4
         {
@@ -12710,11 +13257,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Precision_4;
         partial void OnPrecision_4Changing(global::System.String value);
         partial void OnPrecision_4Changed();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Item_Id
         {
@@ -12741,7 +13288,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -12779,25 +13326,25 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
         [XmlIgnoreAttribute()]
         [SoapIgnoreAttribute()]
         [DataMemberAttribute()]
-        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "xcuda_Inventory_Item", "InventoryItems")]
-        public EntityCollection<InventoryItems> InventoryItems
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_Inventory_Item")]
+        public EntityCollection<xcuda_Inventory_Item> xcuda_Inventory_Item
         {
             get
             {
-                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<InventoryItems>("WaterNutDB.DataLayer.xcuda_Inventory_Item", "InventoryItems");
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<xcuda_Inventory_Item>("WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_Inventory_Item");
             }
             set
             {
                 if ((value != null))
                 {
-                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<InventoryItems>("WaterNutDB.DataLayer.xcuda_Inventory_Item", "InventoryItems", value);
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_Inventory_Item>("WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_Inventory_Item", value);
                 }
             }
         }
@@ -12805,17 +13352,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Identification")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Identification")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Identification : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Identification object.
         /// </summary>
@@ -12830,11 +13377,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -12857,11 +13404,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Manifest_reference_number
         {
@@ -12885,7 +13432,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -12923,7 +13470,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -12961,7 +13508,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -12999,7 +13546,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13037,7 +13584,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13075,7 +13622,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13117,17 +13664,182 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Item")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Inventory_Item")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
+    public partial class xcuda_Inventory_Item : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new xcuda_Inventory_Item object.
+        /// </summary>
+        /// <param name="itemNumber">Initial value of the ItemNumber property.</param>
+        /// <param name="id">Initial value of the Id property.</param>
+        public static xcuda_Inventory_Item Createxcuda_Inventory_Item(global::System.String itemNumber, global::System.Int32 id)
+        {
+            xcuda_Inventory_Item xcuda_Inventory_Item = new xcuda_Inventory_Item();
+            xcuda_Inventory_Item.ItemNumber = itemNumber;
+            xcuda_Inventory_Item.Id = id;
+            return xcuda_Inventory_Item;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String ItemNumber
+        {
+            get
+            {
+                return _ItemNumber;
+            }
+            set
+            {
+                if (_ItemNumber != value)
+                {
+                    OnItemNumberChanging(value);
+                    ReportPropertyChanging("ItemNumber");
+                    _ItemNumber = StructuralObject.SetValidValue(value, false);
+                    ReportPropertyChanged("ItemNumber");
+                    OnItemNumberChanged();
+                }
+            }
+        }
+        private global::System.String _ItemNumber;
+        partial void OnItemNumberChanging(global::System.String value);
+        partial void OnItemNumberChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 Id
+        {
+            get
+            {
+                return _Id;
+            }
+            set
+            {
+                if (_Id != value)
+                {
+                    OnIdChanging(value);
+                    ReportPropertyChanging("Id");
+                    _Id = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("Id");
+                    OnIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _Id;
+        partial void OnIdChanging(global::System.Int32 value);
+        partial void OnIdChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_HScode")]
+        public xcuda_HScode xcuda_HScode
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<xcuda_HScode>("WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_HScode").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<xcuda_HScode>("WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_HScode").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<xcuda_HScode> xcuda_HScodeReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<xcuda_HScode>("WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_HScode");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<xcuda_HScode>("WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode", "xcuda_HScode", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "InventoryItemsExxcuda_Inventory_Item", "InventoryItemsEx")]
+        public InventoryItemsEx InventoryItemsEx
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<InventoryItemsEx>("WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item", "InventoryItemsEx").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<InventoryItemsEx>("WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item", "InventoryItemsEx").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<InventoryItemsEx> InventoryItemsExReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<InventoryItemsEx>("WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item", "InventoryItemsEx");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<InventoryItemsEx>("WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item", "InventoryItemsEx", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Item")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Item : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Item object.
         /// </summary>
@@ -13154,11 +13866,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Amount_deducted_from_licence
         {
@@ -13178,11 +13890,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Amount_deducted_from_licence;
         partial void OnAmount_deducted_from_licenceChanging(global::System.String value);
         partial void OnAmount_deducted_from_licenceChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Quantity_deducted_from_licence
         {
@@ -13202,11 +13914,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Quantity_deducted_from_licence;
         partial void OnQuantity_deducted_from_licenceChanging(global::System.String value);
         partial void OnQuantity_deducted_from_licenceChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Item_Id
         {
@@ -13229,11 +13941,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Item_Id;
         partial void OnItem_IdChanging(global::System.Int32 value);
         partial void OnItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -13253,11 +13965,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Licence_number
         {
@@ -13277,11 +13989,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Licence_number;
         partial void OnLicence_numberChanging(global::System.String value);
         partial void OnLicence_numberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Free_text_1
         {
@@ -13301,11 +14013,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Free_text_1;
         partial void OnFree_text_1Changing(global::System.String value);
         partial void OnFree_text_1Changed();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Free_text_2
         {
@@ -13325,11 +14037,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Free_text_2;
         partial void OnFree_text_2Changing(global::System.String value);
         partial void OnFree_text_2Changed();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> EntryDataDetailsId
         {
@@ -13349,11 +14061,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _EntryDataDetailsId;
         partial void OnEntryDataDetailsIdChanging(Nullable<global::System.Int32> value);
         partial void OnEntryDataDetailsIdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 LineNumber
         {
@@ -13373,11 +14085,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _LineNumber;
         partial void OnLineNumberChanging(global::System.Int32 value);
         partial void OnLineNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> IsAssessed
         {
@@ -13397,11 +14109,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _IsAssessed;
         partial void OnIsAssessedChanging(Nullable<global::System.Boolean> value);
         partial void OnIsAssessedChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double DPQtyAllocated
         {
@@ -13421,11 +14133,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _DPQtyAllocated;
         partial void OnDPQtyAllocatedChanging(global::System.Double value);
         partial void OnDPQtyAllocatedChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double DFQtyAllocated
         {
@@ -13445,11 +14157,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _DFQtyAllocated;
         partial void OnDFQtyAllocatedChanging(global::System.Double value);
         partial void OnDFQtyAllocatedChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.DateTime> EntryTimeStamp
         {
@@ -13469,11 +14181,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.DateTime> _EntryTimeStamp;
         partial void OnEntryTimeStampChanging(Nullable<global::System.DateTime> value);
         partial void OnEntryTimeStampChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> AttributeOnlyAllocation
         {
@@ -13493,11 +14205,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _AttributeOnlyAllocation;
         partial void OnAttributeOnlyAllocationChanging(Nullable<global::System.Boolean> value);
         partial void OnAttributeOnlyAllocationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> DoNotAllocate
         {
@@ -13517,11 +14229,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _DoNotAllocate;
         partial void OnDoNotAllocateChanging(Nullable<global::System.Boolean> value);
         partial void OnDoNotAllocateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> DoNotEX
         {
@@ -13541,11 +14253,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _DoNotEX;
         partial void OnDoNotEXChanging(Nullable<global::System.Boolean> value);
         partial void OnDoNotEXChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Boolean ImportComplete
         {
@@ -13565,11 +14277,11 @@ namespace WaterNut.DataLayer
         private global::System.Boolean _ImportComplete;
         partial void OnImportCompleteChanging(global::System.Boolean value);
         partial void OnImportCompleteChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String WarehouseError
         {
@@ -13589,11 +14301,11 @@ namespace WaterNut.DataLayer
         private global::System.String _WarehouseError;
         partial void OnWarehouseErrorChanging(global::System.String value);
         partial void OnWarehouseErrorChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double SalesFactor
         {
@@ -13613,11 +14325,83 @@ namespace WaterNut.DataLayer
         private global::System.Double _SalesFactor;
         partial void OnSalesFactorChanging(global::System.Double value);
         partial void OnSalesFactorChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String PreviousInvoiceNumber
+        {
+            get
+            {
+                return _PreviousInvoiceNumber;
+            }
+            set
+            {
+                OnPreviousInvoiceNumberChanging(value);
+                ReportPropertyChanging("PreviousInvoiceNumber");
+                _PreviousInvoiceNumber = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("PreviousInvoiceNumber");
+                OnPreviousInvoiceNumberChanged();
+            }
+        }
+        private global::System.String _PreviousInvoiceNumber;
+        partial void OnPreviousInvoiceNumberChanging(global::System.String value);
+        partial void OnPreviousInvoiceNumberChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String PreviousInvoiceLineNumber
+        {
+            get
+            {
+                return _PreviousInvoiceLineNumber;
+            }
+            set
+            {
+                OnPreviousInvoiceLineNumberChanging(value);
+                ReportPropertyChanging("PreviousInvoiceLineNumber");
+                _PreviousInvoiceLineNumber = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("PreviousInvoiceLineNumber");
+                OnPreviousInvoiceLineNumberChanged();
+            }
+        }
+        private global::System.String _PreviousInvoiceLineNumber;
+        partial void OnPreviousInvoiceLineNumberChanging(global::System.String value);
+        partial void OnPreviousInvoiceLineNumberChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String PreviousInvoiceItemNumber
+        {
+            get
+            {
+                return _PreviousInvoiceItemNumber;
+            }
+            set
+            {
+                OnPreviousInvoiceItemNumberChanging(value);
+                ReportPropertyChanging("PreviousInvoiceItemNumber");
+                _PreviousInvoiceItemNumber = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("PreviousInvoiceItemNumber");
+                OnPreviousInvoiceItemNumberChanged();
+            }
+        }
+        private global::System.String _PreviousInvoiceItemNumber;
+        partial void OnPreviousInvoiceItemNumberChanging(global::System.String value);
+        partial void OnPreviousInvoiceItemNumberChanged();
 
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13655,7 +14439,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13677,7 +14461,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13715,7 +14499,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13737,7 +14521,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13775,7 +14559,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13797,7 +14581,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13835,7 +14619,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13857,7 +14641,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13895,7 +14679,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13933,7 +14717,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -13959,17 +14743,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_item_deduction")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_item_deduction")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_item_deduction : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_item_deduction object.
         /// </summary>
@@ -13988,11 +14772,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_national_currency
         {
@@ -14012,11 +14796,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Double value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_foreign_currency
         {
@@ -14036,11 +14820,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Double value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -14060,11 +14844,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Currency_rate
         {
@@ -14084,11 +14868,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Currency_rate;
         partial void OnCurrency_rateChanging(Nullable<global::System.Double> value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -14115,7 +14899,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -14157,17 +14941,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_item_external_freight")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_item_external_freight")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_item_external_freight : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_item_external_freight object.
         /// </summary>
@@ -14188,11 +14972,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_national_currency
         {
@@ -14212,11 +14996,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Single value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_foreign_currency
         {
@@ -14236,11 +15020,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Single value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Currency_rate
         {
@@ -14260,11 +15044,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Single value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_code
         {
@@ -14284,11 +15068,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_code;
         partial void OnCurrency_codeChanging(global::System.String value);
         partial void OnCurrency_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -14315,7 +15099,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -14357,17 +15141,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_item_insurance")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_item_insurance")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_item_insurance : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_item_insurance object.
         /// </summary>
@@ -14386,11 +15170,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_national_currency
         {
@@ -14410,11 +15194,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Double value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_foreign_currency
         {
@@ -14434,11 +15218,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Double value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -14458,11 +15242,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Currency_rate
         {
@@ -14482,11 +15266,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Currency_rate;
         partial void OnCurrency_rateChanging(Nullable<global::System.Double> value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -14513,7 +15297,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -14555,17 +15339,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_item_internal_freight")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_item_internal_freight")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_item_internal_freight : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_item_internal_freight object.
         /// </summary>
@@ -14584,11 +15368,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_national_currency
         {
@@ -14608,11 +15392,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Double value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_foreign_currency
         {
@@ -14632,11 +15416,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Double value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -14656,11 +15440,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Currency_rate
         {
@@ -14680,11 +15464,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Currency_rate;
         partial void OnCurrency_rateChanging(Nullable<global::System.Double> value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -14711,7 +15495,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -14753,17 +15537,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Item_Invoice")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Item_Invoice")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Item_Invoice : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Item_Invoice object.
         /// </summary>
@@ -14784,11 +15568,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_national_currency
         {
@@ -14808,11 +15592,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Single value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Amount_foreign_currency
         {
@@ -14832,11 +15616,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Single value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_code
         {
@@ -14856,11 +15640,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_code;
         partial void OnCurrency_codeChanging(global::System.String value);
         partial void OnCurrency_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Currency_rate
         {
@@ -14880,11 +15664,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Currency_rate;
         partial void OnCurrency_rateChanging(global::System.Single value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -14911,7 +15695,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -14953,17 +15737,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_item_other_cost")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_item_other_cost")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_item_other_cost : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_item_other_cost object.
         /// </summary>
@@ -14982,11 +15766,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_national_currency
         {
@@ -15006,11 +15790,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_national_currency;
         partial void OnAmount_national_currencyChanging(global::System.Double value);
         partial void OnAmount_national_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Amount_foreign_currency
         {
@@ -15030,11 +15814,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Amount_foreign_currency;
         partial void OnAmount_foreign_currencyChanging(global::System.Double value);
         partial void OnAmount_foreign_currencyChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Currency_name
         {
@@ -15054,11 +15838,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Currency_name;
         partial void OnCurrency_nameChanging(global::System.String value);
         partial void OnCurrency_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Currency_rate
         {
@@ -15078,11 +15862,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Currency_rate;
         partial void OnCurrency_rateChanging(Nullable<global::System.Double> value);
         partial void OnCurrency_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -15109,7 +15893,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -15151,17 +15935,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Market_valuer")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Market_valuer")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Market_valuer : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Market_valuer object.
         /// </summary>
@@ -15178,11 +15962,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Rate
         {
@@ -15202,11 +15986,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Rate;
         partial void OnRateChanging(Nullable<global::System.Double> value);
         partial void OnRateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Currency_amount
         {
@@ -15226,11 +16010,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Currency_amount;
         partial void OnCurrency_amountChanging(global::System.Double value);
         partial void OnCurrency_amountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Basis_amount
         {
@@ -15250,11 +16034,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Basis_amount;
         partial void OnBasis_amountChanging(Nullable<global::System.Double> value);
         partial void OnBasis_amountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -15281,7 +16065,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -15323,17 +16107,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Means_of_transport")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Means_of_transport")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Means_of_transport : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Means_of_transport object.
         /// </summary>
@@ -15348,11 +16132,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Means_of_transport_Id
         {
@@ -15375,11 +16159,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Means_of_transport_Id;
         partial void OnMeans_of_transport_IdChanging(global::System.Int32 value);
         partial void OnMeans_of_transport_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Transport_Id
         {
@@ -15399,11 +16183,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Transport_Id;
         partial void OnTransport_IdChanging(Nullable<global::System.Int32> value);
         partial void OnTransport_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Inland_mode_of_transport
         {
@@ -15427,7 +16211,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -15449,7 +16233,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -15471,7 +16255,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -15513,17 +16297,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Nbers")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Nbers")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Nbers : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Nbers object.
         /// </summary>
@@ -15540,11 +16324,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Number_of_loading_lists
         {
@@ -15564,11 +16348,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Number_of_loading_lists;
         partial void OnNumber_of_loading_listsChanging(global::System.String value);
         partial void OnNumber_of_loading_listsChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Total_number_of_items
         {
@@ -15588,11 +16372,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Total_number_of_items;
         partial void OnTotal_number_of_itemsChanging(global::System.String value);
         partial void OnTotal_number_of_itemsChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Total_number_of_packages
         {
@@ -15612,11 +16396,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Total_number_of_packages;
         partial void OnTotal_number_of_packagesChanging(global::System.Double value);
         partial void OnTotal_number_of_packagesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -15643,7 +16427,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -15685,17 +16469,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Office_segment")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Office_segment")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Office_segment : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Office_segment object.
         /// </summary>
@@ -15710,11 +16494,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Customs_clearance_office_code
         {
@@ -15734,11 +16518,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Customs_clearance_office_code;
         partial void OnCustoms_clearance_office_codeChanging(global::System.String value);
         partial void OnCustoms_clearance_office_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Customs_Clearance_office_name
         {
@@ -15758,11 +16542,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Customs_Clearance_office_name;
         partial void OnCustoms_Clearance_office_nameChanging(global::System.String value);
         partial void OnCustoms_Clearance_office_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -15789,7 +16573,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -15831,17 +16615,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Packages")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Packages")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Packages : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Packages object.
         /// </summary>
@@ -15858,11 +16642,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Number_of_packages
         {
@@ -15882,11 +16666,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Number_of_packages;
         partial void OnNumber_of_packagesChanging(global::System.Double value);
         partial void OnNumber_of_packagesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Kind_of_packages_code
         {
@@ -15906,11 +16690,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Kind_of_packages_code;
         partial void OnKind_of_packages_codeChanging(global::System.String value);
         partial void OnKind_of_packages_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Kind_of_packages_name
         {
@@ -15930,11 +16714,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Kind_of_packages_name;
         partial void OnKind_of_packages_nameChanging(global::System.String value);
         partial void OnKind_of_packages_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Packages_Id
         {
@@ -15957,11 +16741,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Packages_Id;
         partial void OnPackages_IdChanging(global::System.Int32 value);
         partial void OnPackages_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Item_Id
         {
@@ -15981,11 +16765,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Item_Id;
         partial void OnItem_IdChanging(Nullable<global::System.Int32> value);
         partial void OnItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Marks1_of_packages
         {
@@ -16005,11 +16789,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Marks1_of_packages;
         partial void OnMarks1_of_packagesChanging(global::System.String value);
         partial void OnMarks1_of_packagesChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Marks2_of_packages
         {
@@ -16033,7 +16817,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -16075,17 +16859,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Place_of_loading")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Place_of_loading")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Place_of_loading : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Place_of_loading object.
         /// </summary>
@@ -16100,11 +16884,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Place_of_loading_Id
         {
@@ -16127,11 +16911,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Place_of_loading_Id;
         partial void OnPlace_of_loading_IdChanging(global::System.Int32 value);
         partial void OnPlace_of_loading_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Transport_Id
         {
@@ -16155,7 +16939,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -16197,17 +16981,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Previous_doc")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Previous_doc")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Previous_doc : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Previous_doc object.
         /// </summary>
@@ -16222,11 +17006,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Summary_declaration
         {
@@ -16246,11 +17030,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Summary_declaration;
         partial void OnSummary_declarationChanging(global::System.String value);
         partial void OnSummary_declarationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Item_Id
         {
@@ -16277,7 +17061,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -16319,17 +17103,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_PreviousItem")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_PreviousItem")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_PreviousItem : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_PreviousItem object.
         /// </summary>
@@ -16341,8 +17125,7 @@ namespace WaterNut.DataLayer
         /// <param name="previous_value">Initial value of the Previous_value property.</param>
         /// <param name="previousItem_Id">Initial value of the PreviousItem_Id property.</param>
         /// <param name="qtyAllocated">Initial value of the QtyAllocated property.</param>
-        /// <param name="prev_decl_HS_spec">Initial value of the Prev_decl_HS_spec property.</param>
-        public static xcuda_PreviousItem Createxcuda_PreviousItem(global::System.Double net_weight, global::System.Double prev_net_weight, global::System.Double suplementary_Quantity, global::System.Double preveious_suplementary_quantity, global::System.Double current_value, global::System.Double previous_value, global::System.Int32 previousItem_Id, global::System.Double qtyAllocated, global::System.String prev_decl_HS_spec)
+        public static xcuda_PreviousItem Createxcuda_PreviousItem(global::System.Double net_weight, global::System.Double prev_net_weight, global::System.Double suplementary_Quantity, global::System.Double preveious_suplementary_quantity, global::System.Double current_value, global::System.Double previous_value, global::System.Int32 previousItem_Id, global::System.Double qtyAllocated)
         {
             xcuda_PreviousItem xcuda_PreviousItem = new xcuda_PreviousItem();
             xcuda_PreviousItem.Net_weight = net_weight;
@@ -16353,18 +17136,17 @@ namespace WaterNut.DataLayer
             xcuda_PreviousItem.Previous_value = previous_value;
             xcuda_PreviousItem.PreviousItem_Id = previousItem_Id;
             xcuda_PreviousItem.QtyAllocated = qtyAllocated;
-            xcuda_PreviousItem.Prev_decl_HS_spec = prev_decl_HS_spec;
             return xcuda_PreviousItem;
         }
 
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Packages_number
         {
@@ -16384,11 +17166,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Packages_number;
         partial void OnPackages_numberChanging(global::System.String value);
         partial void OnPackages_numberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Previous_Packages_number
         {
@@ -16408,11 +17190,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Previous_Packages_number;
         partial void OnPrevious_Packages_numberChanging(global::System.String value);
         partial void OnPrevious_Packages_numberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Hs_code
         {
@@ -16432,11 +17214,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Hs_code;
         partial void OnHs_codeChanging(global::System.String value);
         partial void OnHs_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Commodity_code
         {
@@ -16456,11 +17238,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Commodity_code;
         partial void OnCommodity_codeChanging(global::System.String value);
         partial void OnCommodity_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Previous_item_number
         {
@@ -16480,11 +17262,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Previous_item_number;
         partial void OnPrevious_item_numberChanging(global::System.String value);
         partial void OnPrevious_item_numberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Goods_origin
         {
@@ -16504,11 +17286,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Goods_origin;
         partial void OnGoods_originChanging(global::System.String value);
         partial void OnGoods_originChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Net_weight
         {
@@ -16528,11 +17310,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Net_weight;
         partial void OnNet_weightChanging(global::System.Double value);
         partial void OnNet_weightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Prev_net_weight
         {
@@ -16552,11 +17334,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Prev_net_weight;
         partial void OnPrev_net_weightChanging(global::System.Double value);
         partial void OnPrev_net_weightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Prev_reg_ser
         {
@@ -16576,11 +17358,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Prev_reg_ser;
         partial void OnPrev_reg_serChanging(global::System.String value);
         partial void OnPrev_reg_serChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Prev_reg_nbr
         {
@@ -16600,11 +17382,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Prev_reg_nbr;
         partial void OnPrev_reg_nbrChanging(global::System.String value);
         partial void OnPrev_reg_nbrChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Prev_reg_dat
         {
@@ -16624,11 +17406,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Prev_reg_dat;
         partial void OnPrev_reg_datChanging(global::System.String value);
         partial void OnPrev_reg_datChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Prev_reg_cuo
         {
@@ -16648,11 +17430,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Prev_reg_cuo;
         partial void OnPrev_reg_cuoChanging(global::System.String value);
         partial void OnPrev_reg_cuoChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Suplementary_Quantity
         {
@@ -16672,11 +17454,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Suplementary_Quantity;
         partial void OnSuplementary_QuantityChanging(global::System.Double value);
         partial void OnSuplementary_QuantityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Preveious_suplementary_quantity
         {
@@ -16696,11 +17478,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Preveious_suplementary_quantity;
         partial void OnPreveious_suplementary_quantityChanging(global::System.Double value);
         partial void OnPreveious_suplementary_quantityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Current_value
         {
@@ -16720,11 +17502,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Current_value;
         partial void OnCurrent_valueChanging(global::System.Double value);
         partial void OnCurrent_valueChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Previous_value
         {
@@ -16744,11 +17526,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Previous_value;
         partial void OnPrevious_valueChanging(global::System.Double value);
         partial void OnPrevious_valueChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Current_item_number
         {
@@ -16768,11 +17550,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Current_item_number;
         partial void OnCurrent_item_numberChanging(global::System.String value);
         partial void OnCurrent_item_numberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 PreviousItem_Id
         {
@@ -16795,11 +17577,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _PreviousItem_Id;
         partial void OnPreviousItem_IdChanging(global::System.Int32 value);
         partial void OnPreviousItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -16819,11 +17601,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(Nullable<global::System.Int32> value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double QtyAllocated
         {
@@ -16843,11 +17625,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _QtyAllocated;
         partial void OnQtyAllocatedChanging(global::System.Double value);
         partial void OnQtyAllocatedChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Prev_decl_HS_spec
         {
@@ -16859,7 +17641,7 @@ namespace WaterNut.DataLayer
             {
                 OnPrev_decl_HS_specChanging(value);
                 ReportPropertyChanging("Prev_decl_HS_spec");
-                _Prev_decl_HS_spec = StructuralObject.SetValidValue(value, false);
+                _Prev_decl_HS_spec = StructuralObject.SetValidValue(value, true);
                 ReportPropertyChanged("Prev_decl_HS_spec");
                 OnPrev_decl_HS_specChanged();
             }
@@ -16871,7 +17653,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -16909,7 +17691,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -16951,17 +17733,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Principal")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Principal")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Principal : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Principal object.
         /// </summary>
@@ -16976,11 +17758,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Principal_Id
         {
@@ -17003,11 +17785,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Principal_Id;
         partial void OnPrincipal_IdChanging(global::System.Int32 value);
         partial void OnPrincipal_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Transit_Id
         {
@@ -17031,7 +17813,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17073,17 +17855,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Property")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Property")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Property : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Property object.
         /// </summary>
@@ -17098,11 +17880,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Sad_flow
         {
@@ -17122,11 +17904,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Sad_flow;
         partial void OnSad_flowChanging(global::System.String value);
         partial void OnSad_flowChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Date_of_declaration
         {
@@ -17146,11 +17928,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Date_of_declaration;
         partial void OnDate_of_declarationChanging(global::System.String value);
         partial void OnDate_of_declarationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Selected_page
         {
@@ -17170,11 +17952,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Selected_page;
         partial void OnSelected_pageChanging(global::System.String value);
         partial void OnSelected_pageChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -17197,11 +17979,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(global::System.Int32 value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Place_of_declaration
         {
@@ -17225,7 +18007,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17263,7 +18045,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17301,7 +18083,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17343,17 +18125,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_receipt")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_receipt")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_receipt : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_receipt object.
         /// </summary>
@@ -17368,11 +18150,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Number
         {
@@ -17392,11 +18174,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Number;
         partial void OnNumberChanging(global::System.String value);
         partial void OnNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Date
         {
@@ -17416,11 +18198,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Date;
         partial void OnDateChanging(global::System.String value);
         partial void OnDateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -17447,7 +18229,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17489,17 +18271,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Registration")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Registration")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Registration : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Registration object.
         /// </summary>
@@ -17514,11 +18296,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Number
         {
@@ -17538,11 +18320,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Number;
         partial void OnNumberChanging(global::System.String value);
         partial void OnNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Date
         {
@@ -17562,11 +18344,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Date;
         partial void OnDateChanging(global::System.String value);
         partial void OnDateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -17593,7 +18375,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17635,17 +18417,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Seals")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Seals")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Seals : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Seals object.
         /// </summary>
@@ -17660,11 +18442,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Number
         {
@@ -17684,11 +18466,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Number;
         partial void OnNumberChanging(global::System.String value);
         partial void OnNumberChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Seals_Id
         {
@@ -17711,11 +18493,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Seals_Id;
         partial void OnSeals_IdChanging(global::System.Int32 value);
         partial void OnSeals_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Transit_Id
         {
@@ -17739,7 +18521,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17781,17 +18563,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Signature")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Signature")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Signature : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Signature object.
         /// </summary>
@@ -17806,11 +18588,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Date
         {
@@ -17830,11 +18612,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Date;
         partial void OnDateChanging(global::System.String value);
         partial void OnDateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Signature_Id
         {
@@ -17857,11 +18639,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Signature_Id;
         partial void OnSignature_IdChanging(global::System.Int32 value);
         partial void OnSignature_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Transit_Id
         {
@@ -17885,7 +18667,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -17927,17 +18709,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Supplementary_unit")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Supplementary_unit")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Supplementary_unit : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Supplementary_unit object.
         /// </summary>
@@ -17954,11 +18736,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Suppplementary_unit_quantity
         {
@@ -17978,11 +18760,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Suppplementary_unit_quantity;
         partial void OnSuppplementary_unit_quantityChanging(Nullable<global::System.Double> value);
         partial void OnSuppplementary_unit_quantityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Supplementary_unit_Id
         {
@@ -18005,11 +18787,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Supplementary_unit_Id;
         partial void OnSupplementary_unit_IdChanging(global::System.Int32 value);
         partial void OnSupplementary_unit_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Tarification_Id
         {
@@ -18029,11 +18811,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Tarification_Id;
         partial void OnTarification_IdChanging(global::System.Int32 value);
         partial void OnTarification_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppplementary_unit_code
         {
@@ -18053,11 +18835,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppplementary_unit_code;
         partial void OnSuppplementary_unit_codeChanging(global::System.String value);
         partial void OnSuppplementary_unit_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppplementary_unit_name
         {
@@ -18077,11 +18859,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppplementary_unit_name;
         partial void OnSuppplementary_unit_nameChanging(global::System.String value);
         partial void OnSuppplementary_unit_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Boolean> IsFirstRow
         {
@@ -18105,7 +18887,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -18147,17 +18929,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Suppliers_documents")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Suppliers_documents")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Suppliers_documents : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Suppliers_documents object.
         /// </summary>
@@ -18172,11 +18954,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_date
         {
@@ -18196,11 +18978,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_date;
         partial void OnSuppliers_document_dateChanging(global::System.String value);
         partial void OnSuppliers_document_dateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Suppliers_documents_Id
         {
@@ -18223,11 +19005,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Suppliers_documents_Id;
         partial void OnSuppliers_documents_IdChanging(global::System.Int32 value);
         partial void OnSuppliers_documents_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -18247,11 +19029,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(Nullable<global::System.Int32> value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_itmlink
         {
@@ -18271,11 +19053,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_itmlink;
         partial void OnSuppliers_document_itmlinkChanging(global::System.String value);
         partial void OnSuppliers_document_itmlinkChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_code
         {
@@ -18295,11 +19077,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_code;
         partial void OnSuppliers_document_codeChanging(global::System.String value);
         partial void OnSuppliers_document_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_name
         {
@@ -18319,11 +19101,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_name;
         partial void OnSuppliers_document_nameChanging(global::System.String value);
         partial void OnSuppliers_document_nameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_country
         {
@@ -18343,11 +19125,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_country;
         partial void OnSuppliers_document_countryChanging(global::System.String value);
         partial void OnSuppliers_document_countryChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_city
         {
@@ -18367,11 +19149,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_city;
         partial void OnSuppliers_document_cityChanging(global::System.String value);
         partial void OnSuppliers_document_cityChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_street
         {
@@ -18391,11 +19173,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_street;
         partial void OnSuppliers_document_streetChanging(global::System.String value);
         partial void OnSuppliers_document_streetChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_telephone
         {
@@ -18415,11 +19197,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_telephone;
         partial void OnSuppliers_document_telephoneChanging(global::System.String value);
         partial void OnSuppliers_document_telephoneChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_fax
         {
@@ -18439,11 +19221,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_fax;
         partial void OnSuppliers_document_faxChanging(global::System.String value);
         partial void OnSuppliers_document_faxChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_zip_code
         {
@@ -18463,11 +19245,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_zip_code;
         partial void OnSuppliers_document_zip_codeChanging(global::System.String value);
         partial void OnSuppliers_document_zip_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_invoice_nbr
         {
@@ -18487,11 +19269,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_invoice_nbr;
         partial void OnSuppliers_document_invoice_nbrChanging(global::System.String value);
         partial void OnSuppliers_document_invoice_nbrChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_invoice_amt
         {
@@ -18511,11 +19293,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_document_invoice_amt;
         partial void OnSuppliers_document_invoice_amtChanging(global::System.String value);
         partial void OnSuppliers_document_invoice_amtChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_document_type_code
         {
@@ -18539,7 +19321,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -18581,17 +19363,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Suppliers_link")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Suppliers_link")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Suppliers_link : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Suppliers_link object.
         /// </summary>
@@ -18606,11 +19388,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Suppliers_link_code
         {
@@ -18630,11 +19412,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Suppliers_link_code;
         partial void OnSuppliers_link_codeChanging(global::System.String value);
         partial void OnSuppliers_link_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Item_Id
         {
@@ -18654,11 +19436,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Item_Id;
         partial void OnItem_IdChanging(Nullable<global::System.Int32> value);
         partial void OnItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Suppliers_link_Id
         {
@@ -18685,7 +19467,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -18727,17 +19509,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Tarification")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Tarification")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Tarification : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Tarification object.
         /// </summary>
@@ -18754,11 +19536,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Extended_customs_procedure
         {
@@ -18778,11 +19560,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Extended_customs_procedure;
         partial void OnExtended_customs_procedureChanging(global::System.String value);
         partial void OnExtended_customs_procedureChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String National_customs_procedure
         {
@@ -18802,11 +19584,11 @@ namespace WaterNut.DataLayer
         private global::System.String _National_customs_procedure;
         partial void OnNational_customs_procedureChanging(global::System.String value);
         partial void OnNational_customs_procedureChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Item_price
         {
@@ -18826,11 +19608,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Item_price;
         partial void OnItem_priceChanging(global::System.Double value);
         partial void OnItem_priceChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Item_Id
         {
@@ -18853,11 +19635,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Item_Id;
         partial void OnItem_IdChanging(global::System.Int32 value);
         partial void OnItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Value_item
         {
@@ -18877,11 +19659,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Value_item;
         partial void OnValue_itemChanging(global::System.String value);
         partial void OnValue_itemChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Attached_doc_item
         {
@@ -18905,7 +19687,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -18943,7 +19725,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -18981,7 +19763,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19007,17 +19789,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Taxation")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Taxation")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Taxation : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Taxation object.
         /// </summary>
@@ -19034,11 +19816,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Item_taxes_amount
         {
@@ -19058,11 +19840,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Item_taxes_amount;
         partial void OnItem_taxes_amountChanging(global::System.Double value);
         partial void OnItem_taxes_amountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Item_taxes_guaranted_amount
         {
@@ -19082,11 +19864,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Item_taxes_guaranted_amount;
         partial void OnItem_taxes_guaranted_amountChanging(Nullable<global::System.Double> value);
         partial void OnItem_taxes_guaranted_amountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Counter_of_normal_mode_of_payment
         {
@@ -19106,11 +19888,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Counter_of_normal_mode_of_payment;
         partial void OnCounter_of_normal_mode_of_paymentChanging(global::System.String value);
         partial void OnCounter_of_normal_mode_of_paymentChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Displayed_item_taxes_amount
         {
@@ -19130,11 +19912,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Displayed_item_taxes_amount;
         partial void OnDisplayed_item_taxes_amountChanging(global::System.String value);
         partial void OnDisplayed_item_taxes_amountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Taxation_Id
         {
@@ -19157,11 +19939,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Taxation_Id;
         partial void OnTaxation_IdChanging(global::System.Int32 value);
         partial void OnTaxation_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Item_Id
         {
@@ -19181,11 +19963,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Item_Id;
         partial void OnItem_IdChanging(Nullable<global::System.Int32> value);
         partial void OnItem_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Item_taxes_mode_of_payment
         {
@@ -19209,7 +19991,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19247,7 +20029,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19273,17 +20055,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Taxation_line")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Taxation_line")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Taxation_line : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Taxation_line object.
         /// </summary>
@@ -19302,11 +20084,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Duty_tax_Base
         {
@@ -19326,11 +20108,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Duty_tax_Base;
         partial void OnDuty_tax_BaseChanging(global::System.String value);
         partial void OnDuty_tax_BaseChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Duty_tax_rate
         {
@@ -19350,11 +20132,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Duty_tax_rate;
         partial void OnDuty_tax_rateChanging(global::System.Double value);
         partial void OnDuty_tax_rateChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Duty_tax_amount
         {
@@ -19374,11 +20156,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Duty_tax_amount;
         partial void OnDuty_tax_amountChanging(global::System.Double value);
         partial void OnDuty_tax_amountChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Taxation_line_Id
         {
@@ -19401,11 +20183,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Taxation_line_Id;
         partial void OnTaxation_line_IdChanging(global::System.Int32 value);
         partial void OnTaxation_line_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> Taxation_Id
         {
@@ -19425,11 +20207,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _Taxation_Id;
         partial void OnTaxation_IdChanging(Nullable<global::System.Int32> value);
         partial void OnTaxation_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Duty_tax_code
         {
@@ -19449,11 +20231,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Duty_tax_code;
         partial void OnDuty_tax_codeChanging(global::System.String value);
         partial void OnDuty_tax_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Duty_tax_MP
         {
@@ -19477,7 +20259,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19519,17 +20301,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Total")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Total")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Total : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Total object.
         /// </summary>
@@ -19548,11 +20330,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Total_invoice
         {
@@ -19572,11 +20354,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Total_invoice;
         partial void OnTotal_invoiceChanging(global::System.Single value);
         partial void OnTotal_invoiceChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Total_weight
         {
@@ -19596,11 +20378,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Total_weight;
         partial void OnTotal_weightChanging(global::System.Single value);
         partial void OnTotal_weightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -19627,7 +20409,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19669,17 +20451,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Traders")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Traders")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Traders : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Traders object.
         /// </summary>
@@ -19694,11 +20476,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Traders_Id
         {
@@ -19725,7 +20507,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19763,7 +20545,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19801,7 +20583,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19839,7 +20621,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -19881,17 +20663,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Traders_Financial")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Traders_Financial")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Traders_Financial : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Traders_Financial object.
         /// </summary>
@@ -19906,11 +20688,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Traders_Id
         {
@@ -19933,11 +20715,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Traders_Id;
         partial void OnTraders_IdChanging(global::System.Int32 value);
         partial void OnTraders_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Financial_code
         {
@@ -19957,11 +20739,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Financial_code;
         partial void OnFinancial_codeChanging(global::System.String value);
         partial void OnFinancial_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Financial_name
         {
@@ -19985,7 +20767,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20027,17 +20809,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Transit")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Transit")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Transit : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Transit object.
         /// </summary>
@@ -20052,11 +20834,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Time_limit
         {
@@ -20076,11 +20858,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Time_limit;
         partial void OnTime_limitChanging(global::System.String value);
         partial void OnTime_limitChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Transit_Id
         {
@@ -20103,11 +20885,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Transit_Id;
         partial void OnTransit_IdChanging(global::System.Int32 value);
         partial void OnTransit_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -20131,7 +20913,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20169,7 +20951,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20191,7 +20973,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20213,7 +20995,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20235,7 +21017,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20261,17 +21043,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Transit_Destination")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Transit_Destination")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Transit_Destination : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Transit_Destination object.
         /// </summary>
@@ -20288,11 +21070,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Destination_Id
         {
@@ -20315,11 +21097,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Destination_Id;
         partial void OnDestination_IdChanging(global::System.Int32 value);
         partial void OnDestination_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Office
         {
@@ -20339,11 +21121,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Office;
         partial void OnOfficeChanging(global::System.String value);
         partial void OnOfficeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Country
         {
@@ -20363,11 +21145,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Country;
         partial void OnCountryChanging(global::System.String value);
         partial void OnCountryChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Transit_Id
         {
@@ -20391,7 +21173,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20433,17 +21215,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Transport")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Transport")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Transport : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Transport object.
         /// </summary>
@@ -20462,11 +21244,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Boolean Container_flag
         {
@@ -20486,11 +21268,11 @@ namespace WaterNut.DataLayer
         private global::System.Boolean _Container_flag;
         partial void OnContainer_flagChanging(global::System.Boolean value);
         partial void OnContainer_flagChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Boolean Single_waybill_flag
         {
@@ -20510,11 +21292,11 @@ namespace WaterNut.DataLayer
         private global::System.Boolean _Single_waybill_flag;
         partial void OnSingle_waybill_flagChanging(global::System.Boolean value);
         partial void OnSingle_waybill_flagChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Transport_Id
         {
@@ -20537,11 +21319,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Transport_Id;
         partial void OnTransport_IdChanging(global::System.Int32 value);
         partial void OnTransport_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -20561,11 +21343,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(Nullable<global::System.Int32> value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Location_of_goods
         {
@@ -20589,7 +21371,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20627,7 +21409,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20649,7 +21431,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20671,7 +21453,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20693,7 +21475,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20719,17 +21501,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Type")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Type")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Type : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Type object.
         /// </summary>
@@ -20744,11 +21526,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Type_of_declaration
         {
@@ -20768,11 +21550,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Type_of_declaration;
         partial void OnType_of_declarationChanging(global::System.String value);
         partial void OnType_of_declarationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Declaration_gen_procedure_code
         {
@@ -20792,11 +21574,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Declaration_gen_procedure_code;
         partial void OnDeclaration_gen_procedure_codeChanging(global::System.String value);
         partial void OnDeclaration_gen_procedure_codeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -20823,7 +21605,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -20865,17 +21647,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Valuation")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Valuation")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Valuation : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Valuation object.
         /// </summary>
@@ -20894,11 +21676,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Calculation_working_mode
         {
@@ -20918,11 +21700,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Calculation_working_mode;
         partial void OnCalculation_working_modeChanging(global::System.String value);
         partial void OnCalculation_working_modeChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Total_cost
         {
@@ -20942,11 +21724,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Total_cost;
         partial void OnTotal_costChanging(global::System.Double value);
         partial void OnTotal_costChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Total_CIF
         {
@@ -20966,11 +21748,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Total_CIF;
         partial void OnTotal_CIFChanging(global::System.Double value);
         partial void OnTotal_CIFChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ASYCUDA_Id
         {
@@ -20997,7 +21779,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21035,7 +21817,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21073,7 +21855,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21111,7 +21893,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21149,7 +21931,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21187,7 +21969,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21225,7 +22007,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21263,7 +22045,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21301,7 +22083,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21343,17 +22125,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Valuation_item")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Valuation_item")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Valuation_item : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Valuation_item object.
         /// </summary>
@@ -21374,11 +22156,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Total_cost_itm
         {
@@ -21398,11 +22180,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Total_cost_itm;
         partial void OnTotal_cost_itmChanging(global::System.Double value);
         partial void OnTotal_cost_itmChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Total_CIF_itm
         {
@@ -21422,11 +22204,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Total_CIF_itm;
         partial void OnTotal_CIF_itmChanging(global::System.Double value);
         partial void OnTotal_CIF_itmChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Double> Rate_of_adjustement
         {
@@ -21446,11 +22228,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Double> _Rate_of_adjustement;
         partial void OnRate_of_adjustementChanging(Nullable<global::System.Double> value);
         partial void OnRate_of_adjustementChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Statistical_value
         {
@@ -21470,11 +22252,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Statistical_value;
         partial void OnStatistical_valueChanging(global::System.Double value);
         partial void OnStatistical_valueChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Alpha_coeficient_of_apportionment
         {
@@ -21494,11 +22276,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Alpha_coeficient_of_apportionment;
         partial void OnAlpha_coeficient_of_apportionmentChanging(global::System.String value);
         partial void OnAlpha_coeficient_of_apportionmentChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Item_Id
         {
@@ -21525,7 +22307,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21563,7 +22345,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21601,7 +22383,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21639,7 +22421,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21677,7 +22459,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21715,7 +22497,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21753,7 +22535,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21791,7 +22573,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21829,7 +22611,7 @@ namespace WaterNut.DataLayer
                 }
             }
         }
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -21871,17 +22653,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Warehouse")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Warehouse")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Warehouse : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Warehouse object.
         /// </summary>
@@ -21896,11 +22678,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Identification
         {
@@ -21920,11 +22702,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Identification;
         partial void OnIdentificationChanging(global::System.String value);
         partial void OnIdentificationChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Delay
         {
@@ -21944,11 +22726,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Delay;
         partial void OnDelayChanging(global::System.String value);
         partial void OnDelayChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> ASYCUDA_Id
         {
@@ -21968,11 +22750,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _ASYCUDA_Id;
         partial void OnASYCUDA_IdChanging(Nullable<global::System.Int32> value);
         partial void OnASYCUDA_IdChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Warehouse_Id
         {
@@ -21999,7 +22781,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -22041,17 +22823,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Weight")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Weight")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Weight : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Weight object.
         /// </summary>
@@ -22068,11 +22850,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Double Gross_weight
         {
@@ -22092,11 +22874,11 @@ namespace WaterNut.DataLayer
         private global::System.Double _Gross_weight;
         partial void OnGross_weightChanging(global::System.Double value);
         partial void OnGross_weightChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_Id
         {
@@ -22123,7 +22905,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -22165,17 +22947,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmEntityTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "xcuda_Weight_itm")]
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="xcuda_Weight_itm")]
     [Serializable()]
-    [DataContractAttribute(IsReference = true)]
+    [DataContractAttribute(IsReference=true)]
     public partial class xcuda_Weight_itm : EntityObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new xcuda_Weight_itm object.
         /// </summary>
@@ -22194,11 +22976,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Gross_weight_itm
         {
@@ -22218,11 +23000,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Gross_weight_itm;
         partial void OnGross_weight_itmChanging(global::System.Single value);
         partial void OnGross_weight_itmChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Single Net_weight_itm
         {
@@ -22242,11 +23024,11 @@ namespace WaterNut.DataLayer
         private global::System.Single _Net_weight_itm;
         partial void OnNet_weight_itmChanging(global::System.Single value);
         partial void OnNet_weight_itmChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = true, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 Valuation_item_Id
         {
@@ -22273,7 +23055,7 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Navigation Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
@@ -22319,21 +23101,21 @@ namespace WaterNut.DataLayer
     #endregion
 
     #region ComplexTypes
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmComplexTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "sp_helpdiagramdefinition_Result")]
-    [DataContractAttribute(IsReference = true)]
+    [EdmComplexTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="sp_helpdiagramdefinition_Result")]
+    [DataContractAttribute(IsReference=true)]
     [Serializable()]
     public partial class sp_helpdiagramdefinition_Result : ComplexObject
     {
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> version
         {
@@ -22353,11 +23135,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _version;
         partial void OnversionChanging(Nullable<global::System.Int32> value);
         partial void OnversionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.Byte[] definition
         {
@@ -22381,21 +23163,21 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmComplexTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "sp_helpdiagramdefinition1_Result")]
-    [DataContractAttribute(IsReference = true)]
+    [EdmComplexTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="sp_helpdiagramdefinition1_Result")]
+    [DataContractAttribute(IsReference=true)]
     [Serializable()]
     public partial class sp_helpdiagramdefinition1_Result : ComplexObject
     {
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> version
         {
@@ -22415,11 +23197,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _version;
         partial void OnversionChanging(Nullable<global::System.Int32> value);
         partial void OnversionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.Byte[] definition
         {
@@ -22443,21 +23225,21 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmComplexTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "sp_helpdiagramdefinition2_Result")]
-    [DataContractAttribute(IsReference = true)]
+    [EdmComplexTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="sp_helpdiagramdefinition2_Result")]
+    [DataContractAttribute(IsReference=true)]
     [Serializable()]
     public partial class sp_helpdiagramdefinition2_Result : ComplexObject
     {
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public Nullable<global::System.Int32> version
         {
@@ -22477,11 +23259,11 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _version;
         partial void OnversionChanging(Nullable<global::System.Int32> value);
         partial void OnversionChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.Byte[] definition
         {
@@ -22505,17 +23287,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmComplexTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "sp_helpdiagrams_Result")]
-    [DataContractAttribute(IsReference = true)]
+    [EdmComplexTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="sp_helpdiagrams_Result")]
+    [DataContractAttribute(IsReference=true)]
     [Serializable()]
     public partial class sp_helpdiagrams_Result : ComplexObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new sp_helpdiagrams_Result object.
         /// </summary>
@@ -22534,11 +23316,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Database
         {
@@ -22558,11 +23340,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Database;
         partial void OnDatabaseChanging(global::System.String value);
         partial void OnDatabaseChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String Name
         {
@@ -22582,11 +23364,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Name;
         partial void OnNameChanging(global::System.String value);
         partial void OnNameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ID
         {
@@ -22606,11 +23388,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ID;
         partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Owner
         {
@@ -22630,11 +23412,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Owner;
         partial void OnOwnerChanging(global::System.String value);
         partial void OnOwnerChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 OwnerID
         {
@@ -22658,17 +23440,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmComplexTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "sp_helpdiagrams1_Result")]
-    [DataContractAttribute(IsReference = true)]
+    [EdmComplexTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="sp_helpdiagrams1_Result")]
+    [DataContractAttribute(IsReference=true)]
     [Serializable()]
     public partial class sp_helpdiagrams1_Result : ComplexObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new sp_helpdiagrams1_Result object.
         /// </summary>
@@ -22687,11 +23469,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Database
         {
@@ -22711,11 +23493,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Database;
         partial void OnDatabaseChanging(global::System.String value);
         partial void OnDatabaseChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String Name
         {
@@ -22735,11 +23517,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Name;
         partial void OnNameChanging(global::System.String value);
         partial void OnNameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ID
         {
@@ -22759,11 +23541,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ID;
         partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Owner
         {
@@ -22783,11 +23565,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Owner;
         partial void OnOwnerChanging(global::System.String value);
         partial void OnOwnerChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 OwnerID
         {
@@ -22811,17 +23593,17 @@ namespace WaterNut.DataLayer
         #endregion
 
     }
-
+    
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
-    [EdmComplexTypeAttribute(NamespaceName = "WaterNutDB.DataLayer", Name = "sp_helpdiagrams2_Result")]
-    [DataContractAttribute(IsReference = true)]
+    [EdmComplexTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="sp_helpdiagrams2_Result")]
+    [DataContractAttribute(IsReference=true)]
     [Serializable()]
     public partial class sp_helpdiagrams2_Result : ComplexObject
     {
         #region Factory Method
-
+    
         /// <summary>
         /// Create a new sp_helpdiagrams2_Result object.
         /// </summary>
@@ -22840,11 +23622,11 @@ namespace WaterNut.DataLayer
         #endregion
 
         #region Simple Properties
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Database
         {
@@ -22864,11 +23646,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Database;
         partial void OnDatabaseChanging(global::System.String value);
         partial void OnDatabaseChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.String Name
         {
@@ -22888,11 +23670,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Name;
         partial void OnNameChanging(global::System.String value);
         partial void OnNameChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 ID
         {
@@ -22912,11 +23694,11 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ID;
         partial void OnIDChanging(global::System.Int32 value);
         partial void OnIDChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = true)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
         public global::System.String Owner
         {
@@ -22936,11 +23718,11 @@ namespace WaterNut.DataLayer
         private global::System.String _Owner;
         partial void OnOwnerChanging(global::System.String value);
         partial void OnOwnerChanged();
-
+    
         /// <summary>
         /// No Metadata Documentation available.
         /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty = false, IsNullable = false)]
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
         [DataMemberAttribute()]
         public global::System.Int32 OwnerID
         {

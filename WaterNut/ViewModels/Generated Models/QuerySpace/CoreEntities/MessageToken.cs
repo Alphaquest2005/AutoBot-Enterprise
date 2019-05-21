@@ -34,12 +34,24 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string AsycudaDocumentItemEntryDataDetailsDeleted = "AsycudaDocumentItemEntryDataDetailsDeleted";
 			public const string AsycudaDocumentItemEntryDataDetailsCreated = "AsycudaDocumentItemEntryDataDetailsCreated";
 			public const string AsycudaDocumentItemEntryDataDetailsUpdated = "AsycudaDocumentItemEntryDataDetailsUpdated";
+			public const string AsycudaDocumentSet_AttachmentsFilterExpressionChanged = "AsycudaDocumentSet_AttachmentsFilterExpressionChanged";
+			public const string SelectedAsycudaDocumentSet_AttachmentsChanged = "SelectedAsycudaDocumentSet_AttachmentsChanged";
+            public const string AsycudaDocumentSet_AttachmentsChanged = "AsycudaDocumentSet_AttachmentsChanged";
+			public const string AsycudaDocumentSet_AttachmentsDeleted = "AsycudaDocumentSet_AttachmentsDeleted";
+			public const string AsycudaDocumentSet_AttachmentsCreated = "AsycudaDocumentSet_AttachmentsCreated";
+			public const string AsycudaDocumentSet_AttachmentsUpdated = "AsycudaDocumentSet_AttachmentsUpdated";
 			public const string AsycudaDocumentSetExsFilterExpressionChanged = "AsycudaDocumentSetExsFilterExpressionChanged";
 			public const string SelectedAsycudaDocumentSetExsChanged = "SelectedAsycudaDocumentSetExsChanged";
             public const string AsycudaDocumentSetExsChanged = "AsycudaDocumentSetExsChanged";
 			public const string AsycudaDocumentSetExsDeleted = "AsycudaDocumentSetExsDeleted";
 			public const string AsycudaDocumentSetExsCreated = "AsycudaDocumentSetExsCreated";
 			public const string AsycudaDocumentSetExsUpdated = "AsycudaDocumentSetExsUpdated";
+			public const string AttachmentsFilterExpressionChanged = "AttachmentsFilterExpressionChanged";
+			public const string SelectedAttachmentsChanged = "SelectedAttachmentsChanged";
+            public const string AttachmentsChanged = "AttachmentsChanged";
+			public const string AttachmentsDeleted = "AttachmentsDeleted";
+			public const string AttachmentsCreated = "AttachmentsCreated";
+			public const string AttachmentsUpdated = "AttachmentsUpdated";
 			public const string Customs_ProcedureFilterExpressionChanged = "Customs_ProcedureFilterExpressionChanged";
 			public const string SelectedCustoms_ProcedureChanged = "SelectedCustoms_ProcedureChanged";
             public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
@@ -58,12 +70,30 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string EntryPreviousItemsDeleted = "EntryPreviousItemsDeleted";
 			public const string EntryPreviousItemsCreated = "EntryPreviousItemsCreated";
 			public const string EntryPreviousItemsUpdated = "EntryPreviousItemsUpdated";
-			public const string InventoryItemAliasExFilterExpressionChanged = "InventoryItemAliasExFilterExpressionChanged";
-			public const string SelectedInventoryItemAliasExChanged = "SelectedInventoryItemAliasExChanged";
-            public const string InventoryItemAliasExChanged = "InventoryItemAliasExChanged";
-			public const string InventoryItemAliasExDeleted = "InventoryItemAliasExDeleted";
-			public const string InventoryItemAliasExCreated = "InventoryItemAliasExCreated";
-			public const string InventoryItemAliasExUpdated = "InventoryItemAliasExUpdated";
+			public const string FileTypeMappingsFilterExpressionChanged = "FileTypeMappingsFilterExpressionChanged";
+			public const string SelectedFileTypeMappingsChanged = "SelectedFileTypeMappingsChanged";
+            public const string FileTypeMappingsChanged = "FileTypeMappingsChanged";
+			public const string FileTypeMappingsDeleted = "FileTypeMappingsDeleted";
+			public const string FileTypeMappingsCreated = "FileTypeMappingsCreated";
+			public const string FileTypeMappingsUpdated = "FileTypeMappingsUpdated";
+			public const string FileTypesFilterExpressionChanged = "FileTypesFilterExpressionChanged";
+			public const string SelectedFileTypesChanged = "SelectedFileTypesChanged";
+            public const string FileTypesChanged = "FileTypesChanged";
+			public const string FileTypesDeleted = "FileTypesDeleted";
+			public const string FileTypesCreated = "FileTypesCreated";
+			public const string FileTypesUpdated = "FileTypesUpdated";
+			public const string InfoMappingFilterExpressionChanged = "InfoMappingFilterExpressionChanged";
+			public const string SelectedInfoMappingChanged = "SelectedInfoMappingChanged";
+            public const string InfoMappingChanged = "InfoMappingChanged";
+			public const string InfoMappingDeleted = "InfoMappingDeleted";
+			public const string InfoMappingCreated = "InfoMappingCreated";
+			public const string InfoMappingUpdated = "InfoMappingUpdated";
+			public const string InventoryItemAliasXFilterExpressionChanged = "InventoryItemAliasXFilterExpressionChanged";
+			public const string SelectedInventoryItemAliasXChanged = "SelectedInventoryItemAliasXChanged";
+            public const string InventoryItemAliasXChanged = "InventoryItemAliasXChanged";
+			public const string InventoryItemAliasXDeleted = "InventoryItemAliasXDeleted";
+			public const string InventoryItemAliasXCreated = "InventoryItemAliasXCreated";
+			public const string InventoryItemAliasXUpdated = "InventoryItemAliasXUpdated";
 			public const string InventoryItemXFilterExpressionChanged = "InventoryItemXFilterExpressionChanged";
 			public const string SelectedInventoryItemXChanged = "SelectedInventoryItemXChanged";
             public const string InventoryItemXChanged = "InventoryItemXChanged";
@@ -94,11 +124,16 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string AsycudaDocumentChanged = "AsycudaDocumentChanged";
           // public const string AsycudaDocumentItemChanged = "AsycudaDocumentItemChanged";
           // public const string AsycudaDocumentItemEntryDataDetailsChanged = "AsycudaDocumentItemEntryDataDetailsChanged";
+          // public const string AsycudaDocumentSet_AttachmentsChanged = "AsycudaDocumentSet_AttachmentsChanged";
           // public const string AsycudaDocumentSetExChanged = "AsycudaDocumentSetExChanged";
+          // public const string AttachmentsChanged = "AttachmentsChanged";
           // public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
-          // public const string InventoryItemAliasExChanged = "InventoryItemAliasExChanged";
+          // public const string FileTypeMappingsChanged = "FileTypeMappingsChanged";
+          // public const string FileTypesChanged = "FileTypesChanged";
+          // public const string InfoMappingChanged = "InfoMappingChanged";
+          // public const string InventoryItemAliasXChanged = "InventoryItemAliasXChanged";
           // public const string InventoryItemXChanged = "InventoryItemXChanged";
           // public const string LicenceSummaryChanged = "LicenceSummaryChanged";
           // public const string SubItemsChanged = "SubItemsChanged";
@@ -114,7 +149,11 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentAsycudaDocumentItemEntryDataDetailsChanged = "CurrentAsycudaDocumentItemEntryDataDetailsChanged";
    
+           public const string CurrentAsycudaDocumentSet_AttachmentsChanged = "CurrentAsycudaDocumentSet_AttachmentsChanged";
+   
            public const string CurrentAsycudaDocumentSetExChanged = "CurrentAsycudaDocumentSetExChanged";
+   
+           public const string CurrentAttachmentsChanged = "CurrentAttachmentsChanged";
    
            public const string CurrentCustoms_ProcedureChanged = "CurrentCustoms_ProcedureChanged";
    
@@ -122,7 +161,13 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentEntryPreviousItemsChanged = "CurrentEntryPreviousItemsChanged";
    
-           public const string CurrentInventoryItemAliasExChanged = "CurrentInventoryItemAliasExChanged";
+           public const string CurrentFileTypeMappingsChanged = "CurrentFileTypeMappingsChanged";
+   
+           public const string CurrentFileTypesChanged = "CurrentFileTypesChanged";
+   
+           public const string CurrentInfoMappingChanged = "CurrentInfoMappingChanged";
+   
+           public const string CurrentInventoryItemAliasXChanged = "CurrentInventoryItemAliasXChanged";
    
            public const string CurrentInventoryItemXChanged = "CurrentInventoryItemXChanged";
    
@@ -142,7 +187,11 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentAsycudaDocumentItemEntryDataDetailsIDChanged = "OnCurrentAsycudaDocumentItemEntryDataDetailsIDChanged";
    
+           public const string CurrentAsycudaDocumentSet_AttachmentsIDChanged = "OnCurrentAsycudaDocumentSet_AttachmentsIDChanged";
+   
            public const string CurrentAsycudaDocumentSetExIDChanged = "OnCurrentAsycudaDocumentSetExIDChanged";
+   
+           public const string CurrentAttachmentsIDChanged = "OnCurrentAttachmentsIDChanged";
    
            public const string CurrentCustoms_ProcedureIDChanged = "OnCurrentCustoms_ProcedureIDChanged";
    
@@ -150,7 +199,13 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentEntryPreviousItemsIDChanged = "OnCurrentEntryPreviousItemsIDChanged";
    
-           public const string CurrentInventoryItemAliasExIDChanged = "OnCurrentInventoryItemAliasExIDChanged";
+           public const string CurrentFileTypeMappingsIDChanged = "OnCurrentFileTypeMappingsIDChanged";
+   
+           public const string CurrentFileTypesIDChanged = "OnCurrentFileTypesIDChanged";
+   
+           public const string CurrentInfoMappingIDChanged = "OnCurrentInfoMappingIDChanged";
+   
+           public const string CurrentInventoryItemAliasXIDChanged = "OnCurrentInventoryItemAliasXIDChanged";
    
            public const string CurrentInventoryItemXIDChanged = "OnCurrentInventoryItemXIDChanged";
    

@@ -668,6 +668,8 @@ namespace AllocationDS.Business.Entities
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public InventoryItem InventoryItemsEx { get; set; }
+        [DataMember]
+        public AsycudaSalesAllocations AsycudaSalesAllocations { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

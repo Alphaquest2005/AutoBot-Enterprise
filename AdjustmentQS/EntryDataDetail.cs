@@ -42,6 +42,7 @@ namespace AdjustmentQS
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<bool> IsReconciled { get; set; }
         public Nullable<double> TaxAmount { get; set; }
+        public Nullable<double> LastCost { get; set; }
     
         public virtual ICollection<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         public virtual InventoryItemsEx InventoryItemsEx { get; set; }

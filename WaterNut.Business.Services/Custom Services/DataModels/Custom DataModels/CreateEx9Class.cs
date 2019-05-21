@@ -117,7 +117,7 @@ namespace WaterNut.DataSpace
                     {
                         var res = slst.Where(x => x.DutyFreePaid == dfp);
                         List<ItemSalesPiSummary> itemSalesPiSummarylst;
-                        itemSalesPiSummarylst = GetItemSalesPiSummary(startDate, endDate, res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList());
+                        itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate, endDate, res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList());
                         await CreateDutyFreePaidDocument(dfp, res, docSet, "7400", true, itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp).ToList(), true, true, dfp == "Duty Free"?"EX9":"IM4", true, true, ApplyCurrentChecks, true)
                             .ConfigureAwait(false);
                     }
@@ -318,7 +318,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
         //    }
         //}
 
-        private List<ItemSalesPiSummary> GetItemSalesPiSummary(DateTime startDate, DateTime endDate,
+        private List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
+            DateTime endDate,
             List<int> alst)
         {
             try
@@ -330,6 +331,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                    
                     var resHistoric =   ctx.AsycudaSalesAllocations
                         //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                        .Where(x => x.EntryDataDetails.EntryDataDetailsEx.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => allallocations.Contains(x.EntryDataDetails.ItemNumber))//changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
                         .Where(x => x.EntryDataDetails.Sales.EntryDataDate <= endDate 
                                     || (x.EntryDataDetails.Adjustments != null && x.EntryDataDetails.EffectiveDate <= endDate))
@@ -380,6 +382,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                         var resCurrent = ctx.AsycudaSalesAllocations
                             //  .Where(x => x.EntryDataDetails.ItemNumber == "WES/404-45")
                             .Where(x => alst.Contains(x.AllocationId)) // left this as is because pQtyallocated is totaled anyways
+                            .Where(x => x.EntryDataDetails.EntryDataDetailsEx.ApplicationSettingsId == applicationSettingsId)
                             .Where(x => x.EntryDataDetails.Sales.EntryDataDate >= startDate && x.EntryDataDetails.Sales.EntryDataDate <= endDate || (x.EntryDataDetails.Adjustments != null && x.EntryDataDetails.EffectiveDate >= startDate && x.EntryDataDetails.EffectiveDate <= endDate))
                                 .Where(x => x.PreviousItem_Id != null)
                                 .GroupBy(g => new
@@ -829,9 +832,11 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             {
                 {"pIsAssessed", "PreviousDocumentItem.IsAssessed"},
                 {"pRegistrationDate", "PreviousDocumentItem.AsycudaDocument.RegistrationDate"},
-
+                {"ApplicationSettingsId", "PreviousDocumentItem.AsycudaDocument.ApplicationSettingsId"},
+                {"PiQuantity", "EX9AsycudaSalesAllocations.PiQuantity"},
+                {"pQtyAllocated", "EX9AsycudaSalesAllocations.pQtyAllocated"},
                 // {"pExpiryDate", "(DbFunctions.AddDays(PreviousDocumentItem.AsycudaDocument.RegistrationDate.GetValueOrDefault(),730))"},
-                {"Invalid", "EntryDataDetails.InventoryItem.TariffCodes.Invalid"},
+                {"Invalid", "EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.Invalid"},
                 {"xBond_Item_Id == 0", "(xEntryItem_Id == null || xEntryItem_Id == 0)"}//xBondAllocations != null  && xBondAllocations.Any() == false
 
             };

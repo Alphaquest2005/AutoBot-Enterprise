@@ -40,6 +40,8 @@
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.LastCost).HasColumnName("LastCost");
+              this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.ItemNumber);
               this.HasRequired(t => t.EntryDataEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.EntryDataId);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);

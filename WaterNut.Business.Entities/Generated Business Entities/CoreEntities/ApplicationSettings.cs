@@ -25,6 +25,8 @@ namespace CoreEntities.Business.Entities
             this.AsycudaDocument = new List<AsycudaDocument>();
             this.AsycudaDocumentItem = new List<AsycudaDocumentItem>();
             this.InventoryItemsEx = new List<InventoryItemX>();
+            this.FileTypes = new List<FileTypes>();
+            this.InfoMapping = new List<InfoMapping>();
         }
 
         [DataMember]
@@ -553,6 +555,66 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _isactive;
         [DataMember]
+        public string Email 
+        {
+            get
+            {
+                return _email;
+            }
+            set
+            {
+                _email = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _email;
+        [DataMember]
+        public string EmailPassword 
+        {
+            get
+            {
+                return _emailpassword;
+            }
+            set
+            {
+                _emailpassword = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _emailpassword;
+        [DataMember]
+        public string AsycudaLogin 
+        {
+            get
+            {
+                return _asycudalogin;
+            }
+            set
+            {
+                _asycudalogin = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _asycudalogin;
+        [DataMember]
+        public string AsycudaPassword 
+        {
+            get
+            {
+                return _asycudapassword;
+            }
+            set
+            {
+                _asycudapassword = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _asycudapassword;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }
@@ -560,6 +622,10 @@ namespace CoreEntities.Business.Entities
         public List<AsycudaDocumentItem> AsycudaDocumentItem { get; set; }
         [DataMember]
         public List<InventoryItemX> InventoryItemsEx { get; set; }
+        [DataMember]
+        public List<FileTypes> FileTypes { get; set; }
+        [DataMember]
+        public List<InfoMapping> InfoMapping { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

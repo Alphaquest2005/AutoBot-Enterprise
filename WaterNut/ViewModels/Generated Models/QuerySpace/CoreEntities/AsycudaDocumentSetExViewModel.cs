@@ -530,6 +530,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _totalInternalFreightFilter;
+        public Double? TotalInternalFreightFilter
+        {
+            get
+            {
+                return _totalInternalFreightFilter;
+            }
+            set
+            {
+                _totalInternalFreightFilter = value;
+				NotifyPropertyChanged(x => TotalInternalFreightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _totalPackagesFilter;
+        public Int32? TotalPackagesFilter
+        {
+            get
+            {
+                return _totalPackagesFilter;
+            }
+            set
+            {
+                _totalPackagesFilter = value;
+				NotifyPropertyChanged(x => TotalPackagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -633,7 +669,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("TotalFreight == {0}",  TotalFreightFilter.ToString()));				 
 
 					if(TotalWeightFilter.HasValue)
-						res.Append(" && " + string.Format("TotalWeight == {0}",  TotalWeightFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalWeight == {0}",  TotalWeightFilter.ToString()));				 
+
+					if(TotalInternalFreightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInternalFreight == {0}",  TotalInternalFreightFilter.ToString()));				 
+
+					if(TotalPackagesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalPackages == {0}",  TotalPackagesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -695,7 +737,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalFreight = x.TotalFreight ,
                     
  
-                    TotalWeight = x.TotalWeight 
+                    TotalWeight = x.TotalWeight ,
+                    
+ 
+                    TotalInternalFreight = x.TotalInternalFreight ,
+                    
+ 
+                    TotalPackages = x.TotalPackages 
                     
                 }).ToList()
             };
@@ -748,6 +796,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> TotalWeight { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalInternalFreight { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalPackages { get; set; } 
                     
         }
 

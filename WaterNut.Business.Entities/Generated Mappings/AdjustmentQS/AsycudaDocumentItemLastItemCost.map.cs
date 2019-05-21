@@ -11,11 +11,12 @@
     {
         public AsycudaDocumentItemLastItemCostMap()
         {                        
-              this.HasKey(t => t.applicationsettingsid);        
+              this.HasKey(t => new {t.applicationsettingsid, t.ItemNumber, t.assessmentdate});        
               this.ToTable("AsycudaDocumentItemLastItemCost");
               this.Property(t => t.applicationsettingsid).HasColumnName("applicationsettingsid").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(50);
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(50);
               this.Property(t => t.LocalItemCost).HasColumnName("LocalItemCost");
+              this.Property(t => t.assessmentdate).HasColumnName("assessmentdate");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

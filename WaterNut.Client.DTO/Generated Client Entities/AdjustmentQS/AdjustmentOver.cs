@@ -113,7 +113,7 @@ namespace AdjustmentQS.Client.DTO
         private string _ItemDescription;
 
         [DataMember]
-        public double Cost
+        public Nullable<double> Cost
 		{ 
 		    get { return _Cost; }
 			set
@@ -123,7 +123,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Cost
 			}
 		}
-        private double _Cost;
+        private Nullable<double> _Cost;
 
         [DataMember]
         public double QtyAllocated

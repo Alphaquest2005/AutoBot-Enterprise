@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns:sql="http://schemas.microsoft.com/wix/SqlExtension">
-  <?define WaterNut_TargetDir=$(var.WaterNut.TargetDir)?><?define System.Linq.Dynamic_TargetDir=$(var.System.Linq.Dynamic.TargetDir)?><?define Core.Common_TargetDir=$(var.Core.Common.TargetDir)?><?define Core.Common.Contracts_TargetDir=$(var.Core.Common.Contracts.TargetDir)?><?define WaterNut.Data_TargetDir=$(var.WaterNut.Data.TargetDir)?><?define WaterNut.Business.Entities_TargetDir=$(var.WaterNut.Business.Entities.TargetDir)?><?define Core.Common.UI_TargetDir=$(var.Core.Common.UI.TargetDir)?><?define Core.Common.Data_TargetDir=$(var.Core.Common.Data.TargetDir)?><?define WaterNut.Client.Services_TargetDir=$(var.WaterNut.Client.Services.TargetDir)?><?define WaterNut.Client.DTO_TargetDir=$(var.WaterNut.Client.DTO.TargetDir)?><?define InterfacesModel_TargetDir=$(var.InterfacesModel.TargetDir)?><?define WaterNut.Client.Entities_TargetDir=$(var.WaterNut.Client.Entities.TargetDir)?><?define WaterNut.Client.Contracts_TargetDir=$(var.WaterNut.Client.Contracts.TargetDir)?><?define WaterNut.Client.Bootstraper_TargetDir=$(var.WaterNut.Client.Bootstraper.TargetDir)?><?define WaterNut.Client.Repositories_TargetDir=$(var.WaterNut.Client.Repositories.TargetDir)?><?define WaterNut.Business.Services_TargetDir=$(var.WaterNut.Business.Services.TargetDir)?><?define AllocationQS_TargetDir=$(var.AllocationQS.TargetDir)?><?define AsycudaWorld421_TargetDir=$(var.AsycudaWorld421.TargetDir)?><?define DataLayer_TargetDir=$(var.DataLayer.TargetDir)?><?define Core.Common.PDF2TXT_TargetDir=$(var.Core.Common.PDF2TXT.TargetDir)?><?define WCFConsoleHost_TargetDir=$(var.WCFConsoleHost.TargetDir)?><?define WaterNut.Business.Bootstraper_TargetDir=$(var.WaterNut.Business.Bootstraper.TargetDir)?>
+  <?define WaterNut_TargetDir=$(var.AutoWaterNut.TargetDir)?><?define System.Linq.Dynamic_TargetDir=$(var.System.Linq.Dynamic.TargetDir)?><?define Core.Common_TargetDir=$(var.Core.Common.TargetDir)?><?define Core.Common.Contracts_TargetDir=$(var.Core.Common.Contracts.TargetDir)?><?define WaterNut.Data_TargetDir=$(var.WaterNut.Data.TargetDir)?><?define WaterNut.Business.Entities_TargetDir=$(var.WaterNut.Business.Entities.TargetDir)?><?define Core.Common.UI_TargetDir=$(var.Core.Common.UI.TargetDir)?><?define Core.Common.Data_TargetDir=$(var.Core.Common.Data.TargetDir)?><?define WaterNut.Client.Services_TargetDir=$(var.WaterNut.Client.Services.TargetDir)?><?define WaterNut.Client.DTO_TargetDir=$(var.WaterNut.Client.DTO.TargetDir)?><?define InterfacesModel_TargetDir=$(var.InterfacesModel.TargetDir)?><?define WaterNut.Client.Entities_TargetDir=$(var.WaterNut.Client.Entities.TargetDir)?><?define WaterNut.Client.Contracts_TargetDir=$(var.WaterNut.Client.Contracts.TargetDir)?><?define WaterNut.Client.Bootstraper_TargetDir=$(var.WaterNut.Client.Bootstraper.TargetDir)?><?define WaterNut.Client.Repositories_TargetDir=$(var.WaterNut.Client.Repositories.TargetDir)?><?define WaterNut.Business.Services_TargetDir=$(var.WaterNut.Business.Services.TargetDir)?><?define AllocationQS_TargetDir=$(var.AllocationQS.TargetDir)?><?define AsycudaWorld421_TargetDir=$(var.AsycudaWorld421.TargetDir)?><?define DataLayer_TargetDir=$(var.DataLayer.TargetDir)?><?define Core.Common.PDF2TXT_TargetDir=$(var.Core.Common.PDF2TXT.TargetDir)?><?define AutoWaterNutServer_TargetDir=$(var.AutoWaterNutServer.TargetDir)?><?define WaterNut.Business.Bootstraper_TargetDir=$(var.WaterNut.Business.Bootstraper.TargetDir)?>
   <Product Id="*" Name="Ez_Asycuda_Toolkit" Language="1033" Version="1.0.0.0" Manufacturer="Joseph Bartholomew" UpgradeCode="0a32779b-0ff2-41ae-b457-19a6b503e730">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -274,21 +274,21 @@
         <File Id="pdfbox_1.8.7.dll" Name="pdfbox-1.8.7.dll" Source="$(var.WaterNut_TargetDir)pdfbox-1.8.7.dll" />
       </Component>
       <Component Id="AutoWaterNutServer.exe" Guid="41e1d72f-7034-496a-a2de-abdbf9bf1466">
-        <File Id="AutoWaterNutServer.exe" Name="AutoWaterNutServer.exe" Source="$(var.WCFConsoleHost_TargetDir)AutoWaterNutServer.exe" />
+        <File Id="AutoWaterNutServer.exe" Name="AutoWaterNutServer.exe" Source="$(var.AutoWaterNutServer_TargetDir)AutoWaterNutServer.exe" />
       </Component>
       <Component Id="AutoWaterNutServer.exe.config" Guid="f1e28e70-a177-4e85-ad34-e87b2ada6b0f">
-        <File Id="AutoWaterNutServer.exe.config" Name="AutoWaterNutServer.exe.config" Source="$(var.WCFConsoleHost_TargetDir)AutoWaterNutServer.exe.config" />
+        <File Id="AutoWaterNutServer.exe.config" Name="AutoWaterNutServer.exe.config" Source="$(var.AutoWaterNutServer_TargetDir)AutoWaterNutServer.exe.config" />
       </Component>
       <Component Id="WaterNut.Business.Bootstraper.dll" Guid="e6c111c2-16fb-43b4-bc3d-0562980478ba">
         <File Id="WaterNut.Business.Bootstraper.dll" Name="WaterNut.Business.Bootstraper.dll" Source="$(var.WaterNut.Business.Bootstraper_TargetDir)WaterNut.Business.Bootstraper.dll" />
       </Component>
       <Component Id="WaterNut_EnterpriseDB_log.ldf" Guid="c66f8fb0-39c8-4d05-aeba-d36a6cc577ee">
-        <File Id="WaterNut_EnterpriseDB_log.ldf" Name="AutoBot-EnterpriseDB_log.ldf" Source="$(var.WCFConsoleHost_TargetDir)AutoBot-EnterpriseDB_log.ldf">
+        <File Id="WaterNut_EnterpriseDB_log.ldf" Name="AutoBot-EnterpriseDB_log.ldf" Source="$(var.AutoWaterNutServer_TargetDir)AutoBot-EnterpriseDB_log.ldf">
           <Permission User="Everyone" GenericAll="yes" />
         </File>
       </Component>
       <Component Id="WaterNut_EnterpriseDB.mdf" Guid="c0b446d4-10cb-4c50-9a65-c876ad687522">
-        <File Id="WaterNut_EnterpriseDB.mdf" Name="AutoBot-EnterpriseDB.mdf" Source="$(var.WCFConsoleHost_TargetDir)AutoBot-EnterpriseDB.mdf">
+        <File Id="WaterNut_EnterpriseDB.mdf" Name="AutoBot-EnterpriseDB.mdf" Source="$(var.AutoWaterNutServer_TargetDir)AutoBot-EnterpriseDB.mdf">
           <Permission User="Everyone" GenericAll="yes" />
         </File>
       </Component>

@@ -64,6 +64,21 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         Nullable<double> _localitemcost;
+        [DataMember]
+        public System.DateTime assessmentdate 
+        {
+            get
+            {
+                return _assessmentdate;
+            }
+            set
+            {
+                _assessmentdate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _assessmentdate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

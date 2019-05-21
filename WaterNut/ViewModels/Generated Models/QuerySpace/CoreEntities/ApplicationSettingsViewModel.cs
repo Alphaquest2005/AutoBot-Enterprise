@@ -814,6 +814,78 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _emailFilter;
+        public string EmailFilter
+        {
+            get
+            {
+                return _emailFilter;
+            }
+            set
+            {
+                _emailFilter = value;
+				NotifyPropertyChanged(x => EmailFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _emailPasswordFilter;
+        public string EmailPasswordFilter
+        {
+            get
+            {
+                return _emailPasswordFilter;
+            }
+            set
+            {
+                _emailPasswordFilter = value;
+				NotifyPropertyChanged(x => EmailPasswordFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _asycudaLoginFilter;
+        public string AsycudaLoginFilter
+        {
+            get
+            {
+                return _asycudaLoginFilter;
+            }
+            set
+            {
+                _asycudaLoginFilter = value;
+				NotifyPropertyChanged(x => AsycudaLoginFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _asycudaPasswordFilter;
+        public string AsycudaPasswordFilter
+        {
+            get
+            {
+                return _asycudaPasswordFilter;
+            }
+            set
+            {
+                _asycudaPasswordFilter = value;
+				NotifyPropertyChanged(x => AsycudaPasswordFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1001,6 +1073,22 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(IsActiveFilter.HasValue)
 						res.Append(" && " + string.Format("IsActive == {0}",  IsActiveFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EmailFilter) == false)
+						res.Append(" && " + string.Format("Email.Contains(\"{0}\")",  EmailFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EmailPasswordFilter) == false)
+						res.Append(" && " + string.Format("EmailPassword.Contains(\"{0}\")",  EmailPasswordFilter));						
+ 
+
+									if(string.IsNullOrEmpty(AsycudaLoginFilter) == false)
+						res.Append(" && " + string.Format("AsycudaLogin.Contains(\"{0}\")",  AsycudaLoginFilter));						
+ 
+
+									if(string.IsNullOrEmpty(AsycudaPasswordFilter) == false)
+						res.Append(" && " + string.Format("AsycudaPassword.Contains(\"{0}\")",  AsycudaPasswordFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1123,7 +1211,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     CompanyName = x.CompanyName ,
                     
  
-                    IsActive = x.IsActive 
+                    IsActive = x.IsActive ,
+                    
+ 
+                    Email = x.Email ,
+                    
+ 
+                    EmailPassword = x.EmailPassword ,
+                    
+ 
+                    AsycudaLogin = x.AsycudaLogin ,
+                    
+ 
+                    AsycudaPassword = x.AsycudaPassword 
                     
                 }).ToList()
             };
@@ -1236,6 +1336,18 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> IsActive { get; set; } 
+                    
+ 
+                    public string Email { get; set; } 
+                    
+ 
+                    public string EmailPassword { get; set; } 
+                    
+ 
+                    public string AsycudaLogin { get; set; } 
+                    
+ 
+                    public string AsycudaPassword { get; set; } 
                     
         }
 

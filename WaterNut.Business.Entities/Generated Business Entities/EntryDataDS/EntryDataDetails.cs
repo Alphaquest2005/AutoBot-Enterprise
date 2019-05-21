@@ -365,6 +365,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _taxamount;
         [DataMember]
+        public Nullable<double> LastCost 
+        {
+            get
+            {
+                return _lastcost;
+            }
+            set
+            {
+                _lastcost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _lastcost;
+        [DataMember]
         public EntryData EntryData { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItems { get; set; }

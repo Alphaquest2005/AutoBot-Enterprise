@@ -165,6 +165,8 @@ namespace AllocationDS.Business.Entities
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public List<xBondAllocations> xBondAllocations { get; set; }
+        [DataMember]
+        public EX9AsycudaSalesAllocations EX9AsycudaSalesAllocations { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -71,7 +71,17 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<InventoryItemX> InventoryItemX { get; set; }
      
-        public DbSet<InventoryItemAliasEx> InventoryItemAliasEx { get; set; }
+        public DbSet<InventoryItemAliasX> InventoryItemAliasX { get; set; }
+     
+        public DbSet<FileTypes> FileTypes { get; set; }
+     
+        public DbSet<FileTypeMappings> FileTypeMappings { get; set; }
+     
+        public DbSet<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+     
+        public DbSet<InfoMapping> InfoMapping { get; set; }
+     
+        public DbSet<Attachments> Attachments { get; set; }
      
 
 
@@ -101,7 +111,17 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new InventoryItemXMap());
          
-            modelBuilder.Configurations.Add(new InventoryItemAliasExMap());
+            modelBuilder.Configurations.Add(new InventoryItemAliasXMap());
+         
+            modelBuilder.Configurations.Add(new FileTypesMap());
+         
+            modelBuilder.Configurations.Add(new FileTypeMappingsMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentSet_AttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new InfoMappingMap());
+         
+            modelBuilder.Configurations.Add(new AttachmentsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

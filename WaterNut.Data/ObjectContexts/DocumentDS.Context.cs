@@ -161,6 +161,12 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
      
+        public DbSet<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
+     
+        public DbSet<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+     
+        public DbSet<Attachment> Attachments { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -278,6 +284,12 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new AsycudaDocumentSetEntryDataMap());
          
             modelBuilder.Configurations.Add(new xcuda_ASYCUDA_ExtendedPropertiesMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocument_AttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentSet_AttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new AttachmentMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

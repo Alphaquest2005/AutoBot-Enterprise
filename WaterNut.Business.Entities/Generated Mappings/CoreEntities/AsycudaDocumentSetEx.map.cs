@@ -31,9 +31,13 @@
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.HasOptional(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentSetEx>) t.AsycudaDocumentSetEx).HasForeignKey(d => d.ApplicationSettingsId);
+              this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
+              this.Property(t => t.TotalPackages).HasColumnName("TotalPackages");
+              this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentSetEx>) t.AsycudaDocumentSetEx).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocuments).WithOptional(t => t.AsycudaDocumentSetEx).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.LicenceSummary).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
+              this.HasMany(t => t.FileTypes).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
+              this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

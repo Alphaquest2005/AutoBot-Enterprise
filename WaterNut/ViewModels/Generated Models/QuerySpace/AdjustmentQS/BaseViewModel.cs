@@ -1003,6 +1003,56 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                      
        
 
+        internal void OnCurrentInventoryItemAliasExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemAliasEx> e)
+        {
+            //CurrentInventoryItemAliasEx = e.Data;
+            NotifyPropertyChanged(m => this.CurrentInventoryItemAliasEx);
+        }
+
+        private  InventoryItemAliasEx _currentInventoryItemAliasEx;
+        public InventoryItemAliasEx CurrentInventoryItemAliasEx
+        {
+            get
+            {
+                return _currentInventoryItemAliasEx;
+            }
+            set
+            {
+                if (_currentInventoryItemAliasEx != value)
+                {
+                    _currentInventoryItemAliasEx = value;
+                    BeginSendMessage(MessageToken.CurrentInventoryItemAliasExChanged,
+                                                     new NotificationEventArgs<InventoryItemAliasEx>(MessageToken.CurrentInventoryItemAliasExChanged, _currentInventoryItemAliasEx)); 
+                    NotifyPropertyChanged(x => this.CurrentInventoryItemAliasEx);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<InventoryItemAliasEx> _vcurrentInventoryItemAliasEx;
+        public VirtualListItem<InventoryItemAliasEx> VCurrentInventoryItemAliasEx
+        {
+            get
+            {
+                return _vcurrentInventoryItemAliasEx;
+            }
+            set
+            {
+                if (_vcurrentInventoryItemAliasEx != value)
+                {
+                    _vcurrentInventoryItemAliasEx = value;
+					if(_vcurrentInventoryItemAliasEx != null) CurrentInventoryItemAliasEx = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentInventoryItemAliasEx);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
         {
             //CurrentInventoryItemsEx = e.Data;

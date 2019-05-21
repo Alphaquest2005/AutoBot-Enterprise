@@ -87,6 +87,7 @@
     <Compile Include="AdjustmentQS\AsycudaDocumentSetEntryDataClient.cs" />
     <Compile Include="AdjustmentQS\AsycudaSalesAllocationClient.cs" />
     <Compile Include="AdjustmentQS\EntryDataDetailClient.cs" />
+    <Compile Include="AdjustmentQS\InventoryItemAliasExClient.cs" />
     <Compile Include="AdjustmentQS\InventoryItemsExClient.cs" />
     <Compile Include="AdjustmentQS\ShortAllocationClient.cs" />
     <Compile Include="AdjustmentQS\xcuda_ItemClient.cs" />
@@ -99,10 +100,15 @@
     <Compile Include="CoreEntities\AsycudaDocumentItemClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSetExClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs" />
+    <Compile Include="CoreEntities\AttachmentsClient.cs" />
     <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />
     <Compile Include="CoreEntities\Document_TypeClient.cs" />
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
-    <Compile Include="CoreEntities\InventoryItemAliasExClient.cs" />
+    <Compile Include="CoreEntities\FileTypeMappingsClient.cs" />
+    <Compile Include="CoreEntities\FileTypesClient.cs" />
+    <Compile Include="CoreEntities\InfoMappingClient.cs" />
+    <Compile Include="CoreEntities\InventoryItemAliasXClient.cs" />
     <Compile Include="CoreEntities\InventoryItemXClient.cs" />
     <Compile Include="CoreEntities\LicenceSummaryClient.cs" />
     <Compile Include="CoreEntities\SubItemsClient.cs" />
@@ -128,6 +134,7 @@
     <Compile Include="Custom Services\SalesDataQS\SalesDataClient.cs" />
     <Compile Include="Custom Services\SalesDataQS\SalesDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentEntryDataClient.cs" />
+    <Compile Include="EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs" />
     <Compile Include="EntryDataQS\ContainerEntryDataClient.cs" />
@@ -139,6 +146,7 @@
     <Compile Include="EntryDataQS\EntryDataExClient.cs" />
     <Compile Include="EntryDataQS\InventoryItemsExClient.cs" />
     <Compile Include="EntryDataQS\PackageTypeClient.cs" />
+    <Compile Include="EntryDataQS\ToDo_POToXMLClient.cs" />
     <Compile Include="InventoryQS\EntryDataDetailsExClient.cs" />
     <Compile Include="InventoryQS\InventoryItemsExClient.cs" />
     <Compile Include="InventoryQS\TariffCategoryClient.cs" />

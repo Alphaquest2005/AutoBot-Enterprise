@@ -732,6 +732,42 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Double? _lastCostFilter;
+        public Double? LastCostFilter
+        {
+            get
+            {
+                return _lastCostFilter;
+            }
+            set
+            {
+                _lastCostFilter = value;
+				NotifyPropertyChanged(x => LastCostFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _taxAmountFilter;
+        public Double? TaxAmountFilter
+        {
+            get
+            {
+                return _taxAmountFilter;
+            }
+            set
+            {
+                _taxAmountFilter = value;
+				NotifyPropertyChanged(x => TaxAmountFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -872,7 +908,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(IsReconciledFilter.HasValue)
 						res.Append(" && " + string.Format("IsReconciled == {0}",  IsReconciledFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(LastCostFilter.HasValue)
+						res.Append(" && " + string.Format("LastCost == {0}",  LastCostFilter.ToString()));				 
+
+					if(TaxAmountFilter.HasValue)
+						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -964,7 +1006,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     EffectiveDate = x.EffectiveDate ,
                     
  
-                    IsReconciled = x.IsReconciled 
+                    IsReconciled = x.IsReconciled ,
+                    
+ 
+                    LastCost = x.LastCost ,
+                    
+ 
+                    TaxAmount = x.TaxAmount 
                     
                 }).ToList()
             };
@@ -1047,6 +1095,12 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public Nullable<bool> IsReconciled { get; set; } 
+                    
+ 
+                    public Nullable<double> LastCost { get; set; } 
+                    
+ 
+                    public Nullable<double> TaxAmount { get; set; } 
                     
         }
 

@@ -202,7 +202,7 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new InventoryItemX(res)
                     {
-                     // InventoryItemAliasEx = new System.Collections.ObjectModel.ObservableCollection<InventoryItemAliasEx>(res.InventoryItemAliasEx.Select(y => new InventoryItemAliasEx(y))),    
+                     // InventoryItemAliasEx = new System.Collections.ObjectModel.ObservableCollection<InventoryItemAliasX>(res.InventoryItemAliasEx.Select(y => new InventoryItemAliasX(y))),    
                   // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
                      // AsycudaDocumentItem = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItem>(res.AsycudaDocumentItem.Select(y => new AsycudaDocumentItem(y)))    
                   };

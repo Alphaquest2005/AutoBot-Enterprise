@@ -10,22 +10,31 @@
             <PropertyRef Name="AsycudaDocumentSetId" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Declarant_Reference_Number" Type="varchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="Exchange_Rate" Type="float" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" />
-          <Property Name="Country_of_origin_code" Type="varchar" MaxLength="50" />
-          <Property Name="Currency_Code" Type="varchar" MaxLength="50" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="50" />
           <Property Name="Document_TypeId" Type="int" />
-          <Property Name="Description" Type="nvarchar(max)" />
-          <Property Name="Manifest_Number" Type="varchar" MaxLength="50" />
-          <Property Name="BLNumber" Type="varchar" MaxLength="50" />
-          <Property Name="EntryTimeStamp" Type="datetime" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
           <Property Name="StartingFileCount" Type="int" />
-          <Property Name="ApportionMethod" Type="int" />
+          <Property Name="ApportionMethod" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="TotalFreight" Type="float" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
+        </EntityType>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -33,8 +42,8 @@
           </Key>
           <Property Name="Document_TypeId" Type="int" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Extended_customs_procedure" Type="varchar(max)" />
-          <Property Name="National_customs_procedure" Type="varchar(max)" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
+          <Property Name="National_customs_procedure" Type="nvarchar(max)" />
           <Property Name="IsDefault" Type="bit" />
         </EntityType>
         <EntityType Name="Document_Type">
@@ -42,8 +51,8 @@
             <PropertyRef Name="Document_TypeId" />
           </Key>
           <Property Name="Document_TypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Type_of_declaration" Type="varchar(max)" />
-          <Property Name="Declaration_gen_procedure_code" Type="varchar(max)" />
+          <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -58,50 +67,41 @@
             <PropertyRef Name="ExportTemplateId" />
           </Key>
           <Property Name="ExportTemplateId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Description" Type="varchar" MaxLength="50" />
-          <Property Name="Exporter_code" Type="varchar" MaxLength="50" />
-          <Property Name="Exporter_name" Type="varchar(max)" />
-          <Property Name="Consignee_code" Type="varchar" MaxLength="50" />
-          <Property Name="Consignee_name" Type="varchar(max)" />
-          <Property Name="Financial_code" Type="varchar" MaxLength="50" />
-          <Property Name="Customs_clearance_office_code" Type="varchar" MaxLength="50" />
-          <Property Name="Customs_Procedure" Type="varchar" MaxLength="50" />
-          <Property Name="Declarant_code" Type="varchar" MaxLength="50" />
-          <Property Name="Country_first_destination" Type="varchar" MaxLength="50" />
-          <Property Name="Trading_country" Type="varchar" MaxLength="50" />
-          <Property Name="Export_country_code" Type="varchar" MaxLength="50" />
-          <Property Name="Destination_country_code" Type="varchar" MaxLength="50" />
-          <Property Name="TransportName" Type="varchar" MaxLength="50" />
-          <Property Name="TransportNationality" Type="varchar" MaxLength="50" />
-          <Property Name="Location_of_goods" Type="varchar" MaxLength="50" />
-          <Property Name="Border_information_Mode" Type="varchar" MaxLength="50" />
-          <Property Name="Delivery_terms_Code" Type="varchar" MaxLength="50" />
-          <Property Name="Border_office_Code" Type="varchar" MaxLength="50" />
-          <Property Name="Gs_Invoice_Currency_code" Type="varchar" MaxLength="50" />
-          <Property Name="Warehouse_Identification" Type="varchar" MaxLength="50" />
-          <Property Name="Warehouse_Delay" Type="varchar" MaxLength="50" />
-          <Property Name="Number_of_packages" Type="varchar" MaxLength="50" />
-          <Property Name="Total_number_of_packages" Type="varchar" MaxLength="50" />
-          <Property Name="Deffered_payment_reference" Type="varchar" MaxLength="50" />
-        </EntityType>
-        <EntityType Name="InventoryItems">
-          <Key>
-            <PropertyRef Name="ItemNumber" />
-          </Key>
-          <Property Name="ItemNumber" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Description" Type="varchar(max)" Nullable="false" />
-          <Property Name="Category" Type="nvarchar" MaxLength="60" />
-          <Property Name="TariffCode" Type="varchar" MaxLength="8" />
-          <Property Name="EntryTimeStamp" Type="datetime" />
-          <Property Name="Quantity" Type="int" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="100" />
+          <Property Name="Exporter_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Exporter_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Consignee_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Consignee_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Financial_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Customs_clearance_office_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Customs_Procedure" Type="nvarchar" MaxLength="100" />
+          <Property Name="Declarant_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Country_first_destination" Type="nvarchar" MaxLength="100" />
+          <Property Name="Trading_country" Type="nvarchar" MaxLength="100" />
+          <Property Name="Export_country_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Destination_country_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="TransportName" Type="nvarchar" MaxLength="100" />
+          <Property Name="TransportNationality" Type="nvarchar" MaxLength="100" />
+          <Property Name="Location_of_goods" Type="nvarchar" MaxLength="100" />
+          <Property Name="Border_information_Mode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Delivery_terms_Code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Border_office_Code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Gs_Invoice_Currency_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Warehouse_Identification" Type="nvarchar" MaxLength="100" />
+          <Property Name="Warehouse_Delay" Type="nvarchar" MaxLength="100" />
+          <Property Name="Number_of_packages" Type="nvarchar" MaxLength="100" />
+          <Property Name="Total_number_of_packages" Type="nvarchar" MaxLength="100" />
+          <Property Name="Deffered_payment_reference" Type="nvarchar" MaxLength="100" />
+          <Property Name="AttachedDocumentCode" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
             <PropertyRef Name="TariffCategoryCode" />
           </Key>
-          <Property Name="TariffCategoryCode" Type="varchar" MaxLength="8" Nullable="false" />
-          <Property Name="Description" Type="varchar" MaxLength="999" />
-          <Property Name="ParentTariffCategoryCode" Type="varchar" MaxLength="5" />
+          <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="999" />
+          <Property Name="ParentTariffCategoryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="LicenseRequired" Type="bit" />
         </EntityType>
         <EntityType Name="TariffCategoryCodeSuppUnit">
@@ -109,24 +109,24 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TariffCategoryCode" Type="varchar" MaxLength="8" Nullable="false" />
+          <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="TariffSupUnitId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="TariffCodes">
           <Key>
             <PropertyRef Name="TariffCode" />
           </Key>
-          <Property Name="TariffCode" Type="varchar" MaxLength="8" Nullable="false" />
-          <Property Name="Description" Type="varchar" MaxLength="999" />
-          <Property Name="RateofDuty" Type="varchar" MaxLength="50" />
-          <Property Name="EnvironmentalLevy" Type="varchar" MaxLength="50" />
-          <Property Name="CustomsServiceCharge" Type="varchar" MaxLength="50" />
-          <Property Name="ExciseTax" Type="varchar" MaxLength="50" />
-          <Property Name="VatRate" Type="varchar" MaxLength="50" />
-          <Property Name="PetrolTax" Type="varchar" MaxLength="50" />
-          <Property Name="Units" Type="nvarchar" MaxLength="999" />
-          <Property Name="SiteRev3" Type="varchar" MaxLength="50" />
-          <Property Name="TariffCategoryCode" Type="varchar" MaxLength="8" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="999" />
+          <Property Name="RateofDuty" Type="nvarchar" MaxLength="50" />
+          <Property Name="EnvironmentalLevy" Type="nvarchar" MaxLength="50" />
+          <Property Name="CustomsServiceCharge" Type="nvarchar" MaxLength="50" />
+          <Property Name="ExciseTax" Type="nvarchar" MaxLength="50" />
+          <Property Name="VatRate" Type="nvarchar" MaxLength="50" />
+          <Property Name="PetrolTax" Type="nvarchar" MaxLength="50" />
+          <Property Name="Units" Type="nvarchar" MaxLength="50" />
+          <Property Name="SiteRev3" Type="nvarchar" MaxLength="50" />
+          <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="LicenseRequired" Type="bit" />
           <Property Name="Invalid" Type="bit" />
         </EntityType>
@@ -143,8 +143,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number" Type="varchar(max)" />
-          <Property Name="Date" Type="varchar(max)" />
+          <Property Name="Number" Type="nvarchar" MaxLength="6" />
+          <Property Name="Date" Type="nvarchar" MaxLength="10" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Assessment_notice">
@@ -158,28 +158,28 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="id" Type="varchar(max)" />
+          <Property Name="id" Type="nvarchar" MaxLength="10" />
           <Property Name="ASYCUDA_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="EntryTimeStamp" Type="datetime" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="xcuda_ASYCUDA_ExtendedProperties">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="FileNumber" Type="int" />
           <Property Name="IsManuallyAssessed" Type="bit" />
-          <Property Name="CNumber" Type="varchar" MaxLength="50" />
-          <Property Name="RegistrationDate" Type="datetime" />
-          <Property Name="ReferenceNumber" Type="varchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="Customs_ProcedureId" Type="int" />
           <Property Name="Document_TypeId" Type="int" />
-          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="ExportTemplateId" Type="int" />
-          <Property Name="BLNumber" Type="varchar" MaxLength="50" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="AutoUpdate" Type="bit" />
-          <Property Name="EffectiveRegistrationDate" Type="datetime" />
+          <Property Name="EffectiveRegistrationDate" Type="datetime2" Precision="7" />
           <Property Name="ApportionMethod" Type="int" />
           <Property Name="DoNotAllocate" Type="bit" />
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
@@ -189,19 +189,27 @@
           <Property Name="TotalFreight" Type="float" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
-          <Property Name="EffectiveExpiryDate" Type="datetime" />
+          <Property Name="EffectiveExpiryDate" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
             <PropertyRef Name="Attached_documents_Id" />
           </Key>
-          <Property Name="Attached_document_date" Type="nvarchar(max)" />
+          <Property Name="Attached_document_date" Type="nvarchar" MaxLength="255" />
           <Property Name="Attached_documents_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Item_Id" Type="int" />
-          <Property Name="Attached_document_code" Type="varchar" MaxLength="50" />
-          <Property Name="Attached_document_name" Type="varchar" MaxLength="50" />
-          <Property Name="Attached_document_reference" Type="varchar" MaxLength="50" />
+          <Property Name="Attached_document_code" Type="nvarchar" MaxLength="100" />
+          <Property Name="Attached_document_name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Attached_document_reference" Type="nvarchar" MaxLength="100" />
           <Property Name="Attached_document_from_rule" Type="int" />
+        </EntityType>
+        <EntityType Name="xcuda_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="Attached_documents_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Border_information">
           <Key>
@@ -209,8 +217,8 @@
           </Key>
           <Property Name="Border_information_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Means_of_transport_Id" Type="int" />
-          <Property Name="Identity" Type="varchar" MaxLength="50" />
-          <Property Name="Nationality" Type="varchar" MaxLength="50" />
+          <Property Name="Identity" Type="nvarchar" MaxLength="100" />
+          <Property Name="Nationality" Type="nvarchar" MaxLength="100" />
           <Property Name="Mode" Type="int" />
         </EntityType>
         <EntityType Name="xcuda_Border_office">
@@ -219,29 +227,29 @@
           </Key>
           <Property Name="Border_office_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Transport_Id" Type="int" />
-          <Property Name="Code" Type="varchar" MaxLength="50" />
-          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="xcuda_Consignee">
           <Key>
             <PropertyRef Name="Traders_Id" />
           </Key>
           <Property Name="Traders_Id" Type="int" Nullable="false" />
-          <Property Name="Consignee_code" Type="varchar" MaxLength="50" />
-          <Property Name="Consignee_name" Type="varchar" MaxLength="255" />
+          <Property Name="Consignee_code" Type="nvarchar" MaxLength="20" />
+          <Property Name="Consignee_name" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="xcuda_Container">
           <Key>
             <PropertyRef Name="Container_Id" />
           </Key>
-          <Property Name="Item_Number" Type="varchar(max)" />
-          <Property Name="Container_identity" Type="varchar(max)" />
-          <Property Name="Container_type" Type="varchar(max)" />
-          <Property Name="Empty_full_indicator" Type="varchar(max)" />
+          <Property Name="Item_Number" Type="nvarchar" MaxLength="255" />
+          <Property Name="Container_identity" Type="nvarchar" MaxLength="255" />
+          <Property Name="Container_type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Empty_full_indicator" Type="nvarchar" MaxLength="255" />
           <Property Name="Gross_weight" Type="float" Nullable="false" />
-          <Property Name="Goods_description" Type="varchar(max)" />
-          <Property Name="Packages_type" Type="varchar(max)" />
-          <Property Name="Packages_number" Type="varchar(max)" />
+          <Property Name="Goods_description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Packages_type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Packages_number" Type="nvarchar" MaxLength="255" />
           <Property Name="Packages_weight" Type="float" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="Container_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
@@ -250,21 +258,21 @@
           <Key>
             <PropertyRef Name="Country_Id" />
           </Key>
-          <Property Name="Country_first_destination" Type="varchar(max)" />
-          <Property Name="Country_of_origin_name" Type="varchar(max)" />
+          <Property Name="Country_first_destination" Type="nvarchar" MaxLength="255" />
+          <Property Name="Country_of_origin_name" Type="nvarchar" MaxLength="255" />
           <Property Name="Country_Id" Type="int" Nullable="false" />
           <Property Name="Place_of_loading_Id" Type="int" />
-          <Property Name="Trading_country" Type="varchar" MaxLength="50" />
+          <Property Name="Trading_country" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="xcuda_Declarant">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Declarant_code" Type="varchar(max)" />
-          <Property Name="Declarant_name" Type="varchar(max)" />
-          <Property Name="Declarant_representative" Type="varchar(max)" />
+          <Property Name="Declarant_code" Type="nvarchar" MaxLength="20" />
+          <Property Name="Declarant_name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Declarant_representative" Type="nvarchar" MaxLength="255" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Number" Type="nvarchar(max)" />
+          <Property Name="Number" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="xcuda_Delivery_terms">
           <Key>
@@ -272,9 +280,9 @@
           </Key>
           <Property Name="Delivery_terms_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Transport_Id" Type="int" />
-          <Property Name="Code" Type="varchar" MaxLength="50" />
-          <Property Name="Place" Type="varchar" MaxLength="50" />
-          <Property Name="Situation" Type="varchar" MaxLength="50" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Place" Type="nvarchar" MaxLength="50" />
+          <Property Name="Situation" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Departure_arrival_information">
           <Key>
@@ -282,32 +290,32 @@
           </Key>
           <Property Name="Departure_arrival_information_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Means_of_transport_Id" Type="int" />
-          <Property Name="Identity" Type="varchar" MaxLength="50" />
-          <Property Name="Nationality" Type="varchar" MaxLength="50" />
+          <Property Name="Identity" Type="nvarchar" MaxLength="50" />
+          <Property Name="Nationality" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Destination">
           <Key>
             <PropertyRef Name="Country_Id" />
           </Key>
-          <Property Name="Destination_country_code" Type="varchar(max)" />
-          <Property Name="Destination_country_name" Type="varchar(max)" />
+          <Property Name="Destination_country_code" Type="nvarchar(max)" />
+          <Property Name="Destination_country_name" Type="nvarchar(max)" />
           <Property Name="Country_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Export">
           <Key>
             <PropertyRef Name="Country_Id" />
           </Key>
-          <Property Name="Export_country_code" Type="varchar" MaxLength="50" />
-          <Property Name="Export_country_name" Type="varchar" MaxLength="50" />
+          <Property Name="Export_country_code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Export_country_name" Type="nvarchar" MaxLength="50" />
           <Property Name="Country_Id" Type="int" Nullable="false" />
-          <Property Name="Export_country_region" Type="varchar" MaxLength="50" />
+          <Property Name="Export_country_region" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Export_release">
           <Key>
             <PropertyRef Name="Export_release_Id" />
           </Key>
-          <Property Name="Date_of_exit" Type="varchar(max)" />
-          <Property Name="Time_of_exit" Type="varchar(max)" />
+          <Property Name="Date_of_exit" Type="nvarchar" MaxLength="20" />
+          <Property Name="Time_of_exit" Type="nvarchar" MaxLength="20" />
           <Property Name="Export_release_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
         </EntityType>
@@ -315,9 +323,9 @@
           <Key>
             <PropertyRef Name="Traders_Id" />
           </Key>
-          <Property Name="Exporter_name" Type="varchar(max)" />
+          <Property Name="Exporter_name" Type="nvarchar" MaxLength="255" />
           <Property Name="Traders_Id" Type="int" Nullable="false" />
-          <Property Name="Exporter_code" Type="varchar(max)" />
+          <Property Name="Exporter_code" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="xcuda_Financial">
           <Key>
@@ -325,9 +333,9 @@
           </Key>
           <Property Name="Financial_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
-          <Property Name="Deffered_payment_reference" Type="varchar" MaxLength="50" />
-          <Property Name="Mode_of_payment" Type="varchar" MaxLength="50" />
-          <Property Name="Financial_Code" Type="varchar" MaxLength="50" />
+          <Property Name="Deffered_payment_reference" Type="nvarchar" MaxLength="100" />
+          <Property Name="Mode_of_payment" Type="nvarchar" MaxLength="100" />
+          <Property Name="Financial_Code" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="xcuda_Financial_Amounts">
           <Key>
@@ -346,7 +354,7 @@
           <Property Name="Guarantee_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Financial_Id" Type="int" Nullable="false" />
           <Property Name="Amount" Type="decimal" Precision="15" Scale="4" />
-          <Property Name="Date" Type="datetime" />
+          <Property Name="Date" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="xcuda_Forms">
           <Key>
@@ -360,11 +368,11 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Value_details" Type="varchar(max)" />
+          <Property Name="Value_details" Type="nvarchar" MaxLength="20" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="CAP" Type="varchar(max)" />
-          <Property Name="Additional_information" Type="varchar(max)" />
-          <Property Name="Comments_free_text" Type="nvarchar(max)" />
+          <Property Name="CAP" Type="nvarchar" MaxLength="20" />
+          <Property Name="Additional_information" Type="nvarchar" MaxLength="20" />
+          <Property Name="Comments_free_text" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="xcuda_Global_taxes">
           <Key>
@@ -377,9 +385,9 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Country_of_origin_code" Type="varchar(max)" />
-          <Property Name="Description_of_goods" Type="varchar(max)" />
-          <Property Name="Commercial_Description" Type="varchar(max)" />
+          <Property Name="Country_of_origin_code" Type="varchar" MaxLength="50" />
+          <Property Name="Description_of_goods" Type="varchar" MaxLength="255" />
+          <Property Name="Commercial_Description" Type="varchar" MaxLength="255" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Gs_deduction">
@@ -388,7 +396,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -398,8 +406,8 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
-          <Property Name="Currency_code" Type="varchar" MaxLength="50" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="20" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="4" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -409,7 +417,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -419,7 +427,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar(max)" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -429,10 +437,10 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_code" Type="varchar" MaxLength="50" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar" MaxLength="50" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Gs_other_cost">
           <Key>
@@ -440,7 +448,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="255" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -448,9 +456,9 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Commodity_code" Type="varchar" MaxLength="8" Nullable="false" />
-          <Property Name="Precision_1" Type="varchar(max)" />
-          <Property Name="Precision_4" Type="varchar" MaxLength="50" />
+          <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Precision_1" Type="nvarchar" MaxLength="255" />
+          <Property Name="Precision_4" Type="nvarchar" MaxLength="50" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Identification">
@@ -458,39 +466,42 @@
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Manifest_reference_number" Type="varchar" MaxLength="50" />
+          <Property Name="Manifest_reference_number" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Inventory_Item">
           <Key>
             <PropertyRef Name="ItemNumber" />
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="ItemNumber" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Item">
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Amount_deducted_from_licence" Type="varchar(max)" />
-          <Property Name="Quantity_deducted_from_licence" Type="varchar(max)" />
+          <Property Name="Amount_deducted_from_licence" Type="nvarchar" MaxLength="10" />
+          <Property Name="Quantity_deducted_from_licence" Type="nvarchar" MaxLength="4" />
           <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Licence_number" Type="nvarchar(max)" />
-          <Property Name="Free_text_1" Type="nvarchar(max)" />
-          <Property Name="Free_text_2" Type="nvarchar(max)" />
+          <Property Name="Licence_number" Type="nvarchar" MaxLength="6" />
+          <Property Name="Free_text_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
           <Property Name="EntryDataDetailsId" Type="int" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
           <Property Name="IsAssessed" Type="bit" />
           <Property Name="DPQtyAllocated" Type="float" Nullable="false" />
           <Property Name="DFQtyAllocated" Type="float" Nullable="false" />
-          <Property Name="EntryTimeStamp" Type="datetime" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
           <Property Name="AttributeOnlyAllocation" Type="bit" />
           <Property Name="DoNotAllocate" Type="bit" />
           <Property Name="DoNotEX" Type="bit" />
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
-          <Property Name="WarehouseError" Type="varchar" MaxLength="50" />
+          <Property Name="WarehouseError" Type="nvarchar" MaxLength="50" />
           <Property Name="SalesFactor" Type="float" Nullable="false" />
+          <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -498,7 +509,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="50" />
           <Property Name="Currency_rate" Type="float" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -509,7 +520,7 @@
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
-          <Property Name="Currency_code" Type="varchar(max)" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_item_insurance">
@@ -518,7 +529,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="50" />
           <Property Name="Currency_rate" Type="float" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -528,7 +539,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar" MaxLength="50" />
           <Property Name="Currency_rate" Type="float" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -538,7 +549,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_code" Type="varchar(max)" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="20" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -548,7 +559,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="float" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="float" Nullable="false" />
-          <Property Name="Currency_name" Type="varchar(max)" />
+          <Property Name="Currency_name" Type="nvarchar(max)" />
           <Property Name="Currency_rate" Type="float" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -567,14 +578,14 @@
           </Key>
           <Property Name="Means_of_transport_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Transport_Id" Type="int" />
-          <Property Name="Inland_mode_of_transport" Type="varchar" MaxLength="50" />
+          <Property Name="Inland_mode_of_transport" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Nbers">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number_of_loading_lists" Type="varchar(max)" />
-          <Property Name="Total_number_of_items" Type="varchar(max)" />
+          <Property Name="Number_of_loading_lists" Type="nvarchar" MaxLength="20" />
+          <Property Name="Total_number_of_items" Type="nvarchar" MaxLength="20" />
           <Property Name="Total_number_of_packages" Type="float" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
@@ -582,8 +593,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Customs_clearance_office_code" Type="varchar(max)" />
-          <Property Name="Customs_Clearance_office_name" Type="varchar(max)" />
+          <Property Name="Customs_clearance_office_code" Type="nvarchar" MaxLength="20" />
+          <Property Name="Customs_Clearance_office_name" Type="nvarchar" MaxLength="255" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Packages">
@@ -591,12 +602,12 @@
             <PropertyRef Name="Packages_Id" />
           </Key>
           <Property Name="Number_of_packages" Type="float" Nullable="false" />
-          <Property Name="Kind_of_packages_code" Type="varchar(max)" />
-          <Property Name="Kind_of_packages_name" Type="varchar(max)" />
+          <Property Name="Kind_of_packages_code" Type="nvarchar" MaxLength="20" />
+          <Property Name="Kind_of_packages_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Packages_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Item_Id" Type="int" />
-          <Property Name="Marks1_of_packages" Type="nvarchar(max)" />
-          <Property Name="Marks2_of_packages" Type="nvarchar(max)" />
+          <Property Name="Marks1_of_packages" Type="nvarchar" MaxLength="20" />
+          <Property Name="Marks2_of_packages" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="xcuda_Place_of_loading">
           <Key>
@@ -609,34 +620,34 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Summary_declaration" Type="varchar(max)" />
+          <Property Name="Summary_declaration" Type="nvarchar" MaxLength="255" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_PreviousItem">
           <Key>
             <PropertyRef Name="PreviousItem_Id" />
           </Key>
-          <Property Name="Packages_number" Type="varchar(max)" />
-          <Property Name="Previous_Packages_number" Type="varchar(max)" />
-          <Property Name="Hs_code" Type="varchar(max)" />
-          <Property Name="Commodity_code" Type="varchar(max)" />
-          <Property Name="Previous_item_number" Type="varchar(max)" />
-          <Property Name="Goods_origin" Type="varchar(max)" />
+          <Property Name="Packages_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Hs_code" Type="nvarchar" MaxLength="20" />
+          <Property Name="Commodity_code" Type="nvarchar" MaxLength="20" />
+          <Property Name="Previous_item_number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Goods_origin" Type="nvarchar" MaxLength="20" />
           <Property Name="Net_weight" Type="float" Nullable="false" />
           <Property Name="Prev_net_weight" Type="float" Nullable="false" />
-          <Property Name="Prev_reg_ser" Type="varchar(max)" />
-          <Property Name="Prev_reg_nbr" Type="varchar(max)" />
-          <Property Name="Prev_reg_dat" Type="varchar(max)" />
-          <Property Name="Prev_reg_cuo" Type="varchar(max)" />
+          <Property Name="Prev_reg_ser" Type="nvarchar" MaxLength="20" />
+          <Property Name="Prev_reg_nbr" Type="nvarchar" MaxLength="20" />
+          <Property Name="Prev_reg_dat" Type="nvarchar" MaxLength="20" />
+          <Property Name="Prev_reg_cuo" Type="nvarchar" MaxLength="20" />
           <Property Name="Suplementary_Quantity" Type="float" Nullable="false" />
           <Property Name="Preveious_suplementary_quantity" Type="float" Nullable="false" />
           <Property Name="Current_value" Type="float" Nullable="false" />
           <Property Name="Previous_value" Type="float" Nullable="false" />
-          <Property Name="Current_item_number" Type="varchar(max)" />
+          <Property Name="Current_item_number" Type="nvarchar" MaxLength="20" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
-          <Property Name="Prev_decl_HS_spec" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Prev_decl_HS_spec" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="xcuda_Principal">
           <Key>
@@ -649,33 +660,33 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Sad_flow" Type="varchar(max)" />
-          <Property Name="Date_of_declaration" Type="varchar(max)" />
-          <Property Name="Selected_page" Type="varchar(max)" />
+          <Property Name="Sad_flow" Type="nvarchar" MaxLength="20" />
+          <Property Name="Date_of_declaration" Type="nvarchar" MaxLength="20" />
+          <Property Name="Selected_page" Type="nvarchar" MaxLength="20" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Place_of_declaration" Type="varchar(max)" />
+          <Property Name="Place_of_declaration" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="xcuda_receipt">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number" Type="varchar(max)" />
-          <Property Name="Date" Type="varchar(max)" />
+          <Property Name="Number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Date" Type="nvarchar" MaxLength="20" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Registration">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number" Type="varchar(max)" />
-          <Property Name="Date" Type="varchar(max)" />
+          <Property Name="Number" Type="nvarchar" MaxLength="20" />
+          <Property Name="Date" Type="nvarchar" MaxLength="10" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Seals">
           <Key>
             <PropertyRef Name="Seals_Id" />
           </Key>
-          <Property Name="Number" Type="varchar(max)" />
+          <Property Name="Number" Type="nvarchar(max)" />
           <Property Name="Seals_Id" Type="int" Nullable="false" />
           <Property Name="Transit_Id" Type="int" />
         </EntityType>
@@ -683,7 +694,7 @@
           <Key>
             <PropertyRef Name="Signature_Id" />
           </Key>
-          <Property Name="Date" Type="varchar(max)" />
+          <Property Name="Date" Type="nvarchar(max)" />
           <Property Name="Signature_Id" Type="int" Nullable="false" />
           <Property Name="Transit_Id" Type="int" />
         </EntityType>
@@ -694,15 +705,15 @@
           <Property Name="Suppplementary_unit_quantity" Type="float" />
           <Property Name="Supplementary_unit_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Tarification_Id" Type="int" Nullable="false" />
-          <Property Name="Suppplementary_unit_code" Type="nvarchar(max)" />
-          <Property Name="Suppplementary_unit_name" Type="nvarchar(max)" />
+          <Property Name="Suppplementary_unit_code" Type="nvarchar" MaxLength="4" />
+          <Property Name="Suppplementary_unit_name" Type="nvarchar" MaxLength="255" />
           <Property Name="IsFirstRow" Type="bit" />
         </EntityType>
         <EntityType Name="xcuda_Suppliers_documents">
           <Key>
             <PropertyRef Name="Suppliers_documents_Id" />
           </Key>
-          <Property Name="Suppliers_document_date" Type="varchar(max)" />
+          <Property Name="Suppliers_document_date" Type="nvarchar(max)" />
           <Property Name="Suppliers_documents_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="Suppliers_document_itmlink" Type="nvarchar(max)" />
@@ -722,7 +733,7 @@
           <Key>
             <PropertyRef Name="Suppliers_link_Id" />
           </Key>
-          <Property Name="Suppliers_link_code" Type="varchar" MaxLength="50" />
+          <Property Name="Suppliers_link_code" Type="nvarchar" MaxLength="100" />
           <Property Name="Item_Id" Type="int" />
           <Property Name="Suppliers_link_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
@@ -730,12 +741,12 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Extended_customs_procedure" Type="varchar(max)" />
-          <Property Name="National_customs_procedure" Type="varchar(max)" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="20" />
+          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="20" />
           <Property Name="Item_price" Type="float" Nullable="false" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
-          <Property Name="Value_item" Type="nvarchar(max)" />
-          <Property Name="Attached_doc_item" Type="nvarchar(max)" />
+          <Property Name="Value_item" Type="nvarchar" MaxLength="20" />
+          <Property Name="Attached_doc_item" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="xcuda_Taxation">
           <Key>
@@ -743,23 +754,23 @@
           </Key>
           <Property Name="Item_taxes_amount" Type="float" Nullable="false" />
           <Property Name="Item_taxes_guaranted_amount" Type="float" />
-          <Property Name="Counter_of_normal_mode_of_payment" Type="varchar(max)" />
-          <Property Name="Displayed_item_taxes_amount" Type="varchar(max)" />
+          <Property Name="Counter_of_normal_mode_of_payment" Type="nvarchar" MaxLength="20" />
+          <Property Name="Displayed_item_taxes_amount" Type="nvarchar" MaxLength="20" />
           <Property Name="Taxation_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Item_Id" Type="int" />
-          <Property Name="Item_taxes_mode_of_payment" Type="nvarchar(max)" />
+          <Property Name="Item_taxes_mode_of_payment" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="xcuda_Taxation_line">
           <Key>
             <PropertyRef Name="Taxation_line_Id" />
           </Key>
-          <Property Name="Duty_tax_Base" Type="varchar(max)" />
+          <Property Name="Duty_tax_Base" Type="nvarchar" MaxLength="20" />
           <Property Name="Duty_tax_rate" Type="float" Nullable="false" />
           <Property Name="Duty_tax_amount" Type="float" Nullable="false" />
           <Property Name="Taxation_line_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Taxation_Id" Type="int" />
-          <Property Name="Duty_tax_code" Type="nvarchar(max)" />
-          <Property Name="Duty_tax_MP" Type="nvarchar(max)" />
+          <Property Name="Duty_tax_code" Type="nvarchar" MaxLength="20" />
+          <Property Name="Duty_tax_MP" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="xcuda_Total">
           <Key>
@@ -780,14 +791,14 @@
             <PropertyRef Name="Traders_Id" />
           </Key>
           <Property Name="Traders_Id" Type="int" Nullable="false" />
-          <Property Name="Financial_code" Type="varchar(max)" />
+          <Property Name="Financial_code" Type="nvarchar(max)" />
           <Property Name="Financial_name" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="xcuda_Transit">
           <Key>
             <PropertyRef Name="Transit_Id" />
           </Key>
-          <Property Name="Time_limit" Type="varchar(max)" />
+          <Property Name="Time_limit" Type="nvarchar" MaxLength="10" />
           <Property Name="Transit_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
         </EntityType>
@@ -796,8 +807,8 @@
             <PropertyRef Name="Destination_Id" />
           </Key>
           <Property Name="Destination_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Office" Type="varchar(max)" />
-          <Property Name="Country" Type="varchar(max)" />
+          <Property Name="Office" Type="nvarchar" MaxLength="10" />
+          <Property Name="Country" Type="nvarchar" MaxLength="10" />
           <Property Name="Transit_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Transport">
@@ -808,21 +819,21 @@
           <Property Name="Single_waybill_flag" Type="bit" Nullable="false" />
           <Property Name="Transport_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" />
-          <Property Name="Location_of_goods" Type="varchar" MaxLength="50" />
+          <Property Name="Location_of_goods" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Type">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Type_of_declaration" Type="varchar(max)" />
-          <Property Name="Declaration_gen_procedure_code" Type="varchar(max)" />
+          <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="20" />
+          <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="20" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Valuation">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Calculation_working_mode" Type="varchar(max)" />
+          <Property Name="Calculation_working_mode" Type="nvarchar" MaxLength="20" />
           <Property Name="Total_cost" Type="float" Nullable="false" />
           <Property Name="Total_CIF" Type="float" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
@@ -835,15 +846,15 @@
           <Property Name="Total_CIF_itm" Type="float" Nullable="false" />
           <Property Name="Rate_of_adjustement" Type="float" />
           <Property Name="Statistical_value" Type="float" Nullable="false" />
-          <Property Name="Alpha_coeficient_of_apportionment" Type="varchar(max)" />
+          <Property Name="Alpha_coeficient_of_apportionment" Type="nvarchar" MaxLength="50" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Warehouse">
           <Key>
             <PropertyRef Name="Warehouse_Id" />
           </Key>
-          <Property Name="Identification" Type="varchar" MaxLength="50" />
-          <Property Name="Delay" Type="varchar" MaxLength="50" />
+          <Property Name="Identification" Type="nvarchar" MaxLength="20" />
+          <Property Name="Delay" Type="nvarchar" MaxLength="4" />
           <Property Name="ASYCUDA_Id" Type="int" />
           <Property Name="Warehouse_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
@@ -861,6 +872,23 @@
           <Property Name="Gross_weight_itm" Type="float" Nullable="false" />
           <Property Name="Net_weight_itm" Type="float" Nullable="false" />
           <Property Name="Valuation_item_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            
+            
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="nvarchar" MaxLength="50" />
+          <Property Name="SuppQty" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <Association Name="FK_ASYCUDA_Assessment_notice">
           <End Role="xcuda_ASYCUDA" Type="Self.xcuda_ASYCUDA" Multiplicity="0..1">
@@ -975,7 +1003,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ASYCUDA_Item">
-          <End Role="xcuda_ASYCUDA" Type="Self.xcuda_ASYCUDA" Multiplicity="1" />
+          <End Role="xcuda_ASYCUDA" Type="Self.xcuda_ASYCUDA" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="xcuda_ASYCUDA">
@@ -987,9 +1017,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_ASYCUDA_PreviousItem">
-          <End Role="xcuda_ASYCUDA" Type="Self.xcuda_ASYCUDA" Multiplicity="0..1">
-            <OnDelete Action="Cascade" />
-          </End>
+          <End Role="xcuda_ASYCUDA" Type="Self.xcuda_ASYCUDA" Multiplicity="0..1" />
           <End Role="xcuda_PreviousItem" Type="Self.xcuda_PreviousItem" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="xcuda_ASYCUDA">
@@ -1201,18 +1229,6 @@
             </Principal>
             <Dependent Role="xcuda_Type">
               <PropertyRef Name="ASYCUDA_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_InventoryItems_TariffCodes">
-          <End Role="TariffCodes" Type="Self.TariffCodes" Multiplicity="0..1" />
-          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TariffCodes">
-              <PropertyRef Name="TariffCode" />
-            </Principal>
-            <Dependent Role="InventoryItems">
-              <PropertyRef Name="TariffCode" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1705,7 +1721,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet">
-          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="0..1">
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="xcuda_ASYCUDA_ExtendedProperties" Type="Self.xcuda_ASYCUDA_ExtendedProperties" Multiplicity="*" />
@@ -1751,6 +1767,34 @@
             </Principal>
             <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
               <PropertyRef Name="ExportTemplateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xcuda_Attachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xcuda_Attachments" Type="Self.xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xcuda_Attachments_xcuda_Attached_documents">
+          <End Role="xcuda_Attached_documents" Type="Self.xcuda_Attached_documents" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xcuda_Attachments" Type="Self.xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Attached_documents">
+              <PropertyRef Name="Attached_documents_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="Attached_documents_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1936,20 +1980,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_xcuda_Inventory_Item_InventoryItems">
-          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="xcuda_Inventory_Item" Type="Self.xcuda_Inventory_Item" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItems">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="xcuda_Inventory_Item">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode">
           <End Role="xcuda_HScode" Type="Self.xcuda_HScode" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2041,11 +2071,11 @@
         </Function>
         <EntityContainer Name="WaterNutDBDataLayerStoreContainer">
           <EntitySet Name="AsycudaDocumentSet" EntityType="Self.AsycudaDocumentSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExportTemplate" EntityType="Self.ExportTemplate" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategory" EntityType="Self.TariffCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategoryCodeSuppUnit" EntityType="Self.TariffCategoryCodeSuppUnit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCodes" EntityType="Self.TariffCodes" Schema="dbo" store:Type="Tables" />
@@ -2055,6 +2085,7 @@
           <EntitySet Name="xcuda_ASYCUDA" EntityType="Self.xcuda_ASYCUDA" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_ASYCUDA_ExtendedProperties" EntityType="Self.xcuda_ASYCUDA_ExtendedProperties" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Attached_documents" EntityType="Self.xcuda_Attached_documents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xcuda_Attachments" EntityType="Self.xcuda_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Border_information" EntityType="Self.xcuda_Border_information" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Border_office" EntityType="Self.xcuda_Border_office" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Consignee" EntityType="Self.xcuda_Consignee" Schema="dbo" store:Type="Tables" />
@@ -2122,6 +2153,18 @@
           <EntitySet Name="xcuda_Warehouse" EntityType="Self.xcuda_Warehouse" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Weight" EntityType="Self.xcuda_Weight" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Weight_itm" EntityType="Self.xcuda_Weight_itm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+    [InventoryItemsEx].[Description] AS [Description], 
+    [InventoryItemsEx].[Category] AS [Category], 
+    [InventoryItemsEx].[TariffCode] AS [TariffCode], 
+    [InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+    [InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+    [InventoryItemsEx].[SuppQty] AS [SuppQty], 
+    [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+    FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_ASYCUDA_Assessment_notice" Association="Self.FK_ASYCUDA_Assessment_notice">
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_Assessment_notice" EntitySet="xcuda_Assessment_notice" />
@@ -2221,10 +2264,6 @@
           <AssociationSet Name="FK_Identification_Type" Association="Self.FK_Identification_Type">
             <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
             <End Role="xcuda_Type" EntitySet="xcuda_Type" />
-          </AssociationSet>
-          <AssociationSet Name="FK_InventoryItems_TariffCodes" Association="Self.FK_InventoryItems_TariffCodes">
-            <End Role="TariffCodes" EntitySet="TariffCodes" />
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
           </AssociationSet>
           <AssociationSet Name="FK_Item_Attached_documents" Association="Self.FK_Item_Attached_documents">
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
@@ -2382,6 +2421,14 @@
             <End Role="ExportTemplate" EntitySet="ExportTemplate" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Attachments_Attachments" Association="Self.FK_xcuda_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Attachments_xcuda_Attached_documents" Association="Self.FK_xcuda_Attachments_xcuda_Attached_documents">
+            <End Role="xcuda_Attached_documents" EntitySet="xcuda_Attached_documents" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
+          </AssociationSet>
           <AssociationSet Name="FK_xcuda_Country_xcuda_General_information" Association="Self.FK_xcuda_Country_xcuda_General_information">
             <End Role="xcuda_General_information" EntitySet="xcuda_General_information" />
             <End Role="xcuda_Country" EntitySet="xcuda_Country" />
@@ -2433,10 +2480,6 @@
           <AssociationSet Name="FK_xcuda_Gs_other_cost_xcuda_Valuation" Association="Self.FK_xcuda_Gs_other_cost_xcuda_Valuation">
             <End Role="xcuda_Valuation" EntitySet="xcuda_Valuation" />
             <End Role="xcuda_Gs_other_cost" EntitySet="xcuda_Gs_other_cost" />
-          </AssociationSet>
-          <AssociationSet Name="FK_xcuda_Inventory_Item_InventoryItems" Association="Self.FK_xcuda_Inventory_Item_InventoryItems">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
           </AssociationSet>
           <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode" Association="Self.FK_xcuda_Inventory_Item_xcuda_HScode">
             <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
@@ -2638,7 +2681,6 @@
           <EntitySet Name="Customs_Procedure" EntityType="WaterNutDB.DataLayer.Customs_Procedure" />
           <EntitySet Name="Document_Type" EntityType="WaterNutDB.DataLayer.Document_Type" />
           <EntitySet Name="ExportTemplate" EntityType="WaterNutDB.DataLayer.ExportTemplate" />
-          <EntitySet Name="InventoryItems" EntityType="WaterNutDB.DataLayer.InventoryItems" />
           <EntitySet Name="TariffCategory" EntityType="WaterNutDB.DataLayer.TariffCategory" />
           <EntitySet Name="TariffCodes" EntityType="WaterNutDB.DataLayer.TariffCodes" />
           <EntitySet Name="TariffSupUnitLkps" EntityType="WaterNutDB.DataLayer.TariffSupUnitLkps" />
@@ -2717,10 +2759,6 @@
           <AssociationSet Name="FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" Association="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate">
             <End Role="ExportTemplate" EntitySet="ExportTemplate" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
-          </AssociationSet>
-          <AssociationSet Name="FK_InventoryItems_TariffCodes" Association="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes">
-            <End Role="TariffCodes" EntitySet="TariffCodes" />
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
           </AssociationSet>
           <AssociationSet Name="FK_TariffCodes_TariffCategory" Association="WaterNutDB.DataLayer.FK_TariffCodes_TariffCategory">
             <End Role="TariffCategory" EntitySet="TariffCategory" />
@@ -2962,10 +3000,6 @@
             <End Role="xcuda_Valuation" EntitySet="xcuda_Valuation" />
             <End Role="xcuda_Weight" EntitySet="xcuda_Weight" />
           </AssociationSet>
-          <AssociationSet Name="xcuda_Inventory_Item" Association="WaterNutDB.DataLayer.xcuda_Inventory_Item">
-            <End Role="InventoryItems" EntitySet="InventoryItems" />
-            <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
-          </AssociationSet>
           <EntitySet Name="EntryPreviousItems" EntityType="WaterNutDB.DataLayer.EntryPreviousItems" />
           <AssociationSet Name="FK_EntryPreviousItems_xcuda_Item" Association="WaterNutDB.DataLayer.FK_EntryPreviousItems_xcuda_Item">
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
@@ -2979,6 +3013,30 @@
           <AssociationSet Name="FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps" Association="WaterNutDB.DataLayer.FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps">
             <End Role="TariffSupUnitLkps" EntitySet="TariffSupUnitLkps" />
             <End Role="TariffCategoryCodeSuppUnit" EntitySet="TariffCategoryCodeSuppUnit" />
+          </AssociationSet>
+          <EntitySet Name="InventoryItemsEx" EntityType="WaterNutDB.DataLayer.InventoryItemsEx" />
+          <AssociationSet Name="TariffCodesInventoryItemsEx" Association="WaterNutDB.DataLayer.TariffCodesInventoryItemsEx">
+            <End Role="TariffCodes" EntitySet="TariffCodes" />
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsEx" />
+          </AssociationSet>
+          <EntitySet Name="xcuda_Inventory_Item" EntityType="WaterNutDB.DataLayer.xcuda_Inventory_Item" />
+          <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode" Association="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode">
+            <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
+            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItemsExxcuda_Inventory_Item" Association="WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item">
+            <End Role="InventoryItemsEx" EntitySet="InventoryItemsEx" />
+            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
+          </AssociationSet>
+          <EntitySet Name="Attachments" EntityType="WaterNutDB.DataLayer.Attachments" />
+          <EntitySet Name="xcuda_Attachments" EntityType="WaterNutDB.DataLayer.xcuda_Attachments" />
+          <AssociationSet Name="FK_xcuda_Attachments_Attachments" Association="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Attachments_xcuda_Attached_documents" Association="WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents">
+            <End Role="xcuda_Attached_documents" EntitySet="xcuda_Attached_documents" />
+            <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
           </AssociationSet>
           </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -3021,7 +3079,7 @@
           <Property Type="Single" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Single" Name="Amount_foreign_currency" Nullable="false" />
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
-          <Property Type="String" Name="Currency_code" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_code" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Valuation_item_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_item_external_freight" FromRole="xcuda_item_external_freight" ToRole="xcuda_Valuation_item" />
         </EntityType>
@@ -3031,7 +3089,7 @@
           </Key>
           <Property Type="Double" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Double" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_name" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Double" Name="Currency_rate" />
           <Property Type="Int32" Name="Valuation_item_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_item_internal_freight" FromRole="xcuda_item_internal_freight" ToRole="xcuda_Valuation_item" />
@@ -3042,7 +3100,7 @@
           </Key>
           <Property Type="Single" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Single" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_code" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_code" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_item_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_Item_Invoice" FromRole="xcuda_Item_Invoice" ToRole="xcuda_Valuation_item" />
@@ -3053,7 +3111,7 @@
           </Key>
           <Property Type="Double" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Double" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="Double" Name="Currency_rate" />
           <Property Type="Int32" Name="Valuation_item_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_item_other_cost" FromRole="xcuda_item_other_cost" ToRole="xcuda_Valuation_item" />
@@ -3076,7 +3134,7 @@
           <Property Type="Double" Name="Total_CIF_itm" Nullable="false" />
           <Property Type="Double" Name="Rate_of_adjustement" />
           <Property Type="Double" Name="Statistical_value" Nullable="false" />
-          <Property Type="String" Name="Alpha_coeficient_of_apportionment" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Alpha_coeficient_of_apportionment" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Item_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_item_external_freight" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_item_external_freight" FromRole="xcuda_Valuation_item" ToRole="xcuda_item_external_freight" />
           <NavigationProperty Name="xcuda_item_internal_freight" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_item_internal_freight" FromRole="xcuda_Valuation_item" ToRole="xcuda_item_internal_freight" />
@@ -3187,7 +3245,7 @@
           </Key>
           <Property Type="Single" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Single" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_name" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_deduction_xcuda_Valuation" FromRole="xcuda_Gs_deduction" ToRole="xcuda_Valuation" />
@@ -3198,10 +3256,10 @@
           </Key>
           <Property Type="Single" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Single" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_name" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
-          <Property Type="String" Name="Currency_code" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_code" MaxLength="4" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_external_freight_xcuda_Valuation" FromRole="xcuda_Gs_external_freight" ToRole="xcuda_Valuation" />
         </EntityType>
         <EntityType Name="xcuda_Gs_insurance">
@@ -3210,7 +3268,7 @@
           </Key>
           <Property Type="Single" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Single" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_name" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_insurance_xcuda_Valuation" FromRole="xcuda_Gs_insurance" ToRole="xcuda_Valuation" />
@@ -3221,7 +3279,7 @@
           </Key>
           <Property Type="Single" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Single" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_internal_freight_xcuda_Valuation" FromRole="xcuda_Gs_internal_freight" ToRole="xcuda_Valuation" />
@@ -3232,7 +3290,7 @@
           </Key>
           <Property Type="Single" Name="Amount_national_currency" Nullable="false" />
           <Property Type="Single" Name="Amount_foreign_currency" Nullable="false" />
-          <Property Type="String" Name="Currency_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Currency_name" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_other_cost_xcuda_Valuation" FromRole="xcuda_Gs_other_cost" ToRole="xcuda_Valuation" />
@@ -3258,21 +3316,21 @@
           <Key>
             <PropertyRef Name="Country_Id" />
           </Key>
-          <Property Type="String" Name="Country_first_destination" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Country_of_origin_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Country_first_destination" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Country_of_origin_name" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Country_Id" Nullable="false" annotation:StoreGeneratedPattern="None" />
           <Property Type="Int32" Name="Place_of_loading_Id" />
           <NavigationProperty Name="xcuda_General_information" Relationship="WaterNutDB.DataLayer.FK_xcuda_Country_xcuda_General_information" FromRole="xcuda_Country" ToRole="xcuda_General_information" />
           <NavigationProperty Name="xcuda_Destination" Relationship="WaterNutDB.DataLayer.FK_xcuda_Destination_xcuda_Country" FromRole="xcuda_Country" ToRole="xcuda_Destination" />
           <NavigationProperty Name="xcuda_Export" Relationship="WaterNutDB.DataLayer.FK_xcuda_Export_xcuda_Country" FromRole="xcuda_Country" ToRole="xcuda_Export" />
-          <Property Type="String" Name="Trading_country" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Trading_country" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Destination">
           <Key>
             <PropertyRef Name="Country_Id" />
           </Key>
-          <Property Type="String" Name="Destination_country_code" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Destination_country_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Destination_country_code" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Destination_country_name" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Country_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Country" Relationship="WaterNutDB.DataLayer.FK_xcuda_Destination_xcuda_Country" FromRole="xcuda_Destination" ToRole="xcuda_Country" />
         </EntityType>
@@ -3280,21 +3338,21 @@
           <Key>
             <PropertyRef Name="Country_Id" />
           </Key>
-          <Property Type="String" Name="Export_country_code" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Export_country_name" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Export_country_code" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Export_country_name" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Country_Id" Nullable="false" />
-          <Property Type="String" Name="Export_country_region" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Export_country_region" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Country" Relationship="WaterNutDB.DataLayer.FK_xcuda_Export_xcuda_Country" FromRole="xcuda_Export" ToRole="xcuda_Country" />
         </EntityType>
         <EntityType Name="xcuda_General_information">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Type="String" Name="Value_details" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Value_details" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="ASYCUDA_Id" Nullable="false" />
-          <Property Type="String" Name="CAP" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Additional_information" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Comments_free_text" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="CAP" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Additional_information" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Comments_free_text" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Country" Relationship="WaterNutDB.DataLayer.FK_xcuda_Country_xcuda_General_information" FromRole="xcuda_General_information" ToRole="xcuda_Country" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_General_information" FromRole="xcuda_General_information" ToRole="xcuda_ASYCUDA" />
         </EntityType>
@@ -3343,17 +3401,17 @@
             <PropertyRef Name="Traders_Id" />
           </Key>
           <Property Type="Int32" Name="Traders_Id" Nullable="false" />
-          <Property Type="String" Name="Consignee_code" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="Consignee_name" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Consignee_code" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Consignee_name" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Traders" Relationship="WaterNutDB.DataLayer.FK_Traders_Consignee" FromRole="xcuda_Consignee" ToRole="xcuda_Traders" />
         </EntityType>
         <EntityType Name="xcuda_Exporter">
           <Key>
             <PropertyRef Name="Traders_Id" />
           </Key>
-          <Property Type="String" Name="Exporter_name" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Exporter_name" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Traders_Id" Nullable="false" />
-          <Property Type="String" Name="Exporter_code" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Exporter_code" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Traders" Relationship="WaterNutDB.DataLayer.FK_Traders_Exporter" FromRole="xcuda_Exporter" ToRole="xcuda_Traders" />
         </EntityType>
         <EntityType Name="xcuda_Traders">
@@ -3371,7 +3429,7 @@
             <PropertyRef Name="Traders_Id" />
           </Key>
           <Property Type="Int32" Name="Traders_Id" Nullable="false" />
-          <Property Type="String" Name="Financial_code" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="Financial_code" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Financial_name" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Traders" Relationship="WaterNutDB.DataLayer.FK_Traders_Financial" FromRole="xcuda_Traders_Financial" ToRole="xcuda_Traders" />
         </EntityType>
@@ -3431,25 +3489,26 @@
             <PropertyRef Name="AsycudaDocumentSetId" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Exchange_Rate" Type="Double" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" />
-          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Currency_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Document_TypeId" Type="Int32" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EntryTimeStamp" Type="DateTime" Precision="3" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <Property Name="StartingFileCount" Type="Int32" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="AsycudaDocumentSet" ToRole="Customs_Procedure" />
           <NavigationProperty Name="Document_Type" Relationship="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type" FromRole="AsycudaDocumentSet" ToRole="Document_Type" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
-          <Property Name="ApportionMethod" Type="Int32" />
+          <Property Name="ApportionMethod" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3457,8 +3516,8 @@
           </Key>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDefault" Type="Boolean" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Document_Type" Relationship="WaterNutDB.DataLayer.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
@@ -3469,8 +3528,8 @@
             <PropertyRef Name="Document_TypeId" />
           </Key>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Type_of_declaration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Document_Type" FromRole="Document_Type" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Customs_Procedures" Relationship="WaterNutDB.DataLayer.FK_Customs_Procedure_Document_Type" FromRole="Document_Type" ToRole="Customs_Procedure" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" FromRole="Document_Type" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
@@ -3480,53 +3539,42 @@
             <PropertyRef Name="ExportTemplateId" />
           </Key>
           <Property Name="ExportTemplateId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Exporter_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Exporter_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Consignee_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Consignee_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Financial_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Customs_clearance_office_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Customs_Procedure" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Declarant_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Country_first_destination" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Trading_country" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Export_country_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Destination_country_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TransportName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TransportNationality" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Location_of_goods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Border_information_Mode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Delivery_terms_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Border_office_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Gs_Invoice_Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Warehouse_Identification" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Warehouse_Delay" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Number_of_packages" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Total_number_of_packages" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Deffered_payment_reference" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Consignee_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Consignee_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Financial_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Customs_clearance_office_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Customs_Procedure" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Country_first_destination" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Trading_country" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Export_country_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Destination_country_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TransportName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TransportNationality" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Location_of_goods" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Border_information_Mode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Delivery_terms_Code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Border_office_Code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Gs_Invoice_Currency_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Warehouse_Identification" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Warehouse_Delay" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Number_of_packages" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Total_number_of_packages" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Deffered_payment_reference" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" FromRole="ExportTemplate" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
-        </EntityType>
-        <EntityType Name="InventoryItems">
-          <Key>
-            <PropertyRef Name="ItemNumber" />
-          </Key>
-          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
-          <Property Name="TariffCode" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="EntryTimeStamp" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="TariffCodes" Relationship="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes" FromRole="InventoryItems" ToRole="TariffCodes" />
-          <NavigationProperty Name="xcuda_HScode" Relationship="WaterNutDB.DataLayer.xcuda_Inventory_Item" FromRole="InventoryItems" ToRole="xcuda_HScode" />
-          <Property Name="Quantity" Type="Int32" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AttachedDocumentCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
             <PropertyRef Name="TariffCategoryCode" />
           </Key>
-          <Property Name="TariffCategoryCode" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="999" FixedLength="false" Unicode="false" />
-          <Property Name="ParentTariffCategoryCode" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="TariffCategoryCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="999" FixedLength="false" Unicode="true" />
+          <Property Name="ParentTariffCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LicenseRequired" Type="Boolean" />
           <NavigationProperty Name="TariffCodes" Relationship="WaterNutDB.DataLayer.FK_TariffCodes_TariffCategory" FromRole="TariffCategory" ToRole="TariffCodes" />
           <NavigationProperty Name="TariffCategoryCodeSuppUnit" Relationship="WaterNutDB.DataLayer.FK_TariffCategoryCodeSuppUnit_TariffCategory" FromRole="TariffCategory" ToRole="TariffCategoryCodeSuppUnit" />
@@ -3535,21 +3583,21 @@
           <Key>
             <PropertyRef Name="TariffCode" />
           </Key>
-          <Property Name="TariffCode" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="Description" Type="String" MaxLength="999" FixedLength="false" Unicode="false" />
-          <Property Name="RateofDuty" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EnvironmentalLevy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CustomsServiceCharge" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ExciseTax" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="VatRate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PetrolTax" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Units" Type="String" MaxLength="999" FixedLength="false" Unicode="true" />
-          <Property Name="SiteRev3" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TariffCategoryCode" Type="String" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="TariffCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="999" FixedLength="false" Unicode="true" />
+          <Property Name="RateofDuty" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EnvironmentalLevy" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomsServiceCharge" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ExciseTax" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VatRate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PetrolTax" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Units" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SiteRev3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LicenseRequired" Type="Boolean" />
-          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes" FromRole="TariffCodes" ToRole="InventoryItems" />
           <NavigationProperty Name="TariffCategory" Relationship="WaterNutDB.DataLayer.FK_TariffCodes_TariffCategory" FromRole="TariffCodes" ToRole="TariffCategory" />
           <Property Name="Invalid" Type="Boolean" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDB.DataLayer.TariffCodesInventoryItemsEx" FromRole="TariffCodes" ToRole="InventoryItemsEx" />
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -3565,8 +3613,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Number" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDB.DataLayer.FK_Identification_Assessment" FromRole="xcuda_Assessment" ToRole="xcuda_Identification" />
         </EntityType>
@@ -3582,9 +3630,9 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="id" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="EntryTimeStamp" Type="DateTime" Precision="3" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <NavigationProperty Name="xcuda_Assessment_notice" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Assessment_notice" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Assessment_notice" />
           <NavigationProperty Name="xcuda_Container" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Container" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Container" />
           <NavigationProperty Name="xcuda_Declarant" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Declarant" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Declarant" />
@@ -3609,19 +3657,19 @@
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileNumber" Type="Int32" />
           <Property Name="IsManuallyAssessed" Type="Boolean" />
-          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RegistrationDate" Type="DateTime" Precision="3" />
-          <Property Name="ReferenceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="ReferenceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Customs_ProcedureId" Type="Int32" />
           <Property Name="Document_TypeId" Type="Int32" />
-          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ExportTemplateId" Type="Int32" />
-          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AutoUpdate" Type="Boolean" />
-          <Property Name="EffectiveRegistrationDate" Type="DateTime" Precision="3" />
+          <Property Name="EffectiveRegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="DoNotAllocate" Type="Boolean" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Customs_Procedure" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="Customs_Procedure" />
@@ -3636,20 +3684,21 @@
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
-          <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="7" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
             <PropertyRef Name="Attached_documents_Id" />
           </Key>
-          <Property Name="Attached_document_date" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Attached_document_date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Attached_documents_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Item_Id" Type="Int32" />
-          <Property Name="Attached_document_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Attached_document_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Attached_document_reference" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Attached_document_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Attached_document_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Attached_document_reference" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Attached_document_from_rule" Type="Int32" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Attached_documents" FromRole="xcuda_Attached_documents" ToRole="xcuda_Item" />
+          <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents" FromRole="xcuda_Attached_documents" ToRole="xcuda_Attachments" />
         </EntityType>
         <EntityType Name="xcuda_Border_information">
           <Key>
@@ -3657,8 +3706,8 @@
           </Key>
           <Property Name="Border_information_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Means_of_transport_Id" Type="Int32" />
-          <Property Name="Identity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Nationality" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Identity" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Nationality" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Mode" Type="Int32" />
           <NavigationProperty Name="xcuda_Means_of_transport" Relationship="WaterNutDB.DataLayer.FK_Means_of_transport_Border_information" FromRole="xcuda_Border_information" ToRole="xcuda_Means_of_transport" />
         </EntityType>
@@ -3668,22 +3717,22 @@
           </Key>
           <Property Name="Border_office_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Transport_Id" Type="Int32" />
-          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Transport" Relationship="WaterNutDB.DataLayer.FK_Transport_Border_office" FromRole="xcuda_Border_office" ToRole="xcuda_Transport" />
         </EntityType>
         <EntityType Name="xcuda_Container">
           <Key>
             <PropertyRef Name="Container_Id" />
           </Key>
-          <Property Name="Item_Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Container_identity" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Container_type" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Empty_full_indicator" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Item_Number" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Container_identity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Container_type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Empty_full_indicator" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Gross_weight" Type="Single" Nullable="false" />
-          <Property Name="Goods_description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Packages_type" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Packages_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Goods_description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_number" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Packages_weight" Type="Single" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="Container_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
@@ -3693,11 +3742,11 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Declarant_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Declarant_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Declarant_representative" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Declarant_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_representative" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Number" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Declarant" FromRole="xcuda_Declarant" ToRole="xcuda_ASYCUDA" />
         </EntityType>
         <EntityType Name="xcuda_Delivery_terms">
@@ -3706,9 +3755,9 @@
           </Key>
           <Property Name="Delivery_terms_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Transport_Id" Type="Int32" />
-          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Place" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Situation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Place" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Situation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Transport" Relationship="WaterNutDB.DataLayer.FK_Transport_Delivery_terms" FromRole="xcuda_Delivery_terms" ToRole="xcuda_Transport" />
         </EntityType>
         <EntityType Name="xcuda_Departure_arrival_information">
@@ -3717,16 +3766,16 @@
           </Key>
           <Property Name="Departure_arrival_information_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Means_of_transport_Id" Type="Int32" />
-          <Property Name="Identity" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Nationality" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Identity" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Nationality" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Means_of_transport" Relationship="WaterNutDB.DataLayer.FK_Means_of_transport_Departure_arrival_information" FromRole="xcuda_Departure_arrival_information" ToRole="xcuda_Means_of_transport" />
         </EntityType>
         <EntityType Name="xcuda_Export_release">
           <Key>
             <PropertyRef Name="Export_release_Id" />
           </Key>
-          <Property Name="Date_of_exit" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Time_of_exit" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Date_of_exit" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Time_of_exit" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Export_release_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Export_release" FromRole="xcuda_Export_release" ToRole="xcuda_ASYCUDA" />
@@ -3737,9 +3786,9 @@
           </Key>
           <Property Name="Financial_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
-          <Property Name="Deffered_payment_reference" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Mode_of_payment" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Financial_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Deffered_payment_reference" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Mode_of_payment" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Financial_Code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Financial" FromRole="xcuda_Financial" ToRole="xcuda_ASYCUDA" />
           <NavigationProperty Name="xcuda_Financial_Amounts" Relationship="WaterNutDB.DataLayer.FK_xcuda_Financialxcuda_Financial_Amounts" FromRole="xcuda_Financial" ToRole="xcuda_Financial_Amounts" />
           <NavigationProperty Name="xcuda_Financial_Guarantee" Relationship="WaterNutDB.DataLayer.FK_xcuda_Financialxcuda_Financial_Guarantee" FromRole="xcuda_Financial" ToRole="xcuda_Financial_Guarantee" />
@@ -3762,7 +3811,7 @@
           <Property Name="Guarantee_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Financial_Id" Type="Int32" Nullable="false" />
           <Property Name="Amount" Type="Decimal" Precision="15" Scale="4" />
-          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Date" Type="DateTime" Precision="7" />
           <NavigationProperty Name="xcuda_Financial" Relationship="WaterNutDB.DataLayer.FK_xcuda_Financialxcuda_Financial_Guarantee" FromRole="xcuda_Financial_Guarantee" ToRole="xcuda_Financial" />
         </EntityType>
         <EntityType Name="xcuda_Global_taxes">
@@ -3777,9 +3826,9 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Country_of_origin_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Description_of_goods" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Commercial_Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Description_of_goods" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Commercial_Description" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Goods_description" FromRole="xcuda_Goods_description" ToRole="xcuda_Item" />
         </EntityType>
@@ -3789,29 +3838,29 @@
           </Key>
           <Property Name="Amount_national_currency" Type="Double" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="Double" Nullable="false" />
-          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Currency_rate" Type="Double" Nullable="false" />
           <Property Name="Valuation_Id" Type="Int32" Nullable="false" />
-          <Property Name="Currency_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Currency_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_Invoice_xcuda_Valuation" FromRole="xcuda_Gs_Invoice" ToRole="xcuda_Valuation" />
         </EntityType>
         <EntityType Name="xcuda_HScode">
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Commodity_code" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
-          <Property Name="Precision_1" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Precision_4" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Commodity_code" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Precision_1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Precision_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Tarification" Relationship="WaterNutDB.DataLayer.FK_Tarification_HScode" FromRole="xcuda_HScode" ToRole="xcuda_Tarification" />
-          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDB.DataLayer.xcuda_Inventory_Item" FromRole="xcuda_HScode" ToRole="InventoryItems" />
+          <NavigationProperty Name="xcuda_Inventory_Item" Relationship="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode" FromRole="xcuda_HScode" ToRole="xcuda_Inventory_Item" />
         </EntityType>
         <EntityType Name="xcuda_Identification">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="Manifest_reference_number" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Manifest_reference_number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Assessment" Relationship="WaterNutDB.DataLayer.FK_Identification_Assessment" FromRole="xcuda_Identification" ToRole="xcuda_Assessment" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Identification" FromRole="xcuda_Identification" ToRole="xcuda_ASYCUDA" />
           <NavigationProperty Name="xcuda_Office_segment" Relationship="WaterNutDB.DataLayer.FK_Identification_Office_segment" FromRole="xcuda_Identification" ToRole="xcuda_Office_segment" />
@@ -3823,19 +3872,19 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Amount_deducted_from_licence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Quantity_deducted_from_licence" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Amount_deducted_from_licence" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity_deducted_from_licence" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="Licence_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Free_text_1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Free_text_2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Licence_number" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="Free_text_1" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Free_text_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataDetailsId" Type="Int32" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="IsAssessed" Type="Boolean" />
           <Property Name="DPQtyAllocated" Type="Double" Nullable="false" />
           <Property Name="DFQtyAllocated" Type="Double" Nullable="false" />
-          <Property Name="EntryTimeStamp" Type="DateTime" Precision="3" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <Property Name="AttributeOnlyAllocation" Type="Boolean" />
           <Property Name="DoNotAllocate" Type="Boolean" />
           <Property Name="DoNotEX" Type="Boolean" />
@@ -3851,8 +3900,11 @@
           <NavigationProperty Name="xcuda_PreviousItem" Relationship="WaterNutDB.DataLayer.FK_xcuda_PreviousItem_xcuda_Item" FromRole="xcuda_Item" ToRole="xcuda_PreviousItem" />
           <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="EntryPreviousItems" Relationship="WaterNutDB.DataLayer.FK_EntryPreviousItems_xcuda_Item" FromRole="xcuda_Item" ToRole="EntryPreviousItems" />
-          <Property Name="WarehouseError" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="WarehouseError" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SalesFactor" Type="Double" Nullable="false" />
+          <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -3860,7 +3912,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="Double" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="Double" Nullable="false" />
-          <Property Name="Currency_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Currency_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Currency_rate" Type="Double" />
           <Property Name="Valuation_item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_item_deduction" FromRole="xcuda_item_deduction" ToRole="xcuda_Valuation_item" />
@@ -3871,7 +3923,7 @@
           </Key>
           <Property Name="Amount_national_currency" Type="Double" Nullable="false" />
           <Property Name="Amount_foreign_currency" Type="Double" Nullable="false" />
-          <Property Name="Currency_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Currency_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Currency_rate" Type="Double" />
           <Property Name="Valuation_item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDB.DataLayer.FK_Valuation_item_item_insurance" FromRole="xcuda_item_insurance" ToRole="xcuda_Valuation_item" />
@@ -3882,7 +3934,7 @@
           </Key>
           <Property Name="Means_of_transport_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Transport_Id" Type="Int32" />
-          <Property Name="Inland_mode_of_transport" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Inland_mode_of_transport" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Border_information" Relationship="WaterNutDB.DataLayer.FK_Means_of_transport_Border_information" FromRole="xcuda_Means_of_transport" ToRole="xcuda_Border_information" />
           <NavigationProperty Name="xcuda_Departure_arrival_information" Relationship="WaterNutDB.DataLayer.FK_Means_of_transport_Departure_arrival_information" FromRole="xcuda_Means_of_transport" ToRole="xcuda_Departure_arrival_information" />
           <NavigationProperty Name="xcuda_Transport" Relationship="WaterNutDB.DataLayer.FK_Transport_Means_of_transport" FromRole="xcuda_Means_of_transport" ToRole="xcuda_Transport" />
@@ -3891,8 +3943,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number_of_loading_lists" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Total_number_of_items" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Number_of_loading_lists" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Total_number_of_items" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Total_number_of_packages" Type="Double" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Property" Relationship="WaterNutDB.DataLayer.FK_Property_Nbers" FromRole="xcuda_Nbers" ToRole="xcuda_Property" />
@@ -3901,8 +3953,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Customs_clearance_office_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Customs_Clearance_office_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Customs_clearance_office_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Customs_Clearance_office_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDB.DataLayer.FK_Identification_Office_segment" FromRole="xcuda_Office_segment" ToRole="xcuda_Identification" />
         </EntityType>
@@ -3911,12 +3963,12 @@
             <PropertyRef Name="Packages_Id" />
           </Key>
           <Property Name="Number_of_packages" Type="Double" Nullable="false" />
-          <Property Name="Kind_of_packages_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Kind_of_packages_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Kind_of_packages_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Kind_of_packages_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Packages_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Item_Id" Type="Int32" />
-          <Property Name="Marks1_of_packages" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Marks2_of_packages" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Marks1_of_packages" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Marks2_of_packages" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Packages" FromRole="xcuda_Packages" ToRole="xcuda_Item" />
         </EntityType>
         <EntityType Name="xcuda_Place_of_loading">
@@ -3931,7 +3983,7 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Summary_declaration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Summary_declaration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Previous_doc" FromRole="xcuda_Previous_doc" ToRole="xcuda_Item" />
         </EntityType>
@@ -3939,29 +3991,29 @@
           <Key>
             <PropertyRef Name="PreviousItem_Id" />
           </Key>
-          <Property Name="Packages_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Previous_Packages_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Hs_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Commodity_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Previous_item_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Goods_origin" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Previous_Packages_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Hs_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Commodity_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Previous_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Goods_origin" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Net_weight" Type="Double" Nullable="false" />
           <Property Name="Prev_net_weight" Type="Double" Nullable="false" />
-          <Property Name="Prev_reg_ser" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Prev_reg_nbr" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Prev_reg_dat" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Prev_reg_cuo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Prev_reg_ser" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Prev_reg_nbr" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Prev_reg_dat" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Prev_reg_cuo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Suplementary_Quantity" Type="Double" Nullable="false" />
           <Property Name="Preveious_suplementary_quantity" Type="Double" Nullable="false" />
           <Property Name="Current_value" Type="Double" Nullable="false" />
           <Property Name="Previous_value" Type="Double" Nullable="false" />
-          <Property Name="Current_item_number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Current_item_number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_PreviousItem" FromRole="xcuda_PreviousItem" ToRole="xcuda_ASYCUDA" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_xcuda_PreviousItem_xcuda_Item" FromRole="xcuda_PreviousItem" ToRole="xcuda_Item" />
-          <Property Name="Prev_decl_HS_spec" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Prev_decl_HS_spec" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Principal">
           <Key>
@@ -3975,11 +4027,11 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Sad_flow" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Date_of_declaration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Selected_page" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Sad_flow" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Date_of_declaration" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Selected_page" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="Place_of_declaration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Place_of_declaration" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Property" FromRole="xcuda_Property" ToRole="xcuda_ASYCUDA" />
           <NavigationProperty Name="xcuda_Forms" Relationship="WaterNutDB.DataLayer.FK_xcuda_Forms_xcuda_Property" FromRole="xcuda_Property" ToRole="xcuda_Forms" />
           <NavigationProperty Name="xcuda_Nbers" Relationship="WaterNutDB.DataLayer.FK_Property_Nbers" FromRole="xcuda_Property" ToRole="xcuda_Nbers" />
@@ -3988,8 +4040,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDB.DataLayer.FK_Identification_receipt" FromRole="xcuda_receipt" ToRole="xcuda_Identification" />
         </EntityType>
@@ -3997,8 +4049,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Date" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDB.DataLayer.FK_Identification_Registration" FromRole="xcuda_Registration" ToRole="xcuda_Identification" />
         </EntityType>
@@ -4006,7 +4058,7 @@
           <Key>
             <PropertyRef Name="Seals_Id" />
           </Key>
-          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Number" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Seals_Id" Type="Int32" Nullable="false" />
           <Property Name="Transit_Id" Type="Int32" />
           <NavigationProperty Name="xcuda_Transit" Relationship="WaterNutDB.DataLayer.FK_Transit_Seals" FromRole="xcuda_Seals" ToRole="xcuda_Transit" />
@@ -4015,7 +4067,7 @@
           <Key>
             <PropertyRef Name="Signature_Id" />
           </Key>
-          <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Date" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Signature_Id" Type="Int32" Nullable="false" />
           <Property Name="Transit_Id" Type="Int32" />
           <NavigationProperty Name="xcuda_Transit" Relationship="WaterNutDB.DataLayer.FK_Transit_Signature" FromRole="xcuda_Signature" ToRole="xcuda_Transit" />
@@ -4027,8 +4079,8 @@
           <Property Name="Suppplementary_unit_quantity" Type="Double" />
           <Property Name="Supplementary_unit_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Tarification_Id" Type="Int32" Nullable="false" />
-          <Property Name="Suppplementary_unit_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Suppplementary_unit_name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Suppplementary_unit_code" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="Suppplementary_unit_name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Tarification" Relationship="WaterNutDB.DataLayer.FK_Tarification_Supplementary_unit" FromRole="xcuda_Supplementary_unit" ToRole="xcuda_Tarification" />
           <Property Name="IsFirstRow" Type="Boolean" />
         </EntityType>
@@ -4036,7 +4088,7 @@
           <Key>
             <PropertyRef Name="Suppliers_documents_Id" />
           </Key>
-          <Property Name="Suppliers_document_date" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Suppliers_document_date" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Suppliers_documents_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="Suppliers_document_itmlink" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -4057,7 +4109,7 @@
           <Key>
             <PropertyRef Name="Suppliers_link_Id" />
           </Key>
-          <Property Name="Suppliers_link_code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Suppliers_link_code" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" />
           <Property Name="Suppliers_link_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Suppliers_link" FromRole="xcuda_Suppliers_link" ToRole="xcuda_Item" />
@@ -4066,12 +4118,12 @@
           <Key>
             <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Item_price" Type="Double" Nullable="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
-          <Property Name="Value_item" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Attached_doc_item" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Value_item" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Attached_doc_item" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_HScode" Relationship="WaterNutDB.DataLayer.FK_Tarification_HScode" FromRole="xcuda_Tarification" ToRole="xcuda_HScode" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Tarification" FromRole="xcuda_Tarification" ToRole="xcuda_Item" />
           <NavigationProperty Name="Unordered_xcuda_Supplementary_unit" Relationship="WaterNutDB.DataLayer.FK_Tarification_Supplementary_unit" FromRole="xcuda_Tarification" ToRole="xcuda_Supplementary_unit" />
@@ -4082,11 +4134,11 @@
           </Key>
           <Property Name="Item_taxes_amount" Type="Double" Nullable="false" />
           <Property Name="Item_taxes_guaranted_amount" Type="Double" />
-          <Property Name="Counter_of_normal_mode_of_payment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Displayed_item_taxes_amount" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Counter_of_normal_mode_of_payment" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Displayed_item_taxes_amount" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Taxation_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Item_Id" Type="Int32" />
-          <Property Name="Item_taxes_mode_of_payment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Item_taxes_mode_of_payment" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Taxation" FromRole="xcuda_Taxation" ToRole="xcuda_Item" />
           <NavigationProperty Name="xcuda_Taxation_line" Relationship="WaterNutDB.DataLayer.FK_Taxation_Taxation_line" FromRole="xcuda_Taxation" ToRole="xcuda_Taxation_line" />
         </EntityType>
@@ -4094,20 +4146,20 @@
           <Key>
             <PropertyRef Name="Taxation_line_Id" />
           </Key>
-          <Property Name="Duty_tax_Base" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Duty_tax_Base" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Duty_tax_rate" Type="Double" Nullable="false" />
           <Property Name="Duty_tax_amount" Type="Double" Nullable="false" />
           <Property Name="Taxation_line_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Taxation_Id" Type="Int32" />
-          <Property Name="Duty_tax_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="Duty_tax_MP" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Duty_tax_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Duty_tax_MP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Taxation" Relationship="WaterNutDB.DataLayer.FK_Taxation_Taxation_line" FromRole="xcuda_Taxation_line" ToRole="xcuda_Taxation" />
         </EntityType>
         <EntityType Name="xcuda_Transit">
           <Key>
             <PropertyRef Name="Transit_Id" />
           </Key>
-          <Property Name="Time_limit" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Time_limit" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Transit_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Transit" FromRole="xcuda_Transit" ToRole="xcuda_ASYCUDA" />
@@ -4121,8 +4173,8 @@
             <PropertyRef Name="Destination_Id" />
           </Key>
           <Property Name="Destination_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Office" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Country" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Office" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Transit_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Transit" Relationship="WaterNutDB.DataLayer.FK_xcuda_Transit_Destination_xcuda_Transit" FromRole="xcuda_Transit_Destination" ToRole="xcuda_Transit" />
         </EntityType>
@@ -4134,7 +4186,7 @@
           <Property Name="Single_waybill_flag" Type="Boolean" Nullable="false" />
           <Property Name="Transport_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
-          <Property Name="Location_of_goods" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Location_of_goods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Transport" FromRole="xcuda_Transport" ToRole="xcuda_ASYCUDA" />
           <NavigationProperty Name="xcuda_Border_office" Relationship="WaterNutDB.DataLayer.FK_Transport_Border_office" FromRole="xcuda_Transport" ToRole="xcuda_Border_office" />
           <NavigationProperty Name="xcuda_Delivery_terms" Relationship="WaterNutDB.DataLayer.FK_Transport_Delivery_terms" FromRole="xcuda_Transport" ToRole="xcuda_Delivery_terms" />
@@ -4145,8 +4197,8 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Type_of_declaration" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Type_of_declaration" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Identification" Relationship="WaterNutDB.DataLayer.FK_Identification_Type" FromRole="xcuda_Type" ToRole="xcuda_Identification" />
         </EntityType>
@@ -4154,7 +4206,7 @@
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
           </Key>
-          <Property Name="Calculation_working_mode" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Calculation_working_mode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Total_cost" Type="Double" Nullable="false" />
           <Property Name="Total_CIF" Type="Double" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
@@ -4172,8 +4224,8 @@
           <Key>
             <PropertyRef Name="Warehouse_Id" />
           </Key>
-          <Property Name="Identification" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Delay" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Identification" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Delay" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" />
           <Property Name="Warehouse_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDB.DataLayer.FK_ASYCUDA_Warehouse" FromRole="xcuda_Warehouse" ToRole="xcuda_ASYCUDA" />
@@ -4203,7 +4255,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet">
-          <End Type="WaterNutDB.DataLayer.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="0..1">
+          <End Type="WaterNutDB.DataLayer.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Type="WaterNutDB.DataLayer.xcuda_ASYCUDA_ExtendedProperties" Role="xcuda_ASYCUDA_ExtendedProperties" Multiplicity="*" />
@@ -4261,18 +4313,6 @@
             </Principal>
             <Dependent Role="xcuda_ASYCUDA_ExtendedProperties">
               <PropertyRef Name="ExportTemplateId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_InventoryItems_TariffCodes">
-          <End Type="WaterNutDB.DataLayer.TariffCodes" Role="TariffCodes" Multiplicity="0..1" />
-          <End Type="WaterNutDB.DataLayer.InventoryItems" Role="InventoryItems" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TariffCodes">
-              <PropertyRef Name="TariffCode" />
-            </Principal>
-            <Dependent Role="InventoryItems">
-              <PropertyRef Name="TariffCode" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5112,10 +5152,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="xcuda_Inventory_Item">
-          <End Type="WaterNutDB.DataLayer.InventoryItems" Role="InventoryItems" Multiplicity="*" />
-          <End Type="WaterNutDB.DataLayer.xcuda_HScode" Role="xcuda_HScode" Multiplicity="*" />
-        </Association>
         <EntityType Name="EntryPreviousItems">
           <Key>
             <PropertyRef Name="EntryPreviousItemId" />
@@ -5144,7 +5180,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TariffCategoryCode" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="false" />
+          <Property Name="TariffCategoryCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="TariffSupUnitId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="TariffCategory" Relationship="WaterNutDB.DataLayer.FK_TariffCategoryCodeSuppUnit_TariffCategory" FromRole="TariffCategoryCodeSuppUnit" ToRole="TariffCategory" />
           <NavigationProperty Name="TariffSupUnitLkps" Relationship="WaterNutDB.DataLayer.FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps" FromRole="TariffCategoryCodeSuppUnit" ToRole="TariffSupUnitLkps" />
@@ -5174,6 +5210,116 @@
             </Principal>
             <Dependent Role="TariffCategoryCodeSuppUnit">
               <PropertyRef Name="TariffSupUnitId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InventoryItemsEx">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="SuppUnitCode2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SuppQty" Type="Double" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="TariffCodes" Relationship="WaterNutDB.DataLayer.TariffCodesInventoryItemsEx" FromRole="InventoryItemsEx" ToRole="TariffCodes" />
+          <NavigationProperty Name="xcuda_Inventory_Item" Relationship="WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item" FromRole="InventoryItemsEx" ToRole="xcuda_Inventory_Item" />
+        </EntityType>
+        <Association Name="TariffCodesInventoryItemsEx">
+          <End Type="WaterNutDB.DataLayer.TariffCodes" Role="TariffCodes" Multiplicity="0..1" />
+          <End Type="WaterNutDB.DataLayer.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TariffCodes">
+              <PropertyRef Name="TariffCode" />
+            </Principal>
+            <Dependent Role="InventoryItemsEx">
+              <PropertyRef Name="TariffCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="xcuda_Inventory_Item">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xcuda_HScode" Relationship="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode" FromRole="xcuda_Inventory_Item" ToRole="xcuda_HScode" />
+          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item" FromRole="xcuda_Inventory_Item" ToRole="InventoryItemsEx" />
+        </EntityType>
+        <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode">
+          <End Type="WaterNutDB.DataLayer.xcuda_HScode" Role="xcuda_HScode" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDB.DataLayer.xcuda_Inventory_Item" Role="xcuda_Inventory_Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_HScode">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Inventory_Item">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsExxcuda_Inventory_Item">
+          <End Type="WaterNutDB.DataLayer.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
+          <End Type="WaterNutDB.DataLayer.xcuda_Inventory_Item" Role="xcuda_Inventory_Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItemsEx">
+              <PropertyRef Name="ItemNumber" />
+            </Principal>
+            <Dependent Role="xcuda_Inventory_Item">
+              <PropertyRef Name="ItemNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments" FromRole="Attachments" ToRole="xcuda_Attachments" />
+        </EntityType>
+        <EntityType Name="xcuda_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="Attached_documents_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Attachments" Relationship="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments" FromRole="xcuda_Attachments" ToRole="Attachments" />
+          <NavigationProperty Name="xcuda_Attached_documents" Relationship="WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents" FromRole="xcuda_Attachments" ToRole="xcuda_Attached_documents" />
+        </EntityType>
+        <Association Name="FK_xcuda_Attachments_Attachments">
+          <End Type="WaterNutDB.DataLayer.Attachments" Role="Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDB.DataLayer.xcuda_Attachments" Role="xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xcuda_Attachments_xcuda_Attached_documents">
+          <End Type="WaterNutDB.DataLayer.xcuda_Attached_documents" Role="xcuda_Attached_documents" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDB.DataLayer.xcuda_Attachments" Role="xcuda_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Attached_documents">
+              <PropertyRef Name="Attached_documents_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Attachments">
+              <PropertyRef Name="Attached_documents_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5419,6 +5565,7 @@
           <EntitySetMapping Name="AsycudaDocumentSet">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
@@ -5462,6 +5609,8 @@
           <EntitySetMapping Name="ExportTemplate">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.ExportTemplate">
               <MappingFragment StoreEntitySet="ExportTemplate">
+                <ScalarProperty Name="AttachedDocumentCode" ColumnName="AttachedDocumentCode" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Deffered_payment_reference" ColumnName="Deffered_payment_reference" />
                 <ScalarProperty Name="Total_number_of_packages" ColumnName="Total_number_of_packages" />
                 <ScalarProperty Name="Number_of_packages" ColumnName="Number_of_packages" />
@@ -5488,18 +5637,6 @@
                 <ScalarProperty Name="Exporter_code" ColumnName="Exporter_code" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ExportTemplateId" ColumnName="ExportTemplateId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="InventoryItems">
-            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.InventoryItems">
-              <MappingFragment StoreEntitySet="InventoryItems">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
-                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -5774,6 +5911,9 @@
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
+                <ScalarProperty Name="PreviousInvoiceLineNumber" ColumnName="PreviousInvoiceLineNumber" />
+                <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
                 <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
                 <ScalarProperty Name="WarehouseError" ColumnName="WarehouseError" />
                 <ScalarProperty Name="ImportComplete" ColumnName="ImportComplete" />
@@ -6096,14 +6236,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="xcuda_Inventory_Item" TypeName="WaterNutDB.DataLayer.xcuda_Inventory_Item" StoreEntitySet="xcuda_Inventory_Item">
-            <EndProperty Name="xcuda_HScode">
-              <ScalarProperty Name="Item_Id" ColumnName="Id" />
-            </EndProperty>
-            <EndProperty Name="InventoryItems">
-              <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
-            </EndProperty>
-          </AssociationSetMapping>
           <EntitySetMapping Name="EntryPreviousItems">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.EntryPreviousItems">
               <MappingFragment StoreEntitySet="EntryPreviousItems">
@@ -6118,6 +6250,46 @@
               <MappingFragment StoreEntitySet="TariffCategoryCodeSuppUnit">
                 <ScalarProperty Name="TariffSupUnitId" ColumnName="TariffSupUnitId" />
                 <ScalarProperty Name="TariffCategoryCode" ColumnName="TariffCategoryCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemsEx">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.InventoryItemsEx">
+              <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
+                <ScalarProperty Name="SuppUnitCode2" ColumnName="SuppUnitCode2" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xcuda_Inventory_Item">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Inventory_Item">
+              <MappingFragment StoreEntitySet="xcuda_Inventory_Item">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.Attachments">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xcuda_Attachments">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Attachments">
+              <MappingFragment StoreEntitySet="xcuda_Attachments">
+                <ScalarProperty Name="Attached_documents_Id" ColumnName="Attached_documents_Id" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -12,7 +12,7 @@ namespace SalesDataQS.Business.Services
     {
         public async Task DownloadQBData(DateTime startDate, DateTime endDate, bool importSales, bool importInventory, int docSetId)
         {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId, null).ConfigureAwait(false);
+            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             //await
             //    QuickBooks.QBPOS.DownloadQbData(startDate, endDate,docSet, importSales, importInventory)
             //        .ConfigureAwait(false);

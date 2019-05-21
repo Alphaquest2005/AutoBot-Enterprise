@@ -476,6 +476,58 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _IsActive;
 
+        [DataMember]
+        public string Email
+		{ 
+		    get { return _Email; }
+			set
+			{
+			    if (value == _Email) return;
+				_Email = value;
+				NotifyPropertyChanged();//m => this.Email
+			}
+		}
+        private string _Email;
+
+        [DataMember]
+        public string EmailPassword
+		{ 
+		    get { return _EmailPassword; }
+			set
+			{
+			    if (value == _EmailPassword) return;
+				_EmailPassword = value;
+				NotifyPropertyChanged();//m => this.EmailPassword
+			}
+		}
+        private string _EmailPassword;
+
+        [DataMember]
+        public string AsycudaLogin
+		{ 
+		    get { return _AsycudaLogin; }
+			set
+			{
+			    if (value == _AsycudaLogin) return;
+				_AsycudaLogin = value;
+				NotifyPropertyChanged();//m => this.AsycudaLogin
+			}
+		}
+        private string _AsycudaLogin;
+
+        [DataMember]
+        public string AsycudaPassword
+		{ 
+		    get { return _AsycudaPassword; }
+			set
+			{
+			    if (value == _AsycudaPassword) return;
+				_AsycudaPassword = value;
+				NotifyPropertyChanged();//m => this.AsycudaPassword
+			}
+		}
+        private string _AsycudaPassword;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
@@ -528,6 +580,32 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<InventoryItemX> _InventoryItemsEx = new ChangeTrackingCollection<InventoryItemX>();
+
+        [DataMember]
+        public ChangeTrackingCollection<FileTypes> FileTypes
+		{
+		    get { return _FileTypes; }
+			set
+			{
+			    if (Equals(value, _FileTypes)) return;
+				_FileTypes = value;
+				NotifyPropertyChanged();//m => this.FileTypes
+			}
+		}
+        private ChangeTrackingCollection<FileTypes> _FileTypes = new ChangeTrackingCollection<FileTypes>();
+
+        [DataMember]
+        public ChangeTrackingCollection<InfoMapping> InfoMapping
+		{
+		    get { return _InfoMapping; }
+			set
+			{
+			    if (Equals(value, _InfoMapping)) return;
+				_InfoMapping = value;
+				NotifyPropertyChanged();//m => this.InfoMapping
+			}
+		}
+        private ChangeTrackingCollection<InfoMapping> _InfoMapping = new ChangeTrackingCollection<InfoMapping>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -68,6 +68,21 @@
           <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentItemEntryDataDetails">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="Item_Id" />
+            
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="key" Type="nvarchar" MaxLength="101" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
+          <Property Name="Quantity" Type="float" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentSetEntryDataDetails">
           
@@ -144,6 +159,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="LastCost" Type="float" />
+          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -151,6 +168,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Key>
             
             <PropertyRef Name="InvoiceNo" />
+            
           </Key>
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Type" Type="varchar" MaxLength="5" />
@@ -168,6 +186,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="InventoryItemsEx">
           <Key>
             <PropertyRef Name="ItemNumber" />
+            
+            
           </Key>
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
@@ -177,6 +197,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="SuppUnitCode2" Type="nvarchar" MaxLength="50" />
           <Property Name="SuppQty" Type="float" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ToDo-POToXML">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="IsClassified" Type="bit" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
@@ -228,6 +261,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="EmptyFullCodes" EntityType="Self.EmptyFullCodes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData" EntityType="Self.EntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AsycudaDocumentItemEntryDataDetails].[Item_Id] AS [Item_Id], 
+[AsycudaDocumentItemEntryDataDetails].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentItemEntryDataDetails].[key] AS [key], 
+[AsycudaDocumentItemEntryDataDetails].[DocumentType] AS [DocumentType], 
+[AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity]
+FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="AsycudaDocumentSetEntryDataDetails" EntityType="Self.AsycudaDocumentSetEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [AsycudaDocumentSetEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
@@ -284,7 +327,9 @@ FROM [dbo].[ContainerEx] AS [ContainerEx]</DefiningQuery>
 [EntryDataDetailsEx].[Comment] AS [Comment], 
 [EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
-[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EntryDataDetailsEx].[LastCost] AS [LastCost], 
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataEx" EntityType="Self.EntryDataEx" store:Type="Views" store:Schema="dbo">
@@ -312,6 +357,14 @@ FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
 [InventoryItemsEx].[SuppQty] AS [SuppQty], 
 [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ToDo-POToXML" EntityType="Self.ToDo-POToXML" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ToDo-POToXML].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[ToDo-POToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[ToDo-POToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[ToDo-POToXML].[IsClassified] AS [IsClassified]
+FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData" Association="Self.FK_AsycudaDocumentEntryData_EntryData">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -383,6 +436,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="EntryData" EntitySet="EntryDatas" />
             <End Role="ContainerEntryData" EntitySet="ContainerEntryDatas" />
           </AssociationSet>
+          <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="WaterNutEntities.AsycudaDocumentItemEntryDataDetail" />
+          <EntitySet Name="ToDo_POToXML" EntityType="WaterNutEntities.ToDo_POToXML" />
           </EntityContainer>
         <EntityType Name="InventoryItemsEx">
           <Key>
@@ -471,6 +526,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="LastCost" Type="Double" />
+          <Property Name="TaxAmount" Type="Double" />
         <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty></EntityType>
         <EntityType Name="AsycudaDocumentSetEntryDataDetail">
           <Key>
@@ -682,6 +739,27 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AsycudaDocumentItemEntryDataDetail">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="key" Type="String" MaxLength="101" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" />
+        </EntityType>
+        <EntityType Name="ToDo_POToXML">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="IsClassified" Type="Boolean" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -725,6 +803,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsExes">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.EntryDataDetailsEx)">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
@@ -851,6 +931,28 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
                 <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
                 <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
+            <EntityTypeMapping TypeName="WaterNutEntities.AsycudaDocumentItemEntryDataDetail">
+              <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ToDo_POToXML">
+            <EntityTypeMapping TypeName="WaterNutEntities.ToDo_POToXML">
+              <MappingFragment StoreEntitySet="ToDo-POToXML">
+                <ScalarProperty Name="IsClassified" ColumnName="IsClassified" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

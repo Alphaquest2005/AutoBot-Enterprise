@@ -63,20 +63,20 @@ namespace AdjustmentQS.Business.Services
                             if (aItem != null)
                             {
                                 MatchToAsycudaItem(s, aItem, ed, ctx);
-                                continue;
+                                //continue;
                             }
 
                         }
 
-                        if (s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
+                        else if (string.IsNullOrEmpty(s.PreviousInvoiceNumber) && s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
                         {
                             var aItem = await GetAsycudaEntriesInCNumber(applicationSettingsId,s.PreviousCNumber, s.ItemNumber)
                                 .ConfigureAwait(false);
                             MatchToAsycudaItem(s, aItem, ed, ctx);
-                            continue;
+                           // continue;
                         }
 
-                        if (!string.IsNullOrEmpty(s.PreviousCNumber))
+                        else if (string.IsNullOrEmpty(s.PreviousInvoiceNumber) && s.InvoiceQty.GetValueOrDefault() <= 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
                         {
                             var asycudaDocument = GetAsycudaDocumentInCNumber(applicationSettingsId,s.PreviousCNumber);
                             if (asycudaDocument != null)
@@ -93,13 +93,20 @@ namespace AdjustmentQS.Business.Services
                         {
                             //Set Overs 1st and Shorts to Last of Month
                            if(ed.EffectiveDate == null) ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
-                            if (ed.Cost != 0 || !(ed.InvoiceQty < ed.ReceivedQty)) continue;
+                            
+                        }
+
+                        if (ed.Cost != 0) continue;
                             var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
+                                .Where(x => x.assessmentdate <= ed.EffectiveDate)
+                                .OrderByDescending(x => x.assessmentdate)
                                 .FirstOrDefault(x =>
                                     x.ItemNumber == ed.ItemNumber &&
                                     x.applicationsettingsid == applicationSettingsId);
-                            if(lastItemCost != null) ed.Cost = (double)lastItemCost.LocalItemCost.GetValueOrDefault();
-                        }
+                            if (lastItemCost != null)
+                                ed.LastCost = (double) lastItemCost.LocalItemCost.GetValueOrDefault();
+                        
+
 
                     }
 
@@ -138,7 +145,7 @@ namespace AdjustmentQS.Business.Services
                                 x.AsycudaDocument.DoNotAllocate != true)
                     .Where(x => x.ItemNumber.ToUpper().Trim() == sItemNumber.ToUpper().Trim() && x.PreviousInvoiceNumber.ToUpper().Trim() == sPreviousInvoiceNumber.ToUpper().Trim());
                 var res = aItem.ToList();
-                var alias = ctx.InventoryItemAliasEx.Where(x => x.InventoryItemsEx.ApplicationSettingsId == applicationSettingsId && x.ItemNumber.ToUpper().Trim() == sItemNumber.ToUpper().Trim()).Select(y => y.AliasName.ToUpper().Trim()).ToList();
+                var alias = ctx.InventoryItemAliasX.Where(x => x.InventoryItemsEx.ApplicationSettingsId == applicationSettingsId && x.ItemNumber.ToUpper().Trim() == sItemNumber.ToUpper().Trim()).Select(y => y.AliasName.ToUpper().Trim()).ToList();
 
                 if (!alias.Any()) return res;
 
@@ -166,7 +173,7 @@ namespace AdjustmentQS.Business.Services
             try
             {
                 var docSet =
-                    await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId, null)
+                    await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                         .ConfigureAwait(false);
 
                 var exPro =
@@ -666,7 +673,7 @@ namespace AdjustmentQS.Business.Services
                                 x.AsycudaDocument.DoNotAllocate != true)
                     .Where(x =>x.ItemNumber == itemNumber && cNumber.Contains(x.AsycudaDocument.CNumber));
                 var res = aItem.ToList();
-                var alias = ctx.InventoryItemAliasEx.Where(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();
+                var alias = ctx.InventoryItemAliasX.Where(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();
 
                 if (!alias.Any()) return res;
 

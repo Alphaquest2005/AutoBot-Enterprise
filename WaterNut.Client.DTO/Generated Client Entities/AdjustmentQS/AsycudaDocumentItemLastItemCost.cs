@@ -60,6 +60,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<double> _LocalItemCost;
 
+        [DataMember]
+        public System.DateTime assessmentdate
+		{ 
+		    get { return _assessmentdate; }
+			set
+			{
+			    if (value == _assessmentdate) return;
+				_assessmentdate = value;
+				NotifyPropertyChanged();//m => this.assessmentdate
+			}
+		}
+        private System.DateTime _assessmentdate;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

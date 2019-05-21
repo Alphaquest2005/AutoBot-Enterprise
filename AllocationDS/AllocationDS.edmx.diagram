@@ -75,6 +75,7 @@
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" />
         <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="1.5" PointX="2.625" PointY="15.5" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemInventoryItemAliasEx" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

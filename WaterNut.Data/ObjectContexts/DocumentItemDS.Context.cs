@@ -99,6 +99,10 @@ namespace DocumentItemDS.Business.Entities
      
         public DbSet<EntryPreviousItems> EntryPreviousItems { get; set; }
      
+        public DbSet<Attachments> Attachments { get; set; }
+     
+        public DbSet<xcuda_Attachments> xcuda_Attachments { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -154,6 +158,10 @@ namespace DocumentItemDS.Business.Entities
             modelBuilder.Configurations.Add(new PreviousItemsExMap());
          
             modelBuilder.Configurations.Add(new EntryPreviousItemsMap());
+         
+            modelBuilder.Configurations.Add(new AttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new xcuda_AttachmentsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

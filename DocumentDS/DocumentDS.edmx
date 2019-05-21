@@ -5,6 +5,14 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AsycudaDocument_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="AsycudaDocumentEntryData">
           <Key>
             <PropertyRef Name="Id" />
@@ -36,6 +44,15 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
         </EntityType>
+        <EntityType Name="AsycudaDocumentSet_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="AsycudaDocumentSetEntryData">
           <Key>
             <PropertyRef Name="Id" />
@@ -43,6 +60,14 @@
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -774,6 +799,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_AsycudaDocument_Attachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocument_Attachments" Type="Self.AsycudaDocument_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocument_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocument_Attachments_xcuda_ASYCUDA">
+          <End Role="xcuda_ASYCUDA" Type="Self.xcuda_ASYCUDA" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocument_Attachments" Type="Self.AsycudaDocument_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_ASYCUDA">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocument_Attachments">
+              <PropertyRef Name="AsycudaDocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AsycudaDocumentEntryData_xcuda_ASYCUDA">
           <End Role="xcuda_ASYCUDA" Type="Self.xcuda_ASYCUDA" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -785,6 +838,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Principal>
             <Dependent Role="AsycudaDocumentEntryData">
               <PropertyRef Name="AsycudaDocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
+          <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AttachmentId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1379,9 +1460,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="AsycudaDocument_Attachments" EntityType="Self.AsycudaDocument_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSet" EntityType="Self.AsycudaDocumentSet" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExportTemplate" EntityType="Self.ExportTemplate" Schema="dbo" store:Type="Tables" />
@@ -1497,9 +1581,25 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_Warehouse" EntitySet="xcuda_Warehouse" />
           </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocument_Attachments_Attachments" Association="Self.FK_AsycudaDocument_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="AsycudaDocument_Attachments" EntitySet="AsycudaDocument_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" Association="Self.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA">
+            <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
+            <End Role="AsycudaDocument_Attachments" EntitySet="AsycudaDocument_Attachments" />
+          </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_xcuda_ASYCUDA" Association="Self.FK_AsycudaDocumentEntryData_xcuda_ASYCUDA">
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="AsycudaDocumentEntryData" EntitySet="AsycudaDocumentEntryData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" Association="Self.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Attachments" Association="Self.FK_AsycudaDocumentSet_Attachments_Attachments">
+            <End Role="Attachments" EntitySet="Attachments" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
           <AssociationSet Name="FK_AsycudaDocumentSet_Customs_Procedure" Association="Self.FK_AsycudaDocumentSet_Customs_Procedure">
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
@@ -1972,6 +2072,25 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
             <End Role="xcuda_ASYCUDA_ExtendedProperties" EntitySet="xcuda_ASYCUDA_ExtendedProperties" />
           </AssociationSet>
+          <EntitySet Name="AsycudaDocument_Attachments" EntityType="WaterNutDBModel.AsycudaDocument_Attachments" />
+          <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="WaterNutDBModel.AsycudaDocumentSet_Attachments" />
+          <EntitySet Name="Attachments" EntityType="WaterNutDBModel.Attachment" />
+          <AssociationSet Name="FK_AsycudaDocument_Attachments_Attachments" Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments">
+            <End Role="Attachment" EntitySet="Attachments" />
+            <End Role="AsycudaDocument_Attachments" EntitySet="AsycudaDocument_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA">
+            <End Role="xcuda_ASYCUDA" EntitySet="xcuda_ASYCUDA" />
+            <End Role="AsycudaDocument_Attachments" EntitySet="AsycudaDocument_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Attachments" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments">
+            <End Role="Attachment" EntitySet="Attachments" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
           <Key>
@@ -1999,6 +2118,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSetEntryDatas" Relationship="WaterNutDBModel.FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSetEntryData" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSet_Attachments" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -2099,7 +2219,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="xcuda_Traders" Relationship="WaterNutDBModel.FK_xcuda_Traders_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="xcuda_Traders" />
           <NavigationProperty Name="Ex" Relationship="WaterNutDBModel.xcuda_ASYCUDAxcuda_ASYCUDAEx" FromRole="xcuda_ASYCUDA" ToRole="xcuda_ASYCUDAEx" />
           <NavigationProperty Name="AsycudaDocumentEntryDatas" Relationship="WaterNutDBModel.FK_AsycudaDocumentEntryData_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="AsycudaDocumentEntryData" />
-          <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="xcuda_ASYCUDA_ExtendedProperties" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
+          <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
+          <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="AsycudaDocument_Attachments" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="xcuda_Border_information">
           <Key>
@@ -3474,6 +3595,93 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AsycudaDocument_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Attachment" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="AsycudaDocument_Attachments" ToRole="Attachment" />
+          <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" FromRole="AsycudaDocument_Attachments" ToRole="xcuda_ASYCUDA" />
+        </EntityType>
+        <EntityType Name="AsycudaDocumentSet_Attachments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet_Attachments" ToRole="AsycudaDocumentSet" />
+          <NavigationProperty Name="Attachment" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="Attachment" />
+          <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attachment">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocument_Attachments" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocumentSet_Attachments" />
+          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocument_Attachments_Attachments">
+          <End Type="WaterNutDBModel.Attachment" Role="Attachment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AsycudaDocument_Attachments" Role="AsycudaDocument_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachment">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocument_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocument_Attachments_xcuda_ASYCUDA">
+          <End Type="WaterNutDBModel.xcuda_ASYCUDA" Role="xcuda_ASYCUDA" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AsycudaDocument_Attachments" Role="AsycudaDocument_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_ASYCUDA">
+              <PropertyRef Name="ASYCUDA_Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocument_Attachments">
+              <PropertyRef Name="AsycudaDocumentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet">
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
+          <End Type="WaterNutDBModel.Attachment" Role="Attachment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Attachment">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4105,6 +4313,34 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="FileNumber" ColumnName="FileNumber" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocument_Attachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocument_Attachments">
+              <MappingFragment StoreEntitySet="AsycudaDocument_Attachments">
+                <ScalarProperty Name="AsycudaDocumentId" ColumnName="AsycudaDocumentId" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSet_Attachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet_Attachments">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSet_Attachments">
+                <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Attachment">
+              <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

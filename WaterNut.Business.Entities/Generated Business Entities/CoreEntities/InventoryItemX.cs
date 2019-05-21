@@ -21,7 +21,7 @@ namespace CoreEntities.Business.Entities
     {
         partial void AutoGenStartUp() //InventoryItemX()
         {
-            this.InventoryItemAliasEx = new List<InventoryItemAliasEx>();
+            this.InventoryItemAliasEx = new List<InventoryItemAliasX>();
             this.AsycudaDocumentItem = new List<AsycudaDocumentItem>();
         }
 
@@ -146,7 +146,7 @@ namespace CoreEntities.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public List<InventoryItemAliasEx> InventoryItemAliasEx { get; set; }
+        public List<InventoryItemAliasX> InventoryItemAliasEx { get; set; }
         [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
