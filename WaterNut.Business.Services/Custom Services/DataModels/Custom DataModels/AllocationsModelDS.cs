@@ -187,7 +187,7 @@ namespace WaterNut.DataSpace
 
                 currentAsycudaSalesAllocation.QtyAllocated = aqty;
                 entryDataDetails.QtyAllocated += aqty;
-                if ((entryDataDetails.Sales == null && entryDataDetails.Adjustments != null) || (entryDataDetails.Sales as Sales).DutyFreePaid == "Duty Free")
+                if ((entryDataDetails.Sales == null && entryDataDetails.Adjustments != null) || entryDataDetails.DutyFreePaid == "Duty Free")
                     
                 {
                     asycudaItem.DFQtyAllocated += aqty;
@@ -310,30 +310,7 @@ WHERE (AsycudaDocumentSet.ApplicationSettingsId = {appSettingsId})").ConfigureAw
 
 
 
-        private async Task<List<AsycudaSalesAllocations>> GetSalesData(string dfp)
-        {
-            StatusModel.Timer("Loading Data...");
-            List<AsycudaSalesAllocations> alst = null;
-            using (var ctx = new AsycudaSalesAllocationsService())
-            {
-                alst = (await ctx.GetAsycudaSalesAllocations().ConfigureAwait(false))
-                                    .Where(x => x.EntryDataDetails.Sales != null
-                                        && x.PreviousDocumentItem != null
-                                        // && x.EntryDataDetails.ItemDescription.Contains("POLLEN-BR-B") // && x.PreviousItemEx.xcuda_Tarification.xcuda_HScode.Precision_4.Contains("DKR")// // 
-                                        && (x.PreviousDocumentItem.AsycudaDocument.CNumber != null || x.PreviousDocumentItem.AsycudaDocument.IsManuallyAssessed == true))
-                                     .AsEnumerable()
-                                     .Where(x => (x.EntryDataDetails.Sales as Sales).DutyFreePaid == dfp)
-                                     .OrderBy(x => x.EntryDataDetails.Sales.EntryDataDate).ThenBy(x => x.EntryDataDetails.EntryDataDetailsId).ToList();
-            }
-            StatusModel.Timer("Cleaning Data...");
 
-            using (var ctx = new global::AllocationDS.Business.Services.xcuda_ItemService())
-            {
-                alst.ForEach(x => x.PreviousDocumentItem.EntryPreviousItems.Select(p => p.xcuda_PreviousItem).ToList().ForEach(z => z.QtyAllocated = 0));
-                alst.ForEach(x => x.xBondAllocations.Clear());
-            }
-            return alst;
-        }
 
 
         public  void Send2Excel(List<AsycudaSalesAllocations> lst)
@@ -345,7 +322,7 @@ WHERE (AsycudaDocumentSet.ApplicationSettingsId = {appSettingsId})").ConfigureAw
 
                              select new AllocationsModel.AllocationsExcelLine
                              {
-                                 DutyFreePaid = sales == null ? null : sales.DutyFreePaid,
+                                 DutyFreePaid = sa.EntryDataDetails.DutyFreePaid,
                                  InvoiceNo = sales == null ? null : sales.INVNumber,
                                  InvoiceDate = sales == null ? DateTime.MinValue : sales.EntryDataDate,
                                  SalesAllocationNo = sales == null ? 0 : Convert.ToInt32(sa.SANumber),

@@ -1588,7 +1588,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<double> DutyLiability { get; set; } 
                     
  
-                    public Nullable<double> TaxAmount { get; set; } 
+                    public double TaxAmount { get; set; } 
                     
  
                     public Nullable<bool> pIsAssessed { get; set; } 

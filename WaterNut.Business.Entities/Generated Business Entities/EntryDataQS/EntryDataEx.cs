@@ -43,21 +43,6 @@ namespace EntryDataQS.Business.Entities
         }
         string _type;
         [DataMember]
-        public string DutyFreePaid 
-        {
-            get
-            {
-                return _dutyfreepaid;
-            }
-            set
-            {
-                _dutyfreepaid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _dutyfreepaid;
-        [DataMember]
         public Nullable<double> Total 
         {
             get

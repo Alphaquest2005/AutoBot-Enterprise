@@ -198,6 +198,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AdjustmentShortAllocations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AllocationErrors.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -211,6 +212,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\EX9AsycudaSalesAllocations.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\InventoryItemAlias.cs
+..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\ItemSalesPiSummary.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\PreviousItemsEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\Sales.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationDS\SubItems.cs
@@ -243,6 +245,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Document_Type.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypes.cs
@@ -251,6 +254,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\SubItems.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CounterPointQS\CounterPointPOs.cs
@@ -425,6 +429,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\xcuda_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AscyudaItemPiQuantity.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocumentItemEntryDataDetails.map.cs
@@ -438,6 +443,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesPiSummary.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\PreviousItemsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Sales.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\SubItems.map.cs
@@ -470,6 +476,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypes.map.cs
@@ -478,6 +485,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemX.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\LicenceSummary.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\xcuda_Supplementary_unit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPODetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPOs.map.cs
@@ -666,6 +674,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AdjustmentShortAllocations.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AllocationErrors.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -679,6 +688,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\EX9AsycudaSalesAllocations.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\InventoryItemAlias.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\ItemSalesPiSummary.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\PreviousItemsEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\Sales.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationDS\SubItems.cs
@@ -711,6 +721,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Document_Type.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypes.cs
@@ -719,6 +730,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\SubItems.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CounterPointQS\CounterPointPOs.cs
@@ -887,6 +899,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AdjustmentShortAllocations.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AllocationErrors.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -900,6 +913,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\EX9AsycudaSalesAllocations.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\InventoryItemAlias.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\ItemSalesPiSummary.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\PreviousItemsEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\Sales.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationDS\SubItems.cs
@@ -932,6 +946,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Document_Type.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypes.cs
@@ -940,6 +955,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\SubItems.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CounterPointQS\CounterPointPOs.cs
@@ -1108,6 +1124,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShortAllocations.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AllocationErrors.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -1121,6 +1138,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\EX9AsycudaSalesAllocations.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\InventoryItemAlias.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\ItemSalesPiSummary.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\PreviousItemsEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\Sales.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationDS\SubItems.cs
@@ -1153,6 +1171,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Document_Type.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypes.cs
@@ -1161,6 +1180,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\SubItems.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CounterPointQS\CounterPointPOs.cs
@@ -1329,6 +1349,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShortAllocations.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AllocationErrors.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AscyudaItemPiQuantity.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\AsycudaDocumentItemEntryDataDetails.cs
@@ -1342,6 +1363,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\EX9AsycudaSalesAllocations.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\InventoryItemAlias.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesPiSummary.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\PreviousItemsEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\Sales.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationDS\SubItems.cs
@@ -1374,6 +1396,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs
@@ -1382,6 +1405,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPOs.cs
@@ -1566,6 +1590,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Attachments.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Document_Type.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypes.cs
@@ -1574,6 +1599,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\SubItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CounterPointQS\CounterPointPOs.cs
@@ -1634,6 +1660,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Document_Type.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypes.cs
@@ -1642,6 +1669,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\SubItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CounterPointQS\CounterPointPOs.cs
@@ -1708,6 +1736,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs
@@ -1716,6 +1745,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPOs.cs
@@ -1776,6 +1806,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Document_Type.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypes.cs
@@ -1784,6 +1815,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\SubItems.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CounterPointQS\CounterPointPOs.cs
@@ -1844,6 +1876,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Document_Type.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypes.cs
@@ -1852,6 +1885,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\SubItems.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CounterPointQS\CounterPointPOs.cs
@@ -1912,6 +1946,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs
@@ -1920,6 +1955,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPOs.cs
@@ -1980,6 +2016,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Document_Type.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypes.cs
@@ -1988,6 +2025,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\InventoryItemX.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\LicenceSummary.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\SubItems.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\xcuda_Supplementary_unit.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CounterPointQS\CounterPointPODetails.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CounterPointQS\CounterPointPOs.cs
@@ -2071,6 +2109,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AdjustmentQS\xcuda_Item.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Adjustments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AllocationErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AscyudaItemPiQuantity.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\AsycudaDocumentItemEntryDataDetails.map.cs
@@ -2084,6 +2123,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\InventoryItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\ItemSalesPiSummary.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\PreviousItemsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\Sales.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationDS\SubItems.map.cs
@@ -2116,6 +2156,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Customs_Procedure.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypes.map.cs
@@ -2124,6 +2165,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InventoryItemX.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\LicenceSummary.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\SubItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\xcuda_Supplementary_unit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPODetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CounterPointQS\CounterPointPOs.map.cs
@@ -2345,6 +2387,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Document_TypeRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailMappingRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeMappingsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypesRepository.cs
@@ -2353,6 +2396,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\InventoryItemXRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\LicenceSummaryRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\SubItemsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\xcuda_Supplementary_unitRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntitiesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CounterPointQS\CounterPointPODetailsRepository.cs
@@ -2433,6 +2477,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Customs_ProcedureViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypesViewModel.cs
@@ -2442,6 +2487,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\LicenceSummaryViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\MessageToken.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\SubItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedSalesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\xcuda_Supplementary_unitViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentEntryDataViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentItemEntryDataDetailViewModel.cs
@@ -2501,6 +2547,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Customs_ProcedureTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypesTotals.cs
@@ -2509,6 +2556,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InventoryItemXTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\LicenceSummaryTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\SubItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedSalesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\xcuda_Supplementary_unitTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentEntryDataTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs
@@ -2559,6 +2607,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Customs_ProcedureVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypesVirturalListLoader.cs
@@ -2567,6 +2616,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InventoryItemXVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\LicenceSummaryVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\SubItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\xcuda_Supplementary_unitVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentEntryDataVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs
@@ -2612,6 +2662,7 @@
 ..\WaterNut.Business.Services\Contracts\AdjustmentQS\Ixcuda_ItemService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAdjustmentsService.cs
+..\WaterNut.Business.Services\Contracts\AllocationDS\IAllocationErrorsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAscyudaItemPiQuantityService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IAsycudaDocumentService.cs
@@ -2625,6 +2676,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IEX9AsycudaSalesAllocationsService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IInventoryItemAliasService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IInventoryItemService.cs
+..\WaterNut.Business.Services\Contracts\AllocationDS\IItemSalesPiSummaryService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\IPreviousItemsExService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\ISalesService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationDS\ISubItemsService.cs
@@ -2657,6 +2709,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAttachmentsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ICustoms_ProcedureService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IDocument_TypeService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeMappingsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypesService.cs
@@ -2665,6 +2718,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IInventoryItemXService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ILicenceSummaryService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ISubItemsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\Ixcuda_Supplementary_unitService.cs
 ..\WaterNut.Business.Services\Contracts\CounterPointQS\ICounterPointPODetailsService.cs
 ..\WaterNut.Business.Services\Contracts\CounterPointQS\ICounterPointPOsService.cs
@@ -2833,6 +2887,7 @@
 ..\WaterNut.Business.Services\Services\AdjustmentQS\xcuda_ItemService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AdjustmentShortAllocationsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AdjustmentsService.cs
+..\WaterNut.Business.Services\Services\AllocationDS\AllocationErrorsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AscyudaItemPiQuantityService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\AsycudaDocumentService.cs
@@ -2846,6 +2901,7 @@
 ..\WaterNut.Business.Services\Services\AllocationDS\EX9AsycudaSalesAllocationsService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\InventoryItemAliasService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\InventoryItemService.cs
+..\WaterNut.Business.Services\Services\AllocationDS\ItemSalesPiSummaryService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\PreviousItemsExService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\SalesService.cs
 ..\WaterNut.Business.Services\Services\AllocationDS\SubItemsService.cs
@@ -2878,6 +2934,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\AttachmentsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\Customs_ProcedureService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\Document_TypeService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\EmailMappingService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EntryPreviousItemsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypeMappingsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypesService.cs
@@ -2886,6 +2943,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\InventoryItemXService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\LicenceSummaryService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\SubItemsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_UnallocatedSalesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\xcuda_Supplementary_unitService.cs
 ..\WaterNut.Business.Services\Services\CounterPointQS\CounterPointPODetailsService.cs
 ..\WaterNut.Business.Services\Services\CounterPointQS\CounterPointPOsService.cs
@@ -3064,6 +3122,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IAttachmentsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ICustoms_ProcedureService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IDocument_TypeService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEntryPreviousItemsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypeMappingsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypesService.cs
@@ -3072,6 +3131,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IInventoryItemXService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ILicenceSummaryService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ISubItemsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\Ixcuda_Supplementary_unitService.cs
 ..\WaterNut.Client.Contracts\CounterPointQS\ICounterPointPODetailsService.cs
 ..\WaterNut.Client.Contracts\CounterPointQS\ICounterPointPOsService.cs
@@ -3132,6 +3192,7 @@
 ..\WaterNut.Client.Services\CoreEntities\AttachmentsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\Customs_ProcedureClient.cs
 ..\WaterNut.Client.Services\CoreEntities\Document_TypeClient.cs
+..\WaterNut.Client.Services\CoreEntities\EmailMappingClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EntryPreviousItemsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypeMappingsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypesClient.cs
@@ -3140,6 +3201,7 @@
 ..\WaterNut.Client.Services\CoreEntities\InventoryItemXClient.cs
 ..\WaterNut.Client.Services\CoreEntities\LicenceSummaryClient.cs
 ..\WaterNut.Client.Services\CoreEntities\SubItemsClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_UnallocatedSalesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\xcuda_Supplementary_unitClient.cs
 ..\WaterNut.Client.Services\CounterPointQS\CounterPointPODetailsClient.cs
 ..\WaterNut.Client.Services\CounterPointQS\CounterPointPOsClient.cs

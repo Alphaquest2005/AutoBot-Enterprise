@@ -37,6 +37,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.SalesData' does not have 
         <EntityType Name="SalesData">
           <Key>
             <PropertyRef Name="EntryDataId" />
+            
+            
+            
           </Key>
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
@@ -64,6 +67,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.SalesDataDetails' does no
         <EntityType Name="SalesDataDetails">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />

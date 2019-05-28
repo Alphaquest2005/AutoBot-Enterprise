@@ -14,7 +14,7 @@ where number = '25008'
 and LineNumber =3)
 
 update xcuda_Item
-set WarehouseError = 'Product Code Too Long', DoNotEX = 1
+set WarehouseError = 'Product Code Too Long', DoNotEX = 1 , DoNotAllocate = 1
 where Item_id in 
 (
 SELECT xcuda_Item.Item_Id

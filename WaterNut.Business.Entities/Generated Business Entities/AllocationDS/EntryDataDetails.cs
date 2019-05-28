@@ -24,6 +24,7 @@ namespace AllocationDS.Business.Entities
             this.AsycudaSalesAllocations = new List<AsycudaSalesAllocations>();
             this.AdjustmentShortAllocations = new List<AdjustmentShortAllocations>();
             this.AsycudaDocumentItemEntryDataDetails = new List<AsycudaDocumentItemEntryDataDetails>();
+            this.EX9AsycudaSalesAllocations = new List<EX9AsycudaSalesAllocations>();
         }
 
         [DataMember]
@@ -372,6 +373,21 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<double> _taxamount;
         [DataMember]
+        public Nullable<double> LastCost 
+        {
+            get
+            {
+                return _lastcost;
+            }
+            set
+            {
+                _lastcost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _lastcost;
+        [DataMember]
         public List<AsycudaSalesAllocations> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public EntryDataDetailsEx EntryDataDetailsEx { get; set; }
@@ -383,6 +399,8 @@ namespace AllocationDS.Business.Entities
         public Adjustments Adjustments { get; set; }
         [DataMember]
         public List<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails { get; set; }
+        [DataMember]
+        public List<EX9AsycudaSalesAllocations> EX9AsycudaSalesAllocations { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

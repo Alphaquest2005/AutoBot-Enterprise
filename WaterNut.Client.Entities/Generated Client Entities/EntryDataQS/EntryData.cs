@@ -184,21 +184,6 @@ public string Currency
 		}
      
 
-       
-       [NumberValidationAttribute]
-public Nullable<double> TaxAmount
-		{ 
-		    get { return this.entrydata.TaxAmount; }
-			set
-			{
-			    if (value == this.entrydata.TaxAmount) return;
-				this.entrydata.TaxAmount = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("TaxAmount");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
 public int ApplicationSettingsId

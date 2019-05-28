@@ -70,6 +70,21 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<double> _piweight;
         [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
         public List<AdjustmentShortAllocations> AdjustmentShortAllocations { get; set; }
 
  //       [DataMember]

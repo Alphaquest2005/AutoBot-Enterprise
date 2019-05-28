@@ -41,6 +41,8 @@ namespace InventoryQS
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public Nullable<bool> IsReconciled { get; set; }
         public Nullable<int> ApplicationSettingsId { get; set; }
+        public Nullable<double> LastCost { get; set; }
+        public Nullable<double> TaxAmount { get; set; }
     
         public virtual InventoryItemsEx InventoryItemsEx { get; set; }
     }

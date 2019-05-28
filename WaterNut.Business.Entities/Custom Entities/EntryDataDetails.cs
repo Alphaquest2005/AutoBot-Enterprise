@@ -12,8 +12,7 @@ namespace AllocationDS.Business.Entities
    
     public partial class EntryDataDetails 
     {
-        
-       
+        public string DutyFreePaid => Math.Abs((TaxAmount ?? 0)) < 0.0001 ? "Duty Free" : "Duty Paid";
     }
 }
 

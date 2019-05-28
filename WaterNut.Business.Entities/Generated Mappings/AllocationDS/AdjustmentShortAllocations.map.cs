@@ -11,7 +11,7 @@
     {
         public AdjustmentShortAllocationsMap()
         {                        
-              this.HasKey(t => new {t.AllocationId, t.Asycudadocumentsetid, t.DutyFreePaid, t.ApplicationSettingsId});        
+              this.HasKey(t => t.AllocationId);        
               this.ToTable("AdjustmentShortAllocations");
               this.Property(t => t.AllocationId).HasColumnName("AllocationId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.TotalValue).HasColumnName("TotalValue");
@@ -57,10 +57,10 @@
               this.Property(t => t.pItemNumber).HasColumnName("pItemNumber").HasMaxLength(50);
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
-              this.Property(t => t.Asycudadocumentsetid).HasColumnName("Asycudadocumentsetid").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
-              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AscyudaItemPiQuantity).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);

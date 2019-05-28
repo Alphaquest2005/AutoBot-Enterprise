@@ -728,21 +728,6 @@ public string Comment
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Asycudadocumentsetid is required")]
-       [NumberValidationAttribute]
-public int Asycudadocumentsetid
-		{ 
-		    get { return this.adjustmentshortallocation.Asycudadocumentsetid; }
-			set
-			{
-			    if (value == this.adjustmentshortallocation.Asycudadocumentsetid) return;
-				this.adjustmentshortallocation.Asycudadocumentsetid = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Asycudadocumentsetid");
-			}
-		}
-     
-
        
        
 public Nullable<System.DateTime> AssessmentDate
@@ -786,6 +771,21 @@ public int ApplicationSettingsId
 				this.adjustmentshortallocation.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.adjustmentshortallocation.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.adjustmentshortallocation.AsycudaDocumentSetId) return;
+				this.adjustmentshortallocation.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
 			}
 		}
      

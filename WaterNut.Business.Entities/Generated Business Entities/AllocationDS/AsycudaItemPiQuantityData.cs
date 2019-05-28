@@ -199,6 +199,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _reference;
+        [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

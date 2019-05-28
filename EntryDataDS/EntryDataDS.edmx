@@ -76,7 +76,6 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
-          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
@@ -166,6 +165,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
             
             
             
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -182,7 +182,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Total" Type="float" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="InvoiceQty" Type="float" />
@@ -574,7 +574,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="TotalWeight" Type="Double" />
           <NavigationProperty Name="Suppliers" Relationship="WaterNutDBModel.SuppliersEntryData" FromRole="EntryData" ToRole="Suppliers" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="TaxAmount" Type="Double" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
@@ -675,7 +674,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="CNumber" MaxLength="20" FixedLength="false" Unicode="true" Type="String" />
           <Property Name="CLineNumber" Type="Int32" />
           <Property Type="Boolean" Name="Downloaded" />
-          <Property Type="String" Name="DutyFreePaid" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="DutyFreePaid" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="EntryDataDetails" />
           <Property Type="Double" Name="Total" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
@@ -909,7 +908,6 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.EntryData)">
               <MappingFragment StoreEntitySet="EntryData">
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />

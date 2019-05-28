@@ -107,6 +107,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\Attachments.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypes.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated Client Entities\CounterPointQS\CounterPointPODetails.cs" />
     <Compile Include="Generated Client Entities\CounterPointQS\CounterPointPOs.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
@@ -183,6 +186,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPODetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPOs.cs" />
@@ -243,6 +247,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Document_Type.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypes.cs" />
@@ -251,6 +256,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointPODetails.cs" />
     <Compile Include="Generated MyNavProp Models\CounterPointQS\CounterPointPOs.cs" />

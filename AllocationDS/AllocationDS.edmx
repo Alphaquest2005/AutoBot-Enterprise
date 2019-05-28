@@ -39,7 +39,6 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
-          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
@@ -82,6 +81,7 @@
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="LastCost" Type="float" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -325,9 +325,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
             
             
             
-            <PropertyRef Name="Asycudadocumentsetid" />
-            <PropertyRef Name="DutyFreePaid" />
-            <PropertyRef Name="ApplicationSettingsId" />
+            
+            
+            
           </Key>
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="TotalValue" Type="float" Nullable="false" />
@@ -364,7 +364,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="DoNotAllocateSales" Type="bit" />
           <Property Name="DoNotAllocatePreviousEntry" Type="bit" />
           <Property Name="WarehouseError" Type="nvarchar" MaxLength="50" />
-          <Property Name="SANumber" Type="int" />
           <Property Name="xReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Invalid" Type="bit" />
@@ -373,9 +372,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="pItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
-          <Property Name="Asycudadocumentsetid" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="SANumber" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AllocationErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AllocationErrors">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -383,10 +393,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AscyudaItemPiQuantity' do
         <EntityType Name="AscyudaItemPiQuantity">
           <Key>
             <PropertyRef Name="Item_Id" />
+            
           </Key>
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="PiQuantity" Type="float" />
           <Property Name="PiWeight" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -448,7 +460,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemPiQuantityData
           <Key>
             
             
-            <PropertyRef Name="DutyFreePaid" />
+            
+            
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Item_Id" Type="int" Nullable="false" />
@@ -462,6 +475,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemPiQuantityData
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -469,6 +483,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
         <EntityType Name="EntryDataDetailsEx">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
             
             
             
@@ -492,7 +507,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Total" Type="float" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="InvoiceQty" Type="float" />
@@ -504,12 +519,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="LastCost" Type="float" />
+          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EX9AsycudaSalesAllocations">
           <Key>
             <PropertyRef Name="AllocationId" />
+            
             
             
             
@@ -540,7 +558,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocation
           <Property Name="Cost" Type="float" />
           <Property Name="Total_CIF_itm" Type="float" />
           <Property Name="DutyLiability" Type="float" />
-          <Property Name="TaxAmount" Type="float" />
+          <Property Name="TaxAmount" Type="float" Nullable="false" />
           <Property Name="pIsAssessed" Type="bit" />
           <Property Name="DoNotAllocateSales" Type="bit" />
           <Property Name="DoNotAllocatePreviousEntry" Type="bit" />
@@ -558,12 +576,26 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocation
           <Property Name="pTariffCode" Type="nvarchar" MaxLength="20" />
           <Property Name="pItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="SalesLineNumber" Type="int" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="DPQtyAllocated" Type="float" />
+          <Property Name="DFQtyAllocated" Type="float" />
+          <Property Name="WarehouseError" Type="nvarchar" MaxLength="50" />
+          <Property Name="SalesFactor" Type="float" />
+          <Property Name="DoNotEX" Type="bit" />
+          <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
+          <Property Name="IsManuallyAssessed" Type="bit" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="InventoryItemAliasEx">
           <Key>
             <PropertyRef Name="AliasId" />
+            
+            
+            
+            
           </Key>
           <Property Name="AliasId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -586,6 +618,29 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
           <Property Name="SuppUnitCode2" Type="nvarchar" MaxLength="50" />
           <Property Name="SuppQty" Type="float" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesPiSummary' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ItemSalesPiSummary">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="DutyFreePaid" />
+            <PropertyRef Name="pLineNumber" />
+            <PropertyRef Name="pQtyAllocated" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="EntryDataDate" />
+          </Key>
+          <Property Name="PreviousItem_Id" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="pLineNumber" Type="int" Nullable="false" />
+          <Property Name="pQtyAllocated" Type="float" Nullable="false" />
+          <Property Name="pCNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="pRegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="pAssessmentDate" Type="datetime2" Precision="7" />
+          <Property Name="QtyAllocated" Type="float" />
+          <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -1008,7 +1063,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
 [AdjustmentShortAllocations].[DoNotAllocateSales] AS [DoNotAllocateSales], 
 [AdjustmentShortAllocations].[DoNotAllocatePreviousEntry] AS [DoNotAllocatePreviousEntry], 
 [AdjustmentShortAllocations].[WarehouseError] AS [WarehouseError], 
-[AdjustmentShortAllocations].[SANumber] AS [SANumber], 
 [AdjustmentShortAllocations].[xReferenceNumber] AS [xReferenceNumber], 
 [AdjustmentShortAllocations].[TariffCode] AS [TariffCode], 
 [AdjustmentShortAllocations].[Invalid] AS [Invalid], 
@@ -1017,17 +1071,25 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
 [AdjustmentShortAllocations].[pItemNumber] AS [pItemNumber], 
 [AdjustmentShortAllocations].[EffectiveDate] AS [EffectiveDate], 
 [AdjustmentShortAllocations].[Comment] AS [Comment], 
-[AdjustmentShortAllocations].[Asycudadocumentsetid] AS [Asycudadocumentsetid], 
+[AdjustmentShortAllocations].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [AdjustmentShortAllocations].[AssessmentDate] AS [AssessmentDate], 
 [AdjustmentShortAllocations].[DutyFreePaid] AS [DutyFreePaid], 
-[AdjustmentShortAllocations].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[AdjustmentShortAllocations].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentShortAllocations].[SANumber] AS [SANumber]
 FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AllocationErrors" EntityType="Self.AllocationErrors" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AllocationErrors].[ItemNumber] AS [ItemNumber], 
+[AllocationErrors].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[AllocationErrors] AS [AllocationErrors]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AscyudaItemPiQuantity" EntityType="Self.AscyudaItemPiQuantity" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [AscyudaItemPiQuantity].[Item_Id] AS [Item_Id], 
 [AscyudaItemPiQuantity].[PiQuantity] AS [PiQuantity], 
-[AscyudaItemPiQuantity].[PiWeight] AS [PiWeight]
+[AscyudaItemPiQuantity].[PiWeight] AS [PiWeight], 
+[AscyudaItemPiQuantity].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[AscyudaItemPiQuantity] AS [AscyudaItemPiQuantity]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocument" EntityType="Self.AsycudaDocument" store:Type="Views" store:Schema="dbo">
@@ -1089,6 +1151,7 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaItemPiQuantityData].[ItemNumber] AS [ItemNumber], 
 [AsycudaItemPiQuantityData].[CNumber] AS [CNumber], 
 [AsycudaItemPiQuantityData].[Reference] AS [Reference], 
+[AsycudaItemPiQuantityData].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AsycudaItemPiQuantityData].[Id] AS [Id]
 FROM [dbo].[AsycudaItemPiQuantityData] AS [AsycudaItemPiQuantityData]</DefiningQuery>
           </EntitySet>
@@ -1120,7 +1183,9 @@ FROM [dbo].[AsycudaItemPiQuantityData] AS [AsycudaItemPiQuantityData]</DefiningQ
 [EntryDataDetailsEx].[Comment] AS [Comment], 
 [EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
-[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EntryDataDetailsEx].[LastCost] AS [LastCost], 
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EX9AsycudaSalesAllocations" EntityType="Self.EX9AsycudaSalesAllocations" store:Type="Views" store:Schema="dbo">
@@ -1167,7 +1232,17 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
 [EX9AsycudaSalesAllocations].[xBond_Item_Id] AS [xBond_Item_Id], 
 [EX9AsycudaSalesAllocations].[pTariffCode] AS [pTariffCode], 
 [EX9AsycudaSalesAllocations].[pItemNumber] AS [pItemNumber], 
-[EX9AsycudaSalesAllocations].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[EX9AsycudaSalesAllocations].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EX9AsycudaSalesAllocations].[SalesLineNumber] AS [SalesLineNumber], 
+[EX9AsycudaSalesAllocations].[EffectiveDate] AS [EffectiveDate], 
+[EX9AsycudaSalesAllocations].[DPQtyAllocated] AS [DPQtyAllocated], 
+[EX9AsycudaSalesAllocations].[DFQtyAllocated] AS [DFQtyAllocated], 
+[EX9AsycudaSalesAllocations].[WarehouseError] AS [WarehouseError], 
+[EX9AsycudaSalesAllocations].[SalesFactor] AS [SalesFactor], 
+[EX9AsycudaSalesAllocations].[DoNotEX] AS [DoNotEX], 
+[EX9AsycudaSalesAllocations].[AssessmentDate] AS [AssessmentDate], 
+[EX9AsycudaSalesAllocations].[IsManuallyAssessed] AS [IsManuallyAssessed], 
+[EX9AsycudaSalesAllocations].[DocumentType] AS [DocumentType]
 FROM [dbo].[EX9AsycudaSalesAllocations] AS [EX9AsycudaSalesAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -1190,6 +1265,21 @@ FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
 [InventoryItemsEx].[SuppQty] AS [SuppQty], 
 [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ItemSalesPiSummary" EntityType="Self.ItemSalesPiSummary" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[ItemSalesPiSummary].[PreviousItem_Id] AS [PreviousItem_Id], 
+[ItemSalesPiSummary].[ItemNumber] AS [ItemNumber], 
+[ItemSalesPiSummary].[DutyFreePaid] AS [DutyFreePaid], 
+[ItemSalesPiSummary].[pLineNumber] AS [pLineNumber], 
+[ItemSalesPiSummary].[pQtyAllocated] AS [pQtyAllocated], 
+[ItemSalesPiSummary].[pCNumber] AS [pCNumber], 
+[ItemSalesPiSummary].[pRegistrationDate] AS [pRegistrationDate], 
+[ItemSalesPiSummary].[pAssessmentDate] AS [pAssessmentDate], 
+[ItemSalesPiSummary].[QtyAllocated] AS [QtyAllocated], 
+[ItemSalesPiSummary].[EntryDataDate] AS [EntryDataDate], 
+[ItemSalesPiSummary].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[ItemSalesPiSummary] AS [ItemSalesPiSummary]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="PreviousItemsEx" EntityType="Self.PreviousItemsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1493,6 +1583,16 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
             <End Role="EX9AsycudaSalesAllocations" EntitySet="EX9AsycudaSalesAllocations" />
           </AssociationSet>
+          <EntitySet Name="AllocationErrors" EntityType="WaterNutDBModel.AllocationErrors" />
+          <AssociationSet Name="EntryDataDetailsEX9AsycudaSalesAllocations" Association="WaterNutDBModel.EntryDataDetailsEX9AsycudaSalesAllocations">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="EX9AsycudaSalesAllocations" EntitySet="EX9AsycudaSalesAllocations" />
+          </AssociationSet>
+          <EntitySet Name="ItemSalesPiSummary" EntityType="WaterNutDBModel.ItemSalesPiSummary" />
+          <AssociationSet Name="AllocationErrorsEX9AsycudaSalesAllocations" Association="WaterNutDBModel.AllocationErrorsEX9AsycudaSalesAllocations">
+            <End Role="AllocationErrors" EntitySet="AllocationErrors" />
+            <End Role="EX9AsycudaSalesAllocations" EntitySet="EX9AsycudaSalesAllocations" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -1545,6 +1645,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsAsycudaDocumentItemEntryDataDetails" FromRole="EntryDataDetails" ToRole="AsycudaDocumentItemEntryDataDetails" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="TaxAmount" Type="Double" />
+          <Property Name="LastCost" Type="Double" />
+          <NavigationProperty Name="EX9AsycudaSalesAllocations" Relationship="WaterNutDBModel.EntryDataDetailsEX9AsycudaSalesAllocations" FromRole="EntryDataDetails" ToRole="EX9AsycudaSalesAllocations" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
           
         </EntityType>
@@ -1635,7 +1737,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="CLineNumber" Type="Int32" />
           <Property Name="Downloaded" Type="Boolean" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="EntryDataDetails" />
-          <Property Name="DutyFreePaid" MaxLength="9" FixedLength="false" Unicode="false" Type="String" />
+          <Property Name="DutyFreePaid" MaxLength="9" FixedLength="false" Unicode="false" Type="String" Nullable="false" />
           <Property Name="Total" Type="Double" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
           <Property Name="InvoiceQty" Type="Double" />
@@ -1648,6 +1750,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="InventoryItemsEx" />
+          <Property Name="LastCost" Type="Double" />
+          <Property Name="TaxAmount" Type="Double" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Multiplicity="1" Role="EntryDataDetails" />
@@ -1674,7 +1778,6 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="TaxAmount" Type="Double" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           </EntityType>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -2181,7 +2284,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Cost" Type="Double" />
           <Property Name="Total_CIF_itm" Type="Double" />
           <Property Name="DutyLiability" Type="Double" />
-          <Property Name="TaxAmount" Type="Double" />
+          <Property Name="TaxAmount" Type="Double" Nullable="false" />
           <Property Name="pIsAssessed" Type="Boolean" />
           <Property Name="DoNotAllocateSales" Type="Boolean" />
           <Property Name="DoNotAllocatePreviousEntry" Type="Boolean" />
@@ -2202,6 +2305,18 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExEX9AsycudaSalesAllocations" FromRole="EX9AsycudaSalesAllocations" ToRole="InventoryItemsEx" />
           <NavigationProperty Name="AsycudaSalesAllocations" Relationship="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations" FromRole="EX9AsycudaSalesAllocations" ToRole="AsycudaSalesAllocations" />
+          <Property Name="SalesLineNumber" Type="Int32" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+          <Property Name="DPQtyAllocated" Type="Double" />
+          <Property Name="DFQtyAllocated" Type="Double" />
+          <Property Name="WarehouseError" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesFactor" Type="Double" />
+          <Property Name="DoNotEX" Type="Boolean" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
+          <Property Name="IsManuallyAssessed" Type="Boolean" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsEX9AsycudaSalesAllocations" FromRole="EX9AsycudaSalesAllocations" ToRole="EntryDataDetails" />
+          <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AllocationErrors" Relationship="WaterNutDBModel.AllocationErrorsEX9AsycudaSalesAllocations" FromRole="EX9AsycudaSalesAllocations" ToRole="AllocationErrors" />
         </EntityType>
         <Association Name="xcuda_ItemEX9AsycudaSalesAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1" />
@@ -2293,9 +2408,6 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
         <EntityType Name="AdjustmentShortAllocations">
           <Key>
             <PropertyRef Name="AllocationId" />
-            <PropertyRef Name="Asycudadocumentsetid" />
-            <PropertyRef Name="DutyFreePaid" />
-            <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="AllocationId" Type="Int32" Nullable="false" />
           <Property Name="TotalValue" Type="Double" Nullable="false" />
@@ -2344,10 +2456,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AscyudaItemPiQuantity" Relationship="WaterNutDBModel.AscyudaItemPiQuantityAdjustmentShortAllocations" FromRole="AdjustmentShortAllocations" ToRole="AscyudaItemPiQuantity" />
-          <Property Name="Asycudadocumentsetid" Type="Int32" Nullable="false" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="xcuda_ItemAdjustmentShortAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1" />
@@ -2421,6 +2533,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="PiQuantity" Type="Double" />
           <Property Name="PiWeight" Type="Double" />
           <NavigationProperty Name="AdjustmentShortAllocations" Relationship="WaterNutDBModel.AscyudaItemPiQuantityAdjustmentShortAllocations" FromRole="AscyudaItemPiQuantity" ToRole="AdjustmentShortAllocations" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AscyudaItemPiQuantityAdjustmentShortAllocations">
           <End Type="WaterNutDBModel.AscyudaItemPiQuantity" Role="AscyudaItemPiQuantity" Multiplicity="1" />
@@ -2437,7 +2550,6 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
         <EntityType Name="AsycudaItemPiQuantityData">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="DutyFreePaid" />
           </Key>
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <Property Name="PiQuantity" Type="Double" />
@@ -2451,7 +2563,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Reference" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
-        </EntityType>
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          </EntityType>
         <EntityType Name="PreviousItemsEx">
           <Key>
             <PropertyRef Name="PreviousItem_Id" />
@@ -2586,6 +2699,62 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AllocationErrors">
+          <Key>
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="EX9AsycudaSalesAllocations" Relationship="WaterNutDBModel.AllocationErrorsEX9AsycudaSalesAllocations" FromRole="AllocationErrors" ToRole="EX9AsycudaSalesAllocations" />
+        </EntityType>
+        <Association Name="EntryDataDetailsEX9AsycudaSalesAllocations">
+          <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.EX9AsycudaSalesAllocations" Role="EX9AsycudaSalesAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="EX9AsycudaSalesAllocations">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ItemSalesPiSummary">
+          <Key>
+            <PropertyRef Name="DutyFreePaid" />
+            <PropertyRef Name="pLineNumber" />
+            <PropertyRef Name="pQtyAllocated" />
+            <PropertyRef Name="EntryDataDate" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="PreviousItem_Id" Type="Int32" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="pLineNumber" Type="Int32" Nullable="false" />
+          <Property Name="pQtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="pCNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="pRegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="pAssessmentDate" Type="DateTime" Precision="7" />
+          <Property Name="QtyAllocated" Type="Double" />
+          <Property Name="EntryDataDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="AllocationErrorsEX9AsycudaSalesAllocations">
+          <End Type="WaterNutDBModel.AllocationErrors" Role="AllocationErrors" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.EX9AsycudaSalesAllocations" Role="EX9AsycudaSalesAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AllocationErrors">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="EX9AsycudaSalesAllocations">
+              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2610,6 +2779,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
@@ -2667,6 +2837,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
@@ -2701,7 +2873,6 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.EntryData)">
               <MappingFragment StoreEntitySet="EntryData">
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
@@ -2971,6 +3142,16 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EX9AsycudaSalesAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.EX9AsycudaSalesAllocations">
               <MappingFragment StoreEntitySet="EX9AsycudaSalesAllocations">
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="IsManuallyAssessed" ColumnName="IsManuallyAssessed" />
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
+                <ScalarProperty Name="DoNotEX" ColumnName="DoNotEX" />
+                <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
+                <ScalarProperty Name="WarehouseError" ColumnName="WarehouseError" />
+                <ScalarProperty Name="DFQtyAllocated" ColumnName="DFQtyAllocated" />
+                <ScalarProperty Name="DPQtyAllocated" ColumnName="DPQtyAllocated" />
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="xBond_Item_Id" ColumnName="xBond_Item_Id" />
                 <ScalarProperty Name="pExpiryDate" ColumnName="pExpiryDate" />
@@ -3038,10 +3219,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AdjustmentShortAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.AdjustmentShortAllocations">
               <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
                 <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
-                <ScalarProperty Name="Asycudadocumentsetid" ColumnName="Asycudadocumentsetid" />
                 <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
                 <ScalarProperty Name="pItemNumber" ColumnName="pItemNumber" />
@@ -3104,6 +3285,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AscyudaItemPiQuantity">
             <EntityTypeMapping TypeName="WaterNutDBModel.AscyudaItemPiQuantity">
               <MappingFragment StoreEntitySet="AscyudaItemPiQuantity">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="PiWeight" ColumnName="PiWeight" />
                 <ScalarProperty Name="PiQuantity" ColumnName="PiQuantity" />
                 <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
@@ -3113,6 +3295,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaItemPiQuantityData">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaItemPiQuantityData">
               <MappingFragment StoreEntitySet="AsycudaItemPiQuantityData">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
@@ -3190,6 +3373,31 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="AliasId" ColumnName="AliasId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AllocationErrors">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AllocationErrors">
+              <MappingFragment StoreEntitySet="AllocationErrors">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ItemSalesPiSummary">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ItemSalesPiSummary">
+              <MappingFragment StoreEntitySet="ItemSalesPiSummary">
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="pAssessmentDate" ColumnName="pAssessmentDate" />
+                <ScalarProperty Name="pRegistrationDate" ColumnName="pRegistrationDate" />
+                <ScalarProperty Name="pCNumber" ColumnName="pCNumber" />
+                <ScalarProperty Name="pQtyAllocated" ColumnName="pQtyAllocated" />
+                <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -1051,7 +1051,37 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<AscyudaItemPiQuantity>> GetAscyudaItemPiQuantityByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AscyudaItemPiQuantity> entities = await set//dbContext.AscyudaItemPiQuantity
+                                                    // .Include(x => x.AdjustmentShortAllocations)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try

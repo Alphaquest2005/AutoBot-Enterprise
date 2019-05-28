@@ -1016,6 +1016,60 @@ public string AsycudaPassword
             }
         }
 
+        ObservableCollection<EmailMapping> _EmailMapping = null;
+        public  ObservableCollection<EmailMapping> EmailMapping
+		{
+            
+		    get 
+				{ 
+					if(_EmailMapping != null) return _EmailMapping;
+					//if (this.applicationsettings.EmailMapping == null) Debugger.Break();
+					if(this.applicationsettings.EmailMapping != null)
+					{
+						_EmailMapping = new ObservableCollection<EmailMapping>(this.applicationsettings.EmailMapping.Select(x => new EmailMapping(x)));
+					}
+					
+						_EmailMapping.CollectionChanged += EmailMapping_CollectionChanged; 
+					
+					return _EmailMapping; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailMapping)) return;
+				if (value != null)
+					this.applicationsettings.EmailMapping = new ChangeTrackingCollection<DTO.EmailMapping>(value.Select(x => x.DTO).ToList());
+                _EmailMapping = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailMapping != null)
+				_EmailMapping.CollectionChanged += EmailMapping_CollectionChanged;               
+				NotifyPropertyChanged("EmailMapping");
+			}
+		}
+        
+        void EmailMapping_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailMapping itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.EmailMapping.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailMapping itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        applicationsettings.EmailMapping.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.ApplicationSettings> _changeTracker;    
         public ChangeTrackingCollection<DTO.ApplicationSettings> ChangeTracker

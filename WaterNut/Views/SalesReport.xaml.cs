@@ -97,7 +97,7 @@ namespace WaterNut.Views
                         var directoryInfo = new DirectoryInfo(first).Parent;
                         if (directoryInfo != null)
                         {
-                            await im.ExportDocSetSalesReport(BaseViewModel.Instance.CurrentAsycudaDocumentSetEx, directoryInfo.FullName).ConfigureAwait(false);
+                            await im.ExportDocSetSalesReport(BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, directoryInfo.FullName).ConfigureAwait(false);
                         }
                     }
                     

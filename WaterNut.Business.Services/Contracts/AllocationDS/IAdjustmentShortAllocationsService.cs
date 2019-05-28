@@ -120,6 +120,12 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsBypASYCUDA_Id(string pASYCUDA_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShortAllocations>> GetAdjustmentShortAllocationsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
   
 
 

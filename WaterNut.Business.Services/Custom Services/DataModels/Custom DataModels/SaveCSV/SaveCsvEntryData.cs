@@ -159,7 +159,6 @@ namespace WaterNut.DataSpace
                                 EntryDataId = item.EntryData.EntryDataId,
                                 EntryDataDate = item.EntryData.EntryDataDate,
                                 INVNumber = item.EntryData.EntryDataId,
-                                TaxAmount = item.EntryData.Tax,
                                 CustomerName = item.EntryData.CustomerName,
                                 Currency = string.IsNullOrEmpty(item.EntryData.Currency) ? null : item.EntryData.Currency,
                                 TrackingState = TrackingState.Added
@@ -221,7 +220,6 @@ namespace WaterNut.DataSpace
                                 EntryDataId = item.EntryData.EntryDataId,
                                 EntryDataDate = item.EntryData.EntryDataDate,
                                 TrackingState = TrackingState.Added,
-                                TaxAmount = item.EntryData.Tax,
                                 TotalFreight = item.f.Sum(x => x.TotalFreight),
                                 TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
                                 TotalWeight = item.f.Sum(x => x.TotalWeight),

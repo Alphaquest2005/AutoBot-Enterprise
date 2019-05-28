@@ -35,19 +35,6 @@ namespace EntryDataQS.Client.DTO
         private string _Type;
 
         [DataMember]
-        public string DutyFreePaid
-		{ 
-		    get { return _DutyFreePaid; }
-			set
-			{
-			    if (value == _DutyFreePaid) return;
-				_DutyFreePaid = value;
-				NotifyPropertyChanged();//m => this.DutyFreePaid
-			}
-		}
-        private string _DutyFreePaid;
-
-        [DataMember]
         public Nullable<double> Total
 		{ 
 		    get { return _Total; }

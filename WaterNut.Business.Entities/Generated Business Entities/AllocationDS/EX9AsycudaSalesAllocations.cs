@@ -395,7 +395,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<double> _dutyliability;
         [DataMember]
-        public Nullable<double> TaxAmount 
+        public double TaxAmount 
         {
             get
             {
@@ -408,7 +408,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _taxamount;
+        double _taxamount;
         [DataMember]
         public Nullable<bool> pIsAssessed 
         {
@@ -665,11 +665,165 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<int> _applicationsettingsid;
         [DataMember]
+        public Nullable<int> SalesLineNumber 
+        {
+            get
+            {
+                return _saleslinenumber;
+            }
+            set
+            {
+                _saleslinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _saleslinenumber;
+        [DataMember]
+        public Nullable<System.DateTime> EffectiveDate 
+        {
+            get
+            {
+                return _effectivedate;
+            }
+            set
+            {
+                _effectivedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _effectivedate;
+        [DataMember]
+        public Nullable<double> DPQtyAllocated 
+        {
+            get
+            {
+                return _dpqtyallocated;
+            }
+            set
+            {
+                _dpqtyallocated = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _dpqtyallocated;
+        [DataMember]
+        public Nullable<double> DFQtyAllocated 
+        {
+            get
+            {
+                return _dfqtyallocated;
+            }
+            set
+            {
+                _dfqtyallocated = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _dfqtyallocated;
+        [DataMember]
+        public string WarehouseError 
+        {
+            get
+            {
+                return _warehouseerror;
+            }
+            set
+            {
+                _warehouseerror = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _warehouseerror;
+        [DataMember]
+        public Nullable<double> SalesFactor 
+        {
+            get
+            {
+                return _salesfactor;
+            }
+            set
+            {
+                _salesfactor = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _salesfactor;
+        [DataMember]
+        public Nullable<bool> DoNotEX 
+        {
+            get
+            {
+                return _donotex;
+            }
+            set
+            {
+                _donotex = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _donotex;
+        [DataMember]
+        public Nullable<System.DateTime> AssessmentDate 
+        {
+            get
+            {
+                return _assessmentdate;
+            }
+            set
+            {
+                _assessmentdate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _assessmentdate;
+        [DataMember]
+        public Nullable<bool> IsManuallyAssessed 
+        {
+            get
+            {
+                return _ismanuallyassessed;
+            }
+            set
+            {
+                _ismanuallyassessed = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _ismanuallyassessed;
+        [DataMember]
+        public string DocumentType 
+        {
+            get
+            {
+                return _documenttype;
+            }
+            set
+            {
+                _documenttype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documenttype;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public InventoryItem InventoryItemsEx { get; set; }
         [DataMember]
         public AsycudaSalesAllocations AsycudaSalesAllocations { get; set; }
+        [DataMember]
+        public EntryDataDetails EntryDataDetails { get; set; }
+        [DataMember]
+        public AllocationErrors AllocationErrors { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

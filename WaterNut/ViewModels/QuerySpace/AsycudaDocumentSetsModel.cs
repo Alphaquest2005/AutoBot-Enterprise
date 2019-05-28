@@ -225,7 +225,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         {
                             var dir = directoryInfo.FullName;
                              await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
-                            await SalesReportModel.Instance.ExportDocSetSalesReport(docSet, dir).ConfigureAwait(false);
+                            await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
                         }
                     }
                 }

@@ -34,6 +34,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousDocumentItem' doe
         <EntityType Name="PreviousDocumentItem">
           <Key>
             <PropertyRef Name="Item_Id" />
+            
+            
+            
+            
+            
           </Key>
           <Property Name="Amount_deducted_from_licence" Type="nvarchar" MaxLength="10" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
@@ -79,6 +84,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
             
             
             <PropertyRef Name="PreviousItem_Id" />
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="Packages_number" Type="nvarchar" MaxLength="20" />
           <Property Name="Previous_Packages_number" Type="nvarchar" MaxLength="20" />

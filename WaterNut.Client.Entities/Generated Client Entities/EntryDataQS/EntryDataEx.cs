@@ -63,23 +63,6 @@ public string Type
      
 
        
-       
-                
-                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
-public string DutyFreePaid
-		{ 
-		    get { return this.entrydataex.DutyFreePaid; }
-			set
-			{
-			    if (value == this.entrydataex.DutyFreePaid) return;
-				this.entrydataex.DutyFreePaid = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("DutyFreePaid");
-			}
-		}
-     
-
-       
        [NumberValidationAttribute]
 public Nullable<double> Total
 		{ 

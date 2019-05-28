@@ -209,24 +209,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
  
 
-		private string _dutyFreePaidFilter;
-        public string DutyFreePaidFilter
-        {
-            get
-            {
-                return _dutyFreePaidFilter;
-            }
-            set
-            {
-                _dutyFreePaidFilter = value;
-				NotifyPropertyChanged(x => DutyFreePaidFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Double? _totalFilter;
         public Double? TotalFilter
         {
@@ -418,10 +400,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
  
 
-									if(string.IsNullOrEmpty(DutyFreePaidFilter) == false)
-						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
- 
-
 					if(TotalFilter.HasValue)
 						res.Append(" && " + string.Format("Total == {0}",  TotalFilter.ToString()));				 
 
@@ -495,9 +473,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     Type = x.Type ,
                     
  
-                    DutyFreePaid = x.DutyFreePaid ,
-                    
- 
                     Total = x.Total ,
                     
  
@@ -530,9 +505,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         {
 		 
                     public string Type { get; set; } 
-                    
- 
-                    public string DutyFreePaid { get; set; } 
                     
  
                     public Nullable<double> Total { get; set; } 

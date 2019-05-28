@@ -98,6 +98,7 @@
     <Compile Include="CoreEntities\IAttachmentsService.cs" />
     <Compile Include="CoreEntities\ICustoms_ProcedureService.cs" />
     <Compile Include="CoreEntities\IDocument_TypeService.cs" />
+    <Compile Include="CoreEntities\IEmailMappingService.cs" />
     <Compile Include="CoreEntities\IEntryPreviousItemsService.cs" />
     <Compile Include="CoreEntities\IFileTypeMappingsService.cs" />
     <Compile Include="CoreEntities\IFileTypesService.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="CoreEntities\IInventoryItemXService.cs" />
     <Compile Include="CoreEntities\ILicenceSummaryService.cs" />
     <Compile Include="CoreEntities\ISubItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="CoreEntities\Ixcuda_Supplementary_unitService.cs" />
     <Compile Include="CounterPointQS\ICounterPointPODetailsService.cs" />
     <Compile Include="CounterPointQS\ICounterPointPOsService.cs" />

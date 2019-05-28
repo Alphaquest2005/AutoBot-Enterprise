@@ -245,7 +245,7 @@ namespace AdjustmentQS.Business.Services
                                 pLineNumber = g.PreviousDocumentItem.LineNumber
                             },
                             ItemNumber = g.EntryDataDetails.ItemNumber,
-                            DutyFreePaid = "Duty Free"
+                            DutyFreePaid = g.DutyFreePaid
                         }).Select(x => new CreateEx9Class.ItemSalesPiSummary
                         {
                             ItemNumber = x.Key.ItemNumber,
@@ -483,7 +483,7 @@ namespace AdjustmentQS.Business.Services
                                 c.x.PreviousDocumentItem == null
                                     ? null
                                     : c.x.PreviousDocumentItem.xcuda_Goods_description.Commercial_Description,
-                            DutyFreePaid = "Duty Free",
+                            DutyFreePaid = c.x.DutyFreePaid,
                             EntryDataDetailsId = (int)c.x.EntryDataDetailsId,
                             InvoiceDate = c.x.InvoiceDate,
                             EffectiveDate = (DateTime) c.x.EffectiveDate,
@@ -523,9 +523,9 @@ namespace AdjustmentQS.Business.Services
                                     .Select(z => new previousItems()
                                     {
                                         DutyFreePaid =
-                                            z.xcuda_Item.AsycudaDocument.Type_of_declaration == "EX"
-                                                ? "Duty Free"
-                                                : "Duty Paid",
+                                            z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4074" || z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070"
+                                                ? "Duty Paid"
+                                                : "Duty Free",
                                         Net_weight = z.Net_weight,
                                         Suplementary_Quantity = z.Suplementary_Quantity
                                     }).ToList(),

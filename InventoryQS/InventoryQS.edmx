@@ -61,6 +61,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
             
             
             
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -77,7 +78,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Total" Type="float" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="InvoiceQty" Type="float" />
@@ -89,6 +90,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="LastCost" Type="float" />
+          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -180,7 +183,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
 [EntryDataDetailsEx].[Comment] AS [Comment], 
 [EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
-[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EntryDataDetailsEx].[LastCost] AS [LastCost], 
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -341,7 +346,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CLineNumber" Type="Int32" />
           <Property Name="Downloaded" Type="Boolean" />
-          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Total" Type="Single" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="InventoryItemsEx" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" />
@@ -354,6 +359,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="LastCost" Type="Double" />
+          <Property Name="TaxAmount" Type="Double" />
         </EntityType>
         <Association Name="InventoryItemsExEntryDataDetailsEx">
           <End Type="WaterNutDBModel.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
@@ -469,6 +476,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />

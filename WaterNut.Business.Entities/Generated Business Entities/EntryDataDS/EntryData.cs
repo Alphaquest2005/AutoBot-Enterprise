@@ -163,21 +163,6 @@ namespace EntryDataDS.Business.Entities
         }
         string _currency;
         [DataMember]
-        public Nullable<double> TaxAmount 
-        {
-            get
-            {
-                return _taxamount;
-            }
-            set
-            {
-                _taxamount = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _taxamount;
-        [DataMember]
         public int ApplicationSettingsId 
         {
             get

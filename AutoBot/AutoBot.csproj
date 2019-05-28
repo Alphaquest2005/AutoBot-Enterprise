@@ -52,11 +52,26 @@
     <Reference Include="MailKit, Version=2.1.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
       <HintPath>..\packages\MailKit.2.1.5.1\lib\net45\MailKit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
     <Reference Include="MimeKit, Version=2.1.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\packages\MimeKit.2.1.5.1\lib\net45\MimeKit.dll</HintPath>
     </Reference>
     <Reference Include="MoreLinq, Version=3.1.1.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
       <HintPath>..\packages\morelinq.3.1.1\lib\net451\MoreLinq.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ParallelExtensionsExtras, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSFT.ParallelExtensionsExtras.1.2.0\lib\ParallelExtensionsExtras.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-Common, Version=5.5.0.0, Culture=neutral, PublicKeyToken=20fad5ed49a0c3b4, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleMvvmToolkit-WPF, Version=5.5.0.0, Culture=neutral, PublicKeyToken=20fad5ed49a0c3b4, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -65,6 +80,9 @@
     <Reference Include="System.Security" />
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -96,6 +114,14 @@
     <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
       <Project>{D6846386-8741-4619-BAE3-B0CFEDBF2597}</Project>
       <Name>Core.Common.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4D734EAC-E84B-40A2-9726-D17263B0FF4A}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
+      <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
+      <Name>InterfacesModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\EmailDownloader\EmailDownloader.csproj">
       <Project>{5e51c8c3-9bf4-4c13-ad00-7094ffb83ad6}</Project>

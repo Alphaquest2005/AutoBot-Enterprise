@@ -28,7 +28,7 @@
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
               this.Property(t => t.Downloaded).HasColumnName("Downloaded");
-              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsUnicode(false).HasMaxLength(9);
+              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.Total).HasColumnName("Total");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");
@@ -40,6 +40,8 @@
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.LastCost).HasColumnName("LastCost");
+              this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsEx).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
              // Tracking Properties

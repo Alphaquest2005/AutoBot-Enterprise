@@ -27,6 +27,7 @@ namespace CoreEntities.Business.Entities
             this.InventoryItemsEx = new List<InventoryItemX>();
             this.FileTypes = new List<FileTypes>();
             this.InfoMapping = new List<InfoMapping>();
+            this.EmailMapping = new List<EmailMapping>();
         }
 
         [DataMember]
@@ -626,6 +627,8 @@ namespace CoreEntities.Business.Entities
         public List<FileTypes> FileTypes { get; set; }
         [DataMember]
         public List<InfoMapping> InfoMapping { get; set; }
+        [DataMember]
+        public List<EmailMapping> EmailMapping { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

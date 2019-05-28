@@ -139,19 +139,6 @@ namespace EntryDataQS.Client.DTO
         private string _Currency;
 
         [DataMember]
-        public Nullable<double> TaxAmount
-		{ 
-		    get { return _TaxAmount; }
-			set
-			{
-			    if (value == _TaxAmount) return;
-				_TaxAmount = value;
-				NotifyPropertyChanged();//m => this.TaxAmount
-			}
-		}
-        private Nullable<double> _TaxAmount;
-
-        [DataMember]
         public int ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }

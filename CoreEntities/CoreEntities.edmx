@@ -84,6 +84,14 @@
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
         </EntityType>
+        <EntityType Name="EmailMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
             <PropertyRef Name="EntryPreviousItemId" />
@@ -331,6 +339,27 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not 
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="RowNumber" Type="bigint" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-UnallocatedSales">
+          <Key>
+            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="EntryDataDate" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="QtyAllocated" />
+            <PropertyRef Name="Cost" />
+          </Key>
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+        </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
           <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -354,6 +383,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not 
             </Principal>
             <Dependent Role="Customs_Procedure">
               <PropertyRef Name="Document_TypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EmailMapping_ApplicationSettings">
+          <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EmailMapping" Type="Self.EmailMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="EmailMapping">
+              <PropertyRef Name="ApplicationSettingsId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -405,6 +448,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not 
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmailMapping" EntityType="Self.EmailMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
@@ -561,6 +605,18 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
 [LicenceSummary].[RowNumber] AS [RowNumber]
 FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-UnallocatedSales" EntityType="Self.TODO-UnallocatedSales" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-UnallocatedSales].[EntryDataId] AS [EntryDataId], 
+[TODO-UnallocatedSales].[ItemNumber] AS [ItemNumber], 
+[TODO-UnallocatedSales].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-UnallocatedSales].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-UnallocatedSales].[EntryDataDate] AS [EntryDataDate], 
+[TODO-UnallocatedSales].[Quantity] AS [Quantity], 
+[TODO-UnallocatedSales].[QtyAllocated] AS [QtyAllocated], 
+[TODO-UnallocatedSales].[Cost] AS [Cost]
+FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Attachments" Association="Self.FK_AsycudaDocumentSet_Attachments_Attachments">
             <End Role="Attachments" EntitySet="Attachments" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
@@ -568,6 +624,10 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmailMapping_ApplicationSettings" Association="Self.FK_EmailMapping_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="EmailMapping" EntitySet="EmailMapping" />
           </AssociationSet>
           <AssociationSet Name="FK_FileTypeMappings_FileTypes" Association="Self.FK_FileTypeMappings_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
@@ -685,6 +745,12 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
             <End Role="AsycudaDocumentSetEx" EntitySet="AsycudaDocumentSetExs" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
+          <EntitySet Name="EmailMapping" EntityType="WaterNutDBModel.EmailMapping" />
+          <AssociationSet Name="FK_EmailMapping_ApplicationSettings" Association="WaterNutDBModel.FK_EmailMapping_ApplicationSettings">
+            <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
+            <End Role="EmailMapping" EntitySet="EmailMapping" />
+          </AssociationSet>
+          <EntitySet Name="TODO_UnallocatedSales" EntityType="WaterNutDBModel.TODO_UnallocatedSales" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -734,7 +800,8 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
           <Property Name="AsycudaLogin" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_ApplicationSettings" FromRole="ApplicationSettings" ToRole="FileTypes" />
-          <NavigationProperty Name="InfoMapping" Relationship="WaterNutDBModel.FK_InfoMapping_ApplicationSettings" FromRole="ApplicationSettings" ToRole="InfoMapping" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <NavigationProperty Name="InfoMapping" Relationship="WaterNutDBModel.FK_InfoMapping_ApplicationSettings" FromRole="ApplicationSettings" ToRole="InfoMapping" />
+          <NavigationProperty Name="EmailMapping" Relationship="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" FromRole="ApplicationSettings" ToRole="EmailMapping" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -1282,6 +1349,48 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="EmailMapping">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Pattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" FromRole="EmailMapping" ToRole="ApplicationSettings" />
+        </EntityType>
+        <Association Name="FK_EmailMapping_ApplicationSettings">
+          <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EmailMapping" Role="EmailMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ApplicationSettings">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="EmailMapping">
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TODO_UnallocatedSales">
+          <Key>
+            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="EntryDataDate" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="QtyAllocated" />
+            <PropertyRef Name="Cost" />
+          </Key>
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryDataDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1603,6 +1712,29 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailMapping">
+            <EntityTypeMapping TypeName="WaterNutDBModel.EmailMapping">
+              <MappingFragment StoreEntitySet="EmailMapping">
+                <ScalarProperty Name="Pattern" ColumnName="Pattern" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_UnallocatedSales">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_UnallocatedSales">
+              <MappingFragment StoreEntitySet="TODO-UnallocatedSales">
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -137,7 +137,7 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
             Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-                                     //.Where(x => x.Key.Contains("HCLAMP/060")) // 
+                                     //.Where(x => x.Key.Contains("MMM/09168")) // 
                                      // .Where(x => "337493".Contains(x.Key))
                                      //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
                                      , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
@@ -1048,6 +1048,7 @@ namespace WaterNut.DataSpace
                                                                     : "") +
 
                                                                "QtyAllocated != Quantity " +
+                                                               $"&& Sales.ApplicationSettingsId == {applicationSettingsId} " +
                                                                //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
                                                                "&& DoNotAllocate != true", new Dictionary<string, string>()
                                                                {
@@ -1112,7 +1113,6 @@ namespace WaterNut.DataSpace
                {
                    EntryDataId = x.Adjustments.EntryDataId,
                    EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
-                   TaxAmount = 0,
                    INVNumber = x.Adjustments.EntryDataId,
                };
                x.Comment = "Adjustment";
@@ -1120,46 +1120,7 @@ namespace WaterNut.DataSpace
             return adjlst;
         }
 
-        private static async Task<IEnumerable<ItemSales>> GetSaleslstWithDescription()
-        {
-            StatusModel.Timer("Getting Data - Sales Entries...");
-
-            IEnumerable<ItemSales> saleslst = null;
-            using (var ctx = new EntryDataDetailsService())
-            {
-                var salesData =
-
-                    await
-                        ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"FAA/SCPI18X112\" &&" +
-                                (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Sales.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-                                    : "") +
-                                "QtyAllocated != Quantity " +
-                                "&& Cost > 0 " +
-                                "&& DoNotAllocate != true", new Dictionary<string, string>()
-                                {
-                                    { "Sales", "INVNumber != null" }
-                                }, new List<string>() { "Sales", "AsycudaSalesAllocations" })
-                            .ConfigureAwait(false);
-                saleslst = from d in salesData
-                    //.Where(x => x.EntryData == "GB-0009053")                                       
-                    //.SelectMany(x => x.EntryDataDetails.Select(ed => ed))
-                    //.Where(x => x.QtyAllocated == null || x.QtyAllocated != ((Double) x.Quantity))
-                    //.Where(x => x.ItemNumber == itmnumber)
-                    // .AsEnumerable()
-                    group d by d.ItemDescription.Trim()
-                    into g
-                    select
-                    new ItemSales
-                    {
-                        Key = g.Key,
-                        SalesList = g.Where(xy => xy != null & xy.Sales != null).OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId).ToList()
-                    };
-            }
-            return saleslst;
-        }
-
-
-
+       
 
         private async Task AllocateSalestoAsycudaByKey(List<EntryDataDetails> saleslst, List<xcuda_Item> asycudaEntries,
             double currentSetNo, int setNo, bool allocateToLastAdjustment)
@@ -1219,7 +1180,13 @@ namespace WaterNut.DataSpace
                    // StatusModel.Refresh();
                   
                     var saleitmQtyToallocate = saleitm.Quantity - saleitm.QtyAllocated;
-
+                    if (saleitmQtyToallocate > 0 && CurrentAsycudaItemIndex == asycudaEntries.Count())
+                    {
+                        // over allocate to handle out of stock in case returns deal with it
+                        await AllocateSaleItem(cAsycudaItm, saleitm, saleitmQtyToallocate, null)
+                            .ConfigureAwait(false);
+                        continue;
+                    }
                     for (var i = CurrentAsycudaItemIndex; i < asycudaEntries.Count(); i++)
                     {
                         // reset in event earlier dat
@@ -1354,13 +1321,6 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private double checkRemainingQty(List<EntryDataDetails> saleslst, List<xcuda_Item> asycudaEntries, int CurrentAsycudaItemIndex,
-            int CurrentSalesItemIndex)
-        {
-            double asyRemainingQty = asycudaEntries.Skip(CurrentAsycudaItemIndex + 1).Sum(x => x.ItemQuantity - x.QtyAllocated);
-            double salesRemainingQty = saleslst.Skip(CurrentSalesItemIndex + 1).Sum(x => x.Quantity - x.QtyAllocated);
-            return salesRemainingQty - asyRemainingQty;
-        }
 
      
         private async Task AddExceptionAllocation(EntryDataDetails saleitm, string error)
@@ -1447,7 +1407,7 @@ namespace WaterNut.DataSpace
                 //saleitm.StartTracking();
                 if (cAsycudaItm.SalesFactor == 0) cAsycudaItm.SalesFactor = 1;
 
-                var dfp = ((Sales) saleitm.Sales).DutyFreePaid;
+                var dfp = saleitm.DutyFreePaid;
                 // allocate Sale item
                 var ssa = new AsycudaSalesAllocations()
                 {

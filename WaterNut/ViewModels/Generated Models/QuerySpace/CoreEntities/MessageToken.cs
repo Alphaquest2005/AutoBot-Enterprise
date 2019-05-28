@@ -64,6 +64,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string Document_TypeDeleted = "Document_TypeDeleted";
 			public const string Document_TypeCreated = "Document_TypeCreated";
 			public const string Document_TypeUpdated = "Document_TypeUpdated";
+			public const string EmailMappingFilterExpressionChanged = "EmailMappingFilterExpressionChanged";
+			public const string SelectedEmailMappingChanged = "SelectedEmailMappingChanged";
+            public const string EmailMappingChanged = "EmailMappingChanged";
+			public const string EmailMappingDeleted = "EmailMappingDeleted";
+			public const string EmailMappingCreated = "EmailMappingCreated";
+			public const string EmailMappingUpdated = "EmailMappingUpdated";
 			public const string EntryPreviousItemsFilterExpressionChanged = "EntryPreviousItemsFilterExpressionChanged";
 			public const string SelectedEntryPreviousItemsChanged = "SelectedEntryPreviousItemsChanged";
             public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
@@ -112,6 +118,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string SubItemsDeleted = "SubItemsDeleted";
 			public const string SubItemsCreated = "SubItemsCreated";
 			public const string SubItemsUpdated = "SubItemsUpdated";
+			public const string TODO_UnallocatedSalesFilterExpressionChanged = "TODO_UnallocatedSalesFilterExpressionChanged";
+			public const string SelectedTODO_UnallocatedSalesChanged = "SelectedTODO_UnallocatedSalesChanged";
+            public const string TODO_UnallocatedSalesChanged = "TODO_UnallocatedSalesChanged";
+			public const string TODO_UnallocatedSalesDeleted = "TODO_UnallocatedSalesDeleted";
+			public const string TODO_UnallocatedSalesCreated = "TODO_UnallocatedSalesCreated";
+			public const string TODO_UnallocatedSalesUpdated = "TODO_UnallocatedSalesUpdated";
 			public const string xcuda_Supplementary_unitFilterExpressionChanged = "xcuda_Supplementary_unitFilterExpressionChanged";
 			public const string Selectedxcuda_Supplementary_unitChanged = "Selectedxcuda_Supplementary_unitChanged";
             public const string xcuda_Supplementary_unitChanged = "xcuda_Supplementary_unitChanged";
@@ -129,6 +141,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string AttachmentsChanged = "AttachmentsChanged";
           // public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
+          // public const string EmailMappingChanged = "EmailMappingChanged";
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
           // public const string FileTypeMappingsChanged = "FileTypeMappingsChanged";
           // public const string FileTypesChanged = "FileTypesChanged";
@@ -137,6 +150,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string InventoryItemXChanged = "InventoryItemXChanged";
           // public const string LicenceSummaryChanged = "LicenceSummaryChanged";
           // public const string SubItemsChanged = "SubItemsChanged";
+          // public const string TODO_UnallocatedSalesChanged = "TODO_UnallocatedSalesChanged";
           // public const string xcuda_Supplementary_unitChanged = "xcuda_Supplementary_unitChanged";
  
 
@@ -159,6 +173,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentDocument_TypeChanged = "CurrentDocument_TypeChanged";
    
+           public const string CurrentEmailMappingChanged = "CurrentEmailMappingChanged";
+   
            public const string CurrentEntryPreviousItemsChanged = "CurrentEntryPreviousItemsChanged";
    
            public const string CurrentFileTypeMappingsChanged = "CurrentFileTypeMappingsChanged";
@@ -174,6 +190,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentLicenceSummaryChanged = "CurrentLicenceSummaryChanged";
    
            public const string CurrentSubItemsChanged = "CurrentSubItemsChanged";
+   
+           public const string CurrentTODO_UnallocatedSalesChanged = "CurrentTODO_UnallocatedSalesChanged";
    
            public const string Currentxcuda_Supplementary_unitChanged = "Currentxcuda_Supplementary_unitChanged";
     
@@ -197,6 +215,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentDocument_TypeIDChanged = "OnCurrentDocument_TypeIDChanged";
    
+           public const string CurrentEmailMappingIDChanged = "OnCurrentEmailMappingIDChanged";
+   
            public const string CurrentEntryPreviousItemsIDChanged = "OnCurrentEntryPreviousItemsIDChanged";
    
            public const string CurrentFileTypeMappingsIDChanged = "OnCurrentFileTypeMappingsIDChanged";
@@ -212,6 +232,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentLicenceSummaryIDChanged = "OnCurrentLicenceSummaryIDChanged";
    
            public const string CurrentSubItemsIDChanged = "OnCurrentSubItemsIDChanged";
+   
+           public const string CurrentTODO_UnallocatedSalesIDChanged = "OnCurrentTODO_UnallocatedSalesIDChanged";
    
            public const string Currentxcuda_Supplementary_unitIDChanged = "OnCurrentxcuda_Supplementary_unitIDChanged";
       

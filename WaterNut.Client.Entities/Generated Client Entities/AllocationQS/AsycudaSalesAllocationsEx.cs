@@ -491,9 +491,9 @@ public Nullable<double> DutyLiability
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "TaxAmount is required")]
        [NumberValidationAttribute]
-public Nullable<double> TaxAmount
+public double TaxAmount
 		{ 
 		    get { return this.asycudasalesallocationsex.TaxAmount; }
 			set

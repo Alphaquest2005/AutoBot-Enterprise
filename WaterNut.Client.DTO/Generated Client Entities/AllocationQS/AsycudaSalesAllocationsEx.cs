@@ -399,7 +399,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<double> _DutyLiability;
 
         [DataMember]
-        public Nullable<double> TaxAmount
+        public double TaxAmount
 		{ 
 		    get { return _TaxAmount; }
 			set
@@ -409,7 +409,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.TaxAmount
 			}
 		}
-        private Nullable<double> _TaxAmount;
+        private double _TaxAmount;
 
         [DataMember]
         public Nullable<bool> pIsAssessed

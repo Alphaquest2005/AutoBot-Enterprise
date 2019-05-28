@@ -58,7 +58,6 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
-          <Property Name="TaxAmount" Type="float" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -131,6 +130,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
             
             
             
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -147,7 +147,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Total" Type="float" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="InvoiceQty" Type="float" />
@@ -172,7 +172,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           </Key>
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Type" Type="varchar" MaxLength="5" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
           <Property Name="Total" Type="float" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ImportedTotal" Type="float" />
@@ -336,7 +335,6 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
             <DefiningQuery>SELECT 
 [EntryDataEx].[InvoiceDate] AS [InvoiceDate], 
 [EntryDataEx].[Type] AS [Type], 
-[EntryDataEx].[DutyFreePaid] AS [DutyFreePaid], 
 [EntryDataEx].[Total] AS [Total], 
 [EntryDataEx].[InvoiceNo] AS [InvoiceNo], 
 [EntryDataEx].[ImportedTotal] AS [ImportedTotal], 
@@ -458,7 +456,6 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
             <PropertyRef Name="InvoiceNo" />
           </Key>
           <Property Name="Type" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="Total" Type="Double"><a:DisplayTotalsProperty xmlns:a="http://schemas.tempuri.com/DisplayTotalsProperty">True</a:DisplayTotalsProperty></Property>
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Desc</a:OrderByProperty></Property>
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -511,7 +508,7 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CLineNumber" Type="Int32" />
           <Property Name="Downloaded" Type="Boolean" />
-          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Total" Type="Double"><a:DisplayTotalsProperty xmlns:a="http://schemas.tempuri.com/DisplayTotalsProperty">True</a:DisplayTotalsProperty></Property>
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutEntities.InventoryItemsExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="InventoryItemsEx" />
           <NavigationProperty Name="EntryDataEx" Relationship="WaterNutEntities.EntryDataExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="EntryDataEx" />
@@ -694,7 +691,6 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentEntryDatas" Relationship="WaterNutEntities.FK_AsycudaDocumentEntryData_EntryData" FromRole="EntryData" ToRole="AsycudaDocumentEntryData" />
           <NavigationProperty Name="AsycudaDocumentSetEntryDatas" Relationship="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData" FromRole="EntryData" ToRole="AsycudaDocumentSetEntryData" />
           <NavigationProperty Name="ContainerEntryDatas" Relationship="WaterNutEntities.FK_ContainerEntryData_EntryData" FromRole="EntryData" ToRole="ContainerEntryData" />
-          <Property Name="TaxAmount" Type="Double" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData">
@@ -854,7 +850,6 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
                 <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
                 <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
                 <ScalarProperty Name="Total" ColumnName="Total" />
-                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
               </MappingFragment>
@@ -921,7 +916,6 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
             <EntityTypeMapping TypeName="WaterNutEntities.EntryData">
               <MappingFragment StoreEntitySet="EntryData">
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />

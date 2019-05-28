@@ -269,6 +269,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "EmailMapping":
+                                return
+                                    await
+                                        GetWhere<EmailMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -781,6 +787,9 @@ namespace CoreEntities.Business.Services
                             case "InfoMapping":
                                 return await CountWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailMapping":
+                                return await CountWhere<EmailMapping>(dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.ApplicationSettings.Where(exp == "All" || exp == null ? "ApplicationSettingsId != null" : exp)
@@ -920,6 +929,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<InfoMapping>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EmailMapping":
+                                return
+                                    await
+                                        LoadRangeWhere<EmailMapping>(startIndex, count, dbContext, exp, itm.Value, "ApplicationSettings", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1196,6 +1211,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InfoMapping":
                                 return await SumWhere<InfoMapping>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailMapping":
+                                return await SumWhere<EmailMapping>(dbContext, exp, itm.Value, "ApplicationSettings", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

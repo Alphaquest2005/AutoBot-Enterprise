@@ -1034,24 +1034,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }	
 
  
-
-		private Int32? _asycudadocumentsetidFilter;
-        public Int32? AsycudadocumentsetidFilter
-        {
-            get
-            {
-                return _asycudadocumentsetidFilter;
-            }
-            set
-            {
-                _asycudadocumentsetidFilter = value;
-				NotifyPropertyChanged(x => AsycudadocumentsetidFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
 		private DateTime? _startAssessmentDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
         public DateTime? StartAssessmentDateFilter
         {
@@ -1411,9 +1393,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 						res.Append(" && " + string.Format("Comment.Contains(\"{0}\")",  CommentFilter));						
  
 
-					if(AsycudadocumentsetidFilter.HasValue)
-						res.Append(" && " + string.Format("Asycudadocumentsetid == {0}",  AsycudadocumentsetidFilter.ToString()));				 
-
  
 
 				if (Convert.ToDateTime(StartAssessmentDateFilter).Date != DateTime.MinValue &&
@@ -1582,9 +1561,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     Comment = x.Comment ,
                     
  
-                    Asycudadocumentsetid = x.Asycudadocumentsetid ,
-                    
- 
                     AssessmentDate = x.AssessmentDate ,
                     
  
@@ -1713,9 +1689,6 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public string Comment { get; set; } 
-                    
- 
-                    public int Asycudadocumentsetid { get; set; } 
                     
  
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 

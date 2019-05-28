@@ -279,7 +279,7 @@ public Nullable<bool> Downloaded
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
        
                 
                 [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
@@ -465,6 +465,36 @@ public Nullable<int> ApplicationSettingsId
 				this.entrydatadetailsex.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> LastCost
+		{ 
+		    get { return this.entrydatadetailsex.LastCost; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.LastCost) return;
+				this.entrydatadetailsex.LastCost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LastCost");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TaxAmount
+		{ 
+		    get { return this.entrydatadetailsex.TaxAmount; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.TaxAmount) return;
+				this.entrydatadetailsex.TaxAmount = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TaxAmount");
 			}
 		}
      

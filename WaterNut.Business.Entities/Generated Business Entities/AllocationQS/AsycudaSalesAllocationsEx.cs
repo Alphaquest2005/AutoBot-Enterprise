@@ -455,7 +455,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<double> _dutyliability;
         [DataMember]
-        public Nullable<double> TaxAmount 
+        public double TaxAmount 
         {
             get
             {
@@ -468,7 +468,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _taxamount;
+        double _taxamount;
         [DataMember]
         public Nullable<bool> pIsAssessed 
         {

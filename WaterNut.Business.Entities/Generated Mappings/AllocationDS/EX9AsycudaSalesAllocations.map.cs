@@ -56,9 +56,21 @@
               this.Property(t => t.pExpiryDate).HasColumnName("pExpiryDate");
               this.Property(t => t.xBond_Item_Id).HasColumnName("xBond_Item_Id");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.SalesLineNumber).HasColumnName("SalesLineNumber");
+              this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
+              this.Property(t => t.DPQtyAllocated).HasColumnName("DPQtyAllocated");
+              this.Property(t => t.DFQtyAllocated).HasColumnName("DFQtyAllocated");
+              this.Property(t => t.WarehouseError).HasColumnName("WarehouseError").HasMaxLength(50);
+              this.Property(t => t.SalesFactor).HasColumnName("SalesFactor");
+              this.Property(t => t.DoNotEX).HasColumnName("DoNotEX");
+              this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
+              this.Property(t => t.IsManuallyAssessed).HasColumnName("IsManuallyAssessed");
+              this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasOptional(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
               this.HasRequired(t => t.AsycudaSalesAllocations).WithOptional(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);
+              this.HasOptional(t => t.EntryDataDetails).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.EntryDataDetailsId);
+              this.HasOptional(t => t.AllocationErrors).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

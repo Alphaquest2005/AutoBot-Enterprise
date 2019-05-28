@@ -58,10 +58,10 @@ namespace AdjustmentQS
         public string pItemNumber { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public string Comment { get; set; }
-        public int Asycudadocumentsetid { get; set; }
         public Nullable<System.DateTime> AssessmentDate { get; set; }
         public string DutyFreePaid { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
     
         public virtual AdjustmentShort AdjustmentShort { get; set; }
         public virtual AdjustmentDetail AdjustmentDetail { get; set; }

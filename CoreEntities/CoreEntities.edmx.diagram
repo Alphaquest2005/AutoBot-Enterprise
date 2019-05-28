@@ -43,6 +43,9 @@
         <EntityTypeShape EntityType="WaterNutDBModel.Attachments" Width="1.5" PointX="16.75" PointY="15.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMapping" Width="1.5" PointX="2.75" PointY="21.25" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_UnallocatedSales" Width="1.5" PointX="13.375" PointY="15.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

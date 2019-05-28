@@ -105,7 +105,10 @@ namespace AllocationDS.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AscyudaItemPiQuantity>> GetAscyudaItemPiQuantityByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  
 
 
 

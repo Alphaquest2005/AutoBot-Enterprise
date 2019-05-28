@@ -113,6 +113,10 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<InventoryItemAlias> InventoryItemAlias { get; set; }
      
+        public DbSet<AllocationErrors> AllocationErrors { get; set; }
+     
+        public DbSet<ItemSalesPiSummary> ItemSalesPiSummary { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -182,6 +186,10 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new InventoryItemMap());
          
             modelBuilder.Configurations.Add(new InventoryItemAliasMap());
+         
+            modelBuilder.Configurations.Add(new AllocationErrorsMap());
+         
+            modelBuilder.Configurations.Add(new ItemSalesPiSummaryMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

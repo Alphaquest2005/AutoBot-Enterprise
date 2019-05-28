@@ -135,7 +135,7 @@ namespace WaterNut.DataSpace
 											&& z.xcuda_Item.AsycudaDocument.DoNotAllocate != true
 											&& z.xcuda_Item.AsycudaDocument != null
 											&& (z.xcuda_Item.AsycudaDocument.CNumber != null || z.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true)
-                                            && z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Extended_customs_procedure == (x.EntryDataDetails.Sales.TaxAmount == 0 ? "9070" : "4070"))
+                                            && z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Extended_customs_procedure == (x.EntryDataDetails.TaxAmount == 0 ? "9070" : "4070"))
 									&& x.PreviousDocumentItem.AsycudaDocument != null
 									&& x.PreviousDocumentItem.AsycudaDocument.Cancelled != true)
 						.OrderBy(x => x.EntryDataDetails.Sales.EntryDataDate)
@@ -145,7 +145,7 @@ namespace WaterNut.DataSpace
 							Allocation = x,
 							SalesDate = x.EntryDataDetails.Sales.EntryDataDate,
 							Item_Id = x.PreviousDocumentItem.Item_Id,
-							DutyFreePaid = (x.EntryDataDetails.Sales.TaxAmount == 0 ? "9070" : "4070"),
+							DutyFreePaid = (x.EntryDataDetails.TaxAmount == 0 ? "9070" : "4070"),
 							Pi = x.PreviousDocumentItem.EntryPreviousItems // already filtered out
                      //       .Where(p => p.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Cancelled != true
 																				 //&&   x.EntryDataDetails.Sales.EntryDataDate >= p.xcuda_Item.AsycudaDocument.AssessmentDate
@@ -444,7 +444,7 @@ namespace WaterNut.DataSpace
 				var expLst = new List<string>()
 				{
 					"EntryDataDetails.Sales != null",
-				    $"EntryDataDetails.Sales.TaxAmount {(dfp == "Duty Free" ? "== 0" : "!= 0")}",
+				    $"EntryDataDetails.TaxAmount {(dfp == "Duty Free" ? "== 0" : "!= 0")}",
 				    $"EntryDataDetails.Sales.EntryDataDate >= \"{"5/22/2015"}\" && EntryDataDetails.Sales.EntryDataDate <= \"{"5/31/2015 11:00 pm"}\"",
 					"PreviousDocumentItem != null",
 					"PreviousDocumentItem.EntryPreviousItems.Any(xcuda_PreviousItem.ASYCUDA_Id == \"" + Asycuda_Id.ToString() + "\")",

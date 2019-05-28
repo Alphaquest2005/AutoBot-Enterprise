@@ -594,19 +594,6 @@ namespace AllocationQS.Client.DTO
         private string _Comment;
 
         [DataMember]
-        public int Asycudadocumentsetid
-		{ 
-		    get { return _Asycudadocumentsetid; }
-			set
-			{
-			    if (value == _Asycudadocumentsetid) return;
-				_Asycudadocumentsetid = value;
-				NotifyPropertyChanged();//m => this.Asycudadocumentsetid
-			}
-		}
-        private int _Asycudadocumentsetid;
-
-        [DataMember]
         public Nullable<System.DateTime> AssessmentDate
 		{ 
 		    get { return _AssessmentDate; }
@@ -644,6 +631,19 @@ namespace AllocationQS.Client.DTO
 			}
 		}
         private int _ApplicationSettingsId;
+
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
 
        
    //     [DataMember]

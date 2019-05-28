@@ -406,7 +406,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                 
                 res.Append("PreviousItem_Id != null" +
                     "&& (xBond_Item_Id == 0)" +
-                    //"&& (pIsAssessed == true)" +
+                    "&& (pIsAssessed == true)" +
                     "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
                     //"&& (pRegistrationDate != DateTime.MinValue)" +
                     //"&& (pCNumber != null)" +

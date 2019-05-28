@@ -104,6 +104,7 @@
     <Compile Include="CoreEntities\AttachmentsClient.cs" />
     <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />
     <Compile Include="CoreEntities\Document_TypeClient.cs" />
+    <Compile Include="CoreEntities\EmailMappingClient.cs" />
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
     <Compile Include="CoreEntities\FileTypeMappingsClient.cs" />
     <Compile Include="CoreEntities\FileTypesClient.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="CoreEntities\InventoryItemXClient.cs" />
     <Compile Include="CoreEntities\LicenceSummaryClient.cs" />
     <Compile Include="CoreEntities\SubItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_UnallocatedSalesClient.cs" />
     <Compile Include="CoreEntities\xcuda_Supplementary_unitClient.cs" />
     <Compile Include="CounterPointQS\CounterPointPODetailsClient.cs" />
     <Compile Include="CounterPointQS\CounterPointPOsClient.cs" />

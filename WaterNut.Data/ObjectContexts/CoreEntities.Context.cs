@@ -83,6 +83,10 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<Attachments> Attachments { get; set; }
      
+        public DbSet<EmailMapping> EmailMapping { get; set; }
+     
+        public DbSet<TODO_UnallocatedSales> TODO_UnallocatedSales { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -122,6 +126,10 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new InfoMappingMap());
          
             modelBuilder.Configurations.Add(new AttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new EmailMappingMap());
+         
+            modelBuilder.Configurations.Add(new TODO_UnallocatedSalesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

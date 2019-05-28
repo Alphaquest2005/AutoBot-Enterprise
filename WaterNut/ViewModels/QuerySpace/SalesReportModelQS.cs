@@ -252,12 +252,12 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        internal async Task ExportDocSetSalesReport(AsycudaDocumentSetEx docSet, string folder)
+        public async Task ExportDocSetSalesReport(int asycudaDocumentSetId, string folder)
         {
             var doclst =
                 await
                     SalesDataRepository.Instance.GetSalesDocuments(
-                        docSet.AsycudaDocumentSetId)
+                        asycudaDocumentSetId)
                         .ConfigureAwait(false);
             if (doclst == null || !doclst.ToList().Any()) return;
             StatusModel.StartStatusUpdate("Exporting Files", doclst.Count());
@@ -279,13 +279,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                             if (data != null)
                             {
                                 string path = Path.Combine(folder,
-                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv");
+                                    !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".csv.pdf");
                                 s.dataToPrint = data.ToList();
                                 s.SaveReport(path);
                             }
                             else
                             {
-                                File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv"));
+                                File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".csv.pdf"));
                             }
                             StatusModel.StatusUpdate();
                         }

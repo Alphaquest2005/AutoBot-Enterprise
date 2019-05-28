@@ -28,7 +28,7 @@
               this.Property(t => t.CNumber).HasColumnName("CNumber").HasMaxLength(20);
               this.Property(t => t.CLineNumber).HasColumnName("CLineNumber");
               this.Property(t => t.Downloaded).HasColumnName("Downloaded");
-              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsUnicode(false).HasMaxLength(9);
+              this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.Total).HasColumnName("Total");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");

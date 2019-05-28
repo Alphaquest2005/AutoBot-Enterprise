@@ -14,12 +14,12 @@ namespace AllocationDS.Business.Entities
   
     public partial class Sales
     {
-        [IgnoreDataMember]
-        [NotMapped]
-        public string DutyFreePaid
-        {
-            get { return this.TaxAmount == 0 ? "Duty Free" : "Duty Paid"; }
-        }
+        //[IgnoreDataMember]
+        //[NotMapped]
+        //public string DutyFreePaid
+        //{
+        //    get { return this.TaxAmount == 0 ? "Duty Free" : "Duty Paid"; }
+        //}
     }
 }
 

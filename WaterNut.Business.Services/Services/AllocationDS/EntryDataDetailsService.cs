@@ -269,6 +269,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "EX9AsycudaSalesAllocations":
+                                return
+                                    await
+                                        GetWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -781,6 +787,9 @@ namespace AllocationDS.Business.Services
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return await CountWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EX9AsycudaSalesAllocations":
+                                return await CountWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -920,6 +929,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AsycudaDocumentItemEntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EX9AsycudaSalesAllocations":
+                                return
+                                    await
+                                        LoadRangeWhere<EX9AsycudaSalesAllocations>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1138,6 +1153,7 @@ namespace AllocationDS.Business.Services
                                                     // .Include(x => x.AsycudaSalesAllocations)									  
                                                     // .Include(x => x.AdjustmentShortAllocations)									  
                                                     // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
+                                                    // .Include(x => x.EX9AsycudaSalesAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
@@ -1228,6 +1244,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return await SumWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EX9AsycudaSalesAllocations":
+                                return await SumWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

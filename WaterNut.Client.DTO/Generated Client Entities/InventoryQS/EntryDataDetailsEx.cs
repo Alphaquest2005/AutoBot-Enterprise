@@ -372,6 +372,32 @@ namespace InventoryQS.Client.DTO
 		}
         private Nullable<int> _ApplicationSettingsId;
 
+        [DataMember]
+        public Nullable<double> LastCost
+		{ 
+		    get { return _LastCost; }
+			set
+			{
+			    if (value == _LastCost) return;
+				_LastCost = value;
+				NotifyPropertyChanged();//m => this.LastCost
+			}
+		}
+        private Nullable<double> _LastCost;
+
+        [DataMember]
+        public Nullable<double> TaxAmount
+		{ 
+		    get { return _TaxAmount; }
+			set
+			{
+			    if (value == _TaxAmount) return;
+				_TaxAmount = value;
+				NotifyPropertyChanged();//m => this.TaxAmount
+			}
+		}
+        private Nullable<double> _TaxAmount;
+
        
         [DataMember]
         public InventoryItemsEx InventoryItemsEx

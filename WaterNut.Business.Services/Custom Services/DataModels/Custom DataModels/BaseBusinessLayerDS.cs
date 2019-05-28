@@ -1912,6 +1912,7 @@ namespace WaterNut.DataSpace
                 {
                     if (overWrite == true || !File.Exists(Path.Combine(directoryName, doc.ReferenceNumber + ".xml")))
                         Instance.DocToXML(doc, new FileInfo(Path.Combine(directoryName, doc.ReferenceNumber + ".xml")));
+
                     StatusModel.StatusUpdate();
                     // ExportDocumentToExcel(doc, directoryName);
                 }

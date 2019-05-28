@@ -111,6 +111,9 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AsycudaItemPiQuantityData>> GetAsycudaItemPiQuantityDataByxItem_Id(string xItem_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaItemPiQuantityData>> GetAsycudaItemPiQuantityDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   
 
 

@@ -1685,7 +1685,7 @@ namespace WaterNut.DataSpace.Asycuda
         {
             var dt =
                  BaseDataModel.Instance.Document_TypeCache.GetSingle(x => x.Declaration_gen_procedure_code == t.Declaration_gen_procedure_code
-                                                   && x.Type_of_declaration == t.Type_of_declaration);
+                                                   && x.Type_of_declaration == t.Type_of_declaration );
             ////    (await DBaseDataModel.Instance.SearchDocument_Type(new List<string>()
             ////{
             ////    string.Format("Declaration_gen_procedure_code == \"{0}\"", t.Declaration_gen_procedure_code),

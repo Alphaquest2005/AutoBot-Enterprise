@@ -282,7 +282,7 @@ public Nullable<bool> Downloaded
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
        
                 
                 [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]

@@ -22,7 +22,6 @@
               this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
               this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
               this.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(4);
-              this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasMany(t => t.AsycudaDocumentEntryDatas).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocumentSetEntryDatas).WithRequired(t => (EntryData)t.EntryData);

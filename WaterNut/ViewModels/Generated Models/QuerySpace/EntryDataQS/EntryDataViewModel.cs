@@ -366,24 +366,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
-
-		private Double? _taxAmountFilter;
-        public Double? TaxAmountFilter
-        {
-            get
-            {
-                return _taxAmountFilter;
-            }
-            set
-            {
-                _taxAmountFilter = value;
-				NotifyPropertyChanged(x => TaxAmountFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -464,10 +446,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(CurrencyFilter) == false)
 						res.Append(" && " + string.Format("Currency.Contains(\"{0}\")",  CurrencyFilter));						
- 
-
-					if(TaxAmountFilter.HasValue)
-						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -511,10 +490,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TotalWeight = x.TotalWeight ,
                     
  
-                    Currency = x.Currency ,
-                    
- 
-                    TaxAmount = x.TaxAmount 
+                    Currency = x.Currency 
                     
                 }).ToList()
             };
@@ -549,9 +525,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string Currency { get; set; } 
-                    
- 
-                    public Nullable<double> TaxAmount { get; set; } 
                     
         }
 

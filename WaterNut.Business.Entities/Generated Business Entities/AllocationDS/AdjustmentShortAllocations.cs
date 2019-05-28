@@ -680,21 +680,6 @@ namespace AllocationDS.Business.Entities
         }
         string _comment;
         [DataMember]
-        public int Asycudadocumentsetid 
-        {
-            get
-            {
-                return _asycudadocumentsetid;
-            }
-            set
-            {
-                _asycudadocumentsetid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycudadocumentsetid;
-        [DataMember]
         public Nullable<System.DateTime> AssessmentDate 
         {
             get
@@ -739,6 +724,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         int _applicationsettingsid;
+        [DataMember]
+        public int AsycudaDocumentSetId 
+        {
+            get
+            {
+                return _asycudadocumentsetid;
+            }
+            set
+            {
+                _asycudadocumentsetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycudadocumentsetid;
         [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]

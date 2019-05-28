@@ -16,6 +16,7 @@
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.PiQuantity).HasColumnName("PiQuantity");
               this.Property(t => t.PiWeight).HasColumnName("PiWeight");
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasMany(t => t.AdjustmentShortAllocations).WithRequired(t => (AscyudaItemPiQuantity)t.AscyudaItemPiQuantity);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
