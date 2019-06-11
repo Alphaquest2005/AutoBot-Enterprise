@@ -60,6 +60,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, OnCurrentAsycudaDocumentSet_AttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, OnCurrentAsycudaDocumentSetExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAttachmentsIDChanged, OnCurrentAttachmentsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentContactsIDChanged, OnCurrentContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentCustoms_ProcedureIDChanged, OnCurrentCustoms_ProcedureIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDocument_TypeIDChanged, OnCurrentDocument_TypeIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingIDChanged, OnCurrentEmailMappingIDChanged);
@@ -71,6 +72,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemXIDChanged, OnCurrentInventoryItemXIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLicenceSummaryIDChanged, OnCurrentLicenceSummaryIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSubItemsIDChanged, OnCurrentSubItemsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_CreateEx9IDChanged, OnCurrentTODO_CreateEx9IDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DeleteDocumentSetIDChanged, OnCurrentTODO_DeleteDocumentSetIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DocumentsToDeleteIDChanged, OnCurrentTODO_DocumentsToDeleteIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_UnallocatedSalesIDChanged, OnCurrentTODO_UnallocatedSalesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.Currentxcuda_Supplementary_unitIDChanged, OnCurrentxcuda_Supplementary_unitIDChanged);
        
@@ -83,6 +88,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
                         RegisterToReceiveMessages<Attachments>(MessageToken.CurrentAttachmentsChanged, OnCurrentAttachmentsChanged);
+                        RegisterToReceiveMessages<Contacts>(MessageToken.CurrentContactsChanged, OnCurrentContactsChanged);
                         RegisterToReceiveMessages<Customs_Procedure>(MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
                         RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
                         RegisterToReceiveMessages<EmailMapping>(MessageToken.CurrentEmailMappingChanged, OnCurrentEmailMappingChanged);
@@ -94,6 +100,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<InventoryItemX>(MessageToken.CurrentInventoryItemXChanged, OnCurrentInventoryItemXChanged);
                         RegisterToReceiveMessages<LicenceSummary>(MessageToken.CurrentLicenceSummaryChanged, OnCurrentLicenceSummaryChanged);
                         RegisterToReceiveMessages<SubItems>(MessageToken.CurrentSubItemsChanged, OnCurrentSubItemsChanged);
+                        RegisterToReceiveMessages<TODO_CreateEx9>(MessageToken.CurrentTODO_CreateEx9Changed, OnCurrentTODO_CreateEx9Changed);
+                        RegisterToReceiveMessages<TODO_DeleteDocumentSet>(MessageToken.CurrentTODO_DeleteDocumentSetChanged, OnCurrentTODO_DeleteDocumentSetChanged);
+                        RegisterToReceiveMessages<TODO_DocumentsToDelete>(MessageToken.CurrentTODO_DocumentsToDeleteChanged, OnCurrentTODO_DocumentsToDeleteChanged);
+                        RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
                         RegisterToReceiveMessages<TODO_UnallocatedSales>(MessageToken.CurrentTODO_UnallocatedSalesChanged, OnCurrentTODO_UnallocatedSalesChanged);
                         RegisterToReceiveMessages<xcuda_Supplementary_unit>(MessageToken.Currentxcuda_Supplementary_unitChanged, OnCurrentxcuda_Supplementary_unitChanged);
     
@@ -301,6 +311,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAttachmentsID)) BeginSendMessage(MessageToken.CurrentAttachmentsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAttachmentsIDChanged, _currentAttachmentsID));
                                     NotifyPropertyChanged(x => this.CurrentAttachmentsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentContactsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ContactsRepository ctx = new ContactsRepository())
+                            {
+                                CurrentContacts = await ctx.GetContacts(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentContacts);
+                        }
+
+                        private  string _currentContactsID = "";
+                        public string CurrentContactsID
+                        {
+                            get
+                            {
+                                return _currentContactsID;
+                            }
+                            set
+                            {
+                                if (_currentContactsID != value)
+                                {
+                                    _currentContactsID = value;
+                                    if (!string.IsNullOrEmpty(_currentContactsID)) BeginSendMessage(MessageToken.CurrentContactsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentContactsIDChanged, _currentContactsID));
+                                    NotifyPropertyChanged(x => this.CurrentContactsID);  
                                 }
                             }
                         }
@@ -598,6 +635,114 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentSubItemsID)) BeginSendMessage(MessageToken.CurrentSubItemsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentSubItemsIDChanged, _currentSubItemsID));
                                     NotifyPropertyChanged(x => this.CurrentSubItemsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_CreateEx9IDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_CreateEx9Repository ctx = new TODO_CreateEx9Repository())
+                            {
+                                CurrentTODO_CreateEx9 = await ctx.GetTODO_CreateEx9(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_CreateEx9);
+                        }
+
+                        private  string _currentTODO_CreateEx9ID = "";
+                        public string CurrentTODO_CreateEx9ID
+                        {
+                            get
+                            {
+                                return _currentTODO_CreateEx9ID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_CreateEx9ID != value)
+                                {
+                                    _currentTODO_CreateEx9ID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_CreateEx9ID)) BeginSendMessage(MessageToken.CurrentTODO_CreateEx9IDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_CreateEx9IDChanged, _currentTODO_CreateEx9ID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_CreateEx9ID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_DeleteDocumentSetIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_DeleteDocumentSetRepository ctx = new TODO_DeleteDocumentSetRepository())
+                            {
+                                CurrentTODO_DeleteDocumentSet = await ctx.GetTODO_DeleteDocumentSet(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_DeleteDocumentSet);
+                        }
+
+                        private  string _currentTODO_DeleteDocumentSetID = "";
+                        public string CurrentTODO_DeleteDocumentSetID
+                        {
+                            get
+                            {
+                                return _currentTODO_DeleteDocumentSetID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_DeleteDocumentSetID != value)
+                                {
+                                    _currentTODO_DeleteDocumentSetID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_DeleteDocumentSetID)) BeginSendMessage(MessageToken.CurrentTODO_DeleteDocumentSetIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_DeleteDocumentSetIDChanged, _currentTODO_DeleteDocumentSetID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_DeleteDocumentSetID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_DocumentsToDeleteIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_DocumentsToDeleteRepository ctx = new TODO_DocumentsToDeleteRepository())
+                            {
+                                CurrentTODO_DocumentsToDelete = await ctx.GetTODO_DocumentsToDelete(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_DocumentsToDelete);
+                        }
+
+                        private  string _currentTODO_DocumentsToDeleteID = "";
+                        public string CurrentTODO_DocumentsToDeleteID
+                        {
+                            get
+                            {
+                                return _currentTODO_DocumentsToDeleteID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_DocumentsToDeleteID != value)
+                                {
+                                    _currentTODO_DocumentsToDeleteID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_DocumentsToDeleteID)) BeginSendMessage(MessageToken.CurrentTODO_DocumentsToDeleteIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_DocumentsToDeleteIDChanged, _currentTODO_DocumentsToDeleteID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_DocumentsToDeleteID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_PODocSetIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_PODocSetRepository ctx = new TODO_PODocSetRepository())
+                            {
+                                CurrentTODO_PODocSet = await ctx.GetTODO_PODocSet(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_PODocSet);
+                        }
+
+                        private  string _currentTODO_PODocSetID = "";
+                        public string CurrentTODO_PODocSetID
+                        {
+                            get
+                            {
+                                return _currentTODO_PODocSetID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_PODocSetID != value)
+                                {
+                                    _currentTODO_PODocSetID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_PODocSetID)) BeginSendMessage(MessageToken.CurrentTODO_PODocSetIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_PODocSetIDChanged, _currentTODO_PODocSetID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_PODocSetID);  
                                 }
                             }
                         }
@@ -1029,6 +1174,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentContactsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Contacts> e)
+        {
+            //CurrentContacts = e.Data;
+            NotifyPropertyChanged(m => this.CurrentContacts);
+        }
+
+        private  Contacts _currentContacts;
+        public Contacts CurrentContacts
+        {
+            get
+            {
+                return _currentContacts;
+            }
+            set
+            {
+                if (_currentContacts != value)
+                {
+                    _currentContacts = value;
+                    BeginSendMessage(MessageToken.CurrentContactsChanged,
+                                                     new NotificationEventArgs<Contacts>(MessageToken.CurrentContactsChanged, _currentContacts)); 
+                    NotifyPropertyChanged(x => this.CurrentContacts);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<Contacts> _vcurrentContacts;
+        public VirtualListItem<Contacts> VCurrentContacts
+        {
+            get
+            {
+                return _vcurrentContacts;
+            }
+            set
+            {
+                if (_vcurrentContacts != value)
+                {
+                    _vcurrentContacts = value;
+					if(_vcurrentContacts != null) CurrentContacts = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentContacts);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentCustoms_ProcedureChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Customs_Procedure> e)
         {
             //CurrentCustoms_Procedure = e.Data;
@@ -1303,6 +1498,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyPropertyChanged(x => this.CurrentFileTypes);    
                     // all current navigation properties = null
                  CurrentFileTypeMappings = null;
+                 CurrentContacts = null;
    
                 }
             }
@@ -1574,6 +1770,206 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentSubItems = value;
 					if(_vcurrentSubItems != null) CurrentSubItems = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentSubItems);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_CreateEx9Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_CreateEx9> e)
+        {
+            //CurrentTODO_CreateEx9 = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_CreateEx9);
+        }
+
+        private  TODO_CreateEx9 _currentTODO_CreateEx9;
+        public TODO_CreateEx9 CurrentTODO_CreateEx9
+        {
+            get
+            {
+                return _currentTODO_CreateEx9;
+            }
+            set
+            {
+                if (_currentTODO_CreateEx9 != value)
+                {
+                    _currentTODO_CreateEx9 = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_CreateEx9Changed,
+                                                     new NotificationEventArgs<TODO_CreateEx9>(MessageToken.CurrentTODO_CreateEx9Changed, _currentTODO_CreateEx9)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_CreateEx9);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_CreateEx9> _vcurrentTODO_CreateEx9;
+        public VirtualListItem<TODO_CreateEx9> VCurrentTODO_CreateEx9
+        {
+            get
+            {
+                return _vcurrentTODO_CreateEx9;
+            }
+            set
+            {
+                if (_vcurrentTODO_CreateEx9 != value)
+                {
+                    _vcurrentTODO_CreateEx9 = value;
+					if(_vcurrentTODO_CreateEx9 != null) CurrentTODO_CreateEx9 = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_CreateEx9);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_DeleteDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_DeleteDocumentSet> e)
+        {
+            //CurrentTODO_DeleteDocumentSet = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_DeleteDocumentSet);
+        }
+
+        private  TODO_DeleteDocumentSet _currentTODO_DeleteDocumentSet;
+        public TODO_DeleteDocumentSet CurrentTODO_DeleteDocumentSet
+        {
+            get
+            {
+                return _currentTODO_DeleteDocumentSet;
+            }
+            set
+            {
+                if (_currentTODO_DeleteDocumentSet != value)
+                {
+                    _currentTODO_DeleteDocumentSet = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_DeleteDocumentSetChanged,
+                                                     new NotificationEventArgs<TODO_DeleteDocumentSet>(MessageToken.CurrentTODO_DeleteDocumentSetChanged, _currentTODO_DeleteDocumentSet)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_DeleteDocumentSet);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_DeleteDocumentSet> _vcurrentTODO_DeleteDocumentSet;
+        public VirtualListItem<TODO_DeleteDocumentSet> VCurrentTODO_DeleteDocumentSet
+        {
+            get
+            {
+                return _vcurrentTODO_DeleteDocumentSet;
+            }
+            set
+            {
+                if (_vcurrentTODO_DeleteDocumentSet != value)
+                {
+                    _vcurrentTODO_DeleteDocumentSet = value;
+					if(_vcurrentTODO_DeleteDocumentSet != null) CurrentTODO_DeleteDocumentSet = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_DeleteDocumentSet);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_DocumentsToDeleteChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_DocumentsToDelete> e)
+        {
+            //CurrentTODO_DocumentsToDelete = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_DocumentsToDelete);
+        }
+
+        private  TODO_DocumentsToDelete _currentTODO_DocumentsToDelete;
+        public TODO_DocumentsToDelete CurrentTODO_DocumentsToDelete
+        {
+            get
+            {
+                return _currentTODO_DocumentsToDelete;
+            }
+            set
+            {
+                if (_currentTODO_DocumentsToDelete != value)
+                {
+                    _currentTODO_DocumentsToDelete = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_DocumentsToDeleteChanged,
+                                                     new NotificationEventArgs<TODO_DocumentsToDelete>(MessageToken.CurrentTODO_DocumentsToDeleteChanged, _currentTODO_DocumentsToDelete)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_DocumentsToDelete);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_DocumentsToDelete> _vcurrentTODO_DocumentsToDelete;
+        public VirtualListItem<TODO_DocumentsToDelete> VCurrentTODO_DocumentsToDelete
+        {
+            get
+            {
+                return _vcurrentTODO_DocumentsToDelete;
+            }
+            set
+            {
+                if (_vcurrentTODO_DocumentsToDelete != value)
+                {
+                    _vcurrentTODO_DocumentsToDelete = value;
+					if(_vcurrentTODO_DocumentsToDelete != null) CurrentTODO_DocumentsToDelete = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_DocumentsToDelete);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_PODocSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PODocSet> e)
+        {
+            //CurrentTODO_PODocSet = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_PODocSet);
+        }
+
+        private  TODO_PODocSet _currentTODO_PODocSet;
+        public TODO_PODocSet CurrentTODO_PODocSet
+        {
+            get
+            {
+                return _currentTODO_PODocSet;
+            }
+            set
+            {
+                if (_currentTODO_PODocSet != value)
+                {
+                    _currentTODO_PODocSet = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_PODocSetChanged,
+                                                     new NotificationEventArgs<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, _currentTODO_PODocSet)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_PODocSet);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_PODocSet> _vcurrentTODO_PODocSet;
+        public VirtualListItem<TODO_PODocSet> VCurrentTODO_PODocSet
+        {
+            get
+            {
+                return _vcurrentTODO_PODocSet;
+            }
+            set
+            {
+                if (_vcurrentTODO_PODocSet != value)
+                {
+                    _vcurrentTODO_PODocSet = value;
+					if(_vcurrentTODO_PODocSet != null) CurrentTODO_PODocSet = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_PODocSet);                    
                 }
             }
         }

@@ -80,7 +80,7 @@ namespace AllocationDS.Business.Entities
         }
         string _status;
         [DataMember]
-        public Nullable<double> QtyAllocated 
+        public double QtyAllocated 
         {
             get
             {
@@ -93,7 +93,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _qtyallocated;
+        double _qtyallocated;
         [DataMember]
         public int PreviousItem_Id 
         {
@@ -110,7 +110,7 @@ namespace AllocationDS.Business.Entities
         }
         int _previousitem_id;
         [DataMember]
-        public Nullable<System.DateTime> InvoiceDate 
+        public System.DateTime InvoiceDate 
         {
             get
             {
@@ -123,9 +123,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _invoicedate;
+        System.DateTime _invoicedate;
         [DataMember]
-        public Nullable<double> SalesQuantity 
+        public double SalesQuantity 
         {
             get
             {
@@ -138,9 +138,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _salesquantity;
+        double _salesquantity;
         [DataMember]
-        public Nullable<double> SalesQtyAllocated 
+        public double SalesQtyAllocated 
         {
             get
             {
@@ -153,7 +153,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _salesqtyallocated;
+        double _salesqtyallocated;
         [DataMember]
         public string InvoiceNo 
         {
@@ -200,7 +200,7 @@ namespace AllocationDS.Business.Entities
         }
         string _itemdescription;
         [DataMember]
-        public Nullable<int> EntryDataDetailsId 
+        public int EntryDataDetailsId 
         {
             get
             {
@@ -213,7 +213,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _entrydatadetailsid;
+        int _entrydatadetailsid;
         [DataMember]
         public string DutyFreePaid 
         {
@@ -245,7 +245,7 @@ namespace AllocationDS.Business.Entities
         }
         string _pcnumber;
         [DataMember]
-        public Nullable<System.DateTime> pRegistrationDate 
+        public System.DateTime pRegistrationDate 
         {
             get
             {
@@ -258,7 +258,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _pregistrationdate;
+        System.DateTime _pregistrationdate;
         [DataMember]
         public Nullable<double> pQuantity 
         {
@@ -320,7 +320,7 @@ namespace AllocationDS.Business.Entities
         }
         string _preferencenumber;
         [DataMember]
-        public Nullable<int> pLineNumber 
+        public int pLineNumber 
         {
             get
             {
@@ -333,7 +333,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _plinenumber;
+        int _plinenumber;
         [DataMember]
         public Nullable<int> pASYCUDA_Id 
         {
@@ -365,7 +365,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<double> _cost;
         [DataMember]
-        public Nullable<double> Total_CIF_itm 
+        public double Total_CIF_itm 
         {
             get
             {
@@ -378,7 +378,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _total_cif_itm;
+        double _total_cif_itm;
         [DataMember]
         public Nullable<double> DutyLiability 
         {
@@ -500,7 +500,7 @@ namespace AllocationDS.Business.Entities
         }
         string _country_of_origin_code;
         [DataMember]
-        public Nullable<double> Gross_weight_itm 
+        public double Gross_weight_itm 
         {
             get
             {
@@ -513,9 +513,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _gross_weight_itm;
+        double _gross_weight_itm;
         [DataMember]
-        public Nullable<double> Net_weight_itm 
+        public double Net_weight_itm 
         {
             get
             {
@@ -528,7 +528,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _net_weight_itm;
+        double _net_weight_itm;
         [DataMember]
         public string pTariffCode 
         {
@@ -620,7 +620,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<bool> _invalid;
         [DataMember]
-        public Nullable<System.DateTime> pExpiryDate 
+        public System.DateTime pExpiryDate 
         {
             get
             {
@@ -633,7 +633,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _pexpirydate;
+        System.DateTime _pexpirydate;
         [DataMember]
         public int xBond_Item_Id 
         {
@@ -650,7 +650,7 @@ namespace AllocationDS.Business.Entities
         }
         int _xbond_item_id;
         [DataMember]
-        public Nullable<int> ApplicationSettingsId 
+        public int ApplicationSettingsId 
         {
             get
             {
@@ -663,7 +663,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _applicationsettingsid;
+        int _applicationsettingsid;
         [DataMember]
         public Nullable<int> SalesLineNumber 
         {
@@ -695,7 +695,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<System.DateTime> _effectivedate;
         [DataMember]
-        public Nullable<double> DPQtyAllocated 
+        public double DPQtyAllocated 
         {
             get
             {
@@ -708,9 +708,9 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _dpqtyallocated;
+        double _dpqtyallocated;
         [DataMember]
-        public Nullable<double> DFQtyAllocated 
+        public double DFQtyAllocated 
         {
             get
             {
@@ -723,7 +723,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _dfqtyallocated;
+        double _dfqtyallocated;
         [DataMember]
         public string WarehouseError 
         {
@@ -740,7 +740,7 @@ namespace AllocationDS.Business.Entities
         }
         string _warehouseerror;
         [DataMember]
-        public Nullable<double> SalesFactor 
+        public double SalesFactor 
         {
             get
             {
@@ -753,7 +753,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _salesfactor;
+        double _salesfactor;
         [DataMember]
         public Nullable<bool> DoNotEX 
         {
@@ -770,7 +770,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<bool> _donotex;
         [DataMember]
-        public Nullable<System.DateTime> AssessmentDate 
+        public System.DateTime AssessmentDate 
         {
             get
             {
@@ -783,7 +783,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _assessmentdate;
+        System.DateTime _assessmentdate;
         [DataMember]
         public Nullable<bool> IsManuallyAssessed 
         {
@@ -822,8 +822,6 @@ namespace AllocationDS.Business.Entities
         public AsycudaSalesAllocations AsycudaSalesAllocations { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
-        [DataMember]
-        public AllocationErrors AllocationErrors { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

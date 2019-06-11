@@ -61,6 +61,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AllocationDS.Designer.cs">
@@ -76,10 +78,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EntityDeploy Include="AllocationDS.edmx">
+    <None Include="AllocationDS.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>AllocationDS.Designer.cs</LastGenOutput>
-    </EntityDeploy>
+    </None>
     <None Include="AllocationDS.edmx.diagram">
       <DependentUpon>AllocationDS.edmx</DependentUpon>
     </None>

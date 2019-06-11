@@ -229,19 +229,6 @@ namespace AllocationDS.Business.Services
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EX9AsycudaSalesAllocations":
-                                return
-                                    await
-                                        GetWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "AllocationErrors", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                        }
-
-                    }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = await set.AsNoTracking().Where(exp)
 									.ToListAsync()
@@ -729,15 +716,6 @@ namespace AllocationDS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EX9AsycudaSalesAllocations":
-                                return await CountWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "AllocationErrors", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
-                    }
                     return await dbContext.AllocationErrors.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
@@ -836,22 +814,6 @@ namespace AllocationDS.Business.Services
                                     .Take(count)
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EX9AsycudaSalesAllocations":
-                                return
-                                    await
-                                        LoadRangeWhere<EX9AsycudaSalesAllocations>(startIndex, count, dbContext, exp, itm.Value, "AllocationErrors", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                          
-							default:
-                                throw new ArgumentException("No Navigation property found for " + itm.Key);
-						}
-
                     }
                     return await set//dbContext.AllocationErrors
 								.AsNoTracking()
@@ -1099,15 +1061,6 @@ namespace AllocationDS.Business.Services
                         return Convert.ToDecimal(dbContext.AllocationErrors
 										.AsNoTracking()
                                         .Sum(field)??0);
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "EX9AsycudaSalesAllocations":
-                                return await SumWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "AllocationErrors", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
                     }
                     return Convert.ToDecimal(dbContext.AllocationErrors.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
 											.AsNoTracking()

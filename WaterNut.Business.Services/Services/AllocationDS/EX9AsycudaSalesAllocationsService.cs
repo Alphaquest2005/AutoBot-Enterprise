@@ -257,12 +257,6 @@ namespace AllocationDS.Business.Services
                                         GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AllocationErrors":
-                                return
-                                    await
-                                        GetWhere<AllocationErrors>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                         }
 
                     }
@@ -769,9 +763,6 @@ namespace AllocationDS.Business.Services
                             case "EntryDataDetails":
                                 return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AllocationErrors":
-                                return await CountWhere<AllocationErrors>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EX9AsycudaSalesAllocations.Where(exp == "All" || exp == null ? "AllocationId != null" : exp)
@@ -899,12 +890,6 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AllocationErrors":
-                                return
-                                    await
-                                        LoadRangeWhere<AllocationErrors>(startIndex, count, dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1320,9 +1305,6 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataDetails":
                                 return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AllocationErrors":
-                                return await SumWhere<AllocationErrors>(dbContext, exp, itm.Value, "EX9AsycudaSalesAllocations", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

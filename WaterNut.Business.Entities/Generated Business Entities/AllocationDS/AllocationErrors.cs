@@ -19,11 +19,6 @@ namespace AllocationDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class AllocationErrors : BaseEntity<AllocationErrors>, ITrackable 
     {
-        partial void AutoGenStartUp() //AllocationErrors()
-        {
-            this.EX9AsycudaSalesAllocations = new List<EX9AsycudaSalesAllocations>();
-        }
-
         [DataMember]
         public string ItemNumber 
         {
@@ -55,7 +50,20 @@ namespace AllocationDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public List<EX9AsycudaSalesAllocations> EX9AsycudaSalesAllocations { get; set; }
+        public System.DateTime EntryDataDate 
+        {
+            get
+            {
+                return _entrydatadate;
+            }
+            set
+            {
+                _entrydatadate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _entrydatadate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

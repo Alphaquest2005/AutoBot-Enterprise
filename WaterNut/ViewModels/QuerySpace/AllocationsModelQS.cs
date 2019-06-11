@@ -663,13 +663,18 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         {
             StatusModel.Timer("Allocating Sales");
 
-            var res = MessageBox.Show("Clear Allocations?", "Delete Existing Sales Allocations", MessageBoxButton.YesNo);
+            var res = MessageBox.Show("Clear Allocations?", "Delete Existing Sales Allocations", MessageBoxButton.YesNoCancel);
             if (res == MessageBoxResult.Yes)
             {
                 await AsycudaSalesAllocationsExRepository.Instance.ClearAllocations(CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 
             }
-            
+
+            if (res == MessageBoxResult.Cancel)
+            {
+                StatusModel.StopStatusUpdate();
+                return;
+            }
 
             await AsycudaSalesAllocationsExRepository.Instance.AllocateSales(
                 CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings, allocateToLastAdjustment).ConfigureAwait(false);

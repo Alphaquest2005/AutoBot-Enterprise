@@ -305,7 +305,7 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<double> _pqtyallocated;
         [DataMember]
-        public Nullable<double> PiQuantity 
+        public double PiQuantity 
         {
             get
             {
@@ -318,7 +318,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _piquantity;
+        double _piquantity;
         [DataMember]
         public Nullable<double> SalesFactor 
         {

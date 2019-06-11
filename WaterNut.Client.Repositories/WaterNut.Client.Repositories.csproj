@@ -139,6 +139,7 @@
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSetExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSet_AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AttachmentsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Document_TypeRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailMappingRepository.cs" />
@@ -150,6 +151,10 @@
     <Compile Include="Generated Repositories\CoreEntities\InventoryItemXRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\LicenceSummaryRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SubItemsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_CreateEx9Repository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_DeleteDocumentSetRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\xcuda_Supplementary_unitRepository.cs" />
     <Compile Include="Generated Repositories\CounterPointQSRepository.cs" />

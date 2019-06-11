@@ -395,61 +395,74 @@ namespace WaterNut.DataSpace
 
         public  void IntCdoc(DocumentCT cdoc, AsycudaDocumentSet ads)
         {
+           
+                cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + "-F" +
+                                                       cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
+                                                           .ToString();
+                cdoc.Document.xcuda_Declarant.Declarant_code = CurrentApplicationSettings.DeclarantCode;
+                cdoc.Document.xcuda_Identification.Manifest_reference_number = ads.Manifest_Number;
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
+
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = ads.Customs_Procedure.Document_Type;
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId =
+                    ads.Customs_Procedure.Document_Type.Document_TypeId;
+                cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
+                    ads.Customs_Procedure.Document_Type.Declaration_gen_procedure_code;
+                cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration =
+                    ads.Customs_Procedure.Document_Type.Type_of_declaration;
+                cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination =
+                    ads.Country_of_origin_code;
+                cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = ads.Country_of_origin_code;
+                cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code =
+                    ads.Country_of_origin_code;
+                
+                cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
+                cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = ads.Currency_Code;
+
+                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId !=
+                    ads.Customs_Procedure.Customs_ProcedureId)
+                {
+                    if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId != 0)
+                    {
+                        var c = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure;
+                        foreach (var item in cdoc.DocumentItems.Where(x =>
+                            x.xcuda_Tarification.Extended_customs_procedure == c.Extended_customs_procedure &&
+                            x.xcuda_Tarification.National_customs_procedure == c.National_customs_procedure).ToList())
+                        {
+                            item.xcuda_Tarification.Extended_customs_procedure =
+                                ads.Customs_Procedure.Extended_customs_procedure;
+                            item.xcuda_Tarification.National_customs_procedure =
+                                ads.Customs_Procedure.National_customs_procedure;
+                        }
+                    }
+
+                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = ads.Customs_ProcedureId;
+                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = ads.Customs_Procedure;
+                }
+
+
+                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != ads.BLNumber)
+                {
+                    if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != null)
+                    {
+                        var b = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber;
+                        foreach (var item in cdoc.DocumentItems
+                            .Where(x => x.xcuda_Previous_doc.Summary_declaration == b).ToList())
+                        {
+                            item.xcuda_Previous_doc.Summary_declaration = ads.BLNumber;
+                        }
+                    }
+
+                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber = ads.BLNumber;
+                }
+
+
+
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = ads.Description;
+
+                //    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = true;
 
             
-
-            cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + "-F" + cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber.ToString();
-            cdoc.Document.xcuda_Declarant.Declarant_code = CurrentApplicationSettings.DeclarantCode;
-            cdoc.Document.xcuda_Identification.Manifest_reference_number = ads.Manifest_Number;
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
-
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = ads.Customs_Procedure.Document_Type;
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = ads.Customs_Procedure.Document_Type.Document_TypeId;
-            cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code = ads.Customs_Procedure.Document_Type.Declaration_gen_procedure_code;
-            cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration = ads.Customs_Procedure.Document_Type.Type_of_declaration;
-            cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination = ads.Country_of_origin_code;
-            cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = ads.Country_of_origin_code;
-            cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code = ads.Country_of_origin_code;
-           //cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination.Destination_country_code = "GD";
-            cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
-            cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = ads.Currency_Code;
-
-            if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId != ads.Customs_Procedure.Customs_ProcedureId)
-            {
-                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId  != 0)
-                {
-                    var c = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure;
-                    foreach (var item in cdoc.DocumentItems.Where(x => x.xcuda_Tarification.Extended_customs_procedure == c.Extended_customs_procedure && x.xcuda_Tarification.National_customs_procedure == c.National_customs_procedure).ToList())
-                    {
-                        item.xcuda_Tarification.Extended_customs_procedure = ads.Customs_Procedure.Extended_customs_procedure;
-                        item.xcuda_Tarification.National_customs_procedure = ads.Customs_Procedure.National_customs_procedure;
-                    }
-                }
-                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = ads.Customs_ProcedureId;
-                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = ads.Customs_Procedure;
-            }
-
-
-            if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != ads.BLNumber)
-            {
-                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != null)
-                {
-                    var b = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber;
-                    foreach (var item in cdoc.DocumentItems.Where(x => x.xcuda_Previous_doc.Summary_declaration == b).ToList())
-                    {
-                        item.xcuda_Previous_doc.Summary_declaration = ads.BLNumber;
-                    }
-                }
-                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber = ads.BLNumber;
-            }
-
-
-
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = ads.Description;
-
-            //    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = true;
-
-
         }
 
         
@@ -1717,7 +1730,7 @@ namespace WaterNut.DataSpace
 
             catch (Exception Ex)
             {
-                if (!noMessages)
+                if (!noMessages && (bool) (!Ex?.InnerException?.Message.StartsWith("Please Import CNumber")))
                     exceptions.Enqueue(
                         new ApplicationException(
                             $"Could not import file - '{f}. Error:{(Ex.InnerException ?? Ex).Message} Stacktrace:{(Ex.InnerException ?? Ex).StackTrace}"));

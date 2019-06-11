@@ -176,6 +176,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\EmailMapping.cs" />
@@ -187,6 +188,10 @@
     <Compile Include="Generated Business Entities\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated Business Entities\CounterPointQS\CounterPointPODetails.cs" />
@@ -401,6 +406,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailMapping.cs" />
@@ -412,6 +418,10 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated ChangeTracking Models\CounterPointQS\CounterPointPODetails.cs" />
@@ -626,6 +636,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailMapping.cs" />
@@ -637,6 +648,10 @@
     <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated Constructors Models\CounterPointQS\CounterPointPODetails.cs" />
@@ -851,6 +866,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs" />
@@ -862,6 +878,10 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CounterPointQS\CounterPointPODetails.cs" />
@@ -1076,6 +1096,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Customs_Procedure.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
@@ -1087,6 +1108,10 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateEx9.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CounterPointQS\CounterPointPODetails.cs" />
@@ -1311,6 +1336,7 @@
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Attachments.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\Contacts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Customs_Procedure.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Document_Type.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EmailMapping.map.cs" />
@@ -1322,6 +1348,10 @@
     <Compile Include="Generated Mappings\CoreEntities\InventoryItemX.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\LicenceSummary.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\SubItems.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_CreateEx9.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_DeleteDocumentSet.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSet.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\xcuda_Supplementary_unit.map.cs" />
     <Compile Include="Generated Mappings\CounterPointQS\CounterPointPODetails.map.cs" />

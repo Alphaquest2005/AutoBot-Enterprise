@@ -331,6 +331,60 @@ public string DocumentCode
             }
         }
 
+        ObservableCollection<Contacts> _Contacts = null;
+        public  ObservableCollection<Contacts> Contacts
+		{
+            
+		    get 
+				{ 
+					if(_Contacts != null) return _Contacts;
+					//if (this.filetypes.Contacts == null) Debugger.Break();
+					if(this.filetypes.Contacts != null)
+					{
+						_Contacts = new ObservableCollection<Contacts>(this.filetypes.Contacts.Select(x => new Contacts(x)));
+					}
+					
+						_Contacts.CollectionChanged += Contacts_CollectionChanged; 
+					
+					return _Contacts; 
+				}
+			set
+			{
+			    if (Equals(value, _Contacts)) return;
+				if (value != null)
+					this.filetypes.Contacts = new ChangeTrackingCollection<DTO.Contacts>(value.Select(x => x.DTO).ToList());
+                _Contacts = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_Contacts != null)
+				_Contacts.CollectionChanged += Contacts_CollectionChanged;               
+				NotifyPropertyChanged("Contacts");
+			}
+		}
+        
+        void Contacts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Contacts itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypes.Contacts.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Contacts itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypes.Contacts.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.FileTypes> _changeTracker;    
         public ChangeTrackingCollection<DTO.FileTypes> ChangeTracker

@@ -52,6 +52,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string AttachmentsDeleted = "AttachmentsDeleted";
 			public const string AttachmentsCreated = "AttachmentsCreated";
 			public const string AttachmentsUpdated = "AttachmentsUpdated";
+			public const string ContactsFilterExpressionChanged = "ContactsFilterExpressionChanged";
+			public const string SelectedContactsChanged = "SelectedContactsChanged";
+            public const string ContactsChanged = "ContactsChanged";
+			public const string ContactsDeleted = "ContactsDeleted";
+			public const string ContactsCreated = "ContactsCreated";
+			public const string ContactsUpdated = "ContactsUpdated";
 			public const string Customs_ProcedureFilterExpressionChanged = "Customs_ProcedureFilterExpressionChanged";
 			public const string SelectedCustoms_ProcedureChanged = "SelectedCustoms_ProcedureChanged";
             public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
@@ -118,6 +124,30 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string SubItemsDeleted = "SubItemsDeleted";
 			public const string SubItemsCreated = "SubItemsCreated";
 			public const string SubItemsUpdated = "SubItemsUpdated";
+			public const string TODO_CreateEx9FilterExpressionChanged = "TODO_CreateEx9FilterExpressionChanged";
+			public const string SelectedTODO_CreateEx9Changed = "SelectedTODO_CreateEx9Changed";
+            public const string TODO_CreateEx9Changed = "TODO_CreateEx9Changed";
+			public const string TODO_CreateEx9Deleted = "TODO_CreateEx9Deleted";
+			public const string TODO_CreateEx9Created = "TODO_CreateEx9Created";
+			public const string TODO_CreateEx9Updated = "TODO_CreateEx9Updated";
+			public const string TODO_DeleteDocumentSetFilterExpressionChanged = "TODO_DeleteDocumentSetFilterExpressionChanged";
+			public const string SelectedTODO_DeleteDocumentSetChanged = "SelectedTODO_DeleteDocumentSetChanged";
+            public const string TODO_DeleteDocumentSetChanged = "TODO_DeleteDocumentSetChanged";
+			public const string TODO_DeleteDocumentSetDeleted = "TODO_DeleteDocumentSetDeleted";
+			public const string TODO_DeleteDocumentSetCreated = "TODO_DeleteDocumentSetCreated";
+			public const string TODO_DeleteDocumentSetUpdated = "TODO_DeleteDocumentSetUpdated";
+			public const string TODO_DocumentsToDeleteFilterExpressionChanged = "TODO_DocumentsToDeleteFilterExpressionChanged";
+			public const string SelectedTODO_DocumentsToDeleteChanged = "SelectedTODO_DocumentsToDeleteChanged";
+            public const string TODO_DocumentsToDeleteChanged = "TODO_DocumentsToDeleteChanged";
+			public const string TODO_DocumentsToDeleteDeleted = "TODO_DocumentsToDeleteDeleted";
+			public const string TODO_DocumentsToDeleteCreated = "TODO_DocumentsToDeleteCreated";
+			public const string TODO_DocumentsToDeleteUpdated = "TODO_DocumentsToDeleteUpdated";
+			public const string TODO_PODocSetFilterExpressionChanged = "TODO_PODocSetFilterExpressionChanged";
+			public const string SelectedTODO_PODocSetChanged = "SelectedTODO_PODocSetChanged";
+            public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
+			public const string TODO_PODocSetDeleted = "TODO_PODocSetDeleted";
+			public const string TODO_PODocSetCreated = "TODO_PODocSetCreated";
+			public const string TODO_PODocSetUpdated = "TODO_PODocSetUpdated";
 			public const string TODO_UnallocatedSalesFilterExpressionChanged = "TODO_UnallocatedSalesFilterExpressionChanged";
 			public const string SelectedTODO_UnallocatedSalesChanged = "SelectedTODO_UnallocatedSalesChanged";
             public const string TODO_UnallocatedSalesChanged = "TODO_UnallocatedSalesChanged";
@@ -139,6 +169,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string AsycudaDocumentSet_AttachmentsChanged = "AsycudaDocumentSet_AttachmentsChanged";
           // public const string AsycudaDocumentSetExChanged = "AsycudaDocumentSetExChanged";
           // public const string AttachmentsChanged = "AttachmentsChanged";
+          // public const string ContactsChanged = "ContactsChanged";
           // public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
           // public const string EmailMappingChanged = "EmailMappingChanged";
@@ -150,6 +181,10 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string InventoryItemXChanged = "InventoryItemXChanged";
           // public const string LicenceSummaryChanged = "LicenceSummaryChanged";
           // public const string SubItemsChanged = "SubItemsChanged";
+          // public const string TODO_CreateEx9Changed = "TODO_CreateEx9Changed";
+          // public const string TODO_DeleteDocumentSetChanged = "TODO_DeleteDocumentSetChanged";
+          // public const string TODO_DocumentsToDeleteChanged = "TODO_DocumentsToDeleteChanged";
+          // public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
           // public const string TODO_UnallocatedSalesChanged = "TODO_UnallocatedSalesChanged";
           // public const string xcuda_Supplementary_unitChanged = "xcuda_Supplementary_unitChanged";
  
@@ -168,6 +203,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentAsycudaDocumentSetExChanged = "CurrentAsycudaDocumentSetExChanged";
    
            public const string CurrentAttachmentsChanged = "CurrentAttachmentsChanged";
+   
+           public const string CurrentContactsChanged = "CurrentContactsChanged";
    
            public const string CurrentCustoms_ProcedureChanged = "CurrentCustoms_ProcedureChanged";
    
@@ -191,6 +228,14 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentSubItemsChanged = "CurrentSubItemsChanged";
    
+           public const string CurrentTODO_CreateEx9Changed = "CurrentTODO_CreateEx9Changed";
+   
+           public const string CurrentTODO_DeleteDocumentSetChanged = "CurrentTODO_DeleteDocumentSetChanged";
+   
+           public const string CurrentTODO_DocumentsToDeleteChanged = "CurrentTODO_DocumentsToDeleteChanged";
+   
+           public const string CurrentTODO_PODocSetChanged = "CurrentTODO_PODocSetChanged";
+   
            public const string CurrentTODO_UnallocatedSalesChanged = "CurrentTODO_UnallocatedSalesChanged";
    
            public const string Currentxcuda_Supplementary_unitChanged = "Currentxcuda_Supplementary_unitChanged";
@@ -210,6 +255,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentAsycudaDocumentSetExIDChanged = "OnCurrentAsycudaDocumentSetExIDChanged";
    
            public const string CurrentAttachmentsIDChanged = "OnCurrentAttachmentsIDChanged";
+   
+           public const string CurrentContactsIDChanged = "OnCurrentContactsIDChanged";
    
            public const string CurrentCustoms_ProcedureIDChanged = "OnCurrentCustoms_ProcedureIDChanged";
    
@@ -232,6 +279,14 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentLicenceSummaryIDChanged = "OnCurrentLicenceSummaryIDChanged";
    
            public const string CurrentSubItemsIDChanged = "OnCurrentSubItemsIDChanged";
+   
+           public const string CurrentTODO_CreateEx9IDChanged = "OnCurrentTODO_CreateEx9IDChanged";
+   
+           public const string CurrentTODO_DeleteDocumentSetIDChanged = "OnCurrentTODO_DeleteDocumentSetIDChanged";
+   
+           public const string CurrentTODO_DocumentsToDeleteIDChanged = "OnCurrentTODO_DocumentsToDeleteIDChanged";
+   
+           public const string CurrentTODO_PODocSetIDChanged = "OnCurrentTODO_PODocSetIDChanged";
    
            public const string CurrentTODO_UnallocatedSalesIDChanged = "OnCurrentTODO_UnallocatedSalesIDChanged";
    

@@ -22,6 +22,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //FileTypes()
         {
             this.FileTypeMappings = new List<FileTypeMappings>();
+            this.Contacts = new List<Contacts>();
         }
 
         [DataMember]
@@ -150,6 +151,8 @@ namespace CoreEntities.Business.Entities
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<FileTypeMappings> FileTypeMappings { get; set; }
+        [DataMember]
+        public List<Contacts> Contacts { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

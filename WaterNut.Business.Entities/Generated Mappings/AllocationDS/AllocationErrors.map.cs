@@ -11,11 +11,11 @@
     {
         public AllocationErrorsMap()
         {                        
-              this.HasKey(t => new {t.ItemNumber, t.ApplicationSettingsId});        
+              this.HasKey(t => new {t.ItemNumber, t.ApplicationSettingsId, t.EntryDataDate});        
               this.ToTable("AllocationErrors");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.HasMany(t => t.EX9AsycudaSalesAllocations).WithOptional(t => t.AllocationErrors).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
+              this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

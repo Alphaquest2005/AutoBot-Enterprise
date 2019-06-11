@@ -79,7 +79,6 @@
         <EntityTypeShape EntityType="WaterNutDBModel.AllocationErrors" Width="1.5" PointX="11.625" PointY="13.25" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsEX9AsycudaSalesAllocations" />
         <EntityTypeShape EntityType="WaterNutDBModel.ItemSalesPiSummary" Width="1.5" PointX="15.375" PointY="0.75" />
-        <AssociationConnector Association="WaterNutDBModel.AllocationErrorsEX9AsycudaSalesAllocations" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

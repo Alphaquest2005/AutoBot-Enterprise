@@ -239,13 +239,14 @@ namespace Asycuda421
                 {
                     c.Destination.Destination_country_code.Text.Add(dg.xcuda_Country.xcuda_Destination.Destination_country_code);
                     c.Destination.Destination_country_name.Text.Add(dg.xcuda_Country.xcuda_Destination.Destination_country_name);
-                    //c.Destination.Destination_country_region = dg.xcuda_Country.xcuda_Destination.
+                    //c.Destination.Destination_country_region.Text.Add(dg.xcuda_Country.xcuda_Destination.
                 }
 
                 if (dg.xcuda_Country.xcuda_Export != null)
                 {
                     c.Export.Export_country_code.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_code); 
-                    c.Export.Export_country_name.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_name); 
+                    c.Export.Export_country_name.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_name);
+                    c.Export.Export_country_region.Text.Add(dg.xcuda_Country.xcuda_Export.Export_country_region);
                 }
                 if (dg.xcuda_Country.Trading_country != null)
                 {
@@ -363,7 +364,12 @@ namespace Asycuda421
                 a.Transport.Location_of_goods.Text.Add(Exp.Location_of_goods);
 
             if (Exp.Border_information_Mode != null)
+            {
+                a.Transport.Means_of_transport.Border_information.Identity.Text.Add(Exp.TransportName);
+                a.Transport.Means_of_transport.Border_information.Nationality.Text.Add(Exp.TransportNationality);
                 a.Transport.Means_of_transport.Border_information.Mode.Text.Add(Exp.Border_information_Mode);
+            }
+
 
             if (Exp.Delivery_terms_Code != null)
                 a.Transport.Delivery_terms.Code.Text.Add(Exp.Delivery_terms_Code);

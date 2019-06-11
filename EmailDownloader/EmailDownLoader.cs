@@ -9,10 +9,11 @@ using MailKit.Net.Smtp;
 using MailKit.Search;
 using MailKit.Security;
 using MimeKit;
+using MimeKit.Utils;
 
 namespace EmailDownloader
 {
-    public static class EmailDownloader
+    public static partial class EmailDownloader
     {
         public static Dictionary<string, List<string>> CheckEmails(Client client)
         {
@@ -26,6 +27,54 @@ namespace EmailDownloader
             imapClient.Disconnect(true);
             return res;
         }
+
+        public static void SendEmail(Client client, string directory, string subject, string[] To, string body,
+            string[] attachments)
+        {
+            try
+            {
+                To = new[] {"josephbartholomew@outlook.com"};
+                MimeMessage msg = CreateMessage(client, subject, To, body, attachments);
+                SendEmail(client, msg);
+                
+                File.AppendAllLines(Path.Combine(directory, "EmailResults.txt"), attachments);
+                
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        private static MimeMessage CreateMessage(Client client, string subject, string[] to, string body, string[] attachments)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("AutoBot",client.Email));
+            foreach (var recipent in to)
+            {
+               message.To.Add(new MailboxAddress(recipent)); 
+            }
+            
+            message.Subject = subject;
+
+            var builder = new BodyBuilder();
+
+            // Set the plain-text version of the message text
+            builder.TextBody = body;
+
+            foreach (var attachment in attachments)
+            {
+               builder.Attachments.Add(attachment);
+            }
+
+
+            // Now we just need to set the message body and we're done
+            message.Body = builder.ToMessageBody();
+            return message;
+        }
+
 
         public static Dictionary<string, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
             List<string> emailMappings, Client client)
@@ -43,9 +92,9 @@ namespace EmailDownloader
                     continue;
                 }
 
-                var monthYear = Regex.Match(msg.Subject, @"(\b\d{1,2}\D{0,3})?\b(?<Month>Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|(Nov|Dec)(?:ember)?)[a-zA-Z\s]*(?<Year>(19[7-9]\d|20\d{2})|\d{2})?", RegexOptions.IgnoreCase);
+                var subject = GetSubject(msg);
+                
 
-                var subject =  (monthYear.Groups["Month"].Success? monthYear.Groups["Month"].Value: msg.Date.ToString("MMMM")) + " " + (monthYear.Groups["Year"].Success? monthYear.Groups["Year"].Value : DateTime.Now.Year.ToString());
                 var desFolder = Path.Combine(dataFolder, subject);
                 Directory.CreateDirectory(desFolder);
                 foreach (var a in msg.Attachments)
@@ -70,6 +119,33 @@ namespace EmailDownloader
             return msgFiles;
         }
 
+        private static string GetSubject(MimeMessage msg)
+        {
+            var patterns = new string[]
+            {
+                @"(\b\d{1,2}\D{0,3})?\b(?<Month>Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|(Nov|Dec)(?:ember)?)[a-zA-Z\s]*(?<Year>(19[7-9]\d|20\d{2})|\d{2})?",
+                @"Shipment: (?<Subject>.+)"
+            };
+
+            foreach (var pattern in patterns)
+            {
+                var mat = Regex.Match(msg.Subject,
+                    pattern,
+                    RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                if (!mat.Success) continue;
+                var subject = "";
+                for (int i = 1; i < mat.Groups.Count; i++)
+                {
+                    var g = mat.Groups[i];
+                    subject += " " + g;
+                }
+                return subject.Trim();
+
+            }
+
+            return null;
+        }
+        
         private static void SendBackMsg(MimeMessage msg, Client clientDetails)
         {
             // construct a new message
@@ -90,6 +166,11 @@ namespace EmailDownloader
 
             message.Body = builder.ToMessageBody();
 
+            SendEmail(clientDetails, message);
+        }
+
+        private static void SendEmail(Client clientDetails, MimeMessage message)
+        {
             using (var client = new SmtpClient())
             {
                 client.Connect("ez-brokerage-services.com", 465, true);

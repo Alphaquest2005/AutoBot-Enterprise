@@ -135,7 +135,7 @@ namespace WaterNut.DataSpace
                     {
 
 
-                        switch (overWriteExisting)
+                        switch (overWriteExisting || olded.AsycudaDocumentSets.All(x => x.AsycudaDocumentSetId != docSet.AsycudaDocumentSetId))
                         {
                             case true:
                                 await ClearEntryDataDetails(olded).ConfigureAwait(false);
@@ -336,7 +336,7 @@ namespace WaterNut.DataSpace
                         $"EntryDataId == \"{entryDataId}\"",
                         $"EntryDataDate == \"{entryDateTime.ToString("yyyy-MMM-dd")}\"",
                         $"ApplicationSettingsId == \"{applicationSettingsId}\"",
-                    }).ConfigureAwait(false)).FirstOrDefault();
+                    }, new List<string>() {"AsycudaDocumentSets"}).ConfigureAwait(false)).FirstOrDefault();
                 //eLst.FirstOrDefault(x => x.EntryDataId == item.e.EntryDataId && x.EntryDataDate != item.e.EntryDataDate);
             }
         }

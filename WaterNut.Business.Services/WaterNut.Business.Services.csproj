@@ -186,6 +186,7 @@
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetExService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\ICustoms_ProcedureService.cs" />
     <Compile Include="Contracts\CoreEntities\IDocument_TypeService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailMappingService.cs" />
@@ -197,6 +198,10 @@
     <Compile Include="Contracts\CoreEntities\IInventoryItemXService.cs" />
     <Compile Include="Contracts\CoreEntities\ILicenceSummaryService.cs" />
     <Compile Include="Contracts\CoreEntities\ISubItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_CreateEx9Service.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DeleteDocumentSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_PODocSetService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="Contracts\CoreEntities\Ixcuda_Supplementary_unitService.cs" />
     <Compile Include="Contracts\CounterPointQS\ICounterPointPODetailsService.cs" />
@@ -627,6 +632,7 @@
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetExService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSet_AttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\AttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\ContactsService.cs" />
     <Compile Include="Services\CoreEntities\Customs_ProcedureService.cs" />
     <Compile Include="Services\CoreEntities\Document_TypeService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingService.cs" />
@@ -638,6 +644,10 @@
     <Compile Include="Services\CoreEntities\InventoryItemXService.cs" />
     <Compile Include="Services\CoreEntities\LicenceSummaryService.cs" />
     <Compile Include="Services\CoreEntities\SubItemsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_CreateEx9Service.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DeleteDocumentSetService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DocumentsToDeleteService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_PODocSetService.cs" />
     <Compile Include="Services\CoreEntities\TODO_UnallocatedSalesService.cs" />
     <Compile Include="Services\CoreEntities\xcuda_Supplementary_unitService.cs" />
     <Compile Include="Services\CounterPointQS\CounterPointPODetailsService.cs" />

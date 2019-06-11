@@ -46,6 +46,12 @@
         <EntityTypeShape EntityType="WaterNutDBModel.EmailMapping" Width="1.5" PointX="2.75" PointY="21.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_UnallocatedSales" Width="1.5" PointX="13.375" PointY="15.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Contacts" Width="1.5" PointX="5" PointY="17.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Contacts_FileTypes" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_CreateEx9" Width="1.5" PointX="7.375" PointY="16.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_DeleteDocumentSet" Width="1.5" PointX="9.375" PointY="16.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_DocumentsToDelete" Width="1.5" PointX="17.375" PointY="12.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSet" Width="1.5" PointX="18.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

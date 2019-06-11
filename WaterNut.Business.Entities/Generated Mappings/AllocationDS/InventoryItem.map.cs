@@ -22,7 +22,7 @@
               this.Property(t => t.SuppQty).HasColumnName("SuppQty");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasOptional(t => t.TariffCodes).WithMany(t =>(ICollection<InventoryItem>) t.InventoryItemsEx).HasForeignKey(d => d.TariffCode);
-              this.HasMany(t => t.EX9AsycudaSalesAllocations).WithOptional(t => t.InventoryItemsEx).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
+              this.HasMany(t => t.EX9AsycudaSalesAllocations).WithRequired(t => (InventoryItem)t.InventoryItemsEx);
               this.HasMany(t => t.EntryDataDetailsEx).WithRequired(t => (InventoryItem)t.InventoryItemsEx);
               this.HasMany(t => t.InventoryItemAliasEx).WithRequired(t => (InventoryItem)t.InventoryItem);
              // Tracking Properties

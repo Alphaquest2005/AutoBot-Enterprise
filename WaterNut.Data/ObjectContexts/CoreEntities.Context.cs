@@ -87,6 +87,16 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_UnallocatedSales> TODO_UnallocatedSales { get; set; }
      
+        public DbSet<Contacts> Contacts { get; set; }
+     
+        public DbSet<TODO_CreateEx9> TODO_CreateEx9 { get; set; }
+     
+        public DbSet<TODO_DeleteDocumentSet> TODO_DeleteDocumentSet { get; set; }
+     
+        public DbSet<TODO_DocumentsToDelete> TODO_DocumentsToDelete { get; set; }
+     
+        public DbSet<TODO_PODocSet> TODO_PODocSet { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -130,6 +140,16 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new EmailMappingMap());
          
             modelBuilder.Configurations.Add(new TODO_UnallocatedSalesMap());
+         
+            modelBuilder.Configurations.Add(new ContactsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_CreateEx9Map());
+         
+            modelBuilder.Configurations.Add(new TODO_DeleteDocumentSetMap());
+         
+            modelBuilder.Configurations.Add(new TODO_DocumentsToDeleteMap());
+         
+            modelBuilder.Configurations.Add(new TODO_PODocSetMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

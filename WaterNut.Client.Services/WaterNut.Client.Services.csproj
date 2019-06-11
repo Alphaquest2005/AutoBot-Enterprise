@@ -102,6 +102,7 @@
     <Compile Include="CoreEntities\AsycudaDocumentSetExClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs" />
     <Compile Include="CoreEntities\AttachmentsClient.cs" />
+    <Compile Include="CoreEntities\ContactsClient.cs" />
     <Compile Include="CoreEntities\Customs_ProcedureClient.cs" />
     <Compile Include="CoreEntities\Document_TypeClient.cs" />
     <Compile Include="CoreEntities\EmailMappingClient.cs" />
@@ -113,6 +114,10 @@
     <Compile Include="CoreEntities\InventoryItemXClient.cs" />
     <Compile Include="CoreEntities\LicenceSummaryClient.cs" />
     <Compile Include="CoreEntities\SubItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_CreateEx9Client.cs" />
+    <Compile Include="CoreEntities\TODO_DeleteDocumentSetClient.cs" />
+    <Compile Include="CoreEntities\TODO_DocumentsToDeleteClient.cs" />
+    <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
     <Compile Include="CoreEntities\TODO_UnallocatedSalesClient.cs" />
     <Compile Include="CoreEntities\xcuda_Supplementary_unitClient.cs" />
     <Compile Include="CounterPointQS\CounterPointPODetailsClient.cs" />
