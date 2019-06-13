@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
+using System.Windows.Forms;
 using AllocationQS.Business.Entities;
 using AllocationQS.Client.Repositories;
 using Core.Common.Converters;
@@ -842,6 +843,7 @@ namespace AutoBot
 
                 }
             }
+            Application.SetSuspendState(PowerState.Suspend, true, true);
         }
 
         public static EmailDownloader.Client client { get; set; }
