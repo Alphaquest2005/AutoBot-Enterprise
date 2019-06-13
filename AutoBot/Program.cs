@@ -161,6 +161,7 @@ namespace AutoBot
         {
             if (!contacts.Any()) return;
             var poInfo = CurrentPOInfo();
+            if(poInfo.Item1 == null) return;
             var reference = poInfo.Item1.Declarant_Reference_Number;
             var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, reference);
             var files = Directory.GetFiles(directory, "*.xml");
@@ -377,9 +378,19 @@ namespace AutoBot
         {
             
             var poDocSet = new CoreEntitiesContext().TODO_PODocSet.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-            var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x => x.AsycudaDocumentSetId == poDocSet.AsycudaDocumentSetId);
-            var dirPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSet.Declarant_Reference_Number);
-            return new Tuple<AsycudaDocumentSetEx, string>(docSet, dirPath);
+            if (poDocSet != null)
+            {
+                var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
+                    x.AsycudaDocumentSetId == poDocSet.AsycudaDocumentSetId);
+                if (docSet != null)
+                {
+                    var dirPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        docSet.Declarant_Reference_Number);
+                    return new Tuple<AsycudaDocumentSetEx, string>(docSet, dirPath);
+                }
+
+            }
+            return new Tuple<AsycudaDocumentSetEx, string>(null, null);
         }
 
         private static void AllocateSales()
