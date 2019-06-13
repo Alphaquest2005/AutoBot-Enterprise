@@ -307,7 +307,8 @@ namespace AutoBot
                     ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId)
                         .Declarant_Reference_Number);
                 var csvFiles = new DirectoryInfo(desFolder).GetFiles().Where(x => Regex.IsMatch(x.FullName, ft.FilePattern)).ToArray();
-                BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,csvFiles.Select(x => x.FullName).ToList(), true, true, false, false, true).Wait();
+                if(csvFiles.Length > 0)
+                    BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,csvFiles.Select(x => x.FullName).ToList(), true, true, false, false, true).Wait();
             }
         }
 
