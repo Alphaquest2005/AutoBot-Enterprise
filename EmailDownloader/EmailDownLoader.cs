@@ -36,7 +36,7 @@ namespace EmailDownloader
                 To = new[] {"josephbartholomew@outlook.com"};
                 MimeMessage msg = CreateMessage(client, subject, To, body, attachments);
                 SendEmail(client, msg);
-                
+                if(directory != null)
                 File.AppendAllLines(Path.Combine(directory, "EmailResults.txt"), attachments);
                 
             }

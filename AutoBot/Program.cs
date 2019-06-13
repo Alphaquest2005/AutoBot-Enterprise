@@ -692,84 +692,97 @@ namespace AutoBot
             return null;
 
         }
+
         static void Main(string[] args)
         {
-
-            using (var ctx = new CoreEntitiesContext(){})
+            try
             {
                 
 
-                foreach (var appSetting in ctx.ApplicationSettings.AsNoTracking()
-                    .Include(x => x.FileTypes)
-                    .Include("FileTypes.Contacts")
-                    .Include(x => x.EmailMapping)
-                    
-                    .Include("FileTypes.FileTypeMappings").ToList())
+                using (var ctx = new CoreEntitiesContext() { })
                 {
-                    // set BaseDataModel CurrentAppSettings
-                    BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
-                    //check emails
 
-                    var salesInfo = CurrentSalesInfo();
-                    var dref = salesInfo.Item1.ToString("MMMM yyyy");
-                    if (salesInfo.Item3 == null)
+
+                    foreach (var appSetting in ctx.ApplicationSettings.AsNoTracking()
+                        .Include(x => x.FileTypes)
+                        .Include("FileTypes.Contacts")
+                        .Include(x => x.EmailMapping)
+
+                        .Include("FileTypes.FileTypeMappings").ToList())
                     {
-                        
-                        var doctype = ctx.Document_Type.Include(x => x.Customs_Procedure).First(x =>
-                            x.Type_of_declaration == "IM" && x.Declaration_gen_procedure_code == "7");
-                        ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
-                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({appSetting.ApplicationSettingsId},'{dref}',{doctype.Document_TypeId},{doctype.Customs_Procedure.First(z => z.IsDefault == true).Customs_ProcedureId},0)");
-                        Directory.CreateDirectory(Path.Combine(appSetting.DataFolder, dref));
-                    }
-                    if(!Directory.Exists(Path.Combine(appSetting.DataFolder, dref)))Directory.CreateDirectory(Path.Combine(appSetting.DataFolder, dref));
-                    //
-                    client = new EmailDownloader.Client
-                    {
-                        DataFolder = appSetting.DataFolder,
-                        Password = appSetting.EmailPassword,
-                        Email = appSetting.Email,
-                        EmailMappings = appSetting.EmailMapping.Select(x => x.Pattern).ToList()
-                    };
-                    var msgLst = EmailDownloader.EmailDownloader.CheckEmails(client);
-                    // get downloads
-                    foreach (var msg in msgLst)
-                    {
-                        var desFolder = Path.Combine(appSetting.DataFolder, msg.Key);
-                        foreach (var fileType in appSetting.FileTypes)
+                        // set BaseDataModel CurrentAppSettings
+                        BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
+                        //check emails
+
+                        var salesInfo = CurrentSalesInfo();
+                        var dref = salesInfo.Item1.ToString("MMMM yyyy");
+                        if (salesInfo.Item3 == null)
                         {
-                            var csvFiles = new DirectoryInfo(desFolder).GetFiles().Where(x => Regex.IsMatch(x.FullName, fileType.FilePattern)).ToArray();
 
-                            if (csvFiles.Length == 0) continue;
+                            var doctype = ctx.Document_Type.Include(x => x.Customs_Procedure).First(x =>
+                                x.Type_of_declaration == "IM" && x.Declaration_gen_procedure_code == "7");
+                            ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
+                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
+                                    VALUES({appSetting.ApplicationSettingsId},'{dref}',{doctype.Document_TypeId},{
+                                    doctype.Customs_Procedure.First(z => z.IsDefault == true).Customs_ProcedureId
+                                },0)");
+                            Directory.CreateDirectory(Path.Combine(appSetting.DataFolder, dref));
+                        }
 
-                            var oldDocSet =
-                                ctx.AsycudaDocumentSetExs
-                                    .Include(x => x.AsycudaDocumentSet_Attachments)
-                                    .Include("AsycudaDocumentSet_Attachments.Attachments")
-                                    .FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
-                            if (fileType.CreateDocumentSet)
+                        if (!Directory.Exists(Path.Combine(appSetting.DataFolder, dref)))
+                            Directory.CreateDirectory(Path.Combine(appSetting.DataFolder, dref));
+                        //
+                        client = new EmailDownloader.Client
+                        {
+                            DataFolder = appSetting.DataFolder,
+                            Password = appSetting.EmailPassword,
+                            Email = appSetting.Email,
+                            EmailMappings = appSetting.EmailMapping.Select(x => x.Pattern).ToList()
+                        };
+                        
+                        var msgLst = EmailDownloader.EmailDownloader.CheckEmails(client);
+                        // get downloads
+                        foreach (var msg in msgLst)
+                        {
+                            var desFolder = Path.Combine(appSetting.DataFolder, msg.Key);
+                            foreach (var fileType in appSetting.FileTypes)
                             {
-                                var docSet =
+                                var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                                    .Where(x => Regex.IsMatch(x.FullName, fileType.FilePattern)).ToArray();
+
+                                if (csvFiles.Length == 0) continue;
+
+                                var oldDocSet =
                                     ctx.AsycudaDocumentSetExs
                                         .Include(x => x.AsycudaDocumentSet_Attachments)
                                         .Include("AsycudaDocumentSet_Attachments.Attachments")
-                                        .FirstOrDefault(x => x.Declarant_Reference_Number == msg.Key);
-                                if (docSet == null)
+                                        .FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
+                                if (fileType.CreateDocumentSet)
                                 {
-                                    ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
+                                    var docSet =
+                                        ctx.AsycudaDocumentSetExs
+                                            .Include(x => x.AsycudaDocumentSet_Attachments)
+                                            .Include("AsycudaDocumentSet_Attachments.Attachments")
+                                            .FirstOrDefault(x => x.Declarant_Reference_Number == msg.Key);
+                                    if (docSet == null)
+                                    {
+                                        ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({oldDocSet.ApplicationSettingsId},'{msg.Key}',{oldDocSet.Document_TypeId},{oldDocSet.Customs_ProcedureId},0)");
-                                    
+                                    VALUES({oldDocSet.ApplicationSettingsId},'{msg.Key}',{oldDocSet.Document_TypeId},{
+                                                oldDocSet.Customs_ProcedureId
+                                            },0)");
+
+                                    }
+
+                                    oldDocSet =
+                                        ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
+                                            x.Declarant_Reference_Number == msg.Key);
                                 }
-                                oldDocSet =
-                                    ctx.AsycudaDocumentSetExs.FirstOrDefault(x =>
-                                        x.Declarant_Reference_Number == msg.Key);
-                            }
 
-                            fileType.AsycudaDocumentSetId = oldDocSet.AsycudaDocumentSetId;
-                            fileType.DocReference = oldDocSet.Declarant_Reference_Number;
+                                fileType.AsycudaDocumentSetId = oldDocSet.AsycudaDocumentSetId;
+                                fileType.DocReference = oldDocSet.Declarant_Reference_Number;
 
-                            if (fileType.Type == "Info")
+                                if (fileType.Type == "Info")
                                 {
                                     var dbStatement = "";
                                     foreach (var file in csvFiles)
@@ -779,16 +792,25 @@ namespace AutoBot
                                             .ToList();
                                         foreach (var line in fileTxt)
                                         {
-                                            var match = Regex.Match(line, @"((?<Key>.[a-zA-Z\s]*):(?<Value>.[a-zA-Z0-9\- :$.]*))");
-                                            if(match.Success)
-                                            foreach (var infoMapping in res.Where(x => x.Key == match.Groups["Key"].Value.Trim()))
-                                            {
-                                                dbStatement += $@" Update AsycudaDocumentSet Set {infoMapping.Field} = '{ReplaceSpecialChar(match.Groups["Value"].Value.Trim(),"")}' Where AsycudaDocumentSetId = '{oldDocSet.AsycudaDocumentSetId}';";
-                                            }
+                                            var match = Regex.Match(line,
+                                                @"((?<Key>.[a-zA-Z\s]*):(?<Value>.[a-zA-Z0-9\- :$.]*))");
+                                            if (match.Success)
+                                                foreach (var infoMapping in res.Where(x =>
+                                                    x.Key == match.Groups["Key"].Value.Trim()))
+                                                {
+                                                    dbStatement +=
+                                                        $@" Update AsycudaDocumentSet Set {infoMapping.Field} = '{
+                                                                ReplaceSpecialChar(match.Groups["Value"].Value.Trim(),
+                                                                    "")
+                                                            }' Where AsycudaDocumentSetId = '{
+                                                                oldDocSet.AsycudaDocumentSetId
+                                                            }';";
+                                                }
                                         }
 
                                     }
-                                    if(!string.IsNullOrEmpty(dbStatement)) ctx.Database.ExecuteSqlCommand(dbStatement);
+
+                                    if (!string.IsNullOrEmpty(dbStatement)) ctx.Database.ExecuteSqlCommand(dbStatement);
                                 }
                                 else
                                 {
@@ -796,7 +818,8 @@ namespace AutoBot
                                     {
                                         if (!msg.Value.Contains(file.Name) || fileType.DocumentCode == "NA") continue;
                                         var attachment =
-                                            oldDocSet.AsycudaDocumentSet_Attachments.FirstOrDefault(x => x.Attachments.FilePath == file.FullName);
+                                            oldDocSet.AsycudaDocumentSet_Attachments.FirstOrDefault(x =>
+                                                x.Attachments.FilePath == file.FullName);
                                         if (attachment == null)
                                         {
                                             using (var ctx1 = new CoreEntitiesContext() {StartTracking = true})
@@ -821,29 +844,42 @@ namespace AutoBot
                                     ctx.SaveChanges();
                                 }
 
-                            
-                            
-                            
+
+
+
                                 fileActions.Where(x => x.Filetype == fileType.Type).SelectMany(x => x.Actions).ToList()
-                                    .ForEach(x => x.Invoke(fileType, csvFiles));//.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
+                                    .ForEach(x =>
+                                        x.Invoke(fileType,
+                                            csvFiles)); //.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
+
+                            }
+
 
                         }
 
+                        foreach (var fileType in appSetting.FileTypes
+                        ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
+                        {
+                            var desFolder = Path.Combine(appSetting.DataFolder,
+                                CurrentSalesInfo().Item1.ToString("MMMM yyyy"));
+                            var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                                .Where(x => Regex.IsMatch(x.FullName, fileType.FilePattern)).ToArray();
+                            fileActions.Where(x => x.Filetype == fileType.Type).SelectMany(x => x.Actions).ToList()
+                                .ForEach(x =>
+                                    x.Invoke(fileType,
+                                        csvFiles)); //.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
+                        }
 
                     }
-
-                    foreach (var fileType in appSetting.FileTypes)//.Where(x => x.Type != "Sales" && x.Type != "PO")
-                    {
-                        var desFolder = Path.Combine(appSetting.DataFolder,
-                            CurrentSalesInfo().Item1.ToString("MMMM yyyy"));
-                        var csvFiles = new DirectoryInfo(desFolder).GetFiles().Where(x => Regex.IsMatch(x.FullName, fileType.FilePattern)).ToArray();
-                        fileActions.Where(x => x.Filetype == fileType.Type).SelectMany(x => x.Actions).ToList()
-                            .ForEach(x => x.Invoke(fileType, csvFiles));//.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
-                    }
-
                 }
+
+                Application.SetSuspendState(PowerState.Suspend, true, true);
             }
-            Application.SetSuspendState(PowerState.Suspend, true, true);
+            catch (Exception e)
+            {
+                EmailDownloader.EmailDownloader.SendEmail(client, null, $"Bug Found",
+                    new []{"Josephbartholomew@outlook.com"}, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
+            }
         }
 
         public static EmailDownloader.Client client { get; set; }
