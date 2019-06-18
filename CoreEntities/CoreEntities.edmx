@@ -5,6 +5,13 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Actions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="ApplicationSettings">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
@@ -73,7 +80,6 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Role" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EmailAddress" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="FileTypeId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
@@ -109,6 +115,23 @@
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="EntryPreviousItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FileTypeActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+          <Property Name="Priority" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FileTypeContacts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="ContactId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="FileTypeMappings">
           <Key>
@@ -435,18 +458,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Contacts_FileTypes">
-          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1" />
-          <End Role="Contacts" Type="Self.Contacts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FileTypes">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Contacts">
-              <PropertyRef Name="FileTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Customs_Procedure_Document_Type">
           <End Role="Document_Type" Type="Self.Document_Type" Multiplicity="1" />
           <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="*" />
@@ -470,6 +481,56 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
             </Principal>
             <Dependent Role="EmailMapping">
               <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypeActions_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="FileTypeActions" Type="Self.FileTypeActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeActions">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypeActions_FileTypes">
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1" />
+          <End Role="FileTypeActions" Type="Self.FileTypeActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeActions">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypeContacts_Contacts">
+          <End Role="Contacts" Type="Self.Contacts" Multiplicity="1" />
+          <End Role="FileTypeContacts" Type="Self.FileTypeContacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contacts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeContacts">
+              <PropertyRef Name="ContactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypeContacts_FileTypes">
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1" />
+          <End Role="FileTypeContacts" Type="Self.FileTypeContacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeContacts">
+              <PropertyRef Name="FileTypeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -516,6 +577,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
+          <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationSettings" EntityType="Self.ApplicationSettings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
@@ -524,6 +586,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailMapping" EntityType="Self.EmailMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypeActions" EntityType="Self.FileTypeActions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypeContacts" EntityType="Self.FileTypeContacts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
@@ -731,10 +795,6 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
             <End Role="Attachments" EntitySet="Attachments" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
-          <AssociationSet Name="FK_Contacts_FileTypes" Association="Self.FK_Contacts_FileTypes">
-            <End Role="FileTypes" EntitySet="FileTypes" />
-            <End Role="Contacts" EntitySet="Contacts" />
-          </AssociationSet>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
@@ -742,6 +802,22 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <AssociationSet Name="FK_EmailMapping_ApplicationSettings" Association="Self.FK_EmailMapping_ApplicationSettings">
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="EmailMapping" EntitySet="EmailMapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypeActions_Actions" Association="Self.FK_FileTypeActions_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="FileTypeActions" EntitySet="FileTypeActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypeActions_FileTypes" Association="Self.FK_FileTypeActions_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypeActions" EntitySet="FileTypeActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypeContacts_Contacts" Association="Self.FK_FileTypeContacts_Contacts">
+            <End Role="Contacts" EntitySet="Contacts" />
+            <End Role="FileTypeContacts" EntitySet="FileTypeContacts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypeContacts_FileTypes" Association="Self.FK_FileTypeContacts_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypeContacts" EntitySet="FileTypeContacts" />
           </AssociationSet>
           <AssociationSet Name="FK_FileTypeMappings_FileTypes" Association="Self.FK_FileTypeMappings_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
@@ -866,14 +942,29 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           </AssociationSet>
           <EntitySet Name="TODO_UnallocatedSales" EntityType="WaterNutDBModel.TODO_UnallocatedSales" />
           <EntitySet Name="Contacts" EntityType="WaterNutDBModel.Contacts" />
-          <AssociationSet Name="FK_Contacts_FileTypes" Association="WaterNutDBModel.FK_Contacts_FileTypes">
-            <End Role="FileTypes" EntitySet="FileTypes" />
-            <End Role="Contacts" EntitySet="Contacts" />
-          </AssociationSet>
           <EntitySet Name="TODO_CreateEx9" EntityType="WaterNutDBModel.TODO_CreateEx9" />
           <EntitySet Name="TODO_DeleteDocumentSet" EntityType="WaterNutDBModel.TODO_DeleteDocumentSet" />
           <EntitySet Name="TODO_DocumentsToDelete" EntityType="WaterNutDBModel.TODO_DocumentsToDelete" />
           <EntitySet Name="TODO_PODocSet" EntityType="WaterNutDBModel.TODO_PODocSet" />
+          <EntitySet Name="Actions" EntityType="WaterNutDBModel.Actions" />
+          <EntitySet Name="FileTypeActions" EntityType="WaterNutDBModel.FileTypeActions" />
+          <AssociationSet Name="FK_FileTypeActions_Actions" Association="WaterNutDBModel.FK_FileTypeActions_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="FileTypeActions" EntitySet="FileTypeActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypeActions_FileTypes" Association="WaterNutDBModel.FK_FileTypeActions_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypeActions" EntitySet="FileTypeActions" />
+          </AssociationSet>
+          <EntitySet Name="FileTypeContacts" EntityType="WaterNutDBModel.FileTypeContacts" />
+          <AssociationSet Name="FK_FileTypeContacts_Contacts" Association="WaterNutDBModel.FK_FileTypeContacts_Contacts">
+            <End Role="Contacts" EntitySet="Contacts" />
+            <End Role="FileTypeContacts" EntitySet="FileTypeContacts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypeContacts_FileTypes" Association="WaterNutDBModel.FK_FileTypeContacts_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypeContacts" EntitySet="FileTypeContacts" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -1348,7 +1439,8 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <Property Name="CreateDocumentSet" Type="Boolean" Nullable="false" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
           <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Contacts" Relationship="WaterNutDBModel.FK_Contacts_FileTypes" FromRole="FileTypes" ToRole="Contacts" />
+          <NavigationProperty Name="FileTypeActions" Relationship="WaterNutDBModel.FK_FileTypeActions_FileTypes" FromRole="FileTypes" ToRole="FileTypeActions" />
+          <NavigationProperty Name="FileTypeContacts" Relationship="WaterNutDBModel.FK_FileTypeContacts_FileTypes" FromRole="FileTypes" ToRole="FileTypeContacts" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -1522,22 +1614,9 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Role" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EmailAddress" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_Contacts_FileTypes" FromRole="Contacts" ToRole="FileTypes" />
+          <NavigationProperty Name="FileTypeContacts" Relationship="WaterNutDBModel.FK_FileTypeContacts_Contacts" FromRole="Contacts" ToRole="FileTypeContacts" />
         </EntityType>
-        <Association Name="FK_Contacts_FileTypes">
-          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1" />
-          <End Type="WaterNutDBModel.Contacts" Role="Contacts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="FileTypes">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Contacts">
-              <PropertyRef Name="FileTypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="TODO_CreateEx9">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
@@ -1581,6 +1660,85 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="Actions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypeActions" Relationship="WaterNutDBModel.FK_FileTypeActions_Actions" FromRole="Actions" ToRole="FileTypeActions" />
+        </EntityType>
+        <EntityType Name="FileTypeActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
+          <Property Name="Priority" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Actions" Relationship="WaterNutDBModel.FK_FileTypeActions_Actions" FromRole="FileTypeActions" ToRole="Actions" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypeActions_FileTypes" FromRole="FileTypeActions" ToRole="FileTypes" />
+        </EntityType>
+        <Association Name="FK_FileTypeActions_Actions">
+          <End Type="WaterNutDBModel.Actions" Role="Actions" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.FileTypeActions" Role="FileTypeActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeActions">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypeActions_FileTypes">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1" />
+          <End Type="WaterNutDBModel.FileTypeActions" Role="FileTypeActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeActions">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FileTypeContacts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+          <Property Name="ContactId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Contacts" Relationship="WaterNutDBModel.FK_FileTypeContacts_Contacts" FromRole="FileTypeContacts" ToRole="Contacts" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypeContacts_FileTypes" FromRole="FileTypeContacts" ToRole="FileTypes" />
+        </EntityType>
+        <Association Name="FK_FileTypeContacts_Contacts">
+          <End Type="WaterNutDBModel.Contacts" Role="Contacts" Multiplicity="1" />
+          <End Type="WaterNutDBModel.FileTypeContacts" Role="FileTypeContacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contacts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeContacts">
+              <PropertyRef Name="ContactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypeContacts_FileTypes">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1" />
+          <End Type="WaterNutDBModel.FileTypeContacts" Role="FileTypeContacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeContacts">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1932,7 +2090,6 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
             <EntityTypeMapping TypeName="WaterNutDBModel.Contacts">
               <MappingFragment StoreEntitySet="Contacts">
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1980,6 +2137,33 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Actions">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Actions">
+              <MappingFragment StoreEntitySet="Actions">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileTypeActions">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeActions">
+              <MappingFragment StoreEntitySet="FileTypeActions">
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileTypeContacts">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeContacts">
+              <MappingFragment StoreEntitySet="FileTypeContacts">
+                <ScalarProperty Name="ContactId" ColumnName="ContactId" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

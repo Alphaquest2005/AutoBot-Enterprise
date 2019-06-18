@@ -202,7 +202,7 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new Contacts(res)
                     {
-                  // FileTypes = (res.FileTypes != null?new FileTypes(res.FileTypes): null)    
+                     // FileTypeContacts = new System.Collections.ObjectModel.ObservableCollection<FileTypeContacts>(res.FileTypeContacts.Select(y => new FileTypeContacts(y)))    
                   };
                     }
                     else
@@ -364,35 +364,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<Contacts>> GetContactsByFileTypeId(string FileTypeId, List<string> includesLst = null)
-        {
-             if (FileTypeId == "0") return null;
-            try
-            {
-                 using (ContactsClient t = new ContactsClient())
-                    {
-                        var res = await t.GetContactsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new Contacts(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
-         
+        
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

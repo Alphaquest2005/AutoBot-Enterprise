@@ -51,8 +51,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             RegisterToReceiveMessages(MessageToken.ContactsChanged, OnContactsChanged);
 			RegisterToReceiveMessages(MessageToken.ContactsFilterExpressionChanged, OnContactsFilterExpressionChanged);
 
- 
-			RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -135,10 +133,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentContacts__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
-                    //if (e.PropertyName == "AddFileTypes")
-                   // {
-                   //    if(FileTypes.Contains(CurrentContacts.FileTypes) == false) FileTypes.Add(CurrentContacts.FileTypes);
-                    //}
                  } 
         internal void OnContactsChanged(object sender, NotificationEventArgs e)
         {
@@ -147,45 +141,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }   
 
 
- 	
-		 internal void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
-			{
-			if(ViewCurrentFileTypes == false) return;
-			if (e.Data == null || e.Data.Id == null)
-                {
-                    vloader.FilterExpression = "None";
-                }
-                else
-                {
-				vloader.FilterExpression = string.Format("FileTypeId == {0}", e.Data.Id.ToString());
-                 }
-
-				Contacts.Refresh();
-				NotifyPropertyChanged(x => this.Contacts);
-                // SendMessage(MessageToken.ContactsChanged, new NotificationEventArgs(MessageToken.ContactsChanged));
-                                          
-                BaseViewModel.Instance.CurrentContacts = null;
-			}
-
+ 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
   
 // Filtering Each Field except IDs
- 	
-		 bool _viewCurrentFileTypes = false;
-         public bool ViewCurrentFileTypes
-         {
-             get
-             {
-                 return _viewCurrentFileTypes;
-             }
-             set
-             {
-                 _viewCurrentFileTypes = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentFileTypes);
-                FilterData();
-             }
-         }
 		public void ViewAll()
         {
 		vloader.FilterExpression = "All";

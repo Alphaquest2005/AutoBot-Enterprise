@@ -95,6 +95,7 @@
     <Compile Include="AllocationQS\AsycudaSalesAllocationsExClient.cs" />
     <Compile Include="AllocationQS\AsycudaSalesAndAdjustmentAllocationsExClient.cs" />
     <Compile Include="ClientService.cs" />
+    <Compile Include="CoreEntities\ActionsClient.cs" />
     <Compile Include="CoreEntities\ApplicationSettingsClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentItemClient.cs" />
@@ -107,6 +108,8 @@
     <Compile Include="CoreEntities\Document_TypeClient.cs" />
     <Compile Include="CoreEntities\EmailMappingClient.cs" />
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
+    <Compile Include="CoreEntities\FileTypeActionsClient.cs" />
+    <Compile Include="CoreEntities\FileTypeContactsClient.cs" />
     <Compile Include="CoreEntities\FileTypeMappingsClient.cs" />
     <Compile Include="CoreEntities\FileTypesClient.cs" />
     <Compile Include="CoreEntities\InfoMappingClient.cs" />

@@ -172,17 +172,30 @@ namespace CoreEntities.Client.DTO
         private ChangeTrackingCollection<FileTypeMappings> _FileTypeMappings = new ChangeTrackingCollection<FileTypeMappings>();
 
         [DataMember]
-        public ChangeTrackingCollection<Contacts> Contacts
+        public ChangeTrackingCollection<FileTypeActions> FileTypeActions
 		{
-		    get { return _Contacts; }
+		    get { return _FileTypeActions; }
 			set
 			{
-			    if (Equals(value, _Contacts)) return;
-				_Contacts = value;
-				NotifyPropertyChanged();//m => this.Contacts
+			    if (Equals(value, _FileTypeActions)) return;
+				_FileTypeActions = value;
+				NotifyPropertyChanged();//m => this.FileTypeActions
 			}
 		}
-        private ChangeTrackingCollection<Contacts> _Contacts = new ChangeTrackingCollection<Contacts>();
+        private ChangeTrackingCollection<FileTypeActions> _FileTypeActions = new ChangeTrackingCollection<FileTypeActions>();
+
+        [DataMember]
+        public ChangeTrackingCollection<FileTypeContacts> FileTypeContacts
+		{
+		    get { return _FileTypeContacts; }
+			set
+			{
+			    if (Equals(value, _FileTypeContacts)) return;
+				_FileTypeContacts = value;
+				NotifyPropertyChanged();//m => this.FileTypeContacts
+			}
+		}
+        private ChangeTrackingCollection<FileTypeContacts> _FileTypeContacts = new ChangeTrackingCollection<FileTypeContacts>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

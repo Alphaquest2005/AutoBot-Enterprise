@@ -179,6 +179,7 @@
     <Compile Include="Contracts\AllocationQS\IAdjustmentShortAllocationService.cs" />
     <Compile Include="Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
     <Compile Include="Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs" />
+    <Compile Include="Contracts\CoreEntities\IActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\IApplicationSettingsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemService.cs" />
@@ -191,6 +192,8 @@
     <Compile Include="Contracts\CoreEntities\IDocument_TypeService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailMappingService.cs" />
     <Compile Include="Contracts\CoreEntities\IEntryPreviousItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeActionsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IFileTypeContactsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeMappingsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypesService.cs" />
     <Compile Include="Contracts\CoreEntities\IInfoMappingService.cs" />
@@ -625,6 +628,7 @@
     <Compile Include="Services\AllocationQS\AdjustmentShortAllocationService.cs" />
     <Compile Include="Services\AllocationQS\AsycudaSalesAllocationsExService.cs" />
     <Compile Include="Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExService.cs" />
+    <Compile Include="Services\CoreEntities\ActionsService.cs" />
     <Compile Include="Services\CoreEntities\ApplicationSettingsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentItemService.cs" />
@@ -637,6 +641,8 @@
     <Compile Include="Services\CoreEntities\Document_TypeService.cs" />
     <Compile Include="Services\CoreEntities\EmailMappingService.cs" />
     <Compile Include="Services\CoreEntities\EntryPreviousItemsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeActionsService.cs" />
+    <Compile Include="Services\CoreEntities\FileTypeContactsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeMappingsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypesService.cs" />
     <Compile Include="Services\CoreEntities\InfoMappingService.cs" />

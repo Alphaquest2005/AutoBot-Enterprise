@@ -24,7 +24,8 @@
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.FileTypeMappings).WithRequired(t => (FileTypes)t.FileTypes);
-              this.HasMany(t => t.Contacts).WithRequired(t => (FileTypes)t.FileTypes);
+              this.HasMany(t => t.FileTypeActions).WithRequired(t => (FileTypes)t.FileTypes);
+              this.HasMany(t => t.FileTypeContacts).WithRequired(t => (FileTypes)t.FileTypes);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

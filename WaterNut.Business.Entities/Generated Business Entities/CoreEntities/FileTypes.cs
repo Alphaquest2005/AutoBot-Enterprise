@@ -22,7 +22,8 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //FileTypes()
         {
             this.FileTypeMappings = new List<FileTypeMappings>();
-            this.Contacts = new List<Contacts>();
+            this.FileTypeActions = new List<FileTypeActions>();
+            this.FileTypeContacts = new List<FileTypeContacts>();
         }
 
         [DataMember]
@@ -152,7 +153,9 @@ namespace CoreEntities.Business.Entities
         [DataMember]
         public List<FileTypeMappings> FileTypeMappings { get; set; }
         [DataMember]
-        public List<Contacts> Contacts { get; set; }
+        public List<FileTypeActions> FileTypeActions { get; set; }
+        [DataMember]
+        public List<FileTypeContacts> FileTypeContacts { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

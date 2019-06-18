@@ -42,6 +42,9 @@ namespace CoreEntities.Client.Entities
                 contacts = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= " is required")]
        
 public int Id
@@ -91,21 +94,6 @@ public string EmailAddress
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "FileType is required")]
-       
-public int FileTypeId
-		{ 
-		    get { return this.contacts.FileTypeId; }
-			set
-			{
-			    if (value == this.contacts.FileTypeId) return;
-				this.contacts.FileTypeId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("FileTypeId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "Name is required")]
        
                 
@@ -123,58 +111,59 @@ public string Name
 		}
      
 
-       private FileTypes _FileTypes;
-        public  FileTypes FileTypes
+        ObservableCollection<FileTypeContacts> _FileTypeContacts = null;
+        public  ObservableCollection<FileTypeContacts> FileTypeContacts
 		{
-		    get
-               { 
-                  if (this.contacts != null)
-                   {
-                       if (_FileTypes != null)
-                       {
-                           if (this.contacts.FileTypes !=
-                               _FileTypes.DTO)
-                           {
-                                if (this.contacts.FileTypes  != null)
-                               _FileTypes = new FileTypes(this.contacts.FileTypes);
-                           }
-                       }
-                       else
-                       {
-                             if (this.contacts.FileTypes  != null)
-                           _FileTypes = new FileTypes(this.contacts.FileTypes);
-                       }
-                   }
-
-
-             //       if (_FileTypes != null) return _FileTypes;
-                       
-             //       var i = new FileTypes(){TrackingState = TrackingState.Added};
-			//		//if (this.contacts.FileTypes == null) Debugger.Break();
-			//		if (this.contacts.FileTypes != null)
-            //        {
-            //           i. = this.contacts.FileTypes;
-            //        }
-            //        else
-            //        {
-            //            this.contacts.FileTypes = i.;
-             //       }
-                           
-            //        _FileTypes = i;
-                     
-                    return _FileTypes;
-               }
+            
+		    get 
+				{ 
+					if(_FileTypeContacts != null) return _FileTypeContacts;
+					//if (this.contacts.FileTypeContacts == null) Debugger.Break();
+					if(this.contacts.FileTypeContacts != null)
+					{
+						_FileTypeContacts = new ObservableCollection<FileTypeContacts>(this.contacts.FileTypeContacts.Select(x => new FileTypeContacts(x)));
+					}
+					
+						_FileTypeContacts.CollectionChanged += FileTypeContacts_CollectionChanged; 
+					
+					return _FileTypeContacts; 
+				}
 			set
 			{
-			    if (value == _FileTypes) return;
-                _FileTypes = value;
-                if(value != null)
-                     this.contacts.FileTypes = value.DTO;
+			    if (Equals(value, _FileTypeContacts)) return;
+				if (value != null)
+					this.contacts.FileTypeContacts = new ChangeTrackingCollection<DTO.FileTypeContacts>(value.Select(x => x.DTO).ToList());
+                _FileTypeContacts = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("FileTypes");
+				if (_FileTypeContacts != null)
+				_FileTypeContacts.CollectionChanged += FileTypeContacts_CollectionChanged;               
+				NotifyPropertyChanged("FileTypeContacts");
 			}
 		}
         
+        void FileTypeContacts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FileTypeContacts itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        contacts.FileTypeContacts.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FileTypeContacts itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        contacts.FileTypeContacts.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.Contacts> _changeTracker;    

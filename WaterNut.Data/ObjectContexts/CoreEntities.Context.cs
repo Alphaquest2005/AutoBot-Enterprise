@@ -97,6 +97,12 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_PODocSet> TODO_PODocSet { get; set; }
      
+        public DbSet<Actions> Actions { get; set; }
+     
+        public DbSet<FileTypeActions> FileTypeActions { get; set; }
+     
+        public DbSet<FileTypeContacts> FileTypeContacts { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -150,6 +156,12 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_DocumentsToDeleteMap());
          
             modelBuilder.Configurations.Add(new TODO_PODocSetMap());
+         
+            modelBuilder.Configurations.Add(new ActionsMap());
+         
+            modelBuilder.Configurations.Add(new FileTypeActionsMap());
+         
+            modelBuilder.Configurations.Add(new FileTypeContactsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

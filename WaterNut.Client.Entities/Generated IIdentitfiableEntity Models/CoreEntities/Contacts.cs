@@ -28,44 +28,6 @@ namespace CoreEntities.Client.Entities
                 this.Id = Convert.ToInt32(value);
             }
         }
-        public string FileTypesEntityName
-        {
-            get
-            {
-                return this.FileTypes == null ? "" : this.FileTypes.EntityName;
-            }
-            set
-            {
-                                if (string.IsNullOrEmpty(value)) return;
-                string[] vals = value.Split(',');
-               
-                    using (FileTypesClient ctx = new FileTypesClient())
-                    {
-                        var dto = ctx.GetFileTypes().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
-                        
-
-                        if ( dto == null)
-                        {
-                            this.FileTypes = (FileTypes)new FileTypes().CreateEntityFromString(value);
-							
-							this.Id = Convert.ToInt32(this.FileTypes.Id);
-                            this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddFileTypes");
-                        }
-                        else
-                        {
-                            var obj = new FileTypes(dto);
-                           if (this.FileTypes == null || this.FileTypes.EntityId != obj.EntityId) this.FileTypes = obj;
-                           
-                        }
-                         
-
-
-                    }
-            
-            }
-
-      }
 
 
 

@@ -205,7 +205,8 @@ namespace CoreEntities.Client.Repositories
                   // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
                   // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null),    
                      // FileTypeMappings = new System.Collections.ObjectModel.ObservableCollection<FileTypeMappings>(res.FileTypeMappings.Select(y => new FileTypeMappings(y))),    
-                     // Contacts = new System.Collections.ObjectModel.ObservableCollection<Contacts>(res.Contacts.Select(y => new Contacts(y)))    
+                     // FileTypeActions = new System.Collections.ObjectModel.ObservableCollection<FileTypeActions>(res.FileTypeActions.Select(y => new FileTypeActions(y))),    
+                     // FileTypeContacts = new System.Collections.ObjectModel.ObservableCollection<FileTypeContacts>(res.FileTypeContacts.Select(y => new FileTypeContacts(y)))    
                   };
                     }
                     else

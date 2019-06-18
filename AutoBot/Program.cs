@@ -41,123 +41,138 @@ namespace AutoBot
                 new List<Action<FileTypes, FileInfo[]>>();
         }
 
-        private static List<FileAction> fileActions => new List<FileAction>
-        {
-            new FileAction
+        private static Dictionary<string, Action<FileTypes, FileInfo[]>> fileActions =>
+            new Dictionary<string, Action<FileTypes, FileInfo[]>>
             {
-                Filetype = "XML",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    //(ft, fs) => BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
-                    //    fs.Select(x => x.FullName).ToList(), true, true, false, false, true).Wait(),
-                    (ft, fs) => ImportSalesEntries(),
-                    (x,y) => AllocateSales(),
-                    (ft, fs) => CreateEx9(ft),
-                    (ft, fs) => ExportEx9Entries().Wait(),
-                    (x,y) => AssessEx9Entries(x),
-                    (ft, fs) => ImportSalesEntries(),
-                }
-            },
-            new FileAction
-            {
-                Filetype = "PO",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId),
-                    (ft, fs) => CreatePOEntries().Wait(),
-                     (ft, fs) => ExportPOEntries().Wait(),
-                    //(x,y) => RunSiKuLi(x.AsycudaDocumentSetId,"AssessIM7"),
-                    (ft, fs) => EmailPOEntries(ft.Contacts),
-                }
-            },
-            new FileAction
-            {
-                Filetype = "Sales",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
+                {"ImportSalesEntries",(ft, fs) => ImportSalesEntries() },
+                {"AllocateSales",(ft, fs) => AllocateSales() },
+                {"CreateEx9",(ft, fs) => CreateEx9(ft) },
+                {"ExportEx9Entries",(ft, fs) => ExportEx9Entries().Wait() },
+                {"AssessEx9Entries",(ft, fs) => AssessEx9Entries(ft) },
+                {"SaveCsv",(ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId) },
+                {"CreatePOEntries",(ft, fs) => CreatePOEntries().Wait() },
+                {"ExportPOEntries",(ft, fs) => ExportPOEntries().Wait() },
+                {"AssessEntry",(ft, fs) => AssessEntry(ft)},
+                {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.FileTypeContacts.Select(x => x.Contacts).ToList()) },
+                {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles() },
+                {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft.FileTypeMappings) },
+            };
+        //private static List<FileAction> fileActions => new List<FileAction>
+        //{
+        //    new FileAction
+        //    {
+        //        Filetype = "XML",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+                    
+        //            (ft, fs) => ImportSalesEntries(),
+        //            (x,y) => AllocateSales(),
+        //            (ft, fs) => CreateEx9(ft),
+        //            (ft, fs) => ExportEx9Entries().Wait(),
+        //            (x,y) => AssessEx9Entries(x),
+                    
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "PO",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //            (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId),
+        //            (ft, fs) => CreatePOEntries().Wait(),
+        //             (ft, fs) => ExportPOEntries().Wait(),
+        //            //(x,y) => RunSiKuLi(x.AsycudaDocumentSetId,"AssessIM7"),
+        //            (ft, fs) => EmailPOEntries(ft.Contacts),
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "Sales",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
 
-                    (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId),
-                    (x, y) => DownloadFiles(),
-                    (ft, fs) => ImportSalesEntries(),
-                    (x,y) => AllocateSales(),
-                    (ft, fs) => CreateEx9(ft),
-                    (ft, fs) => ExportEx9Entries().Wait(),
-                    (x,y) => AssessEx9Entries(x),
-                    (ft, fs) => ImportSalesEntries(),
-                }
-            },
-            new FileAction
-            {
-                Filetype = "OPS",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
-                }
-            },
-            new FileAction
-            {
-                Filetype = "ADJ",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
-                }
-            },
-            new FileAction
-            {
-                Filetype = "ADJ",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
-                }
-            },
-            new FileAction
-            {
-                Filetype = "ADJ",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
-                }
-            },
-            new FileAction
-            {
-                Filetype = "XLSX",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    (ft, fs) => Xlsx2csv(fs, ft.FileTypeMappings)
-                }
-            },
-            new FileAction
-            {
-                Filetype = "FIX",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                    (ft, fs) => FixCsv(fs, ft.FileTypeMappings)
-                }
-            },
-            new FileAction
-            {
-                Filetype = "Info",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                     (ft, fs) =>  CreatePOEntries().Wait(),
-                     (ft, fs) =>  ExportPOEntries().Wait(),
-                    //(x,y) => AssessEntry(x),
-                    (ft, fs) => EmailPOEntries(ft.Contacts),
-                }
-            },
-            new FileAction
-            {
-                Filetype = "PDF",
-                Actions = new List<Action<FileTypes, FileInfo[]>>
-                {
-                     (ft, fs) =>  CreatePOEntries().Wait(),
-                     (ft, fs) =>  ExportPOEntries().Wait(),
-                    //(x,y) => AssessEntry(x),
-                    (ft, fs) => EmailPOEntries(ft.Contacts),
-                }
+        //            (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId),
+        //            (x, y) => DownloadSalesFiles(),
+        //            (ft, fs) => ImportSalesEntries(),
+        //            (x,y) => AllocateSales(),
+        //            (ft, fs) => CreateEx9(ft),
+        //            (ft, fs) => ExportEx9Entries().Wait(),
+        //            (x,y) => AssessEx9Entries(x),
+        //            (ft, fs) => ImportSalesEntries(),
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "OPS",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //            (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "ADJ",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //            (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "DIS",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //            (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "RECON",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //            (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId)
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "XLSX",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //            (ft, fs) => Xlsx2csv(fs, ft.FileTypeMappings)
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "FIX",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //            (ft, fs) => FixCsv(fs, ft.FileTypeMappings)
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "Info",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //             (ft, fs) =>  CreatePOEntries().Wait(),
+        //             (ft, fs) =>  ExportPOEntries().Wait(),
+        //            //(x,y) => AssessEntry(x),
+        //            (ft, fs) => EmailPOEntries(ft.Contacts),
+        //        }
+        //    },
+        //    new FileAction
+        //    {
+        //        Filetype = "PDF",
+        //        Actions = new List<Action<FileTypes, FileInfo[]>>
+        //        {
+        //             (ft, fs) =>  CreatePOEntries().Wait(),
+        //             (ft, fs) =>  ExportPOEntries().Wait(),
+        //            //(x,y) => AssessEntry(x),
+        //            (ft, fs) => EmailPOEntries(ft.Contacts),
+        //        }
 
-            }
-        };
+        //    }
+        //};
 
         private static void EmailPOEntries(List<Contacts> contacts)
         {
@@ -186,7 +201,7 @@ namespace AutoBot
             }
         }
 
-        private static void DownloadFiles()
+        private static void DownloadSalesFiles()
         {
             try
 
@@ -735,7 +750,8 @@ namespace AutoBot
 
                     foreach (var appSetting in ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
-                        .Include("FileTypes.Contacts")
+                        .Include("FileTypes.FileTypeContacts.Contacts")
+                        .Include("FileTypes.FileTypeActions.Actions")
                         .Include(x => x.EmailMapping)
 
                         .Include("FileTypes.FileTypeMappings").ToList())
@@ -877,7 +893,7 @@ namespace AutoBot
 
 
 
-                                fileActions.Where(x => x.Filetype == fileType.Type).SelectMany(x => x.Actions).ToList()
+                                fileType.FileTypeActions.OrderBy(x => x.Priority).Select(x => fileActions[x.Actions.Name]).ToList()
                                     .ForEach(x =>
                                         x.Invoke(fileType,
                                             csvFiles)); //.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
@@ -894,7 +910,7 @@ namespace AutoBot
                                 CurrentSalesInfo().Item1.ToString("MMMM yyyy"));
                             var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                                 .Where(x => Regex.IsMatch(x.FullName, fileType.FilePattern)).ToArray();
-                            fileActions.Where(x => x.Filetype == fileType.Type).SelectMany(x => x.Actions).ToList()
+                            fileType.FileTypeActions.OrderBy(x => x.Priority).Select(x => fileActions[x.Actions.Name]).ToList()
                                 .ForEach(x =>
                                     x.Invoke(fileType,
                                         csvFiles)); //.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
@@ -1133,13 +1149,7 @@ namespace AutoBot
 
         }
 
-        private static void FixCsv(FileInfo[] files, List<FileTypeMappings> mappings)
-        {
-            foreach (var file in files)
-            {
-                FixCsv(file,mappings);
-            }
-        }
+      
 
         private static DataTable CSV2DataTable(FileInfo file)
         {
@@ -1187,10 +1197,4 @@ namespace AutoBot
         }
     }
 
-    internal class ToDoEx9
-    {
-        public string ItemNumber { get; set; }
-        
-
-    }
 }

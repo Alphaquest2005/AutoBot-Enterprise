@@ -233,10 +233,10 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "FileTypes":
+                            case "FileTypeContacts":
                                 return
                                     await
-                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "Contacts", "SelectMany", includesLst)
+                                        GetWhere<FileTypeContacts>(dbContext, exp, itm.Value, "Contacts", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -733,8 +733,8 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "FileTypes":
-                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "Contacts", "SelectMany")
+                            case "FileTypeContacts":
+                                return await CountWhere<FileTypeContacts>(dbContext, exp, itm.Value, "Contacts", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -841,10 +841,10 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "FileTypes":
+                            case "FileTypeContacts":
                                 return
                                     await
-                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "Contacts", "SelectMany")
+                                        LoadRangeWhere<FileTypeContacts>(startIndex, count, dbContext, exp, itm.Value, "Contacts", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1051,36 +1051,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<Contacts>> GetContactsByFileTypeId(string FileTypeId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(FileTypeId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<Contacts> entities = await set//dbContext.Contacts
-                                      .AsNoTracking()
-                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1133,8 +1104,8 @@ namespace CoreEntities.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "FileTypes":
-                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "Contacts", field, "SelectMany")
+                            case "FileTypeContacts":
+                                return await SumWhere<FileTypeContacts>(dbContext, exp, itm.Value, "Contacts", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

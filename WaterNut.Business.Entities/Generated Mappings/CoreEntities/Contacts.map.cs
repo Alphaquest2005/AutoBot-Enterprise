@@ -16,9 +16,8 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Role).HasColumnName("Role").IsRequired().HasMaxLength(50);
               this.Property(t => t.EmailAddress).HasColumnName("EmailAddress").IsRequired().IsUnicode(false).HasMaxLength(255);
-              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(255);
-              this.HasRequired(t => t.FileTypes).WithMany(t =>(ICollection<Contacts>) t.Contacts).HasForeignKey(d => d.FileTypeId);
+              this.HasMany(t => t.FileTypeContacts).WithRequired(t => (Contacts)t.Contacts);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

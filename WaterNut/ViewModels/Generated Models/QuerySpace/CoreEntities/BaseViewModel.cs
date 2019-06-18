@@ -53,6 +53,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                  if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
  
 
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentActionsIDChanged, OnCurrentActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentApplicationSettingsIDChanged, OnCurrentApplicationSettingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentIDChanged, OnCurrentAsycudaDocumentIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemIDChanged, OnCurrentAsycudaDocumentItemIDChanged);
@@ -65,6 +66,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentDocument_TypeIDChanged, OnCurrentDocument_TypeIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingIDChanged, OnCurrentEmailMappingIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, OnCurrentEntryPreviousItemsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeActionsIDChanged, OnCurrentFileTypeActionsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeContactsIDChanged, OnCurrentFileTypeContactsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingsIDChanged, OnCurrentFileTypeMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypesIDChanged, OnCurrentFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInfoMappingIDChanged, OnCurrentInfoMappingIDChanged);
@@ -81,6 +84,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
        
 
 			// Recieve messages for Current Object Changed
+                        RegisterToReceiveMessages<Actions>(MessageToken.CurrentActionsChanged, OnCurrentActionsChanged);
                         RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
                         RegisterToReceiveMessages<AsycudaDocument>(MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItem>(MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
@@ -93,6 +97,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
                         RegisterToReceiveMessages<EmailMapping>(MessageToken.CurrentEmailMappingChanged, OnCurrentEmailMappingChanged);
                         RegisterToReceiveMessages<EntryPreviousItems>(MessageToken.CurrentEntryPreviousItemsChanged, OnCurrentEntryPreviousItemsChanged);
+                        RegisterToReceiveMessages<FileTypeActions>(MessageToken.CurrentFileTypeActionsChanged, OnCurrentFileTypeActionsChanged);
+                        RegisterToReceiveMessages<FileTypeContacts>(MessageToken.CurrentFileTypeContactsChanged, OnCurrentFileTypeContactsChanged);
                         RegisterToReceiveMessages<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, OnCurrentFileTypeMappingsChanged);
                         RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
                         RegisterToReceiveMessages<InfoMapping>(MessageToken.CurrentInfoMappingChanged, OnCurrentInfoMappingChanged);
@@ -125,6 +131,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
 
+                        internal async void OnCurrentActionsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ActionsRepository ctx = new ActionsRepository())
+                            {
+                                CurrentActions = await ctx.GetActions(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentActions);
+                        }
+
+                        private  string _currentActionsID = "";
+                        public string CurrentActionsID
+                        {
+                            get
+                            {
+                                return _currentActionsID;
+                            }
+                            set
+                            {
+                                if (_currentActionsID != value)
+                                {
+                                    _currentActionsID = value;
+                                    if (!string.IsNullOrEmpty(_currentActionsID)) BeginSendMessage(MessageToken.CurrentActionsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentActionsIDChanged, _currentActionsID));
+                                    NotifyPropertyChanged(x => this.CurrentActionsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentApplicationSettingsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (ApplicationSettingsRepository ctx = new ApplicationSettingsRepository())
@@ -446,6 +479,60 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentEntryPreviousItemsID)) BeginSendMessage(MessageToken.CurrentEntryPreviousItemsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, _currentEntryPreviousItemsID));
                                     NotifyPropertyChanged(x => this.CurrentEntryPreviousItemsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentFileTypeActionsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (FileTypeActionsRepository ctx = new FileTypeActionsRepository())
+                            {
+                                CurrentFileTypeActions = await ctx.GetFileTypeActions(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentFileTypeActions);
+                        }
+
+                        private  string _currentFileTypeActionsID = "";
+                        public string CurrentFileTypeActionsID
+                        {
+                            get
+                            {
+                                return _currentFileTypeActionsID;
+                            }
+                            set
+                            {
+                                if (_currentFileTypeActionsID != value)
+                                {
+                                    _currentFileTypeActionsID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileTypeActionsID)) BeginSendMessage(MessageToken.CurrentFileTypeActionsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileTypeActionsIDChanged, _currentFileTypeActionsID));
+                                    NotifyPropertyChanged(x => this.CurrentFileTypeActionsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentFileTypeContactsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (FileTypeContactsRepository ctx = new FileTypeContactsRepository())
+                            {
+                                CurrentFileTypeContacts = await ctx.GetFileTypeContacts(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentFileTypeContacts);
+                        }
+
+                        private  string _currentFileTypeContactsID = "";
+                        public string CurrentFileTypeContactsID
+                        {
+                            get
+                            {
+                                return _currentFileTypeContactsID;
+                            }
+                            set
+                            {
+                                if (_currentFileTypeContactsID != value)
+                                {
+                                    _currentFileTypeContactsID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileTypeContactsID)) BeginSendMessage(MessageToken.CurrentFileTypeContactsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileTypeContactsIDChanged, _currentFileTypeContactsID));
+                                    NotifyPropertyChanged(x => this.CurrentFileTypeContactsID);  
                                 }
                             }
                         }
@@ -801,6 +888,57 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                             }
                         }
  
+
+
+
+                     
+       
+
+        internal void OnCurrentActionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Actions> e)
+        {
+            //CurrentActions = e.Data;
+            NotifyPropertyChanged(m => this.CurrentActions);
+        }
+
+        private  Actions _currentActions;
+        public Actions CurrentActions
+        {
+            get
+            {
+                return _currentActions;
+            }
+            set
+            {
+                if (_currentActions != value)
+                {
+                    _currentActions = value;
+                    BeginSendMessage(MessageToken.CurrentActionsChanged,
+                                                     new NotificationEventArgs<Actions>(MessageToken.CurrentActionsChanged, _currentActions)); 
+                    NotifyPropertyChanged(x => this.CurrentActions);    
+                    // all current navigation properties = null
+                 CurrentFileTypeActions = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<Actions> _vcurrentActions;
+        public VirtualListItem<Actions> VCurrentActions
+        {
+            get
+            {
+                return _vcurrentActions;
+            }
+            set
+            {
+                if (_vcurrentActions != value)
+                {
+                    _vcurrentActions = value;
+					if(_vcurrentActions != null) CurrentActions = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentActions);                    
+                }
+            }
+        }
 
 
 
@@ -1196,6 +1334,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                                      new NotificationEventArgs<Contacts>(MessageToken.CurrentContactsChanged, _currentContacts)); 
                     NotifyPropertyChanged(x => this.CurrentContacts);    
                     // all current navigation properties = null
+                 CurrentFileTypeContacts = null;
    
                 }
             }
@@ -1425,6 +1564,106 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentFileTypeActionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypeActions> e)
+        {
+            //CurrentFileTypeActions = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileTypeActions);
+        }
+
+        private  FileTypeActions _currentFileTypeActions;
+        public FileTypeActions CurrentFileTypeActions
+        {
+            get
+            {
+                return _currentFileTypeActions;
+            }
+            set
+            {
+                if (_currentFileTypeActions != value)
+                {
+                    _currentFileTypeActions = value;
+                    BeginSendMessage(MessageToken.CurrentFileTypeActionsChanged,
+                                                     new NotificationEventArgs<FileTypeActions>(MessageToken.CurrentFileTypeActionsChanged, _currentFileTypeActions)); 
+                    NotifyPropertyChanged(x => this.CurrentFileTypeActions);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<FileTypeActions> _vcurrentFileTypeActions;
+        public VirtualListItem<FileTypeActions> VCurrentFileTypeActions
+        {
+            get
+            {
+                return _vcurrentFileTypeActions;
+            }
+            set
+            {
+                if (_vcurrentFileTypeActions != value)
+                {
+                    _vcurrentFileTypeActions = value;
+					if(_vcurrentFileTypeActions != null) CurrentFileTypeActions = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileTypeActions);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentFileTypeContactsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypeContacts> e)
+        {
+            //CurrentFileTypeContacts = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileTypeContacts);
+        }
+
+        private  FileTypeContacts _currentFileTypeContacts;
+        public FileTypeContacts CurrentFileTypeContacts
+        {
+            get
+            {
+                return _currentFileTypeContacts;
+            }
+            set
+            {
+                if (_currentFileTypeContacts != value)
+                {
+                    _currentFileTypeContacts = value;
+                    BeginSendMessage(MessageToken.CurrentFileTypeContactsChanged,
+                                                     new NotificationEventArgs<FileTypeContacts>(MessageToken.CurrentFileTypeContactsChanged, _currentFileTypeContacts)); 
+                    NotifyPropertyChanged(x => this.CurrentFileTypeContacts);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<FileTypeContacts> _vcurrentFileTypeContacts;
+        public VirtualListItem<FileTypeContacts> VCurrentFileTypeContacts
+        {
+            get
+            {
+                return _vcurrentFileTypeContacts;
+            }
+            set
+            {
+                if (_vcurrentFileTypeContacts != value)
+                {
+                    _vcurrentFileTypeContacts = value;
+					if(_vcurrentFileTypeContacts != null) CurrentFileTypeContacts = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileTypeContacts);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentFileTypeMappingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypeMappings> e)
         {
             //CurrentFileTypeMappings = e.Data;
@@ -1498,7 +1737,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyPropertyChanged(x => this.CurrentFileTypes);    
                     // all current navigation properties = null
                  CurrentFileTypeMappings = null;
-                 CurrentContacts = null;
+                 CurrentFileTypeActions = null;
+                 CurrentFileTypeContacts = null;
    
                 }
             }

@@ -132,6 +132,7 @@
     <Compile Include="Generated Repositories\AllocationQS\AsycudaSalesAllocationsExRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntitiesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ApplicationSettingsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentItemEntryDataDetailsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentItemRepository.cs" />
@@ -144,6 +145,8 @@
     <Compile Include="Generated Repositories\CoreEntities\Document_TypeRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailMappingRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\FileTypeActionsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\FileTypeContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InfoMappingRepository.cs" />

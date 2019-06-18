@@ -61,19 +61,6 @@ namespace CoreEntities.Client.DTO
         private string _EmailAddress;
 
         [DataMember]
-        public int FileTypeId
-		{ 
-		    get { return _FileTypeId; }
-			set
-			{
-			    if (value == _FileTypeId) return;
-				_FileTypeId = value;
-				NotifyPropertyChanged();//m => this.FileTypeId
-			}
-		}
-        private int _FileTypeId;
-
-        [DataMember]
         public string Name
 		{ 
 		    get { return _Name; }
@@ -88,20 +75,17 @@ namespace CoreEntities.Client.DTO
 
        
         [DataMember]
-        public FileTypes FileTypes
+        public ChangeTrackingCollection<FileTypeContacts> FileTypeContacts
 		{
-		    get { return _FileTypes; }
+		    get { return _FileTypeContacts; }
 			set
 			{
-			    if (value == _FileTypes) return;
-				_FileTypes = value;
-                FileTypesChangeTracker = _FileTypes == null ? null
-                    : new ChangeTrackingCollection<FileTypes> { _FileTypes };
-				NotifyPropertyChanged();//m => this.FileTypes
+			    if (Equals(value, _FileTypeContacts)) return;
+				_FileTypeContacts = value;
+				NotifyPropertyChanged();//m => this.FileTypeContacts
 			}
 		}
-        private FileTypes _FileTypes;
-        private ChangeTrackingCollection<FileTypes> FileTypesChangeTracker { get; set; }
+        private ChangeTrackingCollection<FileTypeContacts> _FileTypeContacts = new ChangeTrackingCollection<FileTypeContacts>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

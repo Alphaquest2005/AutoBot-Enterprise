@@ -19,6 +19,11 @@ namespace CoreEntities.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Contacts : BaseEntity<Contacts>, ITrackable 
     {
+        partial void AutoGenStartUp() //Contacts()
+        {
+            this.FileTypeContacts = new List<FileTypeContacts>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -65,21 +70,6 @@ namespace CoreEntities.Business.Entities
         }
         string _emailaddress;
         [DataMember]
-        public int FileTypeId 
-        {
-            get
-            {
-                return _filetypeid;
-            }
-            set
-            {
-                _filetypeid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _filetypeid;
-        [DataMember]
         public string Name 
         {
             get
@@ -95,7 +85,7 @@ namespace CoreEntities.Business.Entities
         }
         string _name;
         [DataMember]
-        public FileTypes FileTypes { get; set; }
+        public List<FileTypeContacts> FileTypeContacts { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

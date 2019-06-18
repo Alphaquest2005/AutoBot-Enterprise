@@ -10,6 +10,12 @@ namespace WaterNut.QuerySpace.CoreEntities
     public partial class MessageToken
     {
 
+			public const string ActionsFilterExpressionChanged = "ActionsFilterExpressionChanged";
+			public const string SelectedActionsChanged = "SelectedActionsChanged";
+            public const string ActionsChanged = "ActionsChanged";
+			public const string ActionsDeleted = "ActionsDeleted";
+			public const string ActionsCreated = "ActionsCreated";
+			public const string ActionsUpdated = "ActionsUpdated";
 			public const string ApplicationSettingsFilterExpressionChanged = "ApplicationSettingsFilterExpressionChanged";
 			public const string SelectedApplicationSettingsChanged = "SelectedApplicationSettingsChanged";
             public const string ApplicationSettingsChanged = "ApplicationSettingsChanged";
@@ -82,6 +88,18 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string EntryPreviousItemsDeleted = "EntryPreviousItemsDeleted";
 			public const string EntryPreviousItemsCreated = "EntryPreviousItemsCreated";
 			public const string EntryPreviousItemsUpdated = "EntryPreviousItemsUpdated";
+			public const string FileTypeActionsFilterExpressionChanged = "FileTypeActionsFilterExpressionChanged";
+			public const string SelectedFileTypeActionsChanged = "SelectedFileTypeActionsChanged";
+            public const string FileTypeActionsChanged = "FileTypeActionsChanged";
+			public const string FileTypeActionsDeleted = "FileTypeActionsDeleted";
+			public const string FileTypeActionsCreated = "FileTypeActionsCreated";
+			public const string FileTypeActionsUpdated = "FileTypeActionsUpdated";
+			public const string FileTypeContactsFilterExpressionChanged = "FileTypeContactsFilterExpressionChanged";
+			public const string SelectedFileTypeContactsChanged = "SelectedFileTypeContactsChanged";
+            public const string FileTypeContactsChanged = "FileTypeContactsChanged";
+			public const string FileTypeContactsDeleted = "FileTypeContactsDeleted";
+			public const string FileTypeContactsCreated = "FileTypeContactsCreated";
+			public const string FileTypeContactsUpdated = "FileTypeContactsUpdated";
 			public const string FileTypeMappingsFilterExpressionChanged = "FileTypeMappingsFilterExpressionChanged";
 			public const string SelectedFileTypeMappingsChanged = "SelectedFileTypeMappingsChanged";
             public const string FileTypeMappingsChanged = "FileTypeMappingsChanged";
@@ -162,6 +180,7 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string xcuda_Supplementary_unitUpdated = "xcuda_Supplementary_unitUpdated";
   
 
+          // public const string ActionsChanged = "ActionsChanged";
           // public const string ApplicationSettingsChanged = "ApplicationSettingsChanged";
           // public const string AsycudaDocumentChanged = "AsycudaDocumentChanged";
           // public const string AsycudaDocumentItemChanged = "AsycudaDocumentItemChanged";
@@ -174,6 +193,8 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string Document_TypeChanged = "Document_TypeChanged";
           // public const string EmailMappingChanged = "EmailMappingChanged";
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
+          // public const string FileTypeActionsChanged = "FileTypeActionsChanged";
+          // public const string FileTypeContactsChanged = "FileTypeContactsChanged";
           // public const string FileTypeMappingsChanged = "FileTypeMappingsChanged";
           // public const string FileTypesChanged = "FileTypesChanged";
           // public const string InfoMappingChanged = "InfoMappingChanged";
@@ -189,6 +210,8 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string xcuda_Supplementary_unitChanged = "xcuda_Supplementary_unitChanged";
  
 
+   
+           public const string CurrentActionsChanged = "CurrentActionsChanged";
    
            public const string CurrentApplicationSettingsChanged = "CurrentApplicationSettingsChanged";
    
@@ -213,6 +236,10 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentEmailMappingChanged = "CurrentEmailMappingChanged";
    
            public const string CurrentEntryPreviousItemsChanged = "CurrentEntryPreviousItemsChanged";
+   
+           public const string CurrentFileTypeActionsChanged = "CurrentFileTypeActionsChanged";
+   
+           public const string CurrentFileTypeContactsChanged = "CurrentFileTypeContactsChanged";
    
            public const string CurrentFileTypeMappingsChanged = "CurrentFileTypeMappingsChanged";
    
@@ -242,6 +269,8 @@ namespace WaterNut.QuerySpace.CoreEntities
     
 
    
+           public const string CurrentActionsIDChanged = "OnCurrentActionsIDChanged";
+   
            public const string CurrentApplicationSettingsIDChanged = "OnCurrentApplicationSettingsIDChanged";
    
            public const string CurrentAsycudaDocumentIDChanged = "OnCurrentAsycudaDocumentIDChanged";
@@ -265,6 +294,10 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentEmailMappingIDChanged = "OnCurrentEmailMappingIDChanged";
    
            public const string CurrentEntryPreviousItemsIDChanged = "OnCurrentEntryPreviousItemsIDChanged";
+   
+           public const string CurrentFileTypeActionsIDChanged = "OnCurrentFileTypeActionsIDChanged";
+   
+           public const string CurrentFileTypeContactsIDChanged = "OnCurrentFileTypeContactsIDChanged";
    
            public const string CurrentFileTypeMappingsIDChanged = "OnCurrentFileTypeMappingsIDChanged";
    

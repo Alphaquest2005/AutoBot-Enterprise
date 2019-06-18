@@ -125,6 +125,7 @@
     <Compile Include="Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\Actions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocument.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs" />
@@ -137,6 +138,8 @@
     <Compile Include="Generated Client Entities\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\InfoMapping.cs" />
@@ -200,6 +203,7 @@
     <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocument.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs" />
@@ -212,6 +216,8 @@
     <Compile Include="Generated Constructors Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InfoMapping.cs" />
@@ -275,6 +281,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs" />
@@ -287,6 +294,8 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
@@ -354,6 +363,7 @@
     <Compile Include="Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs" />
@@ -366,6 +376,8 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\Document_Type.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeActions.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\InfoMapping.cs" />

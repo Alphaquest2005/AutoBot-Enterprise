@@ -236,6 +236,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs
@@ -248,6 +249,8 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeActions.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\InfoMapping.cs
@@ -472,6 +475,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Actions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
@@ -484,6 +488,8 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InfoMapping.map.cs
@@ -722,6 +728,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs
@@ -734,6 +741,8 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\InfoMapping.cs
@@ -952,6 +961,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
@@ -964,6 +974,8 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\InfoMapping.cs
@@ -1182,6 +1194,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs
@@ -1194,6 +1207,8 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\InfoMapping.cs
@@ -1412,6 +1427,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
@@ -1424,6 +1440,8 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs
@@ -1611,6 +1629,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Actions.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
@@ -1623,6 +1642,8 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypes.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\InfoMapping.cs
@@ -1686,6 +1707,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
@@ -1698,6 +1720,8 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypes.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\InfoMapping.cs
@@ -1767,6 +1791,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
@@ -1779,6 +1804,8 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs
@@ -1842,6 +1869,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
@@ -1854,6 +1882,8 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\InfoMapping.cs
@@ -1917,6 +1947,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
@@ -1929,6 +1960,8 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\InfoMapping.cs
@@ -1992,6 +2025,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
@@ -2004,6 +2038,8 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs
@@ -2067,6 +2103,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
@@ -2079,6 +2116,8 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Document_Type.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeActions.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypes.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\InfoMapping.cs
@@ -2212,6 +2251,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AdjustmentShortAllocation.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAllocationsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Actions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
@@ -2224,6 +2264,8 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Document_Type.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeMappings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\InfoMapping.map.cs
@@ -2448,6 +2490,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQS\AsycudaSalesAllocationsExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQSRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ActionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ApplicationSettingsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentItemEntryDataDetailsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentItemRepository.cs
@@ -2460,6 +2503,8 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\Document_TypeRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailMappingRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeActionsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeContactsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeMappingsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\InfoMappingRepository.cs
@@ -2541,6 +2586,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\BaseViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\MessageToken.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\AllocationQS\SummaryListViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ActionsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsSummaryListViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs
@@ -2555,6 +2601,8 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\Document_TypeViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeActionsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeContactsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeMappingsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\InfoMappingViewModel.cs
@@ -2618,6 +2666,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAllocationsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ApplicationSettingsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs
@@ -2630,6 +2679,8 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\Document_TypeTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeActionsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeContactsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeMappingsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\InfoMappingTotals.cs
@@ -2683,6 +2734,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAllocationsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ApplicationSettingsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs
@@ -2695,6 +2747,8 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\Document_TypeVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeActionsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeContactsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeMappingsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\InfoMappingVirturalListLoader.cs
@@ -2790,6 +2844,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAdjustmentShortAllocationService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IActionsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IApplicationSettingsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentItemService.cs
@@ -2802,6 +2857,8 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IDocument_TypeService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEntryPreviousItemsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeActionsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeContactsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeMappingsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IInfoMappingService.cs
@@ -3020,6 +3077,7 @@
 ..\WaterNut.Business.Services\Services\AllocationQS\AdjustmentShortAllocationService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AsycudaSalesAllocationsExService.cs
 ..\WaterNut.Business.Services\Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\ActionsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ApplicationSettingsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentItemService.cs
@@ -3032,6 +3090,8 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\Document_TypeService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailMappingService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EntryPreviousItemsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\FileTypeActionsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\FileTypeContactsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypeMappingsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\InfoMappingService.cs
@@ -3213,6 +3273,7 @@
 ..\WaterNut.Client.Contracts\AllocationQS\IAdjustmentShortAllocationService.cs
 ..\WaterNut.Client.Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs
 ..\WaterNut.Client.Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IActionsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IApplicationSettingsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentItemService.cs
@@ -3225,6 +3286,8 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IDocument_TypeService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEntryPreviousItemsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IFileTypeActionsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IFileTypeContactsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypeMappingsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IInfoMappingService.cs
@@ -3288,6 +3351,7 @@
 ..\WaterNut.Client.Services\AllocationQS\AdjustmentShortAllocationClient.cs
 ..\WaterNut.Client.Services\AllocationQS\AsycudaSalesAllocationsExClient.cs
 ..\WaterNut.Client.Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExClient.cs
+..\WaterNut.Client.Services\CoreEntities\ActionsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ApplicationSettingsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentItemClient.cs
@@ -3300,6 +3364,8 @@
 ..\WaterNut.Client.Services\CoreEntities\Document_TypeClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EmailMappingClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EntryPreviousItemsClient.cs
+..\WaterNut.Client.Services\CoreEntities\FileTypeActionsClient.cs
+..\WaterNut.Client.Services\CoreEntities\FileTypeContactsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypeMappingsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\InfoMappingClient.cs
