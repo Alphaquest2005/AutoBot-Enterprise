@@ -50,12 +50,12 @@ namespace AutoBot
                 {
                     //(ft, fs) => BaseDataModel.Instance.ImportDocuments(ft.AsycudaDocumentSetId,
                     //    fs.Select(x => x.FullName).ToList(), true, true, false, false, true).Wait(),
-                    (ft, fs) => ImportEntries(CurrentSalesInfo().Item3.AsycudaDocumentSetId),
+                    (ft, fs) => ImportSalesEntries(),
                     (x,y) => AllocateSales(),
                     (ft, fs) => CreateEx9(ft),
                     (ft, fs) => ExportEx9Entries().Wait(),
                     (x,y) => AssessEx9Entries(x),
-                    (ft, fs) => ImportEntries(CurrentSalesInfo().Item3.AsycudaDocumentSetId),
+                    (ft, fs) => ImportSalesEntries(),
                 }
             },
             new FileAction
@@ -78,12 +78,12 @@ namespace AutoBot
 
                     (ft, fs) => SaveCsv(fs, ft.Type, ft.AsycudaDocumentSetId),
                     (x, y) => DownloadFiles(),
-                    (ft, fs) => ImportEntries(CurrentSalesInfo().Item3.AsycudaDocumentSetId),
+                    (ft, fs) => ImportSalesEntries(),
                     (x,y) => AllocateSales(),
                     (ft, fs) => CreateEx9(ft),
                     (ft, fs) => ExportEx9Entries().Wait(),
                     (x,y) => AssessEx9Entries(x),
-                    (ft, fs) => ImportEntries(CurrentSalesInfo().Item3.AsycudaDocumentSetId),
+                    (ft, fs) => ImportSalesEntries(),
                 }
             },
             new FileAction
@@ -297,11 +297,12 @@ namespace AutoBot
             }
         }
 
-        private static void ImportEntries(int docSetId)
+        private static void ImportSalesEntries()
         {
             Console.WriteLine("Import Entries");
             using (var ctx = new CoreEntitiesContext())
             {
+                var docSetId = CurrentSalesInfo().Item3.AsycudaDocumentSetId;
                 var ft = ctx.FileTypes.FirstOrDefault(x => x.Type == "XML" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if(ft == null) return;
                 var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
