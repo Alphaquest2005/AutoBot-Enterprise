@@ -366,15 +366,13 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 using (var ctx = new AllocationDSContext())
                 {
                     ctx.Database.CommandTimeout = 0;
-                    var allallocations = ctx.AsycudaSalesAllocations.AsNoTracking().Where(x => alst.Contains(x.AllocationId))
-                        .Select(x => x.EntryDataDetails.ItemNumber).Distinct();
+                    //var allallocations = ctx.AsycudaSalesAllocations.AsNoTracking().Where(x => alst.Contains(x.AllocationId))
+                    //    .Select(x => x.EntryDataDetails.ItemNumber).Distinct();
 
-                    var resHistoric = ctx.ItemSalesPiSummary.AsNoTracking()
+                    var resHistoric1 = ctx.ItemSalesPiSummary.AsNoTracking()
                         //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
                         .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        .Where(x => allallocations
-                            .Contains(x
-                                .ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
+                        //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
                         .Where(x => x.EntryDataDate <= endDate)
                         .Where(x => x.PreviousItem_Id != 0)
                         .Where(x => x.DutyFreePaid == dfp)
@@ -389,8 +387,9 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                             ItemNumber = g.ItemNumber,
                             DutyFreePaid = g.DutyFreePaid
 
-                        })
-                        .GroupJoin(ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
+                        }).ToList();
+
+                       var resHistoric = resHistoric1.GroupJoin(ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
                             g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
                             p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new {g, p})
                         .Select(x => new ItemSalesPiSummary

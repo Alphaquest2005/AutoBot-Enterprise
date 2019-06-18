@@ -141,7 +141,8 @@ namespace AutoBot
                 {
                      (ft, fs) =>  CreatePOEntries().Wait(),
                      (ft, fs) =>  ExportPOEntries().Wait(),
-                    (x,y) => AssessEntry(x),
+                    //(x,y) => AssessEntry(x),
+                    (ft, fs) => EmailPOEntries(ft.Contacts),
                 }
             },
             new FileAction
@@ -151,7 +152,8 @@ namespace AutoBot
                 {
                      (ft, fs) =>  CreatePOEntries().Wait(),
                      (ft, fs) =>  ExportPOEntries().Wait(),
-                    (x,y) => AssessEntry(x),
+                    //(x,y) => AssessEntry(x),
+                    (ft, fs) => EmailPOEntries(ft.Contacts),
                 }
 
             }
@@ -160,23 +162,28 @@ namespace AutoBot
         private static void EmailPOEntries(List<Contacts> contacts)
         {
             if (!contacts.Any()) return;
-            var poInfo = CurrentPOInfo();
-            if(poInfo.Item1 == null) return;
-            var reference = poInfo.Item1.Declarant_Reference_Number;
-            var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, reference);
-            var files = Directory.GetFiles(directory, "*.xml");
-            var emailres = new FileInfo(Path.Combine(directory, "EmailResults.txt"));
-            var instructions = new FileInfo(Path.Combine(directory, "Instructions.txt"));
-            if (!instructions.Exists) return;
-            
-            if (emailres.Exists )
+            var lst = CurrentPOInfo();
+            foreach (var poInfo in lst)
             {
-                var eRes = File.ReadAllLines(emailres.FullName);
-                var insts = File.ReadAllLines(instructions.FullName);
-                files = files.ToList().Where(x => insts.Contains(x) && !eRes.Contains(x)).ToArray();
+                
+                if (poInfo.Item1 == null) return;
+                var reference = poInfo.Item1.Declarant_Reference_Number;
+                var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, reference);
+                var files = Directory.GetFiles(directory, "*.xml");
+                var emailres = new FileInfo(Path.Combine(directory, "EmailResults.txt"));
+                var instructions = new FileInfo(Path.Combine(directory, "Instructions.txt"));
+                if (!instructions.Exists) return;
+                Console.WriteLine("Emailing Po Entries");
+                if (emailres.Exists)
+                {
+                    var eRes = File.ReadAllLines(emailres.FullName);
+                    var insts = File.ReadAllLines(instructions.FullName);
+                    files = files.ToList().Where(x => insts.Contains(x) && !eRes.Contains(x)).ToArray();
+                }
+                if (files.Length > 0)
+                    EmailDownloader.EmailDownloader.SendEmail(client, directory, $"Entries for {reference}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", files);
+
             }
-            if(files.Length > 0)
-                EmailDownloader.EmailDownloader.SendEmail(client, directory , $"Entries for {reference}", contacts.Select(x => x.EmailAddress).ToArray(),"Please see attached...", files);
         }
 
         private static void DownloadFiles()
@@ -267,8 +274,9 @@ namespace AutoBot
             lcont = 0;
 
             
-            if (File.Exists(instrFile) && File.Exists(resultsFile))
+            if (File.Exists(instrFile) )
             {
+                if (!File.Exists(resultsFile)) return false;
                 var lines = File.ReadAllLines(instrFile);
                 var res = File.ReadAllLines(resultsFile);
                 if (res.Length == 0)
@@ -375,23 +383,27 @@ namespace AutoBot
             return new Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string>(startDate,endDate, docSet, dirPath);
         }
 
-        private static Tuple<AsycudaDocumentSetEx, string> CurrentPOInfo()
+        private static List<Tuple<AsycudaDocumentSetEx, string>> CurrentPOInfo()
         {
-            
-            var poDocSet = new CoreEntitiesContext().TODO_PODocSet.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-            if (poDocSet != null)
+            using (var ctx = new CoreEntitiesContext())
             {
-                var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                    x.AsycudaDocumentSetId == poDocSet.AsycudaDocumentSetId);
-                if (docSet != null)
+                var poDocSet = ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                if (poDocSet != null)
                 {
-                    var dirPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        docSet.Declarant_Reference_Number);
-                    return new Tuple<AsycudaDocumentSetEx, string>(docSet, dirPath);
-                }
+                    var docSet = ctx.AsycudaDocumentSetExs.Where(x =>
+                         poDocSet.Any(z => z.AsycudaDocumentSetId == x.AsycudaDocumentSetId));
+                    var lst = new List<Tuple<AsycudaDocumentSetEx, string>>();
+                    foreach (var item in docSet)
+                    {
 
+                        var dirPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            item.Declarant_Reference_Number);
+                        lst.Add(new Tuple<AsycudaDocumentSetEx, string>(item, dirPath));
+                    }
+                    return lst;
+                }
+                return new List<Tuple<AsycudaDocumentSetEx, string>>();
             }
-            return new Tuple<AsycudaDocumentSetEx, string>(null, null);
         }
 
         private static void AllocateSales()
@@ -428,16 +440,21 @@ namespace AutoBot
                         .ToList();
                     foreach (var docSetId in res)
                     {
+                        //BaseDataModel.Instance.AddToEntry(
+                        //        docSetId.Entrylst.Where(x => x.IsClassified == true).Select(x => x.EntryDataDetailsId),
+                        //        docSetId.DocSetId,
+                        //        BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true).Wait();
+                        //BaseDataModel.Instance.AddToEntry(
+                        //        docSetId.Entrylst.Where(x => x.IsClassified == false).Select(x => x.EntryDataDetailsId),
+                        //        docSetId.DocSetId,
+                        //        BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true)
+                        //    .Wait();
+
                         BaseDataModel.Instance.AddToEntry(
-                                docSetId.Entrylst.Where(x => x.IsClassified == true).Select(x => x.EntryDataDetailsId),
-                                docSetId.DocSetId,
-                                BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true).Wait();
-                        BaseDataModel.Instance.AddToEntry(
-                                docSetId.Entrylst.Where(x => x.IsClassified == false).Select(x => x.EntryDataDetailsId),
-                                docSetId.DocSetId,
-                                BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true)
-                            .Wait();
-                        
+                               docSetId.Entrylst.Select(x => x.EntryDataDetailsId),
+                               docSetId.DocSetId,
+                               BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true).Wait();
+
                     }
 
                 }
@@ -472,7 +489,7 @@ namespace AutoBot
                     {
                         BaseDataModel.Instance.ExportDocSet(docSetId.DocSet.AsycudaDocumentSetId.Value,
                             Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                docSetId.DocSet.ReferenceNumber), false).Wait();
+                                docSetId.DocSet.ReferenceNumber), true).Wait();
                     }
 
                 }
@@ -886,7 +903,7 @@ namespace AutoBot
                     }
                 }
 
-                Application.SetSuspendState(PowerState.Suspend, true, true);
+               // Application.SetSuspendState(PowerState.Suspend, true, true);
             }
             catch (Exception e)
             {
