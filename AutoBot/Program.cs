@@ -56,7 +56,27 @@ namespace AutoBot
                 {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.FileTypeContacts.Select(x => x.Contacts).ToList()) },
                 {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles() },
                 {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft.FileTypeMappings) },
+                
+                {"CleanupEntries",(ft, fs) => CleanupEntries() },
             };
+
+        private static void CleanupEntries()
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.TODO_DocumentsToDelete
+                    .Where(x => x.ApplicationSettingsId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Select(x => x.ASYCUDA_Id).ToList();
+                foreach (var itm in lst)
+                {
+                    BaseDataModel.Instance.DeleteAsycudaDocument(itm).Wait();
+                }
+                
+            }
+        }
+
+
         //private static List<FileAction> fileActions => new List<FileAction>
         //{
         //    new FileAction
@@ -240,13 +260,15 @@ namespace AutoBot
                 x.DocReference, "Instructions.txt");
 
             var lcont = 0;
-                while (AssessComplete(instrFile, resultsFile, out lcont) == false)
-                {
-                    RunSiKuLi(x.AsycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                }
-           
+            while (AssessComplete(instrFile, resultsFile, out lcont) == false)
+            {
+                RunSiKuLi(x.AsycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                RunSiKuLi(CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+                CleanupEntries();
+            }
 
-            
+
+
         }
 
         private static bool ImportComplete(string directoryName, out int lcont)
