@@ -18,8 +18,8 @@
               this.Property(t => t.Kind_of_packages_name).HasColumnName("Kind_of_packages_name").HasMaxLength(20);
               this.Property(t => t.Packages_Id).HasColumnName("Packages_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Item_Id).HasColumnName("Item_Id");
-              this.Property(t => t.Marks1_of_packages).HasColumnName("Marks1_of_packages").HasMaxLength(20);
-              this.Property(t => t.Marks2_of_packages).HasColumnName("Marks2_of_packages").HasMaxLength(20);
+              this.Property(t => t.Marks1_of_packages).HasColumnName("Marks1_of_packages").HasMaxLength(40);
+              this.Property(t => t.Marks2_of_packages).HasColumnName("Marks2_of_packages").HasMaxLength(40);
               this.HasOptional(t => t.xcuda_Item).WithMany(t =>(ICollection<xcuda_Packages>) t.xcuda_Packages).HasForeignKey(d => d.Item_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
