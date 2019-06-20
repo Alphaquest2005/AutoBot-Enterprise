@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 // Filtering Each Field except IDs
 		public void ViewAll()
         {
-		vloader.FilterExpression = "All";
+			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
 
 
 

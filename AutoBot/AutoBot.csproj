@@ -112,6 +112,10 @@
       <Project>{0426f0e8-f84c-46d2-aa56-759eba752269}</Project>
       <Name>AsycudaWorld421</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
+      <Project>{0DD350C7-3CBE-4791-A9B5-332BF3F1B756}</Project>
+      <Name>Core.Common.Contracts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core.Common\Core.Common.Data\Core.Common.Data.csproj">
       <Project>{D6846386-8741-4619-BAE3-B0CFEDBF2597}</Project>
       <Name>Core.Common.Data</Name>

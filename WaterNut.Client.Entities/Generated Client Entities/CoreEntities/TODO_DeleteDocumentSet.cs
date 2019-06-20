@@ -74,6 +74,21 @@ public string Declarant_Reference_Number
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
+       
+public int ApplicationSettingsId
+		{ 
+		    get { return this.todo_deletedocumentset.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.todo_deletedocumentset.ApplicationSettingsId) return;
+				this.todo_deletedocumentset.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_DeleteDocumentSet> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_DeleteDocumentSet> ChangeTracker

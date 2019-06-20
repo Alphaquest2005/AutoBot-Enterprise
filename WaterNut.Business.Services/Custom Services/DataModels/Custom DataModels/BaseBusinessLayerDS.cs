@@ -2390,7 +2390,13 @@ namespace WaterNut.DataSpace
         #endregion
 
 
-        
+        public async Task DeleteAsycudaDocumentSet(int docSetId)
+        {
+            using (var ctx = new AsycudaDocumentSetService())
+            {
+                await ctx.DeleteAsycudaDocumentSet(docSetId.ToString()).ConfigureAwait(false);
+            }
+        }
     }
 
     public class SaleReportLine

@@ -20,6 +20,7 @@ using AllocationQS.Client.Repositories;
 using Core.Common.Converters;
 using CoreEntities.Business.Entities;
 using CoreEntities.Business.Services;
+using DocumentDS.Business.Services;
 using EntryDataQS.Business.Entities;
 using ExcelDataReader;
 using SalesDataQS.Business.Services;
@@ -73,8 +74,17 @@ namespace AutoBot
                     BaseDataModel.Instance.DeleteAsycudaDocument(itm).Wait();
                 }
 
-                var doclst = ctx.TODO_DeleteDocumentSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                var doclst = ctx.TODO_DeleteDocumentSet.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .Select(x => x.AsycudaDocumentSetId).ToList();
+
+                
+                    foreach (var itm in doclst)
+                    {
+                        BaseDataModel.Instance.DeleteAsycudaDocumentSet(itm).Wait();
+                    }
+                
             }
         }
 

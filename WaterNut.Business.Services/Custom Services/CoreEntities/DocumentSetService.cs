@@ -27,10 +27,7 @@ namespace CoreEntities.Business.Services
 
         public async Task DeleteDocumentSet(int docSetId)
         {
-            using (var ctx = new AsycudaDocumentSetService())
-            {
-                await ctx.DeleteAsycudaDocumentSet(docSetId.ToString()).ConfigureAwait(false);
-            }
+            await WaterNut.DataSpace.BaseDataModel.Instance.DeleteAsycudaDocumentSet(docSetId).ConfigureAwait(false);
         }
 
         public async Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames, bool onlyRegisteredDocuments, bool importTariffCodes, bool noMessages, bool overwriteExisting, bool linkPi)

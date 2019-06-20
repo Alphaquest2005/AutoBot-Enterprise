@@ -390,9 +390,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DeleteDocumentSet' d
         <EntityType Name="TODO-DeleteDocumentSet">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DocumentsToDelete' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -755,7 +757,8 @@ FROM [dbo].[TODO_CreateEx9] AS [TODO_CreateEx9]</DefiningQuery>
           <EntitySet Name="TODO-DeleteDocumentSet" EntityType="Self.TODO-DeleteDocumentSet" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-DeleteDocumentSet].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-[TODO-DeleteDocumentSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
+[TODO-DeleteDocumentSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DeleteDocumentSet].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[TODO-DeleteDocumentSet] AS [TODO-DeleteDocumentSet]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DocumentsToDelete" EntityType="Self.TODO-DocumentsToDelete" store:Type="Views" store:Schema="dbo">
@@ -1631,9 +1634,11 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
         <EntityType Name="TODO_DeleteDocumentSet">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_DocumentsToDelete">
           <Key>
@@ -2110,6 +2115,7 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <EntitySetMapping Name="TODO_DeleteDocumentSet">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_DeleteDocumentSet">
               <MappingFragment StoreEntitySet="TODO-DeleteDocumentSet">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
               </MappingFragment>

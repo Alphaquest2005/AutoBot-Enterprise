@@ -49,6 +49,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _declarant_reference_number;
+        [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

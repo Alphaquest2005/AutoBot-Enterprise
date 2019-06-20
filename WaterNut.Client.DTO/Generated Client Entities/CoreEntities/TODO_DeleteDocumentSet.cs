@@ -47,6 +47,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Declarant_Reference_Number;
 
+        [DataMember]
+        public int ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private int _ApplicationSettingsId;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

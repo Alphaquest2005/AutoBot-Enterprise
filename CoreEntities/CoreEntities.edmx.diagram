@@ -48,7 +48,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_UnallocatedSales" Width="1.5" PointX="13.375" PointY="15.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Contacts" Width="1.5" PointX="5.625" PointY="18.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_CreateEx9" Width="1.5" PointX="7.375" PointY="16.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_DeleteDocumentSet" Width="1.5" PointX="9.375" PointY="16.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_DeleteDocumentSet" Width="2.75" PointX="9.375" PointY="16.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DocumentsToDelete" Width="1.5" PointX="17.375" PointY="12.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSet" Width="1.5" PointX="18.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Actions" Width="1.5" PointX="7.5" PointY="10.625" />

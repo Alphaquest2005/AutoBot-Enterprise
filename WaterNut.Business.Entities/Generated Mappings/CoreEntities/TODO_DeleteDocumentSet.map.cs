@@ -11,10 +11,11 @@
     {
         public TODO_DeleteDocumentSetMap()
         {                        
-              this.HasKey(t => t.AsycudaDocumentSetId);        
+              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId});        
               this.ToTable("TODO-DeleteDocumentSet");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);
