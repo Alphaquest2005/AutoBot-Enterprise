@@ -72,7 +72,9 @@ namespace AutoBot
                 {
                     BaseDataModel.Instance.DeleteAsycudaDocument(itm).Wait();
                 }
-                
+
+                var doclst = ctx.TODO_DeleteDocumentSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Select(x => x.AsycudaDocumentSetId).ToList();
             }
         }
 
@@ -84,13 +86,13 @@ namespace AutoBot
         //        Filetype = "XML",
         //        Actions = new List<Action<FileTypes, FileInfo[]>>
         //        {
-                    
+
         //            (ft, fs) => ImportSalesEntries(),
         //            (x,y) => AllocateSales(),
         //            (ft, fs) => CreateEx9(ft),
         //            (ft, fs) => ExportEx9Entries().Wait(),
         //            (x,y) => AssessEx9Entries(x),
-                    
+
         //        }
         //    },
         //    new FileAction
@@ -194,6 +196,37 @@ namespace AutoBot
         //    }
         //};
 
+        private static void EmailSalesErrors()
+        {
+            
+            var info = CurrentSalesInfo();
+            var directory = info.Item4;
+            var errorfile = Path.Combine(directory, "SalesErrors.csv");
+            
+            using (var ctx = new AllocationQSContext())
+            {
+                var errors = ctx.AsycudaSalesAndAdjustmentAllocationsExes
+                                .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                .Where(x => x.Status != null)
+                                .Where(x => x.InvoiceDate >= info.Item1.Date && x.InvoiceDate <= info.Item2.Date).ToList();
+                
+                var res = new ExportToCSV<AsycudaSalesAndAdjustmentAllocationsEx, List<AsycudaSalesAndAdjustmentAllocationsEx>>();
+                res.dataToPrint = errors;
+                using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                {
+                     Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta);
+                }
+                
+            }
+
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var contacts = ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Sales").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList();
+                if(File.Exists(errorfile))
+                    EmailDownloader.EmailDownloader.SendEmail(client, directory, $"Sales Errors for {info.Item1.ToString("yyyy-MM-dd")} - {info.Item2.ToString("yyyy-MM-dd")}", contacts.Select(x => x.EmailAddress).ToArray(), "Please see attached...", new string[] { errorfile});
+            }
+
+        }
         private static void EmailPOEntries(List<Contacts> contacts)
         {
             if (!contacts.Any()) return;
@@ -448,13 +481,13 @@ namespace AutoBot
             Console.WriteLine("Allocations Started");
             using (var ctx = new CoreEntitiesContext())
             {
-                if (!ctx.TODO_UnallocatedSales.Any()) return;
+                if (!ctx.TODO_UnallocatedSales.Any(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)) return;
                 AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings
                     .ApplicationSettingsId).Wait();
                 AllocationsBaseModel.Instance
                     .AllocateSales(BaseDataModel.Instance.CurrentApplicationSettings, false)
                     .Wait();
-
+                EmailSalesErrors();
             }
         }
 

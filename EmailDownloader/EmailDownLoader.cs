@@ -33,7 +33,7 @@ namespace EmailDownloader
         {
             try
             {
-                To = new string[]{ "Josephbartholomew@outlook.com"};
+                
                 MimeMessage msg = CreateMessage(client, subject, To, body, attachments);
                 SendEmail(client, msg);
                 if(directory != null)
