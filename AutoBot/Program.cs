@@ -307,6 +307,7 @@ namespace AutoBot
             {
                 RunSiKuLi(x.AsycudaDocumentSetId, "AssessIM7", lcont.ToString());
                 RunSiKuLi(CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+                ImportSalesEntries();
                 CleanupEntries();
             }
 
