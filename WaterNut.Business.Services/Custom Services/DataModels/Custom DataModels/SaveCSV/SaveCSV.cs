@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Common.CSV;
@@ -53,7 +54,8 @@ namespace WaterNut.DataSpace
             }
 
         }
-        public  async Task ProcessDroppedFile(string droppedFilePath, string fileType, int asycudaDocumentSetId, bool overWriteExisting)
+        public  async Task ProcessDroppedFile(string droppedFilePath, string fileType, int asycudaDocumentSetId,
+            bool overWriteExisting)
         {
             try
             {

@@ -56,7 +56,7 @@ namespace AutoBot
                 {"AssessEntry",(ft, fs) => AssessEntry(ft)},
                 {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.FileTypeContacts.Select(x => x.Contacts).ToList()) },
                 {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles() },
-                {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft.FileTypeMappings) },
+                {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft) },
                 
                 {"CleanupEntries",(ft, fs) => CleanupEntries() },
             };
@@ -962,7 +962,7 @@ namespace AutoBot
                                 fileType.FileTypeActions.OrderBy(x => x.Priority).Select(x => fileActions[x.Actions.Name]).ToList()
                                     .ForEach(x =>
                                         x.Invoke(fileType,
-                                            csvFiles)); //.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
+                                            csvFiles.Where(z => z.CreationTime.Date == DateTime.Now.Date).ToArray())); //.Where(z => msg.Value.Contains(z.Name) || z.N).ToArray()
 
                             }
 
@@ -1039,6 +1039,8 @@ namespace AutoBot
             }
         }
 
+
+
         private static void SaveCsv(FileInfo[] csvFiles, string fileType, int asycudaDocumentSetId)
         {
             Console.WriteLine("Importing CSV " + fileType);
@@ -1047,59 +1049,70 @@ namespace AutoBot
                 SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, asycudaDocumentSetId, false)
                     .Wait();
 
-                var dt = CSV2DataTable(file);
-                if(dt.Rows.Count == 0) continue;
-                var fileRes = dt.AsEnumerable()
-                    .Where(x => x[0] != DBNull.Value)
+                if (VerifyCSVImport(file))
+                    return;
+                else
+                    continue;
+            }
+        }
+
+        private static bool VerifyCSVImport(FileInfo file)
+        {
+            var dt = CSV2DataTable(file);
+            if (dt.Rows.Count == 0) return false;
+            var fileRes = dt.AsEnumerable()
+                .Where(x => x[0] != DBNull.Value)
+                .Select(x => new
+                {
+                    Invoice = x["Invoice #"].ToString(),
+                    Total = Convert.ToDouble(x["Quantity"]) * x.Field<double>("Cost")
+                })
+                .GroupBy(x => x.Invoice)
+                .Select(x => new
+                {
+                    Invoice = x.Key,
+                    Total = Math.Round(x.Sum(z => z.Total), 2)
+                }).ToList();
+
+            using (var ctx = new EntryDataQSContext())
+            {
+                var dbres = ctx.EntryDataDetailsExes
                     .Select(x => new
                     {
-                        Invoice = x["Invoice #"].ToString(),
-                        Total = Convert.ToDouble(x["Quantity"]) * x.Field<double>("Cost")
+                        Invoice = x.EntryDataId,
+                        Total = x.Quantity * x.Cost
                     })
                     .GroupBy(x => x.Invoice)
                     .Select(x => new
                     {
                         Invoice = x.Key,
-                        Total = Math.Round(x.Sum(z => z.Total),2)
+                        Total = Math.Round(x.Sum(z => z.Total), 2)
                     }).ToList();
+                var res = fileRes.GroupJoin(dbres, x => x.Invoice, y => y.Invoice,
+                        (x, y) => new {file = x, db = y.SingleOrDefault()})
+                    .Where(x => x.file.Total != x.db.Total)
+                    .Select(x => new {x.file.Invoice, FileTotal = x.file.Total, dbTotal = x.db.Total})
+                    .ToList();
 
-                using (var ctx = new EntryDataQSContext())
+                if (res.Any())
                 {
-
-                    var dbres = ctx.EntryDataDetailsExes
-                        .Select(x => new
-                        {
-                            Invoice = x.EntryDataId,
-                            Total = x.Quantity * x.Cost
-                        })
-                        .GroupBy(x => x.Invoice)
-                        .Select(x => new
-                        {
-                            Invoice = x.Key,
-                            Total = Math.Round(x.Sum(z => z.Total),2)
-                        }).ToList();
-                    var res = fileRes.GroupJoin(dbres, x => x.Invoice, y => y.Invoice,
-                            (x, y) => new {file = x, db = y.SingleOrDefault()})
-                        .Where(x => x.file.Total != x.db.Total)
-                        .Select(x => new {x.file.Invoice, FileTotal = x.file.Total, dbTotal = x.db.Total})
-                        .ToList();
-
-                    if (res.Any())
-                    {
-                        //TODO: Log Message
-                        return;
-                    }
-                    
-
+                    //TODO: Log Message
+                    return true;
                 }
-
-
             }
-        }
-    
 
-    private static void Xlsx2csv(FileInfo[] files, List<FileTypeMappings> mappings)
+            return false;
+        }
+
+
+        private static void Xlsx2csv(FileInfo[] files, FileTypes fileType)
         {
+            var dic = new Dictionary<string, string>()
+            {
+                {"CurrentDate", DateTime.Now.Date.ToShortDateString() },
+                { "DIS-Reference", $"DIS-{new CoreEntitiesContext().AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId).Declarant_Reference_Number}"}
+            };
+
             foreach (var file in files)
             {
                 if (File.Exists($@"{file.DirectoryName}\{file.Name.Replace(file.Extension, ".csv")}")) return;
@@ -1114,8 +1127,13 @@ namespace AutoBot
 
                 while (row_no < result.Tables[0].Rows.Count)
                 {
-                    if(mappings.Any() && mappings.Select(x => x.OriginalName).All(x => result.Tables[0].Rows[row_no].ItemArray.Contains(x)))
+                    if (fileType.FileTypeMappings.Any() && fileType.FileTypeMappings.Select(x => x.OriginalName)
+                            .All(x => result.Tables[0].Rows[row_no].ItemArray.Contains(x)))
+                    {
+                        //if(dic.ContainsKey())
                         a = "";
+                    }
+
                     for (int i = 0; i < result.Tables[0].Columns.Count; i++)
                     {
 
@@ -1131,7 +1149,7 @@ namespace AutoBot
                 csv.Write(a);
                 csv.Close();
 
-                FixCsv(new FileInfo(output), mappings);
+                FixCsv(new FileInfo(output), fileType.FileTypeMappings);
                 
             }
         }
