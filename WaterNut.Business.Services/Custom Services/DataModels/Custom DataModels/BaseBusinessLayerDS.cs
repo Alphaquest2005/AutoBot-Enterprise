@@ -1044,6 +1044,7 @@ namespace WaterNut.DataSpace
                 var lst = ictx.xcuda_Weight_itm
                     .Include(x => x.xcuda_Valuation_item)
                    .Where(x => x.xcuda_Valuation_item.xcuda_Item.ASYCUDA_Id == doc.Key).ToList();
+                var mw = 0.0;
                 foreach (var itm in lst)
                 {
 
@@ -1051,8 +1052,17 @@ namespace WaterNut.DataSpace
                     var calWgt = weightRate * (itm.xcuda_Valuation_item.Total_CIF_itm / doc.Value);
                     var minWgt = ictx.xcuda_Tarification.Include(x => x.Unordered_xcuda_Supplementary_unit)
                                      .First(z => z.Item_Id == itm.Valuation_item_Id).Unordered_xcuda_Supplementary_unit.First(x => x.IsFirstRow == true).Suppplementary_unit_quantity.GetValueOrDefault() * .01;
-                    
-                    itm.Gross_weight_itm = calWgt < minWgt? minWgt:calWgt;
+
+                    if (calWgt - mw < minWgt)
+                    {
+                        itm.Gross_weight_itm = minWgt;
+                        mw += minWgt;
+                    }
+                    else
+                    {
+                        itm.Gross_weight_itm = calWgt - mw;
+                        mw = 0;
+                    }
                     itm.Net_weight_itm =
                         itm.Gross_weight_itm;
                 }
@@ -1917,6 +1927,7 @@ namespace WaterNut.DataSpace
             
                             StatusModel.StartStatusUpdate("Exporting Files", docSet.Documents.Count());
             var exceptions = new ConcurrentQueue<Exception>();
+            File.Delete(Path.Combine(directoryName, "Instructions.txt"));
             foreach (var doc in docSet.Documents)
             {
                 //if (doc.xcuda_Item.Any() == true)

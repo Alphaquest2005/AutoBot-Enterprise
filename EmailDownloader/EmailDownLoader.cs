@@ -202,7 +202,7 @@ namespace EmailDownloader
             var part = a.BodyParts.OfType<TextPart>().FirstOrDefault();
             var fileName = "Info.txt";
 
-            if (part != null) System.IO.File.AppendAllText(Path.Combine(dataFolder, fileName), part.Text);
+            if (part != null) System.IO.File.WriteAllText(Path.Combine(dataFolder, fileName), part.Text);
             lst.Add(fileName);
         }
     }
