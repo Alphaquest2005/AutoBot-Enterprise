@@ -350,7 +350,7 @@ namespace WaterNut.DataSpace
 
                 if (h == "") continue;
 
-                if ("INVNO|Reciept #|NUM|Invoice #".ToUpper().Contains(h.ToUpper()))
+                if ("INVNO|Reciept #|NUM|Invoice #|Invoice#".ToUpper().Contains(h.ToUpper()))
                 {
                     mapping.Add("EntryDataId", i);
                     continue;

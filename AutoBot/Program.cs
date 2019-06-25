@@ -873,7 +873,7 @@ namespace AutoBot
                             foreach (var fileType in appSetting.FileTypes)
                             {
                                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                                    .Where(x => msg.Value.Contains(x.FullName) && Regex.IsMatch(x.FullName, fileType.FilePattern) &&
+                                    .Where(x => msg.Value.Contains(x.Name) && Regex.IsMatch(x.FullName, fileType.FilePattern) &&
                                                 x.LastWriteTime.Date == DateTime.Now.Date).ToArray();
 
                                 if (csvFiles.Length == 0) continue;
@@ -901,6 +901,14 @@ namespace AutoBot
                                     }
                                 }
 
+                                var ndocSet =
+                                    ctx.AsycudaDocumentSetExs
+                                        .Include(x => x.AsycudaDocumentSet_Attachments)
+                                        .Include("AsycudaDocumentSet_Attachments.Attachments")
+                                        .First(x => x.Declarant_Reference_Number == msg.Key);
+
+                                if (fileType.Type == "Info") SaveInfo(csvFiles, ndocSet.AsycudaDocumentSetId);
+
                             }
                         }
 
@@ -910,16 +918,18 @@ namespace AutoBot
                         };
                         foreach (var i in CurrentPOInfo().Select(x => x.Item1))
                         {
-                            if(docLst.FirstOrDefault(x => x.AsycudaDocumentSetId == i.AsycudaDocumentSetId) == null)
+                            if(docLst.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId 
+                                                          && x.AsycudaDocumentSetId == i.AsycudaDocumentSetId) == null)
                                 docLst.AddRange(CurrentPOInfo().Select(x => x.Item1));
                         }
-                        
-                            
 
-                        foreach (var fileType in appSetting.FileTypes
-                        ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
+
+
+
+                        foreach (var dSet in docLst.DistinctBy(x => x.AsycudaDocumentSetId))
                         {
-                            foreach (var dSet in docLst)
+                            foreach (var fileType in appSetting.FileTypes
+                            ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
                             {
                                 var desFolder = Path.Combine(appSetting.DataFolder, dSet.Declarant_Reference_Number);
                                 fileType.AsycudaDocumentSetId = dSet.AsycudaDocumentSetId;
@@ -932,7 +942,7 @@ namespace AutoBot
                                     .Select(x => fileActions[x.Actions.Name]).ToList()
                                     .ForEach(x =>
                                         x.Invoke(fileType,
-                                            csvFiles)); 
+                                            csvFiles));
                             }
                         }
 
@@ -1085,7 +1095,7 @@ namespace AutoBot
                 .Where(x => x[0] != DBNull.Value)
                 .Select(x => new
                 {
-                    Invoice = x["Invoice #"].ToString(),
+                    Invoice = x.Table.Columns.Contains("Invoice #")? x["Invoice #"].ToString() : x["Invoice#"].ToString(),
                     Total = Convert.ToDouble(x["Quantity"]) * x.Field<double>("Cost")
                 })
                 .GroupBy(x => x.Invoice)

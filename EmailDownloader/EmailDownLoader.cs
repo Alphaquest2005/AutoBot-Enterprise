@@ -85,7 +85,7 @@ namespace EmailDownloader
                 var lst = new List<string>();
                 var msg = imapClient.Inbox.GetMessage(uid);
 
-                if(!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x)))
+                if(!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x, RegexOptions.IgnoreCase)))
                 {
                     imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                     SendBackMsg(msg, client);
@@ -124,7 +124,7 @@ namespace EmailDownloader
             var patterns = new string[]
             {
                 @"(\b\d{1,2}\D{0,3})?\b(?<Month>Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|(Nov|Dec)(?:ember)?)[a-zA-Z\s]*(?<Year>(19[7-9]\d|20\d{2})|\d{2})?",
-                @"Shipment: (?<Subject>.+)"
+                @"Shipment:\s(?<Subject>.+)"
             };
 
             foreach (var pattern in patterns)
