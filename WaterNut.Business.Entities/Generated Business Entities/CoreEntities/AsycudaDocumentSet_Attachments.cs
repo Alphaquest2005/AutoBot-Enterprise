@@ -19,6 +19,11 @@ namespace CoreEntities.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class AsycudaDocumentSet_Attachments : BaseEntity<AsycudaDocumentSet_Attachments>, ITrackable 
     {
+        partial void AutoGenStartUp() //AsycudaDocumentSet_Attachments()
+        {
+            this.AttachmentLog = new List<AttachmentLog>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -80,9 +85,60 @@ namespace CoreEntities.Business.Entities
         }
         bool _documentspecific;
         [DataMember]
+        public System.DateTime FileDate 
+        {
+            get
+            {
+                return _filedate;
+            }
+            set
+            {
+                _filedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _filedate;
+        [DataMember]
+        public Nullable<int> EmailUniqueId 
+        {
+            get
+            {
+                return _emailuniqueid;
+            }
+            set
+            {
+                _emailuniqueid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailuniqueid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
         public Attachments Attachments { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
+        [DataMember]
+        public FileTypes FileTypes { get; set; }
+        [DataMember]
+        public List<AttachmentLog> AttachmentLog { get; set; }
+        [DataMember]
+        public Emails Emails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

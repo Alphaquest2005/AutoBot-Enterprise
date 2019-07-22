@@ -55,6 +55,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
+ 
+			RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -145,6 +147,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(AsycudaDocumentSetExs.Contains(CurrentFileTypes.AsycudaDocumentSetEx) == false) AsycudaDocumentSetExs.Add(CurrentFileTypes.AsycudaDocumentSetEx);
                     //}
+                    //if (e.PropertyName == "AddFileGroups")
+                   // {
+                   //    if(FileGroups.Contains(CurrentFileTypes.FileGroups) == false) FileGroups.Add(CurrentFileTypes.FileGroups);
+                    //}
                  } 
         internal void OnFileTypesChanged(object sender, NotificationEventArgs e)
         {
@@ -191,6 +197,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentFileTypes = null;
 			}
+	
+		 internal void OnCurrentFileGroupsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileGroups> e)
+			{
+			if(ViewCurrentFileGroups == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("FileGroupId == {0}", e.Data.Id.ToString());
+                 }
+
+				FileTypes.Refresh();
+				NotifyPropertyChanged(x => this.FileTypes);
+                // SendMessage(MessageToken.FileTypesChanged, new NotificationEventArgs(MessageToken.FileTypesChanged));
+                                          
+                BaseViewModel.Instance.CurrentFileTypes = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -223,6 +248,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentAsycudaDocumentSetEx = value;
                  NotifyPropertyChanged(x => x.ViewCurrentAsycudaDocumentSetEx);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentFileGroups = false;
+         public bool ViewCurrentFileGroups
+         {
+             get
+             {
+                 return _viewCurrentFileGroups;
+             }
+             set
+             {
+                 _viewCurrentFileGroups = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentFileGroups);
                 FilterData();
              }
          }
@@ -339,6 +379,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _replyToMailFilter;
+        public Boolean? ReplyToMailFilter
+        {
+            get
+            {
+                return _replyToMailFilter;
+            }
+            set
+            {
+                _replyToMailFilter = value;
+				NotifyPropertyChanged(x => ReplyToMailFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _mergeEmailsFilter;
+        public Boolean? MergeEmailsFilter
+        {
+            get
+            {
+                return _mergeEmailsFilter;
+            }
+            set
+            {
+                _mergeEmailsFilter = value;
+				NotifyPropertyChanged(x => MergeEmailsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -387,6 +463,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(DocumentCodeFilter) == false)
 						res.Append(" && " + string.Format("DocumentCode.Contains(\"{0}\")",  DocumentCodeFilter));						
+ 
+
+									if(ReplyToMailFilter.HasValue)
+						res.Append(" && " + string.Format("ReplyToMail == {0}",  ReplyToMailFilter));						
+ 
+
+									if(MergeEmailsFilter.HasValue)
+						res.Append(" && " + string.Format("MergeEmails == {0}",  MergeEmailsFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -422,7 +506,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DocumentSpecific = x.DocumentSpecific ,
                     
  
-                    DocumentCode = x.DocumentCode 
+                    DocumentCode = x.DocumentCode ,
+                    
+ 
+                    ReplyToMail = x.ReplyToMail ,
+                    
+ 
+                    MergeEmails = x.MergeEmails 
                     
                 }).ToList()
             };
@@ -448,6 +538,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string DocumentCode { get; set; } 
+                    
+ 
+                    public bool ReplyToMail { get; set; } 
+                    
+ 
+                    public bool MergeEmails { get; set; } 
                     
         }
 

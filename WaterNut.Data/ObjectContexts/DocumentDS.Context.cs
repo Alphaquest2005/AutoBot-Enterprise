@@ -167,6 +167,8 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<Attachment> Attachments { get; set; }
      
+        public DbSet<FileType> FileTypes { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -290,6 +292,8 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new AsycudaDocumentSet_AttachmentsMap());
          
             modelBuilder.Configurations.Add(new AttachmentMap());
+         
+            modelBuilder.Configurations.Add(new FileTypeMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

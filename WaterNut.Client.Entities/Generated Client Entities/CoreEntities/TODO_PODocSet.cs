@@ -191,6 +191,21 @@ public string Declarant_Reference_Number
 		}
      
 
+       
+       
+public Nullable<System.DateTime> FileDate
+		{ 
+		    get { return this.todo_podocset.FileDate; }
+			set
+			{
+			    if (value == this.todo_podocset.FileDate) return;
+				this.todo_podocset.FileDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileDate");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_PODocSet> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_PODocSet> ChangeTracker

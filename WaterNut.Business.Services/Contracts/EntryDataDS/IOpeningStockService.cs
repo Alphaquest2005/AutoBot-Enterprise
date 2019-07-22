@@ -111,6 +111,12 @@ namespace EntryDataDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<OpeningStock>> GetOpeningStockByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<OpeningStock>> GetOpeningStockByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<OpeningStock>> GetOpeningStockByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

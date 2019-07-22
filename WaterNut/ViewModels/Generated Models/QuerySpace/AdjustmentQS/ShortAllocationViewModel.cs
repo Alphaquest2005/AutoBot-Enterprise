@@ -1698,7 +1698,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public Nullable<double> pQtyAllocated { get; set; } 
                     
  
-                    public Nullable<double> PiQuantity { get; set; } 
+                    public double PiQuantity { get; set; } 
                     
  
                     public Nullable<double> SalesFactor { get; set; } 

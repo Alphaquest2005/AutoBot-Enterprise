@@ -31,6 +31,6 @@ namespace WaterNut.Business.Entities
         [NotMapped]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
 
-
+        public List<int?> EmailIds { get; set; } = new List<int?>();
     }
 }

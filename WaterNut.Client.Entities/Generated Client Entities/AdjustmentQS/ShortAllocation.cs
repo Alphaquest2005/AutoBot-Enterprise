@@ -337,9 +337,9 @@ public Nullable<double> pQtyAllocated
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "PiQuantity is required")]
        [NumberValidationAttribute]
-public Nullable<double> PiQuantity
+public double PiQuantity
 		{ 
 		    get { return this.shortallocation.PiQuantity; }
 			set
@@ -786,6 +786,36 @@ public int AsycudaDocumentSetId
 				this.shortallocation.AsycudaDocumentSetId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.shortallocation.FileTypeId; }
+			set
+			{
+			    if (value == this.shortallocation.FileTypeId) return;
+				this.shortallocation.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.shortallocation.EmailId; }
+			set
+			{
+			    if (value == this.shortallocation.EmailId) return;
+				this.shortallocation.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
 			}
 		}
      

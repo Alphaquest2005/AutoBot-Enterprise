@@ -23,7 +23,10 @@
               this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
               this.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(4);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.HasOptional(t => t.Suppliers).WithMany(t =>(ICollection<EntryData>) t.EntryData).HasForeignKey(d => d.SupplierId);
+              this.HasOptional(t => t.FileTypes).WithMany(t =>(ICollection<EntryData>) t.EntryData).HasForeignKey(d => d.FileTypeId);
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocuments).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryData)t.EntryData);

@@ -295,6 +295,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+		private DateTime? _startFileDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartFileDateFilter
+        {
+            get
+            {
+                return _startFileDateFilter;
+            }
+            set
+            {
+                _startFileDateFilter = value;
+				NotifyPropertyChanged(x => StartFileDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endFileDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndFileDateFilter
+        {
+            get
+            {
+                return _endFileDateFilter;
+            }
+            set
+            {
+                _endFileDateFilter = value;
+				NotifyPropertyChanged(x => EndFileDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _fileDateFilter;
+        public DateTime? FileDateFilter
+        {
+            get
+            {
+                return _fileDateFilter;
+            }
+            set
+            {
+                _fileDateFilter = value;
+				NotifyPropertyChanged(x => FileDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -351,7 +401,36 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartFileDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("FileDate >= \"{0}\"",  Convert.ToDateTime(StartFileDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndFileDateFilter.HasValue)
+								res.Append(" && " + string.Format("FileDate <= \"{0}\"",  Convert.ToDateTime(EndFileDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_fileDateFilter).Date != DateTime.MinValue)
+						{
+							if(FileDateFilter.HasValue)
+								res.Append(" && " + string.Format("FileDate == \"{0}\"",  Convert.ToDateTime(FileDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -392,7 +471,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Declaration_gen_procedure_code = x.Declaration_gen_procedure_code ,
                     
  
-                    Declarant_Reference_Number = x.Declarant_Reference_Number 
+                    Declarant_Reference_Number = x.Declarant_Reference_Number ,
+                    
+ 
+                    FileDate = x.FileDate 
                     
                 }).ToList()
             };
@@ -424,6 +506,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Declarant_Reference_Number { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> FileDate { get; set; } 
                     
         }
 

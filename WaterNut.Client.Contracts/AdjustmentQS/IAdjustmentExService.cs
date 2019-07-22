@@ -82,6 +82,12 @@ namespace AdjustmentQS.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByEmailId(string EmailId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
   		
     }
 }

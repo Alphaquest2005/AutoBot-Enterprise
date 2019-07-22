@@ -23,6 +23,8 @@
               this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
               this.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(4);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

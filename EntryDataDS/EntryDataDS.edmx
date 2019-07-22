@@ -76,12 +76,15 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
             <PropertyRef Name="EntryDataId" />
           </Key>
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryData_OpeningStock">
           <Key>
@@ -133,6 +136,22 @@
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="TaxAmount" Type="float" />
           <Property Name="LastCost" Type="float" />
+        </EntityType>
+        <EntityType Name="FileTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="FilePattern" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
+          <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ReplyToMail" Type="bit" Nullable="false" />
+          <Property Name="FileGroupId" Type="int" />
+          <Property Name="MergeEmails" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -322,6 +341,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EntryData_FileTypes">
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
+          <End Role="EntryData" Type="Self.EntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EntryData">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EntryData_OpeningStock_EntryData">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -391,6 +422,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="EntryData_PurchaseOrders" EntityType="Self.EntryData_PurchaseOrders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_Sales" EntityType="Self.EntryData_Sales" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
@@ -469,6 +501,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <AssociationSet Name="FK_EntryData_Adjustments_EntryData" Association="Self.FK_EntryData_Adjustments_EntryData">
             <End Role="EntryData" EntitySet="EntryData" />
             <End Role="EntryData_Adjustments" EntitySet="EntryData_Adjustments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntryData_FileTypes" Association="Self.FK_EntryData_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="EntryData" EntitySet="EntryData" />
           </AssociationSet>
           <AssociationSet Name="FK_EntryData_OpeningStock_EntryData" Association="Self.FK_EntryData_OpeningStock_EntryData">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -551,6 +587,11 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="Suppliers" EntitySet="Suppliers" />
             <End Role="EntryData" EntitySet="EntryData" />
           </AssociationSet>
+          <EntitySet Name="FileTypes" EntityType="WaterNutDBModel.FileTypes" />
+          <AssociationSet Name="FK_EntryData_FileTypes" Association="WaterNutDBModel.FK_EntryData_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="EntryData" EntitySet="EntryData" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -575,6 +616,9 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <NavigationProperty Name="Suppliers" Relationship="WaterNutDBModel.SuppliersEntryData" FromRole="EntryData" ToRole="Suppliers" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_EntryData_FileTypes" FromRole="EntryData" ToRole="FileTypes" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="OpeningStock" BaseType="WaterNutDBModel.EntryData">
@@ -897,7 +941,37 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           </ReferentialConstraint>
         </Association>
         <EntityType Name="Adjustments" BaseType="WaterNutDBModel.EntryData">
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="FileTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="FilePattern" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="CreateDocumentSet" Type="Boolean" Nullable="false" />
+          <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
+          <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReplyToMail" Type="Boolean" Nullable="false" />
+          <Property Name="FileGroupId" Type="Int32" />
+          <Property Name="MergeEmails" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="EntryData" Relationship="WaterNutDBModel.FK_EntryData_FileTypes" FromRole="FileTypes" ToRole="EntryData" />
+        </EntityType>
+        <Association Name="FK_EntryData_FileTypes">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EntryData">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -907,6 +981,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryData">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.EntryData)">
               <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
@@ -940,6 +1016,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Adjustments)">
               <MappingFragment StoreEntitySet="EntryData_Adjustments">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1104,6 +1181,23 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
                 <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileTypes">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
+              <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="MergeEmails" ColumnName="MergeEmails" />
+                <ScalarProperty Name="FileGroupId" ColumnName="FileGroupId" />
+                <ScalarProperty Name="ReplyToMail" ColumnName="ReplyToMail" />
+                <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
+                <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
+                <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

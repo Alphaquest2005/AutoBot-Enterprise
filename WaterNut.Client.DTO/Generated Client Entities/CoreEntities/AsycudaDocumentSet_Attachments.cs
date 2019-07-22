@@ -73,6 +73,45 @@ namespace CoreEntities.Client.DTO
 		}
         private bool _DocumentSpecific;
 
+        [DataMember]
+        public System.DateTime FileDate
+		{ 
+		    get { return _FileDate; }
+			set
+			{
+			    if (value == _FileDate) return;
+				_FileDate = value;
+				NotifyPropertyChanged();//m => this.FileDate
+			}
+		}
+        private System.DateTime _FileDate;
+
+        [DataMember]
+        public Nullable<int> EmailUniqueId
+		{ 
+		    get { return _EmailUniqueId; }
+			set
+			{
+			    if (value == _EmailUniqueId) return;
+				_EmailUniqueId = value;
+				NotifyPropertyChanged();//m => this.EmailUniqueId
+			}
+		}
+        private Nullable<int> _EmailUniqueId;
+
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
        
         [DataMember]
         public Attachments Attachments
@@ -105,6 +144,51 @@ namespace CoreEntities.Client.DTO
 		}
         private AsycudaDocumentSetEx _AsycudaDocumentSetEx;
         private ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetExChangeTracker { get; set; }
+
+        [DataMember]
+        public FileTypes FileTypes
+		{
+		    get { return _FileTypes; }
+			set
+			{
+			    if (value == _FileTypes) return;
+				_FileTypes = value;
+                FileTypesChangeTracker = _FileTypes == null ? null
+                    : new ChangeTrackingCollection<FileTypes> { _FileTypes };
+				NotifyPropertyChanged();//m => this.FileTypes
+			}
+		}
+        private FileTypes _FileTypes;
+        private ChangeTrackingCollection<FileTypes> FileTypesChangeTracker { get; set; }
+
+        [DataMember]
+        public ChangeTrackingCollection<AttachmentLog> AttachmentLog
+		{
+		    get { return _AttachmentLog; }
+			set
+			{
+			    if (Equals(value, _AttachmentLog)) return;
+				_AttachmentLog = value;
+				NotifyPropertyChanged();//m => this.AttachmentLog
+			}
+		}
+        private ChangeTrackingCollection<AttachmentLog> _AttachmentLog = new ChangeTrackingCollection<AttachmentLog>();
+
+        [DataMember]
+        public Emails Emails
+		{
+		    get { return _Emails; }
+			set
+			{
+			    if (value == _Emails) return;
+				_Emails = value;
+                EmailsChangeTracker = _Emails == null ? null
+                    : new ChangeTrackingCollection<Emails> { _Emails };
+				NotifyPropertyChanged();//m => this.Emails
+			}
+		}
+        private Emails _Emails;
+        private ChangeTrackingCollection<Emails> EmailsChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

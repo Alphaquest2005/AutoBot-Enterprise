@@ -661,10 +661,14 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                             x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
                                 ? x.InvoiceDate
                                 : x.EffectiveDate).Min();
-
+                    
                     foreach (var mypod in elst)
                     {
                         //itmcount = await InitializeDocumentCT(itmcount, prevEntryId, mypod, cdoc, prevIM7, monthyear, dt, dfp).ConfigureAwait(true);
+                        if (!cdoc.EmailIds.Contains(mypod.EntlnData.EmailId))
+                            cdoc.EmailIds.Add(mypod.EntlnData.EmailId);
+
+
                         if (!(mypod.EntlnData.Quantity > 0)) continue;
                         if (MaxLineCount(itmcount)
                             || InvoicePerEntry(prevEntryId, mypod)
@@ -675,6 +679,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                             {
                                 if (cdoc.Document != null)
                                 {
+
+                                    SaveAttachments(docSet, cdoc);
 
                                     await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                     //}
@@ -734,7 +740,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     }
 
                 }
-
+                SaveAttachments(docSet, cdoc);
                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
                 if (cdoc.Document.ASYCUDA_Id == 0)
                 {
@@ -748,6 +754,44 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             {
 
                 throw;
+            }
+        }
+
+        private static void SaveAttachments(AsycudaDocumentSet docSet, DocumentCT cdoc)
+        {
+            if (!cdoc.DocumentItems.Any()) return;
+            var alst = docSet.AsycudaDocumentSet_Attachments
+                .Where(x => x.DocumentSpecific == false 
+                            && cdoc.EmailIds.Contains(x.EmailUniqueId)
+                            && cdoc.Document.AsycudaDocument_Attachments.All(z => z.AttachmentId != x.AttachmentId))
+                .Select(x => x.Attachment);
+            foreach (var att in alst)
+            {
+                cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
+                {
+                    AttachmentId = att.Id,
+                    AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
+                    //Attachment = att,
+                    //xcuda_ASYCUDA = cdoc.Document,
+                    TrackingState = TrackingState.Added
+                });
+
+                var f = new FileInfo(att.FilePath);
+                cdoc.DocumentItems.First().xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                {
+                    Attached_document_code = att.DocumentCode,
+                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                    Attached_document_reference = f.Name.Replace(f.Extension, ""), //pod.EntryData.EntryDataId,
+                    xcuda_Attachments = new List<xcuda_Attachments>()
+                    {
+                        new xcuda_Attachments(true)
+                        {
+                            AttachmentId = att.Id,
+                            TrackingState = TrackingState.Added
+                        }
+                    },
+                    TrackingState = TrackingState.Added
+                });
             }
         }
 
@@ -1338,6 +1382,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                       ItemDescription = s.LastOrDefault().ItemDescription,
                                       TariffCode = s.LastOrDefault().pTariffCode,
                                       Cost = s.LastOrDefault().pItemCost.GetValueOrDefault(),
+                                      FileTypeId = s.LastOrDefault().FileTypeId,
+                                      EmailId = s.LastOrDefault().EmailId,
                                       Quantity = s.Sum(x => x.QtyAllocated / (x.SalesFactor == 0 ? 1 : x.SalesFactor)),
                                       EntryDataDetails = s.DistinctBy(z => z.EntryDataDetailsId).Select(z =>  
                                                                 new EntryDataDetailSummary()
@@ -1428,6 +1474,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                       TariffCode = x.pTariffCode,
                                       Cost = x.pItemCost.GetValueOrDefault(),
                                       Quantity = x.QtyAllocated / (x.SalesFactor == 0 ? 1: x.SalesFactor),
+                                      FileTypeId = x.FileTypeId,
+                                      EmailId = x.EmailId,
                                       EntryDataDetails = new List<EntryDataDetailSummary>() { 
                                                                 new EntryDataDetailSummary()
                                                                 {
@@ -2205,7 +2253,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             public string TariffCode { get; set; }
             public pDocumentItem pDocumentItem { get; set; }
             public EX9Allocation EX9Allocation { get; set; }
-            
+            public int? FileTypeId { get; set; }
+            public int? EmailId { get; set; }
         }
 
         public class pDocumentItem
@@ -2320,6 +2369,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
         public DateTime? EffectiveDate { get; set; }
         public int pLineNumber { get; set; }
         public string Currency { get; set; }
+        public int? FileTypeId { get; set; }
+        public int? EmailId { get; set; }
     }
 
     public class AllocationDataBlock

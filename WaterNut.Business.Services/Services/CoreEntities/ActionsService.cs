@@ -239,6 +239,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<FileTypeActions>(dbContext, exp, itm.Value, "Actions", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "SessionActions":
+                                return
+                                    await
+                                        GetWhere<SessionActions>(dbContext, exp, itm.Value, "Actions", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace CoreEntities.Business.Services
                             case "FileTypeActions":
                                 return await CountWhere<FileTypeActions>(dbContext, exp, itm.Value, "Actions", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SessionActions":
+                                return await CountWhere<SessionActions>(dbContext, exp, itm.Value, "Actions", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Actions.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -845,6 +854,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<FileTypeActions>(startIndex, count, dbContext, exp, itm.Value, "Actions", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "SessionActions":
+                                return
+                                    await
+                                        LoadRangeWhere<SessionActions>(startIndex, count, dbContext, exp, itm.Value, "Actions", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1106,6 +1121,9 @@ namespace CoreEntities.Business.Services
                         {
                             case "FileTypeActions":
                                 return await SumWhere<FileTypeActions>(dbContext, exp, itm.Value, "Actions", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SessionActions":
+                                return await SumWhere<SessionActions>(dbContext, exp, itm.Value, "Actions", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

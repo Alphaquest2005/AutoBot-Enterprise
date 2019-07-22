@@ -104,6 +104,44 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string FileGroupsEntityName
+        {
+            get
+            {
+                return this.FileGroups == null ? "" : this.FileGroups.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (FileGroupsClient ctx = new FileGroupsClient())
+                    {
+                        var dto = ctx.GetFileGroups().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.FileGroups = (FileGroups)new FileGroups().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.FileGroups.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddFileGroups");
+                        }
+                        else
+                        {
+                            var obj = new FileGroups(dto);
+                           if (this.FileGroups == null || this.FileGroups.EntityId != obj.EntityId) this.FileGroups = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

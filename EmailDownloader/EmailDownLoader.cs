@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
 using MailKit;
 using MailKit.Net.Imap;
@@ -15,14 +16,15 @@ namespace EmailDownloader
 {
     public static partial class EmailDownloader
     {
-        public static Dictionary<string, List<string>> CheckEmails(Client client)
+        public static Dictionary<Tuple<string, Email>, List<string>> CheckEmails(Client client, List<string> patterns)
         {
+            if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email>, List<string>>();
             var imapClient = new ImapClient();
             imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
             imapClient.Authenticate(client.Email, client.Password);
             var dataFolder = client.DataFolder;
             imapClient.Inbox.Open(FolderAccess.ReadWrite);
-            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client);
+            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client, patterns);
 
             imapClient.Disconnect(true);
             return res;
@@ -76,55 +78,87 @@ namespace EmailDownloader
         }
 
 
-        public static Dictionary<string, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
-            List<string> emailMappings, Client client)
+        public static Dictionary<Tuple<string, Email>, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
+            List<string> emailMappings, Client client, List<string> patterns)
         {
-            var msgFiles = new Dictionary<string, List<string>>();
-            foreach (var uid in imapClient.Inbox.Search(SearchQuery.NotSeen))
+            try
             {
-                var lst = new List<string>();
-                var msg = imapClient.Inbox.GetMessage(uid);
 
-                if(!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x, RegexOptions.IgnoreCase)))
+
+                var msgFiles = new Dictionary<Tuple<string, Email>, List<string>>();
+                foreach (var uid in imapClient.Inbox.Search(SearchQuery.NotSeen))
                 {
+                    var lst = new List<string>();
+                    var msg = imapClient.Inbox.GetMessage(uid);
+
+                    if (!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x, RegexOptions.IgnoreCase)))
+                    {
+                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                        var errTxt = "Hey,\r\n\r\n The System is not configured for this message.\r\n" +
+                                           "Check the Subject again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
+                                           "Thanks\r\n" +
+                                           "Ez-Asycuda-Toolkit";
+                        SendBackMsg(msg, client, errTxt);
+                        continue;
+                    }
+
+                    var subject = GetSubject(msg, uid);
+
+                    if (string.IsNullOrEmpty(subject.Item1))
+                        throw new ApplicationException("Subject Not Found please check Email Regex");
+                    var desFolder = Path.Combine(dataFolder, subject.Item1);
+                    Directory.CreateDirectory(desFolder);
+                    foreach (var a in msg.Attachments)
+                    {
+                        if (!a.IsAttachment) continue;
+                        SaveAttachmentPart(desFolder, a, lst);
+                    }
+
+                    if (patterns.All(x => !lst.Any(z => Regex.IsMatch(z, x, RegexOptions.IgnoreCase))))
+                    {
+                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                        var errTxt =
+                            "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
+                            "Check the file Name of attachments again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
+                            "Thanks\r\n" +
+                            "Ez-Asycuda-Toolkit";
+                        SendBackMsg(msg, client, errTxt);
+                    }
+
+                    
+                    SaveBodyPart(desFolder, msg, lst);
+
+                    
+
                     imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
-                    SendBackMsg(msg, client);
-                    continue;
+                    if (msgFiles.ContainsKey(subject))
+                    {
+                        msgFiles[subject].AddRange(lst);
+                    }
+                    else
+                    {
+                        msgFiles.Add(subject, lst);
+                    }
                 }
 
-                var subject = GetSubject(msg);
-                
-
-                var desFolder = Path.Combine(dataFolder, subject);
-                Directory.CreateDirectory(desFolder);
-                foreach (var a in msg.Attachments)
-                {
-                    if (!a.IsAttachment) continue;
-                    SaveAttachmentPart(desFolder,  a, lst);
-                }
-
-                SaveBodyPart(desFolder, msg, lst);
-
-                imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
-                if (msgFiles.ContainsKey(subject))
-                {
-                    msgFiles[subject].AddRange(lst);
-                }
-                else
-                {
-                   msgFiles.Add(subject, lst); 
-                }
+                return msgFiles;
             }
-
-            return msgFiles;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
-        private static string GetSubject(MimeMessage msg)
+        private static Tuple<string, Email> GetSubject(MimeMessage msg, UniqueId uid)
         {
             var patterns = new string[]
             {
-                @"(\b\d{1,2}\D{0,3})?\b(?<Month>Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|(Nov|Dec)(?:ember)?)[a-zA-Z\s]*(?<Year>(19[7-9]\d|20\d{2})|\d{2})?",
-                @"Shipment:\s(?<Subject>.+)"
+                @"(\b\d{1,2}\D{0,3})?\b(?<Month>Jan(?:uary)? |Feb(?:ruary)? |Mar(?:ch)? |Apr(?:il)? |May |Jun(?:e)? |Jul(?:y)? |Aug(?:ust)? |Sep(?:tember)? |Oct(?:ober)? |(Nov |Dec)(?:ember)? )[a-zA-Z\s]*(?<Year>(19[7-9]\d|20\d{2})|\d{2})?(?<![Discrepancy])",
+                @"Shipment:\s(?<Subject>.+)",
+                @"Fw: (?<Subject>[A-Z][a-z]+).*(?<=Discrepancy)|Fw: (?<Subject>[A-Z][A-Z]+).*(?<=Discrepancy)|(?![Fw: ])(?<Subject>^[A-Z][a-z]+).*(?<=Discrepancy)|.*(?<=Warranty).*\-\s(?<Subject>[A-Z][A-Z]+)|.*(?<Subject>[0-9][A-Z]+).*(?<=Discrepancy)",
+                @".*(?<Subject>[0-9][A-Z]+).*(?<=Discrepancy)"
+
             };
 
             foreach (var pattern in patterns)
@@ -136,17 +170,52 @@ namespace EmailDownloader
                 var subject = "";
                 for (int i = 1; i < mat.Groups.Count; i++)
                 {
-                    var g = mat.Groups[i];
+                    var v = mat.Groups[i];
+                    if(string.IsNullOrEmpty(v.Value) || subject.Contains(v.Value)) continue;
+                    var g = v.Value;
                     subject += " " + g;
                 }
-                return subject.Trim();
+
+                 
+                return new Tuple<string, Email>(subject.Trim(), new Email(EmailId: Convert.ToInt32(uid.ToString()), Subject: msg.Subject, EmailDate: msg.Date.DateTime));
 
             }
 
             return null;
         }
-        
-        private static void SendBackMsg(MimeMessage msg, Client clientDetails)
+
+        public static bool SendBackMsg(int uID, Client clientDetails, string errtxt)
+        {
+            try
+            {
+                var imapClient = new ImapClient();
+                imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
+                imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
+                var dataFolder = clientDetails.DataFolder;
+                imapClient.Inbox.Open(FolderAccess.ReadWrite);
+                var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
+                imapClient.Disconnect(true);
+                if (msg != null)
+                {
+                    SendBackMsg(msg, clientDetails, errtxt);
+                }
+                else
+                {
+                    // msg not found
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+
+        }
+
+        private static void SendBackMsg(MimeMessage msg, Client clientDetails, string errtxt)
         {
             // construct a new message
             var message = new MimeMessage();
@@ -157,11 +226,7 @@ namespace EmailDownloader
 
             // now to create our body...
             var builder = new BodyBuilder();
-            builder.TextBody = "Hey,\r\n\r\n The System is not configured for this message.\r\n" +
-                               "Check the Subject again or Check Joseph Barthoomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
-                               "Thanks\r\n" +
-                               "Ez-Asycuda-Toolkit";
-            
+            builder.TextBody = errtxt;
             builder.Attachments.Add(new MessagePart { Message = msg });
 
             message.Body = builder.ToMessageBody();
@@ -184,17 +249,26 @@ namespace EmailDownloader
 
         private static string ReplaceSpecialChar(string msgSubject, string rstring)
         {
-            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z]+", rstring);
+            return Regex.Replace(msgSubject, @"[^0-9a-zA-Z\s]+", rstring);
         }
 
         private static void SaveAttachmentPart(string dataFolder,  MimeEntity a, List<string> lst)
         {
             var part = (MimePart) a;
-            var fileName = part.FileName;
+            var fileName = CleanFileName(part.FileName);
 
+            
             using (var stream = File.Create(Path.Combine(dataFolder, fileName)))
                 part.Content.DecodeTo(stream);
             lst.Add(fileName);
+        }
+
+        private static string CleanFileName(string partFileName)
+        {
+            var newFileName = partFileName.Substring(0,partFileName.LastIndexOf("."));
+            var fileExtention = partFileName.Substring(partFileName.LastIndexOf("."));
+            var res = ReplaceSpecialChar(newFileName, "-") + fileExtention;
+            return res;
         }
 
         private static void SaveBodyPart(string dataFolder, MimeMessage a, List<string> lst)

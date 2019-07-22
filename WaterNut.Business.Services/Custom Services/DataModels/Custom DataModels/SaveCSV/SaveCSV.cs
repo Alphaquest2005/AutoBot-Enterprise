@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Common.CSV;
 using System.IO;
+using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 
 
@@ -78,7 +79,18 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var lines = File.ReadAllLines(droppedFilePath);
+                int? emailId = 0;
+                int? fileTypeId = 0;
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    
+                    var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath.Replace(".xlsx", "-Fixed.csv") == droppedFilePath 
+                                                                            || x.Attachments.FilePath == droppedFilePath) 
+                        .Select(x => new{x.EmailUniqueId, x.FileTypeId}).FirstOrDefault();
+                    emailId = res?.EmailUniqueId;
+                    fileTypeId = res?.FileTypeId;
+                }
+                    var lines = File.ReadAllLines(droppedFilePath);
                 // identify header
                 var headerline = lines.FirstOrDefault();
 
@@ -96,7 +108,7 @@ namespace WaterNut.DataSpace
                         return;
                     }
 
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings, csvType, docSet, overWriteExisting).ConfigureAwait(false)) return;
+                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings, csvType, docSet, overWriteExisting, emailId, fileTypeId).ConfigureAwait(false)) return;
                 }
             }
             catch (Exception Ex)

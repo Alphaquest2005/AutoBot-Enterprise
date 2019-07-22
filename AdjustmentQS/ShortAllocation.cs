@@ -33,7 +33,7 @@ namespace AdjustmentQS
         public Nullable<System.DateTime> pRegistrationDate { get; set; }
         public Nullable<double> pQuantity { get; set; }
         public Nullable<double> pQtyAllocated { get; set; }
-        public Nullable<double> PiQuantity { get; set; }
+        public double PiQuantity { get; set; }
         public Nullable<double> SalesFactor { get; set; }
         public string xCNumber { get; set; }
         public Nullable<System.DateTime> xRegistrationDate { get; set; }
@@ -62,6 +62,8 @@ namespace AdjustmentQS
         public string DutyFreePaid { get; set; }
         public int ApplicationSettingsId { get; set; }
         public int AsycudaDocumentSetId { get; set; }
+        public Nullable<int> FileTypeId { get; set; }
+        public Nullable<int> EmailId { get; set; }
     
         public virtual AdjustmentShort AdjustmentShort { get; set; }
         public virtual AdjustmentDetail AdjustmentDetail { get; set; }

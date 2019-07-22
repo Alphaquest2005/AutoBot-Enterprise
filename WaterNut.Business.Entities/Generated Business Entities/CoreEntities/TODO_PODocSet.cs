@@ -154,6 +154,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _declarant_reference_number;
+        [DataMember]
+        public Nullable<System.DateTime> FileDate 
+        {
+            get
+            {
+                return _filedate;
+            }
+            set
+            {
+                _filedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _filedate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

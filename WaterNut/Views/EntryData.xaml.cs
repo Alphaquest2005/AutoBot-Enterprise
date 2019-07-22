@@ -192,7 +192,7 @@ namespace WaterNut.Views
 
 	    private async void ImportADJ(object sender, MouseButtonEventArgs e)
 	    {
-	        await AdjustmentExModel.Instance.Import("Adjustments").ConfigureAwait(false);
+	        await AdjustmentExModel.Instance.Import("ADJ").ConfigureAwait(false);
         }
 	}
 }

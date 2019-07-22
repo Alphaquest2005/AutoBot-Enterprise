@@ -125,6 +125,45 @@ namespace CoreEntities.Client.DTO
 		}
         private string _DocumentCode;
 
+        [DataMember]
+        public bool ReplyToMail
+		{ 
+		    get { return _ReplyToMail; }
+			set
+			{
+			    if (value == _ReplyToMail) return;
+				_ReplyToMail = value;
+				NotifyPropertyChanged();//m => this.ReplyToMail
+			}
+		}
+        private bool _ReplyToMail;
+
+        [DataMember]
+        public Nullable<int> FileGroupId
+		{ 
+		    get { return _FileGroupId; }
+			set
+			{
+			    if (value == _FileGroupId) return;
+				_FileGroupId = value;
+				NotifyPropertyChanged();//m => this.FileGroupId
+			}
+		}
+        private Nullable<int> _FileGroupId;
+
+        [DataMember]
+        public bool MergeEmails
+		{ 
+		    get { return _MergeEmails; }
+			set
+			{
+			    if (value == _MergeEmails) return;
+				_MergeEmails = value;
+				NotifyPropertyChanged();//m => this.MergeEmails
+			}
+		}
+        private bool _MergeEmails;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings
@@ -196,6 +235,35 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<FileTypeContacts> _FileTypeContacts = new ChangeTrackingCollection<FileTypeContacts>();
+
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
+		{
+		    get { return _AsycudaDocumentSet_Attachments; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSet_Attachments)) return;
+				_AsycudaDocumentSet_Attachments = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSet_Attachments
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = new ChangeTrackingCollection<AsycudaDocumentSet_Attachments>();
+
+        [DataMember]
+        public FileGroups FileGroups
+		{
+		    get { return _FileGroups; }
+			set
+			{
+			    if (value == _FileGroups) return;
+				_FileGroups = value;
+                FileGroupsChangeTracker = _FileGroups == null ? null
+                    : new ChangeTrackingCollection<FileGroups> { _FileGroups };
+				NotifyPropertyChanged();//m => this.FileGroups
+			}
+		}
+        private FileGroups _FileGroups;
+        private ChangeTrackingCollection<FileGroups> FileGroupsChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

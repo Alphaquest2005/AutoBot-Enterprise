@@ -20,12 +20,17 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.CreateDocumentSet).HasColumnName("CreateDocumentSet");
               this.Property(t => t.DocumentSpecific).HasColumnName("DocumentSpecific");
-              this.Property(t => t.DocumentCode).HasColumnName("DocumentCode").HasMaxLength(50);
+              this.Property(t => t.DocumentCode).HasColumnName("DocumentCode").IsRequired().HasMaxLength(50);
+              this.Property(t => t.ReplyToMail).HasColumnName("ReplyToMail");
+              this.Property(t => t.FileGroupId).HasColumnName("FileGroupId");
+              this.Property(t => t.MergeEmails).HasColumnName("MergeEmails");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.AsycudaDocumentSetId);
+              this.HasOptional(t => t.FileGroups).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.FileGroupId);
               this.HasMany(t => t.FileTypeMappings).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.FileTypeActions).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.FileTypeContacts).WithRequired(t => (FileTypes)t.FileTypes);
+              this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithOptional(t => t.FileTypes).HasForeignKey(d => d.FileTypeId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -16,6 +16,7 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
               this.HasMany(t => t.FileTypeActions).WithRequired(t => (Actions)t.Actions);
+              this.HasMany(t => t.SessionActions).WithRequired(t => (Actions)t.Actions);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -61,6 +61,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<FileTypeActions> _FileTypeActions = new ChangeTrackingCollection<FileTypeActions>();
 
+        [DataMember]
+        public ChangeTrackingCollection<SessionActions> SessionActions
+		{
+		    get { return _SessionActions; }
+			set
+			{
+			    if (Equals(value, _SessionActions)) return;
+				_SessionActions = value;
+				NotifyPropertyChanged();//m => this.SessionActions
+			}
+		}
+        private ChangeTrackingCollection<SessionActions> _SessionActions = new ChangeTrackingCollection<SessionActions>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

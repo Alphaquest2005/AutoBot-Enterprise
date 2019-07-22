@@ -111,6 +111,9 @@ namespace CoreEntities.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<FileTypes>> GetFileTypesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<FileTypes>> GetFileTypesByFileGroupId(string FileGroupId, List<string> includesLst = null);
   
 
 

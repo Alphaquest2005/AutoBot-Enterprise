@@ -740,6 +740,36 @@ namespace AllocationDS.Business.Entities
         }
         int _asycudadocumentsetid;
         [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }

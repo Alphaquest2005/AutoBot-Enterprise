@@ -24,6 +24,7 @@ namespace CoreEntities.Business.Entities
             this.FileTypeMappings = new List<FileTypeMappings>();
             this.FileTypeActions = new List<FileTypeActions>();
             this.FileTypeContacts = new List<FileTypeContacts>();
+            this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
         }
 
         [DataMember]
@@ -147,6 +148,51 @@ namespace CoreEntities.Business.Entities
         }
         string _documentcode;
         [DataMember]
+        public bool ReplyToMail 
+        {
+            get
+            {
+                return _replytomail;
+            }
+            set
+            {
+                _replytomail = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _replytomail;
+        [DataMember]
+        public Nullable<int> FileGroupId 
+        {
+            get
+            {
+                return _filegroupid;
+            }
+            set
+            {
+                _filegroupid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filegroupid;
+        [DataMember]
+        public bool MergeEmails 
+        {
+            get
+            {
+                return _mergeemails;
+            }
+            set
+            {
+                _mergeemails = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _mergeemails;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
@@ -156,6 +202,10 @@ namespace CoreEntities.Business.Entities
         public List<FileTypeActions> FileTypeActions { get; set; }
         [DataMember]
         public List<FileTypeContacts> FileTypeContacts { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        [DataMember]
+        public FileGroups FileGroups { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

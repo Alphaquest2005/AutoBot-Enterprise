@@ -25,6 +25,21 @@ namespace AllocationDS.Business.Entities
         }
 
         [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
 
  //       [DataMember]

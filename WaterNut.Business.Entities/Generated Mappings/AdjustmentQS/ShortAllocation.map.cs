@@ -11,7 +11,7 @@
     {
         public ShortAllocationMap()
         {                        
-              this.HasKey(t => new {t.AllocationId, t.AsycudaDocumentSetId});        
+              this.HasKey(t => t.AllocationId);        
               this.ToTable("AdjustmentShortAllocations");
               this.Property(t => t.AllocationId).HasColumnName("AllocationId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.TotalValue).HasColumnName("TotalValue");
@@ -60,7 +60,9 @@
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.HasRequired(t => t.AdjustmentShort).WithMany(t =>(ICollection<ShortAllocation>) t.ShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AdjustmentDetail).WithMany(t =>(ICollection<ShortAllocation>) t.ShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties

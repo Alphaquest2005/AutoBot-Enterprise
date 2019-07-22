@@ -44,7 +44,7 @@ namespace AdjustmentQS.Business.Services
                     var lst = ctx.AdjustmentDetails
                         .Include(x => x.AdjustmentEx)
                         .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        //.Where(x => x.ItemNumber == "BM/BWGL")
+                        //.Where(x => x.ItemNumber == "HS/EXW212")
                         .Where(x => x.EffectiveDate == null && ((x.InvoiceQty > x.ReceivedQty && !x.ShortAllocations.Any()) 
                                                                 || (x.InvoiceQty < x.ReceivedQty && !x.AsycudaDocumentItemEntryDataDetails.Any())))
                         .OrderBy(x => x.EntryDataDetailsId)
@@ -60,7 +60,7 @@ namespace AdjustmentQS.Business.Services
                         {
                             var aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId, s.PreviousInvoiceNumber, s.ItemNumber)
                                 .ConfigureAwait(false);
-                            if (aItem != null)
+                            if (aItem.Any())
                             {
                                 MatchToAsycudaItem(s, aItem, ed, ctx);
                                 //continue;
@@ -71,6 +71,8 @@ namespace AdjustmentQS.Business.Services
                         else if (string.IsNullOrEmpty(s.PreviousInvoiceNumber) && s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
                         {
                             var aItem = await GetAsycudaEntriesInCNumber(applicationSettingsId,s.PreviousCNumber, s.ItemNumber)
+                                .ConfigureAwait(false);
+                            if(!aItem.Any()) aItem = await GetAsycudaEntriesInCNumberReference(applicationSettingsId, s.PreviousCNumber, s.ItemNumber)
                                 .ConfigureAwait(false);
                             MatchToAsycudaItem(s, aItem, ed, ctx);
                            // continue;
@@ -96,7 +98,8 @@ namespace AdjustmentQS.Business.Services
                             
                         }
 
-                        if (ed.Cost != 0) continue;
+                        if (ed.Cost != 0 ) continue;
+                        if( s.InvoiceQty.GetValueOrDefault() > 0) continue;// if invoice > 0 it should have been imported
                             var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
                                 .Where(x => x.assessmentdate <= ed.EffectiveDate)
                                 .OrderByDescending(x => x.assessmentdate)
@@ -530,7 +533,9 @@ namespace AdjustmentQS.Business.Services
                                         Suplementary_Quantity = z.Suplementary_Quantity
                                     }).ToList(),
                             TariffSupUnitLkps =
-                                c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList()
+                                c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList(),
+                            FileTypeId = c.x.FileTypeId,
+                            EmailId = c.x.EmailId,
                             //.Select(x => (ITariffSupUnitLkp)x)
 
                         }
@@ -696,7 +701,52 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-      
+        private async Task<List<AsycudaDocumentItem>> GetAsycudaEntriesInCNumberReference(int applicationSettingsId,
+              string cNumber, string itemNumber)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                try
+                {
+                    var doc = ctx.AsycudaDocuments.FirstOrDefault(x => cNumber.Contains(x.CNumber));
+                    if(doc == null) return new List<AsycudaDocumentItem>();
+                    var docref = doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal) > 0
+                        ? doc.ReferenceNumber.Substring(0, doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal))
+                        : doc.ReferenceNumber;
+                   
+                    var aItem = ctx.AsycudaDocumentItems
+                            .Include(x => x.AsycudaDocument)
+                            .Include(x => x.AsycudaDocumentItemEntryDataDetails)
+                        .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+                        .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
+                                    (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100") &&
+                                    // x.WarehouseError == null && 
+                                    (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
+                                    x.AsycudaDocument.DoNotAllocate != true)
+                        .Where(x => x.ItemNumber == itemNumber && x.AsycudaDocument.ReferenceNumber.Contains(docref));
+                    var res = aItem.ToList();
+                    var alias = ctx.InventoryItemAliasX.Where(x => x.ApplicationSettingsId == applicationSettingsId && x.ItemNumber.ToUpper().Trim() == itemNumber).Select(y => y.AliasName.ToUpper().Trim()).ToList();
+
+                    if (!alias.Any()) return res;
+
+                    var ae = ctx.AsycudaDocumentItems
+                        .Include(x => x.AsycudaDocument)
+                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                        .Where(x => alias.Contains(x.ItemNumber) && x.AsycudaDocument.ReferenceNumber.Contains(docref)).ToList();
+                    if (ae.Any()) res.AddRange(ae);
+
+
+
+                    return res;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+        }
     }
 }
 

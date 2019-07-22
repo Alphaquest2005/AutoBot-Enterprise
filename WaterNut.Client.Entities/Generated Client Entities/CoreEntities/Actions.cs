@@ -131,6 +131,60 @@ public string Name
             }
         }
 
+        ObservableCollection<SessionActions> _SessionActions = null;
+        public  ObservableCollection<SessionActions> SessionActions
+		{
+            
+		    get 
+				{ 
+					if(_SessionActions != null) return _SessionActions;
+					//if (this.actions.SessionActions == null) Debugger.Break();
+					if(this.actions.SessionActions != null)
+					{
+						_SessionActions = new ObservableCollection<SessionActions>(this.actions.SessionActions.Select(x => new SessionActions(x)));
+					}
+					
+						_SessionActions.CollectionChanged += SessionActions_CollectionChanged; 
+					
+					return _SessionActions; 
+				}
+			set
+			{
+			    if (Equals(value, _SessionActions)) return;
+				if (value != null)
+					this.actions.SessionActions = new ChangeTrackingCollection<DTO.SessionActions>(value.Select(x => x.DTO).ToList());
+                _SessionActions = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_SessionActions != null)
+				_SessionActions.CollectionChanged += SessionActions_CollectionChanged;               
+				NotifyPropertyChanged("SessionActions");
+			}
+		}
+        
+        void SessionActions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (SessionActions itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        actions.SessionActions.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (SessionActions itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        actions.SessionActions.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.Actions> _changeTracker;    
         public ChangeTrackingCollection<DTO.Actions> ChangeTracker

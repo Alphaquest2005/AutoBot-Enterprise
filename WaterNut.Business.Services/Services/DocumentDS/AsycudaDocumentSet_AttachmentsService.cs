@@ -245,6 +245,12 @@ namespace DocumentDS.Business.Services
                                         GetWhere<Attachment>(dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileType":
+                                return
+                                    await
+                                        GetWhere<FileType>(dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -745,6 +751,9 @@ namespace DocumentDS.Business.Services
                             case "Attachment":
                                 return await CountWhere<Attachment>(dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileType":
+                                return await CountWhere<FileType>(dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocumentSet_Attachments.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -860,6 +869,12 @@ namespace DocumentDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Attachment>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileType":
+                                return
+                                    await
+                                        LoadRangeWhere<FileType>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1124,6 +1139,64 @@ namespace DocumentDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EmailUniqueId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AsycudaDocumentSet_Attachments> entities = await set//dbContext.AsycudaDocumentSet_Attachments
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailUniqueId.ToString() == EmailUniqueId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AsycudaDocumentSet_Attachments> entities = await set//dbContext.AsycudaDocumentSet_Attachments
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1182,6 +1255,9 @@ namespace DocumentDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Attachment":
                                 return await SumWhere<Attachment>(dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileType":
+                                return await SumWhere<FileType>(dbContext, exp, itm.Value, "AsycudaDocumentSet_Attachments", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

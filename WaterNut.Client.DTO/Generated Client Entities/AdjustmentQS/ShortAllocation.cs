@@ -269,7 +269,7 @@ namespace AdjustmentQS.Client.DTO
         private Nullable<double> _pQtyAllocated;
 
         [DataMember]
-        public Nullable<double> PiQuantity
+        public double PiQuantity
 		{ 
 		    get { return _PiQuantity; }
 			set
@@ -279,7 +279,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.PiQuantity
 			}
 		}
-        private Nullable<double> _PiQuantity;
+        private double _PiQuantity;
 
         [DataMember]
         public Nullable<double> SalesFactor
@@ -644,6 +644,32 @@ namespace AdjustmentQS.Client.DTO
 			}
 		}
         private int _AsycudaDocumentSetId;
+
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public Nullable<int> EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private Nullable<int> _EmailId;
 
        
         [DataMember]

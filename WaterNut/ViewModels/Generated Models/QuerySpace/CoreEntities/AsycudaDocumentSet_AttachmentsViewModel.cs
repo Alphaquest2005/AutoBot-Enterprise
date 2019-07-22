@@ -55,6 +55,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			RegisterToReceiveMessages<Attachments>(MessageToken.CurrentAttachmentsChanged, OnCurrentAttachmentsChanged);
  
 			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
+ 
+			RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
+ 
+			RegisterToReceiveMessages<Emails>(MessageToken.CurrentEmailsChanged, OnCurrentEmailsChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -145,6 +149,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(AsycudaDocumentSetExs.Contains(CurrentAsycudaDocumentSet_Attachments.AsycudaDocumentSetEx) == false) AsycudaDocumentSetExs.Add(CurrentAsycudaDocumentSet_Attachments.AsycudaDocumentSetEx);
                     //}
+                    //if (e.PropertyName == "AddFileTypes")
+                   // {
+                   //    if(FileTypes.Contains(CurrentAsycudaDocumentSet_Attachments.FileTypes) == false) FileTypes.Add(CurrentAsycudaDocumentSet_Attachments.FileTypes);
+                    //}
+                    //if (e.PropertyName == "AddEmails")
+                   // {
+                   //    if(Emails.Contains(CurrentAsycudaDocumentSet_Attachments.Emails) == false) Emails.Add(CurrentAsycudaDocumentSet_Attachments.Emails);
+                    //}
                  } 
         internal void OnAsycudaDocumentSet_AttachmentsChanged(object sender, NotificationEventArgs e)
         {
@@ -191,6 +203,44 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
 			}
+	
+		 internal void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
+			{
+			if(ViewCurrentFileTypes == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("FileTypeId == {0}", e.Data.Id.ToString());
+                 }
+
+				AsycudaDocumentSet_Attachments.Refresh();
+				NotifyPropertyChanged(x => this.AsycudaDocumentSet_Attachments);
+                // SendMessage(MessageToken.AsycudaDocumentSet_AttachmentsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentSet_AttachmentsChanged));
+                                          
+                BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
+			}
+	
+		 internal void OnCurrentEmailsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Emails> e)
+			{
+			if(ViewCurrentEmails == false) return;
+			if (e.Data == null || e.Data.EmailUniqueId == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("EmailUniqueId == {0}", e.Data.EmailUniqueId.ToString());
+                 }
+
+				AsycudaDocumentSet_Attachments.Refresh();
+				NotifyPropertyChanged(x => this.AsycudaDocumentSet_Attachments);
+                // SendMessage(MessageToken.AsycudaDocumentSet_AttachmentsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentSet_AttachmentsChanged));
+                                          
+                BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -223,6 +273,36 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentAsycudaDocumentSetEx = value;
                  NotifyPropertyChanged(x => x.ViewCurrentAsycudaDocumentSetEx);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentFileTypes = false;
+         public bool ViewCurrentFileTypes
+         {
+             get
+             {
+                 return _viewCurrentFileTypes;
+             }
+             set
+             {
+                 _viewCurrentFileTypes = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentFileTypes);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentEmails = false;
+         public bool ViewCurrentEmails
+         {
+             get
+             {
+                 return _viewCurrentEmails;
+             }
+             set
+             {
+                 _viewCurrentEmails = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentEmails);
                 FilterData();
              }
          }
@@ -267,6 +347,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+		private DateTime? _startFileDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartFileDateFilter
+        {
+            get
+            {
+                return _startFileDateFilter;
+            }
+            set
+            {
+                _startFileDateFilter = value;
+				NotifyPropertyChanged(x => StartFileDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endFileDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndFileDateFilter
+        {
+            get
+            {
+                return _endFileDateFilter;
+            }
+            set
+            {
+                _endFileDateFilter = value;
+				NotifyPropertyChanged(x => EndFileDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _fileDateFilter;
+        public DateTime? FileDateFilter
+        {
+            get
+            {
+                return _fileDateFilter;
+            }
+            set
+            {
+                _fileDateFilter = value;
+				NotifyPropertyChanged(x => FileDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -299,7 +429,36 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(DocumentSpecificFilter.HasValue)
 						res.Append(" && " + string.Format("DocumentSpecific == {0}",  DocumentSpecificFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartFileDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("FileDate >= \"{0}\"",  Convert.ToDateTime(StartFileDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndFileDateFilter.HasValue)
+								res.Append(" && " + string.Format("FileDate <= \"{0}\"",  Convert.ToDateTime(EndFileDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_fileDateFilter).Date != DateTime.MinValue)
+						{
+							if(FileDateFilter.HasValue)
+								res.Append(" && " + string.Format("FileDate == \"{0}\"",  Convert.ToDateTime(FileDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -322,7 +481,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 dataToPrint = lst.Select(x => new AsycudaDocumentSet_AttachmentsExcelLine
                 {
  
-                    DocumentSpecific = x.DocumentSpecific 
+                    DocumentSpecific = x.DocumentSpecific ,
+                    
+ 
+                    FileDate = x.FileDate 
                     
                 }).ToList()
             };
@@ -336,6 +498,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
 		 
                     public bool DocumentSpecific { get; set; } 
+                    
+ 
+                    public System.DateTime FileDate { get; set; } 
                     
         }
 

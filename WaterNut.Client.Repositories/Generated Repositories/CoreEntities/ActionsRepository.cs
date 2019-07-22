@@ -202,7 +202,8 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new Actions(res)
                     {
-                     // FileTypeActions = new System.Collections.ObjectModel.ObservableCollection<FileTypeActions>(res.FileTypeActions.Select(y => new FileTypeActions(y)))    
+                     // FileTypeActions = new System.Collections.ObjectModel.ObservableCollection<FileTypeActions>(res.FileTypeActions.Select(y => new FileTypeActions(y))),    
+                     // SessionActions = new System.Collections.ObjectModel.ObservableCollection<SessionActions>(res.SessionActions.Select(y => new SessionActions(y)))    
                   };
                     }
                     else

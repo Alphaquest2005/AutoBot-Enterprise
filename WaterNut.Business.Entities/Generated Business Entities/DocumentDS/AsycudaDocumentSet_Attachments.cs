@@ -80,9 +80,56 @@ namespace DocumentDS.Business.Entities
         }
         bool _documentspecific;
         [DataMember]
+        public System.DateTime FileDate 
+        {
+            get
+            {
+                return _filedate;
+            }
+            set
+            {
+                _filedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _filedate;
+        [DataMember]
+        public Nullable<int> EmailUniqueId 
+        {
+            get
+            {
+                return _emailuniqueid;
+            }
+            set
+            {
+                _emailuniqueid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailuniqueid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
         public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
         [DataMember]
         public Attachment Attachment { get; set; }
+        [DataMember]
+        public FileType FileType { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

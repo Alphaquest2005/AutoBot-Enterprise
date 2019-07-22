@@ -154,7 +154,7 @@ public bool DocumentSpecific
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "DocumentCode is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "DocumentCode has a max length of 50 letters ")]
@@ -167,6 +167,51 @@ public string DocumentCode
 				this.filetypes.DocumentCode = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("DocumentCode");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ReplyToMail is required")]
+       
+public bool ReplyToMail
+		{ 
+		    get { return this.filetypes.ReplyToMail; }
+			set
+			{
+			    if (value == this.filetypes.ReplyToMail) return;
+				this.filetypes.ReplyToMail = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ReplyToMail");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileGroupId
+		{ 
+		    get { return this.filetypes.FileGroupId; }
+			set
+			{
+			    if (value == this.filetypes.FileGroupId) return;
+				this.filetypes.FileGroupId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileGroupId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "MergeEmails is required")]
+       
+public bool MergeEmails
+		{ 
+		    get { return this.filetypes.MergeEmails; }
+			set
+			{
+			    if (value == this.filetypes.MergeEmails) return;
+				this.filetypes.MergeEmails = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MergeEmails");
 			}
 		}
      
@@ -438,6 +483,113 @@ public string DocumentCode
                 
             }
         }
+
+        ObservableCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = null;
+        public  ObservableCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocumentSet_Attachments != null) return _AsycudaDocumentSet_Attachments;
+					//if (this.filetypes.AsycudaDocumentSet_Attachments == null) Debugger.Break();
+					if(this.filetypes.AsycudaDocumentSet_Attachments != null)
+					{
+						_AsycudaDocumentSet_Attachments = new ObservableCollection<AsycudaDocumentSet_Attachments>(this.filetypes.AsycudaDocumentSet_Attachments.Select(x => new AsycudaDocumentSet_Attachments(x)));
+					}
+					
+						_AsycudaDocumentSet_Attachments.CollectionChanged += AsycudaDocumentSet_Attachments_CollectionChanged; 
+					
+					return _AsycudaDocumentSet_Attachments; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSet_Attachments)) return;
+				if (value != null)
+					this.filetypes.AsycudaDocumentSet_Attachments = new ChangeTrackingCollection<DTO.AsycudaDocumentSet_Attachments>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocumentSet_Attachments = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocumentSet_Attachments != null)
+				_AsycudaDocumentSet_Attachments.CollectionChanged += AsycudaDocumentSet_Attachments_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocumentSet_Attachments");
+			}
+		}
+        
+        void AsycudaDocumentSet_Attachments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocumentSet_Attachments itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypes.AsycudaDocumentSet_Attachments.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocumentSet_Attachments itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypes.AsycudaDocumentSet_Attachments.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+       private FileGroups _FileGroups;
+        public  FileGroups FileGroups
+		{
+		    get
+               { 
+                  if (this.filetypes != null)
+                   {
+                       if (_FileGroups != null)
+                       {
+                           if (this.filetypes.FileGroups !=
+                               _FileGroups.DTO)
+                           {
+                                if (this.filetypes.FileGroups  != null)
+                               _FileGroups = new FileGroups(this.filetypes.FileGroups);
+                           }
+                       }
+                       else
+                       {
+                             if (this.filetypes.FileGroups  != null)
+                           _FileGroups = new FileGroups(this.filetypes.FileGroups);
+                       }
+                   }
+
+
+             //       if (_FileGroups != null) return _FileGroups;
+                       
+             //       var i = new FileGroups(){TrackingState = TrackingState.Added};
+			//		//if (this.filetypes.FileGroups == null) Debugger.Break();
+			//		if (this.filetypes.FileGroups != null)
+            //        {
+            //           i. = this.filetypes.FileGroups;
+            //        }
+            //        else
+            //        {
+            //            this.filetypes.FileGroups = i.;
+             //       }
+                           
+            //        _FileGroups = i;
+                     
+                    return _FileGroups;
+               }
+			set
+			{
+			    if (value == _FileGroups) return;
+                _FileGroups = value;
+                if(value != null)
+                     this.filetypes.FileGroups = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("FileGroups");
+			}
+		}
+        
 
 
         ChangeTrackingCollection<DTO.FileTypes> _changeTracker;    

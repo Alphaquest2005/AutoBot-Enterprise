@@ -71,6 +71,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<Suppliers> Suppliers { get; set; }
      
+        public DbSet<FileTypes> FileTypes { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -98,6 +100,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ContainerAsycudaDocumentSetMap());
          
             modelBuilder.Configurations.Add(new SuppliersMap());
+         
+            modelBuilder.Configurations.Add(new FileTypesMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

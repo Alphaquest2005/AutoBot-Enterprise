@@ -27,7 +27,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 ViewCurrentAsycudaDocument = true,
                 ViewCurrentApplicationSettings = true,
                 StartRegistrationDateFilter = DateTime.MinValue,
-                EndRegistrationDateFilter = DateTime.MinValue
+                EndRegistrationDateFilter = DateTime.MinValue,
+                StartExpiryDateFilter = DateTime.MinValue,
+                EndExpiryDateFilter = DateTime.MinValue,
             };
         }
 

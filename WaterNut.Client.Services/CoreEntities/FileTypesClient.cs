@@ -122,6 +122,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetFileTypesByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<FileTypes>> GetFileTypesByFileGroupId(string FileGroupId, List<string> includesLst = null)
+        {
+            return  await Channel.GetFileTypesByFileGroupId(FileGroupId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

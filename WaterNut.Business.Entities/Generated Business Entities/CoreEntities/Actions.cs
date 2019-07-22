@@ -22,6 +22,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //Actions()
         {
             this.FileTypeActions = new List<FileTypeActions>();
+            this.SessionActions = new List<SessionActions>();
         }
 
         [DataMember]
@@ -56,6 +57,8 @@ namespace CoreEntities.Business.Entities
         string _name;
         [DataMember]
         public List<FileTypeActions> FileTypeActions { get; set; }
+        [DataMember]
+        public List<SessionActions> SessionActions { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

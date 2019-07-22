@@ -67,7 +67,7 @@ namespace WaterNut.Views
         private async void ImportAdjustments(object sender, MouseButtonEventArgs e)
         {
             
-           await im.Import("Adjustments").ConfigureAwait(false);
+           await im.Import("ADJ").ConfigureAwait(false);
         }
 
         private async void MatchEntries(object sender, MouseButtonEventArgs e)

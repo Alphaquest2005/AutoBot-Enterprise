@@ -85,6 +85,9 @@ namespace CoreEntities.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<FileTypes>> GetFileTypesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<FileTypes>> GetFileTypesByFileGroupId(string FileGroupId, List<string> includesLst = null);
+        
   		
     }
 }

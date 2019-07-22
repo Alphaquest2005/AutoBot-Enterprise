@@ -42,6 +42,9 @@ namespace CoreEntities.Client.Entities
                 asycudadocumentset_attachments = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= " is required")]
        
 public int Id
@@ -98,6 +101,51 @@ public bool DocumentSpecific
 				this.asycudadocumentset_attachments.DocumentSpecific = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("DocumentSpecific");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "FileDate is required")]
+       
+public System.DateTime FileDate
+		{ 
+		    get { return this.asycudadocumentset_attachments.FileDate; }
+			set
+			{
+			    if (value == this.asycudadocumentset_attachments.FileDate) return;
+				this.asycudadocumentset_attachments.FileDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileDate");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailUniqueId
+		{ 
+		    get { return this.asycudadocumentset_attachments.EmailUniqueId; }
+			set
+			{
+			    if (value == this.asycudadocumentset_attachments.EmailUniqueId) return;
+				this.asycudadocumentset_attachments.EmailUniqueId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailUniqueId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.asycudadocumentset_attachments.FileTypeId; }
+			set
+			{
+			    if (value == this.asycudadocumentset_attachments.FileTypeId) return;
+				this.asycudadocumentset_attachments.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
 			}
 		}
      
@@ -204,6 +252,166 @@ public bool DocumentSpecific
                      this.asycudadocumentset_attachments.AsycudaDocumentSetEx = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("AsycudaDocumentSetEx");
+			}
+		}
+        
+
+       private FileTypes _FileTypes;
+        public  FileTypes FileTypes
+		{
+		    get
+               { 
+                  if (this.asycudadocumentset_attachments != null)
+                   {
+                       if (_FileTypes != null)
+                       {
+                           if (this.asycudadocumentset_attachments.FileTypes !=
+                               _FileTypes.DTO)
+                           {
+                                if (this.asycudadocumentset_attachments.FileTypes  != null)
+                               _FileTypes = new FileTypes(this.asycudadocumentset_attachments.FileTypes);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocumentset_attachments.FileTypes  != null)
+                           _FileTypes = new FileTypes(this.asycudadocumentset_attachments.FileTypes);
+                       }
+                   }
+
+
+             //       if (_FileTypes != null) return _FileTypes;
+                       
+             //       var i = new FileTypes(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocumentset_attachments.FileTypes == null) Debugger.Break();
+			//		if (this.asycudadocumentset_attachments.FileTypes != null)
+            //        {
+            //           i. = this.asycudadocumentset_attachments.FileTypes;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocumentset_attachments.FileTypes = i.;
+             //       }
+                           
+            //        _FileTypes = i;
+                     
+                    return _FileTypes;
+               }
+			set
+			{
+			    if (value == _FileTypes) return;
+                _FileTypes = value;
+                if(value != null)
+                     this.asycudadocumentset_attachments.FileTypes = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("FileTypes");
+			}
+		}
+        
+
+        ObservableCollection<AttachmentLog> _AttachmentLog = null;
+        public  ObservableCollection<AttachmentLog> AttachmentLog
+		{
+            
+		    get 
+				{ 
+					if(_AttachmentLog != null) return _AttachmentLog;
+					//if (this.asycudadocumentset_attachments.AttachmentLog == null) Debugger.Break();
+					if(this.asycudadocumentset_attachments.AttachmentLog != null)
+					{
+						_AttachmentLog = new ObservableCollection<AttachmentLog>(this.asycudadocumentset_attachments.AttachmentLog.Select(x => new AttachmentLog(x)));
+					}
+					
+						_AttachmentLog.CollectionChanged += AttachmentLog_CollectionChanged; 
+					
+					return _AttachmentLog; 
+				}
+			set
+			{
+			    if (Equals(value, _AttachmentLog)) return;
+				if (value != null)
+					this.asycudadocumentset_attachments.AttachmentLog = new ChangeTrackingCollection<DTO.AttachmentLog>(value.Select(x => x.DTO).ToList());
+                _AttachmentLog = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AttachmentLog != null)
+				_AttachmentLog.CollectionChanged += AttachmentLog_CollectionChanged;               
+				NotifyPropertyChanged("AttachmentLog");
+			}
+		}
+        
+        void AttachmentLog_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AttachmentLog itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentset_attachments.AttachmentLog.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AttachmentLog itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentset_attachments.AttachmentLog.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+       private Emails _Emails;
+        public  Emails Emails
+		{
+		    get
+               { 
+                  if (this.asycudadocumentset_attachments != null)
+                   {
+                       if (_Emails != null)
+                       {
+                           if (this.asycudadocumentset_attachments.Emails !=
+                               _Emails.DTO)
+                           {
+                                if (this.asycudadocumentset_attachments.Emails  != null)
+                               _Emails = new Emails(this.asycudadocumentset_attachments.Emails);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocumentset_attachments.Emails  != null)
+                           _Emails = new Emails(this.asycudadocumentset_attachments.Emails);
+                       }
+                   }
+
+
+             //       if (_Emails != null) return _Emails;
+                       
+             //       var i = new Emails(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocumentset_attachments.Emails == null) Debugger.Break();
+			//		if (this.asycudadocumentset_attachments.Emails != null)
+            //        {
+            //           i. = this.asycudadocumentset_attachments.Emails;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocumentset_attachments.Emails = i.;
+             //       }
+                           
+            //        _Emails = i;
+                     
+                    return _Emails;
+               }
+			set
+			{
+			    if (value == _Emails) return;
+                _Emails = value;
+                if(value != null)
+                     this.asycudadocumentset_attachments.Emails = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("Emails");
 			}
 		}
         

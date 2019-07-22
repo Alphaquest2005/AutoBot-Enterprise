@@ -66,6 +66,8 @@
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.IsManuallyAssessed).HasColumnName("IsManuallyAssessed");
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
               this.HasRequired(t => t.AsycudaSalesAllocations).WithOptional(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);

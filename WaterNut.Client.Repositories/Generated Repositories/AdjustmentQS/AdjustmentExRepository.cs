@@ -396,6 +396,62 @@ namespace AdjustmentQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByEmailId(string EmailId, List<string> includesLst = null)
+        {
+             if (EmailId == "0") return null;
+            try
+            {
+                 using (AdjustmentExClient t = new AdjustmentExClient())
+                    {
+                        var res = await t.GetAdjustmentExByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AdjustmentEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (AdjustmentExClient t = new AdjustmentExClient())
+                    {
+                        var res = await t.GetAdjustmentExByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AdjustmentEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

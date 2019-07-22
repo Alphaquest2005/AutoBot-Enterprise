@@ -117,6 +117,16 @@ namespace AdjustmentQS.Client.Services
             return  await Channel.GetAdjustmentExByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAdjustmentExByEmailId(EmailId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAdjustmentExByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

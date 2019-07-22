@@ -203,7 +203,10 @@ namespace CoreEntities.Client.Repositories
                             return new AsycudaDocumentSet_Attachments(res)
                     {
                   // Attachments = (res.Attachments != null?new Attachments(res.Attachments): null),    
-                  // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null)    
+                  // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null),    
+                  // FileTypes = (res.FileTypes != null?new FileTypes(res.FileTypes): null),    
+                     // AttachmentLog = new System.Collections.ObjectModel.ObservableCollection<AttachmentLog>(res.AttachmentLog.Select(y => new AttachmentLog(y))),    
+                  // Emails = (res.Emails != null?new Emails(res.Emails): null)    
                   };
                     }
                     else
@@ -401,6 +404,62 @@ namespace CoreEntities.Client.Repositories
                  using (AsycudaDocumentSet_AttachmentsClient t = new AsycudaDocumentSet_AttachmentsClient())
                     {
                         var res = await t.GetAsycudaDocumentSet_AttachmentsByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentSet_Attachments(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null)
+        {
+             if (EmailUniqueId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentSet_AttachmentsClient t = new AsycudaDocumentSet_AttachmentsClient())
+                    {
+                        var res = await t.GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(EmailUniqueId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentSet_Attachments(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentSet_AttachmentsClient t = new AsycudaDocumentSet_AttachmentsClient())
+                    {
+                        var res = await t.GetAsycudaDocumentSet_AttachmentsByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new AsycudaDocumentSet_Attachments(x)).AsEnumerable();

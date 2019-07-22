@@ -64,6 +64,17 @@
           <Property Name="AttachmentId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
+          <Property Name="FileDate" Type="date" Nullable="false" />
+          <Property Name="EmailUniqueId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
+        </EntityType>
+        <EntityType Name="AttachmentLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocSetAttachment" Type="int" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Attachments">
           <Key>
@@ -108,6 +119,14 @@
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Pattern" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <EntityType Name="Emails">
+          <Key>
+            <PropertyRef Name="EmailUniqueId" />
+          </Key>
+          <Property Name="EmailUniqueId" Type="int" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EmailDate" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
             <PropertyRef Name="EntryPreviousItemId" />
@@ -115,6 +134,13 @@
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
           <Property Name="EntryPreviousItemId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FileGroups">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="FileTypeActions">
           <Key>
@@ -155,7 +181,10 @@
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="CreateDocumentSet" Type="bit" Nullable="false" />
           <Property Name="DocumentSpecific" Type="bit" Nullable="false" />
-          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ReplyToMail" Type="bit" Nullable="false" />
+          <Property Name="FileGroupId" Type="int" />
+          <Property Name="MergeEmails" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="InfoMapping">
           <Key>
@@ -166,6 +195,21 @@
           <Property Name="Field" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EntityType" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SessionActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SessionId" Type="int" Nullable="false" />
+          <Property Name="ActionId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Sessions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="SubItems">
           <Key>
@@ -386,6 +430,47 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO_CreateEx9' does not 
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentsToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-AdjustmentsToXML">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="IsClassified" Type="bit" />
+          <Property Name="AdjustmentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateDiscrepancyEntries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-CreateDiscrepancyEntries">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+          </Key>
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="AdjustmentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DeleteDocumentSet' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-DeleteDocumentSet">
           <Key>
@@ -395,6 +480,33 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DeleteDocumentSet' d
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToSubmit' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-DiscrepanciesToSubmit">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="IsClassified" Type="bit" />
+          <Property Name="AdjustmentType" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceQty" Type="float" />
+          <Property Name="ReceivedQty" Type="float" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DocumentsToDelete' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -424,6 +536,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not h
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="FileDate" Type="date" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -446,6 +559,26 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-UnallocatedShorts">
+          <Key>
+            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="QtyAllocated" />
+            <PropertyRef Name="Cost" />
+          </Key>
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DoNotAllocate" Type="bit" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+        </EntityType>
         <Association Name="FK_AsycudaDocumentSet_Attachments_Attachments">
           <End Role="Attachments" Type="Self.Attachments" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -457,6 +590,44 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
             </Principal>
             <Dependent Role="AsycudaDocumentSet_Attachments">
               <PropertyRef Name="AttachmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Emails">
+          <End Role="Emails" Type="Self.Emails" Multiplicity="0..1" />
+          <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailUniqueId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="EmailUniqueId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_FileTypes">
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
+          <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AttachmentLog_AsycudaDocumentSet_Attachments">
+          <End Role="AsycudaDocumentSet_Attachments" Type="Self.AsycudaDocumentSet_Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AttachmentLog" Type="Self.AttachmentLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AttachmentLog">
+              <PropertyRef Name="DocSetAttachment" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -564,6 +735,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FileTypes_FileGroups">
+          <End Role="FileGroups" Type="Self.FileGroups" Multiplicity="0..1" />
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileGroups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="FileGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InfoMapping_ApplicationSettings">
           <End Role="ApplicationSettings" Type="Self.ApplicationSettings" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -578,21 +761,50 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SessionActions_Actions">
+          <End Role="Actions" Type="Self.Actions" Multiplicity="1" />
+          <End Role="SessionActions" Type="Self.SessionActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionActions">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SessionActions_Sessions">
+          <End Role="Sessions" Type="Self.Sessions" Multiplicity="1" />
+          <End Role="SessionActions" Type="Self.SessionActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sessions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionActions">
+              <PropertyRef Name="SessionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationSettings" EntityType="Self.ApplicationSettings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AttachmentLog" EntityType="Self.AttachmentLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Contacts" EntityType="Self.Contacts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EmailMapping" EntityType="Self.EmailMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Emails" EntityType="Self.Emails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileGroups" EntityType="Self.FileGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeActions" EntityType="Self.FileTypeActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeContacts" EntityType="Self.FileTypeContacts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SessionActions" EntityType="Self.SessionActions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubItems" EntityType="Self.SubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Supplementary_unit" EntityType="Self.xcuda_Supplementary_unit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocument" EntityType="Self.AsycudaDocument" store:Type="Views" store:Schema="dbo">
@@ -754,12 +966,58 @@ FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
 [TODO_CreateEx9].[PreviousItem_Id] AS [PreviousItem_Id]
 FROM [dbo].[TODO_CreateEx9] AS [TODO_CreateEx9]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-AdjustmentsToXML" EntityType="Self.TODO-AdjustmentsToXML" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-AdjustmentsToXML].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-AdjustmentsToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-AdjustmentsToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-AdjustmentsToXML].[IsClassified] AS [IsClassified], 
+[TODO-AdjustmentsToXML].[AdjustmentType] AS [AdjustmentType], 
+[TODO-AdjustmentsToXML].[InvoiceNo] AS [InvoiceNo], 
+[TODO-AdjustmentsToXML].[InvoiceQty] AS [InvoiceQty], 
+[TODO-AdjustmentsToXML].[ReceivedQty] AS [ReceivedQty], 
+[TODO-AdjustmentsToXML].[InvoiceDate] AS [InvoiceDate], 
+[TODO-AdjustmentsToXML].[ItemNumber] AS [ItemNumber], 
+[TODO-AdjustmentsToXML].[Status] AS [Status], 
+[TODO-AdjustmentsToXML].[CNumber] AS [CNumber], 
+[TODO-AdjustmentsToXML].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
+FROM [dbo].[TODO-AdjustmentsToXML] AS [TODO-AdjustmentsToXML]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-CreateDiscrepancyEntries" EntityType="Self.TODO-CreateDiscrepancyEntries" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-CreateDiscrepancyEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-CreateDiscrepancyEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-CreateDiscrepancyEntries].[AdjustmentType] AS [AdjustmentType], 
+[TODO-CreateDiscrepancyEntries].[InvoiceNo] AS [InvoiceNo], 
+[TODO-CreateDiscrepancyEntries].[InvoiceDate] AS [InvoiceDate], 
+[TODO-CreateDiscrepancyEntries].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
+FROM [dbo].[TODO-CreateDiscrepancyEntries] AS [TODO-CreateDiscrepancyEntries]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-DeleteDocumentSet" EntityType="Self.TODO-DeleteDocumentSet" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-DeleteDocumentSet].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [TODO-DeleteDocumentSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
 [TODO-DeleteDocumentSet].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[TODO-DeleteDocumentSet] AS [TODO-DeleteDocumentSet]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-DiscrepanciesToSubmit" EntityType="Self.TODO-DiscrepanciesToSubmit" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-DiscrepanciesToSubmit].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[TODO-DiscrepanciesToSubmit].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-DiscrepanciesToSubmit].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-DiscrepanciesToSubmit].[IsClassified] AS [IsClassified], 
+[TODO-DiscrepanciesToSubmit].[AdjustmentType] AS [AdjustmentType], 
+[TODO-DiscrepanciesToSubmit].[InvoiceNo] AS [InvoiceNo], 
+[TODO-DiscrepanciesToSubmit].[InvoiceQty] AS [InvoiceQty], 
+[TODO-DiscrepanciesToSubmit].[ReceivedQty] AS [ReceivedQty], 
+[TODO-DiscrepanciesToSubmit].[InvoiceDate] AS [InvoiceDate], 
+[TODO-DiscrepanciesToSubmit].[ItemNumber] AS [ItemNumber], 
+[TODO-DiscrepanciesToSubmit].[Status] AS [Status], 
+[TODO-DiscrepanciesToSubmit].[CNumber] AS [CNumber], 
+[TODO-DiscrepanciesToSubmit].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DiscrepanciesToSubmit].[EmailId] AS [EmailId], 
+[TODO-DiscrepanciesToSubmit].[FileTypeId] AS [FileTypeId]
+FROM [dbo].[TODO-DiscrepanciesToSubmit] AS [TODO-DiscrepanciesToSubmit]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DocumentsToDelete" EntityType="Self.TODO-DocumentsToDelete" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -779,7 +1037,8 @@ FROM [dbo].[TODO-DocumentsToDelete] AS [TODO-DocumentsToDelete]</DefiningQuery>
 [TODO-PODocSet].[BLNumber] AS [BLNumber], 
 [TODO-PODocSet].[Type_of_declaration] AS [Type_of_declaration], 
 [TODO-PODocSet].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
-[TODO-PODocSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
+[TODO-PODocSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-PODocSet].[FileDate] AS [FileDate]
 FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-UnallocatedSales" EntityType="Self.TODO-UnallocatedSales" store:Type="Views" store:Schema="dbo">
@@ -794,9 +1053,33 @@ FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
 [TODO-UnallocatedSales].[Cost] AS [Cost]
 FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-UnallocatedShorts" EntityType="Self.TODO-UnallocatedShorts" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-UnallocatedShorts].[EntryDataId] AS [EntryDataId], 
+[TODO-UnallocatedShorts].[ItemNumber] AS [ItemNumber], 
+[TODO-UnallocatedShorts].[DoNotAllocate] AS [DoNotAllocate], 
+[TODO-UnallocatedShorts].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-UnallocatedShorts].[EffectiveDate] AS [EffectiveDate], 
+[TODO-UnallocatedShorts].[Quantity] AS [Quantity], 
+[TODO-UnallocatedShorts].[QtyAllocated] AS [QtyAllocated], 
+[TODO-UnallocatedShorts].[Cost] AS [Cost]
+FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Attachments" Association="Self.FK_AsycudaDocumentSet_Attachments_Attachments">
             <End Role="Attachments" EntitySet="Attachments" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Emails" Association="Self.FK_AsycudaDocumentSet_Attachments_Emails">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_FileTypes" Association="Self.FK_AsycudaDocumentSet_Attachments_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AttachmentLog_AsycudaDocumentSet_Attachments" Association="Self.FK_AttachmentLog_AsycudaDocumentSet_Attachments">
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+            <End Role="AttachmentLog" EntitySet="AttachmentLog" />
           </AssociationSet>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
@@ -830,9 +1113,21 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="FileTypes" EntitySet="FileTypes" />
           </AssociationSet>
+          <AssociationSet Name="FK_FileTypes_FileGroups" Association="Self.FK_FileTypes_FileGroups">
+            <End Role="FileGroups" EntitySet="FileGroups" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
           <AssociationSet Name="FK_InfoMapping_ApplicationSettings" Association="Self.FK_InfoMapping_ApplicationSettings">
             <End Role="ApplicationSettings" EntitySet="ApplicationSettings" />
             <End Role="InfoMapping" EntitySet="InfoMapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SessionActions_Actions" Association="Self.FK_SessionActions_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="SessionActions" EntitySet="SessionActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SessionActions_Sessions" Association="Self.FK_SessionActions_Sessions">
+            <End Role="Sessions" EntitySet="Sessions" />
+            <End Role="SessionActions" EntitySet="SessionActions" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -968,6 +1263,39 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypeContacts" EntitySet="FileTypeContacts" />
           </AssociationSet>
+          <EntitySet Name="TODO_UnallocatedShorts" EntityType="WaterNutDBModel.TODO_UnallocatedShorts" />
+          <EntitySet Name="TODO_AdjustmentsToXML" EntityType="WaterNutDBModel.TODO_AdjustmentsToXML" />
+          <EntitySet Name="SessionActions" EntityType="WaterNutDBModel.SessionActions" />
+          <EntitySet Name="Sessions" EntityType="WaterNutDBModel.Sessions" />
+          <AssociationSet Name="FK_SessionActions_Actions" Association="WaterNutDBModel.FK_SessionActions_Actions">
+            <End Role="Actions" EntitySet="Actions" />
+            <End Role="SessionActions" EntitySet="SessionActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SessionActions_Sessions" Association="WaterNutDBModel.FK_SessionActions_Sessions">
+            <End Role="Sessions" EntitySet="Sessions" />
+            <End Role="SessionActions" EntitySet="SessionActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_FileTypes" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <EntitySet Name="AttachmentLog" EntityType="WaterNutDBModel.AttachmentLog" />
+          <AssociationSet Name="FK_AttachmentLog_AsycudaDocumentSet_Attachments" Association="WaterNutDBModel.FK_AttachmentLog_AsycudaDocumentSet_Attachments">
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+            <End Role="AttachmentLog" EntitySet="AttachmentLog" />
+          </AssociationSet>
+          <EntitySet Name="TODO_CreateDiscrepancyEntries" EntityType="WaterNutDBModel.TODO_CreateDiscrepancyEntries" />
+          <EntitySet Name="Emails" EntityType="WaterNutDBModel.Emails" />
+          <AssociationSet Name="FK_AsycudaDocumentSet_Attachments_Emails" Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails">
+            <End Role="Emails" EntitySet="Emails" />
+            <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
+          </AssociationSet>
+          <EntitySet Name="FileGroups" EntityType="WaterNutDBModel.FileGroups" />
+          <AssociationSet Name="FK_FileTypes_FileGroups" Association="WaterNutDBModel.FK_FileTypes_FileGroups">
+            <End Role="FileGroups" EntitySet="FileGroups" />
+            <End Role="FileTypes" EntitySet="FileTypes" />
+          </AssociationSet>
+          <EntitySet Name="TODO_DiscrepanciesToSubmit" EntityType="WaterNutDBModel.TODO_DiscrepanciesToSubmit" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -1441,9 +1769,14 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <NavigationProperty Name="FileTypeMappings" Relationship="WaterNutDBModel.FK_FileTypeMappings_FileTypes" FromRole="FileTypes" ToRole="FileTypeMappings" />
           <Property Name="CreateDocumentSet" Type="Boolean" Nullable="false" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
-          <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="FileTypeActions" Relationship="WaterNutDBModel.FK_FileTypeActions_FileTypes" FromRole="FileTypes" ToRole="FileTypeActions" />
           <NavigationProperty Name="FileTypeContacts" Relationship="WaterNutDBModel.FK_FileTypeContacts_FileTypes" FromRole="FileTypes" ToRole="FileTypeContacts" />
+          <Property Name="ReplyToMail" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" FromRole="FileTypes" ToRole="AsycudaDocumentSet_Attachments" />
+          <Property Name="FileGroupId" Type="Int32" />
+          <Property Name="MergeEmails" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="FileGroups" Relationship="WaterNutDBModel.FK_FileTypes_FileGroups" FromRole="FileTypes" ToRole="FileGroups" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -1507,6 +1840,12 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <NavigationProperty Name="Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="Attachments" />
           <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="AsycudaDocumentSetEx" />
           <Property Name="DocumentSpecific" Type="Boolean" Nullable="false" />
+          <Property Name="FileDate" Type="DateTime" Precision="0" Nullable="false" />
+          <Property Name="EmailUniqueId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" FromRole="AsycudaDocumentSet_Attachments" ToRole="FileTypes" />
+          <NavigationProperty Name="AttachmentLog" Relationship="WaterNutDBModel.FK_AttachmentLog_AsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSet_Attachments" ToRole="AttachmentLog" />
+          <NavigationProperty Name="Emails" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails" FromRole="AsycudaDocumentSet_Attachments" ToRole="Emails" />
         </EntityType>
         <EntityType Name="InfoMapping">
           <Key>
@@ -1664,6 +2003,7 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FileDate" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="Actions">
           <Key>
@@ -1672,6 +2012,7 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="FileTypeActions" Relationship="WaterNutDBModel.FK_FileTypeActions_Actions" FromRole="Actions" ToRole="FileTypeActions" />
+          <NavigationProperty Name="SessionActions" Relationship="WaterNutDBModel.FK_SessionActions_Actions" FromRole="Actions" ToRole="SessionActions" />
         </EntityType>
         <EntityType Name="FileTypeActions">
           <Key>
@@ -1744,6 +2085,204 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="TODO_UnallocatedShorts">
+          <Key>
+            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="Quantity" />
+            <PropertyRef Name="QtyAllocated" />
+            <PropertyRef Name="Cost" />
+          </Key>
+          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DoNotAllocate" Type="Boolean" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" Nullable="false" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
+        </EntityType>
+        <EntityType Name="TODO_AdjustmentsToXML">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="IsClassified" Type="Boolean" />
+          <Property Name="AdjustmentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SessionActions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SessionId" Type="Int32" Nullable="false" />
+          <Property Name="ActionId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Actions" Relationship="WaterNutDBModel.FK_SessionActions_Actions" FromRole="SessionActions" ToRole="Actions" />
+          <NavigationProperty Name="Sessions" Relationship="WaterNutDBModel.FK_SessionActions_Sessions" FromRole="SessionActions" ToRole="Sessions" />
+        </EntityType>
+        <EntityType Name="Sessions">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="SessionActions" Relationship="WaterNutDBModel.FK_SessionActions_Sessions" FromRole="Sessions" ToRole="SessionActions" />
+        </EntityType>
+        <Association Name="FK_SessionActions_Actions">
+          <End Type="WaterNutDBModel.Actions" Role="Actions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.SessionActions" Role="SessionActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Actions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionActions">
+              <PropertyRef Name="ActionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SessionActions_Sessions">
+          <End Type="WaterNutDBModel.Sessions" Role="Sessions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.SessionActions" Role="SessionActions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sessions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionActions">
+              <PropertyRef Name="SessionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_FileTypes">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="FileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="AttachmentLog">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocSetAttachment" Type="Int32" Nullable="false" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AttachmentLog_AsycudaDocumentSet_Attachments" FromRole="AttachmentLog" ToRole="AsycudaDocumentSet_Attachments" />
+        </EntityType>
+        <Association Name="FK_AttachmentLog_AsycudaDocumentSet_Attachments">
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.AttachmentLog" Role="AttachmentLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AttachmentLog">
+              <PropertyRef Name="DocSetAttachment" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TODO_CreateDiscrepancyEntries">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+          </Key>
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="AdjustmentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Emails">
+          <Key>
+            <PropertyRef Name="EmailUniqueId" />
+          </Key>
+          <Property Name="EmailUniqueId" Type="Int32" Nullable="false" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Emails" FromRole="Emails" ToRole="AsycudaDocumentSet_Attachments" />
+        </EntityType>
+        <Association Name="FK_AsycudaDocumentSet_Attachments_Emails">
+          <End Type="WaterNutDBModel.Emails" Role="Emails" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.AsycudaDocumentSet_Attachments" Role="AsycudaDocumentSet_Attachments" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Emails">
+              <PropertyRef Name="EmailUniqueId" />
+            </Principal>
+            <Dependent Role="AsycudaDocumentSet_Attachments">
+              <PropertyRef Name="EmailUniqueId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FileGroups">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_FileGroups" FromRole="FileGroups" ToRole="FileTypes" />
+        </EntityType>
+        <Association Name="FK_FileTypes_FileGroups">
+          <End Type="WaterNutDBModel.FileGroups" Role="FileGroups" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileGroups">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes">
+              <PropertyRef Name="FileGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TODO_DiscrepanciesToSubmit">
+          <Key>
+            <PropertyRef Name="EntryDataDetailsId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="ItemNumber" />
+          </Key>
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="IsClassified" Type="Boolean" />
+          <Property Name="AdjustmentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceQty" Type="Double" />
+          <Property Name="ReceivedQty" Type="Double" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2015,6 +2554,9 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="MergeEmails" ColumnName="MergeEmails" />
+                <ScalarProperty Name="FileGroupId" ColumnName="FileGroupId" />
+                <ScalarProperty Name="ReplyToMail" ColumnName="ReplyToMail" />
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="CreateDocumentSet" ColumnName="CreateDocumentSet" />
@@ -2041,6 +2583,9 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSet_Attachments">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet_Attachments">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet_Attachments">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailUniqueId" ColumnName="EmailUniqueId" />
+                <ScalarProperty Name="FileDate" ColumnName="FileDate" />
                 <ScalarProperty Name="DocumentSpecific" ColumnName="DocumentSpecific" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
@@ -2134,6 +2679,7 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
           <EntitySetMapping Name="TODO_PODocSet">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_PODocSet">
               <MappingFragment StoreEntitySet="TODO-PODocSet">
+                <ScalarProperty Name="FileDate" ColumnName="FileDate" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
                 <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
                 <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
@@ -2170,6 +2716,115 @@ FROM [dbo].[TODO-UnallocatedSales] AS [TODO-UnallocatedSales]</DefiningQuery>
                 <ScalarProperty Name="ContactId" ColumnName="ContactId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_UnallocatedShorts">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_UnallocatedShorts">
+              <MappingFragment StoreEntitySet="TODO-UnallocatedShorts">
+                <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="DoNotAllocate" ColumnName="DoNotAllocate" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_AdjustmentsToXML">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_AdjustmentsToXML">
+              <MappingFragment StoreEntitySet="TODO-AdjustmentsToXML">
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="AdjustmentType" ColumnName="AdjustmentType" />
+                <ScalarProperty Name="IsClassified" ColumnName="IsClassified" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SessionActions">
+            <EntityTypeMapping TypeName="WaterNutDBModel.SessionActions">
+              <MappingFragment StoreEntitySet="SessionActions">
+                <ScalarProperty Name="ActionId" ColumnName="ActionId" />
+                <ScalarProperty Name="SessionId" ColumnName="SessionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sessions">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Sessions">
+              <MappingFragment StoreEntitySet="Sessions">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AttachmentLog">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AttachmentLog">
+              <MappingFragment StoreEntitySet="AttachmentLog">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="DocSetAttachment" ColumnName="DocSetAttachment" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_CreateDiscrepancyEntries">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_CreateDiscrepancyEntries">
+              <MappingFragment StoreEntitySet="TODO-CreateDiscrepancyEntries">
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="AdjustmentType" ColumnName="AdjustmentType" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Emails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Emails">
+              <MappingFragment StoreEntitySet="Emails">
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="EmailUniqueId" ColumnName="EmailUniqueId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileGroups">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileGroups">
+              <MappingFragment StoreEntitySet="FileGroups">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_DiscrepanciesToSubmit">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_DiscrepanciesToSubmit">
+              <MappingFragment StoreEntitySet="TODO-DiscrepanciesToSubmit">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="ReceivedQty" ColumnName="ReceivedQty" />
+                <ScalarProperty Name="InvoiceQty" ColumnName="InvoiceQty" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="AdjustmentType" ColumnName="AdjustmentType" />
+                <ScalarProperty Name="IsClassified" ColumnName="IsClassified" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -108,6 +108,12 @@ namespace AdjustmentQS.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentEx>> GetAdjustmentExByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

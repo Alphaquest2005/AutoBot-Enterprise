@@ -111,6 +111,12 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<Sales>> GetSalesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Sales>> GetSalesByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Sales>> GetSalesByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

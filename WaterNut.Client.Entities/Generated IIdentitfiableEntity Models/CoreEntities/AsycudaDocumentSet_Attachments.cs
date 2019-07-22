@@ -104,6 +104,82 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string FileTypesEntityName
+        {
+            get
+            {
+                return this.FileTypes == null ? "" : this.FileTypes.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (FileTypesClient ctx = new FileTypesClient())
+                    {
+                        var dto = ctx.GetFileTypes().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.FileTypes = (FileTypes)new FileTypes().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.FileTypes.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddFileTypes");
+                        }
+                        else
+                        {
+                            var obj = new FileTypes(dto);
+                           if (this.FileTypes == null || this.FileTypes.EntityId != obj.EntityId) this.FileTypes = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string EmailsEntityName
+        {
+            get
+            {
+                return this.Emails == null ? "" : this.Emails.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (EmailsClient ctx = new EmailsClient())
+                    {
+                        var dto = ctx.GetEmails().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.Emails = (Emails)new Emails().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.Emails.EmailUniqueId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddEmails");
+                        }
+                        else
+                        {
+                            var obj = new Emails(dto);
+                           if (this.Emails == null || this.Emails.EntityId != obj.EntityId) this.Emails = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

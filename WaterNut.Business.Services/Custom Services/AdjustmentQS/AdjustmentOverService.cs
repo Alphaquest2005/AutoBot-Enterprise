@@ -52,7 +52,9 @@ namespace AdjustmentQS.Business.Services
                             {
                                 EntryDataId = x.EntryDataId,
                                 Currency = x.AdjustmentEx.Currency,
-                                EntryDataDate = x.AdjustmentEx.InvoiceDate
+                                EntryDataDate = x.AdjustmentEx.InvoiceDate,
+                                EmailId = x.AdjustmentEx.EmailId,
+                                FileTypeId = x.AdjustmentEx.FileTypeId
                             },
                             InventoryItems = new InventoryItemsEx()
                             {

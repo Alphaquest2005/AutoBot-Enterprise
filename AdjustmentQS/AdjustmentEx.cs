@@ -33,6 +33,8 @@ namespace AdjustmentQS
         public Nullable<int> TotalLines { get; set; }
         public string Currency { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public Nullable<int> EmailId { get; set; }
+        public Nullable<int> FileTypeId { get; set; }
     
         public virtual ICollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         public virtual ICollection<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }

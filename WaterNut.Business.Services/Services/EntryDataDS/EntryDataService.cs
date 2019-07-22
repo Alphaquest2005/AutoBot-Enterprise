@@ -263,6 +263,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileTypes":
+                                return
+                                    await
+                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -772,6 +778,9 @@ namespace EntryDataDS.Business.Services
                             case "Suppliers":
                                 return await CountWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EntryData.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
@@ -905,6 +914,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Suppliers>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1177,6 +1192,72 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<EntryData>> GetEntryDataByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EmailId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EntryData> entities = await set//dbContext.EntryData
+                                                    // .Include(x => x.EntryDataDetails)									  
+                                                    // .Include(x => x.AsycudaDocuments)									  
+                                                    // .Include(x => x.AsycudaDocumentSets)									  
+                                                    // .Include(x => x.ContainerEntryData)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<EntryData>> GetEntryDataByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EntryData> entities = await set//dbContext.EntryData
+                                                    // .Include(x => x.EntryDataDetails)									  
+                                                    // .Include(x => x.AsycudaDocuments)									  
+                                                    // .Include(x => x.AsycudaDocumentSets)									  
+                                                    // .Include(x => x.ContainerEntryData)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1244,6 +1325,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Suppliers":
                                 return await SumWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

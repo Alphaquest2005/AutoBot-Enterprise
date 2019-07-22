@@ -103,6 +103,24 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<FileTypeContacts> FileTypeContacts { get; set; }
      
+        public DbSet<TODO_UnallocatedShorts> TODO_UnallocatedShorts { get; set; }
+     
+        public DbSet<TODO_AdjustmentsToXML> TODO_AdjustmentsToXML { get; set; }
+     
+        public DbSet<SessionActions> SessionActions { get; set; }
+     
+        public DbSet<Sessions> Sessions { get; set; }
+     
+        public DbSet<AttachmentLog> AttachmentLog { get; set; }
+     
+        public DbSet<TODO_CreateDiscrepancyEntries> TODO_CreateDiscrepancyEntries { get; set; }
+     
+        public DbSet<Emails> Emails { get; set; }
+     
+        public DbSet<FileGroups> FileGroups { get; set; }
+     
+        public DbSet<TODO_DiscrepanciesToSubmit> TODO_DiscrepanciesToSubmit { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -162,6 +180,24 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new FileTypeActionsMap());
          
             modelBuilder.Configurations.Add(new FileTypeContactsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_UnallocatedShortsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_AdjustmentsToXMLMap());
+         
+            modelBuilder.Configurations.Add(new SessionActionsMap());
+         
+            modelBuilder.Configurations.Add(new SessionsMap());
+         
+            modelBuilder.Configurations.Add(new AttachmentLogMap());
+         
+            modelBuilder.Configurations.Add(new TODO_CreateDiscrepancyEntriesMap());
+         
+            modelBuilder.Configurations.Add(new EmailsMap());
+         
+            modelBuilder.Configurations.Add(new FileGroupsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_DiscrepanciesToSubmitMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

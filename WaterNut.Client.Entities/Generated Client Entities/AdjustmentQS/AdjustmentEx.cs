@@ -77,7 +77,7 @@ public string Type
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
        
                 
                 [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
@@ -199,6 +199,36 @@ public int ApplicationSettingsId
 				this.adjustmentex.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.adjustmentex.EmailId; }
+			set
+			{
+			    if (value == this.adjustmentex.EmailId) return;
+				this.adjustmentex.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.adjustmentex.FileTypeId; }
+			set
+			{
+			    if (value == this.adjustmentex.FileTypeId) return;
+				this.adjustmentex.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
 			}
 		}
      

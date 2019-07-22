@@ -14,6 +14,7 @@
               this.HasKey(t => t.EntryDataId);        
               this.ToTable("EntryData_Adjustments");
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
              // Nav Property Names
                   
     

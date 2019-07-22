@@ -704,7 +704,9 @@ namespace WaterNut.DataSpace
                     });
 
                     var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
-                        .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) || (x.DocumentSpecific == false && !cdoc.Document.AsycudaDocument_Attachments.Any(z => z.AttachmentId == x.AttachmentId) ))
+                        .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) || (x.DocumentSpecific == false
+                                                                                                  && x.EmailUniqueId == pod.EntryData.EmailId
+                                                                                                  && !cdoc.Document.AsycudaDocument_Attachments.Any(z => z.AttachmentId == x.AttachmentId) ))
                         .Select(x => x.Attachment);
                     foreach (var att in alst)
                     {
@@ -809,6 +811,7 @@ namespace WaterNut.DataSpace
                         LineNumber = x.LineNumber,
                     }).ToList(),
                     EntryData = g.Key.EntryData,
+
                     Freight = Convert.ToDouble(g.Sum(x => x.Freight)),
                     Weight = Convert.ToDouble(g.Sum(x => x.Weight)),
                     InternalFreight = Convert.ToDouble(g.Sum(x => x.InternalFreight)),
@@ -1927,6 +1930,7 @@ namespace WaterNut.DataSpace
             
                             StatusModel.StartStatusUpdate("Exporting Files", docSet.Documents.Count());
             var exceptions = new ConcurrentQueue<Exception>();
+            if (!Directory.Exists(directoryName)) return;
             File.Delete(Path.Combine(directoryName, "Instructions.txt"));
             foreach (var doc in docSet.Documents)
             {

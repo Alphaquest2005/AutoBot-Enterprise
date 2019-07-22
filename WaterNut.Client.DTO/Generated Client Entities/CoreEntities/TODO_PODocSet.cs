@@ -138,6 +138,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Declarant_Reference_Number;
 
+        [DataMember]
+        public Nullable<System.DateTime> FileDate
+		{ 
+		    get { return _FileDate; }
+			set
+			{
+			    if (value == _FileDate) return;
+				_FileDate = value;
+				NotifyPropertyChanged();//m => this.FileDate
+			}
+		}
+        private Nullable<System.DateTime> _FileDate;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

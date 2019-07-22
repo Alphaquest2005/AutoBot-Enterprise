@@ -19,6 +19,21 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Adjustments : EntryData 
     {
+        [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

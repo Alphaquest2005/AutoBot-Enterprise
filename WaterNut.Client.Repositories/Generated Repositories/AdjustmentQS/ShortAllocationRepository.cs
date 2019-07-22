@@ -533,6 +533,90 @@ namespace AdjustmentQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<ShortAllocation>> GetShortAllocationByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+             if (AsycudaDocumentSetId == "0") return null;
+            try
+            {
+                 using (ShortAllocationClient t = new ShortAllocationClient())
+                    {
+                        var res = await t.GetShortAllocationByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new ShortAllocation(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<ShortAllocation>> GetShortAllocationByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (ShortAllocationClient t = new ShortAllocationClient())
+                    {
+                        var res = await t.GetShortAllocationByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new ShortAllocation(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<ShortAllocation>> GetShortAllocationByEmailId(string EmailId, List<string> includesLst = null)
+        {
+             if (EmailId == "0") return null;
+            try
+            {
+                 using (ShortAllocationClient t = new ShortAllocationClient())
+                    {
+                        var res = await t.GetShortAllocationByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new ShortAllocation(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

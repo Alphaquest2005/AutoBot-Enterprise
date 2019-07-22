@@ -111,6 +111,12 @@ namespace DocumentDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByEmailUniqueId(string EmailUniqueId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaDocumentSet_Attachments>> GetAsycudaDocumentSet_AttachmentsByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

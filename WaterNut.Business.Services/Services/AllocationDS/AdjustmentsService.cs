@@ -1111,6 +1111,66 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<Adjustments>> GetAdjustmentsByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EmailId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Adjustments> entities = await set//dbContext.EntryData.OfType<Adjustments>()
+                                                    // .Include(x => x.EntryDataDetails)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<Adjustments>> GetAdjustmentsByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Adjustments> entities = await set//dbContext.EntryData.OfType<Adjustments>()
+                                                    // .Include(x => x.EntryDataDetails)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

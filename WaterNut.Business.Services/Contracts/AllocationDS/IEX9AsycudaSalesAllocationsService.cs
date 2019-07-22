@@ -120,6 +120,12 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

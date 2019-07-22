@@ -305,7 +305,7 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<double> _pqtyallocated;
         [DataMember]
-        public Nullable<double> PiQuantity 
+        public double PiQuantity 
         {
             get
             {
@@ -318,7 +318,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _piquantity;
+        double _piquantity;
         [DataMember]
         public Nullable<double> SalesFactor 
         {
@@ -739,6 +739,36 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         int _asycudadocumentsetid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
         [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }
         [DataMember]

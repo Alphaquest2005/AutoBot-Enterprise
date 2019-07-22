@@ -142,6 +142,21 @@ namespace AdjustmentQS.Client.Services
             return  await Channel.GetShortAllocationByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<ShortAllocation>> GetShortAllocationByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetShortAllocationByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<ShortAllocation>> GetShortAllocationByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetShortAllocationByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<ShortAllocation>> GetShortAllocationByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetShortAllocationByEmailId(EmailId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
