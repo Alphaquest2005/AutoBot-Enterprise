@@ -210,6 +210,15 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WindowInMinutes" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SessionSchedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SesseionId" Type="int" Nullable="false" />
+          <Property Name="RunDateTime" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="SubItems">
           <Key>
@@ -271,6 +280,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="TotalFreight" Type="float" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="SourceFileName" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -539,6 +549,25 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not h
           <Property Name="FileDate" Type="date" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-SubmitXMLToCustoms">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ASYCUDA_Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="20" />
+          <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-UnallocatedSales">
           <Key>
@@ -785,6 +814,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SessionSchedule_Sessions">
+          <End Role="Sessions" Type="Self.Sessions" Multiplicity="1" />
+          <End Role="SessionSchedule" Type="Self.SessionSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sessions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionSchedule">
+              <PropertyRef Name="SesseionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="Actions" EntityType="Self.Actions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ApplicationSettings" EntityType="Self.ApplicationSettings" Schema="dbo" store:Type="Tables" />
@@ -805,6 +846,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SessionActions" EntityType="Self.SessionActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Sessions" EntityType="Self.Sessions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SessionSchedule" EntityType="Self.SessionSchedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubItems" EntityType="Self.SubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Supplementary_unit" EntityType="Self.xcuda_Supplementary_unit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocument" EntityType="Self.AsycudaDocument" store:Type="Views" store:Schema="dbo">
@@ -840,7 +882,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
 [AsycudaDocument].[AssessmentDate] AS [AssessmentDate], 
 [AsycudaDocument].[TotalFreight] AS [TotalFreight], 
 [AsycudaDocument].[ExpiryDate] AS [ExpiryDate], 
-[AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocument].[SourceFileName] AS [SourceFileName]
 FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItem" EntityType="Self.AsycudaDocumentItem" store:Type="Views" store:Schema="dbo">
@@ -1041,6 +1084,21 @@ FROM [dbo].[TODO-DocumentsToDelete] AS [TODO-DocumentsToDelete]</DefiningQuery>
 [TODO-PODocSet].[FileDate] AS [FileDate]
 FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-SubmitXMLToCustoms" EntityType="Self.TODO-SubmitXMLToCustoms" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-SubmitXMLToCustoms].[Id] AS [Id], 
+[TODO-SubmitXMLToCustoms].[CNumber] AS [CNumber], 
+[TODO-SubmitXMLToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-SubmitXMLToCustoms].[RegistrationDate] AS [RegistrationDate], 
+[TODO-SubmitXMLToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-SubmitXMLToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitXMLToCustoms].[DocumentType] AS [DocumentType], 
+[TODO-SubmitXMLToCustoms].[AssessmentDate] AS [AssessmentDate], 
+[TODO-SubmitXMLToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitXMLToCustoms].[EmailId] AS [EmailId], 
+[TODO-SubmitXMLToCustoms].[Extended_customs_procedure] AS [Extended_customs_procedure]
+FROM [dbo].[TODO-SubmitXMLToCustoms] AS [TODO-SubmitXMLToCustoms]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-UnallocatedSales" EntityType="Self.TODO-UnallocatedSales" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-UnallocatedSales].[EntryDataId] AS [EntryDataId], 
@@ -1128,6 +1186,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <AssociationSet Name="FK_SessionActions_Sessions" Association="Self.FK_SessionActions_Sessions">
             <End Role="Sessions" EntitySet="Sessions" />
             <End Role="SessionActions" EntitySet="SessionActions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SessionSchedule_Sessions" Association="Self.FK_SessionSchedule_Sessions">
+            <End Role="Sessions" EntitySet="Sessions" />
+            <End Role="SessionSchedule" EntitySet="SessionSchedule" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -1296,6 +1358,12 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypes" EntitySet="FileTypes" />
           </AssociationSet>
           <EntitySet Name="TODO_DiscrepanciesToSubmit" EntityType="WaterNutDBModel.TODO_DiscrepanciesToSubmit" />
+          <EntitySet Name="SessionSchedule" EntityType="WaterNutDBModel.SessionSchedule" />
+          <AssociationSet Name="FK_SessionSchedule_Sessions" Association="WaterNutDBModel.FK_SessionSchedule_Sessions">
+            <End Role="Sessions" EntitySet="Sessions" />
+            <End Role="SessionSchedule" EntitySet="SessionSchedule" />
+          </AssociationSet>
+          <EntitySet Name="TODO_SubmitXMLToCustoms" EntityType="WaterNutDBModel.TODO_SubmitXMLToCustoms" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -1387,6 +1455,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <NavigationProperty Name="ApplicationSettings" Relationship="WaterNutDBModel.ApplicationSettingsAsycudaDocument" FromRole="AsycudaDocument" ToRole="ApplicationSettings" />
+          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="AsycudaDocumentItem">
@@ -2143,6 +2212,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="SessionActions" Relationship="WaterNutDBModel.FK_SessionActions_Sessions" FromRole="Sessions" ToRole="SessionActions" />
+          <Property Name="WindowInMinutes" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SessionSchedule" Relationship="WaterNutDBModel.FK_SessionSchedule_Sessions" FromRole="Sessions" ToRole="SessionSchedule" />
         </EntityType>
         <Association Name="FK_SessionActions_Actions">
           <End Type="WaterNutDBModel.Actions" Role="Actions" Multiplicity="1" />
@@ -2283,6 +2354,44 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="EmailId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
         </EntityType>
+        <EntityType Name="SessionSchedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SesseionId" Type="Int32" Nullable="false" />
+          <Property Name="RunDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Sessions" Relationship="WaterNutDBModel.FK_SessionSchedule_Sessions" FromRole="SessionSchedule" ToRole="Sessions" />
+        </EntityType>
+        <Association Name="FK_SessionSchedule_Sessions">
+          <End Type="WaterNutDBModel.Sessions" Role="Sessions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.SessionSchedule" Role="SessionSchedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Sessions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SessionSchedule">
+              <PropertyRef Name="SesseionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="TODO_SubmitXMLToCustoms">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ASYCUDA_Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="ReferenceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="DocumentType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2337,6 +2446,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocuments">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocument">
               <MappingFragment StoreEntitySet="AsycudaDocument">
+                <ScalarProperty Name="SourceFileName" ColumnName="SourceFileName" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
@@ -2764,6 +2874,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="Sessions">
             <EntityTypeMapping TypeName="WaterNutDBModel.Sessions">
               <MappingFragment StoreEntitySet="Sessions">
+                <ScalarProperty Name="WindowInMinutes" ColumnName="WindowInMinutes" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -2825,6 +2936,32 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SessionSchedule">
+            <EntityTypeMapping TypeName="WaterNutDBModel.SessionSchedule">
+              <MappingFragment StoreEntitySet="SessionSchedule">
+                <ScalarProperty Name="RunDateTime" ColumnName="RunDateTime" />
+                <ScalarProperty Name="SesseionId" ColumnName="SesseionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_SubmitXMLToCustoms">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitXMLToCustoms">
+              <MappingFragment StoreEntitySet="TODO-SubmitXMLToCustoms">
+                <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
+                <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -128,8 +128,8 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
          public override void FilterData()
          {
              var res = GetAutoPropertyFilterString();
-
-              if (ViewDocData == true)
+             res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
+            if (ViewDocData == true)
               {
                   if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx != null)
                   {

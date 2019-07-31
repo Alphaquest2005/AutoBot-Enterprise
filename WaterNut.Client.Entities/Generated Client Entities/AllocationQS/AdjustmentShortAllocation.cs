@@ -337,9 +337,9 @@ public Nullable<double> pQtyAllocated
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "PiQuantity is required")]
        [NumberValidationAttribute]
-public Nullable<double> PiQuantity
+public double PiQuantity
 		{ 
 		    get { return this.adjustmentshortallocation.PiQuantity; }
 			set
@@ -786,6 +786,53 @@ public int AsycudaDocumentSetId
 				this.adjustmentshortallocation.AsycudaDocumentSetId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.adjustmentshortallocation.FileTypeId; }
+			set
+			{
+			    if (value == this.adjustmentshortallocation.FileTypeId) return;
+				this.adjustmentshortallocation.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.adjustmentshortallocation.EmailId; }
+			set
+			{
+			    if (value == this.adjustmentshortallocation.EmailId) return;
+				this.adjustmentshortallocation.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "xStatus has a max length of 255 letters ")]
+public string xStatus
+		{ 
+		    get { return this.adjustmentshortallocation.xStatus; }
+			set
+			{
+			    if (value == this.adjustmentshortallocation.xStatus) return;
+				this.adjustmentshortallocation.xStatus = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xStatus");
 			}
 		}
      

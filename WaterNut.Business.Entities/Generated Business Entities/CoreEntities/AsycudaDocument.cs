@@ -505,6 +505,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _applicationsettingsid;
         [DataMember]
+        public string SourceFileName 
+        {
+            get
+            {
+                return _sourcefilename;
+            }
+            set
+            {
+                _sourcefilename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefilename;
+        [DataMember]
         public List<AsycudaDocumentItem> AsycudaDocumentItems { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

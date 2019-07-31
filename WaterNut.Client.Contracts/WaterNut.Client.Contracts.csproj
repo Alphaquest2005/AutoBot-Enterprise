@@ -114,6 +114,7 @@
     <Compile Include="CoreEntities\IInventoryItemXService.cs" />
     <Compile Include="CoreEntities\ILicenceSummaryService.cs" />
     <Compile Include="CoreEntities\ISessionActionsService.cs" />
+    <Compile Include="CoreEntities\ISessionScheduleService.cs" />
     <Compile Include="CoreEntities\ISessionsService.cs" />
     <Compile Include="CoreEntities\ISubItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_AdjustmentsToXMLService.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="CoreEntities\ITODO_DocumentsToDeleteService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedShortsService.cs" />
     <Compile Include="CoreEntities\Ixcuda_Supplementary_unitService.cs" />

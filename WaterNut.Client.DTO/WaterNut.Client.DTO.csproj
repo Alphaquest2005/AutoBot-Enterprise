@@ -124,6 +124,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\SubItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\xcuda_Supplementary_unit.cs" />
@@ -211,6 +213,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -219,6 +222,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs" />
@@ -298,6 +302,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -306,6 +311,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\xcuda_Supplementary_unit.cs" />

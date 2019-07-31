@@ -160,6 +160,21 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<int> _xentryitem_id;
         [DataMember]
+        public string xStatus 
+        {
+            get
+            {
+                return _xstatus;
+            }
+            set
+            {
+                _xstatus = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xstatus;
+        [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
         [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }

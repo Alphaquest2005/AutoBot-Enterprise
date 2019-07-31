@@ -899,6 +899,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _sourceFileNameFilter;
+        public string SourceFileNameFilter
+        {
+            get
+            {
+                return _sourceFileNameFilter;
+            }
+            set
+            {
+                _sourceFileNameFilter = value;
+				NotifyPropertyChanged(x => SourceFileNameFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1130,7 +1148,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(ExpiryDateFilter.HasValue)
 								res.Append(" && " + string.Format("ExpiryDate == \"{0}\"",  Convert.ToDateTime(ExpiryDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(string.IsNullOrEmpty(SourceFileNameFilter) == false)
+						res.Append(" && " + string.Format("SourceFileName.Contains(\"{0}\")",  SourceFileNameFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1231,7 +1253,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalFreight = x.TotalFreight ,
                     
  
-                    ExpiryDate = x.ExpiryDate 
+                    ExpiryDate = x.ExpiryDate ,
+                    
+ 
+                    SourceFileName = x.SourceFileName 
                     
                 }).ToList()
             };
@@ -1323,6 +1348,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<System.DateTime> ExpiryDate { get; set; } 
+                    
+ 
+                    public string SourceFileName { get; set; } 
                     
         }
 

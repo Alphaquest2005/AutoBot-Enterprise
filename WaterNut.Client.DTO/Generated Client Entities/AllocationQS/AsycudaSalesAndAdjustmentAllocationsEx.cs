@@ -113,7 +113,7 @@ namespace AllocationQS.Client.DTO
         private int _PreviousItem_Id;
 
         [DataMember]
-        public Nullable<System.DateTime> InvoiceDate
+        public System.DateTime InvoiceDate
 		{ 
 		    get { return _InvoiceDate; }
 			set
@@ -123,7 +123,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.InvoiceDate
 			}
 		}
-        private Nullable<System.DateTime> _InvoiceDate;
+        private System.DateTime _InvoiceDate;
 
         [DataMember]
         public string CustomerName
@@ -204,7 +204,7 @@ namespace AllocationQS.Client.DTO
         private string _ItemDescription;
 
         [DataMember]
-        public Nullable<int> EntryDataDetailsId
+        public int EntryDataDetailsId
 		{ 
 		    get { return _EntryDataDetailsId; }
 			set
@@ -214,7 +214,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.EntryDataDetailsId
 			}
 		}
-        private Nullable<int> _EntryDataDetailsId;
+        private int _EntryDataDetailsId;
 
         [DataMember]
         public int xBond_Item_Id
@@ -451,7 +451,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<double> _DutyLiability;
 
         [DataMember]
-        public Nullable<double> TaxAmount
+        public double TaxAmount
 		{ 
 		    get { return _TaxAmount; }
 			set
@@ -461,7 +461,7 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.TaxAmount
 			}
 		}
-        private Nullable<double> _TaxAmount;
+        private double _TaxAmount;
 
         [DataMember]
         public Nullable<bool> pIsAssessed
@@ -633,7 +633,7 @@ namespace AllocationQS.Client.DTO
         private Nullable<System.DateTime> _AssessmentDate;
 
         [DataMember]
-        public Nullable<int> ApplicationSettingsId
+        public int ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -643,7 +643,20 @@ namespace AllocationQS.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private Nullable<int> _ApplicationSettingsId;
+        private int _ApplicationSettingsId;
+
+        [DataMember]
+        public string xStatus
+		{ 
+		    get { return _xStatus; }
+			set
+			{
+			    if (value == _xStatus) return;
+				_xStatus = value;
+				NotifyPropertyChanged();//m => this.xStatus
+			}
+		}
+        private string _xStatus;
 
        
    //     [DataMember]

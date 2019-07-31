@@ -97,6 +97,12 @@ namespace AllocationQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AdjustmentShortAllocation>> GetAdjustmentShortAllocationByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentShortAllocation>> GetAdjustmentShortAllocationByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentShortAllocation>> GetAdjustmentShortAllocationByEmailId(string EmailId, List<string> includesLst = null);
+        
   		
     }
 }

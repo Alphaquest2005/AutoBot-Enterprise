@@ -114,6 +114,12 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

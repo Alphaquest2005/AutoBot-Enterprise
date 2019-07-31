@@ -770,6 +770,21 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<int> _emailid;
         [DataMember]
+        public string xStatus 
+        {
+            get
+            {
+                return _xstatus;
+            }
+            set
+            {
+                _xstatus = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xstatus;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }

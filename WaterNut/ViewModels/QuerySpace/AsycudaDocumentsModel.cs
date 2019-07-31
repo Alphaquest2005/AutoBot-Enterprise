@@ -150,7 +150,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
         public override void FilterData()
         {
+
             var res = GetAutoPropertyFilterString();
+            res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
+            
             var viewres = FilterViewStr();
             if (viewres.Length > 0) res.Append(" && (" + viewres + ")");
 

@@ -18,7 +18,7 @@ using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Security.Permissions;
 
-namespace WCFConsoleHost
+namespace AutoWaterNutServer
 {
     class Program
     {

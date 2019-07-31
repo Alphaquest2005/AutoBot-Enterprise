@@ -22,6 +22,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //Sessions()
         {
             this.SessionActions = new List<SessionActions>();
+            this.SessionSchedule = new List<SessionSchedule>();
         }
 
         [DataMember]
@@ -55,7 +56,24 @@ namespace CoreEntities.Business.Entities
         }
         string _name;
         [DataMember]
+        public int WindowInMinutes 
+        {
+            get
+            {
+                return _windowinminutes;
+            }
+            set
+            {
+                _windowinminutes = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _windowinminutes;
+        [DataMember]
         public List<SessionActions> SessionActions { get; set; }
+        [DataMember]
+        public List<SessionSchedule> SessionSchedule { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

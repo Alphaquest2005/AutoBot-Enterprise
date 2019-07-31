@@ -190,6 +190,7 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
           <Property Name="EffectiveExpiryDate" Type="datetime2" Precision="7" />
+          <Property Name="SourceFileName" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
@@ -606,8 +607,8 @@
           <Property Name="Kind_of_packages_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Packages_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Item_Id" Type="int" />
-          <Property Name="Marks1_of_packages" Type="nvarchar" MaxLength="20" />
-          <Property Name="Marks2_of_packages" Type="nvarchar" MaxLength="20" />
+          <Property Name="Marks1_of_packages" Type="nvarchar" MaxLength="40" />
+          <Property Name="Marks2_of_packages" Type="nvarchar" MaxLength="40" />
         </EntityType>
         <EntityType Name="xcuda_Place_of_loading">
           <Key>
@@ -3685,6 +3686,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
           <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="7" />
+          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
@@ -3967,8 +3969,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Kind_of_packages_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Packages_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Item_Id" Type="Int32" />
-          <Property Name="Marks1_of_packages" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Marks2_of_packages" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Marks1_of_packages" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Marks2_of_packages" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDB.DataLayer.FK_Item_Packages" FromRole="xcuda_Packages" ToRole="xcuda_Item" />
         </EntityType>
         <EntityType Name="xcuda_Place_of_loading">
@@ -5708,6 +5710,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_ASYCUDA_ExtendedProperties">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_ASYCUDA_ExtendedProperties">
               <MappingFragment StoreEntitySet="xcuda_ASYCUDA_ExtendedProperties">
+                <ScalarProperty Name="SourceFileName" ColumnName="SourceFileName" />
                 <ScalarProperty Name="EffectiveExpiryDate" ColumnName="EffectiveExpiryDate" />
                 <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />

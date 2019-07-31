@@ -1734,7 +1734,7 @@ namespace WaterNut.DataSpace
                     importer.OverwriteExisting = overwriteExisting;
                     importer.NoMessages = noMessages;
                     importer.LinkPi = linkPi;
-                    importer.SaveToDatabase(a, docSet).Wait();
+                    importer.SaveToDatabase(a, docSet, new FileInfo(f)).Wait();
                 }
                 //await a.SaveToDatabase(a).ConfigureAwait(false);
 
@@ -1931,15 +1931,19 @@ namespace WaterNut.DataSpace
                             StatusModel.StartStatusUpdate("Exporting Files", docSet.Documents.Count());
             var exceptions = new ConcurrentQueue<Exception>();
             if (!Directory.Exists(directoryName)) return;
-            File.Delete(Path.Combine(directoryName, "Instructions.txt"));
             foreach (var doc in docSet.Documents)
             {
                 //if (doc.xcuda_Item.Any() == true)
                 //{
                 try
                 {
-                    if (overWrite == true || !File.Exists(Path.Combine(directoryName, doc.ReferenceNumber + ".xml")))
-                        Instance.DocToXML(doc, new FileInfo(Path.Combine(directoryName, doc.ReferenceNumber + ".xml")));
+                    var fileInfo = new FileInfo(Path.Combine(directoryName, doc.ReferenceNumber + ".xml"));
+                    if (overWrite == true || !File.Exists(fileInfo.FullName))
+                    {
+                        
+                        Instance.DocToXML(doc, fileInfo);
+                    }
+                   
 
                     StatusModel.StatusUpdate();
                     // ExportDocumentToExcel(doc, directoryName);

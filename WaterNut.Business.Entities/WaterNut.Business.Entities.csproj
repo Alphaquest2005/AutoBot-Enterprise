@@ -195,6 +195,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\SubItems.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\xcuda_Supplementary_unit.cs" />
@@ -310,7 +312,9 @@
     <Compile Include="Generated Business Entities\EntryDataDS\EntryDataDetails.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\PurchaseOrders.cs" />
@@ -439,6 +443,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -447,6 +452,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\xcuda_Supplementary_unit.cs" />
@@ -554,7 +560,9 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItemsEx.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PurchaseOrders.cs" />
@@ -683,6 +691,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -691,6 +700,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\xcuda_Supplementary_unit.cs" />
@@ -798,7 +808,9 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataDetails.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItemsEx.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\PurchaseOrders.cs" />
@@ -927,6 +939,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -935,6 +948,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\xcuda_Supplementary_unit.cs" />
@@ -1042,7 +1056,9 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItemsEx.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1171,6 +1187,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Sessions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
@@ -1179,6 +1196,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedShorts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\xcuda_Supplementary_unit.cs" />
@@ -1286,7 +1304,9 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItemsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItems_NonStock.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\OpeningStock.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PackageTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PurchaseOrders.cs" />
@@ -1425,6 +1445,7 @@
     <Compile Include="Generated Mappings\CoreEntities\LicenceSummary.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\SessionActions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Sessions.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\SessionSchedule.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\SubItems.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_AdjustmentsToXML.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_CreateDiscrepancyEntries.map.cs" />
@@ -1433,6 +1454,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSet.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_UnallocatedShorts.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\xcuda_Supplementary_unit.map.cs" />
@@ -1540,7 +1562,9 @@
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataDetails.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataDetailsEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\FileTypes.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\InventoryItems.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InventoryItemsEx.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\InventoryItems_NonStock.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\OpeningStock.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PackageTypes.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\PurchaseOrders.map.cs" />

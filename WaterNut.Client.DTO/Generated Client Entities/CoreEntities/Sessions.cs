@@ -47,6 +47,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Name;
 
+        [DataMember]
+        public int WindowInMinutes
+		{ 
+		    get { return _WindowInMinutes; }
+			set
+			{
+			    if (value == _WindowInMinutes) return;
+				_WindowInMinutes = value;
+				NotifyPropertyChanged();//m => this.WindowInMinutes
+			}
+		}
+        private int _WindowInMinutes;
+
        
         [DataMember]
         public ChangeTrackingCollection<SessionActions> SessionActions
@@ -60,6 +73,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<SessionActions> _SessionActions = new ChangeTrackingCollection<SessionActions>();
+
+        [DataMember]
+        public ChangeTrackingCollection<SessionSchedule> SessionSchedule
+		{
+		    get { return _SessionSchedule; }
+			set
+			{
+			    if (Equals(value, _SessionSchedule)) return;
+				_SessionSchedule = value;
+				NotifyPropertyChanged();//m => this.SessionSchedule
+			}
+		}
+        private ChangeTrackingCollection<SessionSchedule> _SessionSchedule = new ChangeTrackingCollection<SessionSchedule>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

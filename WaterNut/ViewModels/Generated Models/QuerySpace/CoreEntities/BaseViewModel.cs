@@ -79,6 +79,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLicenceSummaryIDChanged, OnCurrentLicenceSummaryIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSessionActionsIDChanged, OnCurrentSessionActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSessionsIDChanged, OnCurrentSessionsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentSessionScheduleIDChanged, OnCurrentSessionScheduleIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSubItemsIDChanged, OnCurrentSubItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_AdjustmentsToXMLIDChanged, OnCurrentTODO_AdjustmentsToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_CreateDiscrepancyEntriesIDChanged, OnCurrentTODO_CreateDiscrepancyEntriesIDChanged);
@@ -87,6 +88,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesToSubmitIDChanged, OnCurrentTODO_DiscrepanciesToSubmitIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DocumentsToDeleteIDChanged, OnCurrentTODO_DocumentsToDeleteIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitXMLToCustomsIDChanged, OnCurrentTODO_SubmitXMLToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_UnallocatedSalesIDChanged, OnCurrentTODO_UnallocatedSalesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_UnallocatedShortsIDChanged, OnCurrentTODO_UnallocatedShortsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.Currentxcuda_Supplementary_unitIDChanged, OnCurrentxcuda_Supplementary_unitIDChanged);
@@ -119,6 +121,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<LicenceSummary>(MessageToken.CurrentLicenceSummaryChanged, OnCurrentLicenceSummaryChanged);
                         RegisterToReceiveMessages<SessionActions>(MessageToken.CurrentSessionActionsChanged, OnCurrentSessionActionsChanged);
                         RegisterToReceiveMessages<Sessions>(MessageToken.CurrentSessionsChanged, OnCurrentSessionsChanged);
+                        RegisterToReceiveMessages<SessionSchedule>(MessageToken.CurrentSessionScheduleChanged, OnCurrentSessionScheduleChanged);
                         RegisterToReceiveMessages<SubItems>(MessageToken.CurrentSubItemsChanged, OnCurrentSubItemsChanged);
                         RegisterToReceiveMessages<TODO_AdjustmentsToXML>(MessageToken.CurrentTODO_AdjustmentsToXMLChanged, OnCurrentTODO_AdjustmentsToXMLChanged);
                         RegisterToReceiveMessages<TODO_CreateDiscrepancyEntries>(MessageToken.CurrentTODO_CreateDiscrepancyEntriesChanged, OnCurrentTODO_CreateDiscrepancyEntriesChanged);
@@ -127,6 +130,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_DiscrepanciesToSubmit>(MessageToken.CurrentTODO_DiscrepanciesToSubmitChanged, OnCurrentTODO_DiscrepanciesToSubmitChanged);
                         RegisterToReceiveMessages<TODO_DocumentsToDelete>(MessageToken.CurrentTODO_DocumentsToDeleteChanged, OnCurrentTODO_DocumentsToDeleteChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
+                        RegisterToReceiveMessages<TODO_SubmitXMLToCustoms>(MessageToken.CurrentTODO_SubmitXMLToCustomsChanged, OnCurrentTODO_SubmitXMLToCustomsChanged);
                         RegisterToReceiveMessages<TODO_UnallocatedSales>(MessageToken.CurrentTODO_UnallocatedSalesChanged, OnCurrentTODO_UnallocatedSalesChanged);
                         RegisterToReceiveMessages<TODO_UnallocatedShorts>(MessageToken.CurrentTODO_UnallocatedShortsChanged, OnCurrentTODO_UnallocatedShortsChanged);
                         RegisterToReceiveMessages<xcuda_Supplementary_unit>(MessageToken.Currentxcuda_Supplementary_unitChanged, OnCurrentxcuda_Supplementary_unitChanged);
@@ -851,6 +855,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentSessionScheduleIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (SessionScheduleRepository ctx = new SessionScheduleRepository())
+                            {
+                                CurrentSessionSchedule = await ctx.GetSessionSchedule(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentSessionSchedule);
+                        }
+
+                        private  string _currentSessionScheduleID = "";
+                        public string CurrentSessionScheduleID
+                        {
+                            get
+                            {
+                                return _currentSessionScheduleID;
+                            }
+                            set
+                            {
+                                if (_currentSessionScheduleID != value)
+                                {
+                                    _currentSessionScheduleID = value;
+                                    if (!string.IsNullOrEmpty(_currentSessionScheduleID)) BeginSendMessage(MessageToken.CurrentSessionScheduleIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentSessionScheduleIDChanged, _currentSessionScheduleID));
+                                    NotifyPropertyChanged(x => this.CurrentSessionScheduleID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentSubItemsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (SubItemsRepository ctx = new SubItemsRepository())
@@ -1064,6 +1095,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_PODocSetID)) BeginSendMessage(MessageToken.CurrentTODO_PODocSetIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_PODocSetIDChanged, _currentTODO_PODocSetID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_PODocSetID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_SubmitXMLToCustomsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitXMLToCustomsRepository ctx = new TODO_SubmitXMLToCustomsRepository())
+                            {
+                                CurrentTODO_SubmitXMLToCustoms = await ctx.GetTODO_SubmitXMLToCustoms(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitXMLToCustoms);
+                        }
+
+                        private  string _currentTODO_SubmitXMLToCustomsID = "";
+                        public string CurrentTODO_SubmitXMLToCustomsID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitXMLToCustomsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitXMLToCustomsID != value)
+                                {
+                                    _currentTODO_SubmitXMLToCustomsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitXMLToCustomsID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitXMLToCustomsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitXMLToCustomsIDChanged, _currentTODO_SubmitXMLToCustomsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitXMLToCustomsID);  
                                 }
                             }
                         }
@@ -2458,6 +2516,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyPropertyChanged(x => this.CurrentSessions);    
                     // all current navigation properties = null
                  CurrentSessionActions = null;
+                 CurrentSessionSchedule = null;
    
                 }
             }
@@ -2477,6 +2536,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentSessions = value;
 					if(_vcurrentSessions != null) CurrentSessions = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentSessions);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentSessionScheduleChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<SessionSchedule> e)
+        {
+            //CurrentSessionSchedule = e.Data;
+            NotifyPropertyChanged(m => this.CurrentSessionSchedule);
+        }
+
+        private  SessionSchedule _currentSessionSchedule;
+        public SessionSchedule CurrentSessionSchedule
+        {
+            get
+            {
+                return _currentSessionSchedule;
+            }
+            set
+            {
+                if (_currentSessionSchedule != value)
+                {
+                    _currentSessionSchedule = value;
+                    BeginSendMessage(MessageToken.CurrentSessionScheduleChanged,
+                                                     new NotificationEventArgs<SessionSchedule>(MessageToken.CurrentSessionScheduleChanged, _currentSessionSchedule)); 
+                    NotifyPropertyChanged(x => this.CurrentSessionSchedule);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<SessionSchedule> _vcurrentSessionSchedule;
+        public VirtualListItem<SessionSchedule> VCurrentSessionSchedule
+        {
+            get
+            {
+                return _vcurrentSessionSchedule;
+            }
+            set
+            {
+                if (_vcurrentSessionSchedule != value)
+                {
+                    _vcurrentSessionSchedule = value;
+					if(_vcurrentSessionSchedule != null) CurrentSessionSchedule = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentSessionSchedule);                    
                 }
             }
         }
@@ -2877,6 +2986,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_PODocSet = value;
 					if(_vcurrentTODO_PODocSet != null) CurrentTODO_PODocSet = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_PODocSet);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitXMLToCustomsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitXMLToCustoms> e)
+        {
+            //CurrentTODO_SubmitXMLToCustoms = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitXMLToCustoms);
+        }
+
+        private  TODO_SubmitXMLToCustoms _currentTODO_SubmitXMLToCustoms;
+        public TODO_SubmitXMLToCustoms CurrentTODO_SubmitXMLToCustoms
+        {
+            get
+            {
+                return _currentTODO_SubmitXMLToCustoms;
+            }
+            set
+            {
+                if (_currentTODO_SubmitXMLToCustoms != value)
+                {
+                    _currentTODO_SubmitXMLToCustoms = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitXMLToCustomsChanged,
+                                                     new NotificationEventArgs<TODO_SubmitXMLToCustoms>(MessageToken.CurrentTODO_SubmitXMLToCustomsChanged, _currentTODO_SubmitXMLToCustoms)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitXMLToCustoms);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitXMLToCustoms> _vcurrentTODO_SubmitXMLToCustoms;
+        public VirtualListItem<TODO_SubmitXMLToCustoms> VCurrentTODO_SubmitXMLToCustoms
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitXMLToCustoms;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitXMLToCustoms != value)
+                {
+                    _vcurrentTODO_SubmitXMLToCustoms = value;
+					if(_vcurrentTODO_SubmitXMLToCustoms != null) CurrentTODO_SubmitXMLToCustoms = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitXMLToCustoms);                    
                 }
             }
         }

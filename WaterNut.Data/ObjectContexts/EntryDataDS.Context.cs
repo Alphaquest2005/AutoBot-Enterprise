@@ -73,6 +73,10 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<FileTypes> FileTypes { get; set; }
      
+        public DbSet<InventoryItems_NonStock> InventoryItems_NonStock { get; set; }
+     
+        public DbSet<InventoryItems> InventoryItems { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -102,6 +106,10 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new SuppliersMap());
          
             modelBuilder.Configurations.Add(new FileTypesMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItems_NonStockMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

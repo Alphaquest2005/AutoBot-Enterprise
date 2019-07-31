@@ -153,6 +153,24 @@
           <Property Name="FileGroupId" Type="int" />
           <Property Name="MergeEmails" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="InventoryItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InventoryItems-NonStock">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
             <PropertyRef Name="PackageType" />
@@ -215,6 +233,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LastCost" Type="float" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -395,6 +415,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_InventoryItems-NonStock_InventoryItems">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InventoryItems-NonStock" Type="Self.InventoryItems-NonStock" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItems-NonStock">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -423,6 +457,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="EntryData_Sales" EntityType="Self.EntryData_Sales" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItems-NonStock" EntityType="Self.InventoryItems-NonStock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
@@ -455,7 +491,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
 [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [EntryDataDetailsEx].[LastCost] AS [LastCost], 
-[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
+[EntryDataDetailsEx].[EmailId] AS [EmailId], 
+[EntryDataDetailsEx].[FileTypeId] AS [FileTypeId]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -517,6 +555,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <AssociationSet Name="FK_EntryData_Sales_EntryData" Association="Self.FK_EntryData_Sales_EntryData">
             <End Role="EntryData" EntitySet="EntryData" />
             <End Role="EntryData_Sales" EntitySet="EntryData_Sales" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItems-NonStock_InventoryItems" Association="Self.FK_InventoryItems-NonStock_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItems-NonStock" EntitySet="InventoryItems-NonStock" />
           </AssociationSet>
           <AssociationSet Name="FK_PurchaseOrderDetails_PurchaseOrders" Association="Self.FK_PurchaseOrderDetails_PurchaseOrders">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -591,6 +633,12 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <AssociationSet Name="FK_EntryData_FileTypes" Association="WaterNutDBModel.FK_EntryData_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="EntryData" EntitySet="EntryData" />
+          </AssociationSet>
+          <EntitySet Name="InventoryItems_NonStock" EntityType="WaterNutDBModel.InventoryItems_NonStock" />
+          <EntitySet Name="InventoryItems" EntityType="WaterNutDBModel.InventoryItems" />
+          <AssociationSet Name="FK_InventoryItems_NonStock_InventoryItems" Association="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItems_NonStock" EntitySet="InventoryItems_NonStock" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -733,6 +781,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="LastCost" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -972,6 +1022,40 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="InventoryItems_NonStock">
+          <Key>
+            <PropertyRef Name="InventoryItemId" />
+          </Key>
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" FromRole="InventoryItems_NonStock" ToRole="InventoryItems" />
+        </EntityType>
+        <EntityType Name="InventoryItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="InventoryItems_NonStock" Relationship="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItems_NonStock" />
+        </EntityType>
+        <Association Name="FK_InventoryItems_NonStock_InventoryItems">
+          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InventoryItems_NonStock" Role="InventoryItems_NonStock" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItems_NonStock">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1068,6 +1152,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -1198,6 +1284,26 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItems_NonStock">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItems_NonStock">
+              <MappingFragment StoreEntitySet="InventoryItems-NonStock">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItems">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItems">
+              <MappingFragment StoreEntitySet="InventoryItems">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -149,9 +149,9 @@ public int PreviousItem_Id
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "InvoiceDate is required")]
        
-       
-public Nullable<System.DateTime> InvoiceDate
+public System.DateTime InvoiceDate
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.InvoiceDate; }
 			set
@@ -211,7 +211,7 @@ public Nullable<double> SalesQtyAllocated
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "InvoiceNo is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "InvoiceNo has a max length of 50 letters ")]
@@ -228,7 +228,7 @@ public string InvoiceNo
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "ItemNumber is required")]
        
                 
                 [MaxLength(20, ErrorMessage = "ItemNumber has a max length of 20 letters ")]
@@ -245,7 +245,7 @@ public string ItemNumber
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "ItemDescription is required")]
        
                 
                 [MaxLength(255, ErrorMessage = "ItemDescription has a max length of 255 letters ")]
@@ -262,9 +262,9 @@ public string ItemDescription
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "EntryDataDetails is required")]
        
-       
-public Nullable<int> EntryDataDetailsId
+public int EntryDataDetailsId
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.EntryDataDetailsId; }
 			set
@@ -555,9 +555,9 @@ public Nullable<double> DutyLiability
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "TaxAmount is required")]
        [NumberValidationAttribute]
-public Nullable<double> TaxAmount
+public double TaxAmount
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.TaxAmount; }
 			set
@@ -777,9 +777,9 @@ public Nullable<System.DateTime> AssessmentDate
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-       
-public Nullable<int> ApplicationSettingsId
+public int ApplicationSettingsId
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId; }
 			set
@@ -788,6 +788,23 @@ public Nullable<int> ApplicationSettingsId
 				this.asycudasalesandadjustmentallocationsex.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "xStatus has a max length of 255 letters ")]
+public string xStatus
+		{ 
+		    get { return this.asycudasalesandadjustmentallocationsex.xStatus; }
+			set
+			{
+			    if (value == this.asycudasalesandadjustmentallocationsex.xStatus) return;
+				this.asycudasalesandadjustmentallocationsex.xStatus = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xStatus");
 			}
 		}
      

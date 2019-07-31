@@ -31,6 +31,7 @@ namespace AdjustmentQS.Business.Services
 
                 using (var ctx = new AdjustmentQSContext() {StartTracking = true})
                 {
+                    ctx.Database.CommandTimeout = 0;
                     //Select All unmatched Shorts
                     //var lst = ctx.AdjustmentDetails
                     //    .Include(x => x.AdjustmentEx)

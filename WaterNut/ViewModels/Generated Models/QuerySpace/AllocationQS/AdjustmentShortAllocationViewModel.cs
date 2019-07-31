@@ -1102,6 +1102,24 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }	
 
  
+
+		private string _xStatusFilter;
+        public string xStatusFilter
+        {
+            get
+            {
+                return _xStatusFilter;
+            }
+            set
+            {
+                _xStatusFilter = value;
+				NotifyPropertyChanged(x => xStatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1424,6 +1442,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 									if(string.IsNullOrEmpty(DutyFreePaidFilter) == false)
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
+ 
+
+									if(string.IsNullOrEmpty(xStatusFilter) == false)
+						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1564,7 +1586,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     AssessmentDate = x.AssessmentDate ,
                     
  
-                    DutyFreePaid = x.DutyFreePaid 
+                    DutyFreePaid = x.DutyFreePaid ,
+                    
+ 
+                    xStatus = x.xStatus 
                     
                 }).ToList()
             };
@@ -1622,7 +1647,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<double> pQtyAllocated { get; set; } 
                     
  
-                    public Nullable<double> PiQuantity { get; set; } 
+                    public double PiQuantity { get; set; } 
                     
  
                     public Nullable<double> SalesFactor { get; set; } 
@@ -1695,6 +1720,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public string DutyFreePaid { get; set; } 
+                    
+ 
+                    public string xStatus { get; set; } 
                     
         }
 

@@ -120,6 +120,7 @@
     <Compile Include="CoreEntities\InventoryItemXClient.cs" />
     <Compile Include="CoreEntities\LicenceSummaryClient.cs" />
     <Compile Include="CoreEntities\SessionActionsClient.cs" />
+    <Compile Include="CoreEntities\SessionScheduleClient.cs" />
     <Compile Include="CoreEntities\SessionsClient.cs" />
     <Compile Include="CoreEntities\SubItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_AdjustmentsToXMLClient.cs" />
@@ -129,6 +130,7 @@
     <Compile Include="CoreEntities\TODO_DiscrepanciesToSubmitClient.cs" />
     <Compile Include="CoreEntities\TODO_DocumentsToDeleteClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitXMLToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_UnallocatedSalesClient.cs" />
     <Compile Include="CoreEntities\TODO_UnallocatedShortsClient.cs" />
     <Compile Include="CoreEntities\xcuda_Supplementary_unitClient.cs" />

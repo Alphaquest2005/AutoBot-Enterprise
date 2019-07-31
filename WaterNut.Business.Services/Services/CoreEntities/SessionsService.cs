@@ -239,6 +239,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<SessionActions>(dbContext, exp, itm.Value, "Sessions", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "SessionSchedule":
+                                return
+                                    await
+                                        GetWhere<SessionSchedule>(dbContext, exp, itm.Value, "Sessions", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace CoreEntities.Business.Services
                             case "SessionActions":
                                 return await CountWhere<SessionActions>(dbContext, exp, itm.Value, "Sessions", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SessionSchedule":
+                                return await CountWhere<SessionSchedule>(dbContext, exp, itm.Value, "Sessions", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Sessions.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -845,6 +854,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<SessionActions>(startIndex, count, dbContext, exp, itm.Value, "Sessions", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "SessionSchedule":
+                                return
+                                    await
+                                        LoadRangeWhere<SessionSchedule>(startIndex, count, dbContext, exp, itm.Value, "Sessions", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1106,6 +1121,9 @@ namespace CoreEntities.Business.Services
                         {
                             case "SessionActions":
                                 return await SumWhere<SessionActions>(dbContext, exp, itm.Value, "Sessions", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SessionSchedule":
+                                return await SumWhere<SessionSchedule>(dbContext, exp, itm.Value, "Sessions", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -394,5 +394,16 @@
                   VerticalAlignment="Top"
                   Content="MultiSelect"
                   IsChecked="False" />
+        <TextBlock x:Name="ImportBtn_Copy"
+            Width="153"
+            Height="26"
+            Margin="405,49,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            FontSize="16"
+            MouseLeftButtonDown="AutoDownload"
+            Style="{DynamicResource TextButtonStyle}"
+            TextAlignment="Right"
+            TextWrapping="Wrap"><Run Text="Auto Download IM7" /><LineBreak /><Run /></TextBlock>
     </Grid>
 </UserControl>

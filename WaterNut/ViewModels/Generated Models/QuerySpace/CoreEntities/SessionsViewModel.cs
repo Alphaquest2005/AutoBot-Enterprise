@@ -187,6 +187,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _windowInMinutesFilter;
+        public Int32? WindowInMinutesFilter
+        {
+            get
+            {
+                return _windowInMinutesFilter;
+            }
+            set
+            {
+                _windowInMinutesFilter = value;
+				NotifyPropertyChanged(x => WindowInMinutesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -219,7 +237,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(WindowInMinutesFilter.HasValue)
+						res.Append(" && " + string.Format("WindowInMinutes == {0}",  WindowInMinutesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -242,7 +263,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 dataToPrint = lst.Select(x => new SessionsExcelLine
                 {
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    WindowInMinutes = x.WindowInMinutes 
                     
                 }).ToList()
             };
@@ -256,6 +280,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
 		 
                     public string Name { get; set; } 
+                    
+ 
+                    public int WindowInMinutes { get; set; } 
                     
         }
 

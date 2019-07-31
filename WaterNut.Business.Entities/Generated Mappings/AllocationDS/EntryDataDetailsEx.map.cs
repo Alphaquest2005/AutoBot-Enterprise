@@ -42,6 +42,8 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.LastCost).HasColumnName("LastCost");
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsEx).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
              // Tracking Properties

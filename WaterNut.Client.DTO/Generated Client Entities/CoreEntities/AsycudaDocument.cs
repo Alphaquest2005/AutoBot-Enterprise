@@ -437,6 +437,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _ApplicationSettingsId;
 
+        [DataMember]
+        public string SourceFileName
+		{ 
+		    get { return _SourceFileName; }
+			set
+			{
+			    if (value == _SourceFileName) return;
+				_SourceFileName = value;
+				NotifyPropertyChanged();//m => this.SourceFileName
+			}
+		}
+        private string _SourceFileName;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentItem> AsycudaDocumentItems

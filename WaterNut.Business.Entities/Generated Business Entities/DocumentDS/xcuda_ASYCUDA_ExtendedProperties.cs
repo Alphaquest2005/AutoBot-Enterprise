@@ -380,6 +380,21 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<System.DateTime> _effectiveexpirydate;
         [DataMember]
+        public string SourceFileName 
+        {
+            get
+            {
+                return _sourcefilename;
+            }
+            set
+            {
+                _sourcefilename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefilename;
+        [DataMember]
         public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
         [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }

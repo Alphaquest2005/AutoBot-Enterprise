@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
+using AutoBot;
 using Core.Common.UI;
 using Core.Common.UI.DataVirtualization;
 using EntryDataQS.Client.Entities;
@@ -175,5 +176,9 @@ namespace WaterNut.Views
             im.ViewAll();
         }
 
+	    private void AutoImportSales(object sender, MouseButtonEventArgs e)
+	    {
+	        Utils.DownloadSalesFiles(2);
+        }
 	}
 }

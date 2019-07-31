@@ -14,12 +14,15 @@ using InventoryDS.Business.Entities;
 using Core.Common.UI;
 using AllocationDS.Business.Services;
 using CoreEntities.Business.Entities;
+using EntryDataDS.Business.Entities;
 using MoreLinq;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
+using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
 using InventoryItem = AllocationDS.Business.Entities.InventoryItem;
 using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
+using Sales = AllocationDS.Business.Entities.Sales;
 using SubItems = AllocationDS.Business.Entities.SubItems;
 using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 using xcuda_ItemService = AllocationDS.Business.Services.xcuda_ItemService;
@@ -85,19 +88,35 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                // update nonstock entrydetails status
+                using (var ctx = new EntryDataDSContext())
+                {
+                    ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
+                        SET         Status = N'Non Stock', DoNotAllocate = 1
+                        FROM    EntryData INNER JOIN
+                                         EntryDataDetails ON EntryData.EntryDataId = EntryDataDetails.EntryDataId INNER JOIN
+                                         [InventoryItems-NonStock] INNER JOIN
+                                         InventoryItems ON [InventoryItems-NonStock].InventoryItemId = InventoryItems.Id ON EntryDataDetails.ItemNumber = InventoryItems.ItemNumber AND 
+                                         EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
+                        WHERE (EntryData.ApplicationSettingsId = {applicationSettings.ApplicationSettingsId}) AND (EntryDataDetails.Status IS NULL)");
+                }
+
+
                 StatusModel.Timer("Auto Match Adjustments");
                 using (var ctx = new AdjustmentShortService())
                 {
                     await ctx.AutoMatch(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 }
 
-           //     StatusModel.Timer("Allocating Sales");
-                //if (itemDescriptionContainsAsycudaAttribute == true)
-                //{
-                //    await AllocateSalesWhereItemDescriptionContainsAsycudaAttribute().ConfigureAwait(false);
-                //}
-                //else
-                //{
+
+                
+                    //     StatusModel.Timer("Allocating Sales");
+                    //if (itemDescriptionContainsAsycudaAttribute == true)
+                    //{
+                    //    await AllocateSalesWhereItemDescriptionContainsAsycudaAttribute().ConfigureAwait(false);
+                    //}
+                    //else
+                    //{
                     await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment).ConfigureAwait(false);
                 //}
 
@@ -137,7 +156,7 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
             Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-                                     //.Where(x => x.Key.Contains("1005HGL")) // 
+                                    // .Where(x => x.Key.Contains("354415")) // 
                                      // .Where(x => "337493".Contains(x.Key))
                                      //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
                                      , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
@@ -355,7 +374,7 @@ namespace WaterNut.DataSpace
                         .Include(x => x.xcuda_Goods_description)
                         .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-                                    (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" ||
+                                    (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" || 
                                      x.AsycudaDocument.Extended_customs_procedure == "9000") &&
                                     x.AsycudaDocument.DoNotAllocate != true)
                         .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
@@ -497,7 +516,7 @@ namespace WaterNut.DataSpace
                         .Include(x => x.xcuda_Goods_description)
                         .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                         .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-                                    (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" ||
+                                    (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" ||
                                      x.AsycudaDocument.Extended_customs_procedure == "9000") &&
                                     x.AsycudaDocument.DoNotAllocate != true)
                         .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
@@ -739,7 +758,7 @@ namespace WaterNut.DataSpace
                         (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"AsycudaDocument.RegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\""
                             : "AsycudaDocument.RegistrationDate >= \"1/1/2010\"") ,
                         "DoNotAllocate == null || DoNotAllocate != true",
-                        "(AsycudaDocument.Extended_customs_procedure == \"7000\" || AsycudaDocument.Extended_customs_procedure == \"7400\" || AsycudaDocument.Extended_customs_procedure == \"7100\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
+                        "(AsycudaDocument.Extended_customs_procedure == \"7000\" || AsycudaDocument.Extended_customs_procedure == \"7400\" || AsycudaDocument.Extended_customs_procedure == \"7100\" || AsycudaDocument.Extended_customs_procedure == \"7500\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
                        //"SubItems.Count > 0",
                        // "AttributeOnlyAllocation == true"
                         //string.Format("EX.Precision_4.ToUpper() == \"{0}\"", attrib)
@@ -806,7 +825,7 @@ namespace WaterNut.DataSpace
                             new List<string>()
                             {
                                 "DoNotAllocate == null || DoNotAllocate != true",
-                                "(AsycudaDocument.Extended_customs_procedure == \"7000\" ||AsycudaDocument.Extended_customs_procedure == \"7400\" || AsycudaDocument.Extended_customs_procedure == \"7100\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
+                                "(AsycudaDocument.Extended_customs_procedure == \"7000\" ||AsycudaDocument.Extended_customs_procedure == \"7400\" || AsycudaDocument.Extended_customs_procedure == \"7100\" || AsycudaDocument.Extended_customs_procedure == \"7500\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
                                 "SubItems.Count == 0",
                                 "AttributeOnlyAllocation == true",
                                 $"xcuda_Tarification.xcuda_HScode.Precision_4.ToUpper() == \"{attrib}\""
@@ -818,7 +837,7 @@ namespace WaterNut.DataSpace
                 alst.AddRange((ctx.Getxcuda_ItemByExpressionLst(new List<string>()
                 {
                     "DoNotAllocate == null || DoNotAllocate != true",
-                    "(AsycudaDocument.Extended_customs_procedure == \"7000\" || AsycudaDocument.Extended_customs_procedure == \"7400\" ||AsycudaDocument.Extended_customs_procedure == \"7100\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
+                    "(AsycudaDocument.Extended_customs_procedure == \"7000\" || AsycudaDocument.Extended_customs_procedure == \"7400\" ||AsycudaDocument.Extended_customs_procedure == \"7100\" ||AsycudaDocument.Extended_customs_procedure == \"7500\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
                    "SubItems.Count == 0",
                     "AttributeOnlyAllocation == null || AttributeOnlyAllocation != true",
                     $"\"{salesDescrip}\".Contains(xcuda_Tarification.xcuda_HScode.Precision_4.ToUpper())"
@@ -962,7 +981,7 @@ namespace WaterNut.DataSpace
                     .Include("EntryPreviousItems.xcuda_PreviousItem")
                     .Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                     .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-                                (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" ) &&
+                                (x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" || x.AsycudaDocument.Extended_customs_procedure == "9000") &&
                                 // x.WarehouseError == null && 
                                  (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
                                  x.AsycudaDocument.DoNotAllocate != true )
@@ -1008,7 +1027,7 @@ namespace WaterNut.DataSpace
                     "All",
                     // "xcuda_Tarification.xcuda_HScode.Precision_4 == \"1360\"",
                     new Dictionary<string, string>() { { "AsycudaDocument", (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"AssessmentDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-                                                                                : "") + "(CNumber != null || IsManuallyAssessed == true) && (Extended_customs_procedure == \"7000\" ||Extended_customs_procedure == \"7400\" ||Extended_customs_procedure == \"7100\" || Extended_customs_procedure == \"9000\") && DoNotAllocate != true" } }
+                                                                                : "") + "(CNumber != null || IsManuallyAssessed == true) && (Extended_customs_procedure == \"7000\" ||Extended_customs_procedure == \"7400\" ||Extended_customs_procedure == \"7100\" ||Extended_customs_procedure == \"7500\" || Extended_customs_procedure == \"9000\") && DoNotAllocate != true" } }
                     , new List<string>() { "AsycudaDocument",
                         "xcuda_Tarification.xcuda_HScode", "xcuda_Tarification.xcuda_Supplementary_unit","SubItems", "xcuda_Goods_description",
                     }).ConfigureAwait(false);//"EX"

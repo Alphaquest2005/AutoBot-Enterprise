@@ -6,17 +6,19 @@ using InventoryDS.Business.Entities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 //using WaterNut.DataLayer;
 using TrackableEntities;
 using Asycuda421;
+using CoreEntities.Business.Entities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using WaterNut.Business.Entities;
 using WaterNut.Interfaces;
-
+using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using xcuda_PreviousItem = DocumentItemDS.Business.Entities.xcuda_PreviousItem;
@@ -34,7 +36,7 @@ using xcuda_Taxation_line = DocumentItemDS.Business.Entities.xcuda_Taxation_line
 using xcuda_Valuation_item = DocumentItemDS.Business.Entities.xcuda_Valuation_item;
 using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
 using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
-
+using Attachments = CoreEntities.Business.Entities.Attachments;
 
 namespace WaterNut.DataSpace.Asycuda
 {
@@ -80,7 +82,7 @@ namespace WaterNut.DataSpace.Asycuda
         public bool NoMessages { get; set; }
 
         public bool LinkPi { get; set; }
-        public async Task SaveToDatabase(ASYCUDA adoc, AsycudaDocumentSet docSet)
+        public async Task SaveToDatabase(ASYCUDA adoc, AsycudaDocumentSet docSet, FileInfo file)
         {
 
             try
@@ -93,7 +95,7 @@ namespace WaterNut.DataSpace.Asycuda
 
                 var ads = docSet; //await GetAsycudaDocumentSet().ConfigureAwait(false);
                 //}
-                da = await CreateDocumentCt(ads).ConfigureAwait(false);
+                da = await CreateDocumentCt(ads, file).ConfigureAwait(false);
 
                 
 
@@ -132,7 +134,30 @@ namespace WaterNut.DataSpace.Asycuda
                     //    da.Document.xcuda_ASYCUDA_ExtendedProperties).ConfigureAwait(false);
 
                 await BaseDataModel.Instance.SaveDocumentCT(da).ConfigureAwait(false);
-                Debug.WriteLine($"{a.Identification.Registration.Number}");
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    
+                    var res = new AsycudaDocumentSet_Attachments(true)
+                        {
+                            AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
+                            DocumentSpecific = true,
+                            FileDate = file.LastWriteTime,
+                            EmailUniqueId = null,
+                            FileTypeId = ctx.FileTypes.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                                                                           x.Type == "XML")?.Id,
+                            TrackingState = TrackingState.Added,
+                            Attachments = new Attachments(true)
+                            {
+                                FilePath = file.FullName,
+                                DocumentCode = "NA",
+                                TrackingState = TrackingState.Added,
+                            }
+                        };
+                    ctx.AsycudaDocumentSet_Attachments.Add(res);
+                    ctx.SaveChanges();
+
+                }
+                    Debug.WriteLine($"{a.Identification.Registration.Number}");
                // BuildSalesReportClass.Instance.ReBuildSalesReports(da.Document.id);
 
 
@@ -154,10 +179,11 @@ namespace WaterNut.DataSpace.Asycuda
 
         }
 
-        private  async Task<DocumentCT> CreateDocumentCt(AsycudaDocumentSet ads)
+        private  async Task<DocumentCT> CreateDocumentCt(AsycudaDocumentSet ads, FileInfo file)
         {
             DocumentCT da = await BaseDataModel.Instance.CreateDocumentCt(ads).ConfigureAwait(false);
             da.Document.xcuda_ASYCUDA_ExtendedProperties.ImportComplete = false;
+            da.Document.xcuda_ASYCUDA_ExtendedProperties.SourceFileName = file.FullName;
             da.Document.id = a.id;
             da.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
             da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;

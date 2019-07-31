@@ -8,6 +8,7 @@ using CoreEntities.Client.Entities;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AutoBot;
 using SimpleMvvmToolkit;
 using WaterNut.QuerySpace.AllocationQS.ViewModels;
 using WaterNut.QuerySpace.CoreEntities;
@@ -162,11 +163,13 @@ namespace WaterNut.Views
             StatusModel.StopStatusUpdate();
         }
 
-        #endregion 
-      
+        #endregion
 
- 
 
-      
+	    private void AutoDownload(object sender, MouseButtonEventArgs e)
+	    {
+	        Utils.DownloadSalesFiles(2);
+
+	    }
 	}
 }

@@ -43,10 +43,10 @@ namespace WaterNut
                 
 
 
-                if (Core.Common.Utils.ProcessExtentions.IsProcessOpen("WCFConsoleHost") == null)
+                if (Core.Common.Utils.ProcessExtentions.IsProcessOpen("AutoWaterNutServer") == null)
                 {
                     Process p = new Process();
-                    p.StartInfo = new ProcessStartInfo("WCFConsoleHost.exe");
+                    p.StartInfo = new ProcessStartInfo("AutoWaterNutServer.exe");
                     p.StartInfo.CreateNoWindow = true;
                     p.StartInfo.UseShellExecute = false;
                     p.Start();
@@ -81,7 +81,7 @@ namespace WaterNut
 
         private void Current_Exit(object sender, ExitEventArgs e)
         {
-            var p = Core.Common.Utils.ProcessExtentions.IsProcessOpen("WCFConsoleHost");
+            var p = Core.Common.Utils.ProcessExtentions.IsProcessOpen("AutoWaterNutServer");
             if (p != null)
             {
                 p.Kill();

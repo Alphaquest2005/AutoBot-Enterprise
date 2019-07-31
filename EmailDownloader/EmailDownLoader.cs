@@ -279,5 +279,59 @@ namespace EmailDownloader
             if (part != null) System.IO.File.WriteAllText(Path.Combine(dataFolder, fileName), part.Text);
             lst.Add(fileName);
         }
+
+        public static bool ForwardMsg(int uID, Client clientDetails, string subject, string body, string[] contacts)
+        {
+            try
+            {
+                var imapClient = new ImapClient();
+                imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
+                imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
+                var dataFolder = clientDetails.DataFolder;
+                imapClient.Inbox.Open(FolderAccess.ReadWrite);
+                var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
+                imapClient.Disconnect(true);
+                if (msg != null)
+                {
+                    ForwardMsg(msg, clientDetails,subject, body, contacts);
+                }
+                else
+                {
+                    // msg not found
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+
+        }
+
+        private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body, string[] contacts)
+        {
+            // construct a new message
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("AutoBot", clientDetails.Email));
+            message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
+            
+            foreach (var recipent in contacts)
+            {
+                message.To.Add(MailboxAddress.Parse(recipent));
+            }
+            message.Subject = subject;
+
+            // now to create our body...
+            var builder = new BodyBuilder();
+            builder.TextBody = body;
+            builder.Attachments.Add(new MessagePart { Message = msg });
+
+            message.Body = builder.ToMessageBody();
+
+            SendEmail(clientDetails, message);
+        }
     }
 }

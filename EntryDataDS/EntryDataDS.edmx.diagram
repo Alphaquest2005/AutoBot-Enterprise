@@ -38,6 +38,9 @@
         <InheritanceConnector EntityType="WaterNutDBModel.Adjustments" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypes" Width="1.5" PointX="0.75" PointY="6" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_FileTypes" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems_NonStock" Width="1.5" PointX="3.375" PointY="9.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems" Width="1.5" PointX="1.125" PointY="10.125" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

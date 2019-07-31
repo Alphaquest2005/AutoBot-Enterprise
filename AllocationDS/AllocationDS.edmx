@@ -24,6 +24,7 @@
           <Property Name="EANumber" Type="int" Nullable="false" />
           <Property Name="SANumber" Type="int" Nullable="false" />
           <Property Name="xEntryItem_Id" Type="int" />
+          <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="EntryData">
           <Key>
@@ -383,6 +384,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="FileTypeId" Type="int" />
           <Property Name="EmailId" Type="int" />
           <Property Name="SANumber" Type="int" />
+          <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AllocationErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -529,6 +531,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LastCost" Type="float" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -555,16 +559,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocation
             
             
             
+            
+            
+            
+            
           </Key>
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="TotalValue" Type="float" />
           <Property Name="AllocatedValue" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="255" />
-          <Property Name="QtyAllocated" Type="float" />
+          <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="SalesQuantity" Type="float" />
-          <Property Name="SalesQtyAllocated" Type="float" />
+          <Property Name="SalesQuantity" Type="float" Nullable="false" />
+          <Property Name="SalesQtyAllocated" Type="float" Nullable="false" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
@@ -579,7 +587,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocation
           <Property Name="pLineNumber" Type="int" Nullable="false" />
           <Property Name="pASYCUDA_Id" Type="int" />
           <Property Name="Cost" Type="float" />
-          <Property Name="Total_CIF_itm" Type="float" />
+          <Property Name="Total_CIF_itm" Type="float" Nullable="false" />
           <Property Name="DutyLiability" Type="float" />
           <Property Name="TaxAmount" Type="float" Nullable="false" />
           <Property Name="pIsAssessed" Type="bit" />
@@ -1102,7 +1110,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
 [AdjustmentShortAllocations].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AdjustmentShortAllocations].[FileTypeId] AS [FileTypeId], 
 [AdjustmentShortAllocations].[EmailId] AS [EmailId], 
-[AdjustmentShortAllocations].[SANumber] AS [SANumber]
+[AdjustmentShortAllocations].[SANumber] AS [SANumber], 
+[AdjustmentShortAllocations].[xStatus] AS [xStatus]
 FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AllocationErrors" EntityType="Self.AllocationErrors" store:Type="Views" store:Schema="dbo">
@@ -1213,7 +1222,9 @@ FROM [dbo].[AsycudaItemPiQuantityData] AS [AsycudaItemPiQuantityData]</DefiningQ
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
 [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [EntryDataDetailsEx].[LastCost] AS [LastCost], 
-[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
+[EntryDataDetailsEx].[EmailId] AS [EmailId], 
+[EntryDataDetailsEx].[FileTypeId] AS [FileTypeId]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EX9AsycudaSalesAllocations" EntityType="Self.EX9AsycudaSalesAllocations" store:Type="Views" store:Schema="dbo">
@@ -1637,6 +1648,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="PreviousDocumentItem" Relationship="WaterNutDBModel.FK_AsycudaSalesAllocations_xcuda_Item" FromRole="AsycudaSalesAllocations" ToRole="xcuda_Item" />
           <NavigationProperty Name="xBondAllocations" Relationship="WaterNutDBModel.FK_xBondAllocations_AsycudaSalesAllocations" FromRole="AsycudaSalesAllocations" ToRole="xBondAllocations" />
           <NavigationProperty Name="EX9AsycudaSalesAllocations" Relationship="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations" FromRole="AsycudaSalesAllocations" ToRole="EX9AsycudaSalesAllocations" />
+          <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -1778,6 +1790,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="InventoryItemsEx" />
           <Property Name="LastCost" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Multiplicity="1" Role="EntryDataDetails" />
@@ -2491,6 +2505,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="EmailId" Type="Int32" />
+          <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="xcuda_ItemAdjustmentShortAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1" />
@@ -2783,6 +2798,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaSalesAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaSalesAllocations">
               <MappingFragment StoreEntitySet="AsycudaSalesAllocations">
+                <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
                 <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
@@ -2856,6 +2872,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -3243,6 +3261,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AdjustmentShortAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.AdjustmentShortAllocations">
               <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />

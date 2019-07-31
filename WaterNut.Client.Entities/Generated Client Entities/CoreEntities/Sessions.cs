@@ -77,6 +77,21 @@ public string Name
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "WindowInMinutes is required")]
+       [NumberValidationAttribute]
+public int WindowInMinutes
+		{ 
+		    get { return this.sessions.WindowInMinutes; }
+			set
+			{
+			    if (value == this.sessions.WindowInMinutes) return;
+				this.sessions.WindowInMinutes = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("WindowInMinutes");
+			}
+		}
+     
+
         ObservableCollection<SessionActions> _SessionActions = null;
         public  ObservableCollection<SessionActions> SessionActions
 		{
@@ -124,6 +139,60 @@ public string Name
                     {
                         if (itm != null)
                         sessions.SessionActions.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<SessionSchedule> _SessionSchedule = null;
+        public  ObservableCollection<SessionSchedule> SessionSchedule
+		{
+            
+		    get 
+				{ 
+					if(_SessionSchedule != null) return _SessionSchedule;
+					//if (this.sessions.SessionSchedule == null) Debugger.Break();
+					if(this.sessions.SessionSchedule != null)
+					{
+						_SessionSchedule = new ObservableCollection<SessionSchedule>(this.sessions.SessionSchedule.Select(x => new SessionSchedule(x)));
+					}
+					
+						_SessionSchedule.CollectionChanged += SessionSchedule_CollectionChanged; 
+					
+					return _SessionSchedule; 
+				}
+			set
+			{
+			    if (Equals(value, _SessionSchedule)) return;
+				if (value != null)
+					this.sessions.SessionSchedule = new ChangeTrackingCollection<DTO.SessionSchedule>(value.Select(x => x.DTO).ToList());
+                _SessionSchedule = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_SessionSchedule != null)
+				_SessionSchedule.CollectionChanged += SessionSchedule_CollectionChanged;               
+				NotifyPropertyChanged("SessionSchedule");
+			}
+		}
+        
+        void SessionSchedule_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (SessionSchedule itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        sessions.SessionSchedule.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (SessionSchedule itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        sessions.SessionSchedule.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

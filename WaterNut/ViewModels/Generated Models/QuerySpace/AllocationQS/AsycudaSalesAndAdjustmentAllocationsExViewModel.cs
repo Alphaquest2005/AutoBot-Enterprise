@@ -1088,6 +1088,24 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }	
 
  
+
+		private string _xStatusFilter;
+        public string xStatusFilter
+        {
+            get
+            {
+                return _xStatusFilter;
+            }
+            set
+            {
+                _xStatusFilter = value;
+				NotifyPropertyChanged(x => xStatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1388,7 +1406,11 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 							if(AssessmentDateFilter.HasValue)
 								res.Append(" && " + string.Format("AssessmentDate == \"{0}\"",  Convert.ToDateTime(AssessmentDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(string.IsNullOrEmpty(xStatusFilter) == false)
+						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1531,7 +1553,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     Type = x.Type ,
                     
  
-                    AssessmentDate = x.AssessmentDate 
+                    AssessmentDate = x.AssessmentDate ,
+                    
+ 
+                    xStatus = x.xStatus 
                     
                 }).ToList()
             };
@@ -1559,7 +1584,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<int> xLineNumber { get; set; } 
                     
  
-                    public Nullable<System.DateTime> InvoiceDate { get; set; } 
+                    public System.DateTime InvoiceDate { get; set; } 
                     
  
                     public string CustomerName { get; set; } 
@@ -1625,7 +1650,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     public Nullable<double> DutyLiability { get; set; } 
                     
  
-                    public Nullable<double> TaxAmount { get; set; } 
+                    public double TaxAmount { get; set; } 
                     
  
                     public Nullable<bool> pIsAssessed { get; set; } 
@@ -1665,6 +1690,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 
+                    
+ 
+                    public string xStatus { get; set; } 
                     
         }
 

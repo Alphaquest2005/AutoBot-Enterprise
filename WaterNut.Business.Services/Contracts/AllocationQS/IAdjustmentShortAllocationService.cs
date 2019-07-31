@@ -123,6 +123,12 @@ namespace AllocationQS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AdjustmentShortAllocation>> GetAdjustmentShortAllocationByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShortAllocation>> GetAdjustmentShortAllocationByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentShortAllocation>> GetAdjustmentShortAllocationByEmailId(string EmailId, List<string> includesLst = null);
   
 
 

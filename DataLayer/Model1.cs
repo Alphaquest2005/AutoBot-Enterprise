@@ -7672,6 +7672,30 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.DateTime> _EffectiveExpiryDate;
         partial void OnEffectiveExpiryDateChanging(Nullable<global::System.DateTime> value);
         partial void OnEffectiveExpiryDateChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String SourceFileName
+        {
+            get
+            {
+                return _SourceFileName;
+            }
+            set
+            {
+                OnSourceFileNameChanging(value);
+                ReportPropertyChanging("SourceFileName");
+                _SourceFileName = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("SourceFileName");
+                OnSourceFileNameChanged();
+            }
+        }
+        private global::System.String _SourceFileName;
+        partial void OnSourceFileNameChanging(global::System.String value);
+        partial void OnSourceFileNameChanged();
 
         #endregion
 

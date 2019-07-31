@@ -37,6 +37,7 @@
               this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
               this.Property(t => t.TotalPackages).HasColumnName("TotalPackages");
               this.Property(t => t.EffectiveExpiryDate).HasColumnName("EffectiveExpiryDate");
+              this.Property(t => t.SourceFileName).HasColumnName("SourceFileName");
               this.HasRequired(t => t.AsycudaDocumentSet).WithMany(t =>(ICollection<xcuda_ASYCUDA_ExtendedProperties>) t.xcuda_ASYCUDA_ExtendedProperties).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.Customs_Procedure).WithMany(t =>(ICollection<xcuda_ASYCUDA_ExtendedProperties>) t.xcuda_ASYCUDA_ExtendedProperties).HasForeignKey(d => d.Customs_ProcedureId);
               this.HasOptional(t => t.Document_Type).WithMany(t =>(ICollection<xcuda_ASYCUDA_ExtendedProperties>) t.xcuda_ASYCUDA_ExtendedProperties).HasForeignKey(d => d.Document_TypeId);

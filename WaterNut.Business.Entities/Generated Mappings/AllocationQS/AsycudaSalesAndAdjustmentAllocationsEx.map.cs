@@ -24,9 +24,9 @@
               this.Property(t => t.CustomerName).HasColumnName("CustomerName").HasMaxLength(255);
               this.Property(t => t.SalesQuantity).HasColumnName("SalesQuantity");
               this.Property(t => t.SalesQtyAllocated).HasColumnName("SalesQtyAllocated");
-              this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").HasMaxLength(50);
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
-              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").HasMaxLength(255);
+              this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").IsRequired().HasMaxLength(50);
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
+              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").IsRequired().HasMaxLength(255);
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId");
               this.Property(t => t.xBond_Item_Id).HasColumnName("xBond_Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
@@ -61,6 +61,7 @@
               this.Property(t => t.Type).HasColumnName("Type").IsRequired().IsUnicode(false).HasMaxLength(4);
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

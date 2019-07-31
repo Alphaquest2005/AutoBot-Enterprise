@@ -15,7 +15,9 @@
               this.ToTable("Sessions");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
+              this.Property(t => t.WindowInMinutes).HasColumnName("WindowInMinutes");
               this.HasMany(t => t.SessionActions).WithRequired(t => (Sessions)t.Sessions);
+              this.HasMany(t => t.SessionSchedule).WithRequired(t => (Sessions)t.Sessions);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

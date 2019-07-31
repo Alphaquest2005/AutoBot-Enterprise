@@ -40,6 +40,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         private void OnCurrentApplicationSettingsChanged1(object sender, NotificationEventArgs<ApplicationSettings> e)
         {
             SystemRepository.Instance.SetCurrentApplicationSettings(e.Data.ApplicationSettingsId);
+            AutoBot.Utils.SetCurrentApplicationSettings(e.Data.ApplicationSettingsId);
         }
 
         public List<ApplicationSettings> ApplicationSettings

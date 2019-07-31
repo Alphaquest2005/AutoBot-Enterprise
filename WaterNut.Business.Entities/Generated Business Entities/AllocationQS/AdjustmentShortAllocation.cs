@@ -305,7 +305,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<double> _pqtyallocated;
         [DataMember]
-        public Nullable<double> PiQuantity 
+        public double PiQuantity 
         {
             get
             {
@@ -318,7 +318,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _piquantity;
+        double _piquantity;
         [DataMember]
         public Nullable<double> SalesFactor 
         {
@@ -739,6 +739,51 @@ namespace AllocationQS.Business.Entities
             }
         }
         int _asycudadocumentsetid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
+        [DataMember]
+        public string xStatus 
+        {
+            get
+            {
+                return _xstatus;
+            }
+            set
+            {
+                _xstatus = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xstatus;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

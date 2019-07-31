@@ -38,7 +38,7 @@
 
     <Grid x:Name="LayoutRoot" DataContext="{Binding Source={StaticResource Ex9SalesDataModelDataSource}}">
         <TextBlock HorizontalAlignment="Left" Height="33" Margin="9,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="21.333" Text="Sales Data"/>
-        <ListBox x:Name="ItemLst" HorizontalAlignment="Stretch" Height="321" Margin="0,154,10,0" VerticalAlignment="Top" Width="Auto" 
+        <ListBox x:Name="ItemLst" HorizontalAlignment="Stretch" Height="293" Margin="0,182,10.273,0" VerticalAlignment="Top" Width="Auto" 
                  VirtualizingStackPanel.IsVirtualizing="True"
                 VirtualizingStackPanel.VirtualizationMode="Recycling"
                 ScrollViewer.IsDeferredScrollingEnabled="True" 
@@ -49,7 +49,7 @@
         <TextBlock x:Name="DeselectTxt" HorizontalAlignment="Left" Height="22" Margin="179,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="92" FontSize="16" Text="De-Select All" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="DeselectTxt_MouseLeftButtonDown"/>
         <TextBlock x:Name="SelectTxt" HorizontalAlignment="Left" Height="22" Margin="304,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="83" FontSize="16" Text="Select All" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="SelectTxt_MouseLeftButtonDown"/>
         <CheckBox x:Name="MultiSelectChk" HorizontalAlignment="Left" Height="26" Margin="67,118,0,0" VerticalAlignment="Top" Width="107" Content="MultiSelect" IsChecked="False"/>
-        
+
         <TextBlock x:Name="ImportSalesTxt" HorizontalAlignment="Left" Height="22" Margin="533,22,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="82" FontSize="14" Text="Import Sales" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="ImportSales"/>
         <TextBlock MouseLeftButtonDown="RemoveSelected" HorizontalAlignment="Left" Height="26" Margin="387,118,0,0" TextWrapping="Wrap" Text="Remove Selected" VerticalAlignment="Top" Width="126" FontSize="16" Style="{DynamicResource CloseButtonStyle}" TextAlignment="Right" />
         <TextBlock HorizontalAlignment="Left" Height="23" Margin="9,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="154" FontSize="14" Text="Invoice Number" TextAlignment="Center"/>
@@ -64,5 +64,6 @@
         <DatePicker SelectedDate="{Binding EndEntryDataDateFilter}" HorizontalAlignment="Left" Height="22" Margin="305,82,0,0" VerticalAlignment="Top" Width="113"/>
         <TextBlock HorizontalAlignment="Left" MouseLeftButtonDown="ViewAll" Height="26" Margin="540,77,0,0" TextWrapping="Wrap" Text="View All" VerticalAlignment="Top" Width="75" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" />
         <TextBlock Text="{Binding SelectedTotal, StringFormat=Total \{0:c\}}" HorizontalAlignment="Left" Height="24" Margin="198,495,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
+        <TextBlock x:Name="ImportSalesTxt_Copy" HorizontalAlignment="Left" Height="22" Margin="454,149,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="151" FontSize="14" Text="Auto Import Sales XML" TextAlignment="Left" Style="{DynamicResource TextButtonStyle}" MouseLeftButtonDown="AutoImportSales"/>
     </Grid>
 </UserControl>

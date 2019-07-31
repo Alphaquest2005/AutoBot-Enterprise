@@ -168,7 +168,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
             var res = GetAutoPropertyFilterString();
             var navexp = new StringBuilder();
-
+            res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
             if (ViewIM7 == true)
             {
                 navexp.Append("|| DocumentType == \"IM7\" || DocumentType == \"OS7\"");

@@ -263,7 +263,7 @@ namespace Asycuda421
                 var lncounter = 0;
                 foreach (var item in da.xcuda_PreviousItem.OrderBy(x => Convert.ToInt32(x.Current_item_number)))
                 {
-                    if (item.Prev_decl_HS_spec.Length > 17) continue;
+                    //if (item.Prev_decl_HS_spec.Length > 17) continue;
                     if (string.IsNullOrEmpty(item.Prev_reg_nbr)) continue;
                     lncounter += 1;
                     var pi = new ASYCUDAPrev_decl();//ASYCUDAPreviousItem
@@ -284,7 +284,7 @@ namespace Asycuda421
                     pi.Prev_decl_weight_written_off = item.Prev_net_weight.ToString();
                     pi.Prev_decl_supp_quantity_written_off = item.Preveious_suplementary_quantity.ToString();
                     pi.Prev_decl_ref_value_written_off = Math.Round(item.Previous_value, 4).ToString();
-                    pi.Prev_decl_HS_spec = item.Prev_decl_HS_spec;
+                    pi.Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 17? item.Prev_decl_HS_spec:"";
 
                     a.Prev_decl.Add(pi);
                 }
@@ -519,8 +519,12 @@ namespace Asycuda421
                 if (doc.Attached_document_name != null)
                     adoc.Attached_document_name.Text.Add(doc.Attached_document_name);
                 ai.Attached_documents.Add(adoc);
-                if(doc.xcuda_Attachments.Any())
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{doc.xcuda_Attachments.FirstOrDefault().Attachments.FilePath}\r\n");
+                if (doc.xcuda_Attachments.Any())
+                {
+                    var fileinfo = new FileInfo(doc.xcuda_Attachments.FirstOrDefault().Attachments.FilePath);
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name)}\r\n");
+                }
+                    
             }
         }
 
@@ -684,7 +688,7 @@ namespace Asycuda421
                 if (item.xcuda_Tarification.xcuda_HScode.Commodity_code != null)
                     ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode.Commodity_code); // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
                 // ai.Tarification.HScode.Precision_1 = item.xcuda_Tarification.xcuda_HScode.Precision_1;
-                if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 17)
+                if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 17)//
                     ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim().Truncate(17));
             }
         }

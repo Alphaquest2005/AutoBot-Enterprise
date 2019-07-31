@@ -12,4 +12,4 @@ UPDATE       xcuda_ASYCUDA_ExtendedProperties
 SET                Cancelled = 1
 FROM            AsycudaDocumentBasicInfo INNER JOIN
                          xcuda_ASYCUDA_ExtendedProperties ON AsycudaDocumentBasicInfo.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id
-WHERE        (AsycudaDocumentBasicInfo.CNumber in (select CNumber from [budget-ENTERPRISEDB].dbo.AsycudaDocumentBasicInfo where Cancelled = 1) and AsycudaDocumentBasicInfo.ApplicationSettingsId = 2)
+WHERE        (AsycudaDocumentBasicInfo.CNumber in ('27080') and AsycudaDocumentBasicInfo.ApplicationSettingsId = 3)

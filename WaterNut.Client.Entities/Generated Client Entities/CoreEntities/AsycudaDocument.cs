@@ -551,6 +551,23 @@ public Nullable<int> ApplicationSettingsId
 		}
      
 
+       
+       
+                
+                
+public string SourceFileName
+		{ 
+		    get { return this.asycudadocument.SourceFileName; }
+			set
+			{
+			    if (value == this.asycudadocument.SourceFileName) return;
+				this.asycudadocument.SourceFileName = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SourceFileName");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentItem> _AsycudaDocumentItems = null;
         public  ObservableCollection<AsycudaDocumentItem> AsycudaDocumentItems
 		{

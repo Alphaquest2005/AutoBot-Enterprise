@@ -202,7 +202,8 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new Sessions(res)
                     {
-                     // SessionActions = new System.Collections.ObjectModel.ObservableCollection<SessionActions>(res.SessionActions.Select(y => new SessionActions(y)))    
+                     // SessionActions = new System.Collections.ObjectModel.ObservableCollection<SessionActions>(res.SessionActions.Select(y => new SessionActions(y))),    
+                     // SessionSchedule = new System.Collections.ObjectModel.ObservableCollection<SessionSchedule>(res.SessionSchedule.Select(y => new SessionSchedule(y)))    
                   };
                     }
                     else

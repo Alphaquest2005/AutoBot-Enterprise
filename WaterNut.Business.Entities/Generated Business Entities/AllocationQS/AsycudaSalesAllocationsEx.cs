@@ -125,7 +125,7 @@ namespace AllocationQS.Business.Entities
         }
         int _previousitem_id;
         [DataMember]
-        public Nullable<System.DateTime> InvoiceDate 
+        public System.DateTime InvoiceDate 
         {
             get
             {
@@ -138,7 +138,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _invoicedate;
+        System.DateTime _invoicedate;
         [DataMember]
         public Nullable<double> SalesQuantity 
         {
@@ -215,7 +215,7 @@ namespace AllocationQS.Business.Entities
         }
         string _itemdescription;
         [DataMember]
-        public Nullable<int> EntryDataDetailsId 
+        public int EntryDataDetailsId 
         {
             get
             {
@@ -228,7 +228,7 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _entrydatadetailsid;
+        int _entrydatadetailsid;
         [DataMember]
         public int xBond_Item_Id 
         {
@@ -710,7 +710,7 @@ namespace AllocationQS.Business.Entities
         }
         Nullable<System.DateTime> _assessmentdate;
         [DataMember]
-        public Nullable<int> ApplicationSettingsId 
+        public int ApplicationSettingsId 
         {
             get
             {
@@ -723,7 +723,22 @@ namespace AllocationQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _applicationsettingsid;
+        int _applicationsettingsid;
+        [DataMember]
+        public string xStatus 
+        {
+            get
+            {
+                return _xstatus;
+            }
+            set
+            {
+                _xstatus = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xstatus;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

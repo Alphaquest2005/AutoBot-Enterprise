@@ -25,6 +25,7 @@ using AllocationQS.Business.Entities;
 using DocumentItemDS.Business.Entities;
 using MoreLinq;
 using PreviousDocumentQS.Business.Entities;
+using TrackableEntities.EF6;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 
@@ -59,7 +60,8 @@ namespace WaterNut.DataSpace
         public async Task CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
             AsycudaDocumentSet docSet)
         {
-
+            // Make CurrentChecks always on
+            applyCurrentChecks = true;
             try
             {
                 PerIM7 = perIM7;
@@ -123,7 +125,7 @@ namespace WaterNut.DataSpace
                 }
 
                     var exPro =
-                        " && (PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7000\" || PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7400\")";
+                        " && (PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7000\" || PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7400\" || PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7500\")";
                     var slst =
                         (await CreateAllocationDataBlocks(currentFilter + exPro, errors).ConfigureAwait(false))
                         .Where(x => x.Allocations.Count > 0 );
@@ -148,13 +150,13 @@ namespace WaterNut.DataSpace
                     {
                         //exPro = " && PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7500\"";
                         //slst =
-                        //    (await CreateAllocationDataBlocks(currentFilter + exPro).ConfigureAwait(false)).Where(
+                        //    (await CreateAllocationDataBlocks(currentFilter + exPro, errors).ConfigureAwait(false)).Where(
                         //        x => x.Allocations.Count > 0);
                         //if (slst != null && slst.ToList().Any())
                         //{
-                        //    if (Process7100) itemSalesPiSummarylst.AddRange(Get7100SalesPiSummaryLst(startDate,endDate));
+                        //    List<ItemSalesPiSummary> itemSalesPiSummarylst = Get7100SalesPiSummaryLst(docSet.ApplicationSettingsId, startDate, endDate);
                         //    await CreateDutyFreePaidDocument(dfp, slst.Where(x => x.DutyFreePaid == dfp), docSet,
-                        //            "7100", true, itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp).ToList(), true, true, dfp == "Duty Free" ? "EX9" : "IM4", true, true, true, true)
+                        //            "7500", true, itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp).ToList(), true, true, dfp == "Duty Free" ? "EX9" : "IM4", true, true, true, true)
                         //        .ConfigureAwait(false);
                         //}
                     }
@@ -167,14 +169,15 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        private List<ItemSalesPiSummary> Get7100SalesPiSummaryLst(DateTime startDate, DateTime endDate)
+        private List<ItemSalesPiSummary> Get7100SalesPiSummaryLst(int applicationSettingsId, DateTime startDate,
+            DateTime endDate)
         {
-            var res = Historic7100ItemSalesPi(endDate);
-            res.AddRange(Current7100ItemSalesPi(startDate, endDate));
+            var res = Historic7100ItemSalesPi(applicationSettingsId, endDate);
+           // res.AddRange(Current7100ItemSalesPi(startDate, endDate));
             return res;
         }
 
-        private static List<ItemSalesPiSummary> Historic7100ItemSalesPi(DateTime endDate)
+        private static List<ItemSalesPiSummary> Historic7100ItemSalesPi(int applicationSettingsId, DateTime endDate)
         {
             using (var ctx = new AllocationDSContext())
             {
@@ -185,10 +188,10 @@ FROM            (SELECT        ItemNumber, SUM(ItemQuantity) AS ItemQuantity, SU
                                                                               AsycudaDocument.ExpiryDate, AsycudaDocument.CNumber, AsycudaDocumentItem.LineNumber
                                                     FROM            AsycudaDocumentBasicInfo AS AsycudaDocument INNER JOIN
                                                                               AsycudaItemBasicInfo AS AsycudaDocumentItem ON AsycudaDocument.ASYCUDA_Id = AsycudaDocumentItem.ASYCUDA_Id
-                                                    WHERE        (AsycudaDocument.Extended_customs_procedure = '7100')
+                                                    WHERE   (AsycudaDocument.ApplicationSettingsId = {applicationSettingsId}) AND     (AsycudaDocument.Extended_customs_procedure = '7500')
                                                     GROUP BY AsycudaDocumentItem.ItemNumber, AsycudaDocumentItem.DPQtyAllocated, AsycudaDocumentItem.DFQtyAllocated, AsycudaDocumentItem.ItemQuantity, AsycudaDocument.AssessmentDate, 
                                                                               AsycudaDocument.ExpiryDate, AsycudaDocument.CNumber, AsycudaDocumentItem.LineNumber) AS IM
-                          WHERE        (AssessmentDate <= CONVERT(DATETIME, '{
+                          WHERE   (AssessmentDate <= CONVERT(DATETIME, '{
                                 endDate.Date.ToShortDateString()
                             }', 102)) AND (ExpiryDate >= CONVERT(DATETIME, '{endDate.Date.ToShortDateString()}', 102))
                           GROUP BY ItemNumber) AS SIM INNER JOIN
@@ -201,8 +204,8 @@ FROM            (SELECT        ItemNumber, SUM(ItemQuantity) AS ItemQuantity, SU
                                                                                    AsycudaDocumentBasicInfo AS AsycudaDocument_1 ON AsycudaDocumentItem_1.ASYCUDA_Id = AsycudaDocument_1.ASYCUDA_Id
                                                          GROUP BY AsycudaDocumentItem_1.ItemNumber, AsycudaDocumentItem_1.ItemQuantity, AsycudaDocument_1.AssessmentDate, AsycudaDocument_1.ExpiryDate, AsycudaDocument_1.CNumber, 
                                                                                    AsycudaDocument_1.Extended_customs_procedure
-                                                         HAVING         (AsycudaDocument_1.Extended_customs_procedure = '9071' OR
-                                                                                   AsycudaDocument_1.Extended_customs_procedure = '4071')) AS Ex
+                                                         HAVING       (AsycudaDocument_1.ApplicationSettingsId = {applicationSettingsId}) AND   (AsycudaDocument_1.Extended_customs_procedure = '9075' OR
+                                                                                   AsycudaDocument_1.Extended_customs_procedure = '4075')) AS Ex
                                WHERE        (AssessmentDate <= CONVERT(DATETIME, '{
                                 endDate.Date.ToShortDateString()
                             }', 102))
@@ -249,7 +252,7 @@ FROM            AsycudaSalesAllocations INNER JOIN
                          EntryDataDetails ON AsycudaSalesAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
                          EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId INNER JOIN
                          EntryData_Sales ON EntryData.EntryDataId = EntryData_Sales.EntryDataId
-WHERE        (AsycudaDocumentBasicInfo.Extended_customs_procedure = '7100')
+WHERE        (AsycudaDocumentBasicInfo.Extended_customs_procedure = '7500')
 GROUP BY AsycudaItemBasicInfo.ItemNumber, EntryDataDetails.Quantity, EntryData_Sales.TaxAmount, AsycudaSalesAllocations.QtyAllocated, EntryDataDetails.EntryDataId, EntryData.EntryDataDate, 
                          EntryDataDetails.EntryDataDetailsId
 ORDER BY InvoiceDate) AS sales
@@ -407,6 +410,44 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                         }).ToList();
 
+                    var resCurrent1 = ctx.ItemSalesPiSummary.AsNoTracking()
+                       //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                       .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                       //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
+                       .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
+                       .Where(x => x.PreviousItem_Id != 0)
+                       .Where(x => x.DutyFreePaid == dfp)
+
+                       .GroupBy(g => new
+                       {
+                           PreviousItem_Id = g.PreviousItem_Id,
+                           pQtyAllocated = g.pQtyAllocated,
+                           pCNumber = g.pCNumber,
+                           pRegistrationDate = g.pRegistrationDate,
+                           pLineNumber = g.pLineNumber,
+                           ItemNumber = g.ItemNumber,
+                           DutyFreePaid = g.DutyFreePaid
+
+                       }).ToList();
+
+                    var resCurrent = resCurrent1.GroupJoin(ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate >= startDate && x.AssessmentDate <= endDate),
+                         g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
+                         p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new { g, p })
+                     .Select(x => new ItemSalesPiSummary
+                     {
+                         PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
+                         ItemNumber = x.g.Key.ItemNumber,
+                         QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
+                         pQtyAllocated = x.g.Key.pQtyAllocated,
+                         PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
+                         pCNumber = x.g.Key.pCNumber,
+                         pRegistrationDate = x.g.Key.pRegistrationDate,
+                         pLineNumber = x.g.Key.pLineNumber,
+                         DutyFreePaid = x.g.Key.DutyFreePaid,
+                         Type = "Current"
+
+                     }).ToList();
+                    resHistoric.AddRange(resCurrent);
 
                     return resHistoric;
                 }
@@ -1559,37 +1600,38 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                 /////////////// QtyAllocated >= piQuantity cap
                 /// 
-                if(checkQtyAllocatedGreaterThanPiQuantity)
-                if (im7Type == "7000" || im7Type == "7400")
-                {
-                    if (mypod.EntlnData.pDocumentItem.QtyAllocated <= mypod.EntlnData.pDocumentItem.previousItems
-                            .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum())
+                if (checkQtyAllocatedGreaterThanPiQuantity)
+                    if (im7Type == "7000" || im7Type == "7400")
                     {
-                        return 0;
+                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <= mypod.EntlnData.pDocumentItem.previousItems
+                                .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum())
+                        {
+                            return 0;
+                        }
                     }
-                }
-                else
-                {
-                    if (mypod.EntlnData.pDocumentItem.QtyAllocated < itemSalesPiSummaryLst.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum())
+                    else
                     {
-                        return 0;
+                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <
+                            itemSalesPiSummaryLst.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum())
+                        {
+                            return 0;
+                        }
                     }
-                }
 
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
                 //var totalSalesLst = salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").ToList();
                 //var piSummaries = piSummary.Where(x => x.Type == "Historic"
-                                                       //&& x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                                                       //&& x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber.ToString()
-                                                       //&& x.pOffice == mypod.EntlnData.EX9Allocation.Customs_clearance_office_code
-                                                       //&& x.pItemQuantity.ToString() == mypod.EntlnData.pDocumentItem.ItemQuantity.ToString()
-                                                       //&& (x.ItemNumber == mypod.EntlnData.ItemNumber || x.ItemNumber == mypod.EntlnData.pDocumentItem.ItemNumber)).ToList();
+                //&& x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
+                //&& x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber.ToString()
+                //&& x.pOffice == mypod.EntlnData.EX9Allocation.Customs_clearance_office_code
+                //&& x.pItemQuantity.ToString() == mypod.EntlnData.pDocumentItem.ItemQuantity.ToString()
+                //&& (x.ItemNumber == mypod.EntlnData.ItemNumber || x.ItemNumber == mypod.EntlnData.pDocumentItem.ItemNumber)).ToList();
                 List<ItemSalesPiSummary> salesPiHistoric;
                 List<ItemSalesPiSummary> salesPiCurrent;
                 List<ItemSalesPiSummary> itemSalesPiHistoric = new List<ItemSalesPiSummary>();
                 List<ItemSalesPiSummary> itemSalesPiCurrent = new List<ItemSalesPiSummary>();
-                if (im7Type == "7100")
+                if (im7Type == "7500")
                 {
                     //TODO:Include itemSalesPiHistoric & itemSalesPiCurrent
                     salesPiHistoric = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber &&
@@ -1612,36 +1654,50 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                                                        //&& x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
                                                                        && x.Type == "Historic").ToList();
                     salesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                                                                      && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                                                                      && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
+                                                                      && x.pCNumber == mypod.EntlnData.EX9Allocation
+                                                                          .pCNumber // donot disable this because previous month pi are not included
+                                                                      && x.pLineNumber == mypod.EntlnData.pDocumentItem
+                                                                          .LineNumber
                                                                       && x.Type == "Current").ToList();
 
                     itemSalesPiHistoric = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-
-                                                                       && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                                                                       && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
-                                                                       && x.Type == "Historic").ToList();
-                    itemSalesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                                                                      && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                                                                      && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
-                                                                      && x.Type == "Current").ToList();
+                                                                           && x.pCNumber == mypod.EntlnData
+                                                                               .EX9Allocation.pCNumber
+                                                                           && x.pLineNumber ==
+                                                                           mypod.EntlnData.pDocumentItem.LineNumber
+                                                                           && x.Type == "Historic").ToList();
+                    //itemSalesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
+                    //                                                  && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
+                    //                                                  && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
+                    //                                                  && x.Type == "Current").ToList();
                 }
-                Debug.WriteLine($"Create EX9 For {mypod.EntlnData.ItemNumber}:{mypod.EntlnData.EntryDataDetails.First().EntryDataDate:MMM-yy} - {mypod.EntlnData.Quantity} | C#{mypod.EntlnData.EX9Allocation.pCNumber}-{mypod.EntlnData.pDocumentItem.LineNumber}");
-                salesPiHistoric.ForEach(x => Debug.WriteLine($"Sales vs Pi History: {x.QtyAllocated} of {x.pQtyAllocated} - {x.PiQuantity} | C#{x.pCNumber}-{x.pLineNumber}"));
 
-                
+                Debug.WriteLine(
+                    $"Create EX9 For {mypod.EntlnData.ItemNumber}:{mypod.EntlnData.EntryDataDetails.First().EntryDataDate:MMM-yy} - {mypod.EntlnData.Quantity} | C#{mypod.EntlnData.EX9Allocation.pCNumber}-{mypod.EntlnData.pDocumentItem.LineNumber}");
+                salesPiHistoric.ForEach(x =>
+                    Debug.WriteLine(
+                        $"Sales vs Pi History: {x.QtyAllocated} of {x.pQtyAllocated} - {x.PiQuantity} | C#{x.pCNumber}-{x.pLineNumber}"));
+
+
                 var docPi = docSetPi
-                    .Where(x => ((x.pCNumber == null && x.ItemNumber == mypod.EntlnData.pDocumentItem.ItemNumber) || (x.pCNumber != null && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber))
-                                && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber.ToString()).Select(x => x.TotalQuantity)
+                    .Where(x => ((x.pCNumber == null && x.ItemNumber == mypod.EntlnData.pDocumentItem.ItemNumber) ||
+                                 (x.pCNumber != null && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber))
+                                && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber.ToString())
+                    .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
+
+                var totalSalesHistoric = salesPiHistoric.Select(x => x.pQtyAllocated).DefaultIfEmpty(0).Sum();
+                var totalPiHistoric = salesPiHistoric.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
+
                 if (applyEx9Bucket)
-                if (im7Type == "7100")
-                {
-                    await Ex9Bucket(mypod, dfp, docPi, salesPiCurrent).ConfigureAwait(false);
-                }
-                else
-                {
-                    await Ex9Bucket(mypod, dfp, docPi,salesPiHistoric //i assume once you not doing historic checks especially for adjustments just use the specific item history
+                    if (im7Type == "7500")
+                    {
+                        await Ex9Bucket(mypod, dfp, docPi, salesPiCurrent).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await Ex9Bucket(mypod, dfp, docPi,
+                            salesPiHistoric //i assume once you not doing historic checks especially for adjustments just use the specific item history
                         ).ConfigureAwait(false); //historic = 'HCLAMP/060'
                     }
 
@@ -1651,7 +1707,11 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                 mypod.EntlnData.Quantity = Math.Round(mypod.EntlnData.Quantity, 2);
                 Debug.WriteLine($"EX9Bucket Quantity {mypod.EntlnData.ItemNumber} - {mypod.EntlnData.Quantity}");
-                if (mypod.EntlnData.Quantity <= 0) return 0;
+                if (mypod.EntlnData.Quantity <= 0)
+                {
+
+                    return 0;
+                }
 
                 ////////////////////////----------------- Cap to prevent xQuantity > Sales Quantity
                 double qtyAllocated = 0;
@@ -1662,27 +1722,35 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                         ? 1
                                         : mypod.EntlnData.EX9Allocation.SalesFactor);
                 }
+
                 // todo: ensure allocations are marked for investigation
                 double qty = mypod.EntlnData.Quantity;
-                if (Math.Abs(qty - Math.Round(qtyAllocated,2)) > 0.0001)
+                if (Math.Abs(qty - Math.Round(qtyAllocated, 2)) > 0.0001)
                 {
+                    updateXStatus(mypod.Allocations,
+                        $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}");
                     return 0;
                 }
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
 
-                var totalSalesHistoric = salesPiHistoric.Select(x => x.pQtyAllocated).DefaultIfEmpty(0).Sum(); //salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
-                
-                var totalPiHistoric = salesPiHistoric.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();//piSummaries.Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
-                var itemSalesHistoric = itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum(); //salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
+                //salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
+
+                //piSummaries.Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
+                // var itemSalesHistoric = itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum(); //salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
 
                 var itemPiHistoric = itemSalesPiHistoric.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
+                // var itemPiCurrent = itemSalesPiCurrent.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
                 if (applyHistoricChecks)
                 {
                     if (totalSalesHistoric == 0) return 0; // no sales found
                     if (Math.Round(totalSalesHistoric, 2) <
                         Math.Round((totalPiHistoric + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
                     {
+                        updateXStatus(mypod.Allocations,
+                            $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
+                               Total Historic PI: {totalPiHistoric}
+                               xQuantity:{mypod.EntlnData.Quantity}");
                         return 0;
                     }
                 }
@@ -1696,19 +1764,41 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                     var totalPiCurrent = salesPiCurrent.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
 
-                    if (totalSalesCurrent == 0) return 0; // no sales found
-                    if (Math.Round(totalSalesCurrent, 2) < Math.Round((totalPiCurrent + mypod.EntlnData.Quantity) * salesFactor, 2))
+                    if (totalSalesCurrent == 0)
                     {
+                        updateXStatus(mypod.Allocations,
+                            $@"No Current Sales Found");
+                        return 0;
+                    }
+
+                    // no sales found
+
+
+                    if (Math.Round(totalSalesCurrent, 2) <
+                        Math.Round((totalPiCurrent + mypod.EntlnData.Quantity) * salesFactor, 2))
+                    {
+                        updateXStatus(mypod.Allocations,
+                            $@"Failed Current Check:: Total Current Sales:{Math.Round(totalSalesCurrent, 2)}
+                               Total Current PI: {totalPiCurrent}
+                               xQuantity:{mypod.EntlnData.Quantity}");
                         return 0;
                     }
                 }
+
+
                 ////////////////////////////////////////////////////////////////////////
                 //// Cap to prevent over creation of ex9 vs Item Quantity espectially if creating Duty paid and Duty Free at same time
 
                 if (mypod.EntlnData.pDocumentItem.ItemQuantity < Math.Round((itemPiHistoric + docPi + mypod.EntlnData.Quantity) ,2))
                 {
+                    updateXStatus(mypod.Allocations,
+                        $@"Failed ItemQuantity < ItemPIHistoric:: ItemQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}
+                               Item Historic PI: {itemPiHistoric}
+                               xQuantity:{mypod.EntlnData.Quantity}");
                     return 0;
                 }
+
+                
                 //////////////////// can't delump allocations because of returns and 1kg weights issue too much items wont be able to exwarehouse
                 var itmsToBeCreated = 1;
                 var itmsCreated = 0;
@@ -1729,6 +1819,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                         itmcount + i, dfp);
                     if (Math.Round(pitm.Net_weight, 2) < 0.01)
                     {
+                        updateXStatus(mypod.Allocations,
+                            $@"Failed PiQuantity < 0.01 :: PiQuantity:{Math.Round(pitm.Net_weight, 2)}");
                         return 0;
                     }
                     pitm.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
@@ -1881,6 +1973,21 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
         }
 
+        private void updateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus)
+        {
+            using (var ctx = new AllocationDSContext(){StartTracking = true})
+            {
+                foreach (var a in allocations)
+                {
+                    var res = ctx.AsycudaSalesAllocations.First(x => x.AllocationId == a.AllocationId);
+                    res.xStatus = xstatus;
+                    ctx.ApplyChanges(res);
+                }
+
+                ctx.SaveChanges();
+            }
+        }
+
         private static pDocumentItem oldPDocumentItem = null;
         static List<previousItems> existingPreviousItems = new List<previousItems>(); 
         private List<previousItems> Get7100PreviousItems(AlloEntryLineData entlnDataPDocumentItem, string dfp)
@@ -1965,6 +2072,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     || (Math.Abs(remainingQtyToBeTakenOut) < .01)
                     || allocationSales < allocationPi)
                 {
+                    updateXStatus(mypod.Allocations,
+                        $@"Failed Ex9 Bucket :: PI Quantity: {allocationPi}");
                     allocations.Clear();
                     entryLine.EntryDataDetails.Clear();
                     entryLine.Quantity = 0;
@@ -2006,6 +2115,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                             if (Math.Abs(allocation.QtyAllocated) < 0.001)
                             {
+                                updateXStatus(new List<AsycudaSalesAllocations>() {allocation},
+                                    $@"Failed Ex9 Bucket");
                                 allocations.Remove(allocation);
                             }
                             else

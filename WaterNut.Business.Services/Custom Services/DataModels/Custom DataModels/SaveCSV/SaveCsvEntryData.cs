@@ -454,7 +454,7 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("DESCRIPTION|MEMO|Item Description|ItemDescription".ToUpper().Contains(h.ToUpper()))
+                if ("DESCRIPTION|MEMO|Item Description|ItemDescription|Description 1".ToUpper().Contains(h.ToUpper()))
                 {
                     mapping.Add("ItemDescription", i);
                     continue;

@@ -56,7 +56,7 @@ namespace WaterNut.DataSpace
             //get document items where itemquantity > pi quantity
             try
             {
-                var alst = await GetSelectedIM9Data(lst).ConfigureAwait(false);
+                var alst = await GetSelectedIM9Data(lst, docSet.ApplicationSettingsId).ConfigureAwait(false);
 
                 await CreateIM9Entries(docSet, PerIM7, alst).ConfigureAwait(false);
             }
@@ -171,7 +171,8 @@ namespace WaterNut.DataSpace
             return ares;
         }
 
-        private static async Task<IEnumerable<AsycudaDocumentItemIM9>> GetSelectedIM9Data(IEnumerable<int> lst)
+        private static async Task<IEnumerable<AsycudaDocumentItemIM9>> GetSelectedIM9Data(IEnumerable<int> lst,
+            int applicationSettingsId)
         {
             try
             {
@@ -201,7 +202,7 @@ namespace WaterNut.DataSpace
 
                         ctx.xcuda_Item
                             .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.Any())
-                            .Where(x => str.Contains(x.AsycudaDocument.ASYCUDA_Id.ToString()))
+                            .Where(x => str.Contains(x.AsycudaDocument.ASYCUDA_Id.ToString()) && x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                             .Select(x => new AsycudaDocumentItemIM9()
                             {
                                 ItemNumber = x.xcuda_Tarification.xcuda_HScode.Precision_4,

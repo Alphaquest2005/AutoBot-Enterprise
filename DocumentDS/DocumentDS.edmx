@@ -190,6 +190,7 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
           <Property Name="EffectiveExpiryDate" Type="datetime2" Precision="7" />
+          <Property Name="SourceFileName" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="xcuda_Border_information">
           <Key>
@@ -3594,6 +3595,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="ExportTemplate" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="ExportTemplate" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="xcuda_ASYCUDA" />
           <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="7" />
+          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet">
           <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -4401,6 +4403,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_ASYCUDA_ExtendedProperties">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_ASYCUDA_ExtendedProperties">
               <MappingFragment StoreEntitySet="xcuda_ASYCUDA_ExtendedProperties">
+                <ScalarProperty Name="SourceFileName" ColumnName="SourceFileName" />
                 <ScalarProperty Name="EffectiveExpiryDate" ColumnName="EffectiveExpiryDate" />
                 <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
