@@ -34,30 +34,42 @@ namespace WaterNut.DataSpace
         public async Task<bool> ExtractEntryData(string fileType, string[] lines, string[] headings, string csvType,
             AsycudaDocumentSet docSet, bool overWriteExisting, int? emailId, int? fileTypeId)
         {
-            if (docSet == null)
+            try
             {
-               throw new ApplicationException("Please select Document Set before proceding!");
-               
-            }
-            var mapping = new Dictionary<string, int>();
-             GetMappings(mapping, headings);
-            var eslst = GetCSVDataSummayList(lines, mapping, headings);
-
-            if (eslst == null) return true;
 
 
-            if (csvType == "QB9")
-            {
-                foreach (var item in eslst)
+                if (docSet == null)
                 {
-                    item.ItemNumber = item.ItemNumber.Split(':').Last();
+                    throw new ApplicationException("Please select Document Set before proceding!");
+
                 }
+
+                var mapping = new Dictionary<string, int>();
+                GetMappings(mapping, headings);
+                var eslst = GetCSVDataSummayList(lines, mapping, headings);
+
+                if (eslst == null) return true;
+
+
+                if (csvType == "QB9")
+                {
+                    foreach (var item in eslst)
+                    {
+                        item.ItemNumber = item.ItemNumber.Split(':').Last();
+                    }
+                }
+
+                await ImportInventory(eslst, docSet).ConfigureAwait(false);
+
+                if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId)
+                    .ConfigureAwait(false)) return true;
+                return false;
             }
-
-            await ImportInventory(eslst, docSet).ConfigureAwait(false);
-
-            if (await ImportEntryData(fileType, eslst,docSet, overWriteExisting, emailId, fileTypeId).ConfigureAwait(false)) return true;
-            return false;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
 
@@ -132,41 +144,52 @@ namespace WaterNut.DataSpace
 
                 foreach (var item in ed)
                 {
+                    if (!item.EntryDataDetails.Any()) throw new ApplicationException(item.EntryData.EntryDataId + " has no details");
+
+                    List<EntryDataDetails> details = new List<EntryDataDetails>();
+                    
                     // check Existing items
                     var olded = await GetEntryData(item.EntryData.EntryDataId, item.EntryData.EntryDataDate, item.EntryData.ApplicationSettingsId).ConfigureAwait(false);
 
                     if (olded != null)
                     {
-                        var l = 0;
-                        foreach (var nEd in item.EntryDataDetails)
+                        if (overWriteExisting)
                         {
-                            l += 1;
-                            var oEd = olded.EntryDataDetails.FirstOrDefault(x =>
-                                x.LineNumber == l && x.ItemNumber == nEd.ItemNumber);
-                            if (oEd != null)
+                            await ClearEntryDataDetails(olded).ConfigureAwait(false);
+                            await DeleteEntryData(olded).ConfigureAwait(false);
+                            details = item.EntryDataDetails.ToList();
+                        }
+                        else
+                        {
+
+
+                            var l = 0;
+                            foreach (var nEd in item.EntryDataDetails.ToList())
                             {
+                                l += 1;
+
+                                var oEd = olded.EntryDataDetails.FirstOrDefault(x =>
+                                    x.LineNumber == l && x.ItemNumber == nEd.ItemNumber);
+
+                                if (oEd == null) continue;
+                                if (Math.Abs(nEd.Quantity - oEd.Quantity) < .0001 &&
+                                    Math.Abs(nEd.Cost - oEd.Cost) < .0001)
+                                {
+                                    
+                                    continue;
+                                }
+                                details.Add(nEd);
                                 new EntryDataDetailsService().DeleteEntryDataDetails(oEd.EntryDataDetailsId.ToString())
                                     .Wait();
+
                             }
-                           
                         }
-
-                        //switch (overWriteExisting || olded.AsycudaDocumentSets.All(x => x.AsycudaDocumentSetId != docSet.AsycudaDocumentSetId))
-                        //{
-                        //    case true:
-                        //        await ClearEntryDataDetails(olded).ConfigureAwait(false);
-                        //        await DeleteEntryData(olded).ConfigureAwait(false);
-
-                        //        break;
-                        //    case false:
-                        //        continue;
-
-                        //}
                     }
-                    else
+                    if (olded == null) details = item.EntryDataDetails.ToList();
+                    if (overWriteExisting || olded == null)
                     {
 
-
+                        
 
                         switch (fileType)
                         {
@@ -325,9 +348,7 @@ namespace WaterNut.DataSpace
                         }
                     }
 
-                    if (!item.EntryDataDetails.Any()) throw new ApplicationException(item.EntryData.EntryDataId + " has no details");
-
-                    var details = item.EntryDataDetails.ToList();
+                    
 
                     using (var ctx = new EntryDataDetailsService())
                     {
@@ -635,7 +656,10 @@ namespace WaterNut.DataSpace
             {
                 if (string.IsNullOrEmpty(line)) return null;
                 var splits = line.Replace("�", "").CsvSplit().Select(x => x.Trim()).ToArray();
-                
+                if (!map.Keys.Contains("EntryDataId"))
+                    throw new ApplicationException("Invoice# not Mapped");
+                if (!map.Keys.Contains("ItemNumber"))
+                    throw new ApplicationException("ItemNumber not Mapped");
                 if (splits[map["EntryDataId"]] != "" && splits[map["ItemNumber"]] != "")
                 {
                     var res = new CSVDataSummary();

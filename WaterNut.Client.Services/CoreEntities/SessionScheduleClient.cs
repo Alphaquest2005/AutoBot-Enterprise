@@ -117,6 +117,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetSessionScheduleBySesseionId(SesseionId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<SessionSchedule>> GetSessionScheduleByApplicationSettingId(string ApplicationSettingId, List<string> includesLst = null)
+        {
+            return  await Channel.GetSessionScheduleByApplicationSettingId(ApplicationSettingId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

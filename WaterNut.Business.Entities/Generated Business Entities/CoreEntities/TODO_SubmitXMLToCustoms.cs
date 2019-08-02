@@ -184,6 +184,36 @@ namespace CoreEntities.Business.Entities
             }
         }
         int _asycuda_id;
+        [DataMember]
+        public string FilePath 
+        {
+            get
+            {
+                return _filepath;
+            }
+            set
+            {
+                _filepath = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _filepath;
+        [DataMember]
+        public string Status 
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _status;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

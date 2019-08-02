@@ -65,6 +65,21 @@ namespace CoreEntities.Business.Entities
         }
         System.DateTime _rundatetime;
         [DataMember]
+        public Nullable<int> ApplicationSettingId 
+        {
+            get
+            {
+                return _applicationsettingid;
+            }
+            set
+            {
+                _applicationsettingid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _applicationsettingid;
+        [DataMember]
         public Sessions Sessions { get; set; }
 
  //       [DataMember]

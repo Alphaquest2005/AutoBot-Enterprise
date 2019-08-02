@@ -78,14 +78,21 @@ namespace AutoBot
                 {"AutoMatch", AutoMatch },
                 {"AssessDiscpancyEntries", AssessDiscpancyEntries },
                 {"ExportDiscpancyEntries", ExportDiscpancyEntries },
-                { "SubmitDiscrepancyErrors", SubmitDiscrepancyErrors },
+                {"SubmitDiscrepancyErrors", SubmitDiscrepancyErrors },
                 {"AllocateSales", AllocateSales },
                 {"CreateEx9", CreateEx9 },
                 {"ExportEx9Entries", ExportEx9Entries },
                 {"AssessEx9Entries", AssessEx9Entries },
                 {"SubmitToCustoms", SubmitSalesXMLToCustoms },
                 {"CleanupEntries", CleanupEntries },
+                {"ClearAllocations", ClearAllocations },
             };
+
+        private static void ClearAllocations()
+        {
+            Console.WriteLine("Clear Allocations");
+            AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Wait();
+        }
 
         private static void SubmitSalesXMLToCustoms()
         {
@@ -172,7 +179,7 @@ namespace AutoBot
 
         public static void CleanupEntries()
         {
-            Console.WriteLine("AutoMatch ...");
+            Console.WriteLine("Cleanup ...");
             using (var ctx = new CoreEntitiesContext())
             {
                 var lst = ctx.TODO_DocumentsToDelete
@@ -529,7 +536,7 @@ namespace AutoBot
                 var lst = ctx.TODO_AdjustmentsToXML.Where(x =>
                     x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                     && x.AdjustmentType == "DIS"
-                        //    && x.InvoiceNo == "118965"
+                        //    && x.InvoiceNo == "2123008908"
                         //&& x.InvoiceDate >= saleInfo.Item1
                         //    &&  x.InvoiceDate <= saleInfo.Item2
                         )
@@ -621,6 +628,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
+                    ctx.Database.CommandTimeout = 0;
                     var lst = ctx.TODO_DiscrepanciesToSubmit.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId
@@ -730,7 +738,7 @@ namespace AutoBot
             Console.WriteLine("Allocations Started");
             using (var ctx = new CoreEntitiesContext())
             {
-                if (!ctx.TODO_UnallocatedSales.Any(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)) return;
+                //if (!ctx.TODO_UnallocatedSales.Any(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)) return;
                 AllocationsModel.Instance.ClearAllAllocations(BaseDataModel.Instance.CurrentApplicationSettings
                     .ApplicationSettingsId).Wait();
                 AllocationsBaseModel.Instance
@@ -1287,7 +1295,7 @@ namespace AutoBot
                                 x.AsycudaDocumentSet_Attachments.Attachments.FilePath == file.FullName
                                 && x.Status == "Sender Informed of Error") == null)
                         {
-                            var att = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x => x.Attachments.FilePath == file.FullName);
+                            var att = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed","")));
                             var body = "Error While Importing: \r\n" +
                                        $"File: {file}\r\n" +
                                        $"Error: {(e.InnerException ?? e).Message.Replace(file.FullName, file.Name)} \r\n" +
@@ -1295,7 +1303,7 @@ namespace AutoBot
                                        $"Regards,\r\n" +
                                        $"AutoBot";
                             var emailId = ctx.AsycudaDocumentSet_Attachments
-                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "")))?.EmailUniqueId;
+                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailUniqueId;
                             EmailDownloader.EmailDownloader.SendBackMsg(Convert.ToInt32(emailId), Client, body);
                             ctx.AttachmentLog.Add(new AttachmentLog(true)
                             {
@@ -1379,7 +1387,7 @@ namespace AutoBot
             foreach (var file in files)
             {
                 var dfile = new FileInfo($@"{file.DirectoryName}\{file.Name.Replace(file.Extension, ".csv")}");
-                if (dfile.Exists && dfile.LastWriteTime.Date == DateTime.Now.Date) return;
+                if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime) return;
                 // Reading from a binary Excel file (format; *.xlsx)
                 FileStream stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read);
                 var excelReader = ExcelReaderFactory.CreateReader(stream);
@@ -1428,7 +1436,7 @@ namespace AutoBot
                 if (fileType.FileTypeMappings.Count == 0) return;
                 var dfile = new FileInfo(
                     $@"{file.DirectoryName}\{file.Name.Replace(".csv", "")}-Fixed{file.Extension}");
-                if (dfile.Exists && dfile.LastWriteTime.Date == DateTime.Now.Date) return;
+                if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime) return;
                 // Reading from a binary Excel file (format; *.xlsx)
                 var dt = CSV2DataTable(file);
 

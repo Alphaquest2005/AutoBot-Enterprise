@@ -359,6 +359,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _filePathFilter;
+        public string FilePathFilter
+        {
+            get
+            {
+                return _filePathFilter;
+            }
+            set
+            {
+                _filePathFilter = value;
+				NotifyPropertyChanged(x => FilePathFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _statusFilter;
+        public string StatusFilter
+        {
+            get
+            {
+                return _statusFilter;
+            }
+            set
+            {
+                _statusFilter = value;
+				NotifyPropertyChanged(x => StatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -461,6 +497,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(Extended_customs_procedureFilter) == false)
 						res.Append(" && " + string.Format("Extended_customs_procedure.Contains(\"{0}\")",  Extended_customs_procedureFilter));						
+ 
+
+									if(string.IsNullOrEmpty(FilePathFilter) == false)
+						res.Append(" && " + string.Format("FilePath.Contains(\"{0}\")",  FilePathFilter));						
+ 
+
+									if(string.IsNullOrEmpty(StatusFilter) == false)
+						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -499,7 +543,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AssessmentDate = x.AssessmentDate ,
                     
  
-                    Extended_customs_procedure = x.Extended_customs_procedure 
+                    Extended_customs_procedure = x.Extended_customs_procedure ,
+                    
+ 
+                    FilePath = x.FilePath ,
+                    
+ 
+                    Status = x.Status 
                     
                 }).ToList()
             };
@@ -528,6 +578,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Extended_customs_procedure { get; set; } 
+                    
+ 
+                    public string FilePath { get; set; } 
+                    
+ 
+                    public string Status { get; set; } 
                     
         }
 

@@ -82,6 +82,9 @@ namespace CoreEntities.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<SessionSchedule>> GetSessionScheduleBySesseionId(string SesseionId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<SessionSchedule>> GetSessionScheduleByApplicationSettingId(string ApplicationSettingId, List<string> includesLst = null);
+        
   		
     }
 }

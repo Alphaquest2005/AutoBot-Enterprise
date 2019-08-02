@@ -164,6 +164,32 @@ namespace CoreEntities.Client.DTO
 		}
         private int _ASYCUDA_Id;
 
+        [DataMember]
+        public string FilePath
+		{ 
+		    get { return _FilePath; }
+			set
+			{
+			    if (value == _FilePath) return;
+				_FilePath = value;
+				NotifyPropertyChanged();//m => this.FilePath
+			}
+		}
+        private string _FilePath;
+
+        [DataMember]
+        public string Status
+		{ 
+		    get { return _Status; }
+			set
+			{
+			    if (value == _Status) return;
+				_Status = value;
+				NotifyPropertyChanged();//m => this.Status
+			}
+		}
+        private string _Status;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

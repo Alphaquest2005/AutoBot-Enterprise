@@ -32,20 +32,11 @@ namespace AdjustmentQS.Business.Services
                 using (var ctx = new AdjustmentQSContext() {StartTracking = true})
                 {
                     ctx.Database.CommandTimeout = 0;
-                    //Select All unmatched Shorts
-                    //var lst = ctx.AdjustmentDetails
-                    //    .Include(x => x.AdjustmentEx)
-                    //    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                    //    //.Where(x => x.ItemNumber == "CLS/8536")
-                    //    .Where(x => x.AdjustmentShorts != null && (x.EffectiveDate == null || (x.EffectiveDate != null && !x.AdjustmentShorts.ShortAllocations.Any())) ||
-                    //                x.AdjustmentOvers!= null && (x.EffectiveDate == null || (x.EffectiveDate != null && !x.AdjustmentOvers.AsycudaDocumentItemEntryDataDetails.Any())))
-                    //    .OrderBy(x => x.EntryDataDetailsId)
-                    //    .ToList();
-
+                  
                     var lst = ctx.AdjustmentDetails
                         .Include(x => x.AdjustmentEx)
                         .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        //.Where(x => x.ItemNumber == "HS/EXW212")
+                        //.Where(x => x.ItemNumber == "BLS/8262")
                         .Where(x => x.EffectiveDate == null && ((x.InvoiceQty > x.ReceivedQty && !x.ShortAllocations.Any()) 
                                                                 || (x.InvoiceQty < x.ReceivedQty && !x.AsycudaDocumentItemEntryDataDetails.Any())))
                         .OrderBy(x => x.EntryDataDetailsId)
@@ -189,6 +180,7 @@ namespace AdjustmentQS.Business.Services
                         x => x.Allocations.Count > 0);
                 if (slst != null && slst.ToList().Any())
                 {
+
                     foreach (var dbBlock in slst)
                     {
                         // must use the month cuz assessment date could be 1 or 30
@@ -196,13 +188,12 @@ namespace AdjustmentQS.Business.Services
                             new DateTime(dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Year,
                                 dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Month, 1);
                         var endDate = startDate.AddMonths(1).AddDays(-1);
-                        var itemPiSummarylst = GetItemPiSummary(docSet.ApplicationSettingsId,startDate, endDate,
-                            dbBlock.Allocations.Select(x => x.ItemNumber).Distinct().ToList());
+                        var itemPiSummarylst = CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId,startDate, endDate, "Duty Free");
 
 
                         await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                             new List<AllocationDataBlock>() {dbBlock}, docSet, "7400", false, itemPiSummarylst, false,
-                            false, ex9Type, true, true, false, true).ConfigureAwait(false);
+                            false, ex9Type, true, "Current", true, false, true).ConfigureAwait(false);
                     }
 
                 }
@@ -218,100 +209,136 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        private List<CreateEx9Class.ItemSalesPiSummary> GetItemPiSummary(int applicationSettingsId,
-            DateTime startDate, DateTime endDate,
-            List<string> itmList)
-        {
-            try
-            {
+        //private List<CreateEx9Class.ItemSalesPiSummary> GetItemPiSummary(int applicationSettingsId,
+        //    DateTime startDate, DateTime endDate,
+        //    List<string> itmList)
+        //{
+        //    try
+        //    {
 
 
-                using (var ctx = new AllocationDSContext())
-                {
-                    var res1 = ctx.AdjustmentShortAllocations
-                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        .Where(x => x.EffectiveDate <= endDate)
-                        .Where(x => itmList.Contains(x.ItemNumber))
-                        .Where(x => x.PreviousItem_Id != 0)
-                        .GroupBy(g => new
-                        {
-                            PreviousItem_Id = g.PreviousItem_Id,
-                            PreviousDocumentItem = new
-                            {
-                                PreviousItem_Id = g.PreviousItem_Id,
-                                PiQuantity = g.PreviousDocumentItem.EntryPreviousItems
-                                    .Where(z => z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Cancelled != true)
-                                    .Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                //QtyAllocated = g.PreviousDocumentItem.DFQtyAllocated + g.PreviousDocumentItem.DPQtyAllocated,
-                                QtyAllocated = g.PreviousDocumentItem.DFQtyAllocated,//assume im9 are duty free
-                                pCNumber = g.PreviousDocumentItem.AsycudaDocument.CNumber,
-                                pRegistrationDate = g.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
-                                pLineNumber = g.PreviousDocumentItem.LineNumber
-                            },
-                            ItemNumber = g.EntryDataDetails.ItemNumber,
-                            DutyFreePaid = g.DutyFreePaid
-                        }).Select(x => new CreateEx9Class.ItemSalesPiSummary
-                        {
-                            ItemNumber = x.Key.ItemNumber,
-                            QtyAllocated = (double) x.Key.PreviousDocumentItem.QtyAllocated,
-                            pQtyAllocated = x.Key.PreviousDocumentItem.QtyAllocated,
-                            PiQuantity = (double) x.Key.PreviousDocumentItem.PiQuantity,
-                            pCNumber = x.Key.PreviousDocumentItem.pCNumber,
-                            pRegistrationDate = x.Key.PreviousDocumentItem.pRegistrationDate,
-                            pLineNumber = x.Key.PreviousDocumentItem.pLineNumber,
-                            DutyFreePaid = x.Key.DutyFreePaid,
-                            Type = "Historic"
+        //        using (var ctx = new AllocationDSContext())
+        //        {
+        //            var resHistoric = ctx.AdjustmentShortAllocations
+        //                .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+        //                .Where(x => x.EffectiveDate <= endDate)
+        //                .Where(x => itmList.Contains(x.ItemNumber))
+        //                .Where(x => x.PreviousItem_Id != 0)
+        //                .GroupBy(g => new
+        //                {
+        //                    PreviousItem_Id = g.PreviousItem_Id,
+        //                    PreviousDocumentItem = new
+        //                    {
+        //                        PreviousItem_Id = g.PreviousItem_Id,
+        //                        PiQuantity = g.PreviousDocumentItem.EntryPreviousItems
+        //                            .Where(z => z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Cancelled != true)
+        //                            .Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
+        //                        //QtyAllocated = g.PreviousDocumentItem.DFQtyAllocated + g.PreviousDocumentItem.DPQtyAllocated,
+        //                        QtyAllocated = g.PreviousDocumentItem.DFQtyAllocated,//assume im9 are duty free
+        //                        pCNumber = g.PreviousDocumentItem.AsycudaDocument.CNumber,
+        //                        pRegistrationDate = g.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
+        //                        pLineNumber = g.PreviousDocumentItem.LineNumber
+        //                    },
+        //                    ItemNumber = g.EntryDataDetails.ItemNumber,
+        //                    DutyFreePaid = g.DutyFreePaid
+        //                }).Select(x => new CreateEx9Class.ItemSalesPiSummary
+        //                {
+        //                    ItemNumber = x.Key.ItemNumber,
+        //                    QtyAllocated = (double) x.Key.PreviousDocumentItem.QtyAllocated,
+        //                    pQtyAllocated = x.Key.PreviousDocumentItem.QtyAllocated,
+        //                    PiQuantity = (double) x.Key.PreviousDocumentItem.PiQuantity,
+        //                    pCNumber = x.Key.PreviousDocumentItem.pCNumber,
+        //                    pRegistrationDate = x.Key.PreviousDocumentItem.pRegistrationDate,
+        //                    pLineNumber = x.Key.PreviousDocumentItem.pLineNumber,
+        //                    DutyFreePaid = x.Key.DutyFreePaid,
+        //                    Type = "Historic"
 
-                        }).ToList();
+        //                }).ToList();
 
-                    //var res2 = ctx.AdjustmentShortAllocations.Where(x =>
-                    //            x.EffectiveDate >= startDate &&
-                    //            x.EffectiveDate <= endDate)
-                    //        .Where(x => itmList.Contains(x.ItemNumber))
-                    //        .Where(x => x.PreviousItem_Id != 0)
-                    //        .GroupBy(g => new
-                    //        {
-                    //            PreviousDocumentItem = new
-                    //            {
-                    //                PiQuantity = g.PreviousDocumentItem.EntryPreviousItems
-                    //                    .Where(z =>
-                    //                        z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.AssessmentDate >= startDate &&
-                    //                        z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.AssessmentDate <= endDate &&
-                    //                        z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Cancelled != true)
-                    //                    .Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-                                    
-                    //                pCNumber = g.PreviousDocumentItem.AsycudaDocument.CNumber,
-                    //                pRegistrationDate = g.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
-                    //                pLineNumber = g.PreviousDocumentItem.LineNumber
-                    //            },
-                    //            ItemNumber = g.EntryDataDetails.ItemNumber,
-                    //            DutyFreePaid = "Duty Free"
-                    //        }).Select(x => new CreateEx9Class.ItemSalesPiSummary
-                    //        {
-                    //            ItemNumber = x.Key.ItemNumber,
-                    //            QtyAllocated = (double) x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),//this has to be current month qty allocated
-                    //            PiQuantity = x.Key.PreviousDocumentItem.PiQuantity,
-                    //            pCNumber = x.Key.PreviousDocumentItem.pCNumber,
-                    //            pRegistrationDate = x.Key.PreviousDocumentItem.pRegistrationDate,
-                    //            pLineNumber = x.Key.PreviousDocumentItem.pLineNumber,
-                    //            DutyFreePaid = x.Key.DutyFreePaid,
-                    //            Type = "Current"
+        //            var resCurrent = ctx.AdjustmentShortAllocations
+        //                .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+        //                .Where(x => x.EffectiveDate <= endDate)
+        //                .Where(x => itmList.Contains(x.ItemNumber))
+        //                .Where(x => x.PreviousItem_Id != 0)
+        //                .GroupBy(g => new
+        //                {
+        //                    PreviousItem_Id = g.PreviousItem_Id,
+        //                    PreviousDocumentItem = new
+        //                    {
+        //                        PreviousItem_Id = g.PreviousItem_Id,
+        //                        PiQuantity = g.PreviousDocumentItem.EntryPreviousItems
+        //                            .Where(z => z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Cancelled != true)
+        //                            .Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
+        //                        //QtyAllocated = g.PreviousDocumentItem.DFQtyAllocated + g.PreviousDocumentItem.DPQtyAllocated,
+        //                        QtyAllocated = g.PreviousDocumentItem.DFQtyAllocated,//assume im9 are duty free
+        //                        pCNumber = g.PreviousDocumentItem.AsycudaDocument.CNumber,
+        //                        pRegistrationDate = g.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
+        //                        pLineNumber = g.PreviousDocumentItem.LineNumber
+        //                    },
+        //                    ItemNumber = g.EntryDataDetails.ItemNumber,
+        //                    DutyFreePaid = g.DutyFreePaid
+        //                }).Select(x => new CreateEx9Class.ItemSalesPiSummary
+        //                {
+        //                    ItemNumber = x.Key.ItemNumber,
+        //                    QtyAllocated = (double)x.Key.PreviousDocumentItem.QtyAllocated,
+        //                    pQtyAllocated = x.Key.PreviousDocumentItem.QtyAllocated,
+        //                    PiQuantity = (double)x.Key.PreviousDocumentItem.PiQuantity,
+        //                    pCNumber = x.Key.PreviousDocumentItem.pCNumber,
+        //                    pRegistrationDate = x.Key.PreviousDocumentItem.pRegistrationDate,
+        //                    pLineNumber = x.Key.PreviousDocumentItem.pLineNumber,
+        //                    DutyFreePaid = x.Key.DutyFreePaid,
+        //                    Type = "Current"
 
-                    //        }).ToList();
+        //                }).ToList();
 
-                    //res1.AddRange(res2);
+        //            //var res2 = ctx.AdjustmentShortAllocations.Where(x =>
+        //            //            x.EffectiveDate >= startDate &&
+        //            //            x.EffectiveDate <= endDate)
+        //            //        .Where(x => itmList.Contains(x.ItemNumber))
+        //            //        .Where(x => x.PreviousItem_Id != 0)
+        //            //        .GroupBy(g => new
+        //            //        {
+        //            //            PreviousDocumentItem = new
+        //            //            {
+        //            //                PiQuantity = g.PreviousDocumentItem.EntryPreviousItems
+        //            //                    .Where(z =>
+        //            //                        z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.AssessmentDate >= startDate &&
+        //            //                        z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.AssessmentDate <= endDate &&
+        //            //                        z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Cancelled != true)
+        //            //                    .Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
 
-                    return res1;
-                }
+        //            //                pCNumber = g.PreviousDocumentItem.AsycudaDocument.CNumber,
+        //            //                pRegistrationDate = g.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
+        //            //                pLineNumber = g.PreviousDocumentItem.LineNumber
+        //            //            },
+        //            //            ItemNumber = g.EntryDataDetails.ItemNumber,
+        //            //            DutyFreePaid = "Duty Free"
+        //            //        }).Select(x => new CreateEx9Class.ItemSalesPiSummary
+        //            //        {
+        //            //            ItemNumber = x.Key.ItemNumber,
+        //            //            QtyAllocated = (double) x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),//this has to be current month qty allocated
+        //            //            PiQuantity = x.Key.PreviousDocumentItem.PiQuantity,
+        //            //            pCNumber = x.Key.PreviousDocumentItem.pCNumber,
+        //            //            pRegistrationDate = x.Key.PreviousDocumentItem.pRegistrationDate,
+        //            //            pLineNumber = x.Key.PreviousDocumentItem.pLineNumber,
+        //            //            DutyFreePaid = x.Key.DutyFreePaid,
+        //            //            Type = "Current"
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+        //            //        }).ToList();
 
-        }
+        //            //res1.AddRange(res2);
+
+        //            return resHistoric;
+        //        }
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+
+        //}
 
         private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(bool perInvoice,string filterExpression)
         {

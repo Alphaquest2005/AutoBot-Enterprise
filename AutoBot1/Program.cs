@@ -10,6 +10,7 @@ using System.Data.Entity.SqlServer;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using MoreLinq.Extensions;
 using WaterNut.DataSpace;
 
@@ -23,8 +24,8 @@ namespace AutoBot
         {
             try
             {
-
-
+                var beforeImport = DateTime.Now;
+                Console.WriteLine($"{beforeImport}");
                 using (var ctx = new CoreEntitiesContext() { })
                 {
 
@@ -33,6 +34,7 @@ namespace AutoBot
                         .Include(x => x.FileTypes)
                         .Include("FileTypes.FileTypeContacts.Contacts")
                         .Include("FileTypes.FileTypeActions.Actions")
+                        .Include("FileTypes.AsycudaDocumentSetEx")
                         .Include(x => x.EmailMapping)
 
                         .Include("FileTypes.FileTypeMappings").ToList())
@@ -66,9 +68,10 @@ namespace AutoBot
                             Email = appSetting.Email,
                             EmailMappings = appSetting.EmailMapping.Select(x => x.Pattern).ToList()
                         };
-
-                        var msgLst = EmailDownloader.EmailDownloader.CheckEmails(Utils.Client, appSetting.FileTypes.Select(x => x.FilePattern).ToList());
+                        
+                        var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client, appSetting.FileTypes.Select(x => x.FilePattern).ToList())).Result;
                         // get downloads
+                        Console.WriteLine($"{msgLst.Count} Emails Processed");
                         foreach (var msg in msgLst)
                         {
                             var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1);
@@ -76,7 +79,7 @@ namespace AutoBot
                             {
                                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                                     .Where(x => msg.Value.Contains(x.Name) && Regex.IsMatch(x.FullName, fileType.FilePattern, RegexOptions.IgnoreCase) &&
-                                                x.LastWriteTime.Date == DateTime.Now.Date).ToArray();
+                                                x.LastWriteTime >= beforeImport).ToArray();
 
                                 if (csvFiles.Length == 0)
                                 {
@@ -139,13 +142,13 @@ namespace AutoBot
                             ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
                             {
                                 var desFolder = Path.Combine(appSetting.DataFolder, dSet.Declarant_Reference_Number);
-                                fileType.AsycudaDocumentSetId = dSet.AsycudaDocumentSetId;
-                                fileType.DocReference = dSet.Declarant_Reference_Number;
+                                fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet? dSet.AsycudaDocumentSetId : fileType.AsycudaDocumentSetId;
+                                fileType.DocReference = fileType.CreateDocumentSet ? dSet.Declarant_Reference_Number: fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
                                 if (!Directory.Exists(desFolder)) continue;
                                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                                     .Where(x =>
                                         Regex.IsMatch(x.FullName, fileType.FilePattern, RegexOptions.IgnoreCase) &&
-                                        x.LastWriteTime.Date == DateTime.Now.Date).ToArray();
+                                        x.LastWriteTime >= beforeImport ).ToArray();// set to 10 mins so it works within the email import time
                                 if (!csvFiles.Any()) continue;
 
                                 fileType.FileTypeActions.OrderBy(x => x.Priority)
@@ -170,7 +173,7 @@ namespace AutoBot
                        var sLst = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
                                            .Where(x => x.RunDateTime >= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes * -1, DateTime.Now)
                                                         && x.RunDateTime <= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes, DateTime.Now)).ToList();
-                        foreach (var item in sLst)
+                        foreach (var item in sLst.Where(x => x.ApplicationSettingId == null || x.ApplicationSettingId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                         {
                             item.Sessions.SessionActions
                                 .Select(x => Utils.SessionActions[x.Actions.Name])
@@ -181,6 +184,7 @@ namespace AutoBot
                     }
                 }
 
+                
                 // Application.SetSuspendState(PowerState.Suspend, true, true);
             }
             catch (Exception e)

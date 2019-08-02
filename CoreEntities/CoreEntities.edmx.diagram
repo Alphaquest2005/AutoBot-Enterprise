@@ -32,13 +32,13 @@
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExInventoryItemAliasEx" />
         <AssociationConnector Association="WaterNutDBModel.ApplicationSettingsInventoryItemsEx" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem" />
-        <EntityTypeShape EntityType="WaterNutDBModel.FileTypes" Width="1.5" PointX="2.75" PointY="13.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FileTypes" Width="2.125" PointX="2.125" PointY="13.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_ApplicationSettings" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExFileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypeMappings" Width="1.5" PointX="5" PointY="14.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeMappings_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet_Attachments" Width="1.5" PointX="15.375" PointY="12.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InfoMapping" Width="1.5" PointX="2.75" PointY="17.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InfoMapping" Width="1.5" PointX="2.875" PointY="18.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_InfoMapping_ApplicationSettings" />
         <EntityTypeShape EntityType="WaterNutDBModel.Attachments" Width="1.5" PointX="16.75" PointY="15.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" />

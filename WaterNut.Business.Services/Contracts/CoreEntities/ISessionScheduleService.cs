@@ -108,6 +108,9 @@ namespace CoreEntities.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<SessionSchedule>> GetSessionScheduleBySesseionId(string SesseionId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<SessionSchedule>> GetSessionScheduleByApplicationSettingId(string ApplicationSettingId, List<string> includesLst = null);
   
 
 

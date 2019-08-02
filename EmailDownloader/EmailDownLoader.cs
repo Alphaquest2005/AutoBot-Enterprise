@@ -104,8 +104,15 @@ namespace EmailDownloader
 
                     var subject = GetSubject(msg, uid);
 
-                    if (string.IsNullOrEmpty(subject.Item1))
-                        throw new ApplicationException("Subject Not Found please check Email Regex");
+                    if (string.IsNullOrEmpty(subject?.Item1))
+                    {
+
+                        SendEmail(client, null, $"Bug Found",
+                            new[] { "Josephbartholomew@outlook.com" }, $"Subject not configured for Regex: '{msg.Subject}'", Array.Empty<string>());
+                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                        continue;
+                    }
+                        
                     var desFolder = Path.Combine(dataFolder, subject.Item1);
                     Directory.CreateDirectory(desFolder);
                     foreach (var a in msg.Attachments)
@@ -114,7 +121,7 @@ namespace EmailDownloader
                         SaveAttachmentPart(desFolder, a, lst);
                     }
 
-                    if (patterns.All(x => !lst.Any(z => Regex.IsMatch(z, x, RegexOptions.IgnoreCase))))
+                    if (lst.Any() && patterns.All(x => !lst.Any(z => Regex.IsMatch(z, x, RegexOptions.IgnoreCase))))
                     {
                         imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                         var errTxt =
@@ -256,9 +263,10 @@ namespace EmailDownloader
         {
             var part = (MimePart) a;
             var fileName = CleanFileName(part.FileName);
-
+            var file = Path.Combine(dataFolder, fileName);
+            if(File.Exists(file)) File.Delete(file);
             
-            using (var stream = File.Create(Path.Combine(dataFolder, fileName)))
+            using (var stream = File.Create(file))
                 part.Content.DecodeTo(stream);
             lst.Add(fileName);
         }

@@ -1080,6 +1080,35 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<SessionSchedule>> GetSessionScheduleByApplicationSettingId(string ApplicationSettingId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<SessionSchedule> entities = await set//dbContext.SessionSchedule
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingId.ToString() == ApplicationSettingId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

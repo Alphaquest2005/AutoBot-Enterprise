@@ -139,10 +139,10 @@ namespace WaterNut.DataSpace
                         var res = slst.Where(x => x.DutyFreePaid == dfp);
                         List<ItemSalesPiSummary> itemSalesPiSummarylst;
                         itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate, endDate,
-                            res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), dfp);
+                            dfp);//res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
                         await CreateDutyFreePaidDocument(dfp, res, docSet, "7400", true,
                                 itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp).ToList(), true, true,
-                                dfp == "Duty Free" ? "EX9" : "IM4", true, true, ApplyCurrentChecks, true)
+                                dfp == "Duty Free" ? "EX9" : "IM4", true, "Historic", true, ApplyCurrentChecks, true)
                             .ConfigureAwait(false);
                     }
 
@@ -359,9 +359,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
         //    }
         //}
 
-        private List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
-            DateTime endDate,
-            List<int> alst, string dfp)
+        public List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
+            DateTime endDate, string dfp)
         {
             try
             {
@@ -659,7 +658,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
         public async Task CreateDutyFreePaidDocument(string dfp, IEnumerable<AllocationDataBlock> slst,
             AsycudaDocumentSet docSet, string im7Type, bool isGrouped, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, string ex9Type,
-            bool applyEx9Bucket, bool applyHistoricChecks, bool applyCurrentChecks, bool autoAssess)
+            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks, bool autoAssess)
         {
             try
             {
@@ -766,8 +765,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                         var newItms = await
                             CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, monthyear.MonthYear, im7Type,
-                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket,
-                                    applyHistoricChecks, applyCurrentChecks)
+                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks)
                                 .ConfigureAwait(false);
 
                         itmcount += newItms;
@@ -1593,7 +1591,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
         public async Task<int> CreateEx9EntryAsync(MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
             string monthyear,
             string im7Type, List<ItemSalesPiSummary> itemSalesPiSummaryLst, bool checkQtyAllocatedGreaterThanPiQuantity,
-            bool applyEx9Bucket, bool applyHistoricChecks, bool applyCurrentChecks)
+            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks)
         {
             try
             {
@@ -1690,7 +1688,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 var totalPiHistoric = salesPiHistoric.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
 
                 if (applyEx9Bucket)
-                    if (im7Type == "7500")
+                    if (ex9BucketType == "Current")
                     {
                         await Ex9Bucket(mypod, dfp, docPi, salesPiCurrent).ConfigureAwait(false);
                     }

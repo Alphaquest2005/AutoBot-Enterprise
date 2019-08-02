@@ -87,6 +87,21 @@ public System.DateTime RunDateTime
 		}
      
 
+       
+       
+public Nullable<int> ApplicationSettingId
+		{ 
+		    get { return this.sessionschedule.ApplicationSettingId; }
+			set
+			{
+			    if (value == this.sessionschedule.ApplicationSettingId) return;
+				this.sessionschedule.ApplicationSettingId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingId");
+			}
+		}
+     
+
        private Sessions _Sessions;
         public  Sessions Sessions
 		{

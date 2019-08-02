@@ -60,6 +60,19 @@ namespace CoreEntities.Client.DTO
 		}
         private System.DateTime _RunDateTime;
 
+        [DataMember]
+        public Nullable<int> ApplicationSettingId
+		{ 
+		    get { return _ApplicationSettingId; }
+			set
+			{
+			    if (value == _ApplicationSettingId) return;
+				_ApplicationSettingId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingId
+			}
+		}
+        private Nullable<int> _ApplicationSettingId;
+
        
         [DataMember]
         public Sessions Sessions

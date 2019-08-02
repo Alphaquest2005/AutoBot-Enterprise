@@ -219,6 +219,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SesseionId" Type="int" Nullable="false" />
           <Property Name="RunDateTime" Type="datetime" Nullable="false" />
+          <Property Name="ApplicationSettingId" Type="int" />
         </EntityType>
         <EntityType Name="SubItems">
           <Key>
@@ -566,6 +567,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' 
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="EmailId" Type="int" />
           <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1096,7 +1099,9 @@ FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
 [TODO-SubmitXMLToCustoms].[AssessmentDate] AS [AssessmentDate], 
 [TODO-SubmitXMLToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [TODO-SubmitXMLToCustoms].[EmailId] AS [EmailId], 
-[TODO-SubmitXMLToCustoms].[Extended_customs_procedure] AS [Extended_customs_procedure]
+[TODO-SubmitXMLToCustoms].[Extended_customs_procedure] AS [Extended_customs_procedure], 
+[TODO-SubmitXMLToCustoms].[FilePath] AS [FilePath], 
+[TODO-SubmitXMLToCustoms].[Status] AS [Status]
 FROM [dbo].[TODO-SubmitXMLToCustoms] AS [TODO-SubmitXMLToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-UnallocatedSales" EntityType="Self.TODO-UnallocatedSales" store:Type="Views" store:Schema="dbo">
@@ -2362,6 +2367,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="SesseionId" Type="Int32" Nullable="false" />
           <Property Name="RunDateTime" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Sessions" Relationship="WaterNutDBModel.FK_SessionSchedule_Sessions" FromRole="SessionSchedule" ToRole="Sessions" />
+          <Property Name="ApplicationSettingId" Type="Int32" />
         </EntityType>
         <Association Name="FK_SessionSchedule_Sessions">
           <End Type="WaterNutDBModel.Sessions" Role="Sessions" Multiplicity="1" />
@@ -2391,6 +2397,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="EmailId" Type="Int32" />
           <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
+          <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -2942,6 +2950,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="SessionSchedule">
             <EntityTypeMapping TypeName="WaterNutDBModel.SessionSchedule">
               <MappingFragment StoreEntitySet="SessionSchedule">
+                <ScalarProperty Name="ApplicationSettingId" ColumnName="ApplicationSettingId" />
                 <ScalarProperty Name="RunDateTime" ColumnName="RunDateTime" />
                 <ScalarProperty Name="SesseionId" ColumnName="SesseionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -2951,6 +2960,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_SubmitXMLToCustoms">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitXMLToCustoms">
               <MappingFragment StoreEntitySet="TODO-SubmitXMLToCustoms">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
                 <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />

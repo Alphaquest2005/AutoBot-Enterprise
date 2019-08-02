@@ -215,6 +215,40 @@ public int ASYCUDA_Id
 		}
      
 
+       
+       
+                
+                [MaxLength(500, ErrorMessage = "FilePath has a max length of 500 letters ")]
+public string FilePath
+		{ 
+		    get { return this.todo_submitxmltocustoms.FilePath; }
+			set
+			{
+			    if (value == this.todo_submitxmltocustoms.FilePath) return;
+				this.todo_submitxmltocustoms.FilePath = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FilePath");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Status has a max length of 50 letters ")]
+public string Status
+		{ 
+		    get { return this.todo_submitxmltocustoms.Status; }
+			set
+			{
+			    if (value == this.todo_submitxmltocustoms.Status) return;
+				this.todo_submitxmltocustoms.Status = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Status");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_SubmitXMLToCustoms> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_SubmitXMLToCustoms> ChangeTracker
