@@ -493,6 +493,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DeleteDocumentSet' d
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-DiscrepanciesToAssess">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="DocumentsCount" Type="int" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToSubmit' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-DiscrepanciesToSubmit">
           <Key>
@@ -518,6 +530,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToSubmi
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
+          <Property Name="Comment" Type="varchar" MaxLength="24" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DocumentsToDelete' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -548,6 +561,27 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not h
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="FileDate" Type="date" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-SubmitDiscrepanciesToCustoms">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ASYCUDA_Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="CNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
+          <Property Name="RegistrationDate" Type="datetime2" Precision="7" />
+          <Property Name="ReferenceNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="20" />
+          <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="500" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1046,6 +1080,15 @@ FROM [dbo].[TODO-CreateDiscrepancyEntries] AS [TODO-CreateDiscrepancyEntries]</D
 [TODO-DeleteDocumentSet].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[TODO-DeleteDocumentSet] AS [TODO-DeleteDocumentSet]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-DiscrepanciesToAssess" EntityType="Self.TODO-DiscrepanciesToAssess" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-DiscrepanciesToAssess].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-DiscrepanciesToAssess].[DocumentsCount] AS [DocumentsCount], 
+[TODO-DiscrepanciesToAssess].[Type] AS [Type], 
+[TODO-DiscrepanciesToAssess].[CNumber] AS [CNumber], 
+[TODO-DiscrepanciesToAssess].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+FROM [dbo].[TODO-DiscrepanciesToAssess] AS [TODO-DiscrepanciesToAssess]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-DiscrepanciesToSubmit" EntityType="Self.TODO-DiscrepanciesToSubmit" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-DiscrepanciesToSubmit].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -1062,7 +1105,8 @@ FROM [dbo].[TODO-DeleteDocumentSet] AS [TODO-DeleteDocumentSet]</DefiningQuery>
 [TODO-DiscrepanciesToSubmit].[CNumber] AS [CNumber], 
 [TODO-DiscrepanciesToSubmit].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
 [TODO-DiscrepanciesToSubmit].[EmailId] AS [EmailId], 
-[TODO-DiscrepanciesToSubmit].[FileTypeId] AS [FileTypeId]
+[TODO-DiscrepanciesToSubmit].[FileTypeId] AS [FileTypeId], 
+[TODO-DiscrepanciesToSubmit].[Comment] AS [Comment]
 FROM [dbo].[TODO-DiscrepanciesToSubmit] AS [TODO-DiscrepanciesToSubmit]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DocumentsToDelete" EntityType="Self.TODO-DocumentsToDelete" store:Type="Views" store:Schema="dbo">
@@ -1086,6 +1130,23 @@ FROM [dbo].[TODO-DocumentsToDelete] AS [TODO-DocumentsToDelete]</DefiningQuery>
 [TODO-PODocSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
 [TODO-PODocSet].[FileDate] AS [FileDate]
 FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-SubmitDiscrepanciesToCustoms" EntityType="Self.TODO-SubmitDiscrepanciesToCustoms" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-SubmitDiscrepanciesToCustoms].[Id] AS [Id], 
+[TODO-SubmitDiscrepanciesToCustoms].[CNumber] AS [CNumber], 
+[TODO-SubmitDiscrepanciesToCustoms].[ASYCUDA_Id] AS [ASYCUDA_Id], 
+[TODO-SubmitDiscrepanciesToCustoms].[RegistrationDate] AS [RegistrationDate], 
+[TODO-SubmitDiscrepanciesToCustoms].[ReferenceNumber] AS [ReferenceNumber], 
+[TODO-SubmitDiscrepanciesToCustoms].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitDiscrepanciesToCustoms].[DocumentType] AS [DocumentType], 
+[TODO-SubmitDiscrepanciesToCustoms].[AssessmentDate] AS [AssessmentDate], 
+[TODO-SubmitDiscrepanciesToCustoms].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-SubmitDiscrepanciesToCustoms].[EmailId] AS [EmailId], 
+[TODO-SubmitDiscrepanciesToCustoms].[Extended_customs_procedure] AS [Extended_customs_procedure], 
+[TODO-SubmitDiscrepanciesToCustoms].[FilePath] AS [FilePath], 
+[TODO-SubmitDiscrepanciesToCustoms].[Status] AS [Status]
+FROM [dbo].[TODO-SubmitDiscrepanciesToCustoms] AS [TODO-SubmitDiscrepanciesToCustoms]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitXMLToCustoms" EntityType="Self.TODO-SubmitXMLToCustoms" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1369,6 +1430,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="SessionSchedule" EntitySet="SessionSchedule" />
           </AssociationSet>
           <EntitySet Name="TODO_SubmitXMLToCustoms" EntityType="WaterNutDBModel.TODO_SubmitXMLToCustoms" />
+          <EntitySet Name="TODO_DiscrepanciesToAssess" EntityType="WaterNutDBModel.TODO_DiscrepanciesToAssess" />
+          <EntitySet Name="TODO_SubmitDiscrepanciesToCustoms" EntityType="WaterNutDBModel.TODO_SubmitDiscrepanciesToCustoms" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -2358,6 +2421,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EmailId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="Comment" Type="String" MaxLength="24" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="SessionSchedule">
           <Key>
@@ -2397,6 +2461,35 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="EmailId" Type="Int32" />
           <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
+          <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TODO_DiscrepanciesToAssess">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentsCount" Type="Int32" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TODO_SubmitDiscrepanciesToCustoms">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ASYCUDA_Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="CNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
+          <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
+          <Property Name="ReferenceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="DocumentType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
+          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="FilePath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -2929,6 +3022,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_DiscrepanciesToSubmit">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_DiscrepanciesToSubmit">
               <MappingFragment StoreEntitySet="TODO-DiscrepanciesToSubmit">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
@@ -2971,6 +3065,36 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
                 <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_DiscrepanciesToAssess">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_DiscrepanciesToAssess">
+              <MappingFragment StoreEntitySet="TODO-DiscrepanciesToAssess">
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="CNumber" ColumnName="CNumber" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DocumentsCount" ColumnName="DocumentsCount" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_SubmitDiscrepanciesToCustoms">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitDiscrepanciesToCustoms">
+              <MappingFragment StoreEntitySet="TODO-SubmitDiscrepanciesToCustoms">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ReferenceNumber" ColumnName="ReferenceNumber" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
                 <ScalarProperty Name="CNumber" ColumnName="CNumber" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

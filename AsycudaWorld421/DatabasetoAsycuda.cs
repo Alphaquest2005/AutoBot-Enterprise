@@ -513,7 +513,7 @@ namespace Asycuda421
                 if (doc.Attached_document_date != null)
                     adoc.Attached_document_date = doc.Attached_document_date;
                 if (doc.Attached_document_reference != null)
-                    adoc.Attached_document_reference.Text.Add(doc.Attached_document_reference);
+                    adoc.Attached_document_reference.Text.Add(doc.Attached_document_reference.Truncate(30));
                 if (doc.Attached_document_from_rule != null)
                     adoc.Attached_document_from_rule.Text.Add(doc.Attached_document_from_rule.ToString());
                 if (doc.Attached_document_name != null)
@@ -522,10 +522,19 @@ namespace Asycuda421
                 if (doc.xcuda_Attachments.Any())
                 {
                     var fileinfo = new FileInfo(doc.xcuda_Attachments.FirstOrDefault().Attachments.FilePath);
+                    if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
                     File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name)}\r\n");
                 }
                     
             }
+        }
+
+        private FileInfo Change2Pdf(FileInfo fileinfo)
+        {
+            var res = new FileInfo(fileinfo.FullName + ".pdf");
+            if (res.Exists) return res;
+            File.Copy(fileinfo.FullName, res.FullName);
+            return res;
         }
 
         private  ASYCUDAItem SetupItemProperties(xcuda_ASYCUDA da)

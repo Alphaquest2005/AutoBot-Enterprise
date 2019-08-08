@@ -279,6 +279,23 @@ public Nullable<int> FileTypeId
 		}
      
 
+       
+       
+                
+                [MaxLength(24, ErrorMessage = "Comment has a max length of 24 letters ")]
+public string Comment
+		{ 
+		    get { return this.todo_discrepanciestosubmit.Comment; }
+			set
+			{
+			    if (value == this.todo_discrepanciestosubmit.Comment) return;
+				this.todo_discrepanciestosubmit.Comment = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Comment");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_DiscrepanciesToSubmit> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_DiscrepanciesToSubmit> ChangeTracker

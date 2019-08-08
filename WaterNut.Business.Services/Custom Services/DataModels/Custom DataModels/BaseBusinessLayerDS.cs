@@ -460,9 +460,37 @@ namespace WaterNut.DataSpace
 
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = ads.Description;
 
-                //    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = true;
+            //    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = true;
+            using (var ctx = new DocumentDSContext())
+            {
 
-            
+
+                ExportTemplate Exp = ctx.ExportTemplates
+                    .Where(x => x.ApplicationSettingsId ==
+                                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
+                                    .ApplicationSettingsId)
+                    .FirstOrDefault(x =>
+                        x.Description == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type
+                            .DisplayName);
+                cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination.Destination_country_code =
+                    Exp.Destination_country_code;
+                cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =
+                    Exp.Trading_country;
+                if (string.IsNullOrEmpty(ads.Currency_Code)) cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
+                if (string.IsNullOrEmpty(ads.Country_of_origin_code))
+                {
+                    cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = Exp.Trading_country;
+                    cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination = Exp.Country_first_destination;
+
+                    cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code = Exp.Export_country_code;
+                }
+
+
+                //cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
+
+            }
+
+
         }
 
         
@@ -1927,10 +1955,15 @@ namespace WaterNut.DataSpace
 
         internal void ExportDocSet(AsycudaDocumentSet docSet, string directoryName, bool overWrite)
         {
-            
-                            StatusModel.StartStatusUpdate("Exporting Files", docSet.Documents.Count());
+
+            StatusModel.StartStatusUpdate("Exporting Files", docSet.Documents.Count());
             var exceptions = new ConcurrentQueue<Exception>();
             if (!Directory.Exists(directoryName)) return;
+            if (File.Exists(Path.Combine(directoryName, "Instructions.txt")))
+                File.Delete(Path.Combine(directoryName, "Instructions.txt"));
+            if (File.Exists(Path.Combine(directoryName, "InstructionResults.txt")))
+                File.Delete(Path.Combine(directoryName, "InstructionResults.txt"));
+
             foreach (var doc in docSet.Documents)
             {
                 //if (doc.xcuda_Item.Any() == true)
@@ -1940,10 +1973,10 @@ namespace WaterNut.DataSpace
                     var fileInfo = new FileInfo(Path.Combine(directoryName, doc.ReferenceNumber + ".xml"));
                     if (overWrite == true || !File.Exists(fileInfo.FullName))
                     {
-                        
+
                         Instance.DocToXML(doc, fileInfo);
                     }
-                   
+
 
                     StatusModel.StatusUpdate();
                     // ExportDocumentToExcel(doc, directoryName);
@@ -1970,7 +2003,7 @@ namespace WaterNut.DataSpace
 
         }
 
-         AsycudaDocumentSet _currentAsycudaDocumentSet = null;
+        AsycudaDocumentSet _currentAsycudaDocumentSet = null;
         //public  AsycudaDocumentSet CurrentAsycudaDocumentSet
         //{
         //    get

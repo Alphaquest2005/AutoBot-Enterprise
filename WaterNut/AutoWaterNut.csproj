@@ -244,9 +244,11 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateDiscrepancyEntriesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateEx9ViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DeleteDocumentSetViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToSubmitViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitXMLToCustomsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedSalesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedShortsViewModel.cs" />
@@ -342,9 +344,11 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateDiscrepancyEntriesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateEx9Totals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DeleteDocumentSetTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToSubmitTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitXMLToCustomsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedSalesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedShortsTotals.cs" />
@@ -431,9 +435,11 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateDiscrepancyEntriesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateEx9VirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DeleteDocumentSetVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToSubmitVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitXMLToCustomsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedShortsVirturalListLoader.cs" />

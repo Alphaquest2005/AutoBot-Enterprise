@@ -211,9 +211,11 @@
     <Compile Include="Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_CreateEx9Service.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DeleteDocumentSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedShortsService.cs" />
@@ -675,9 +677,11 @@
     <Compile Include="Services\CoreEntities\TODO_CreateDiscrepancyEntriesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_CreateEx9Service.cs" />
     <Compile Include="Services\CoreEntities\TODO_DeleteDocumentSetService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DocumentsToDeleteService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_UnallocatedSalesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_UnallocatedShortsService.cs" />

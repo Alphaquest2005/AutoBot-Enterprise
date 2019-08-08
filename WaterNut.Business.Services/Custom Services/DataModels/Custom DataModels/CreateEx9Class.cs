@@ -370,85 +370,14 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     ctx.Database.CommandTimeout = 0;
                     //var allallocations = ctx.AsycudaSalesAllocations.AsNoTracking().Where(x => alst.Contains(x.AllocationId))
                     //    .Select(x => x.EntryDataDetails.ItemNumber).Distinct();
-
-                    var resHistoric1 = ctx.ItemSalesPiSummary.AsNoTracking()
-                        //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
-                        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-                        .Where(x => x.EntryDataDate <= endDate)
-                        .Where(x => x.PreviousItem_Id != 0)
-                        .Where(x => x.DutyFreePaid == dfp)
-
-                        .GroupBy(g => new
-                        {
-                            PreviousItem_Id = g.PreviousItem_Id,
-                            pQtyAllocated = g.pQtyAllocated,
-                            pCNumber = g.pCNumber,
-                            pRegistrationDate = g.pRegistrationDate,
-                            pLineNumber = g.pLineNumber,
-                            ItemNumber = g.ItemNumber,
-                            DutyFreePaid = g.DutyFreePaid
-
-                        }).ToList();
-
-                       var resHistoric = resHistoric1.GroupJoin(ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
-                            g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
-                            p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new {g, p})
-                        .Select(x => new ItemSalesPiSummary
-                        {
-                            PreviousItem_Id = (int) x.g.Key.PreviousItem_Id,
-                            ItemNumber = x.g.Key.ItemNumber,
-                            QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-                            pQtyAllocated = x.g.Key.pQtyAllocated,
-                            PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-                            pCNumber = x.g.Key.pCNumber,
-                            pRegistrationDate = x.g.Key.pRegistrationDate,
-                            pLineNumber = x.g.Key.pLineNumber,
-                            DutyFreePaid = x.g.Key.DutyFreePaid,
-                            Type = "Historic"
-
-                        }).ToList();
-
-                    var resCurrent1 = ctx.ItemSalesPiSummary.AsNoTracking()
-                       //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
-                       .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                       //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-                       .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
-                       .Where(x => x.PreviousItem_Id != 0)
-                       .Where(x => x.DutyFreePaid == dfp)
-
-                       .GroupBy(g => new
-                       {
-                           PreviousItem_Id = g.PreviousItem_Id,
-                           pQtyAllocated = g.pQtyAllocated,
-                           pCNumber = g.pCNumber,
-                           pRegistrationDate = g.pRegistrationDate,
-                           pLineNumber = g.pLineNumber,
-                           ItemNumber = g.ItemNumber,
-                           DutyFreePaid = g.DutyFreePaid
-
-                       }).ToList();
-
-                    var resCurrent = resCurrent1.GroupJoin(ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate >= startDate && x.AssessmentDate <= endDate),
-                         g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
-                         p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new { g, p })
-                     .Select(x => new ItemSalesPiSummary
-                     {
-                         PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
-                         ItemNumber = x.g.Key.ItemNumber,
-                         QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-                         pQtyAllocated = x.g.Key.pQtyAllocated,
-                         PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-                         pCNumber = x.g.Key.pCNumber,
-                         pRegistrationDate = x.g.Key.pRegistrationDate,
-                         pLineNumber = x.g.Key.pLineNumber,
-                         DutyFreePaid = x.g.Key.DutyFreePaid,
-                         Type = "Current"
-
-                     }).ToList();
-                    resHistoric.AddRange(resCurrent);
-
-                    return resHistoric;
+                    List<ItemSalesPiSummary> res = new List<ItemSalesPiSummary>();
+                    List<ItemSalesPiSummary> resSales = new List<ItemSalesPiSummary>();
+                    List<ItemSalesPiSummary> resAdj = new List<ItemSalesPiSummary>();
+                    GetSales(applicationSettingsId, startDate, endDate, dfp, ctx, resSales);
+                    GetAdjustments(applicationSettingsId, startDate, endDate, dfp, ctx, resAdj);
+                    res.AddRange(resSales);
+                    res.AddRange(resAdj);
+                    return res;
                 }
             }
             catch (Exception e)
@@ -456,6 +385,164 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 Console.WriteLine(e);
                 throw;
             }
+        }
+        private static void GetAdjustments(int applicationSettingsId, DateTime startDate, DateTime endDate, string dfp,
+            AllocationDSContext ctx, List<ItemSalesPiSummary> res)
+        {
+            var resHistoricSales = ctx.ItemSalesPiSummary.AsNoTracking()
+                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
+                .Where(x => x.EntryDataDate <= endDate)
+                .Where(x => x.PreviousItem_Id != 0)
+                //.Where(x => x.DutyFreePaid == dfp)///////////////////////TAKE OUT DFP because it can switch
+                .Where(x => x.Type == "ADJ")
+                .GroupBy(g => new
+                {
+                    PreviousItem_Id = g.PreviousItem_Id,
+                    pQtyAllocated = g.pQtyAllocated,
+                    pCNumber = g.pCNumber,
+                    pRegistrationDate = g.pRegistrationDate,
+                    pLineNumber = g.pLineNumber,
+                    ItemNumber = g.ItemNumber,
+                    DutyFreePaid = g.DutyFreePaid
+                }).ToList();
+
+
+            res.AddRange(resHistoricSales.GroupJoin(
+                    ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
+                    g => g.Key.PreviousItem_Id.ToString()/* + g.Key.DutyFreePaid*/,///////////////////////TAKE OUT DFP because it can switch
+                    p => p.Item_Id.ToString()/* + p.DutyFreePaid*/, (g, p) => new { g, p })
+                .Select(x => new ItemSalesPiSummary
+                {
+                    PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
+                    ItemNumber = x.g.Key.ItemNumber,
+                    QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
+                    pQtyAllocated = x.g.Key.pQtyAllocated,
+                    PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
+                    pCNumber = x.g.Key.pCNumber,
+                    pRegistrationDate = x.g.Key.pRegistrationDate,
+                    pLineNumber = x.g.Key.pLineNumber,
+                    DutyFreePaid = x.g.Key.DutyFreePaid,
+                    Type = "Historic"
+                }).ToList());
+
+            var resCurrentSales = ctx.ItemSalesPiSummary.AsNoTracking()
+                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
+                .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
+                .Where(x => x.PreviousItem_Id != 0)
+                //.Where(x => x.DutyFreePaid == dfp)///////////////////////TAKE OUT DFP because it can switch
+                .Where(x => x.Type == "ADJ")
+                .GroupBy(g => new
+                {
+                    PreviousItem_Id = g.PreviousItem_Id,
+                    pQtyAllocated = g.pQtyAllocated,
+                    pCNumber = g.pCNumber,
+                    pRegistrationDate = g.pRegistrationDate,
+                    pLineNumber = g.pLineNumber,
+                    ItemNumber = g.ItemNumber,
+                    DutyFreePaid = g.DutyFreePaid
+                }).ToList();
+
+            res.AddRange(resCurrentSales.GroupJoin(
+                    ctx.AsycudaItemPiQuantityData.AsNoTracking()
+                        .Where(x => x.AssessmentDate >= startDate && x.AssessmentDate <= endDate),
+                    g => g.Key.PreviousItem_Id.ToString() /* + g.Key.DutyFreePaid*/,///////////////////////TAKE OUT DFP because it can switch
+                    p => p.Item_Id.ToString() /* + p.DutyFreePaid*/, (g, p) => new { g, p })
+                .Select(x => new ItemSalesPiSummary
+                {
+                    PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
+                    ItemNumber = x.g.Key.ItemNumber,
+                    QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
+                    pQtyAllocated = x.g.Key.pQtyAllocated,
+                    PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
+                    pCNumber = x.g.Key.pCNumber,
+                    pRegistrationDate = x.g.Key.pRegistrationDate,
+                    pLineNumber = x.g.Key.pLineNumber,
+                    DutyFreePaid = x.g.Key.DutyFreePaid,
+                    Type = "Current"
+                }).ToList());
+        }
+        private static void GetSales(int applicationSettingsId, DateTime startDate, DateTime endDate, string dfp,
+            AllocationDSContext ctx, List<ItemSalesPiSummary> res)
+        {
+            var resHistoricSales = ctx.ItemSalesPiSummary.AsNoTracking()
+                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
+                .Where(x => x.EntryDataDate <= endDate)
+                .Where(x => x.PreviousItem_Id != 0)
+                .Where(x => x.DutyFreePaid == dfp)
+                .Where(x => x.Type == "Sales")
+                .GroupBy(g => new
+                {
+                    PreviousItem_Id = g.PreviousItem_Id,
+                    pQtyAllocated = g.pQtyAllocated,
+                    pCNumber = g.pCNumber,
+                    pRegistrationDate = g.pRegistrationDate,
+                    pLineNumber = g.pLineNumber,
+                    ItemNumber = g.ItemNumber,
+                    DutyFreePaid = g.DutyFreePaid
+                }).ToList();
+
+
+            res.AddRange(resHistoricSales.GroupJoin(
+                    ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
+                    g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
+                    p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new {g, p})
+                .Select(x => new ItemSalesPiSummary
+                {
+                    PreviousItem_Id = (int) x.g.Key.PreviousItem_Id,
+                    ItemNumber = x.g.Key.ItemNumber,
+                    QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
+                    pQtyAllocated = x.g.Key.pQtyAllocated,
+                    PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
+                    pCNumber = x.g.Key.pCNumber,
+                    pRegistrationDate = x.g.Key.pRegistrationDate,
+                    pLineNumber = x.g.Key.pLineNumber,
+                    DutyFreePaid = x.g.Key.DutyFreePaid,
+                    Type = "Historic"
+                }).ToList());
+
+            var resCurrentSales = ctx.ItemSalesPiSummary.AsNoTracking()
+                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
+                .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
+                .Where(x => x.PreviousItem_Id != 0)
+                .Where(x => x.DutyFreePaid == dfp)
+                .Where(x => x.Type == "Sales")
+                .GroupBy(g => new
+                {
+                    PreviousItem_Id = g.PreviousItem_Id,
+                    pQtyAllocated = g.pQtyAllocated,
+                    pCNumber = g.pCNumber,
+                    pRegistrationDate = g.pRegistrationDate,
+                    pLineNumber = g.pLineNumber,
+                    ItemNumber = g.ItemNumber,
+                    DutyFreePaid = g.DutyFreePaid
+                }).ToList();
+
+            res.AddRange(resCurrentSales.GroupJoin(
+                    ctx.AsycudaItemPiQuantityData.AsNoTracking()
+                        .Where(x => x.AssessmentDate >= startDate && x.AssessmentDate <= endDate),
+                    g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
+                    p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new {g, p})
+                .Select(x => new ItemSalesPiSummary
+                {
+                    PreviousItem_Id = (int) x.g.Key.PreviousItem_Id,
+                    ItemNumber = x.g.Key.ItemNumber,
+                    QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
+                    pQtyAllocated = x.g.Key.pQtyAllocated,
+                    PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
+                    pCNumber = x.g.Key.pCNumber,
+                    pRegistrationDate = x.g.Key.pRegistrationDate,
+                    pLineNumber = x.g.Key.pLineNumber,
+                    DutyFreePaid = x.g.Key.DutyFreePaid,
+                    Type = "Current"
+                }).ToList());
         }
 
         //private List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
@@ -1023,7 +1110,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                           Net_weight_itm =  x.Net_weight_itm,
                           
                           previousItems = x.PreviousDocumentItem.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-                                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) && y.xcuda_Item.AsycudaDocument.Cancelled != true)
+                                    .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) 
+                                                && y.xcuda_Item.AsycudaDocument.Cancelled != true)
                                     .Select(z => new previousItems()
                                     {
                                         DutyFreePaid =
@@ -1618,13 +1706,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
-                //var totalSalesLst = salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").ToList();
-                //var piSummaries = piSummary.Where(x => x.Type == "Historic"
-                //&& x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                //&& x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber.ToString()
-                //&& x.pOffice == mypod.EntlnData.EX9Allocation.Customs_clearance_office_code
-                //&& x.pItemQuantity.ToString() == mypod.EntlnData.pDocumentItem.ItemQuantity.ToString()
-                //&& (x.ItemNumber == mypod.EntlnData.ItemNumber || x.ItemNumber == mypod.EntlnData.pDocumentItem.ItemNumber)).ToList();
+               
                 List<ItemSalesPiSummary> salesPiHistoric;
                 List<ItemSalesPiSummary> salesPiCurrent;
                 List<ItemSalesPiSummary> itemSalesPiHistoric = new List<ItemSalesPiSummary>();
@@ -2336,6 +2418,18 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                         Exp.Destination_country_code;
                     cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =
                         Exp.Trading_country;
+                    if(string.IsNullOrEmpty(ads.Currency_Code)) cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
+                    if (string.IsNullOrEmpty(ads.Country_of_origin_code))
+                    {
+                        cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = Exp.Trading_country;
+                            cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination = Exp.Country_first_destination;
+
+                        cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code = Exp.Export_country_code;
+                    }
+
+
+                    //cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
+                    
                 }
             }
             catch (Exception)

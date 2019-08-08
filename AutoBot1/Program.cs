@@ -63,6 +63,7 @@ namespace AutoBot
                         //
                         Utils.Client = new EmailDownloader.Client
                         {
+                            CompanyName = appSetting.CompanyName,
                             DataFolder = appSetting.DataFolder,
                             Password = appSetting.EmailPassword,
                             Email = appSetting.Email,

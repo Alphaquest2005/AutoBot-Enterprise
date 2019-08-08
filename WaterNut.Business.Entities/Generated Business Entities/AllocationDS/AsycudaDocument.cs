@@ -505,6 +505,21 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<int> _applicationsettingsid;
         [DataMember]
+        public string SourceFileName 
+        {
+            get
+            {
+                return _sourcefilename;
+            }
+            set
+            {
+                _sourcefilename = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefilename;
+        [DataMember]
         public List<xcuda_Item> xcuda_Item { get; set; }
 
  //       [DataMember]

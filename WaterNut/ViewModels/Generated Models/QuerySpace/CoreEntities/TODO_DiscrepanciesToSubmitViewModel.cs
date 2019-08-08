@@ -381,6 +381,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _commentFilter;
+        public string CommentFilter
+        {
+            get
+            {
+                return _commentFilter;
+            }
+            set
+            {
+                _commentFilter = value;
+				NotifyPropertyChanged(x => CommentFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -472,6 +490,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CommentFilter) == false)
+						res.Append(" && " + string.Format("Comment.Contains(\"{0}\")",  CommentFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -522,7 +544,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     CNumber = x.CNumber ,
                     
  
-                    Declarant_Reference_Number = x.Declarant_Reference_Number 
+                    Declarant_Reference_Number = x.Declarant_Reference_Number ,
+                    
+ 
+                    Comment = x.Comment 
                     
                 }).ToList()
             };
@@ -563,6 +588,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Declarant_Reference_Number { get; set; } 
+                    
+ 
+                    public string Comment { get; set; } 
                     
         }
 

@@ -216,6 +216,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _FileTypeId;
 
+        [DataMember]
+        public string Comment
+		{ 
+		    get { return _Comment; }
+			set
+			{
+			    if (value == _Comment) return;
+				_Comment = value;
+				NotifyPropertyChanged();//m => this.Comment
+			}
+		}
+        private string _Comment;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

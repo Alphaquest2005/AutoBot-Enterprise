@@ -36,7 +36,7 @@ namespace AdjustmentQS.Business.Services
                     var lst = ctx.AdjustmentDetails
                         .Include(x => x.AdjustmentEx)
                         .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                        //.Where(x => x.ItemNumber == "BLS/8262")
+                        //.Where(x => x.ItemNumber == "CB/BM35X50")
                         .Where(x => x.EffectiveDate == null && ((x.InvoiceQty > x.ReceivedQty && !x.ShortAllocations.Any()) 
                                                                 || (x.InvoiceQty < x.ReceivedQty && !x.AsycudaDocumentItemEntryDataDetails.Any())))
                         .OrderBy(x => x.EntryDataDetailsId)
@@ -92,15 +92,18 @@ namespace AdjustmentQS.Business.Services
 
                         if (ed.Cost != 0 ) continue;
                         if( s.InvoiceQty.GetValueOrDefault() > 0) continue;// if invoice > 0 it should have been imported
-                            var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
-                                .Where(x => x.assessmentdate <= ed.EffectiveDate)
-                                .OrderByDescending(x => x.assessmentdate)
-                                .FirstOrDefault(x =>
-                                    x.ItemNumber == ed.ItemNumber &&
-                                    x.applicationsettingsid == applicationSettingsId);
-                            if (lastItemCost != null)
-                                ed.LastCost = (double) lastItemCost.LocalItemCost.GetValueOrDefault();
-                        
+
+                        //////////// only apply to Adjustments because they are after shipment... discrepancies have to be provided.
+                        if (s.Type != "ADJ") continue;
+                        var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
+                            .Where(x => x.assessmentdate <= ed.EffectiveDate)
+                            .OrderByDescending(x => x.assessmentdate)
+                            .FirstOrDefault(x =>
+                                x.ItemNumber == ed.ItemNumber &&
+                                x.applicationsettingsid == applicationSettingsId);
+                        if (lastItemCost != null)
+                            ed.LastCost = (double)lastItemCost.LocalItemCost.GetValueOrDefault();
+
 
 
                     }
@@ -188,7 +191,7 @@ namespace AdjustmentQS.Business.Services
                             new DateTime(dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Year,
                                 dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Month, 1);
                         var endDate = startDate.AddMonths(1).AddDays(-1);
-                        var itemPiSummarylst = CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId,startDate, endDate, "Duty Free");
+                        var itemPiSummarylst = CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId,startDate, endDate, dutyFreePaid);
 
 
                         await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,

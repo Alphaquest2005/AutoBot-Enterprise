@@ -244,6 +244,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _filetypeid;
+        [DataMember]
+        public string Comment 
+        {
+            get
+            {
+                return _comment;
+            }
+            set
+            {
+                _comment = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _comment;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

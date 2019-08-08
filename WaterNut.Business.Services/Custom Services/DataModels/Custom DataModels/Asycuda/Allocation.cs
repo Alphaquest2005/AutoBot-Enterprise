@@ -1105,6 +1105,7 @@ namespace WaterNut.DataSpace
                                                                     : "") +
                                                                "QtyAllocated != Quantity && " +
                                                                 $"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
+                                                                $"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have CNumber to get matched
                                                                 "((CNumber == null && PreviousInvoiceNumber == null) ||" +
                                                                 " ((CNumber != null || PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments
                                                                 " && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"": "") +  ")" +

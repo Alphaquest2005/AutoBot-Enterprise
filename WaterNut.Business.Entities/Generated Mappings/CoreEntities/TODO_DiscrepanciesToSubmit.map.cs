@@ -28,6 +28,7 @@
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.Comment).HasColumnName("Comment").IsUnicode(false).HasMaxLength(24);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

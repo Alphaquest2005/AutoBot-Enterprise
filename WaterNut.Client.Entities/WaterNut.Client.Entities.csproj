@@ -157,9 +157,11 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateEx9.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_UnallocatedShorts.cs" />
@@ -246,9 +248,11 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateEx9.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_UnallocatedShorts.cs" />
@@ -335,9 +339,11 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateEx9.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedShorts.cs" />
@@ -428,9 +434,11 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateEx9.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DeleteDocumentSet.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_UnallocatedShorts.cs" />

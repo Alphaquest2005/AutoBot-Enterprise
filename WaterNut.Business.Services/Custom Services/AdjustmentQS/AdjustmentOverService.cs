@@ -36,6 +36,7 @@ namespace AdjustmentQS.Business.Services
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
                         .Where(x => !x.AsycudaDocumentItemEntryDataDetails.Any())
+                        .Where(x => (double)x.Cost > 0)
                         .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
                         .OrderBy(x => x.EffectiveDate)
                         .Select(x => new EntryDataDetails()

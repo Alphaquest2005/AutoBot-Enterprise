@@ -8,5 +8,6 @@ namespace EmailDownloader
         public string Password { get; set; }
         public string DataFolder { get; set; }
         public List<string> EmailMappings { get; set; }
+        public string CompanyName { get; set; }
     }
 }

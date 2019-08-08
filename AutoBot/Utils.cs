@@ -21,6 +21,7 @@ using AllocationQS.Business.Entities;
 using AllocationQS.Client.Repositories;
 using Asycuda421;
 using Core.Common.Converters;
+using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using CoreEntities.Business.Services;
 using DocumentDS.Business.Services;
@@ -86,6 +87,10 @@ namespace AutoBot
                 {"SubmitToCustoms", SubmitSalesXMLToCustoms },
                 {"CleanupEntries", CleanupEntries },
                 {"ClearAllocations", ClearAllocations },
+                {"AssessDISEntries", AssessDISEntries },
+                {"DownloadSalesFiles",() => DownloadSalesFiles(3) },
+                {"ImportSalesEntries",ImportSalesEntries },
+                {"SubmitDiscrepanciesToCustoms",SubmitDiscrepanciesToCustoms },
             };
 
         private static void ClearAllocations()
@@ -170,6 +175,82 @@ namespace AutoBot
             }
         }
 
+        private static void SubmitDiscrepanciesToCustoms()
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Discrepancies To Customs");
+
+                // var saleInfo = CurrentSalesInfo();
+                
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
+                    var lst = ctx.TODO_SubmitDiscrepanciesToCustoms.Where(x =>
+                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                    .ApplicationSettingsId).ToList()
+                        .GroupBy(x => x.EmailId);
+                    foreach (var emailIds in lst)
+                    {
+
+
+
+                        var body = "The Following Discrepancies Entries were Assessed. \r\n" +
+                                   
+                                   $"\t{"CNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"\r\n" +
+                                   $"Please open the attached email to view Email Thread.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"\r\n" +
+                                   $"Regards,\r\n" +
+                                   $"AutoBot";
+
+
+                        if (emailIds.Key == null)
+                        {
+                            EmailDownloader.EmailDownloader.SendEmail(Client, "", "Assessed Shipping Discrepancy Entries",
+                                contacts, body, new string[0]);
+                        }
+                        else
+                        {
+                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Assessed Shipping Discrepancy Entries", body, contacts);
+                        }
+
+                        foreach (var item in emailIds)
+                        {
+                            var sfile = ctx.AsycudaDocuments.FirstOrDefault(x =>
+                                x.ASYCUDA_Id == item.ASYCUDA_Id &&
+                                x.ApplicationSettingsId == item.ApplicationSettingsId);
+                            var eAtt = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x =>
+                                x.Attachments.FilePath == sfile.SourceFileName);
+                            if (eAtt != null)
+                            {
+                                ctx.AttachmentLog.Add(new AttachmentLog(true)
+                                {
+                                    DocSetAttachment = eAtt.Id,
+                                    Status = "Submit XML To Customs",
+                                    TrackingState = TrackingState.Added
+                                });
+                            }
+                        }
+
+                        ctx.SaveChanges();
+
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
         public static void AutoMatch()
         {
             Console.WriteLine("AutoMatch ...");
@@ -205,7 +286,7 @@ namespace AutoBot
                 ctx.Database.ExecuteSqlCommand(@"delete from entrydata where entrydataid in 
                     (SELECT EntryData.EntryDataId
                     FROM    EntryData LEFT OUTER JOIN
-                AsycudaDocumentSetEntryData ON EntryData.EntryDataId = AsycudaDocumentSetEntryData.EntryDataId
+                AsycudaDocumentEntryData ON EntryData.EntryDataId = AsycudaDocumentEntryData.EntryDataId
                 WHERE(AsycudaDocumentSetEntryData.AsycudaDocumentSetId IS NULL))");
 
             }
@@ -343,6 +424,7 @@ namespace AutoBot
                 {
                     ImportComplete(directoryName, out lcont);
                     RunSiKuLi(CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+                    if (ImportComplete(directoryName, out lcont)) break;
                 }
                 
             }
@@ -360,6 +442,21 @@ namespace AutoBot
             AssessEntry(saleinfo.Item3.Declarant_Reference_Number, saleinfo.Item3.AsycudaDocumentSetId);
         }
 
+        public static void AssessDISEntries()
+        {
+            Console.WriteLine("Assessing Discrepancy Entries");
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res = ctx.TODO_DiscrepanciesToAssess.ToList();
+                foreach (var doc in res)
+                {
+                    AssessEntry(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId);
+                }
+                
+            }
+
+        }
+
         public static void AssessEntry(string docReference, int asycudaDocumentSetId)
         {
 
@@ -375,14 +472,14 @@ namespace AutoBot
                 RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
             }
 
-            lcont = 0;
-            while (AssessComplete(instrFile, resultsFile, out lcont) == false)
-            {
-                RunSiKuLi(CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
-            }
+            //lcont = 0;
+            //while (AssessComplete(instrFile, resultsFile, out lcont) == false)
+            //{
+            //    RunSiKuLi(CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+            //}
 
-            ImportSalesEntries();
-            CleanupEntries();
+            //ImportSalesEntries();
+            //CleanupEntries();
 
         }
 
@@ -442,6 +539,7 @@ namespace AutoBot
                 {
                     var p = line.Split('\t');
                     if (lcont >= res.Length) return false;
+                    if(string.IsNullOrEmpty(res[lcont])) return false;
                     var r = res[lcont].Split('\t');
                     lcont += 1;
                     if (p[1] == r[1] && r.Length == 3 && r[2] == "Success") continue;
@@ -578,7 +676,7 @@ namespace AutoBot
 
                     BaseDataModel.Instance.ExportDocSet(doc.Key.AsycudaDocumentSetId,
                         Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            doc.Key.Declarant_Reference_Number), false).Wait();
+                            doc.Key.Declarant_Reference_Number), true).Wait();
                     ExportDocSetSalesReport(doc.Key.AsycudaDocumentSetId,
                         Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                             doc.Key.Declarant_Reference_Number)).Wait();
@@ -645,9 +743,9 @@ namespace AutoBot
                         {
 
                             var body = "Discrepancies Found: \r\n" +
-                                       "System could not find the following items on the CNumbers Stated: \r\n" +
-                                       "\tItem Number\t\tInvoiceQty\t\tRecieved Qty\t\tCNumber\r\n" +
-                                       $"{doc.Select(current => $"\t{current.ItemNumber}\t\t{current.InvoiceQty}\t\t\t\t{current.ReceivedQty}\t\t{current.CNumber}\r\n").Aggregate((old, current) => old + current)}" +
+                                       "System could not Generate Entries the following items on the CNumbers Stated: \r\n" +
+                                       $"\t{"Item Number".FormatedSpace(20)}{"InvoiceQty".FormatedSpace(15)}{"Recieved Qty".FormatedSpace(15)}{"CNumber".FormatedSpace(15)}{"Reason".FormatedSpace(30)}\r\n" +
+                                       $"{doc.Select(current => $"\t{current.ItemNumber.FormatedSpace(20)}{current.InvoiceQty.ToString().FormatedSpace(15)}{current.ReceivedQty.ToString().FormatedSpace(15)}{current.CNumber.FormatedSpace(15)}{current.Comment.FormatedSpace(30)}\r\n").Aggregate((old, current) => old + current)}" +
                                        $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
                                        $"Regards,\r\n" +
                                        $"AutoBot";
@@ -1254,7 +1352,8 @@ namespace AutoBot
             var timeoutCycles = 0;
             while (!process.HasExited && process.Responding)
             {
-                if (timeoutCycles > 60) break;
+                if (timeoutCycles > 12) break;
+                Console.WriteLine($"Waiting {timeoutCycles} Minutes");
                 Thread.Sleep(1000 * 60);
                 timeoutCycles += 1;
             }
@@ -1433,7 +1532,11 @@ namespace AutoBot
             {
 
 
-                if (fileType.FileTypeMappings.Count == 0) return;
+                if (fileType.FileTypeMappings.Count == 0)
+                {
+                    throw new ApplicationException($"Missing File Type Mappings for {fileType.FilePattern}");
+                    
+                }
                 var dfile = new FileInfo(
                     $@"{file.DirectoryName}\{file.Name.Replace(".csv", "")}-Fixed{file.Extension}");
                 if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime) return;

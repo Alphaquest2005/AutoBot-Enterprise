@@ -448,6 +448,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="TotalFreight" Type="float" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="SourceFileName" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -662,6 +663,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesPiSummary' does 
             <PropertyRef Name="pLineNumber" />
             <PropertyRef Name="pQtyAllocated" />
             <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="Type" />
             <PropertyRef Name="EntryDataDate" />
           </Key>
           <Property Name="PreviousItem_Id" Type="int" />
@@ -675,6 +677,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesPiSummary' does 
           <Property Name="QtyAllocated" Type="float" />
           <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="5" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1162,7 +1165,8 @@ FROM [dbo].[AscyudaItemPiQuantity] AS [AscyudaItemPiQuantity]</DefiningQuery>
 [AsycudaDocument].[AssessmentDate] AS [AssessmentDate], 
 [AsycudaDocument].[TotalFreight] AS [TotalFreight], 
 [AsycudaDocument].[ExpiryDate] AS [ExpiryDate], 
-[AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocument].[SourceFileName] AS [SourceFileName]
 FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
@@ -1319,7 +1323,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
 [ItemSalesPiSummary].[pAssessmentDate] AS [pAssessmentDate], 
 [ItemSalesPiSummary].[QtyAllocated] AS [QtyAllocated], 
 [ItemSalesPiSummary].[EntryDataDate] AS [EntryDataDate], 
-[ItemSalesPiSummary].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[ItemSalesPiSummary].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[ItemSalesPiSummary].[Type] AS [Type]
 FROM [dbo].[ItemSalesPiSummary] AS [ItemSalesPiSummary]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="PreviousItemsEx" EntityType="Self.PreviousItemsEx" store:Type="Views" store:Schema="dbo">
@@ -1908,6 +1913,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="AsycudaDocumentxcuda_Item">
           <End Type="WaterNutDBModel.AsycudaDocument" Role="AsycudaDocument" Multiplicity="1" />
@@ -2776,6 +2782,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <PropertyRef Name="EntryDataDate" />
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="Type" />
           </Key>
           <Property Name="PreviousItem_Id" Type="Int32" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
@@ -2788,6 +2795,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="EntryDataDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -2967,6 +2975,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocument">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocument">
               <MappingFragment StoreEntitySet="AsycudaDocument">
+                <ScalarProperty Name="SourceFileName" ColumnName="SourceFileName" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
@@ -3433,6 +3442,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="ItemSalesPiSummary">
             <EntityTypeMapping TypeName="WaterNutDBModel.ItemSalesPiSummary">
               <MappingFragment StoreEntitySet="ItemSalesPiSummary">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />

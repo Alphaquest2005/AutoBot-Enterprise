@@ -268,9 +268,11 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_UnallocatedShorts.cs
@@ -522,9 +524,11 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateDiscrepancyEntries.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateEx9.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DeleteDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedShorts.map.cs
@@ -790,9 +794,11 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -1038,9 +1044,11 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -1286,9 +1294,11 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -1534,9 +1544,11 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -1751,9 +1763,11 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_UnallocatedShorts.cs
@@ -1840,9 +1854,11 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_UnallocatedShorts.cs
@@ -1935,9 +1951,11 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -2024,9 +2042,11 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -2113,9 +2133,11 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -2202,9 +2224,11 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -2291,9 +2315,11 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_CreateEx9.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DeleteDocumentSet.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedShorts.cs
@@ -2450,9 +2476,11 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateDiscrepancyEntries.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_CreateEx9.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DeleteDocumentSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedShorts.map.cs
@@ -2704,9 +2732,11 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_CreateDiscrepancyEntriesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_CreateEx9Repository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DeleteDocumentSetRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesToSubmitRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_UnallocatedShortsRepository.cs
@@ -2814,9 +2844,11 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateDiscrepancyEntriesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_CreateEx9ViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DeleteDocumentSetViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToSubmitViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitXMLToCustomsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedSalesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedShortsViewModel.cs
@@ -2902,9 +2934,11 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateDiscrepancyEntriesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_CreateEx9Totals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DeleteDocumentSetTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToSubmitTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitXMLToCustomsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedSalesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedShortsTotals.cs
@@ -2981,9 +3015,11 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateDiscrepancyEntriesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_CreateEx9VirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DeleteDocumentSetVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToSubmitVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitXMLToCustomsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedShortsVirturalListLoader.cs
@@ -3102,9 +3138,11 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_CreateEx9Service.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DeleteDocumentSetService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_PODocSetService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_UnallocatedShortsService.cs
@@ -3350,9 +3388,11 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_CreateDiscrepancyEntriesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_CreateEx9Service.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DeleteDocumentSetService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DocumentsToDeleteService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_PODocSetService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_UnallocatedSalesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_UnallocatedShortsService.cs
@@ -3561,9 +3601,11 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_CreateEx9Service.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DeleteDocumentSetService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_PODocSetService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_UnallocatedShortsService.cs
@@ -3650,9 +3692,11 @@
 ..\WaterNut.Client.Services\CoreEntities\TODO_CreateDiscrepancyEntriesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_CreateEx9Client.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DeleteDocumentSetClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesToAssessClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesToSubmitClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DocumentsToDeleteClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_PODocSetClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitXMLToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_UnallocatedSalesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_UnallocatedShortsClient.cs

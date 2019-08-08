@@ -53,7 +53,7 @@ namespace EmailDownloader
         private static MimeMessage CreateMessage(Client client, string subject, string[] to, string body, string[] attachments)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("AutoBot",client.Email));
+            message.From.Add(new MailboxAddress($"{client.CompanyName}-AutoBot", client.Email));
             foreach (var recipent in to)
             {
                message.To.Add(MailboxAddress.Parse(recipent)); 
@@ -180,7 +180,7 @@ namespace EmailDownloader
                     var v = mat.Groups[i];
                     if(string.IsNullOrEmpty(v.Value) || subject.Contains(v.Value)) continue;
                     var g = v.Value;
-                    subject += " " + g;
+                    subject += " " + g.Trim();
                 }
 
                  
@@ -226,7 +226,7 @@ namespace EmailDownloader
         {
             // construct a new message
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("AutoBot", clientDetails.Email));
+            message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
             message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
             message.Subject = "FWD: " + msg.Subject;
@@ -323,7 +323,7 @@ namespace EmailDownloader
         {
             // construct a new message
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("AutoBot", clientDetails.Email));
+            message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
             
             foreach (var recipent in contacts)

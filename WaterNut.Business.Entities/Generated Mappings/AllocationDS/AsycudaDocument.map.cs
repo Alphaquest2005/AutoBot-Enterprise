@@ -45,6 +45,7 @@
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.ExpiryDate).HasColumnName("ExpiryDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.SourceFileName).HasColumnName("SourceFileName");
               this.HasMany(t => t.xcuda_Item).WithRequired(t => (AsycudaDocument)t.AsycudaDocument);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

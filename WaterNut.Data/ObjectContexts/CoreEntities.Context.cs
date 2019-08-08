@@ -125,6 +125,10 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_SubmitXMLToCustoms> TODO_SubmitXMLToCustoms { get; set; }
      
+        public DbSet<TODO_DiscrepanciesToAssess> TODO_DiscrepanciesToAssess { get; set; }
+     
+        public DbSet<TODO_SubmitDiscrepanciesToCustoms> TODO_SubmitDiscrepanciesToCustoms { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -206,6 +210,10 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new SessionScheduleMap());
          
             modelBuilder.Configurations.Add(new TODO_SubmitXMLToCustomsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_DiscrepanciesToAssessMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitDiscrepanciesToCustomsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -164,9 +164,11 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_CreateDiscrepancyEntriesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_CreateEx9Repository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DeleteDocumentSetRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToSubmitRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedShortsRepository.cs" />

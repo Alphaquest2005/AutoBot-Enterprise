@@ -121,9 +121,11 @@
     <Compile Include="CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
     <Compile Include="CoreEntities\ITODO_CreateEx9Service.cs" />
     <Compile Include="CoreEntities\ITODO_DeleteDocumentSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="CoreEntities\ITODO_DocumentsToDeleteService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedShortsService.cs" />
