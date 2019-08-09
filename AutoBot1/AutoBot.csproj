@@ -82,6 +82,10 @@
       <Project>{d6846386-8741-4619-bae3-b0cfedbf2597}</Project>
       <Name>Core.Common.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Core.Common\Core.Common\Core.Common.csproj">
+      <Project>{4d734eac-e84b-40a2-9726-d17263b0ff4a}</Project>
+      <Name>Core.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EmailDownloader\EmailDownloader.csproj">
       <Project>{5E51C8C3-9BF4-4C13-AD00-7094FFB83AD6}</Project>
       <Name>EmailDownloader</Name>

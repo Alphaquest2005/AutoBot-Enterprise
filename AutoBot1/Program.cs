@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Core.Common.Utils;
 using MoreLinq.Extensions;
 using WaterNut.DataSpace;
 
@@ -39,6 +40,7 @@ namespace AutoBot
 
                         .Include("FileTypes.FileTypeMappings").ToList())
                     {
+                        appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
                         // set BaseDataModel CurrentAppSettings
                         BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
                         //check emails

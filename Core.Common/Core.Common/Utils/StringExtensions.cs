@@ -10,7 +10,7 @@ namespace Core.Common.Utils
     {
         public static string Truncate(this string value, int maxLength)
         {
-            if (string.IsNullOrEmpty(value)) return value;
+            if (String.IsNullOrEmpty(value)) return value;
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
@@ -19,7 +19,7 @@ namespace Core.Common.Utils
         {
             if (val == null) val = "";
             int len = 0;
-            string retVal = string.Empty;
+            string retVal = String.Empty;
             try
 
             {
@@ -40,6 +40,11 @@ namespace Core.Common.Utils
             }
             return retVal;
 
+        }
+
+        public static string UpdateToCurrentUser(string dataFolder)
+        {
+            return dataFolder.Replace("Josep", Environment.UserName);
         }
     }
 }
