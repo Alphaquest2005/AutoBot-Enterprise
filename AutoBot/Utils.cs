@@ -1341,7 +1341,7 @@ namespace AutoBot
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.FileName = "java.exe";
             startInfo.Arguments =
-                $@"-jar C:\Users\josep\OneDrive\Clients\AutoBot\sikulix.jar -r C:\Users\josep\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
+                $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix.jar -r C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
                         BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin
                     } {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} {(string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + " ")}""{
                         Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef) + "\\"
