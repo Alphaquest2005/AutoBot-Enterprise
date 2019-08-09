@@ -379,6 +379,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
+          <Property Name="LastFileNumber" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1003,7 +1004,8 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaDocumentSetEx].[TotalFreight] AS [TotalFreight], 
 [AsycudaDocumentSetEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AsycudaDocumentSetEx].[TotalInternalFreight] AS [TotalInternalFreight], 
-[AsycudaDocumentSetEx].[TotalPackages] AS [TotalPackages]
+[AsycudaDocumentSetEx].[TotalPackages] AS [TotalPackages], 
+[AsycudaDocumentSetEx].[LastFileNumber] AS [LastFileNumber]
 FROM [dbo].[AsycudaDocumentSetEx] AS [AsycudaDocumentSetEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -1656,6 +1658,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" FromRole="AsycudaDocumentSetEx" ToRole="AsycudaDocumentSet_Attachments" />
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
+          <Property Name="LastFileNumber" Type="Int32" />
           <a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <Association Name="AsycudaDocumentSetExAsycudaDocument">
@@ -2657,6 +2660,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSetExs">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSetEx">
               <MappingFragment StoreEntitySet="AsycudaDocumentSetEx">
+                <ScalarProperty Name="LastFileNumber" ColumnName="LastFileNumber" />
                 <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />

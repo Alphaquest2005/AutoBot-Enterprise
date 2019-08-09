@@ -281,6 +281,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _TotalPackages;
 
+        [DataMember]
+        public Nullable<int> LastFileNumber
+		{ 
+		    get { return _LastFileNumber; }
+			set
+			{
+			    if (value == _LastFileNumber) return;
+				_LastFileNumber = value;
+				NotifyPropertyChanged();//m => this.LastFileNumber
+			}
+		}
+        private Nullable<int> _LastFileNumber;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocument> AsycudaDocuments

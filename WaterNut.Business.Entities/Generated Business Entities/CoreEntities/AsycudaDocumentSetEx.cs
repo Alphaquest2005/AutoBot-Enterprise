@@ -328,6 +328,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _totalpackages;
         [DataMember]
+        public Nullable<int> LastFileNumber 
+        {
+            get
+            {
+                return _lastfilenumber;
+            }
+            set
+            {
+                _lastfilenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _lastfilenumber;
+        [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]
         public List<LicenceSummary> LicenceSummary { get; set; }

@@ -566,6 +566,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _lastFileNumberFilter;
+        public Int32? LastFileNumberFilter
+        {
+            get
+            {
+                return _lastFileNumberFilter;
+            }
+            set
+            {
+                _lastFileNumberFilter = value;
+				NotifyPropertyChanged(x => LastFileNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -675,7 +693,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("TotalInternalFreight == {0}",  TotalInternalFreightFilter.ToString()));				 
 
 					if(TotalPackagesFilter.HasValue)
-						res.Append(" && " + string.Format("TotalPackages == {0}",  TotalPackagesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalPackages == {0}",  TotalPackagesFilter.ToString()));				 
+
+					if(LastFileNumberFilter.HasValue)
+						res.Append(" && " + string.Format("LastFileNumber == {0}",  LastFileNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -743,7 +764,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalInternalFreight = x.TotalInternalFreight ,
                     
  
-                    TotalPackages = x.TotalPackages 
+                    TotalPackages = x.TotalPackages ,
+                    
+ 
+                    LastFileNumber = x.LastFileNumber 
                     
                 }).ToList()
             };
@@ -802,6 +826,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> TotalPackages { get; set; } 
+                    
+ 
+                    public Nullable<int> LastFileNumber { get; set; } 
                     
         }
 

@@ -298,6 +298,21 @@ namespace DocumentDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public Nullable<int> LastFileNumber 
+        {
+            get
+            {
+                return _lastfilenumber;
+            }
+            set
+            {
+                _lastfilenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _lastfilenumber;
+        [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
         [DataMember]
         public Document_Type Document_Type { get; set; }

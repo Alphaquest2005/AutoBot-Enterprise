@@ -359,6 +359,21 @@ public Nullable<int> TotalPackages
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> LastFileNumber
+		{ 
+		    get { return this.asycudadocumentsetex.LastFileNumber; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.LastFileNumber) return;
+				this.asycudadocumentsetex.LastFileNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LastFileNumber");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocument> _AsycudaDocuments = null;
         public  ObservableCollection<AsycudaDocument> AsycudaDocuments
 		{

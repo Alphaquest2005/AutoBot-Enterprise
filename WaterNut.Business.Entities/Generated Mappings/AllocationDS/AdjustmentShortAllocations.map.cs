@@ -64,6 +64,7 @@
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AscyudaItemPiQuantity).WithMany(t =>(ICollection<AdjustmentShortAllocations>) t.AdjustmentShortAllocations).HasForeignKey(d => d.PreviousItem_Id);

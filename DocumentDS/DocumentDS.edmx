@@ -43,6 +43,7 @@
           <Property Name="TotalFreight" Type="float" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
+          <Property Name="LastFileNumber" Type="int" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
@@ -2184,6 +2185,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSet_Attachments" />
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="FileType" />
+          <Property Name="LastFileNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3805,6 +3807,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSets">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="LastFileNumber" ColumnName="LastFileNumber" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />

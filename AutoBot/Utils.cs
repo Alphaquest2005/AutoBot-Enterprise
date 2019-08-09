@@ -498,6 +498,7 @@ namespace AutoBot
                     return false;
                 }
 
+                var existingfiles = 0;
 
                 foreach (var line in lines)
                 {
@@ -506,11 +507,16 @@ namespace AutoBot
                     var p = line.StartsWith($"{DateTime.Now.Year}\t")
                         ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
                         : line.Split('\t');
-                    if (File.Exists(Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{p[5]}.xml"))) continue;
+                    if (p.Length < 8) continue;
+                    if (File.Exists(Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{p[5]}.xml")))
+                    {
+                        existingfiles += 1;
+                        continue;
+                    }
                     return false;
                 }
 
-                return true;
+                return existingfiles != 0;
             }
             else
             {

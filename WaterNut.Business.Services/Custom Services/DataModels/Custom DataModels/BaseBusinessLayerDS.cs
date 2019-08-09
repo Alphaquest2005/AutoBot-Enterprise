@@ -388,9 +388,28 @@ namespace WaterNut.DataSpace
             {
                 CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Add(ndoc.xcuda_ASYCUDA_ExtendedProperties);
                 ndoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = CurrentAsycudaDocumentSet;
-                ndoc.xcuda_ASYCUDA_ExtendedProperties.FileNumber = CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Count();
+                ndoc.xcuda_ASYCUDA_ExtendedProperties.FileNumber =
+                    CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault() +
+                    1; //CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Count();
+                UpdateAsycudaDocumentSetLastNumber(CurrentAsycudaDocumentSet);
             }
             return ndoc;
+        }
+
+        private static void UpdateAsycudaDocumentSetLastNumber(AsycudaDocumentSet CurrentAsycudaDocumentSet)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var sql = $@"UPDATE AsycudaDocumentSet
+                                SET         LastFileNumber = {
+                        CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault() + 1
+                    }
+                                FROM    AsycudaDocumentSet 
+                                where AsycudaDocumentSet.AsycudaDocumentSetId = {
+                        CurrentAsycudaDocumentSet.AsycudaDocumentSetId
+                    }";
+                ctx.Database.ExecuteSqlCommand(sql);
+            }
         }
 
         public  void IntCdoc(DocumentCT cdoc, AsycudaDocumentSet ads)

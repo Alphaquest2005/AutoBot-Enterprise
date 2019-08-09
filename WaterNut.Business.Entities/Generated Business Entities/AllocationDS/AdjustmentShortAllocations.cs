@@ -785,6 +785,21 @@ namespace AllocationDS.Business.Entities
         }
         string _xstatus;
         [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }

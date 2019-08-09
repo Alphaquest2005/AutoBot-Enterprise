@@ -385,6 +385,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="EmailId" Type="int" />
           <Property Name="SANumber" Type="int" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AllocationErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1114,7 +1115,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
 [AdjustmentShortAllocations].[FileTypeId] AS [FileTypeId], 
 [AdjustmentShortAllocations].[EmailId] AS [EmailId], 
 [AdjustmentShortAllocations].[SANumber] AS [SANumber], 
-[AdjustmentShortAllocations].[xStatus] AS [xStatus]
+[AdjustmentShortAllocations].[xStatus] AS [xStatus], 
+[AdjustmentShortAllocations].[Type] AS [Type]
 FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AllocationErrors" EntityType="Self.AllocationErrors" store:Type="Views" store:Schema="dbo">
@@ -2512,6 +2514,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="EmailId" Type="Int32" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="xcuda_ItemAdjustmentShortAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1" />
@@ -3270,6 +3273,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AdjustmentShortAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.AdjustmentShortAllocations">
               <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
