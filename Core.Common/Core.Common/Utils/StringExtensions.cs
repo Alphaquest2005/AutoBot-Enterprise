@@ -44,7 +44,7 @@ namespace Core.Common.Utils
 
         public static string UpdateToCurrentUser(string dataFolder)
         {
-            return dataFolder.Replace("Josep", Environment.UserName);
+            return dataFolder.Replace("josep", Environment.UserName);
         }
     }
 }

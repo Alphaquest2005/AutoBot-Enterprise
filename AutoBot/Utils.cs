@@ -804,7 +804,7 @@ namespace AutoBot
             var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
                 x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
             
-            var dirPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef);
+            var dirPath = StringExtensions.UpdateToCurrentUser( Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef));
             return new Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string>(startDate, endDate, docSet, dirPath);
         }
 
@@ -821,8 +821,8 @@ namespace AutoBot
                     foreach (var item in docSet)
                     {
 
-                        var dirPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            item.Declarant_Reference_Number);
+                        var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            item.Declarant_Reference_Number));
                         lst.Add(new Tuple<AsycudaDocumentSetEx, string>(item, dirPath));
                     }
                     return lst;
