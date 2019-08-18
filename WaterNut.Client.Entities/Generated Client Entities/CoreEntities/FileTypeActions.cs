@@ -87,21 +87,6 @@ public int ActionId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Priority is required")]
-       [NumberValidationAttribute]
-public int Priority
-		{ 
-		    get { return this.filetypeactions.Priority; }
-			set
-			{
-			    if (value == this.filetypeactions.Priority) return;
-				this.filetypeactions.Priority = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Priority");
-			}
-		}
-     
-
        private Actions _Actions;
         public  Actions Actions
 		{

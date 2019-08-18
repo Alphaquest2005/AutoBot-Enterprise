@@ -60,19 +60,6 @@ namespace CoreEntities.Client.DTO
 		}
         private int _ActionId;
 
-        [DataMember]
-        public int Priority
-		{ 
-		    get { return _Priority; }
-			set
-			{
-			    if (value == _Priority) return;
-				_Priority = value;
-				NotifyPropertyChanged();//m => this.Priority
-			}
-		}
-        private int _Priority;
-
        
         [DataMember]
         public Actions Actions

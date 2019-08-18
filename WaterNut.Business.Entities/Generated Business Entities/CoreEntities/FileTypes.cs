@@ -193,6 +193,21 @@ namespace CoreEntities.Business.Entities
         }
         bool _mergeemails;
         [DataMember]
+        public bool CopyEntryData 
+        {
+            get
+            {
+                return _copyentrydata;
+            }
+            set
+            {
+                _copyentrydata = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _copyentrydata;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

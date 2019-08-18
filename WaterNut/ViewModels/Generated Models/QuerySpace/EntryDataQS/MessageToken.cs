@@ -88,12 +88,6 @@ namespace WaterNut.QuerySpace.EntryDataQS
 			public const string PackageTypesDeleted = "PackageTypesDeleted";
 			public const string PackageTypesCreated = "PackageTypesCreated";
 			public const string PackageTypesUpdated = "PackageTypesUpdated";
-			public const string ToDo_POToXMLFilterExpressionChanged = "ToDo_POToXMLFilterExpressionChanged";
-			public const string SelectedToDo_POToXMLChanged = "SelectedToDo_POToXMLChanged";
-            public const string ToDo_POToXMLChanged = "ToDo_POToXMLChanged";
-			public const string ToDo_POToXMLDeleted = "ToDo_POToXMLDeleted";
-			public const string ToDo_POToXMLCreated = "ToDo_POToXMLCreated";
-			public const string ToDo_POToXMLUpdated = "ToDo_POToXMLUpdated";
   
 
           // public const string AsycudaDocumentEntryDataChanged = "AsycudaDocumentEntryDataChanged";
@@ -109,7 +103,6 @@ namespace WaterNut.QuerySpace.EntryDataQS
           // public const string EntryDataExChanged = "EntryDataExChanged";
           // public const string InventoryItemsExChanged = "InventoryItemsExChanged";
           // public const string PackageTypeChanged = "PackageTypeChanged";
-          // public const string ToDo_POToXMLChanged = "ToDo_POToXMLChanged";
  
 
    
@@ -138,8 +131,6 @@ namespace WaterNut.QuerySpace.EntryDataQS
            public const string CurrentInventoryItemsExChanged = "CurrentInventoryItemsExChanged";
    
            public const string CurrentPackageTypeChanged = "CurrentPackageTypeChanged";
-   
-           public const string CurrentToDo_POToXMLChanged = "CurrentToDo_POToXMLChanged";
     
 
    
@@ -168,8 +159,6 @@ namespace WaterNut.QuerySpace.EntryDataQS
            public const string CurrentInventoryItemsExIDChanged = "OnCurrentInventoryItemsExIDChanged";
    
            public const string CurrentPackageTypeIDChanged = "OnCurrentPackageTypeIDChanged";
-   
-           public const string CurrentToDo_POToXMLIDChanged = "OnCurrentToDo_POToXMLIDChanged";
       
     }
 }		

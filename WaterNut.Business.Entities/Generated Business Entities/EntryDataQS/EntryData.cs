@@ -177,6 +177,36 @@ namespace EntryDataQS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas { get; set; }
         [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryDatas { get; set; }

@@ -25,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks.Schedulers;
 using AllocationDS.Business.Entities;
 using Asycuda421;
+using AsycudaWorld421;
 using Core.Common.Business.Services;
 using Core.Common.Converters;
 using DocumentItemDS.Business.Entities;
@@ -58,7 +59,7 @@ using xcuda_PreviousItemService = DocumentItemDS.Business.Services.xcuda_Previou
 using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Supplementary_unit;
 using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
 using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
-
+using AsycudaDocument_Attachments = DocumentDS.Business.Entities.AsycudaDocument_Attachments;
 
 namespace WaterNut.DataSpace
 {
@@ -389,26 +390,24 @@ namespace WaterNut.DataSpace
                 CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Add(ndoc.xcuda_ASYCUDA_ExtendedProperties);
                 ndoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = CurrentAsycudaDocumentSet;
                 ndoc.xcuda_ASYCUDA_ExtendedProperties.FileNumber =
-                    CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault() +
-                    1; //CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Count();
-                UpdateAsycudaDocumentSetLastNumber(CurrentAsycudaDocumentSet);
+                    CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault() ;// the number is forward looking //CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Count();
+                CurrentAsycudaDocumentSet.LastFileNumber = UpdateAsycudaDocumentSetLastNumber(CurrentAsycudaDocumentSet.AsycudaDocumentSetId, CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault());
             }
             return ndoc;
         }
 
-        private static void UpdateAsycudaDocumentSetLastNumber(AsycudaDocumentSet CurrentAsycudaDocumentSet)
+        public int UpdateAsycudaDocumentSetLastNumber(int docSetId, int num)
         {
             using (var ctx = new CoreEntitiesContext())
             {
                 var sql = $@"UPDATE AsycudaDocumentSet
                                 SET         LastFileNumber = {
-                        CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault() + 1
+                       num + 1
                     }
                                 FROM    AsycudaDocumentSet 
-                                where AsycudaDocumentSet.AsycudaDocumentSetId = {
-                        CurrentAsycudaDocumentSet.AsycudaDocumentSetId
-                    }";
+                                where AsycudaDocumentSet.AsycudaDocumentSetId = {docSetId}";
                 ctx.Database.ExecuteSqlCommand(sql);
+                return num + 1;
             }
         }
 
@@ -1716,6 +1715,125 @@ namespace WaterNut.DataSpace
                     .ConfigureAwait(false);
         }
 
+        public void ImportC71(int asycudaDocumentSetId, List<string> files)
+        {
+            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result();
+            var exceptions = new ConcurrentQueue<Exception>();
+            foreach (var file in files)
+            {
+                try
+                {
+                    if (Value_declaration_form.CanLoadFromFile(file))
+                    {
+                        LoadC71(docSet, file, ref exceptions);
+                    }
+                    else
+                    {
+                        throw new ApplicationException($"Can not Load file '{file}'");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Enqueue(ex);
+                }
+            }
+        }
+
+        public void ImportLicense(int asycudaDocumentSetId, List<string> files)
+        {
+            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result();
+            var exceptions = new ConcurrentQueue<Exception>();
+            foreach (var file in files)
+            {
+                try
+                {
+                    if (Licence.CanLoadFromFile(file))
+                    {
+                        LoadLicence(docSet, file, ref exceptions);
+                    }
+                    else
+                    {
+                        throw new ApplicationException($"Can not Load file '{file}'");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    exceptions.Enqueue(ex);
+                }
+            }
+        }
+
+        private void LoadLicence(AsycudaDocumentSet docSet, string file, ref ConcurrentQueue<Exception> exceptions)
+        {
+            try
+            {
+
+                var a = Licence.LoadFromFile(file);
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var declarantCode = ctx.ApplicationSettings.First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var fileCode = a.General_segment.Importer_code.Text.FirstOrDefault();
+                    if (fileCode == null) return;
+                    if (!fileCode.Contains(declarantCode))
+                    {
+                        throw new ApplicationException($"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                    }
+                }
+
+
+                if (a != null)
+                {
+                    var importer = new LicenseToDataBase();
+                    importer.SaveToDatabase(a, docSet, new FileInfo(file)).Wait();
+                }
+                //await a.SaveToDatabase(a).ConfigureAwait(false);
+
+                Debug.WriteLine(file);
+            }
+
+            catch (Exception Ex)
+            {
+                exceptions.Enqueue(
+                    new ApplicationException(
+                        $"Could not import file - '{file}. Error:{(Ex.InnerException ?? Ex).Message} Stacktrace:{(Ex.InnerException ?? Ex).StackTrace}"));
+            }
+        }
+
+        private void LoadC71(AsycudaDocumentSet docSet, string file, ref ConcurrentQueue<Exception> exceptions)
+        {
+            try
+            {
+
+                var a = Value_declaration_form.LoadFromFile(file);
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var declarantCode = ctx.ApplicationSettings.First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var fileCode = a.Identification_segment.Declarant_segment.Code.ToString();
+                    if (!fileCode.Contains(declarantCode))
+                    {
+                        throw new ApplicationException($"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                    }
+                }
+
+
+                if (a != null)
+                {
+                    var importer = new C71ToDataBase();
+                    importer.SaveToDatabase(a, docSet, new FileInfo(file)).Wait();
+                }
+                //await a.SaveToDatabase(a).ConfigureAwait(false);
+
+                Debug.WriteLine(file);
+            }
+
+            catch (Exception Ex)
+            {
+               exceptions.Enqueue(
+                        new ApplicationException(
+                            $"Could not import file - '{file}. Error:{(Ex.InnerException ?? Ex).Message} Stacktrace:{(Ex.InnerException ?? Ex).StackTrace}"));
+            }
+        }
+
         private void ImportDocuments(AsycudaDocumentSet docSet, bool importOnlyRegisteredDocument,
             bool importTariffCodes, bool noMessages,
             bool overwriteExisting, bool linkPi,  IEnumerable<string> fileNames)
@@ -2468,6 +2586,8 @@ namespace WaterNut.DataSpace
                 await ctx.DeleteAsycudaDocumentSet(docSetId.ToString()).ConfigureAwait(false);
             }
         }
+
+        
     }
 
     public class SaleReportLine

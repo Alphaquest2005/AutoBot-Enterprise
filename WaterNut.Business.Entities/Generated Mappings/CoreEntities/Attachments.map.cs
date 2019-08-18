@@ -17,6 +17,7 @@
               this.Property(t => t.FilePath).HasColumnName("FilePath").IsRequired().HasMaxLength(500);
               this.Property(t => t.DocumentCode).HasColumnName("DocumentCode").IsRequired().HasMaxLength(50);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (Attachments)t.Attachments);
+              this.HasMany(t => t.AsycudaDocument_Attachments).WithRequired(t => (Attachments)t.Attachments);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

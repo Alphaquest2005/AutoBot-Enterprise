@@ -56,6 +56,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentActionsIDChanged, OnCurrentActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentApplicationSettingsIDChanged, OnCurrentApplicationSettingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentIDChanged, OnCurrentAsycudaDocumentIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocument_AttachmentsIDChanged, OnCurrentAsycudaDocument_AttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemIDChanged, OnCurrentAsycudaDocumentItemIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, OnCurrentAsycudaDocumentSet_AttachmentsIDChanged);
@@ -88,7 +89,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesToAssessIDChanged, OnCurrentTODO_DiscrepanciesToAssessIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesToSubmitIDChanged, OnCurrentTODO_DiscrepanciesToSubmitIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DocumentsToDeleteIDChanged, OnCurrentTODO_DocumentsToDeleteIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_EntriesExpiringNextMonthIDChanged, OnCurrentTODO_EntriesExpiringNextMonthIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_Error_DuplicateEntryIDChanged, OnCurrentTODO_Error_DuplicateEntryIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_Error_IncompleteImportIDChanged, OnCurrentTODO_Error_IncompleteImportIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_Error_IncompleteItemsIDChanged, OnCurrentTODO_Error_IncompleteItemsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_AllocationsIDChanged, OnCurrentTODO_ERRReport_AllocationsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_AsycudaEntriesIDChanged, OnCurrentTODO_ERRReport_AsycudaEntriesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_AsycudaLinesIDChanged, OnCurrentTODO_ERRReport_AsycudaLinesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_ByItemNumberIDChanged, OnCurrentTODO_ERRReport_ByItemNumberIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsIDChanged, OnCurrentTODO_ERRReport_EntryDataDetailsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, OnCurrentTODO_ERRReport_UnmappedItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentToDo_POToXMLIDChanged, OnCurrentToDo_POToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitXMLToCustomsIDChanged, OnCurrentTODO_SubmitXMLToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_UnallocatedSalesIDChanged, OnCurrentTODO_UnallocatedSalesIDChanged);
@@ -100,6 +113,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<Actions>(MessageToken.CurrentActionsChanged, OnCurrentActionsChanged);
                         RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
                         RegisterToReceiveMessages<AsycudaDocument>(MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
+                        RegisterToReceiveMessages<AsycudaDocument_Attachments>(MessageToken.CurrentAsycudaDocument_AttachmentsChanged, OnCurrentAsycudaDocument_AttachmentsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItem>(MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetails>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
@@ -132,7 +146,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_DiscrepanciesToAssess>(MessageToken.CurrentTODO_DiscrepanciesToAssessChanged, OnCurrentTODO_DiscrepanciesToAssessChanged);
                         RegisterToReceiveMessages<TODO_DiscrepanciesToSubmit>(MessageToken.CurrentTODO_DiscrepanciesToSubmitChanged, OnCurrentTODO_DiscrepanciesToSubmitChanged);
                         RegisterToReceiveMessages<TODO_DocumentsToDelete>(MessageToken.CurrentTODO_DocumentsToDeleteChanged, OnCurrentTODO_DocumentsToDeleteChanged);
+                        RegisterToReceiveMessages<TODO_EntriesExpiringNextMonth>(MessageToken.CurrentTODO_EntriesExpiringNextMonthChanged, OnCurrentTODO_EntriesExpiringNextMonthChanged);
+                        RegisterToReceiveMessages<TODO_Error_DuplicateEntry>(MessageToken.CurrentTODO_Error_DuplicateEntryChanged, OnCurrentTODO_Error_DuplicateEntryChanged);
+                        RegisterToReceiveMessages<TODO_Error_IncompleteImport>(MessageToken.CurrentTODO_Error_IncompleteImportChanged, OnCurrentTODO_Error_IncompleteImportChanged);
+                        RegisterToReceiveMessages<TODO_Error_IncompleteItems>(MessageToken.CurrentTODO_Error_IncompleteItemsChanged, OnCurrentTODO_Error_IncompleteItemsChanged);
+                        RegisterToReceiveMessages<TODO_ERRReport_Allocations>(MessageToken.CurrentTODO_ERRReport_AllocationsChanged, OnCurrentTODO_ERRReport_AllocationsChanged);
+                        RegisterToReceiveMessages<TODO_ERRReport_AsycudaEntries>(MessageToken.CurrentTODO_ERRReport_AsycudaEntriesChanged, OnCurrentTODO_ERRReport_AsycudaEntriesChanged);
+                        RegisterToReceiveMessages<TODO_ERRReport_AsycudaLines>(MessageToken.CurrentTODO_ERRReport_AsycudaLinesChanged, OnCurrentTODO_ERRReport_AsycudaLinesChanged);
+                        RegisterToReceiveMessages<TODO_ERRReport_ByItemNumber>(MessageToken.CurrentTODO_ERRReport_ByItemNumberChanged, OnCurrentTODO_ERRReport_ByItemNumberChanged);
+                        RegisterToReceiveMessages<TODO_ERRReport_EntryDataDetails>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsChanged, OnCurrentTODO_ERRReport_EntryDataDetailsChanged);
+                        RegisterToReceiveMessages<TODO_ERRReport_SubmitWarehouseErrors>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsChanged);
+                        RegisterToReceiveMessages<TODO_ERRReport_UnmappedItems>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged, OnCurrentTODO_ERRReport_UnmappedItemsChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
+                        RegisterToReceiveMessages<ToDo_POToXML>(MessageToken.CurrentToDo_POToXMLChanged, OnCurrentToDo_POToXMLChanged);
                         RegisterToReceiveMessages<TODO_SubmitDiscrepanciesToCustoms>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsChanged);
                         RegisterToReceiveMessages<TODO_SubmitXMLToCustoms>(MessageToken.CurrentTODO_SubmitXMLToCustomsChanged, OnCurrentTODO_SubmitXMLToCustomsChanged);
                         RegisterToReceiveMessages<TODO_UnallocatedSales>(MessageToken.CurrentTODO_UnallocatedSalesChanged, OnCurrentTODO_UnallocatedSalesChanged);
@@ -235,6 +261,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAsycudaDocumentID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentIDChanged, _currentAsycudaDocumentID));
                                     NotifyPropertyChanged(x => this.CurrentAsycudaDocumentID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAsycudaDocument_AttachmentsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaDocument_AttachmentsRepository ctx = new AsycudaDocument_AttachmentsRepository())
+                            {
+                                CurrentAsycudaDocument_Attachments = await ctx.GetAsycudaDocument_Attachments(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaDocument_Attachments);
+                        }
+
+                        private  string _currentAsycudaDocument_AttachmentsID = "";
+                        public string CurrentAsycudaDocument_AttachmentsID
+                        {
+                            get
+                            {
+                                return _currentAsycudaDocument_AttachmentsID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaDocument_AttachmentsID != value)
+                                {
+                                    _currentAsycudaDocument_AttachmentsID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaDocument_AttachmentsID)) BeginSendMessage(MessageToken.CurrentAsycudaDocument_AttachmentsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocument_AttachmentsIDChanged, _currentAsycudaDocument_AttachmentsID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaDocument_AttachmentsID);  
                                 }
                             }
                         }
@@ -1102,6 +1155,303 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentTODO_EntriesExpiringNextMonthIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_EntriesExpiringNextMonthRepository ctx = new TODO_EntriesExpiringNextMonthRepository())
+                            {
+                                CurrentTODO_EntriesExpiringNextMonth = await ctx.GetTODO_EntriesExpiringNextMonth(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_EntriesExpiringNextMonth);
+                        }
+
+                        private  string _currentTODO_EntriesExpiringNextMonthID = "";
+                        public string CurrentTODO_EntriesExpiringNextMonthID
+                        {
+                            get
+                            {
+                                return _currentTODO_EntriesExpiringNextMonthID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_EntriesExpiringNextMonthID != value)
+                                {
+                                    _currentTODO_EntriesExpiringNextMonthID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_EntriesExpiringNextMonthID)) BeginSendMessage(MessageToken.CurrentTODO_EntriesExpiringNextMonthIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_EntriesExpiringNextMonthIDChanged, _currentTODO_EntriesExpiringNextMonthID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_EntriesExpiringNextMonthID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_Error_DuplicateEntryIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_Error_DuplicateEntryRepository ctx = new TODO_Error_DuplicateEntryRepository())
+                            {
+                                CurrentTODO_Error_DuplicateEntry = await ctx.GetTODO_Error_DuplicateEntry(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_Error_DuplicateEntry);
+                        }
+
+                        private  string _currentTODO_Error_DuplicateEntryID = "";
+                        public string CurrentTODO_Error_DuplicateEntryID
+                        {
+                            get
+                            {
+                                return _currentTODO_Error_DuplicateEntryID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_Error_DuplicateEntryID != value)
+                                {
+                                    _currentTODO_Error_DuplicateEntryID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_Error_DuplicateEntryID)) BeginSendMessage(MessageToken.CurrentTODO_Error_DuplicateEntryIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_Error_DuplicateEntryIDChanged, _currentTODO_Error_DuplicateEntryID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_Error_DuplicateEntryID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_Error_IncompleteImportIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_Error_IncompleteImportRepository ctx = new TODO_Error_IncompleteImportRepository())
+                            {
+                                CurrentTODO_Error_IncompleteImport = await ctx.GetTODO_Error_IncompleteImport(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_Error_IncompleteImport);
+                        }
+
+                        private  string _currentTODO_Error_IncompleteImportID = "";
+                        public string CurrentTODO_Error_IncompleteImportID
+                        {
+                            get
+                            {
+                                return _currentTODO_Error_IncompleteImportID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_Error_IncompleteImportID != value)
+                                {
+                                    _currentTODO_Error_IncompleteImportID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_Error_IncompleteImportID)) BeginSendMessage(MessageToken.CurrentTODO_Error_IncompleteImportIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_Error_IncompleteImportIDChanged, _currentTODO_Error_IncompleteImportID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_Error_IncompleteImportID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_Error_IncompleteItemsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_Error_IncompleteItemsRepository ctx = new TODO_Error_IncompleteItemsRepository())
+                            {
+                                CurrentTODO_Error_IncompleteItems = await ctx.GetTODO_Error_IncompleteItems(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_Error_IncompleteItems);
+                        }
+
+                        private  string _currentTODO_Error_IncompleteItemsID = "";
+                        public string CurrentTODO_Error_IncompleteItemsID
+                        {
+                            get
+                            {
+                                return _currentTODO_Error_IncompleteItemsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_Error_IncompleteItemsID != value)
+                                {
+                                    _currentTODO_Error_IncompleteItemsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_Error_IncompleteItemsID)) BeginSendMessage(MessageToken.CurrentTODO_Error_IncompleteItemsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_Error_IncompleteItemsIDChanged, _currentTODO_Error_IncompleteItemsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_Error_IncompleteItemsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ERRReport_AllocationsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ERRReport_AllocationsRepository ctx = new TODO_ERRReport_AllocationsRepository())
+                            {
+                                CurrentTODO_ERRReport_Allocations = await ctx.GetTODO_ERRReport_Allocations(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ERRReport_Allocations);
+                        }
+
+                        private  string _currentTODO_ERRReport_AllocationsID = "";
+                        public string CurrentTODO_ERRReport_AllocationsID
+                        {
+                            get
+                            {
+                                return _currentTODO_ERRReport_AllocationsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ERRReport_AllocationsID != value)
+                                {
+                                    _currentTODO_ERRReport_AllocationsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ERRReport_AllocationsID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_AllocationsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_AllocationsIDChanged, _currentTODO_ERRReport_AllocationsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_AllocationsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ERRReport_AsycudaEntriesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ERRReport_AsycudaEntriesRepository ctx = new TODO_ERRReport_AsycudaEntriesRepository())
+                            {
+                                CurrentTODO_ERRReport_AsycudaEntries = await ctx.GetTODO_ERRReport_AsycudaEntries(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ERRReport_AsycudaEntries);
+                        }
+
+                        private  string _currentTODO_ERRReport_AsycudaEntriesID = "";
+                        public string CurrentTODO_ERRReport_AsycudaEntriesID
+                        {
+                            get
+                            {
+                                return _currentTODO_ERRReport_AsycudaEntriesID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ERRReport_AsycudaEntriesID != value)
+                                {
+                                    _currentTODO_ERRReport_AsycudaEntriesID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ERRReport_AsycudaEntriesID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_AsycudaEntriesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_AsycudaEntriesIDChanged, _currentTODO_ERRReport_AsycudaEntriesID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_AsycudaEntriesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ERRReport_AsycudaLinesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ERRReport_AsycudaLinesRepository ctx = new TODO_ERRReport_AsycudaLinesRepository())
+                            {
+                                CurrentTODO_ERRReport_AsycudaLines = await ctx.GetTODO_ERRReport_AsycudaLines(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ERRReport_AsycudaLines);
+                        }
+
+                        private  string _currentTODO_ERRReport_AsycudaLinesID = "";
+                        public string CurrentTODO_ERRReport_AsycudaLinesID
+                        {
+                            get
+                            {
+                                return _currentTODO_ERRReport_AsycudaLinesID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ERRReport_AsycudaLinesID != value)
+                                {
+                                    _currentTODO_ERRReport_AsycudaLinesID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ERRReport_AsycudaLinesID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_AsycudaLinesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_AsycudaLinesIDChanged, _currentTODO_ERRReport_AsycudaLinesID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_AsycudaLinesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ERRReport_ByItemNumberIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ERRReport_ByItemNumberRepository ctx = new TODO_ERRReport_ByItemNumberRepository())
+                            {
+                                CurrentTODO_ERRReport_ByItemNumber = await ctx.GetTODO_ERRReport_ByItemNumber(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ERRReport_ByItemNumber);
+                        }
+
+                        private  string _currentTODO_ERRReport_ByItemNumberID = "";
+                        public string CurrentTODO_ERRReport_ByItemNumberID
+                        {
+                            get
+                            {
+                                return _currentTODO_ERRReport_ByItemNumberID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ERRReport_ByItemNumberID != value)
+                                {
+                                    _currentTODO_ERRReport_ByItemNumberID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ERRReport_ByItemNumberID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_ByItemNumberIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_ByItemNumberIDChanged, _currentTODO_ERRReport_ByItemNumberID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_ByItemNumberID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ERRReport_EntryDataDetailsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ERRReport_EntryDataDetailsRepository ctx = new TODO_ERRReport_EntryDataDetailsRepository())
+                            {
+                                CurrentTODO_ERRReport_EntryDataDetails = await ctx.GetTODO_ERRReport_EntryDataDetails(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ERRReport_EntryDataDetails);
+                        }
+
+                        private  string _currentTODO_ERRReport_EntryDataDetailsID = "";
+                        public string CurrentTODO_ERRReport_EntryDataDetailsID
+                        {
+                            get
+                            {
+                                return _currentTODO_ERRReport_EntryDataDetailsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ERRReport_EntryDataDetailsID != value)
+                                {
+                                    _currentTODO_ERRReport_EntryDataDetailsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ERRReport_EntryDataDetailsID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsIDChanged, _currentTODO_ERRReport_EntryDataDetailsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_EntryDataDetailsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ERRReport_SubmitWarehouseErrorsRepository ctx = new TODO_ERRReport_SubmitWarehouseErrorsRepository())
+                            {
+                                CurrentTODO_ERRReport_SubmitWarehouseErrors = await ctx.GetTODO_ERRReport_SubmitWarehouseErrors(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ERRReport_SubmitWarehouseErrors);
+                        }
+
+                        private  string _currentTODO_ERRReport_SubmitWarehouseErrorsID = "";
+                        public string CurrentTODO_ERRReport_SubmitWarehouseErrorsID
+                        {
+                            get
+                            {
+                                return _currentTODO_ERRReport_SubmitWarehouseErrorsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ERRReport_SubmitWarehouseErrorsID != value)
+                                {
+                                    _currentTODO_ERRReport_SubmitWarehouseErrorsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ERRReport_SubmitWarehouseErrorsID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged, _currentTODO_ERRReport_SubmitWarehouseErrorsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_SubmitWarehouseErrorsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ERRReport_UnmappedItemsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ERRReport_UnmappedItemsRepository ctx = new TODO_ERRReport_UnmappedItemsRepository())
+                            {
+                                CurrentTODO_ERRReport_UnmappedItems = await ctx.GetTODO_ERRReport_UnmappedItems(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ERRReport_UnmappedItems);
+                        }
+
+                        private  string _currentTODO_ERRReport_UnmappedItemsID = "";
+                        public string CurrentTODO_ERRReport_UnmappedItemsID
+                        {
+                            get
+                            {
+                                return _currentTODO_ERRReport_UnmappedItemsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ERRReport_UnmappedItemsID != value)
+                                {
+                                    _currentTODO_ERRReport_UnmappedItemsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ERRReport_UnmappedItemsID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, _currentTODO_ERRReport_UnmappedItemsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_UnmappedItemsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentTODO_PODocSetIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (TODO_PODocSetRepository ctx = new TODO_PODocSetRepository())
@@ -1126,6 +1476,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_PODocSetID)) BeginSendMessage(MessageToken.CurrentTODO_PODocSetIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_PODocSetIDChanged, _currentTODO_PODocSetID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_PODocSetID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentToDo_POToXMLIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ToDo_POToXMLRepository ctx = new ToDo_POToXMLRepository())
+                            {
+                                CurrentToDo_POToXML = await ctx.GetToDo_POToXML(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentToDo_POToXML);
+                        }
+
+                        private  string _currentToDo_POToXMLID = "";
+                        public string CurrentToDo_POToXMLID
+                        {
+                            get
+                            {
+                                return _currentToDo_POToXMLID;
+                            }
+                            set
+                            {
+                                if (_currentToDo_POToXMLID != value)
+                                {
+                                    _currentToDo_POToXMLID = value;
+                                    if (!string.IsNullOrEmpty(_currentToDo_POToXMLID)) BeginSendMessage(MessageToken.CurrentToDo_POToXMLIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentToDo_POToXMLIDChanged, _currentToDo_POToXMLID));
+                                    NotifyPropertyChanged(x => this.CurrentToDo_POToXMLID);  
                                 }
                             }
                         }
@@ -1431,6 +1808,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentAsycudaDocument_AttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocument_Attachments> e)
+        {
+            //CurrentAsycudaDocument_Attachments = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaDocument_Attachments);
+        }
+
+        private  AsycudaDocument_Attachments _currentAsycudaDocument_Attachments;
+        public AsycudaDocument_Attachments CurrentAsycudaDocument_Attachments
+        {
+            get
+            {
+                return _currentAsycudaDocument_Attachments;
+            }
+            set
+            {
+                if (_currentAsycudaDocument_Attachments != value)
+                {
+                    _currentAsycudaDocument_Attachments = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaDocument_AttachmentsChanged,
+                                                     new NotificationEventArgs<AsycudaDocument_Attachments>(MessageToken.CurrentAsycudaDocument_AttachmentsChanged, _currentAsycudaDocument_Attachments)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaDocument_Attachments);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaDocument_Attachments> _vcurrentAsycudaDocument_Attachments;
+        public VirtualListItem<AsycudaDocument_Attachments> VCurrentAsycudaDocument_Attachments
+        {
+            get
+            {
+                return _vcurrentAsycudaDocument_Attachments;
+            }
+            set
+            {
+                if (_vcurrentAsycudaDocument_Attachments != value)
+                {
+                    _vcurrentAsycudaDocument_Attachments = value;
+					if(_vcurrentAsycudaDocument_Attachments != null) CurrentAsycudaDocument_Attachments = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaDocument_Attachments);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
         {
             //CurrentAsycudaDocumentItem = e.Data;
@@ -1713,6 +2140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     NotifyPropertyChanged(x => this.CurrentAttachments);    
                     // all current navigation properties = null
                  CurrentAsycudaDocumentSet_Attachments = null;
+                 CurrentAsycudaDocument_Attachments = null;
    
                 }
             }
@@ -3053,6 +3481,556 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentTODO_EntriesExpiringNextMonthChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_EntriesExpiringNextMonth> e)
+        {
+            //CurrentTODO_EntriesExpiringNextMonth = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_EntriesExpiringNextMonth);
+        }
+
+        private  TODO_EntriesExpiringNextMonth _currentTODO_EntriesExpiringNextMonth;
+        public TODO_EntriesExpiringNextMonth CurrentTODO_EntriesExpiringNextMonth
+        {
+            get
+            {
+                return _currentTODO_EntriesExpiringNextMonth;
+            }
+            set
+            {
+                if (_currentTODO_EntriesExpiringNextMonth != value)
+                {
+                    _currentTODO_EntriesExpiringNextMonth = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_EntriesExpiringNextMonthChanged,
+                                                     new NotificationEventArgs<TODO_EntriesExpiringNextMonth>(MessageToken.CurrentTODO_EntriesExpiringNextMonthChanged, _currentTODO_EntriesExpiringNextMonth)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_EntriesExpiringNextMonth);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_EntriesExpiringNextMonth> _vcurrentTODO_EntriesExpiringNextMonth;
+        public VirtualListItem<TODO_EntriesExpiringNextMonth> VCurrentTODO_EntriesExpiringNextMonth
+        {
+            get
+            {
+                return _vcurrentTODO_EntriesExpiringNextMonth;
+            }
+            set
+            {
+                if (_vcurrentTODO_EntriesExpiringNextMonth != value)
+                {
+                    _vcurrentTODO_EntriesExpiringNextMonth = value;
+					if(_vcurrentTODO_EntriesExpiringNextMonth != null) CurrentTODO_EntriesExpiringNextMonth = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_EntriesExpiringNextMonth);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_Error_DuplicateEntryChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_Error_DuplicateEntry> e)
+        {
+            //CurrentTODO_Error_DuplicateEntry = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_Error_DuplicateEntry);
+        }
+
+        private  TODO_Error_DuplicateEntry _currentTODO_Error_DuplicateEntry;
+        public TODO_Error_DuplicateEntry CurrentTODO_Error_DuplicateEntry
+        {
+            get
+            {
+                return _currentTODO_Error_DuplicateEntry;
+            }
+            set
+            {
+                if (_currentTODO_Error_DuplicateEntry != value)
+                {
+                    _currentTODO_Error_DuplicateEntry = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_Error_DuplicateEntryChanged,
+                                                     new NotificationEventArgs<TODO_Error_DuplicateEntry>(MessageToken.CurrentTODO_Error_DuplicateEntryChanged, _currentTODO_Error_DuplicateEntry)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_Error_DuplicateEntry);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_Error_DuplicateEntry> _vcurrentTODO_Error_DuplicateEntry;
+        public VirtualListItem<TODO_Error_DuplicateEntry> VCurrentTODO_Error_DuplicateEntry
+        {
+            get
+            {
+                return _vcurrentTODO_Error_DuplicateEntry;
+            }
+            set
+            {
+                if (_vcurrentTODO_Error_DuplicateEntry != value)
+                {
+                    _vcurrentTODO_Error_DuplicateEntry = value;
+					if(_vcurrentTODO_Error_DuplicateEntry != null) CurrentTODO_Error_DuplicateEntry = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_Error_DuplicateEntry);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_Error_IncompleteImportChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_Error_IncompleteImport> e)
+        {
+            //CurrentTODO_Error_IncompleteImport = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_Error_IncompleteImport);
+        }
+
+        private  TODO_Error_IncompleteImport _currentTODO_Error_IncompleteImport;
+        public TODO_Error_IncompleteImport CurrentTODO_Error_IncompleteImport
+        {
+            get
+            {
+                return _currentTODO_Error_IncompleteImport;
+            }
+            set
+            {
+                if (_currentTODO_Error_IncompleteImport != value)
+                {
+                    _currentTODO_Error_IncompleteImport = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_Error_IncompleteImportChanged,
+                                                     new NotificationEventArgs<TODO_Error_IncompleteImport>(MessageToken.CurrentTODO_Error_IncompleteImportChanged, _currentTODO_Error_IncompleteImport)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_Error_IncompleteImport);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_Error_IncompleteImport> _vcurrentTODO_Error_IncompleteImport;
+        public VirtualListItem<TODO_Error_IncompleteImport> VCurrentTODO_Error_IncompleteImport
+        {
+            get
+            {
+                return _vcurrentTODO_Error_IncompleteImport;
+            }
+            set
+            {
+                if (_vcurrentTODO_Error_IncompleteImport != value)
+                {
+                    _vcurrentTODO_Error_IncompleteImport = value;
+					if(_vcurrentTODO_Error_IncompleteImport != null) CurrentTODO_Error_IncompleteImport = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_Error_IncompleteImport);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_Error_IncompleteItemsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_Error_IncompleteItems> e)
+        {
+            //CurrentTODO_Error_IncompleteItems = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_Error_IncompleteItems);
+        }
+
+        private  TODO_Error_IncompleteItems _currentTODO_Error_IncompleteItems;
+        public TODO_Error_IncompleteItems CurrentTODO_Error_IncompleteItems
+        {
+            get
+            {
+                return _currentTODO_Error_IncompleteItems;
+            }
+            set
+            {
+                if (_currentTODO_Error_IncompleteItems != value)
+                {
+                    _currentTODO_Error_IncompleteItems = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_Error_IncompleteItemsChanged,
+                                                     new NotificationEventArgs<TODO_Error_IncompleteItems>(MessageToken.CurrentTODO_Error_IncompleteItemsChanged, _currentTODO_Error_IncompleteItems)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_Error_IncompleteItems);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_Error_IncompleteItems> _vcurrentTODO_Error_IncompleteItems;
+        public VirtualListItem<TODO_Error_IncompleteItems> VCurrentTODO_Error_IncompleteItems
+        {
+            get
+            {
+                return _vcurrentTODO_Error_IncompleteItems;
+            }
+            set
+            {
+                if (_vcurrentTODO_Error_IncompleteItems != value)
+                {
+                    _vcurrentTODO_Error_IncompleteItems = value;
+					if(_vcurrentTODO_Error_IncompleteItems != null) CurrentTODO_Error_IncompleteItems = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_Error_IncompleteItems);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ERRReport_AllocationsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ERRReport_Allocations> e)
+        {
+            //CurrentTODO_ERRReport_Allocations = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ERRReport_Allocations);
+        }
+
+        private  TODO_ERRReport_Allocations _currentTODO_ERRReport_Allocations;
+        public TODO_ERRReport_Allocations CurrentTODO_ERRReport_Allocations
+        {
+            get
+            {
+                return _currentTODO_ERRReport_Allocations;
+            }
+            set
+            {
+                if (_currentTODO_ERRReport_Allocations != value)
+                {
+                    _currentTODO_ERRReport_Allocations = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ERRReport_AllocationsChanged,
+                                                     new NotificationEventArgs<TODO_ERRReport_Allocations>(MessageToken.CurrentTODO_ERRReport_AllocationsChanged, _currentTODO_ERRReport_Allocations)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_Allocations);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ERRReport_Allocations> _vcurrentTODO_ERRReport_Allocations;
+        public VirtualListItem<TODO_ERRReport_Allocations> VCurrentTODO_ERRReport_Allocations
+        {
+            get
+            {
+                return _vcurrentTODO_ERRReport_Allocations;
+            }
+            set
+            {
+                if (_vcurrentTODO_ERRReport_Allocations != value)
+                {
+                    _vcurrentTODO_ERRReport_Allocations = value;
+					if(_vcurrentTODO_ERRReport_Allocations != null) CurrentTODO_ERRReport_Allocations = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_Allocations);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ERRReport_AsycudaEntriesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ERRReport_AsycudaEntries> e)
+        {
+            //CurrentTODO_ERRReport_AsycudaEntries = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ERRReport_AsycudaEntries);
+        }
+
+        private  TODO_ERRReport_AsycudaEntries _currentTODO_ERRReport_AsycudaEntries;
+        public TODO_ERRReport_AsycudaEntries CurrentTODO_ERRReport_AsycudaEntries
+        {
+            get
+            {
+                return _currentTODO_ERRReport_AsycudaEntries;
+            }
+            set
+            {
+                if (_currentTODO_ERRReport_AsycudaEntries != value)
+                {
+                    _currentTODO_ERRReport_AsycudaEntries = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ERRReport_AsycudaEntriesChanged,
+                                                     new NotificationEventArgs<TODO_ERRReport_AsycudaEntries>(MessageToken.CurrentTODO_ERRReport_AsycudaEntriesChanged, _currentTODO_ERRReport_AsycudaEntries)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_AsycudaEntries);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ERRReport_AsycudaEntries> _vcurrentTODO_ERRReport_AsycudaEntries;
+        public VirtualListItem<TODO_ERRReport_AsycudaEntries> VCurrentTODO_ERRReport_AsycudaEntries
+        {
+            get
+            {
+                return _vcurrentTODO_ERRReport_AsycudaEntries;
+            }
+            set
+            {
+                if (_vcurrentTODO_ERRReport_AsycudaEntries != value)
+                {
+                    _vcurrentTODO_ERRReport_AsycudaEntries = value;
+					if(_vcurrentTODO_ERRReport_AsycudaEntries != null) CurrentTODO_ERRReport_AsycudaEntries = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_AsycudaEntries);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ERRReport_AsycudaLinesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ERRReport_AsycudaLines> e)
+        {
+            //CurrentTODO_ERRReport_AsycudaLines = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ERRReport_AsycudaLines);
+        }
+
+        private  TODO_ERRReport_AsycudaLines _currentTODO_ERRReport_AsycudaLines;
+        public TODO_ERRReport_AsycudaLines CurrentTODO_ERRReport_AsycudaLines
+        {
+            get
+            {
+                return _currentTODO_ERRReport_AsycudaLines;
+            }
+            set
+            {
+                if (_currentTODO_ERRReport_AsycudaLines != value)
+                {
+                    _currentTODO_ERRReport_AsycudaLines = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ERRReport_AsycudaLinesChanged,
+                                                     new NotificationEventArgs<TODO_ERRReport_AsycudaLines>(MessageToken.CurrentTODO_ERRReport_AsycudaLinesChanged, _currentTODO_ERRReport_AsycudaLines)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_AsycudaLines);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ERRReport_AsycudaLines> _vcurrentTODO_ERRReport_AsycudaLines;
+        public VirtualListItem<TODO_ERRReport_AsycudaLines> VCurrentTODO_ERRReport_AsycudaLines
+        {
+            get
+            {
+                return _vcurrentTODO_ERRReport_AsycudaLines;
+            }
+            set
+            {
+                if (_vcurrentTODO_ERRReport_AsycudaLines != value)
+                {
+                    _vcurrentTODO_ERRReport_AsycudaLines = value;
+					if(_vcurrentTODO_ERRReport_AsycudaLines != null) CurrentTODO_ERRReport_AsycudaLines = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_AsycudaLines);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ERRReport_ByItemNumberChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ERRReport_ByItemNumber> e)
+        {
+            //CurrentTODO_ERRReport_ByItemNumber = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ERRReport_ByItemNumber);
+        }
+
+        private  TODO_ERRReport_ByItemNumber _currentTODO_ERRReport_ByItemNumber;
+        public TODO_ERRReport_ByItemNumber CurrentTODO_ERRReport_ByItemNumber
+        {
+            get
+            {
+                return _currentTODO_ERRReport_ByItemNumber;
+            }
+            set
+            {
+                if (_currentTODO_ERRReport_ByItemNumber != value)
+                {
+                    _currentTODO_ERRReport_ByItemNumber = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ERRReport_ByItemNumberChanged,
+                                                     new NotificationEventArgs<TODO_ERRReport_ByItemNumber>(MessageToken.CurrentTODO_ERRReport_ByItemNumberChanged, _currentTODO_ERRReport_ByItemNumber)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_ByItemNumber);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ERRReport_ByItemNumber> _vcurrentTODO_ERRReport_ByItemNumber;
+        public VirtualListItem<TODO_ERRReport_ByItemNumber> VCurrentTODO_ERRReport_ByItemNumber
+        {
+            get
+            {
+                return _vcurrentTODO_ERRReport_ByItemNumber;
+            }
+            set
+            {
+                if (_vcurrentTODO_ERRReport_ByItemNumber != value)
+                {
+                    _vcurrentTODO_ERRReport_ByItemNumber = value;
+					if(_vcurrentTODO_ERRReport_ByItemNumber != null) CurrentTODO_ERRReport_ByItemNumber = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_ByItemNumber);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ERRReport_EntryDataDetailsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ERRReport_EntryDataDetails> e)
+        {
+            //CurrentTODO_ERRReport_EntryDataDetails = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ERRReport_EntryDataDetails);
+        }
+
+        private  TODO_ERRReport_EntryDataDetails _currentTODO_ERRReport_EntryDataDetails;
+        public TODO_ERRReport_EntryDataDetails CurrentTODO_ERRReport_EntryDataDetails
+        {
+            get
+            {
+                return _currentTODO_ERRReport_EntryDataDetails;
+            }
+            set
+            {
+                if (_currentTODO_ERRReport_EntryDataDetails != value)
+                {
+                    _currentTODO_ERRReport_EntryDataDetails = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsChanged,
+                                                     new NotificationEventArgs<TODO_ERRReport_EntryDataDetails>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsChanged, _currentTODO_ERRReport_EntryDataDetails)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_EntryDataDetails);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ERRReport_EntryDataDetails> _vcurrentTODO_ERRReport_EntryDataDetails;
+        public VirtualListItem<TODO_ERRReport_EntryDataDetails> VCurrentTODO_ERRReport_EntryDataDetails
+        {
+            get
+            {
+                return _vcurrentTODO_ERRReport_EntryDataDetails;
+            }
+            set
+            {
+                if (_vcurrentTODO_ERRReport_EntryDataDetails != value)
+                {
+                    _vcurrentTODO_ERRReport_EntryDataDetails = value;
+					if(_vcurrentTODO_ERRReport_EntryDataDetails != null) CurrentTODO_ERRReport_EntryDataDetails = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_EntryDataDetails);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ERRReport_SubmitWarehouseErrorsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ERRReport_SubmitWarehouseErrors> e)
+        {
+            //CurrentTODO_ERRReport_SubmitWarehouseErrors = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ERRReport_SubmitWarehouseErrors);
+        }
+
+        private  TODO_ERRReport_SubmitWarehouseErrors _currentTODO_ERRReport_SubmitWarehouseErrors;
+        public TODO_ERRReport_SubmitWarehouseErrors CurrentTODO_ERRReport_SubmitWarehouseErrors
+        {
+            get
+            {
+                return _currentTODO_ERRReport_SubmitWarehouseErrors;
+            }
+            set
+            {
+                if (_currentTODO_ERRReport_SubmitWarehouseErrors != value)
+                {
+                    _currentTODO_ERRReport_SubmitWarehouseErrors = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged,
+                                                     new NotificationEventArgs<TODO_ERRReport_SubmitWarehouseErrors>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged, _currentTODO_ERRReport_SubmitWarehouseErrors)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_SubmitWarehouseErrors);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ERRReport_SubmitWarehouseErrors> _vcurrentTODO_ERRReport_SubmitWarehouseErrors;
+        public VirtualListItem<TODO_ERRReport_SubmitWarehouseErrors> VCurrentTODO_ERRReport_SubmitWarehouseErrors
+        {
+            get
+            {
+                return _vcurrentTODO_ERRReport_SubmitWarehouseErrors;
+            }
+            set
+            {
+                if (_vcurrentTODO_ERRReport_SubmitWarehouseErrors != value)
+                {
+                    _vcurrentTODO_ERRReport_SubmitWarehouseErrors = value;
+					if(_vcurrentTODO_ERRReport_SubmitWarehouseErrors != null) CurrentTODO_ERRReport_SubmitWarehouseErrors = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_SubmitWarehouseErrors);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ERRReport_UnmappedItemsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ERRReport_UnmappedItems> e)
+        {
+            //CurrentTODO_ERRReport_UnmappedItems = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ERRReport_UnmappedItems);
+        }
+
+        private  TODO_ERRReport_UnmappedItems _currentTODO_ERRReport_UnmappedItems;
+        public TODO_ERRReport_UnmappedItems CurrentTODO_ERRReport_UnmappedItems
+        {
+            get
+            {
+                return _currentTODO_ERRReport_UnmappedItems;
+            }
+            set
+            {
+                if (_currentTODO_ERRReport_UnmappedItems != value)
+                {
+                    _currentTODO_ERRReport_UnmappedItems = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged,
+                                                     new NotificationEventArgs<TODO_ERRReport_UnmappedItems>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged, _currentTODO_ERRReport_UnmappedItems)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_UnmappedItems);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ERRReport_UnmappedItems> _vcurrentTODO_ERRReport_UnmappedItems;
+        public VirtualListItem<TODO_ERRReport_UnmappedItems> VCurrentTODO_ERRReport_UnmappedItems
+        {
+            get
+            {
+                return _vcurrentTODO_ERRReport_UnmappedItems;
+            }
+            set
+            {
+                if (_vcurrentTODO_ERRReport_UnmappedItems != value)
+                {
+                    _vcurrentTODO_ERRReport_UnmappedItems = value;
+					if(_vcurrentTODO_ERRReport_UnmappedItems != null) CurrentTODO_ERRReport_UnmappedItems = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_UnmappedItems);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentTODO_PODocSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PODocSet> e)
         {
             //CurrentTODO_PODocSet = e.Data;
@@ -3094,6 +4072,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_PODocSet = value;
 					if(_vcurrentTODO_PODocSet != null) CurrentTODO_PODocSet = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_PODocSet);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentToDo_POToXMLChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ToDo_POToXML> e)
+        {
+            //CurrentToDo_POToXML = e.Data;
+            NotifyPropertyChanged(m => this.CurrentToDo_POToXML);
+        }
+
+        private  ToDo_POToXML _currentToDo_POToXML;
+        public ToDo_POToXML CurrentToDo_POToXML
+        {
+            get
+            {
+                return _currentToDo_POToXML;
+            }
+            set
+            {
+                if (_currentToDo_POToXML != value)
+                {
+                    _currentToDo_POToXML = value;
+                    BeginSendMessage(MessageToken.CurrentToDo_POToXMLChanged,
+                                                     new NotificationEventArgs<ToDo_POToXML>(MessageToken.CurrentToDo_POToXMLChanged, _currentToDo_POToXML)); 
+                    NotifyPropertyChanged(x => this.CurrentToDo_POToXML);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<ToDo_POToXML> _vcurrentToDo_POToXML;
+        public VirtualListItem<ToDo_POToXML> VCurrentToDo_POToXML
+        {
+            get
+            {
+                return _vcurrentToDo_POToXML;
+            }
+            set
+            {
+                if (_vcurrentToDo_POToXML != value)
+                {
+                    _vcurrentToDo_POToXML = value;
+					if(_vcurrentToDo_POToXML != null) CurrentToDo_POToXML = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentToDo_POToXML);                    
                 }
             }
         }

@@ -78,6 +78,20 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitXMLToCustoms" Width="1.5" PointX="20.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesToAssess" Width="3.125" PointX="20.375" PointY="5.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitDiscrepanciesToCustoms" Width="1.5" PointX="20.375" PointY="19.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument_Attachments" Width="1.5" PointX="19" PointY="28.625" />
+        <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_Error_DuplicateEntry" Width="1.5" PointX="5.375" PointY="21.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_Error_IncompleteImport" Width="1.5" PointX="7.375" PointY="21.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_Error_IncompleteItems" Width="1.5" PointX="20.375" PointY="8.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ERRReport_Allocations" Width="1.5" PointX="21.375" PointY="11.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ERRReport_AsycudaEntries" Width="1.5" PointX="22.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ERRReport_AsycudaLines" Width="1.5" PointX="22.375" PointY="16.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ERRReport_ByItemNumber" Width="1.5" PointX="22.375" PointY="20.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ERRReport_EntryDataDetails" Width="1.5" PointX="23.375" PointY="8.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ERRReport_UnmappedItems" Width="1.5" PointX="23.375" PointY="12.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ToDo_POToXML" Width="1.5" PointX="24.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_EntriesExpiringNextMonth" Width="2.375" PointX="0.75" PointY="24.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ERRReport_SubmitWarehouseErrors" Width="1.5" PointX="24.375" PointY="3.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

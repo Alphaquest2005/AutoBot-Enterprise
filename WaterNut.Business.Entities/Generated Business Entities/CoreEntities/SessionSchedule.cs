@@ -80,6 +80,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _applicationsettingid;
         [DataMember]
+        public Nullable<int> ActionId 
+        {
+            get
+            {
+                return _actionid;
+            }
+            set
+            {
+                _actionid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _actionid;
+        [DataMember]
         public Sessions Sessions { get; set; }
 
  //       [DataMember]

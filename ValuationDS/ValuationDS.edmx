@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ValuationDS.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="xC71_Declarant_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Code" Type="bigint" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="xC71_Identification_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Contract_Date" Type="nvarchar" MaxLength="50" />
+          <Property Name="Customs_Decision_Date" Type="nvarchar" MaxLength="50" />
+          <Property Name="Yes_7A" Type="bit" Nullable="false" />
+          <Property Name="No_7A" Type="bit" Nullable="false" />
+          <Property Name="Yes_7B" Type="bit" Nullable="false" />
+          <Property Name="No_7B" Type="bit" Nullable="false" />
+          <Property Name="Yes_7C" Type="bit" Nullable="false" />
+          <Property Name="No_7C" Type="bit" Nullable="false" />
+          <Property Name="Yes_8A" Type="bit" Nullable="false" />
+          <Property Name="No_8A" Type="bit" Nullable="false" />
+          <Property Name="Yes_8B" Type="bit" Nullable="false" />
+          <Property Name="No_8B" Type="bit" Nullable="false" />
+          <Property Name="Yes_9A" Type="bit" Nullable="false" />
+          <Property Name="No_9A" Type="bit" Nullable="false" />
+          <Property Name="Yes_9B" Type="bit" Nullable="false" />
+          <Property Name="No_9B" Type="bit" Nullable="false" />
+          <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
+          <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="xC71_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Terms_of_Delivery_Code" Type="nvarchar" MaxLength="255" />
+          <Property Name="Terms_of_Delivery_Desc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Invoice_Number" Type="int" Nullable="false" />
+          <Property Name="Invoice_Date" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_ind" Type="tinyint" Nullable="false" />
+          <Property Name="Net_Price" Type="smallint" Nullable="false" />
+          <Property Name="Currency_code_net" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_net" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_net" Type="tinyint" Nullable="false" />
+          <Property Name="Indirect_Payments" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_com" Type="tinyint" Nullable="false" />
+          <Property Name="Commissions" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_brg" Type="tinyint" Nullable="false" />
+          <Property Name="Brokerage" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_cap" Type="tinyint" Nullable="false" />
+          <Property Name="Containers_Packaging" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_mcp" Type="tinyint" Nullable="false" />
+          <Property Name="Material_Components" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_tls" Type="tinyint" Nullable="false" />
+          <Property Name="Tool_Dies" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_mcg" Type="tinyint" Nullable="false" />
+          <Property Name="Materials_Consumed" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_eng" Type="tinyint" Nullable="false" />
+          <Property Name="Engineering_Development" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_roy" Type="tinyint" Nullable="false" />
+          <Property Name="Royalties_licence_fees" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_pro" Type="tinyint" Nullable="false" />
+          <Property Name="Proceeds" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_code_tpt" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_tpt" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_tpt" Type="tinyint" Nullable="false" />
+          <Property Name="Transport" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_lhc" Type="tinyint" Nullable="false" />
+          <Property Name="Loading_handling" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_ins" Type="tinyint" Nullable="false" />
+          <Property Name="Insurance" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_aim" Type="tinyint" Nullable="false" />
+          <Property Name="Transport_after_import" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_cfc" Type="tinyint" Nullable="false" />
+          <Property Name="Construction" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_oth" Type="tinyint" Nullable="false" />
+          <Property Name="Other_charges" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_txs" Type="tinyint" Nullable="false" />
+          <Property Name="Customs_duties_taxes" Type="tinyint" Nullable="false" />
+          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="Value_declaration_form_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="xC71_Seller_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Name" Type="varchar" MaxLength="255" />
+          <Property Name="Address" Type="varchar" MaxLength="255" />
+          <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="xC71_Value_declaration_form">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="Identification_segment_Declarant_segment">
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
+          <End Role="xC71_Declarant_segment" Type="Self.xC71_Declarant_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Identification_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Principal>
+            <Dependent Role="xC71_Declarant_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Identification_segment_Seller_segment">
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
+          <End Role="xC71_Seller_segment" Type="Self.xC71_Seller_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Identification_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Principal>
+            <Dependent Role="xC71_Seller_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Value_declaration_form_Identification_segment">
+          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1" />
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Value_declaration_form">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Principal>
+            <Dependent Role="xC71_Identification_segment">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Value_declaration_form_Item">
+          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xC71_Item" Type="Self.xC71_Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Value_declaration_form">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Principal>
+            <Dependent Role="xC71_Item">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ValuationDSStoreContainer">
+          <EntitySet Name="xC71_Declarant_segment" EntityType="Self.xC71_Declarant_segment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xC71_Identification_segment" EntityType="Self.xC71_Identification_segment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xC71_Item" EntityType="Self.xC71_Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xC71_Seller_segment" EntityType="Self.xC71_Seller_segment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xC71_Value_declaration_form" EntityType="Self.xC71_Value_declaration_form" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="Identification_segment_Declarant_segment" Association="Self.Identification_segment_Declarant_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Declarant_segment" EntitySet="xC71_Declarant_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Identification_segment_Seller_segment" Association="Self.Identification_segment_Seller_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Seller_segment" EntitySet="xC71_Seller_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Value_declaration_form_Identification_segment" Association="Self.Value_declaration_form_Identification_segment">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Value_declaration_form_Item" Association="Self.Value_declaration_form_Item">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Item" EntitySet="xC71_Item" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ValuationDS" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="xC71_Declarant_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Code" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xC71_Identification_segment" Relationship="Self.Identification_segment_Declarant_segment" FromRole="xC71_Declarant_segment" ToRole="xC71_Identification_segment" />
+        </EntityType>
+        <EntityType Name="xC71_Identification_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Contract_Date" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Customs_Decision_Date" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Yes_7A" Type="Boolean" Nullable="false" />
+          <Property Name="No_7A" Type="Boolean" Nullable="false" />
+          <Property Name="Yes_7B" Type="Boolean" Nullable="false" />
+          <Property Name="No_7B" Type="Boolean" Nullable="false" />
+          <Property Name="Yes_7C" Type="Boolean" Nullable="false" />
+          <Property Name="No_7C" Type="Boolean" Nullable="false" />
+          <Property Name="Yes_8A" Type="Boolean" Nullable="false" />
+          <Property Name="No_8A" Type="Boolean" Nullable="false" />
+          <Property Name="Yes_8B" Type="Boolean" Nullable="false" />
+          <Property Name="No_8B" Type="Boolean" Nullable="false" />
+          <Property Name="Yes_9A" Type="Boolean" Nullable="false" />
+          <Property Name="No_9A" Type="Boolean" Nullable="false" />
+          <Property Name="Yes_9B" Type="Boolean" Nullable="false" />
+          <Property Name="No_9B" Type="Boolean" Nullable="false" />
+          <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
+          <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xC71_Declarant_segment" Relationship="Self.Identification_segment_Declarant_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Declarant_segment" />
+          <NavigationProperty Name="xC71_Seller_segment" Relationship="Self.Identification_segment_Seller_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Seller_segment" />
+          <NavigationProperty Name="xC71_Value_declaration_form" Relationship="Self.Value_declaration_form_Identification_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Value_declaration_form" />
+        </EntityType>
+        <EntityType Name="xC71_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Terms_of_Delivery_Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Terms_of_Delivery_Desc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Invoice_Number" Type="Int32" Nullable="false" />
+          <Property Name="Invoice_Date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_ind" Type="Byte" Nullable="false" />
+          <Property Name="Net_Price" Type="Int16" Nullable="false" />
+          <Property Name="Currency_code_net" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_net" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_net" Type="Byte" Nullable="false" />
+          <Property Name="Indirect_Payments" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_com" Type="Byte" Nullable="false" />
+          <Property Name="Commissions" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_brg" Type="Byte" Nullable="false" />
+          <Property Name="Brokerage" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_cap" Type="Byte" Nullable="false" />
+          <Property Name="Containers_Packaging" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_mcp" Type="Byte" Nullable="false" />
+          <Property Name="Material_Components" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_tls" Type="Byte" Nullable="false" />
+          <Property Name="Tool_Dies" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_mcg" Type="Byte" Nullable="false" />
+          <Property Name="Materials_Consumed" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_eng" Type="Byte" Nullable="false" />
+          <Property Name="Engineering_Development" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_roy" Type="Byte" Nullable="false" />
+          <Property Name="Royalties_licence_fees" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_pro" Type="Byte" Nullable="false" />
+          <Property Name="Proceeds" Type="Byte" Nullable="false" />
+          <Property Name="Currency_code_tpt" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_tpt" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_tpt" Type="Byte" Nullable="false" />
+          <Property Name="Transport" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_lhc" Type="Byte" Nullable="false" />
+          <Property Name="Loading_handling" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_ins" Type="Byte" Nullable="false" />
+          <Property Name="Insurance" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_aim" Type="Byte" Nullable="false" />
+          <Property Name="Transport_after_import" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_cfc" Type="Byte" Nullable="false" />
+          <Property Name="Construction" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_oth" Type="Byte" Nullable="false" />
+          <Property Name="Other_charges" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_txs" Type="Byte" Nullable="false" />
+          <Property Name="Customs_duties_taxes" Type="Byte" Nullable="false" />
+          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="Value_declaration_form_Id" Type="Int32" />
+          <NavigationProperty Name="xC71_Value_declaration_form" Relationship="Self.Value_declaration_form_Item" FromRole="xC71_Item" ToRole="xC71_Value_declaration_form" />
+        </EntityType>
+        <EntityType Name="xC71_Seller_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xC71_Identification_segment" Relationship="Self.Identification_segment_Seller_segment" FromRole="xC71_Seller_segment" ToRole="xC71_Identification_segment" />
+        </EntityType>
+        <EntityType Name="xC71_Value_declaration_form">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xC71_Identification_segment" Relationship="Self.Value_declaration_form_Identification_segment" FromRole="xC71_Value_declaration_form" ToRole="xC71_Identification_segment" />
+          <NavigationProperty Name="xC71_Item" Relationship="Self.Value_declaration_form_Item" FromRole="xC71_Value_declaration_form" ToRole="xC71_Item" />
+        </EntityType>
+        <Association Name="Identification_segment_Declarant_segment">
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
+          <End Role="xC71_Declarant_segment" Type="Self.xC71_Declarant_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Identification_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Principal>
+            <Dependent Role="xC71_Declarant_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Identification_segment_Seller_segment">
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
+          <End Role="xC71_Seller_segment" Type="Self.xC71_Seller_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Identification_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Principal>
+            <Dependent Role="xC71_Seller_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Value_declaration_form_Identification_segment">
+          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1" />
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Value_declaration_form">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Principal>
+            <Dependent Role="xC71_Identification_segment">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Value_declaration_form_Item">
+          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xC71_Item" Type="Self.xC71_Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Value_declaration_form">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Principal>
+            <Dependent Role="xC71_Item">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="xC71_Declarant_segment" EntityType="Self.xC71_Declarant_segment" />
+          <EntitySet Name="xC71_Identification_segment" EntityType="Self.xC71_Identification_segment" />
+          <EntitySet Name="xC71_Item" EntityType="Self.xC71_Item" />
+          <EntitySet Name="xC71_Seller_segment" EntityType="Self.xC71_Seller_segment" />
+          <EntitySet Name="xC71_Value_declaration_form" EntityType="Self.xC71_Value_declaration_form" />
+          <AssociationSet Name="Identification_segment_Declarant_segment" Association="Self.Identification_segment_Declarant_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Declarant_segment" EntitySet="xC71_Declarant_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Identification_segment_Seller_segment" Association="Self.Identification_segment_Seller_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Seller_segment" EntitySet="xC71_Seller_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Value_declaration_form_Identification_segment" Association="Self.Value_declaration_form_Identification_segment">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Value_declaration_form_Item" Association="Self.Value_declaration_form_Item">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Item" EntitySet="xC71_Item" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ValuationDSStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="xC71_Declarant_segment">
+            <EntityTypeMapping TypeName="ValuationDS.xC71_Declarant_segment">
+              <MappingFragment StoreEntitySet="xC71_Declarant_segment">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xC71_Identification_segment">
+            <EntityTypeMapping TypeName="ValuationDS.xC71_Identification_segment">
+              <MappingFragment StoreEntitySet="xC71_Identification_segment">
+                <ScalarProperty Name="Contract_Date" ColumnName="Contract_Date" />
+                <ScalarProperty Name="Customs_Decision_Date" ColumnName="Customs_Decision_Date" />
+                <ScalarProperty Name="Yes_7A" ColumnName="Yes_7A" />
+                <ScalarProperty Name="No_7A" ColumnName="No_7A" />
+                <ScalarProperty Name="Yes_7B" ColumnName="Yes_7B" />
+                <ScalarProperty Name="No_7B" ColumnName="No_7B" />
+                <ScalarProperty Name="Yes_7C" ColumnName="Yes_7C" />
+                <ScalarProperty Name="No_7C" ColumnName="No_7C" />
+                <ScalarProperty Name="Yes_8A" ColumnName="Yes_8A" />
+                <ScalarProperty Name="No_8A" ColumnName="No_8A" />
+                <ScalarProperty Name="Yes_8B" ColumnName="Yes_8B" />
+                <ScalarProperty Name="No_8B" ColumnName="No_8B" />
+                <ScalarProperty Name="Yes_9A" ColumnName="Yes_9A" />
+                <ScalarProperty Name="No_9A" ColumnName="No_9A" />
+                <ScalarProperty Name="Yes_9B" ColumnName="Yes_9B" />
+                <ScalarProperty Name="No_9B" ColumnName="No_9B" />
+                <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
+                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xC71_Item">
+            <EntityTypeMapping TypeName="ValuationDS.xC71_Item">
+              <MappingFragment StoreEntitySet="xC71_Item">
+                <ScalarProperty Name="Terms_of_Delivery_Code" ColumnName="Terms_of_Delivery_Code" />
+                <ScalarProperty Name="Terms_of_Delivery_Desc" ColumnName="Terms_of_Delivery_Desc" />
+                <ScalarProperty Name="Invoice_Number" ColumnName="Invoice_Number" />
+                <ScalarProperty Name="Invoice_Date" ColumnName="Invoice_Date" />
+                <ScalarProperty Name="Currency_Rate_ind" ColumnName="Currency_Rate_ind" />
+                <ScalarProperty Name="Net_Price" ColumnName="Net_Price" />
+                <ScalarProperty Name="Currency_code_net" ColumnName="Currency_code_net" />
+                <ScalarProperty Name="Currency_Name_net" ColumnName="Currency_Name_net" />
+                <ScalarProperty Name="Currency_Rate_net" ColumnName="Currency_Rate_net" />
+                <ScalarProperty Name="Indirect_Payments" ColumnName="Indirect_Payments" />
+                <ScalarProperty Name="Currency_Rate_com" ColumnName="Currency_Rate_com" />
+                <ScalarProperty Name="Commissions" ColumnName="Commissions" />
+                <ScalarProperty Name="Currency_Rate_brg" ColumnName="Currency_Rate_brg" />
+                <ScalarProperty Name="Brokerage" ColumnName="Brokerage" />
+                <ScalarProperty Name="Currency_Rate_cap" ColumnName="Currency_Rate_cap" />
+                <ScalarProperty Name="Containers_Packaging" ColumnName="Containers_Packaging" />
+                <ScalarProperty Name="Currency_Rate_mcp" ColumnName="Currency_Rate_mcp" />
+                <ScalarProperty Name="Material_Components" ColumnName="Material_Components" />
+                <ScalarProperty Name="Currency_Rate_tls" ColumnName="Currency_Rate_tls" />
+                <ScalarProperty Name="Tool_Dies" ColumnName="Tool_Dies" />
+                <ScalarProperty Name="Currency_Rate_mcg" ColumnName="Currency_Rate_mcg" />
+                <ScalarProperty Name="Materials_Consumed" ColumnName="Materials_Consumed" />
+                <ScalarProperty Name="Currency_Rate_eng" ColumnName="Currency_Rate_eng" />
+                <ScalarProperty Name="Engineering_Development" ColumnName="Engineering_Development" />
+                <ScalarProperty Name="Currency_Rate_roy" ColumnName="Currency_Rate_roy" />
+                <ScalarProperty Name="Royalties_licence_fees" ColumnName="Royalties_licence_fees" />
+                <ScalarProperty Name="Currency_Rate_pro" ColumnName="Currency_Rate_pro" />
+                <ScalarProperty Name="Proceeds" ColumnName="Proceeds" />
+                <ScalarProperty Name="Currency_code_tpt" ColumnName="Currency_code_tpt" />
+                <ScalarProperty Name="Currency_Name_tpt" ColumnName="Currency_Name_tpt" />
+                <ScalarProperty Name="Currency_Rate_tpt" ColumnName="Currency_Rate_tpt" />
+                <ScalarProperty Name="Transport" ColumnName="Transport" />
+                <ScalarProperty Name="Currency_Rate_lhc" ColumnName="Currency_Rate_lhc" />
+                <ScalarProperty Name="Loading_handling" ColumnName="Loading_handling" />
+                <ScalarProperty Name="Currency_Rate_ins" ColumnName="Currency_Rate_ins" />
+                <ScalarProperty Name="Insurance" ColumnName="Insurance" />
+                <ScalarProperty Name="Currency_Rate_aim" ColumnName="Currency_Rate_aim" />
+                <ScalarProperty Name="Transport_after_import" ColumnName="Transport_after_import" />
+                <ScalarProperty Name="Currency_Rate_cfc" ColumnName="Currency_Rate_cfc" />
+                <ScalarProperty Name="Construction" ColumnName="Construction" />
+                <ScalarProperty Name="Currency_Rate_oth" ColumnName="Currency_Rate_oth" />
+                <ScalarProperty Name="Other_charges" ColumnName="Other_charges" />
+                <ScalarProperty Name="Currency_Rate_txs" ColumnName="Currency_Rate_txs" />
+                <ScalarProperty Name="Customs_duties_taxes" ColumnName="Customs_duties_taxes" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xC71_Seller_segment">
+            <EntityTypeMapping TypeName="ValuationDS.xC71_Seller_segment">
+              <MappingFragment StoreEntitySet="xC71_Seller_segment">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xC71_Value_declaration_form">
+            <EntityTypeMapping TypeName="ValuationDS.xC71_Value_declaration_form">
+              <MappingFragment StoreEntitySet="xC71_Value_declaration_form">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

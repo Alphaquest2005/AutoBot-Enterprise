@@ -216,6 +216,21 @@ public bool MergeEmails
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "CopyEntryData is required")]
+       
+public bool CopyEntryData
+		{ 
+		    get { return this.filetypes.CopyEntryData; }
+			set
+			{
+			    if (value == this.filetypes.CopyEntryData) return;
+				this.filetypes.CopyEntryData = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CopyEntryData");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

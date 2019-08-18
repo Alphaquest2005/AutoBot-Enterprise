@@ -138,6 +138,45 @@ namespace EntryDataQS.Client.DTO
 		}
         private int _ApplicationSettingsId;
 
+        [DataMember]
+        public string DutyFreePaid
+		{ 
+		    get { return _DutyFreePaid; }
+			set
+			{
+			    if (value == _DutyFreePaid) return;
+				_DutyFreePaid = value;
+				NotifyPropertyChanged();//m => this.DutyFreePaid
+			}
+		}
+        private string _DutyFreePaid;
+
+        [DataMember]
+        public Nullable<int> EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private Nullable<int> _EmailId;
+
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets

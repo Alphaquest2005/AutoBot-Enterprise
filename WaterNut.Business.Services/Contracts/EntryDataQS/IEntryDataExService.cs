@@ -108,6 +108,12 @@ namespace EntryDataQS.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryDataEx>> GetEntryDataExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataEx>> GetEntryDataExByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataEx>> GetEntryDataExByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 
 

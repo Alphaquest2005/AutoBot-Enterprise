@@ -96,6 +96,7 @@
     <Compile Include="CoreEntities\IAsycudaDocumentService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentSetExService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocument_AttachmentsService.cs" />
     <Compile Include="CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="CoreEntities\IAttachmentsService.cs" />
     <Compile Include="CoreEntities\IContactsService.cs" />
@@ -124,7 +125,19 @@
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="CoreEntities\ITODO_DocumentsToDeleteService.cs" />
+    <Compile Include="CoreEntities\ITODO_EntriesExpiringNextMonthService.cs" />
+    <Compile Include="CoreEntities\ITODO_Error_DuplicateEntryService.cs" />
+    <Compile Include="CoreEntities\ITODO_Error_IncompleteImportService.cs" />
+    <Compile Include="CoreEntities\ITODO_Error_IncompleteItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_AllocationsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_AsycudaEntriesService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_AsycudaLinesService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_ByItemNumberService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="CoreEntities\IToDo_POToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedSalesService.cs" />
@@ -162,7 +175,6 @@
     <Compile Include="EntryDataQS\IEntryDataService.cs" />
     <Compile Include="EntryDataQS\IInventoryItemsExService.cs" />
     <Compile Include="EntryDataQS\IPackageTypeService.cs" />
-    <Compile Include="EntryDataQS\IToDo_POToXMLService.cs" />
     <Compile Include="InventoryQS\IEntryDataDetailsExService.cs" />
     <Compile Include="InventoryQS\IInventoryItemsExService.cs" />
     <Compile Include="InventoryQS\ITariffCategoryCodeSuppUnitService.cs" />

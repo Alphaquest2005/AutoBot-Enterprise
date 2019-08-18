@@ -1248,6 +1248,13 @@
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>
+									  <xs:element minOccurs="0" name="Tax_relief_code">
+									    <xs:complexType mixed="true">
+									      <xs:sequence >
+									        <xs:element minOccurs="0" name="null" />
+									      </xs:sequence>
+									    </xs:complexType>
+									  </xs:element>
                     <xs:element minOccurs="0" name="Extended_customs_procedure">
                       <xs:complexType mixed="true">
                         <xs:sequence >

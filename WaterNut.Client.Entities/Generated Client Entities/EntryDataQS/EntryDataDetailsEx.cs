@@ -502,6 +502,36 @@ public Nullable<double> TaxAmount
 		}
      
 
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.entrydatadetailsex.EmailId; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.EmailId) return;
+				this.entrydatadetailsex.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.entrydatadetailsex.FileTypeId; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.FileTypeId) return;
+				this.entrydatadetailsex.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
        private InventoryItemsEx _InventoryItemsEx;
         public  InventoryItemsEx InventoryItemsEx
 		{

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using Core.Common.Data.Contracts;
 //using Newtonsoft.Json;
 using System.Runtime.Serialization;
+using TrackableEntities;
 using TrackableEntities.Client;
 
 
@@ -10,7 +12,7 @@ namespace Core.Common.Business.Entities
 {
    // [JsonObject(IsReference = true)]
     [DataContract(IsReference = true)]
-    public abstract class BaseEntity<T> : EntityBase, IIdentifiableEntity where T : IIdentifiableEntity
+    public abstract class BaseEntity<T> : EntityBase, IIdentifiableEntity where T : class, IIdentifiableEntity, ITrackable, INotifyPropertyChanged
     {
         //[NotMapped]
         //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
@@ -54,5 +56,9 @@ namespace Core.Common.Business.Entities
             // ReSharper disable once cuz of nhibernate
             return (_entityGuid.ToString()).GetHashCode();
         }
+
+        [NotMapped]
+        [IgnoreDataMember]
+        public virtual ChangeTrackingCollection<T> ChangeTracker { get; set; }
     }
 }

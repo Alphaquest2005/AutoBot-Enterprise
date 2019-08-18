@@ -117,6 +117,7 @@ namespace AutoBot
                                     Utils.SaveInfo(csvFiles, ndocSet.AsycudaDocumentSetId);
                                 else
                                 {
+                                    
                                     fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
                                     Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
                                 }
@@ -154,7 +155,7 @@ namespace AutoBot
                                         x.LastWriteTime >= beforeImport ).ToArray();// set to 10 mins so it works within the email import time
                                 if (!csvFiles.Any()) continue;
 
-                                fileType.FileTypeActions.OrderBy(x => x.Priority)
+                                fileType.FileTypeActions.OrderBy(x => x.Id)
                                     .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
                                     .ForEach(x =>
                                     {
@@ -178,7 +179,7 @@ namespace AutoBot
                                                         && x.RunDateTime <= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes, DateTime.Now)).ToList();
                         foreach (var item in sLst.Where(x => x.ApplicationSettingId == null || x.ApplicationSettingId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                         {
-                            item.Sessions.SessionActions
+                            item.Sessions.SessionActions.Where(x => item.ActionId == null || x.ActionId == item.ActionId)
                                 .Select(x => Utils.SessionActions[x.Actions.Name])
                                 .ForEach(x => x.Invoke());
                         }

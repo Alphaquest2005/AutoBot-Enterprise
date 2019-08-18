@@ -148,6 +148,60 @@ public string DocumentCode
             }
         }
 
+        ObservableCollection<AsycudaDocument_Attachments> _AsycudaDocument_Attachments = null;
+        public  ObservableCollection<AsycudaDocument_Attachments> AsycudaDocument_Attachments
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocument_Attachments != null) return _AsycudaDocument_Attachments;
+					//if (this.attachments.AsycudaDocument_Attachments == null) Debugger.Break();
+					if(this.attachments.AsycudaDocument_Attachments != null)
+					{
+						_AsycudaDocument_Attachments = new ObservableCollection<AsycudaDocument_Attachments>(this.attachments.AsycudaDocument_Attachments.Select(x => new AsycudaDocument_Attachments(x)));
+					}
+					
+						_AsycudaDocument_Attachments.CollectionChanged += AsycudaDocument_Attachments_CollectionChanged; 
+					
+					return _AsycudaDocument_Attachments; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocument_Attachments)) return;
+				if (value != null)
+					this.attachments.AsycudaDocument_Attachments = new ChangeTrackingCollection<DTO.AsycudaDocument_Attachments>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocument_Attachments = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocument_Attachments != null)
+				_AsycudaDocument_Attachments.CollectionChanged += AsycudaDocument_Attachments_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocument_Attachments");
+			}
+		}
+        
+        void AsycudaDocument_Attachments_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocument_Attachments itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        attachments.AsycudaDocument_Attachments.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocument_Attachments itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        attachments.AsycudaDocument_Attachments.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.Attachments> _changeTracker;    
         public ChangeTrackingCollection<DTO.Attachments> ChangeTracker

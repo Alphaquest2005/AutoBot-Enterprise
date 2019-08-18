@@ -28,6 +28,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string AsycudaDocumentsDeleted = "AsycudaDocumentsDeleted";
 			public const string AsycudaDocumentsCreated = "AsycudaDocumentsCreated";
 			public const string AsycudaDocumentsUpdated = "AsycudaDocumentsUpdated";
+			public const string AsycudaDocument_AttachmentsFilterExpressionChanged = "AsycudaDocument_AttachmentsFilterExpressionChanged";
+			public const string SelectedAsycudaDocument_AttachmentsChanged = "SelectedAsycudaDocument_AttachmentsChanged";
+            public const string AsycudaDocument_AttachmentsChanged = "AsycudaDocument_AttachmentsChanged";
+			public const string AsycudaDocument_AttachmentsDeleted = "AsycudaDocument_AttachmentsDeleted";
+			public const string AsycudaDocument_AttachmentsCreated = "AsycudaDocument_AttachmentsCreated";
+			public const string AsycudaDocument_AttachmentsUpdated = "AsycudaDocument_AttachmentsUpdated";
 			public const string AsycudaDocumentItemsFilterExpressionChanged = "AsycudaDocumentItemsFilterExpressionChanged";
 			public const string SelectedAsycudaDocumentItemsChanged = "SelectedAsycudaDocumentItemsChanged";
             public const string AsycudaDocumentItemsChanged = "AsycudaDocumentItemsChanged";
@@ -220,12 +226,84 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_DocumentsToDeleteDeleted = "TODO_DocumentsToDeleteDeleted";
 			public const string TODO_DocumentsToDeleteCreated = "TODO_DocumentsToDeleteCreated";
 			public const string TODO_DocumentsToDeleteUpdated = "TODO_DocumentsToDeleteUpdated";
+			public const string TODO_EntriesExpiringNextMonthFilterExpressionChanged = "TODO_EntriesExpiringNextMonthFilterExpressionChanged";
+			public const string SelectedTODO_EntriesExpiringNextMonthChanged = "SelectedTODO_EntriesExpiringNextMonthChanged";
+            public const string TODO_EntriesExpiringNextMonthChanged = "TODO_EntriesExpiringNextMonthChanged";
+			public const string TODO_EntriesExpiringNextMonthDeleted = "TODO_EntriesExpiringNextMonthDeleted";
+			public const string TODO_EntriesExpiringNextMonthCreated = "TODO_EntriesExpiringNextMonthCreated";
+			public const string TODO_EntriesExpiringNextMonthUpdated = "TODO_EntriesExpiringNextMonthUpdated";
+			public const string TODO_Error_DuplicateEntryFilterExpressionChanged = "TODO_Error_DuplicateEntryFilterExpressionChanged";
+			public const string SelectedTODO_Error_DuplicateEntryChanged = "SelectedTODO_Error_DuplicateEntryChanged";
+            public const string TODO_Error_DuplicateEntryChanged = "TODO_Error_DuplicateEntryChanged";
+			public const string TODO_Error_DuplicateEntryDeleted = "TODO_Error_DuplicateEntryDeleted";
+			public const string TODO_Error_DuplicateEntryCreated = "TODO_Error_DuplicateEntryCreated";
+			public const string TODO_Error_DuplicateEntryUpdated = "TODO_Error_DuplicateEntryUpdated";
+			public const string TODO_Error_IncompleteImportFilterExpressionChanged = "TODO_Error_IncompleteImportFilterExpressionChanged";
+			public const string SelectedTODO_Error_IncompleteImportChanged = "SelectedTODO_Error_IncompleteImportChanged";
+            public const string TODO_Error_IncompleteImportChanged = "TODO_Error_IncompleteImportChanged";
+			public const string TODO_Error_IncompleteImportDeleted = "TODO_Error_IncompleteImportDeleted";
+			public const string TODO_Error_IncompleteImportCreated = "TODO_Error_IncompleteImportCreated";
+			public const string TODO_Error_IncompleteImportUpdated = "TODO_Error_IncompleteImportUpdated";
+			public const string TODO_Error_IncompleteItemsFilterExpressionChanged = "TODO_Error_IncompleteItemsFilterExpressionChanged";
+			public const string SelectedTODO_Error_IncompleteItemsChanged = "SelectedTODO_Error_IncompleteItemsChanged";
+            public const string TODO_Error_IncompleteItemsChanged = "TODO_Error_IncompleteItemsChanged";
+			public const string TODO_Error_IncompleteItemsDeleted = "TODO_Error_IncompleteItemsDeleted";
+			public const string TODO_Error_IncompleteItemsCreated = "TODO_Error_IncompleteItemsCreated";
+			public const string TODO_Error_IncompleteItemsUpdated = "TODO_Error_IncompleteItemsUpdated";
+			public const string TODO_ERRReport_AllocationsFilterExpressionChanged = "TODO_ERRReport_AllocationsFilterExpressionChanged";
+			public const string SelectedTODO_ERRReport_AllocationsChanged = "SelectedTODO_ERRReport_AllocationsChanged";
+            public const string TODO_ERRReport_AllocationsChanged = "TODO_ERRReport_AllocationsChanged";
+			public const string TODO_ERRReport_AllocationsDeleted = "TODO_ERRReport_AllocationsDeleted";
+			public const string TODO_ERRReport_AllocationsCreated = "TODO_ERRReport_AllocationsCreated";
+			public const string TODO_ERRReport_AllocationsUpdated = "TODO_ERRReport_AllocationsUpdated";
+			public const string TODO_ERRReport_AsycudaEntriesFilterExpressionChanged = "TODO_ERRReport_AsycudaEntriesFilterExpressionChanged";
+			public const string SelectedTODO_ERRReport_AsycudaEntriesChanged = "SelectedTODO_ERRReport_AsycudaEntriesChanged";
+            public const string TODO_ERRReport_AsycudaEntriesChanged = "TODO_ERRReport_AsycudaEntriesChanged";
+			public const string TODO_ERRReport_AsycudaEntriesDeleted = "TODO_ERRReport_AsycudaEntriesDeleted";
+			public const string TODO_ERRReport_AsycudaEntriesCreated = "TODO_ERRReport_AsycudaEntriesCreated";
+			public const string TODO_ERRReport_AsycudaEntriesUpdated = "TODO_ERRReport_AsycudaEntriesUpdated";
+			public const string TODO_ERRReport_AsycudaLinesFilterExpressionChanged = "TODO_ERRReport_AsycudaLinesFilterExpressionChanged";
+			public const string SelectedTODO_ERRReport_AsycudaLinesChanged = "SelectedTODO_ERRReport_AsycudaLinesChanged";
+            public const string TODO_ERRReport_AsycudaLinesChanged = "TODO_ERRReport_AsycudaLinesChanged";
+			public const string TODO_ERRReport_AsycudaLinesDeleted = "TODO_ERRReport_AsycudaLinesDeleted";
+			public const string TODO_ERRReport_AsycudaLinesCreated = "TODO_ERRReport_AsycudaLinesCreated";
+			public const string TODO_ERRReport_AsycudaLinesUpdated = "TODO_ERRReport_AsycudaLinesUpdated";
+			public const string TODO_ERRReport_ByItemNumberFilterExpressionChanged = "TODO_ERRReport_ByItemNumberFilterExpressionChanged";
+			public const string SelectedTODO_ERRReport_ByItemNumberChanged = "SelectedTODO_ERRReport_ByItemNumberChanged";
+            public const string TODO_ERRReport_ByItemNumberChanged = "TODO_ERRReport_ByItemNumberChanged";
+			public const string TODO_ERRReport_ByItemNumberDeleted = "TODO_ERRReport_ByItemNumberDeleted";
+			public const string TODO_ERRReport_ByItemNumberCreated = "TODO_ERRReport_ByItemNumberCreated";
+			public const string TODO_ERRReport_ByItemNumberUpdated = "TODO_ERRReport_ByItemNumberUpdated";
+			public const string TODO_ERRReport_EntryDataDetailsFilterExpressionChanged = "TODO_ERRReport_EntryDataDetailsFilterExpressionChanged";
+			public const string SelectedTODO_ERRReport_EntryDataDetailsChanged = "SelectedTODO_ERRReport_EntryDataDetailsChanged";
+            public const string TODO_ERRReport_EntryDataDetailsChanged = "TODO_ERRReport_EntryDataDetailsChanged";
+			public const string TODO_ERRReport_EntryDataDetailsDeleted = "TODO_ERRReport_EntryDataDetailsDeleted";
+			public const string TODO_ERRReport_EntryDataDetailsCreated = "TODO_ERRReport_EntryDataDetailsCreated";
+			public const string TODO_ERRReport_EntryDataDetailsUpdated = "TODO_ERRReport_EntryDataDetailsUpdated";
+			public const string TODO_ERRReport_SubmitWarehouseErrorsFilterExpressionChanged = "TODO_ERRReport_SubmitWarehouseErrorsFilterExpressionChanged";
+			public const string SelectedTODO_ERRReport_SubmitWarehouseErrorsChanged = "SelectedTODO_ERRReport_SubmitWarehouseErrorsChanged";
+            public const string TODO_ERRReport_SubmitWarehouseErrorsChanged = "TODO_ERRReport_SubmitWarehouseErrorsChanged";
+			public const string TODO_ERRReport_SubmitWarehouseErrorsDeleted = "TODO_ERRReport_SubmitWarehouseErrorsDeleted";
+			public const string TODO_ERRReport_SubmitWarehouseErrorsCreated = "TODO_ERRReport_SubmitWarehouseErrorsCreated";
+			public const string TODO_ERRReport_SubmitWarehouseErrorsUpdated = "TODO_ERRReport_SubmitWarehouseErrorsUpdated";
+			public const string TODO_ERRReport_UnmappedItemsFilterExpressionChanged = "TODO_ERRReport_UnmappedItemsFilterExpressionChanged";
+			public const string SelectedTODO_ERRReport_UnmappedItemsChanged = "SelectedTODO_ERRReport_UnmappedItemsChanged";
+            public const string TODO_ERRReport_UnmappedItemsChanged = "TODO_ERRReport_UnmappedItemsChanged";
+			public const string TODO_ERRReport_UnmappedItemsDeleted = "TODO_ERRReport_UnmappedItemsDeleted";
+			public const string TODO_ERRReport_UnmappedItemsCreated = "TODO_ERRReport_UnmappedItemsCreated";
+			public const string TODO_ERRReport_UnmappedItemsUpdated = "TODO_ERRReport_UnmappedItemsUpdated";
 			public const string TODO_PODocSetFilterExpressionChanged = "TODO_PODocSetFilterExpressionChanged";
 			public const string SelectedTODO_PODocSetChanged = "SelectedTODO_PODocSetChanged";
             public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
 			public const string TODO_PODocSetDeleted = "TODO_PODocSetDeleted";
 			public const string TODO_PODocSetCreated = "TODO_PODocSetCreated";
 			public const string TODO_PODocSetUpdated = "TODO_PODocSetUpdated";
+			public const string ToDo_POToXMLFilterExpressionChanged = "ToDo_POToXMLFilterExpressionChanged";
+			public const string SelectedToDo_POToXMLChanged = "SelectedToDo_POToXMLChanged";
+            public const string ToDo_POToXMLChanged = "ToDo_POToXMLChanged";
+			public const string ToDo_POToXMLDeleted = "ToDo_POToXMLDeleted";
+			public const string ToDo_POToXMLCreated = "ToDo_POToXMLCreated";
+			public const string ToDo_POToXMLUpdated = "ToDo_POToXMLUpdated";
 			public const string TODO_SubmitDiscrepanciesToCustomsFilterExpressionChanged = "TODO_SubmitDiscrepanciesToCustomsFilterExpressionChanged";
 			public const string SelectedTODO_SubmitDiscrepanciesToCustomsChanged = "SelectedTODO_SubmitDiscrepanciesToCustomsChanged";
             public const string TODO_SubmitDiscrepanciesToCustomsChanged = "TODO_SubmitDiscrepanciesToCustomsChanged";
@@ -261,6 +339,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string ActionsChanged = "ActionsChanged";
           // public const string ApplicationSettingsChanged = "ApplicationSettingsChanged";
           // public const string AsycudaDocumentChanged = "AsycudaDocumentChanged";
+          // public const string AsycudaDocument_AttachmentsChanged = "AsycudaDocument_AttachmentsChanged";
           // public const string AsycudaDocumentItemChanged = "AsycudaDocumentItemChanged";
           // public const string AsycudaDocumentItemEntryDataDetailsChanged = "AsycudaDocumentItemEntryDataDetailsChanged";
           // public const string AsycudaDocumentSet_AttachmentsChanged = "AsycudaDocumentSet_AttachmentsChanged";
@@ -293,7 +372,19 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_DiscrepanciesToAssessChanged = "TODO_DiscrepanciesToAssessChanged";
           // public const string TODO_DiscrepanciesToSubmitChanged = "TODO_DiscrepanciesToSubmitChanged";
           // public const string TODO_DocumentsToDeleteChanged = "TODO_DocumentsToDeleteChanged";
+          // public const string TODO_EntriesExpiringNextMonthChanged = "TODO_EntriesExpiringNextMonthChanged";
+          // public const string TODO_Error_DuplicateEntryChanged = "TODO_Error_DuplicateEntryChanged";
+          // public const string TODO_Error_IncompleteImportChanged = "TODO_Error_IncompleteImportChanged";
+          // public const string TODO_Error_IncompleteItemsChanged = "TODO_Error_IncompleteItemsChanged";
+          // public const string TODO_ERRReport_AllocationsChanged = "TODO_ERRReport_AllocationsChanged";
+          // public const string TODO_ERRReport_AsycudaEntriesChanged = "TODO_ERRReport_AsycudaEntriesChanged";
+          // public const string TODO_ERRReport_AsycudaLinesChanged = "TODO_ERRReport_AsycudaLinesChanged";
+          // public const string TODO_ERRReport_ByItemNumberChanged = "TODO_ERRReport_ByItemNumberChanged";
+          // public const string TODO_ERRReport_EntryDataDetailsChanged = "TODO_ERRReport_EntryDataDetailsChanged";
+          // public const string TODO_ERRReport_SubmitWarehouseErrorsChanged = "TODO_ERRReport_SubmitWarehouseErrorsChanged";
+          // public const string TODO_ERRReport_UnmappedItemsChanged = "TODO_ERRReport_UnmappedItemsChanged";
           // public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
+          // public const string ToDo_POToXMLChanged = "ToDo_POToXMLChanged";
           // public const string TODO_SubmitDiscrepanciesToCustomsChanged = "TODO_SubmitDiscrepanciesToCustomsChanged";
           // public const string TODO_SubmitXMLToCustomsChanged = "TODO_SubmitXMLToCustomsChanged";
           // public const string TODO_UnallocatedSalesChanged = "TODO_UnallocatedSalesChanged";
@@ -307,6 +398,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentApplicationSettingsChanged = "CurrentApplicationSettingsChanged";
    
            public const string CurrentAsycudaDocumentChanged = "CurrentAsycudaDocumentChanged";
+   
+           public const string CurrentAsycudaDocument_AttachmentsChanged = "CurrentAsycudaDocument_AttachmentsChanged";
    
            public const string CurrentAsycudaDocumentItemChanged = "CurrentAsycudaDocumentItemChanged";
    
@@ -372,7 +465,31 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_DocumentsToDeleteChanged = "CurrentTODO_DocumentsToDeleteChanged";
    
+           public const string CurrentTODO_EntriesExpiringNextMonthChanged = "CurrentTODO_EntriesExpiringNextMonthChanged";
+   
+           public const string CurrentTODO_Error_DuplicateEntryChanged = "CurrentTODO_Error_DuplicateEntryChanged";
+   
+           public const string CurrentTODO_Error_IncompleteImportChanged = "CurrentTODO_Error_IncompleteImportChanged";
+   
+           public const string CurrentTODO_Error_IncompleteItemsChanged = "CurrentTODO_Error_IncompleteItemsChanged";
+   
+           public const string CurrentTODO_ERRReport_AllocationsChanged = "CurrentTODO_ERRReport_AllocationsChanged";
+   
+           public const string CurrentTODO_ERRReport_AsycudaEntriesChanged = "CurrentTODO_ERRReport_AsycudaEntriesChanged";
+   
+           public const string CurrentTODO_ERRReport_AsycudaLinesChanged = "CurrentTODO_ERRReport_AsycudaLinesChanged";
+   
+           public const string CurrentTODO_ERRReport_ByItemNumberChanged = "CurrentTODO_ERRReport_ByItemNumberChanged";
+   
+           public const string CurrentTODO_ERRReport_EntryDataDetailsChanged = "CurrentTODO_ERRReport_EntryDataDetailsChanged";
+   
+           public const string CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged = "CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged";
+   
+           public const string CurrentTODO_ERRReport_UnmappedItemsChanged = "CurrentTODO_ERRReport_UnmappedItemsChanged";
+   
            public const string CurrentTODO_PODocSetChanged = "CurrentTODO_PODocSetChanged";
+   
+           public const string CurrentToDo_POToXMLChanged = "CurrentToDo_POToXMLChanged";
    
            public const string CurrentTODO_SubmitDiscrepanciesToCustomsChanged = "CurrentTODO_SubmitDiscrepanciesToCustomsChanged";
    
@@ -391,6 +508,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentApplicationSettingsIDChanged = "OnCurrentApplicationSettingsIDChanged";
    
            public const string CurrentAsycudaDocumentIDChanged = "OnCurrentAsycudaDocumentIDChanged";
+   
+           public const string CurrentAsycudaDocument_AttachmentsIDChanged = "OnCurrentAsycudaDocument_AttachmentsIDChanged";
    
            public const string CurrentAsycudaDocumentItemIDChanged = "OnCurrentAsycudaDocumentItemIDChanged";
    
@@ -456,7 +575,31 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_DocumentsToDeleteIDChanged = "OnCurrentTODO_DocumentsToDeleteIDChanged";
    
+           public const string CurrentTODO_EntriesExpiringNextMonthIDChanged = "OnCurrentTODO_EntriesExpiringNextMonthIDChanged";
+   
+           public const string CurrentTODO_Error_DuplicateEntryIDChanged = "OnCurrentTODO_Error_DuplicateEntryIDChanged";
+   
+           public const string CurrentTODO_Error_IncompleteImportIDChanged = "OnCurrentTODO_Error_IncompleteImportIDChanged";
+   
+           public const string CurrentTODO_Error_IncompleteItemsIDChanged = "OnCurrentTODO_Error_IncompleteItemsIDChanged";
+   
+           public const string CurrentTODO_ERRReport_AllocationsIDChanged = "OnCurrentTODO_ERRReport_AllocationsIDChanged";
+   
+           public const string CurrentTODO_ERRReport_AsycudaEntriesIDChanged = "OnCurrentTODO_ERRReport_AsycudaEntriesIDChanged";
+   
+           public const string CurrentTODO_ERRReport_AsycudaLinesIDChanged = "OnCurrentTODO_ERRReport_AsycudaLinesIDChanged";
+   
+           public const string CurrentTODO_ERRReport_ByItemNumberIDChanged = "OnCurrentTODO_ERRReport_ByItemNumberIDChanged";
+   
+           public const string CurrentTODO_ERRReport_EntryDataDetailsIDChanged = "OnCurrentTODO_ERRReport_EntryDataDetailsIDChanged";
+   
+           public const string CurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged = "OnCurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged";
+   
+           public const string CurrentTODO_ERRReport_UnmappedItemsIDChanged = "OnCurrentTODO_ERRReport_UnmappedItemsIDChanged";
+   
            public const string CurrentTODO_PODocSetIDChanged = "OnCurrentTODO_PODocSetIDChanged";
+   
+           public const string CurrentToDo_POToXMLIDChanged = "OnCurrentToDo_POToXMLIDChanged";
    
            public const string CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged = "OnCurrentTODO_SubmitDiscrepanciesToCustomsIDChanged";
    

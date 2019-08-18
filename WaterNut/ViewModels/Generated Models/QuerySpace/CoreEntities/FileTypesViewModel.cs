@@ -415,6 +415,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _copyEntryDataFilter;
+        public Boolean? CopyEntryDataFilter
+        {
+            get
+            {
+                return _copyEntryDataFilter;
+            }
+            set
+            {
+                _copyEntryDataFilter = value;
+				NotifyPropertyChanged(x => CopyEntryDataFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -471,6 +489,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(MergeEmailsFilter.HasValue)
 						res.Append(" && " + string.Format("MergeEmails == {0}",  MergeEmailsFilter));						
+ 
+
+									if(CopyEntryDataFilter.HasValue)
+						res.Append(" && " + string.Format("CopyEntryData == {0}",  CopyEntryDataFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -512,7 +534,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ReplyToMail = x.ReplyToMail ,
                     
  
-                    MergeEmails = x.MergeEmails 
+                    MergeEmails = x.MergeEmails ,
+                    
+ 
+                    CopyEntryData = x.CopyEntryData 
                     
                 }).ToList()
             };
@@ -544,6 +569,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public bool MergeEmails { get; set; } 
+                    
+ 
+                    public bool CopyEntryData { get; set; } 
                     
         }
 

@@ -129,6 +129,32 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_SubmitDiscrepanciesToCustoms> TODO_SubmitDiscrepanciesToCustoms { get; set; }
      
+        public DbSet<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
+     
+        public DbSet<TODO_Error_DuplicateEntry> TODO_Error_DuplicateEntry { get; set; }
+     
+        public DbSet<TODO_Error_IncompleteImport> TODO_Error_IncompleteImport { get; set; }
+     
+        public DbSet<TODO_Error_IncompleteItems> TODO_Error_IncompleteItems { get; set; }
+     
+        public DbSet<TODO_ERRReport_Allocations> TODO_ERRReport_Allocations { get; set; }
+     
+        public DbSet<TODO_ERRReport_AsycudaEntries> TODO_ERRReport_AsycudaEntries { get; set; }
+     
+        public DbSet<TODO_ERRReport_AsycudaLines> TODO_ERRReport_AsycudaLines { get; set; }
+     
+        public DbSet<TODO_ERRReport_ByItemNumber> TODO_ERRReport_ByItemNumber { get; set; }
+     
+        public DbSet<TODO_ERRReport_EntryDataDetails> TODO_ERRReport_EntryDataDetails { get; set; }
+     
+        public DbSet<TODO_ERRReport_UnmappedItems> TODO_ERRReport_UnmappedItems { get; set; }
+     
+        public DbSet<ToDo_POToXML> ToDo_POToXML { get; set; }
+     
+        public DbSet<TODO_EntriesExpiringNextMonth> TODO_EntriesExpiringNextMonth { get; set; }
+     
+        public DbSet<TODO_ERRReport_SubmitWarehouseErrors> TODO_ERRReport_SubmitWarehouseErrors { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -214,6 +240,32 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_DiscrepanciesToAssessMap());
          
             modelBuilder.Configurations.Add(new TODO_SubmitDiscrepanciesToCustomsMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocument_AttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_Error_DuplicateEntryMap());
+         
+            modelBuilder.Configurations.Add(new TODO_Error_IncompleteImportMap());
+         
+            modelBuilder.Configurations.Add(new TODO_Error_IncompleteItemsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_ERRReport_AllocationsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_ERRReport_AsycudaEntriesMap());
+         
+            modelBuilder.Configurations.Add(new TODO_ERRReport_AsycudaLinesMap());
+         
+            modelBuilder.Configurations.Add(new TODO_ERRReport_ByItemNumberMap());
+         
+            modelBuilder.Configurations.Add(new TODO_ERRReport_EntryDataDetailsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_ERRReport_UnmappedItemsMap());
+         
+            modelBuilder.Configurations.Add(new ToDo_POToXMLMap());
+         
+            modelBuilder.Configurations.Add(new TODO_EntriesExpiringNextMonthMap());
+         
+            modelBuilder.Configurations.Add(new TODO_ERRReport_SubmitWarehouseErrorsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

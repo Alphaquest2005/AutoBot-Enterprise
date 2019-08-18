@@ -420,6 +420,34 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<SessionSchedule>> GetSessionScheduleByActionId(string ActionId, List<string> includesLst = null)
+        {
+             if (ActionId == "0") return null;
+            try
+            {
+                 using (SessionScheduleClient t = new SessionScheduleClient())
+                    {
+                        var res = await t.GetSessionScheduleByActionId(ActionId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new SessionSchedule(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

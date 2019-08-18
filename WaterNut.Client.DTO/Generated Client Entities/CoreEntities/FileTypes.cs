@@ -164,6 +164,19 @@ namespace CoreEntities.Client.DTO
 		}
         private bool _MergeEmails;
 
+        [DataMember]
+        public bool CopyEntryData
+		{ 
+		    get { return _CopyEntryData; }
+			set
+			{
+			    if (value == _CopyEntryData) return;
+				_CopyEntryData = value;
+				NotifyPropertyChanged();//m => this.CopyEntryData
+			}
+		}
+        private bool _CopyEntryData;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

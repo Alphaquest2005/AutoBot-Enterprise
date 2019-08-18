@@ -75,8 +75,11 @@
     </Compile>
     <Compile Include="Asycuda421.designer.cs">
       <DependentUpon>Asycuda421.cs</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="C71.designer.cs" />
     <Compile Include="DatabasetoAsycuda.cs" />
+    <Compile Include="License.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +88,12 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="C71.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="License.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

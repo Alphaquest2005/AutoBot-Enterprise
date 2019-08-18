@@ -82,6 +82,12 @@ namespace EntryDataQS.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<EntryDataEx>> GetEntryDataExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<EntryDataEx>> GetEntryDataExByEmailId(string EmailId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<EntryDataEx>> GetEntryDataExByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
   		
     }
 }

@@ -65,21 +65,6 @@ namespace CoreEntities.Business.Entities
         }
         int _actionid;
         [DataMember]
-        public int Priority 
-        {
-            get
-            {
-                return _priority;
-            }
-            set
-            {
-                _priority = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _priority;
-        [DataMember]
         public Actions Actions { get; set; }
         [DataMember]
         public FileTypes FileTypes { get; set; }

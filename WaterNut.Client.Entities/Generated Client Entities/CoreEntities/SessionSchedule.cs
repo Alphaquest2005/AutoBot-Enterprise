@@ -102,6 +102,21 @@ public Nullable<int> ApplicationSettingId
 		}
      
 
+       
+       
+public Nullable<int> ActionId
+		{ 
+		    get { return this.sessionschedule.ActionId; }
+			set
+			{
+			    if (value == this.sessionschedule.ActionId) return;
+				this.sessionschedule.ActionId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ActionId");
+			}
+		}
+     
+
        private Sessions _Sessions;
         public  Sessions Sessions
 		{

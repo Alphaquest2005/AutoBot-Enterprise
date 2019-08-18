@@ -288,7 +288,8 @@ namespace EmailDownloader
             lst.Add(fileName);
         }
 
-        public static bool ForwardMsg(int uID, Client clientDetails, string subject, string body, string[] contacts)
+        public static bool ForwardMsg(int uID, Client clientDetails, string subject, string body, string[] attachments,
+            string[] contacts)
         {
             try
             {
@@ -301,7 +302,7 @@ namespace EmailDownloader
                 imapClient.Disconnect(true);
                 if (msg != null)
                 {
-                    ForwardMsg(msg, clientDetails,subject, body, contacts);
+                    ForwardMsg(msg, clientDetails,subject, body, contacts, attachments);
                 }
                 else
                 {
@@ -319,7 +320,7 @@ namespace EmailDownloader
 
         }
 
-        private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body, string[] contacts)
+        private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body, string[] attachments, string[] contacts)
         {
             // construct a new message
             var message = new MimeMessage();
@@ -336,6 +337,13 @@ namespace EmailDownloader
             var builder = new BodyBuilder();
             builder.TextBody = body;
             builder.Attachments.Add(new MessagePart { Message = msg });
+            
+
+            foreach (var attachment in attachments)
+            {
+                builder.Attachments.Add(attachment);
+            }
+
 
             message.Body = builder.ToMessageBody();
 

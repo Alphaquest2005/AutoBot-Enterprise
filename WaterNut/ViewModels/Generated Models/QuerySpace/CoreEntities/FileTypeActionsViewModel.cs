@@ -249,24 +249,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }
 
  
-
-		private Int32? _priorityFilter;
-        public Int32? PriorityFilter
-        {
-            get
-            {
-                return _priorityFilter;
-            }
-            set
-            {
-                _priorityFilter = value;
-				NotifyPropertyChanged(x => PriorityFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -295,10 +277,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		internal virtual StringBuilder GetAutoPropertyFilterString()
 		{
 		var res = new StringBuilder();
- 
-
-					if(PriorityFilter.HasValue)
-						res.Append(" && " + string.Format("Priority == {0}",  PriorityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -320,9 +299,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 dataToPrint = lst.Select(x => new FileTypeActionsExcelLine
                 {
- 
-                    Priority = x.Priority 
-                    
                 }).ToList()
             };
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -333,10 +309,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
         public class FileTypeActionsExcelLine
         {
-		 
-                    public int Priority { get; set; } 
-                    
-        }
+		        }
 
 		
     }

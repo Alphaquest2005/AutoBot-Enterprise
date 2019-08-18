@@ -395,6 +395,62 @@ namespace EntryDataQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<EntryDataEx>> GetEntryDataExByEmailId(string EmailId, List<string> includesLst = null)
+        {
+             if (EmailId == "0") return null;
+            try
+            {
+                 using (EntryDataExClient t = new EntryDataExClient())
+                    {
+                        var res = await t.GetEntryDataExByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EntryDataEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<EntryDataEx>> GetEntryDataExByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (EntryDataExClient t = new EntryDataExClient())
+                    {
+                        var res = await t.GetEntryDataExByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EntryDataEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

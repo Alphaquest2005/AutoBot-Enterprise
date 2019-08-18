@@ -73,8 +73,6 @@ namespace EntryDataQS.Business.Entities
      
         public DbSet<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
      
-        public DbSet<ToDo_POToXML> ToDo_POToXML { get; set; }
-     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -104,8 +102,6 @@ namespace EntryDataQS.Business.Entities
             modelBuilder.Configurations.Add(new EntryDataMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentItemEntryDataDetailMap());
-         
-            modelBuilder.Configurations.Add(new ToDo_POToXMLMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

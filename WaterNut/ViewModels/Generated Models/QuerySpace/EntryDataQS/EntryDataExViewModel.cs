@@ -366,6 +366,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private string _dutyFreePaidFilter;
+        public string DutyFreePaidFilter
+        {
+            get
+            {
+                return _dutyFreePaidFilter;
+            }
+            set
+            {
+                _dutyFreePaidFilter = value;
+				NotifyPropertyChanged(x => DutyFreePaidFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -447,6 +465,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(CurrencyFilter) == false)
 						res.Append(" && " + string.Format("Currency.Contains(\"{0}\")",  CurrencyFilter));						
+ 
+
+									if(string.IsNullOrEmpty(DutyFreePaidFilter) == false)
+						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -491,7 +513,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TotalLines = x.TotalLines ,
                     
  
-                    Currency = x.Currency 
+                    Currency = x.Currency ,
+                    
+ 
+                    DutyFreePaid = x.DutyFreePaid 
                     
                 }).ToList()
             };
@@ -526,6 +551,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string Currency { get; set; } 
+                    
+ 
+                    public string DutyFreePaid { get; set; } 
                     
         }
 

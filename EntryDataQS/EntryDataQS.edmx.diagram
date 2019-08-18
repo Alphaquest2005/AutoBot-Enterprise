@@ -28,7 +28,6 @@
         <AssociationConnector Association="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData" />
         <AssociationConnector Association="WaterNutEntities.FK_ContainerEntryData_EntryData" />
         <EntityTypeShape EntityType="WaterNutEntities.AsycudaDocumentItemEntryDataDetail" Width="4.875" PointX="14.5" PointY="11.125" />
-        <EntityTypeShape EntityType="WaterNutEntities.ToDo_POToXML" Width="1.5" PointX="9.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

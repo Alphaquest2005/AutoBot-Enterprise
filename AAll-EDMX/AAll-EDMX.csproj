@@ -239,6 +239,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -271,7 +272,19 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_UnallocatedSales.cs
@@ -402,7 +415,6 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\PackageType.cs
-..\WaterNut.Business.Entities\Generated Business Entities\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\InventoryItemAlia.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryDS\TariffCategory.cs
@@ -495,6 +507,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Actions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument_Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
@@ -527,7 +540,19 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_EntriesExpiringNextMonth.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_DuplicateEntry.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteImport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_Allocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_ByItemNumber.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_UnmappedItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
@@ -658,7 +683,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\InventoryItemsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\PackageType.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\ToDo_POToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemAlia.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategory.map.cs
@@ -765,6 +789,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -797,7 +822,19 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -928,7 +965,6 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\PackageType.cs
-..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\InventoryItemAlia.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryDS\TariffCategory.cs
@@ -1015,6 +1051,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -1047,7 +1084,19 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -1178,7 +1227,6 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\PackageType.cs
-..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\InventoryItemAlia.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryDS\TariffCategory.cs
@@ -1265,6 +1313,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -1297,7 +1346,19 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -1428,7 +1489,6 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\PackageType.cs
-..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\InventoryItemAlia.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryDS\TariffCategory.cs
@@ -1515,6 +1575,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -1547,7 +1608,19 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -1678,7 +1751,6 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\PackageType.cs
-..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\InventoryItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\InventoryItemAlia.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryDS\TariffCategory.cs
@@ -1734,6 +1806,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Actions.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -1766,7 +1839,19 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
@@ -1789,7 +1874,6 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\PackageType.cs
-..\WaterNut.Client.DTO\Generated Client Entities\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\EntryDataDetailsEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\InventoryItemsEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\InventoryQS\TariffCategory.cs
@@ -1825,6 +1909,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -1857,7 +1942,19 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_UnallocatedSales.cs
@@ -1880,7 +1977,6 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\PackageType.cs
-..\WaterNut.Client.Entities\Generated Client Entities\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\EntryDataDetailsEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\InventoryQS\TariffCategory.cs
@@ -1922,6 +2018,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -1954,7 +2051,19 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -1977,7 +2086,6 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\PackageType.cs
-..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\InventoryQS\EntryDataDetailsEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\InventoryQS\InventoryItemsEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\InventoryQS\TariffCategory.cs
@@ -2013,6 +2121,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -2045,7 +2154,19 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -2068,7 +2189,6 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\PackageType.cs
-..\WaterNut.Client.DTO\Generated MyNavProp Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\InventoryQS\EntryDataDetailsEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\InventoryQS\InventoryItemsEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\InventoryQS\TariffCategory.cs
@@ -2104,6 +2224,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -2136,7 +2257,19 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -2159,7 +2292,6 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\PackageType.cs
-..\WaterNut.Client.Entities\Generated Constructors Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\InventoryQS\EntryDataDetailsEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\InventoryQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\InventoryQS\TariffCategory.cs
@@ -2195,6 +2327,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -2227,7 +2360,19 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -2250,7 +2395,6 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\PackageType.cs
-..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\InventoryQS\EntryDataDetailsEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\InventoryQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\InventoryQS\TariffCategory.cs
@@ -2286,6 +2430,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Actions.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocument_Attachments.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
@@ -2318,7 +2463,19 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_Error_DuplicateEntry.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_Error_IncompleteImport.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_Error_IncompleteItems.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_Allocations.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_AsycudaEntries.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_AsycudaLines.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_ByItemNumber.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_UnallocatedSales.cs
@@ -2341,7 +2498,6 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\EntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\PackageType.cs
-..\WaterNut.Client.Entities\Generated MyNavProp Models\EntryDataQS\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\InventoryQS\EntryDataDetailsEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\InventoryQS\InventoryItemsEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\InventoryQS\TariffCategory.cs
@@ -2447,6 +2603,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Actions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument_Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
@@ -2479,7 +2636,19 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_EntriesExpiringNextMonth.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_DuplicateEntry.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteImport.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_Error_IncompleteItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_Allocations.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_AsycudaLines.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_ByItemNumber.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_EntryDataDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_UnmappedItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_UnallocatedSales.map.cs
@@ -2610,7 +2779,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\EntryDataEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\InventoryItemsEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\PackageType.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataQS\ToDo_POToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\InventoryItemAlia.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryDS\TariffCategory.map.cs
@@ -2702,6 +2870,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\AllocationQSRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ActionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ApplicationSettingsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocument_AttachmentsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentItemEntryDataDetailsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentItemRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentRepository.cs
@@ -2735,7 +2904,19 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesToSubmitRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_EntriesExpiringNextMonthRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_Error_DuplicateEntryRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_Error_IncompleteImportRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_Error_IncompleteItemsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_AllocationsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_AsycudaEntriesRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_AsycudaLinesRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_ByItemNumberRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_EntryDataDetailsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_UnmappedItemsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs
@@ -2760,7 +2941,6 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\EntryDataRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\InventoryItemsExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\PackageTypeRepository.cs
-..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQS\ToDo_POToXMLRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\EntryDataQSRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\InventoryQS\EntryDataDetailsExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\InventoryQS\InventoryItemsExRepository.cs
@@ -2812,6 +2992,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ActionsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsSummaryListViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocument_AttachmentsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSet_AttachmentsViewModel.cs
@@ -2847,7 +3028,19 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToSubmitViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_EntriesExpiringNextMonthViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_DuplicateEntryViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_IncompleteImportViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_Error_IncompleteItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AllocationsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AsycudaEntriesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_AsycudaLinesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_ByItemNumberViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_EntryDataDetailsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_UnmappedItemsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ToDo_POToXMLViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitXMLToCustomsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_UnallocatedSalesViewModel.cs
@@ -2869,7 +3062,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\MessageToken.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\PackageTypeViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\SummaryListViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\EntryDataQS\ToDo_POToXMLViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\BaseViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\EntryDataDetailsExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\InventoryQS\InventoryItemsExViewModel.cs
@@ -2904,6 +3096,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ApplicationSettingsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocument_AttachmentsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSet_AttachmentsTotals.cs
@@ -2937,7 +3130,19 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToSubmitTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_EntriesExpiringNextMonthTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_DuplicateEntryTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_IncompleteImportTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_Error_IncompleteItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AllocationsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AsycudaEntriesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_AsycudaLinesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_ByItemNumberTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_EntryDataDetailsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_UnmappedItemsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ToDo_POToXMLTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitXMLToCustomsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_UnallocatedSalesTotals.cs
@@ -2956,7 +3161,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\InventoryItemsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\PackageTypeTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ToDo_POToXMLTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\EntryDataDetailsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\InventoryItemsExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryCodeSuppUnitTotals.cs
@@ -2985,6 +3189,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ApplicationSettingsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocument_AttachmentsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSet_AttachmentsVirturalListLoader.cs
@@ -3018,7 +3223,19 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToSubmitVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_EntriesExpiringNextMonthVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_DuplicateEntryVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_IncompleteImportVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_Error_IncompleteItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AllocationsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AsycudaEntriesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_AsycudaLinesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_ByItemNumberVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_EntryDataDetailsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_UnmappedItemsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ToDo_POToXMLVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitXMLToCustomsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_UnallocatedSalesVirturalListLoader.cs
@@ -3037,7 +3254,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\InventoryItemsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\PackageTypeVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ToDo_POToXMLVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\EntryDataDetailsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\InventoryItemsExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryCodeSuppUnitVirturalListLoader.cs
@@ -3108,6 +3324,7 @@
 ..\WaterNut.Business.Services\Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IActionsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IApplicationSettingsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocument_AttachmentsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentItemService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentService.cs
@@ -3141,7 +3358,19 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_EntriesExpiringNextMonthService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_Error_DuplicateEntryService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_Error_IncompleteImportService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_Error_IncompleteItemsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_AllocationsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_AsycudaEntriesService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_AsycudaLinesService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_ByItemNumberService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_PODocSetService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs
@@ -3272,7 +3501,6 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IInventoryItemsExService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataQS\IPackageTypeService.cs
-..\WaterNut.Business.Services\Contracts\EntryDataQS\IToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryDS\IInventoryItemAliaService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryDS\IInventoryItemService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryDS\ITariffCategoryCodeSuppUnitService.cs
@@ -3358,6 +3586,7 @@
 ..\WaterNut.Business.Services\Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ActionsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ApplicationSettingsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocument_AttachmentsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentItemService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentService.cs
@@ -3391,7 +3620,19 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DocumentsToDeleteService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_EntriesExpiringNextMonthService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_Error_DuplicateEntryService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_Error_IncompleteImportService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_Error_IncompleteItemsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_AllocationsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_AsycudaEntriesService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_AsycudaLinesService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_ByItemNumberService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_EntryDataDetailsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_UnmappedItemsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_PODocSetService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\ToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_UnallocatedSalesService.cs
@@ -3522,7 +3763,6 @@
 ..\WaterNut.Business.Services\Services\EntryDataQS\EntryDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\InventoryItemsExService.cs
 ..\WaterNut.Business.Services\Services\EntryDataQS\PackageTypeService.cs
-..\WaterNut.Business.Services\Services\EntryDataQS\ToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Services\InventoryDS\InventoryItemAliaService.cs
 ..\WaterNut.Business.Services\Services\InventoryDS\InventoryItemService.cs
 ..\WaterNut.Business.Services\Services\InventoryDS\TariffCategoryCodeSuppUnitService.cs
@@ -3571,6 +3811,7 @@
 ..\WaterNut.Client.Contracts\AllocationQS\IAsycudaSalesAndAdjustmentAllocationsExService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IActionsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IApplicationSettingsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocument_AttachmentsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentItemService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentService.cs
@@ -3604,7 +3845,19 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_EntriesExpiringNextMonthService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_Error_DuplicateEntryService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_Error_IncompleteImportService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_Error_IncompleteItemsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_AllocationsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_AsycudaEntriesService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_AsycudaLinesService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_ByItemNumberService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_PODocSetService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IToDo_POToXMLService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs
@@ -3627,7 +3880,6 @@
 ..\WaterNut.Client.Contracts\EntryDataQS\IEntryDataService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IInventoryItemsExService.cs
 ..\WaterNut.Client.Contracts\EntryDataQS\IPackageTypeService.cs
-..\WaterNut.Client.Contracts\EntryDataQS\IToDo_POToXMLService.cs
 ..\WaterNut.Client.Contracts\InventoryQS\IEntryDataDetailsExService.cs
 ..\WaterNut.Client.Contracts\InventoryQS\IInventoryItemsExService.cs
 ..\WaterNut.Client.Contracts\InventoryQS\ITariffCategoryCodeSuppUnitService.cs
@@ -3662,6 +3914,7 @@
 ..\WaterNut.Client.Services\AllocationQS\AsycudaSalesAndAdjustmentAllocationsExClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ActionsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ApplicationSettingsClient.cs
+..\WaterNut.Client.Services\CoreEntities\AsycudaDocument_AttachmentsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentItemClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs
@@ -3695,7 +3948,19 @@
 ..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesToAssessClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesToSubmitClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DocumentsToDeleteClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_EntriesExpiringNextMonthClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_Error_DuplicateEntryClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_Error_IncompleteImportClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_Error_IncompleteItemsClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_AllocationsClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_AsycudaEntriesClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_AsycudaLinesClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_ByItemNumberClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_EntryDataDetailsClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_PODocSetClient.cs
+..\WaterNut.Client.Services\CoreEntities\ToDo_POToXMLClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitXMLToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_UnallocatedSalesClient.cs
@@ -3718,7 +3983,6 @@
 ..\WaterNut.Client.Services\EntryDataQS\EntryDataExClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\InventoryItemsExClient.cs
 ..\WaterNut.Client.Services\EntryDataQS\PackageTypeClient.cs
-..\WaterNut.Client.Services\EntryDataQS\ToDo_POToXMLClient.cs
 ..\WaterNut.Client.Services\InventoryQS\EntryDataDetailsExClient.cs
 ..\WaterNut.Client.Services\InventoryQS\InventoryItemsExClient.cs
 ..\WaterNut.Client.Services\InventoryQS\TariffCategoryClient.cs

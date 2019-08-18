@@ -74,6 +74,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = new ChangeTrackingCollection<AsycudaDocumentSet_Attachments>();
 
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocument_Attachments> AsycudaDocument_Attachments
+		{
+		    get { return _AsycudaDocument_Attachments; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocument_Attachments)) return;
+				_AsycudaDocument_Attachments = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocument_Attachments
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocument_Attachments> _AsycudaDocument_Attachments = new ChangeTrackingCollection<AsycudaDocument_Attachments>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

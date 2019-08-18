@@ -199,6 +199,36 @@ public int ApplicationSettingsId
 		}
      
 
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.entrydata.EmailId; }
+			set
+			{
+			    if (value == this.entrydata.EmailId) return;
+				this.entrydata.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.entrydata.FileTypeId; }
+			set
+			{
+			    if (value == this.entrydata.FileTypeId) return;
+				this.entrydata.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentEntryData> _AsycudaDocumentEntryDatas = null;
         public  ObservableCollection<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas
 		{

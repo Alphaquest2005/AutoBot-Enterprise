@@ -102,6 +102,7 @@
     <Compile Include="CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSetExClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocument_AttachmentsClient.cs" />
     <Compile Include="CoreEntities\AttachmentLogClient.cs" />
     <Compile Include="CoreEntities\AttachmentsClient.cs" />
     <Compile Include="CoreEntities\ContactsClient.cs" />
@@ -130,7 +131,19 @@
     <Compile Include="CoreEntities\TODO_DiscrepanciesToAssessClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepanciesToSubmitClient.cs" />
     <Compile Include="CoreEntities\TODO_DocumentsToDeleteClient.cs" />
+    <Compile Include="CoreEntities\TODO_EntriesExpiringNextMonthClient.cs" />
+    <Compile Include="CoreEntities\TODO_Error_DuplicateEntryClient.cs" />
+    <Compile Include="CoreEntities\TODO_Error_IncompleteImportClient.cs" />
+    <Compile Include="CoreEntities\TODO_Error_IncompleteItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_AllocationsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_AsycudaEntriesClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_AsycudaLinesClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_ByItemNumberClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_EntryDataDetailsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
+    <Compile Include="CoreEntities\ToDo_POToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitXMLToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_UnallocatedSalesClient.cs" />
@@ -169,7 +182,6 @@
     <Compile Include="EntryDataQS\EntryDataExClient.cs" />
     <Compile Include="EntryDataQS\InventoryItemsExClient.cs" />
     <Compile Include="EntryDataQS\PackageTypeClient.cs" />
-    <Compile Include="EntryDataQS\ToDo_POToXMLClient.cs" />
     <Compile Include="InventoryQS\EntryDataDetailsExClient.cs" />
     <Compile Include="InventoryQS\InventoryItemsExClient.cs" />
     <Compile Include="InventoryQS\TariffCategoryClient.cs" />

@@ -124,6 +124,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Asycuda\C71ToDatabase.cs" />
     <Compile Include="Asycuda\AsycudaToDataBase421.cs" />
     <Compile Include="Contracts\AdjustmentQS\IAdjustmentDetailService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IAdjustmentExService.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetExService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocument_AttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IContactsService.cs" />
@@ -214,7 +216,19 @@
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_EntriesExpiringNextMonthService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_Error_DuplicateEntryService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_Error_IncompleteImportService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_Error_IncompleteItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_AllocationsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_AsycudaEntriesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_AsycudaLinesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_ByItemNumberService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\IToDo_POToXMLService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs" />
@@ -345,7 +359,6 @@
     <Compile Include="Contracts\EntryDataQS\IEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataQS\IInventoryItemsExService.cs" />
     <Compile Include="Contracts\EntryDataQS\IPackageTypeService.cs" />
-    <Compile Include="Contracts\EntryDataQS\IToDo_POToXMLService.cs" />
     <Compile Include="Contracts\InventoryDS\IInventoryItemAliaService.cs" />
     <Compile Include="Contracts\InventoryDS\IInventoryItemService.cs" />
     <Compile Include="Contracts\InventoryDS\ITariffCategoryCodeSuppUnitService.cs" />
@@ -652,6 +665,7 @@
     <Compile Include="Services\CoreEntities\AsycudaDocumentService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetExService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSet_AttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocument_AttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\AttachmentLogService.cs" />
     <Compile Include="Services\CoreEntities\AttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\ContactsService.cs" />
@@ -680,7 +694,19 @@
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DocumentsToDeleteService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_EntriesExpiringNextMonthService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_Error_DuplicateEntryService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_Error_IncompleteImportService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_Error_IncompleteItemsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_AllocationsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_AsycudaEntriesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_AsycudaLinesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_ByItemNumberService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_EntryDataDetailsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_ERRReport_UnmappedItemsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetService.cs" />
+    <Compile Include="Services\CoreEntities\ToDo_POToXMLService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_UnallocatedSalesService.cs" />
@@ -811,7 +837,6 @@
     <Compile Include="Services\EntryDataQS\EntryDataService.cs" />
     <Compile Include="Services\EntryDataQS\InventoryItemsExService.cs" />
     <Compile Include="Services\EntryDataQS\PackageTypeService.cs" />
-    <Compile Include="Services\EntryDataQS\ToDo_POToXMLService.cs" />
     <Compile Include="Services\InventoryDS\InventoryItemAliaService.cs" />
     <Compile Include="Services\InventoryDS\InventoryItemService.cs" />
     <Compile Include="Services\InventoryDS\TariffCategoryCodeSuppUnitService.cs" />

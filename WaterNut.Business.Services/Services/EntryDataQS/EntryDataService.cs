@@ -1145,6 +1145,70 @@ namespace EntryDataQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<EntryData>> GetEntryDataByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EmailId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EntryData> entities = await set//dbContext.EntryDatas
+                                                    // .Include(x => x.AsycudaDocumentEntryDatas)									  
+                                                    // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
+                                                    // .Include(x => x.ContainerEntryDatas)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<EntryData>> GetEntryDataByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EntryData> entities = await set//dbContext.EntryDatas
+                                                    // .Include(x => x.AsycudaDocumentEntryDatas)									  
+                                                    // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
+                                                    // .Include(x => x.ContainerEntryDatas)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

@@ -139,6 +139,7 @@
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSetExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSet_AttachmentsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\AsycudaDocument_AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AttachmentLogRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ContactsRepository.cs" />
@@ -167,7 +168,19 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToSubmitRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_EntriesExpiringNextMonthRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_Error_DuplicateEntryRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_Error_IncompleteImportRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_Error_IncompleteItemsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_AllocationsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_AsycudaEntriesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_AsycudaLinesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_ByItemNumberRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_EntryDataDetailsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_UnmappedItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs" />
@@ -194,7 +207,6 @@
     <Compile Include="Generated Repositories\EntryDataQS\EntryDataRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\InventoryItemsExRepository.cs" />
     <Compile Include="Generated Repositories\EntryDataQS\PackageTypeRepository.cs" />
-    <Compile Include="Generated Repositories\EntryDataQS\ToDo_POToXMLRepository.cs" />
     <Compile Include="Generated Repositories\InventoryQSRepository.cs" />
     <Compile Include="Generated Repositories\InventoryQS\EntryDataDetailsExRepository.cs" />
     <Compile Include="Generated Repositories\InventoryQS\InventoryItemsExRepository.cs" />

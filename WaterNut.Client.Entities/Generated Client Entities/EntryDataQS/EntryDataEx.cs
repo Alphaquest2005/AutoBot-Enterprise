@@ -48,7 +48,7 @@ namespace EntryDataQS.Client.Entities
        
        
                 
-                [MaxLength(5, ErrorMessage = "Type has a max length of 5 letters ")]
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
 public string Type
 		{ 
 		    get { return this.entrydataex.Type; }
@@ -182,6 +182,53 @@ public int ApplicationSettingsId
 				this.entrydataex.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
+       
+                
+                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+public string DutyFreePaid
+		{ 
+		    get { return this.entrydataex.DutyFreePaid; }
+			set
+			{
+			    if (value == this.entrydataex.DutyFreePaid) return;
+				this.entrydataex.DutyFreePaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DutyFreePaid");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.entrydataex.EmailId; }
+			set
+			{
+			    if (value == this.entrydataex.EmailId) return;
+				this.entrydataex.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.entrydataex.FileTypeId; }
+			set
+			{
+			    if (value == this.entrydataex.FileTypeId) return;
+				this.entrydataex.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
 			}
 		}
      

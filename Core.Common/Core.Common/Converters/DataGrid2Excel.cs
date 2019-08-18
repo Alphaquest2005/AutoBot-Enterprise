@@ -25,7 +25,7 @@ namespace Core.Common.Converters
         public List<T> dataToPrint;
         // Excel object references.
 
-
+        public  List<PropertyInfo> IgnoreFields = new List<PropertyInfo>();
 
 
         /// <summary>
@@ -166,8 +166,8 @@ namespace Core.Common.Converters
         /// <returns></returns>
         private string[] CreateHeader()
         {
-            var headerInfo = typeof(T).GetProperties();
-
+            var headerInfo = typeof(T).GetProperties().Where(x => IgnoreFields.All(z => z.Name != x.Name)).ToArray();
+            
             // Create an array for the headers and add it to the
             // worksheet starting at cell A1.
             var header = new string[headerInfo.Length];

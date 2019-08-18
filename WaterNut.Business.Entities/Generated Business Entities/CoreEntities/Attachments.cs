@@ -22,6 +22,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //Attachments()
         {
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
+            this.AsycudaDocument_Attachments = new List<AsycudaDocument_Attachments>();
         }
 
         [DataMember]
@@ -71,6 +72,8 @@ namespace CoreEntities.Business.Entities
         string _documentcode;
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        [DataMember]
+        public List<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

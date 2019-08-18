@@ -58,6 +58,8 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -161,6 +163,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LastCost" Type="float" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -168,10 +172,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Key>
             
             <PropertyRef Name="InvoiceNo" />
-            
           </Key>
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Type" Type="varchar" MaxLength="5" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="Total" Type="float" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ImportedTotal" Type="float" />
@@ -179,6 +182,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="TotalLines" Type="int" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -199,17 +205,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="ToDo-POToXML">
-          <Key>
-            <PropertyRef Name="EntryDataDetailsId" />
-            
-            
-          </Key>
-          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
-          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
-          <Property Name="IsClassified" Type="bit" />
-        </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -328,7 +323,9 @@ FROM [dbo].[ContainerEx] AS [ContainerEx]</DefiningQuery>
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
 [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [EntryDataDetailsEx].[LastCost] AS [LastCost], 
-[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
+[EntryDataDetailsEx].[EmailId] AS [EmailId], 
+[EntryDataDetailsEx].[FileTypeId] AS [FileTypeId]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataEx" EntityType="Self.EntryDataEx" store:Type="Views" store:Schema="dbo">
@@ -341,7 +338,10 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
 [EntryDataEx].[ImportedLines] AS [ImportedLines], 
 [EntryDataEx].[TotalLines] AS [TotalLines], 
 [EntryDataEx].[Currency] AS [Currency], 
-[EntryDataEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[EntryDataEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[EntryDataEx].[DutyFreePaid] AS [DutyFreePaid], 
+[EntryDataEx].[EmailId] AS [EmailId], 
+[EntryDataEx].[FileTypeId] AS [FileTypeId]
 FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -355,14 +355,6 @@ FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
 [InventoryItemsEx].[SuppQty] AS [SuppQty], 
 [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="ToDo-POToXML" EntityType="Self.ToDo-POToXML" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-[ToDo-POToXML].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-[ToDo-POToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-[ToDo-POToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-[ToDo-POToXML].[IsClassified] AS [IsClassified]
-FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData" Association="Self.FK_AsycudaDocumentEntryData_EntryData">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -435,7 +427,6 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
             <End Role="ContainerEntryData" EntitySet="ContainerEntryDatas" />
           </AssociationSet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="WaterNutEntities.AsycudaDocumentItemEntryDataDetail" />
-          <EntitySet Name="ToDo_POToXML" EntityType="WaterNutEntities.ToDo_POToXML" />
           </EntityContainer>
         <EntityType Name="InventoryItemsEx">
           <Key>
@@ -455,7 +446,7 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <Key>
             <PropertyRef Name="InvoiceNo" />
           </Key>
-          <Property Name="Type" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Total" Type="Double"><a:DisplayTotalsProperty xmlns:a="http://schemas.tempuri.com/DisplayTotalsProperty">True</a:DisplayTotalsProperty></Property>
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Desc</a:OrderByProperty></Property>
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -468,6 +459,9 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <Property Name="TotalLines" Type="Int32" />
           <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
         </EntityType>
         <EntityType Name="AsycudaDocumentEntryData">
           <Key>
@@ -525,6 +519,8 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="LastCost" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
         <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty></EntityType>
         <EntityType Name="AsycudaDocumentSetEntryDataDetail">
           <Key>
@@ -692,6 +688,8 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSetEntryDatas" Relationship="WaterNutEntities.FK_AsycudaDocumentSetEntryData_EntryData" FromRole="EntryData" ToRole="AsycudaDocumentSetEntryData" />
           <NavigationProperty Name="ContainerEntryDatas" Relationship="WaterNutEntities.FK_ContainerEntryData_EntryData" FromRole="EntryData" ToRole="ContainerEntryData" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData">
           <End Type="WaterNutEntities.EntryData" Role="EntryData" Multiplicity="1">
@@ -747,15 +745,6 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" />
         </EntityType>
-        <EntityType Name="ToDo_POToXML">
-          <Key>
-            <PropertyRef Name="EntryDataDetailsId" />
-          </Key>
-          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
-          <Property Name="IsClassified" Type="Boolean" />
-        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -799,6 +788,8 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsExes">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.EntryDataDetailsEx)">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -843,6 +834,9 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <EntitySetMapping Name="EntryDataEx">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.EntryDataEx)">
               <MappingFragment StoreEntitySet="EntryDataEx">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="TotalLines" ColumnName="TotalLines" />
@@ -915,6 +909,8 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
           <EntitySetMapping Name="EntryDatas">
             <EntityTypeMapping TypeName="WaterNutEntities.EntryData">
               <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
@@ -936,16 +932,6 @@ FROM [dbo].[ToDo-POToXML] AS [ToDo-POToXML]</DefiningQuery>
                 <ScalarProperty Name="key" ColumnName="key" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
                 <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
-                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ToDo_POToXML">
-            <EntityTypeMapping TypeName="WaterNutEntities.ToDo_POToXML">
-              <MappingFragment StoreEntitySet="ToDo-POToXML">
-                <ScalarProperty Name="IsClassified" ColumnName="IsClassified" />
-                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
               </MappingFragment>
             </EntityTypeMapping>

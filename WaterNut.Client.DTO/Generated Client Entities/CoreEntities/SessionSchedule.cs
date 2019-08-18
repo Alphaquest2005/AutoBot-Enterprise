@@ -73,6 +73,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _ApplicationSettingId;
 
+        [DataMember]
+        public Nullable<int> ActionId
+		{ 
+		    get { return _ActionId; }
+			set
+			{
+			    if (value == _ActionId) return;
+				_ActionId = value;
+				NotifyPropertyChanged();//m => this.ActionId
+			}
+		}
+        private Nullable<int> _ActionId;
+
        
         [DataMember]
         public Sessions Sessions

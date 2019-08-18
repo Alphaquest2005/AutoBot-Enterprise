@@ -122,6 +122,16 @@ namespace EntryDataQS.Client.Services
             return  await Channel.GetEntryDataByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<EntryData>> GetEntryDataByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetEntryDataByEmailId(EmailId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<EntryData>> GetEntryDataByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetEntryDataByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

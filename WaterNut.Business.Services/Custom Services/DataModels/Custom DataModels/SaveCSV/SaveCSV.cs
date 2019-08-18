@@ -43,7 +43,7 @@ namespace WaterNut.DataSpace
             //MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
         }
 
-        public async Task ProcessDroppedFile(string droppedFilePath, string fileType, AsycudaDocumentSet docSet, bool overWriteExisting)
+        public async Task ProcessDroppedFile(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting)
         {
             try
             {
@@ -55,16 +55,17 @@ namespace WaterNut.DataSpace
             }
 
         }
-        public  async Task ProcessDroppedFile(string droppedFilePath, string fileType, int asycudaDocumentSetId,
-            bool overWriteExisting)
+        public  async Task ProcessDroppedFile(string droppedFilePath, FileTypes fileType, bool overWriteExisting)
         {
             try
             {
                 using (var ctx = new DocumentDSContext())
                 {
-                    var docSet =
-                        ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
-                    if (docSet == null) throw new ApplicationException("Document Set with reference not found");
+                    var docSet = new List<AsycudaDocumentSet>() {
+                        ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)};
+                    var ddocset = ctx.FileTypes.First(x => x.Id == fileType.Id).AsycudaDocumentSetId;
+                    if (fileType.CopyEntryData) docSet.Add(ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
+                    if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
                     await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
                 }
             }
@@ -75,7 +76,7 @@ namespace WaterNut.DataSpace
 
         }
 
-        private  async Task SaveCSV(string droppedFilePath, string fileType, AsycudaDocumentSet docSet, bool overWriteExisting)
+        private  async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting)
         {
             try
             {
@@ -102,13 +103,13 @@ namespace WaterNut.DataSpace
                     var headings = headerline.CsvSplit();
 
 
-                    if (fileType == "SI")
+                    if (fileType.Type == "SI")
                     {
-                        await SaveCsvSubItems.Instance.ExtractSubItems(fileType, lines, headings, csvType).ConfigureAwait(false);
+                        await SaveCsvSubItems.Instance.ExtractSubItems(fileType.Type, lines, headings, csvType).ConfigureAwait(false);
                         return;
                     }
 
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings, csvType, docSet, overWriteExisting, emailId, fileTypeId).ConfigureAwait(false)) return;
+                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType.Type, lines, headings, csvType, docSet, overWriteExisting, emailId, fileTypeId).ConfigureAwait(false)) return;
                 }
             }
             catch (Exception Ex)

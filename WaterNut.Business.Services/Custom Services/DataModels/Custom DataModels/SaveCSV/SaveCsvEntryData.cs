@@ -32,7 +32,7 @@ namespace WaterNut.DataSpace
         }
 
         public async Task<bool> ExtractEntryData(string fileType, string[] lines, string[] headings, string csvType,
-            AsycudaDocumentSet docSet, bool overWriteExisting, int? emailId, int? fileTypeId)
+            List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-                await ImportInventory(eslst, docSet).ConfigureAwait(false);
+                await ImportInventory(eslst, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
 
                 if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId)
                     .ConfigureAwait(false)) return true;
@@ -74,7 +74,7 @@ namespace WaterNut.DataSpace
 
 
 
-        private async Task<bool> ImportEntryData(string fileType, List<CSVDataSummary> eslst, AsycudaDocumentSet docSet,
+        private async Task<bool> ImportEntryData(string fileType, List<CSVDataSummary> eslst, List<AsycudaDocumentSet> docSet,
             bool overWriteExisting, int? emailId, int? fileTypeId)
         {
             try
@@ -97,8 +97,8 @@ namespace WaterNut.DataSpace
                                  {
                                      EntryDataId = g.Key.EntryDataId,
                                      EntryDataDate = g.Key.EntryDataDate,
-                                     AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
-                                     ApplicationSettingsId = docSet.ApplicationSettingsId,
+                                     AsycudaDocumentSetId = docSet.First().AsycudaDocumentSetId,
+                                     ApplicationSettingsId = docSet.First().ApplicationSettingsId,
                                      CustomerName = g.Key.CustomerName,
                                      Tax = g.Sum(x => x.Tax),
                                      Supplier = g.Key.SupplierCode,
@@ -209,12 +209,10 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.Currency,
                                     TrackingState = TrackingState.Added
                                 };
-                                EDsale.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
-                                {
-                                    AsycudaDocumentSetId = item.EntryData.AsycudaDocumentSetId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    TrackingState = TrackingState.Added
-                                });
+                                
+                                AddToDocSet(docSet, EDsale);
+                                    
+                                
                                 await CreateSales(EDsale).ConfigureAwait(false);
                                 break;
                             case "PO":
@@ -234,12 +232,7 @@ namespace WaterNut.DataSpace
                                         ? null
                                         : item.EntryData.Currency,
                                 };
-                                EDpo.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
-                                {
-                                    AsycudaDocumentSetId = item.EntryData.AsycudaDocumentSetId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    TrackingState = TrackingState.Added
-                                });
+                                AddToDocSet(docSet, EDpo);
                                 await CreatePurchaseOrders(EDpo).ConfigureAwait(false);
                                 break;
                             case "OPS":
@@ -259,12 +252,7 @@ namespace WaterNut.DataSpace
                                         ? null
                                         : item.EntryData.Currency,
                                 };
-                                EDops.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
-                                {
-                                    AsycudaDocumentSetId = item.EntryData.AsycudaDocumentSetId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    TrackingState = TrackingState.Added
-                                });
+                                AddToDocSet(docSet, EDops);
                                 await CreateOpeningStock(EDops).ConfigureAwait(false);
                                 break;
                             case "ADJ":
@@ -284,12 +272,7 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.Currency,
                                     Type = "ADJ"
                                 };
-                                EDadj.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
-                                {
-                                    AsycudaDocumentSetId = item.EntryData.AsycudaDocumentSetId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    TrackingState = TrackingState.Added
-                                });
+                                AddToDocSet(docSet, EDadj);
                                 await CreateAdjustments(EDadj).ConfigureAwait(false);
                                 break;
                             case "DIS":
@@ -309,12 +292,7 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.Currency,
                                     Type = "DIS"
                                 };
-                                EDdis.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
-                                {
-                                    AsycudaDocumentSetId = item.EntryData.AsycudaDocumentSetId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    TrackingState = TrackingState.Added
-                                });
+                                AddToDocSet(docSet, EDdis);
                                 await CreateAdjustments(EDdis).ConfigureAwait(false);
                                 break;
                             case "RCON":
@@ -334,12 +312,7 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.Currency,
                                     Type = "RCON"
                                 };
-                                EDrcon.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
-                                {
-                                    AsycudaDocumentSetId = item.EntryData.AsycudaDocumentSetId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    TrackingState = TrackingState.Added
-                                });
+                                AddToDocSet(docSet, EDrcon);
                                 await CreateAdjustments(EDrcon).ConfigureAwait(false);
                                 break;
                             default:
@@ -421,6 +394,19 @@ namespace WaterNut.DataSpace
             {
 
                 throw;
+            }
+        }
+
+        private static void AddToDocSet(List<AsycudaDocumentSet> docSet, EntryData entryData)
+        {
+            foreach (var doc in docSet.DistinctBy(x => x.AsycudaDocumentSetId))
+            {
+                entryData.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
+                {
+                    AsycudaDocumentSetId = doc.AsycudaDocumentSetId,
+                    EntryDataId = entryData.EntryDataId,
+                    TrackingState = TrackingState.Added
+                });
             }
         }
 
@@ -725,7 +711,7 @@ namespace WaterNut.DataSpace
             public DateTime? EffectiveDate { get; set; }
         }
 
-        private async Task ImportInventory(List<CSVDataSummary> eslst, AsycudaDocumentSet docSet)
+        private async Task ImportInventory(List<CSVDataSummary> eslst, int applicationSettingsId)
         {
             var itmlst = from i in eslst
                          group i by i.ItemNumber.ToUpper()
@@ -736,12 +722,12 @@ namespace WaterNut.DataSpace
             {
                 foreach (var item in itmlst)
                 {
-                    var i = (await ctx.GetInventoryItemsByExpression($"ItemNumber == \"{item.ItemNumber}\" && ApplicationSettingsId == \"{docSet.ApplicationSettingsId}\"", null, true).ConfigureAwait(false)).FirstOrDefault();
+                    var i = (await ctx.GetInventoryItemsByExpression($"ItemNumber == \"{item.ItemNumber}\" && ApplicationSettingsId == \"{applicationSettingsId}\"", null, true).ConfigureAwait(false)).FirstOrDefault();
                     if (i == null)
                     {
                         i = new InventoryItem(true)
                         {
-                            ApplicationSettingsId = docSet.ApplicationSettingsId,
+                            ApplicationSettingsId = applicationSettingsId,
                             Description = item.ItemDescription,
                             ItemNumber = item.ItemNumber.Truncate(20),
                            TrackingState = TrackingState.Added
