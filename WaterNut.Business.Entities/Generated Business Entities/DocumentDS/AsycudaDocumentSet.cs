@@ -253,21 +253,6 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<double> _totalfreight;
         [DataMember]
-        public Nullable<double> TotalInternalFreight 
-        {
-            get
-            {
-                return _totalinternalfreight;
-            }
-            set
-            {
-                _totalinternalfreight = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _totalinternalfreight;
-        [DataMember]
         public Nullable<int> TotalPackages 
         {
             get
@@ -312,6 +297,36 @@ namespace DocumentDS.Business.Entities
             }
         }
         Nullable<int> _lastfilenumber;
+        [DataMember]
+        public Nullable<int> TotalInvoices 
+        {
+            get
+            {
+                return _totalinvoices;
+            }
+            set
+            {
+                _totalinvoices = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _totalinvoices;
+        [DataMember]
+        public Nullable<int> MaxLines 
+        {
+            get
+            {
+                return _maxlines;
+            }
+            set
+            {
+                _maxlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _maxlines;
         [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
         [DataMember]

@@ -139,17 +139,30 @@ namespace CoreEntities.Client.DTO
         private string _Declarant_Reference_Number;
 
         [DataMember]
-        public Nullable<System.DateTime> FileDate
+        public Nullable<int> Invoices
 		{ 
-		    get { return _FileDate; }
+		    get { return _Invoices; }
 			set
 			{
-			    if (value == _FileDate) return;
-				_FileDate = value;
-				NotifyPropertyChanged();//m => this.FileDate
+			    if (value == _Invoices) return;
+				_Invoices = value;
+				NotifyPropertyChanged();//m => this.Invoices
 			}
 		}
-        private Nullable<System.DateTime> _FileDate;
+        private Nullable<int> _Invoices;
+
+        [DataMember]
+        public Nullable<int> TotalInvoices
+		{ 
+		    get { return _TotalInvoices; }
+			set
+			{
+			    if (value == _TotalInvoices) return;
+				_TotalInvoices = value;
+				NotifyPropertyChanged();//m => this.TotalInvoices
+			}
+		}
+        private Nullable<int> _TotalInvoices;
 
        
    //     [DataMember]

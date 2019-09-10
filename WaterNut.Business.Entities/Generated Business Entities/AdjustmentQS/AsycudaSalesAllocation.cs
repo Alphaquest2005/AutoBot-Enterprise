@@ -155,6 +155,21 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<int> _xentryitem_id;
         [DataMember]
+        public string xStatus 
+        {
+            get
+            {
+                return _xstatus;
+            }
+            set
+            {
+                _xstatus = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _xstatus;
+        [DataMember]
         public EntryDataDetail EntryDataDetail { get; set; }
         [DataMember]
         public xcuda_Item xcuda_Item { get; set; }

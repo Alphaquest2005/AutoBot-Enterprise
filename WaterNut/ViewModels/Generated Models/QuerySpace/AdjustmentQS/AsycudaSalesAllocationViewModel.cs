@@ -369,6 +369,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _xStatusFilter;
+        public string xStatusFilter
+        {
+            get
+            {
+                return _xStatusFilter;
+            }
+            set
+            {
+                _xStatusFilter = value;
+				NotifyPropertyChanged(x => xStatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -439,7 +457,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("EANumber == {0}",  EANumberFilter.ToString()));				 
 
 					if(SANumberFilter.HasValue)
-						res.Append(" && " + string.Format("SANumber == {0}",  SANumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("SANumber == {0}",  SANumberFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(xStatusFilter) == false)
+						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -474,7 +496,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     EANumber = x.EANumber ,
                     
  
-                    SANumber = x.SANumber 
+                    SANumber = x.SANumber ,
+                    
+ 
+                    xStatus = x.xStatus 
                     
                 }).ToList()
             };
@@ -500,6 +525,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public int SANumber { get; set; } 
+                    
+ 
+                    public string xStatus { get; set; } 
                     
         }
 

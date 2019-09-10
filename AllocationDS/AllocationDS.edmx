@@ -33,15 +33,18 @@
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="ImportedTotal" Type="float" />
+          <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
-          <Property Name="SupplierId" Type="int" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
           <Property Name="TotalFreight" Type="float" />
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
+          <Property Name="TotalOtherCost" Type="float" />
+          <Property Name="TotalInsurance" Type="float" />
+          <Property Name="TotalDeduction" Type="float" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
@@ -1818,9 +1821,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </Key>
           <Property Type="String" Name="EntryDataId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true"></Property>
           <Property Type="DateTime" Name="EntryDataDate" Nullable="false" Precision="7"></Property>
-          <Property Name="ImportedTotal" Type="Double" />
           <Property Name="ImportedLines" Type="Int32" />
-          <Property Name="SupplierId" Type="Int32" />
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalWeight" Type="Double" />
@@ -1828,6 +1829,11 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TotalOtherCost" Type="Double" />
+          <Property Name="TotalInsurance" Type="Double" />
+          <Property Name="TotalDeduction" Type="Double" />
           </EntityType>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Type="String" Name="INVNumber" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true"></Property>
@@ -2920,6 +2926,11 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryData">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.EntryData)">
               <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="TotalDeduction" ColumnName="TotalDeduction" />
+                <ScalarProperty Name="TotalInsurance" ColumnName="TotalInsurance" />
+                <ScalarProperty Name="TotalOtherCost" ColumnName="TotalOtherCost" />
+                <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -2927,9 +2938,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
-                <ScalarProperty Name="SupplierId" ColumnName="SupplierId" />
                 <ScalarProperty Name="ImportedLines" ColumnName="ImportedLines" />
-                <ScalarProperty Name="ImportedTotal" ColumnName="ImportedTotal" />
                 <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
                 <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
               </MappingFragment>

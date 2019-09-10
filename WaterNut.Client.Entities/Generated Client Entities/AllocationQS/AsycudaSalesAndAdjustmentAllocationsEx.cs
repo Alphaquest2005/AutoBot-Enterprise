@@ -745,10 +745,10 @@ public string pItemNumber
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Type is required")]
+       
        
                 
-                [MaxLength(4, ErrorMessage = "Type has a max length of 4 letters ")]
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
 public string Type
 		{ 
 		    get { return this.asycudasalesandadjustmentallocationsex.Type; }

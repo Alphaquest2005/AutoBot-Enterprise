@@ -259,24 +259,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
  
 
-		private Double? _importedTotalFilter;
-        public Double? ImportedTotalFilter
-        {
-            get
-            {
-                return _importedTotalFilter;
-            }
-            set
-            {
-                _importedTotalFilter = value;
-				NotifyPropertyChanged(x => ImportedTotalFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Int32? _importedLinesFilter;
         public Int32? ImportedLinesFilter
         {
@@ -366,6 +348,96 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private string _supplierCodeFilter;
+        public string SupplierCodeFilter
+        {
+            get
+            {
+                return _supplierCodeFilter;
+            }
+            set
+            {
+                _supplierCodeFilter = value;
+				NotifyPropertyChanged(x => SupplierCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _invoiceTotalFilter;
+        public Double? InvoiceTotalFilter
+        {
+            get
+            {
+                return _invoiceTotalFilter;
+            }
+            set
+            {
+                _invoiceTotalFilter = value;
+				NotifyPropertyChanged(x => InvoiceTotalFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalOtherCostFilter;
+        public Double? TotalOtherCostFilter
+        {
+            get
+            {
+                return _totalOtherCostFilter;
+            }
+            set
+            {
+                _totalOtherCostFilter = value;
+				NotifyPropertyChanged(x => TotalOtherCostFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalInsuranceFilter;
+        public Double? TotalInsuranceFilter
+        {
+            get
+            {
+                return _totalInsuranceFilter;
+            }
+            set
+            {
+                _totalInsuranceFilter = value;
+				NotifyPropertyChanged(x => TotalInsuranceFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalDeductionFilter;
+        public Double? TotalDeductionFilter
+        {
+            get
+            {
+                return _totalDeductionFilter;
+            }
+            set
+            {
+                _totalDeductionFilter = value;
+				NotifyPropertyChanged(x => TotalDeductionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -429,9 +501,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						}
 				 
 
-					if(ImportedTotalFilter.HasValue)
-						res.Append(" && " + string.Format("ImportedTotal == {0}",  ImportedTotalFilter.ToString()));				 
-
 					if(ImportedLinesFilter.HasValue)
 						res.Append(" && " + string.Format("ImportedLines == {0}",  ImportedLinesFilter.ToString()));				 
 
@@ -446,7 +515,23 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(CurrencyFilter) == false)
 						res.Append(" && " + string.Format("Currency.Contains(\"{0}\")",  CurrencyFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+									if(string.IsNullOrEmpty(SupplierCodeFilter) == false)
+						res.Append(" && " + string.Format("SupplierCode.Contains(\"{0}\")",  SupplierCodeFilter));						
+ 
+
+					if(InvoiceTotalFilter.HasValue)
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
+
+					if(TotalOtherCostFilter.HasValue)
+						res.Append(" && " + string.Format("TotalOtherCost == {0}",  TotalOtherCostFilter.ToString()));				 
+
+					if(TotalInsuranceFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInsurance == {0}",  TotalInsuranceFilter.ToString()));				 
+
+					if(TotalDeductionFilter.HasValue)
+						res.Append(" && " + string.Format("TotalDeduction == {0}",  TotalDeductionFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -475,9 +560,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     EntryDataDate = x.EntryDataDate ,
                     
  
-                    ImportedTotal = x.ImportedTotal ,
-                    
- 
                     ImportedLines = x.ImportedLines ,
                     
  
@@ -490,7 +572,22 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TotalWeight = x.TotalWeight ,
                     
  
-                    Currency = x.Currency 
+                    Currency = x.Currency ,
+                    
+ 
+                    SupplierCode = x.SupplierCode ,
+                    
+ 
+                    InvoiceTotal = x.InvoiceTotal ,
+                    
+ 
+                    TotalOtherCost = x.TotalOtherCost ,
+                    
+ 
+                    TotalInsurance = x.TotalInsurance ,
+                    
+ 
+                    TotalDeduction = x.TotalDeduction 
                     
                 }).ToList()
             };
@@ -509,9 +606,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     public System.DateTime EntryDataDate { get; set; } 
                     
  
-                    public Nullable<double> ImportedTotal { get; set; } 
-                    
- 
                     public Nullable<int> ImportedLines { get; set; } 
                     
  
@@ -525,6 +619,21 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string Currency { get; set; } 
+                    
+ 
+                    public string SupplierCode { get; set; } 
+                    
+ 
+                    public Nullable<double> InvoiceTotal { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalOtherCost { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalInsurance { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalDeduction { get; set; } 
                     
         }
 

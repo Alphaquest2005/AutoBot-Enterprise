@@ -179,6 +179,23 @@ public Nullable<int> xEntryItem_Id
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "xStatus has a max length of 255 letters ")]
+public string xStatus
+		{ 
+		    get { return this.asycudasalesallocation.xStatus; }
+			set
+			{
+			    if (value == this.asycudasalesallocation.xStatus) return;
+				this.asycudasalesallocation.xStatus = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xStatus");
+			}
+		}
+     
+
        private EntryDataDetail _EntryDataDetail;
         public  EntryDataDetail EntryDataDetail
 		{

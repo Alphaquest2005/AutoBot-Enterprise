@@ -71,6 +71,21 @@ namespace CoreEntities.Business.Entities
         }
         string _documentcode;
         [DataMember]
+        public string Reference 
+        {
+            get
+            {
+                return _reference;
+            }
+            set
+            {
+                _reference = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _reference;
+        [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public List<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }

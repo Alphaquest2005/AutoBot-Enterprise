@@ -671,6 +671,32 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<int> _EmailId;
 
+        [DataMember]
+        public string xStatus
+		{ 
+		    get { return _xStatus; }
+			set
+			{
+			    if (value == _xStatus) return;
+				_xStatus = value;
+				NotifyPropertyChanged();//m => this.xStatus
+			}
+		}
+        private string _xStatus;
+
+        [DataMember]
+        public string Type
+		{ 
+		    get { return _Type; }
+			set
+			{
+			    if (value == _Type) return;
+				_Type = value;
+				NotifyPropertyChanged();//m => this.Type
+			}
+		}
+        private string _Type;
+
        
         [DataMember]
         public AdjustmentShort AdjustmentShort

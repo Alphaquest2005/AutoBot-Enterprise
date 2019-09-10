@@ -24,6 +24,7 @@
               this.Property(t => t.ReplyToMail).HasColumnName("ReplyToMail");
               this.Property(t => t.FileGroupId).HasColumnName("FileGroupId");
               this.Property(t => t.MergeEmails).HasColumnName("MergeEmails");
+              this.Property(t => t.CopyEntryData).HasColumnName("CopyEntryData");
               this.HasRequired(t => t.AsycudaDocumentSet).WithMany(t =>(ICollection<FileType>) t.FileTypes).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithOptional(t => t.FileType).HasForeignKey(d => d.FileTypeId);
              // Tracking Properties

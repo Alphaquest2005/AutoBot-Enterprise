@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using InventoryDS.Business.Entities;
 using InventoryQS.Business.Entities;
 using Omu.ValueInjecter;
 
@@ -29,9 +31,9 @@ namespace InventoryQS.Business.Services
 
         public async Task SaveInventoryItemsEx(InventoryItemsEx olditm)
         {
-            var itm = new InventoryDS.Business.Entities.InventoryItem();
-            olditm.ModifiedProperties = null;
-            itm.InjectFrom(olditm);
+            var itm = new InventoryDSContext().InventoryItems.First(x => x.ItemNumber == olditm.ItemNumber && x.ApplicationSettingsId == olditm.ApplicationSettingsId);
+            //itm.ApplicationSettingsId = olditm.ApplicationSettingsId;
+            itm.TariffCode = olditm.TariffCode;
 
             await WaterNut.DataSpace.InventoryDS.DataModels.BaseDataModel.Instance.SaveInventoryItem(itm).ConfigureAwait(false);
         }

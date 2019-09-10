@@ -95,8 +95,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_DocumentsToDelete> TODO_DocumentsToDelete { get; set; }
      
-        public DbSet<TODO_PODocSet> TODO_PODocSet { get; set; }
-     
         public DbSet<Actions> Actions { get; set; }
      
         public DbSet<FileTypeActions> FileTypeActions { get; set; }
@@ -155,6 +153,20 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_ERRReport_SubmitWarehouseErrors> TODO_ERRReport_SubmitWarehouseErrors { get; set; }
      
+        public DbSet<TODO_C71ToXML> TODO_C71ToXML { get; set; }
+     
+        public DbSet<TODO_LicenseToXML> TODO_LicenseToXML { get; set; }
+     
+        public DbSet<TODO_SubmitIncompleteEntryData> TODO_SubmitIncompleteEntryData { get; set; }
+     
+        public DbSet<TODO_PODocSet> TODO_PODocSet { get; set; }
+     
+        public DbSet<TODO_SubmitDocSetWithIncompleteInvoices> TODO_SubmitDocSetWithIncompleteInvoices { get; set; }
+     
+        public DbSet<TODO_SubmitUnclassifiedItems> TODO_SubmitUnclassifiedItems { get; set; }
+     
+        public DbSet<TODO_SubmitInadequatePackages> TODO_SubmitInadequatePackages { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -206,8 +218,6 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_DeleteDocumentSetMap());
          
             modelBuilder.Configurations.Add(new TODO_DocumentsToDeleteMap());
-         
-            modelBuilder.Configurations.Add(new TODO_PODocSetMap());
          
             modelBuilder.Configurations.Add(new ActionsMap());
          
@@ -266,6 +276,20 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_EntriesExpiringNextMonthMap());
          
             modelBuilder.Configurations.Add(new TODO_ERRReport_SubmitWarehouseErrorsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_C71ToXMLMap());
+         
+            modelBuilder.Configurations.Add(new TODO_LicenseToXMLMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitIncompleteEntryDataMap());
+         
+            modelBuilder.Configurations.Add(new TODO_PODocSetMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitDocSetWithIncompleteInvoicesMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitUnclassifiedItemsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitInadequatePackagesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

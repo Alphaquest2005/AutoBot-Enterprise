@@ -331,21 +331,6 @@ public int ApplicationSettingsId
 
        
        [NumberValidationAttribute]
-public Nullable<double> TotalInternalFreight
-		{ 
-		    get { return this.asycudadocumentsetex.TotalInternalFreight; }
-			set
-			{
-			    if (value == this.asycudadocumentsetex.TotalInternalFreight) return;
-				this.asycudadocumentsetex.TotalInternalFreight = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("TotalInternalFreight");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
 public Nullable<int> TotalPackages
 		{ 
 		    get { return this.asycudadocumentsetex.TotalPackages; }
@@ -370,6 +355,81 @@ public Nullable<int> LastFileNumber
 				this.asycudadocumentsetex.LastFileNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("LastFileNumber");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> TotalInvoices
+		{ 
+		    get { return this.asycudadocumentsetex.TotalInvoices; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.TotalInvoices) return;
+				this.asycudadocumentsetex.TotalInvoices = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalInvoices");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> ImportedInvoices
+		{ 
+		    get { return this.asycudadocumentsetex.ImportedInvoices; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.ImportedInvoices) return;
+				this.asycudadocumentsetex.ImportedInvoices = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ImportedInvoices");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> ClassifiedLines
+		{ 
+		    get { return this.asycudadocumentsetex.ClassifiedLines; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.ClassifiedLines) return;
+				this.asycudadocumentsetex.ClassifiedLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ClassifiedLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> TotalLines
+		{ 
+		    get { return this.asycudadocumentsetex.TotalLines; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.TotalLines) return;
+				this.asycudadocumentsetex.TotalLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> MaxLines
+		{ 
+		    get { return this.asycudadocumentsetex.MaxLines; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.MaxLines) return;
+				this.asycudadocumentsetex.MaxLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MaxLines");
 			}
 		}
      

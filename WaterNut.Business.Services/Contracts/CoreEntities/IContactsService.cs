@@ -105,7 +105,10 @@ namespace CoreEntities.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Contacts>> GetContactsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  
 
 
 

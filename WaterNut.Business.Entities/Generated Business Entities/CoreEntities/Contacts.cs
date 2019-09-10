@@ -85,6 +85,36 @@ namespace CoreEntities.Business.Entities
         }
         string _name;
         [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
+        public string CellPhone 
+        {
+            get
+            {
+                return _cellphone;
+            }
+            set
+            {
+                _cellphone = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _cellphone;
+        [DataMember]
         public List<FileTypeContacts> FileTypeContacts { get; set; }
 
  //       [DataMember]

@@ -162,6 +162,7 @@
     <Compile Include="Generated Repositories\CoreEntities\SessionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SubItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_AdjustmentsToXMLRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_C71ToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_CreateDiscrepancyEntriesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_CreateEx9Repository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DeleteDocumentSetRepository.cs" />
@@ -179,9 +180,14 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_EntryDataDetailsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_ERRReport_UnmappedItemsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_LicenseToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitInadequatePackagesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitIncompleteEntryDataRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitUnclassifiedItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedShortsRepository.cs" />

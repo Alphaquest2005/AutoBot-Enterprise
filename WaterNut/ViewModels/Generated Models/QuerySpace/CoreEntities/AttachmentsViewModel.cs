@@ -205,6 +205,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _referenceFilter;
+        public string ReferenceFilter
+        {
+            get
+            {
+                return _referenceFilter;
+            }
+            set
+            {
+                _referenceFilter = value;
+				NotifyPropertyChanged(x => ReferenceFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -241,6 +259,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(DocumentCodeFilter) == false)
 						res.Append(" && " + string.Format("DocumentCode.Contains(\"{0}\")",  DocumentCodeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(ReferenceFilter) == false)
+						res.Append(" && " + string.Format("Reference.Contains(\"{0}\")",  ReferenceFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -267,7 +289,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     FilePath = x.FilePath ,
                     
  
-                    DocumentCode = x.DocumentCode 
+                    DocumentCode = x.DocumentCode ,
+                    
+ 
+                    Reference = x.Reference 
                     
                 }).ToList()
             };
@@ -284,6 +309,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string DocumentCode { get; set; } 
+                    
+ 
+                    public string Reference { get; set; } 
                     
         }
 

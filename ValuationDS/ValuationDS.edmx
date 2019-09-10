@@ -4,12 +4,21 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ValuationDS.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="asgfdg.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="xC71_Buyer_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Code" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="xC71_Declarant_segment">
           <Key>
             <PropertyRef Name="Identification_segment_Id" />
           </Key>
-          <Property Name="Code" Type="bigint" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" />
           <Property Name="Address" Type="nvarchar" MaxLength="255" />
           <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
@@ -35,7 +44,11 @@
           <Property Name="Yes_9B" Type="bit" Nullable="false" />
           <Property Name="No_9B" Type="bit" Nullable="false" />
           <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
-          <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
+          <Property Name="Customs_Decision_Number" Type="nvarchar" MaxLength="255" />
+          <Property Name="Box7_Details" Type="nvarchar" MaxLength="255" />
+          <Property Name="Box8_Details" Type="nvarchar" MaxLength="255" />
+          <Property Name="Box9_Details" Type="nvarchar" MaxLength="255" />
+          <Property Name="Contract_Number" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="xC71_Item">
           <Key>
@@ -43,50 +56,83 @@
           </Key>
           <Property Name="Terms_of_Delivery_Code" Type="nvarchar" MaxLength="255" />
           <Property Name="Terms_of_Delivery_Desc" Type="nvarchar" MaxLength="255" />
-          <Property Name="Invoice_Number" Type="int" Nullable="false" />
+          <Property Name="Invoice_Number" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Invoice_Date" Type="nvarchar" MaxLength="255" />
-          <Property Name="Currency_Rate_ind" Type="tinyint" Nullable="false" />
-          <Property Name="Net_Price" Type="smallint" Nullable="false" />
+          <Property Name="Currency_Rate_ind" Type="nvarchar" MaxLength="255" />
+          <Property Name="Net_Price" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Currency_code_net" Type="nvarchar" MaxLength="255" />
           <Property Name="Currency_Name_net" Type="nvarchar" MaxLength="255" />
-          <Property Name="Currency_Rate_net" Type="tinyint" Nullable="false" />
-          <Property Name="Indirect_Payments" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_com" Type="tinyint" Nullable="false" />
-          <Property Name="Commissions" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_brg" Type="tinyint" Nullable="false" />
-          <Property Name="Brokerage" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_cap" Type="tinyint" Nullable="false" />
-          <Property Name="Containers_Packaging" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_mcp" Type="tinyint" Nullable="false" />
-          <Property Name="Material_Components" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_tls" Type="tinyint" Nullable="false" />
-          <Property Name="Tool_Dies" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_mcg" Type="tinyint" Nullable="false" />
-          <Property Name="Materials_Consumed" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_eng" Type="tinyint" Nullable="false" />
-          <Property Name="Engineering_Development" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_roy" Type="tinyint" Nullable="false" />
-          <Property Name="Royalties_licence_fees" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_pro" Type="tinyint" Nullable="false" />
-          <Property Name="Proceeds" Type="tinyint" Nullable="false" />
+          <Property Name="Currency_Rate_net" Type="nvarchar" MaxLength="255" />
+          <Property Name="Indirect_Payments" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_com" Type="nvarchar" MaxLength="255" />
+          <Property Name="Commissions" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_brg" Type="nvarchar" MaxLength="255" />
+          <Property Name="Brokerage" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_cap" Type="nvarchar" MaxLength="255" />
+          <Property Name="Containers_Packaging" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_mcp" Type="nvarchar" MaxLength="255" />
+          <Property Name="Material_Components" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_tls" Type="nvarchar" MaxLength="255" />
+          <Property Name="Tool_Dies" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_mcg" Type="nvarchar" MaxLength="255" />
+          <Property Name="Materials_Consumed" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_eng" Type="nvarchar" MaxLength="255" />
+          <Property Name="Engineering_Development" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_roy" Type="nvarchar" MaxLength="255" />
+          <Property Name="Royalties_licence_fees" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_pro" Type="nvarchar" MaxLength="255" />
+          <Property Name="Proceeds" Type="nvarchar" MaxLength="255" />
           <Property Name="Currency_code_tpt" Type="nvarchar" MaxLength="255" />
           <Property Name="Currency_Name_tpt" Type="nvarchar" MaxLength="255" />
-          <Property Name="Currency_Rate_tpt" Type="tinyint" Nullable="false" />
-          <Property Name="Transport" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_lhc" Type="tinyint" Nullable="false" />
-          <Property Name="Loading_handling" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_ins" Type="tinyint" Nullable="false" />
-          <Property Name="Insurance" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_aim" Type="tinyint" Nullable="false" />
-          <Property Name="Transport_after_import" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_cfc" Type="tinyint" Nullable="false" />
-          <Property Name="Construction" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_oth" Type="tinyint" Nullable="false" />
-          <Property Name="Other_charges" Type="tinyint" Nullable="false" />
-          <Property Name="Currency_Rate_txs" Type="tinyint" Nullable="false" />
-          <Property Name="Customs_duties_taxes" Type="tinyint" Nullable="false" />
-          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_Rate_tpt" Type="nvarchar" MaxLength="255" />
+          <Property Name="Transport" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_lhc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Loading_handling" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_ins" Type="nvarchar" MaxLength="255" />
+          <Property Name="Insurance" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_aim" Type="nvarchar" MaxLength="255" />
+          <Property Name="Transport_after_import" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_cfc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Construction" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_oth" Type="nvarchar" MaxLength="255" />
+          <Property Name="Other_charges" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Rate_txs" Type="nvarchar" MaxLength="255" />
+          <Property Name="Customs_duties_taxes" Type="nvarchar" MaxLength="255" />
+          <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Value_declaration_form_Id" Type="int" />
+          <Property Name="Currency_Name_com" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_ind" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_mcp" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_ins" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_ind" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_mcg" Type="nvarchar" MaxLength="255" />
+          <Property Name="Other_specify" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_mcp" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_brg" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_tls" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_txs" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_oth" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_eng" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_cap" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_aim" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_eng" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_com" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_lhc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_roy" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_aim" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_tls" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_mcg" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_pro" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_cfc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_roy" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_brg" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_cap" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_ins" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_pro" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_cfc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_txs" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_code_lhc" Type="nvarchar" MaxLength="255" />
+          <Property Name="Currency_Name_oth" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="xC71_Seller_segment">
           <Key>
@@ -100,11 +146,63 @@
           <Key>
             <PropertyRef Name="Value_declaration_form_Id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
-          <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
+          <Property Name="Value_declaration_form_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
+        <EntityType Name="xC71_Value_declaration_form_Registered">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+          </Key>
+          <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
+          <Property Name="id" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RegNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_xC71_Identification_segment_xC71_Value_declaration_form">
+          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Value_declaration_form">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Principal>
+            <Dependent Role="xC71_Identification_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xC71_RegisteredValuation_xC71_Value_declaration_form">
+          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xC71_Value_declaration_form_Registered" Type="Self.xC71_Value_declaration_form_Registered" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Value_declaration_form">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Principal>
+            <Dependent Role="xC71_Value_declaration_form_Registered">
+              <PropertyRef Name="Value_declaration_form_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Identification_segment_Buyer_segment">
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xC71_Buyer_segment" Type="Self.xC71_Buyer_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Identification_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Principal>
+            <Dependent Role="xC71_Buyer_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Identification_segment_Declarant_segment">
-          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="xC71_Declarant_segment" Type="Self.xC71_Declarant_segment" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="xC71_Identification_segment">
@@ -116,7 +214,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="Identification_segment_Seller_segment">
-          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
+          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="xC71_Seller_segment" Type="Self.xC71_Seller_segment" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="xC71_Identification_segment">
@@ -124,18 +224,6 @@
             </Principal>
             <Dependent Role="xC71_Seller_segment">
               <PropertyRef Name="Identification_segment_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="Value_declaration_form_Identification_segment">
-          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1" />
-          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="xC71_Value_declaration_form">
-              <PropertyRef Name="Value_declaration_form_Id" />
-            </Principal>
-            <Dependent Role="xC71_Identification_segment">
-              <PropertyRef Name="Value_declaration_form_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -153,12 +241,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ValuationDSStoreContainer">
+        <EntityContainer Name="asgfdgStoreContainer">
+          <EntitySet Name="xC71_Buyer_segment" EntityType="Self.xC71_Buyer_segment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Declarant_segment" EntityType="Self.xC71_Declarant_segment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Identification_segment" EntityType="Self.xC71_Identification_segment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Item" EntityType="Self.xC71_Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Seller_segment" EntityType="Self.xC71_Seller_segment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Value_declaration_form" EntityType="Self.xC71_Value_declaration_form" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="xC71_Value_declaration_form_Registered" EntityType="Self.xC71_Value_declaration_form_Registered" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_xC71_Identification_segment_xC71_Value_declaration_form" Association="Self.FK_xC71_Identification_segment_xC71_Value_declaration_form">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xC71_RegisteredValuation_xC71_Value_declaration_form" Association="Self.FK_xC71_RegisteredValuation_xC71_Value_declaration_form">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Value_declaration_form_Registered" EntitySet="xC71_Value_declaration_form_Registered" />
+          </AssociationSet>
+          <AssociationSet Name="Identification_segment_Buyer_segment" Association="Self.Identification_segment_Buyer_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Buyer_segment" EntitySet="xC71_Buyer_segment" />
+          </AssociationSet>
           <AssociationSet Name="Identification_segment_Declarant_segment" Association="Self.Identification_segment_Declarant_segment">
             <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
             <End Role="xC71_Declarant_segment" EntitySet="xC71_Declarant_segment" />
@@ -167,29 +269,62 @@
             <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
             <End Role="xC71_Seller_segment" EntitySet="xC71_Seller_segment" />
           </AssociationSet>
-          <AssociationSet Name="Value_declaration_form_Identification_segment" Association="Self.Value_declaration_form_Identification_segment">
-            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
-            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
-          </AssociationSet>
           <AssociationSet Name="Value_declaration_form_Item" Association="Self.Value_declaration_form_Item">
             <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
             <End Role="xC71_Item" EntitySet="xC71_Item" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="ValuationDS" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="WaterNutModelDB" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ValuationDS" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="xC71_Buyer_segment" EntityType="WaterNutModelDB.xC71_Buyer_segment" />
+          <EntitySet Name="xC71_Declarant_segment" EntityType="WaterNutModelDB.xC71_Declarant_segment" />
+          <EntitySet Name="xC71_Identification_segment" EntityType="WaterNutModelDB.xC71_Identification_segment" />
+          <EntitySet Name="xC71_Item" EntityType="WaterNutModelDB.xC71_Item" />
+          <EntitySet Name="xC71_Seller_segment" EntityType="WaterNutModelDB.xC71_Seller_segment" />
+          <AssociationSet Name="Identification_segment_Buyer_segment" Association="WaterNutModelDB.Identification_segment_Buyer_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Buyer_segment" EntitySet="xC71_Buyer_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Identification_segment_Declarant_segment" Association="WaterNutModelDB.Identification_segment_Declarant_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Declarant_segment" EntitySet="xC71_Declarant_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Identification_segment_Seller_segment" Association="WaterNutModelDB.Identification_segment_Seller_segment">
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+            <End Role="xC71_Seller_segment" EntitySet="xC71_Seller_segment" />
+          </AssociationSet>
+          <EntitySet Name="xC71_Value_declaration_form" EntityType="WaterNutModelDB.xC71_Value_declaration_form" />
+          <AssociationSet Name="FK_xC71_Identification_segment_xC71_Value_declaration_form" Association="WaterNutModelDB.FK_xC71_Identification_segment_xC71_Value_declaration_form">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
+          </AssociationSet>
+          <AssociationSet Name="Value_declaration_form_Item" Association="WaterNutModelDB.Value_declaration_form_Item">
+            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
+            <End Role="xC71_Item" EntitySet="xC71_Item" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="xC71_Buyer_segment">
+          <Key>
+            <PropertyRef Name="Identification_segment_Id" />
+          </Key>
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xC71_Identification_segment" Relationship="WaterNutModelDB.Identification_segment_Buyer_segment" FromRole="xC71_Buyer_segment" ToRole="xC71_Identification_segment" />
+        </EntityType>
         <EntityType Name="xC71_Declarant_segment">
           <Key>
             <PropertyRef Name="Identification_segment_Id" />
           </Key>
-          <Property Name="Code" Type="Int64" Nullable="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="xC71_Identification_segment" Relationship="Self.Identification_segment_Declarant_segment" FromRole="xC71_Declarant_segment" ToRole="xC71_Identification_segment" />
+          <NavigationProperty Name="xC71_Identification_segment" Relationship="WaterNutModelDB.Identification_segment_Declarant_segment" FromRole="xC71_Declarant_segment" ToRole="xC71_Identification_segment" />
         </EntityType>
         <EntityType Name="xC71_Identification_segment">
           <Key>
@@ -212,10 +347,15 @@
           <Property Name="Yes_9B" Type="Boolean" Nullable="false" />
           <Property Name="No_9B" Type="Boolean" Nullable="false" />
           <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
-          <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="xC71_Declarant_segment" Relationship="Self.Identification_segment_Declarant_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Declarant_segment" />
-          <NavigationProperty Name="xC71_Seller_segment" Relationship="Self.Identification_segment_Seller_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Seller_segment" />
-          <NavigationProperty Name="xC71_Value_declaration_form" Relationship="Self.Value_declaration_form_Identification_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Value_declaration_form" />
+          <Property Name="Customs_Decision_Number" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Box7_Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Box8_Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Box9_Details" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Contract_Number" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xC71_Buyer_segment" Relationship="WaterNutModelDB.Identification_segment_Buyer_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Buyer_segment" />
+          <NavigationProperty Name="xC71_Declarant_segment" Relationship="WaterNutModelDB.Identification_segment_Declarant_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Declarant_segment" />
+          <NavigationProperty Name="xC71_Seller_segment" Relationship="WaterNutModelDB.Identification_segment_Seller_segment" FromRole="xC71_Identification_segment" ToRole="xC71_Seller_segment" />
+          <NavigationProperty Name="xC71_Value_declaration_form" Relationship="WaterNutModelDB.FK_xC71_Identification_segment_xC71_Value_declaration_form" FromRole="xC71_Identification_segment" ToRole="xC71_Value_declaration_form" />
         </EntityType>
         <EntityType Name="xC71_Item">
           <Key>
@@ -223,51 +363,84 @@
           </Key>
           <Property Name="Terms_of_Delivery_Code" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Terms_of_Delivery_Desc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Invoice_Number" Type="Int32" Nullable="false" />
+          <Property Name="Invoice_Number" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Invoice_Date" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Rate_ind" Type="Byte" Nullable="false" />
-          <Property Name="Net_Price" Type="Int16" Nullable="false" />
+          <Property Name="Currency_Rate_ind" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Net_Price" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Currency_code_net" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Currency_Name_net" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Rate_net" Type="Byte" Nullable="false" />
-          <Property Name="Indirect_Payments" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_com" Type="Byte" Nullable="false" />
-          <Property Name="Commissions" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_brg" Type="Byte" Nullable="false" />
-          <Property Name="Brokerage" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_cap" Type="Byte" Nullable="false" />
-          <Property Name="Containers_Packaging" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_mcp" Type="Byte" Nullable="false" />
-          <Property Name="Material_Components" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_tls" Type="Byte" Nullable="false" />
-          <Property Name="Tool_Dies" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_mcg" Type="Byte" Nullable="false" />
-          <Property Name="Materials_Consumed" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_eng" Type="Byte" Nullable="false" />
-          <Property Name="Engineering_Development" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_roy" Type="Byte" Nullable="false" />
-          <Property Name="Royalties_licence_fees" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_pro" Type="Byte" Nullable="false" />
-          <Property Name="Proceeds" Type="Byte" Nullable="false" />
+          <Property Name="Currency_Rate_net" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Indirect_Payments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_com" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Commissions" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_brg" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Brokerage" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_cap" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Containers_Packaging" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_mcp" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Material_Components" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_tls" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Tool_Dies" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_mcg" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Materials_Consumed" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_eng" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Engineering_Development" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_roy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Royalties_licence_fees" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_pro" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Proceeds" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Currency_code_tpt" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Currency_Name_tpt" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Rate_tpt" Type="Byte" Nullable="false" />
-          <Property Name="Transport" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_lhc" Type="Byte" Nullable="false" />
-          <Property Name="Loading_handling" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_ins" Type="Byte" Nullable="false" />
-          <Property Name="Insurance" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_aim" Type="Byte" Nullable="false" />
-          <Property Name="Transport_after_import" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_cfc" Type="Byte" Nullable="false" />
-          <Property Name="Construction" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_oth" Type="Byte" Nullable="false" />
-          <Property Name="Other_charges" Type="Byte" Nullable="false" />
-          <Property Name="Currency_Rate_txs" Type="Byte" Nullable="false" />
-          <Property Name="Customs_duties_taxes" Type="Byte" Nullable="false" />
-          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="Currency_Rate_tpt" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Transport" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_lhc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Loading_handling" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_ins" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Insurance" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_aim" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Transport_after_import" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_cfc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Construction" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_oth" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Other_charges" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Rate_txs" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Customs_duties_taxes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Item_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Value_declaration_form_Id" Type="Int32" />
-          <NavigationProperty Name="xC71_Value_declaration_form" Relationship="Self.Value_declaration_form_Item" FromRole="xC71_Item" ToRole="xC71_Value_declaration_form" />
+          <Property Name="Currency_Name_com" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_ind" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_mcp" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_ins" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_ind" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_mcg" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Other_specify" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_mcp" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_brg" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_tls" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_txs" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_oth" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_eng" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_cap" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_aim" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_eng" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_com" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_lhc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_roy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_aim" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_tls" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_mcg" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_pro" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_cfc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_roy" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_brg" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_cap" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_ins" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_pro" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_cfc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_txs" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_code_lhc" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Name_oth" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xC71_Value_declaration_form" Relationship="WaterNutModelDB.Value_declaration_form_Item" FromRole="xC71_Item" ToRole="xC71_Value_declaration_form" />
         </EntityType>
         <EntityType Name="xC71_Seller_segment">
           <Key>
@@ -276,20 +449,27 @@
           <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="xC71_Identification_segment" Relationship="Self.Identification_segment_Seller_segment" FromRole="xC71_Seller_segment" ToRole="xC71_Identification_segment" />
+          <NavigationProperty Name="xC71_Identification_segment" Relationship="WaterNutModelDB.Identification_segment_Seller_segment" FromRole="xC71_Seller_segment" ToRole="xC71_Identification_segment" />
         </EntityType>
-        <EntityType Name="xC71_Value_declaration_form">
-          <Key>
-            <PropertyRef Name="Value_declaration_form_Id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="xC71_Identification_segment" Relationship="Self.Value_declaration_form_Identification_segment" FromRole="xC71_Value_declaration_form" ToRole="xC71_Identification_segment" />
-          <NavigationProperty Name="xC71_Item" Relationship="Self.Value_declaration_form_Item" FromRole="xC71_Value_declaration_form" ToRole="xC71_Item" />
-        </EntityType>
+        <Association Name="Identification_segment_Buyer_segment">
+          <End Type="WaterNutModelDB.xC71_Identification_segment" Role="xC71_Identification_segment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutModelDB.xC71_Buyer_segment" Role="xC71_Buyer_segment" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xC71_Identification_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Principal>
+            <Dependent Role="xC71_Buyer_segment">
+              <PropertyRef Name="Identification_segment_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="Identification_segment_Declarant_segment">
-          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
-          <End Role="xC71_Declarant_segment" Type="Self.xC71_Declarant_segment" Multiplicity="0..1" />
+          <End Type="WaterNutModelDB.xC71_Identification_segment" Role="xC71_Identification_segment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutModelDB.xC71_Declarant_segment" Role="xC71_Declarant_segment" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="xC71_Identification_segment">
               <PropertyRef Name="Identification_segment_Id" />
@@ -300,8 +480,10 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="Identification_segment_Seller_segment">
-          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="1" />
-          <End Role="xC71_Seller_segment" Type="Self.xC71_Seller_segment" Multiplicity="0..1" />
+          <End Type="WaterNutModelDB.xC71_Identification_segment" Role="xC71_Identification_segment" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutModelDB.xC71_Seller_segment" Role="xC71_Seller_segment" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="xC71_Identification_segment">
               <PropertyRef Name="Identification_segment_Id" />
@@ -311,23 +493,33 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Value_declaration_form_Identification_segment">
-          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1" />
-          <End Role="xC71_Identification_segment" Type="Self.xC71_Identification_segment" Multiplicity="*" />
+        <EntityType Name="xC71_Value_declaration_form">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+          </Key>
+          <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="xC71_Identification_segment" Relationship="WaterNutModelDB.FK_xC71_Identification_segment_xC71_Value_declaration_form" FromRole="xC71_Value_declaration_form" ToRole="xC71_Identification_segment" />
+          <NavigationProperty Name="xC71_Item" Relationship="WaterNutModelDB.Value_declaration_form_Item" FromRole="xC71_Value_declaration_form" ToRole="xC71_Item" />
+        </EntityType>
+        <Association Name="FK_xC71_Identification_segment_xC71_Value_declaration_form">
+          <End Type="WaterNutModelDB.xC71_Value_declaration_form" Role="xC71_Value_declaration_form" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutModelDB.xC71_Identification_segment" Role="xC71_Identification_segment" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="xC71_Value_declaration_form">
               <PropertyRef Name="Value_declaration_form_Id" />
             </Principal>
             <Dependent Role="xC71_Identification_segment">
-              <PropertyRef Name="Value_declaration_form_Id" />
+              <PropertyRef Name="Identification_segment_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="Value_declaration_form_Item">
-          <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="0..1">
+          <End Type="WaterNutModelDB.xC71_Value_declaration_form" Role="xC71_Value_declaration_form" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="xC71_Item" Type="Self.xC71_Item" Multiplicity="*" />
+          <End Type="WaterNutModelDB.xC71_Item" Role="xC71_Item" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="xC71_Value_declaration_form">
               <PropertyRef Name="Value_declaration_form_Id" />
@@ -337,139 +529,175 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="xC71_Declarant_segment" EntityType="Self.xC71_Declarant_segment" />
-          <EntitySet Name="xC71_Identification_segment" EntityType="Self.xC71_Identification_segment" />
-          <EntitySet Name="xC71_Item" EntityType="Self.xC71_Item" />
-          <EntitySet Name="xC71_Seller_segment" EntityType="Self.xC71_Seller_segment" />
-          <EntitySet Name="xC71_Value_declaration_form" EntityType="Self.xC71_Value_declaration_form" />
-          <AssociationSet Name="Identification_segment_Declarant_segment" Association="Self.Identification_segment_Declarant_segment">
-            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
-            <End Role="xC71_Declarant_segment" EntitySet="xC71_Declarant_segment" />
-          </AssociationSet>
-          <AssociationSet Name="Identification_segment_Seller_segment" Association="Self.Identification_segment_Seller_segment">
-            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
-            <End Role="xC71_Seller_segment" EntitySet="xC71_Seller_segment" />
-          </AssociationSet>
-          <AssociationSet Name="Value_declaration_form_Identification_segment" Association="Self.Value_declaration_form_Identification_segment">
-            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
-            <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
-          </AssociationSet>
-          <AssociationSet Name="Value_declaration_form_Item" Association="Self.Value_declaration_form_Item">
-            <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
-            <End Role="xC71_Item" EntitySet="xC71_Item" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        <EntityType Name="Registered" BaseType="WaterNutModelDB.xC71_Value_declaration_form">
+          <Property Name="id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RegNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="ValuationDSStoreContainer" CdmEntityContainer="Entities">
-          <EntitySetMapping Name="xC71_Declarant_segment">
-            <EntityTypeMapping TypeName="ValuationDS.xC71_Declarant_segment">
-              <MappingFragment StoreEntitySet="xC71_Declarant_segment">
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
+        <EntityContainerMapping StorageEntityContainer="asgfdgStoreContainer" CdmEntityContainer="ValuationDS">
+          <EntitySetMapping Name="xC71_Buyer_segment">
+            <EntityTypeMapping TypeName="WaterNutModelDB.xC71_Buyer_segment">
+              <MappingFragment StoreEntitySet="xC71_Buyer_segment">
                 <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xC71_Declarant_segment">
+            <EntityTypeMapping TypeName="WaterNutModelDB.xC71_Declarant_segment">
+              <MappingFragment StoreEntitySet="xC71_Declarant_segment">
+                <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="xC71_Identification_segment">
-            <EntityTypeMapping TypeName="ValuationDS.xC71_Identification_segment">
+            <EntityTypeMapping TypeName="WaterNutModelDB.xC71_Identification_segment">
               <MappingFragment StoreEntitySet="xC71_Identification_segment">
-                <ScalarProperty Name="Contract_Date" ColumnName="Contract_Date" />
-                <ScalarProperty Name="Customs_Decision_Date" ColumnName="Customs_Decision_Date" />
-                <ScalarProperty Name="Yes_7A" ColumnName="Yes_7A" />
-                <ScalarProperty Name="No_7A" ColumnName="No_7A" />
-                <ScalarProperty Name="Yes_7B" ColumnName="Yes_7B" />
-                <ScalarProperty Name="No_7B" ColumnName="No_7B" />
-                <ScalarProperty Name="Yes_7C" ColumnName="Yes_7C" />
-                <ScalarProperty Name="No_7C" ColumnName="No_7C" />
-                <ScalarProperty Name="Yes_8A" ColumnName="Yes_8A" />
-                <ScalarProperty Name="No_8A" ColumnName="No_8A" />
-                <ScalarProperty Name="Yes_8B" ColumnName="Yes_8B" />
-                <ScalarProperty Name="No_8B" ColumnName="No_8B" />
-                <ScalarProperty Name="Yes_9A" ColumnName="Yes_9A" />
-                <ScalarProperty Name="No_9A" ColumnName="No_9A" />
-                <ScalarProperty Name="Yes_9B" ColumnName="Yes_9B" />
-                <ScalarProperty Name="No_9B" ColumnName="No_9B" />
+                <ScalarProperty Name="Contract_Number" ColumnName="Contract_Number" />
+                <ScalarProperty Name="Box9_Details" ColumnName="Box9_Details" />
+                <ScalarProperty Name="Box8_Details" ColumnName="Box8_Details" />
+                <ScalarProperty Name="Box7_Details" ColumnName="Box7_Details" />
+                <ScalarProperty Name="Customs_Decision_Number" ColumnName="Customs_Decision_Number" />
                 <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
-                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+                <ScalarProperty Name="No_9B" ColumnName="No_9B" />
+                <ScalarProperty Name="Yes_9B" ColumnName="Yes_9B" />
+                <ScalarProperty Name="No_9A" ColumnName="No_9A" />
+                <ScalarProperty Name="Yes_9A" ColumnName="Yes_9A" />
+                <ScalarProperty Name="No_8B" ColumnName="No_8B" />
+                <ScalarProperty Name="Yes_8B" ColumnName="Yes_8B" />
+                <ScalarProperty Name="No_8A" ColumnName="No_8A" />
+                <ScalarProperty Name="Yes_8A" ColumnName="Yes_8A" />
+                <ScalarProperty Name="No_7C" ColumnName="No_7C" />
+                <ScalarProperty Name="Yes_7C" ColumnName="Yes_7C" />
+                <ScalarProperty Name="No_7B" ColumnName="No_7B" />
+                <ScalarProperty Name="Yes_7B" ColumnName="Yes_7B" />
+                <ScalarProperty Name="No_7A" ColumnName="No_7A" />
+                <ScalarProperty Name="Yes_7A" ColumnName="Yes_7A" />
+                <ScalarProperty Name="Customs_Decision_Date" ColumnName="Customs_Decision_Date" />
+                <ScalarProperty Name="Contract_Date" ColumnName="Contract_Date" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="xC71_Item">
-            <EntityTypeMapping TypeName="ValuationDS.xC71_Item">
+            <EntityTypeMapping TypeName="WaterNutModelDB.xC71_Item">
               <MappingFragment StoreEntitySet="xC71_Item">
-                <ScalarProperty Name="Terms_of_Delivery_Code" ColumnName="Terms_of_Delivery_Code" />
-                <ScalarProperty Name="Terms_of_Delivery_Desc" ColumnName="Terms_of_Delivery_Desc" />
-                <ScalarProperty Name="Invoice_Number" ColumnName="Invoice_Number" />
-                <ScalarProperty Name="Invoice_Date" ColumnName="Invoice_Date" />
-                <ScalarProperty Name="Currency_Rate_ind" ColumnName="Currency_Rate_ind" />
-                <ScalarProperty Name="Net_Price" ColumnName="Net_Price" />
-                <ScalarProperty Name="Currency_code_net" ColumnName="Currency_code_net" />
-                <ScalarProperty Name="Currency_Name_net" ColumnName="Currency_Name_net" />
-                <ScalarProperty Name="Currency_Rate_net" ColumnName="Currency_Rate_net" />
-                <ScalarProperty Name="Indirect_Payments" ColumnName="Indirect_Payments" />
-                <ScalarProperty Name="Currency_Rate_com" ColumnName="Currency_Rate_com" />
-                <ScalarProperty Name="Commissions" ColumnName="Commissions" />
-                <ScalarProperty Name="Currency_Rate_brg" ColumnName="Currency_Rate_brg" />
-                <ScalarProperty Name="Brokerage" ColumnName="Brokerage" />
-                <ScalarProperty Name="Currency_Rate_cap" ColumnName="Currency_Rate_cap" />
-                <ScalarProperty Name="Containers_Packaging" ColumnName="Containers_Packaging" />
-                <ScalarProperty Name="Currency_Rate_mcp" ColumnName="Currency_Rate_mcp" />
-                <ScalarProperty Name="Material_Components" ColumnName="Material_Components" />
-                <ScalarProperty Name="Currency_Rate_tls" ColumnName="Currency_Rate_tls" />
-                <ScalarProperty Name="Tool_Dies" ColumnName="Tool_Dies" />
-                <ScalarProperty Name="Currency_Rate_mcg" ColumnName="Currency_Rate_mcg" />
-                <ScalarProperty Name="Materials_Consumed" ColumnName="Materials_Consumed" />
-                <ScalarProperty Name="Currency_Rate_eng" ColumnName="Currency_Rate_eng" />
-                <ScalarProperty Name="Engineering_Development" ColumnName="Engineering_Development" />
-                <ScalarProperty Name="Currency_Rate_roy" ColumnName="Currency_Rate_roy" />
-                <ScalarProperty Name="Royalties_licence_fees" ColumnName="Royalties_licence_fees" />
-                <ScalarProperty Name="Currency_Rate_pro" ColumnName="Currency_Rate_pro" />
-                <ScalarProperty Name="Proceeds" ColumnName="Proceeds" />
-                <ScalarProperty Name="Currency_code_tpt" ColumnName="Currency_code_tpt" />
-                <ScalarProperty Name="Currency_Name_tpt" ColumnName="Currency_Name_tpt" />
-                <ScalarProperty Name="Currency_Rate_tpt" ColumnName="Currency_Rate_tpt" />
-                <ScalarProperty Name="Transport" ColumnName="Transport" />
-                <ScalarProperty Name="Currency_Rate_lhc" ColumnName="Currency_Rate_lhc" />
-                <ScalarProperty Name="Loading_handling" ColumnName="Loading_handling" />
-                <ScalarProperty Name="Currency_Rate_ins" ColumnName="Currency_Rate_ins" />
-                <ScalarProperty Name="Insurance" ColumnName="Insurance" />
-                <ScalarProperty Name="Currency_Rate_aim" ColumnName="Currency_Rate_aim" />
-                <ScalarProperty Name="Transport_after_import" ColumnName="Transport_after_import" />
-                <ScalarProperty Name="Currency_Rate_cfc" ColumnName="Currency_Rate_cfc" />
-                <ScalarProperty Name="Construction" ColumnName="Construction" />
-                <ScalarProperty Name="Currency_Rate_oth" ColumnName="Currency_Rate_oth" />
-                <ScalarProperty Name="Other_charges" ColumnName="Other_charges" />
-                <ScalarProperty Name="Currency_Rate_txs" ColumnName="Currency_Rate_txs" />
-                <ScalarProperty Name="Customs_duties_taxes" ColumnName="Customs_duties_taxes" />
-                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+                <ScalarProperty Name="Currency_Name_oth" ColumnName="Currency_Name_oth" />
+                <ScalarProperty Name="Currency_code_lhc" ColumnName="Currency_code_lhc" />
+                <ScalarProperty Name="Currency_Name_txs" ColumnName="Currency_Name_txs" />
+                <ScalarProperty Name="Currency_code_cfc" ColumnName="Currency_code_cfc" />
+                <ScalarProperty Name="Currency_Name_pro" ColumnName="Currency_Name_pro" />
+                <ScalarProperty Name="Currency_Name_ins" ColumnName="Currency_Name_ins" />
+                <ScalarProperty Name="Currency_code_cap" ColumnName="Currency_code_cap" />
+                <ScalarProperty Name="Currency_code_brg" ColumnName="Currency_code_brg" />
+                <ScalarProperty Name="Currency_Name_roy" ColumnName="Currency_Name_roy" />
+                <ScalarProperty Name="Currency_Name_cfc" ColumnName="Currency_Name_cfc" />
+                <ScalarProperty Name="Currency_code_pro" ColumnName="Currency_code_pro" />
+                <ScalarProperty Name="Currency_code_mcg" ColumnName="Currency_code_mcg" />
+                <ScalarProperty Name="Currency_Name_tls" ColumnName="Currency_Name_tls" />
+                <ScalarProperty Name="Currency_code_aim" ColumnName="Currency_code_aim" />
+                <ScalarProperty Name="Currency_code_roy" ColumnName="Currency_code_roy" />
+                <ScalarProperty Name="Currency_Name_lhc" ColumnName="Currency_Name_lhc" />
+                <ScalarProperty Name="Currency_code_com" ColumnName="Currency_code_com" />
+                <ScalarProperty Name="Currency_code_eng" ColumnName="Currency_code_eng" />
+                <ScalarProperty Name="Currency_Name_aim" ColumnName="Currency_Name_aim" />
+                <ScalarProperty Name="Currency_Name_cap" ColumnName="Currency_Name_cap" />
+                <ScalarProperty Name="Currency_Name_eng" ColumnName="Currency_Name_eng" />
+                <ScalarProperty Name="Currency_code_oth" ColumnName="Currency_code_oth" />
+                <ScalarProperty Name="Currency_code_txs" ColumnName="Currency_code_txs" />
+                <ScalarProperty Name="Currency_code_tls" ColumnName="Currency_code_tls" />
+                <ScalarProperty Name="Currency_Name_brg" ColumnName="Currency_Name_brg" />
+                <ScalarProperty Name="Currency_Name_mcp" ColumnName="Currency_Name_mcp" />
+                <ScalarProperty Name="Other_specify" ColumnName="Other_specify" />
+                <ScalarProperty Name="Currency_Name_mcg" ColumnName="Currency_Name_mcg" />
+                <ScalarProperty Name="Currency_Name_ind" ColumnName="Currency_Name_ind" />
+                <ScalarProperty Name="Currency_code_ins" ColumnName="Currency_code_ins" />
+                <ScalarProperty Name="Currency_code_mcp" ColumnName="Currency_code_mcp" />
+                <ScalarProperty Name="Currency_code_ind" ColumnName="Currency_code_ind" />
+                <ScalarProperty Name="Currency_Name_com" ColumnName="Currency_Name_com" />
                 <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+                <ScalarProperty Name="Customs_duties_taxes" ColumnName="Customs_duties_taxes" />
+                <ScalarProperty Name="Currency_Rate_txs" ColumnName="Currency_Rate_txs" />
+                <ScalarProperty Name="Other_charges" ColumnName="Other_charges" />
+                <ScalarProperty Name="Currency_Rate_oth" ColumnName="Currency_Rate_oth" />
+                <ScalarProperty Name="Construction" ColumnName="Construction" />
+                <ScalarProperty Name="Currency_Rate_cfc" ColumnName="Currency_Rate_cfc" />
+                <ScalarProperty Name="Transport_after_import" ColumnName="Transport_after_import" />
+                <ScalarProperty Name="Currency_Rate_aim" ColumnName="Currency_Rate_aim" />
+                <ScalarProperty Name="Insurance" ColumnName="Insurance" />
+                <ScalarProperty Name="Currency_Rate_ins" ColumnName="Currency_Rate_ins" />
+                <ScalarProperty Name="Loading_handling" ColumnName="Loading_handling" />
+                <ScalarProperty Name="Currency_Rate_lhc" ColumnName="Currency_Rate_lhc" />
+                <ScalarProperty Name="Transport" ColumnName="Transport" />
+                <ScalarProperty Name="Currency_Rate_tpt" ColumnName="Currency_Rate_tpt" />
+                <ScalarProperty Name="Currency_Name_tpt" ColumnName="Currency_Name_tpt" />
+                <ScalarProperty Name="Currency_code_tpt" ColumnName="Currency_code_tpt" />
+                <ScalarProperty Name="Proceeds" ColumnName="Proceeds" />
+                <ScalarProperty Name="Currency_Rate_pro" ColumnName="Currency_Rate_pro" />
+                <ScalarProperty Name="Royalties_licence_fees" ColumnName="Royalties_licence_fees" />
+                <ScalarProperty Name="Currency_Rate_roy" ColumnName="Currency_Rate_roy" />
+                <ScalarProperty Name="Engineering_Development" ColumnName="Engineering_Development" />
+                <ScalarProperty Name="Currency_Rate_eng" ColumnName="Currency_Rate_eng" />
+                <ScalarProperty Name="Materials_Consumed" ColumnName="Materials_Consumed" />
+                <ScalarProperty Name="Currency_Rate_mcg" ColumnName="Currency_Rate_mcg" />
+                <ScalarProperty Name="Tool_Dies" ColumnName="Tool_Dies" />
+                <ScalarProperty Name="Currency_Rate_tls" ColumnName="Currency_Rate_tls" />
+                <ScalarProperty Name="Material_Components" ColumnName="Material_Components" />
+                <ScalarProperty Name="Currency_Rate_mcp" ColumnName="Currency_Rate_mcp" />
+                <ScalarProperty Name="Containers_Packaging" ColumnName="Containers_Packaging" />
+                <ScalarProperty Name="Currency_Rate_cap" ColumnName="Currency_Rate_cap" />
+                <ScalarProperty Name="Brokerage" ColumnName="Brokerage" />
+                <ScalarProperty Name="Currency_Rate_brg" ColumnName="Currency_Rate_brg" />
+                <ScalarProperty Name="Commissions" ColumnName="Commissions" />
+                <ScalarProperty Name="Currency_Rate_com" ColumnName="Currency_Rate_com" />
+                <ScalarProperty Name="Indirect_Payments" ColumnName="Indirect_Payments" />
+                <ScalarProperty Name="Currency_Rate_net" ColumnName="Currency_Rate_net" />
+                <ScalarProperty Name="Currency_Name_net" ColumnName="Currency_Name_net" />
+                <ScalarProperty Name="Currency_code_net" ColumnName="Currency_code_net" />
+                <ScalarProperty Name="Net_Price" ColumnName="Net_Price" />
+                <ScalarProperty Name="Currency_Rate_ind" ColumnName="Currency_Rate_ind" />
+                <ScalarProperty Name="Invoice_Date" ColumnName="Invoice_Date" />
+                <ScalarProperty Name="Invoice_Number" ColumnName="Invoice_Number" />
+                <ScalarProperty Name="Terms_of_Delivery_Desc" ColumnName="Terms_of_Delivery_Desc" />
+                <ScalarProperty Name="Terms_of_Delivery_Code" ColumnName="Terms_of_Delivery_Code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="xC71_Seller_segment">
-            <EntityTypeMapping TypeName="ValuationDS.xC71_Seller_segment">
+            <EntityTypeMapping TypeName="WaterNutModelDB.xC71_Seller_segment">
               <MappingFragment StoreEntitySet="xC71_Seller_segment">
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="xC71_Value_declaration_form">
-            <EntityTypeMapping TypeName="ValuationDS.xC71_Value_declaration_form">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutModelDB.xC71_Value_declaration_form)">
               <MappingFragment StoreEntitySet="xC71_Value_declaration_form">
-                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
               </MappingFragment>
             </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutModelDB.Registered)">
+              <MappingFragment StoreEntitySet="xC71_Value_declaration_form_Registered">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="RegNumber" ColumnName="RegNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>
@@ -485,7 +713,7 @@
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
-        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
       </DesignerInfoPropertySet>
     </Options>

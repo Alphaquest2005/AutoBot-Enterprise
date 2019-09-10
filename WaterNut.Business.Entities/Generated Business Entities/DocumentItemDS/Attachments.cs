@@ -70,6 +70,21 @@ namespace DocumentItemDS.Business.Entities
         }
         string _documentcode;
         [DataMember]
+        public string Reference 
+        {
+            get
+            {
+                return _reference;
+            }
+            set
+            {
+                _reference = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _reference;
+        [DataMember]
         public List<xcuda_Attachments> xcuda_Attachments { get; set; }
 
  //       [DataMember]

@@ -64,6 +64,8 @@ namespace AdjustmentQS
         public int AsycudaDocumentSetId { get; set; }
         public Nullable<int> FileTypeId { get; set; }
         public Nullable<int> EmailId { get; set; }
+        public string xStatus { get; set; }
+        public string Type { get; set; }
     
         public virtual AdjustmentShort AdjustmentShort { get; set; }
         public virtual AdjustmentDetail AdjustmentDetail { get; set; }

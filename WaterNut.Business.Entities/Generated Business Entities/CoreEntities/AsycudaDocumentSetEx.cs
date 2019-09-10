@@ -298,21 +298,6 @@ namespace CoreEntities.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public Nullable<double> TotalInternalFreight 
-        {
-            get
-            {
-                return _totalinternalfreight;
-            }
-            set
-            {
-                _totalinternalfreight = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _totalinternalfreight;
-        [DataMember]
         public Nullable<int> TotalPackages 
         {
             get
@@ -342,6 +327,81 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _lastfilenumber;
+        [DataMember]
+        public Nullable<int> TotalInvoices 
+        {
+            get
+            {
+                return _totalinvoices;
+            }
+            set
+            {
+                _totalinvoices = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _totalinvoices;
+        [DataMember]
+        public Nullable<int> ImportedInvoices 
+        {
+            get
+            {
+                return _importedinvoices;
+            }
+            set
+            {
+                _importedinvoices = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _importedinvoices;
+        [DataMember]
+        public Nullable<int> ClassifiedLines 
+        {
+            get
+            {
+                return _classifiedlines;
+            }
+            set
+            {
+                _classifiedlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _classifiedlines;
+        [DataMember]
+        public Nullable<int> TotalLines 
+        {
+            get
+            {
+                return _totallines;
+            }
+            set
+            {
+                _totallines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _totallines;
+        [DataMember]
+        public Nullable<int> MaxLines 
+        {
+            get
+            {
+                return _maxlines;
+            }
+            set
+            {
+                _maxlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _maxlines;
         [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]

@@ -25,7 +25,7 @@ namespace EntryDataQS.Business.Services
             var docSet = new List<AsycudaDocumentSet>() {await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false)};
             using (var ctx = new CoreEntitiesContext())
             {
-                var dfileType = ctx.FileTypes.FirstOrDefault(x =>
+                var dfileType = ctx.FileTypes.ToList().FirstOrDefault(x =>
                     Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType);
                 if (dfileType == null) // for filenames not in database
                 {

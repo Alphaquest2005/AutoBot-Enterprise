@@ -257,16 +257,22 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileTypes":
+                                return
+                                    await
+                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                             case "Suppliers":
                                 return
                                     await
                                         GetWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "FileTypes":
+                            case "EntryDataTotals":
                                 return
                                     await
-                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
+                                        GetWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -775,11 +781,14 @@ namespace EntryDataDS.Business.Services
                             case "ContainerEntryData":
                                 return await CountWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Suppliers":
                                 return await CountWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
+                            case "EntryDataTotals":
+                                return await CountWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -910,16 +919,22 @@ namespace EntryDataDS.Business.Services
                                         LoadRangeWhere<ContainerEntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
                             case "Suppliers":
                                 return
                                     await
                                         LoadRangeWhere<Suppliers>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "FileTypes":
+                            case "EntryDataTotals":
                                 return
                                     await
-                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
+                                        LoadRangeWhere<EntryDataExTotals>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1126,36 +1141,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<OpeningStock>> GetOpeningStockBySupplierId(string SupplierId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(SupplierId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<OpeningStock> entities = await set//dbContext.EntryData.OfType<OpeningStock>()
-                                      .AsNoTracking()
-                                        .Where(x => x.SupplierId.ToString() == SupplierId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<OpeningStock>> GetOpeningStockByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<OpeningStock>> GetOpeningStockByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1307,11 +1293,14 @@ namespace EntryDataDS.Business.Services
                             case "ContainerEntryData":
                                 return await SumWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Suppliers":
                                 return await SumWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
+                            case "EntryDataTotals":
+                                return await SumWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

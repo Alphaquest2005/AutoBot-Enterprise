@@ -31,9 +31,13 @@
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
               this.Property(t => t.TotalPackages).HasColumnName("TotalPackages");
               this.Property(t => t.LastFileNumber).HasColumnName("LastFileNumber");
+              this.Property(t => t.TotalInvoices).HasColumnName("TotalInvoices");
+              this.Property(t => t.ImportedInvoices).HasColumnName("ImportedInvoices");
+              this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
+              this.Property(t => t.TotalLines).HasColumnName("TotalLines");
+              this.Property(t => t.MaxLines).HasColumnName("MaxLines");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentSetEx>) t.AsycudaDocumentSetEx).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocuments).WithOptional(t => t.AsycudaDocumentSetEx).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.LicenceSummary).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);

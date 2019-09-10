@@ -11,16 +11,16 @@
     {
         public SuppliersMap()
         {                        
-              this.HasKey(t => t.SupplierId);        
+              this.HasKey(t => t.SupplierCode);        
               this.ToTable("Suppliers");
-              this.Property(t => t.SupplierId).HasColumnName("SupplierId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.SupplierCode).HasColumnName("SupplierCode").HasMaxLength(100);
+              this.Property(t => t.SupplierCode).HasColumnName("SupplierCode").IsRequired().HasMaxLength(100);
               this.Property(t => t.SupplierName).HasColumnName("SupplierName").HasMaxLength(510);
               this.Property(t => t.Street).HasColumnName("Street").HasMaxLength(100);
               this.Property(t => t.City).HasColumnName("City").HasMaxLength(38);
-              this.Property(t => t.ZipCode).HasColumnName("ZipCode").HasMaxLength(100);
               this.Property(t => t.Country).HasColumnName("Country").HasMaxLength(100);
-              this.HasMany(t => t.EntryData).WithOptional(t => t.Suppliers).HasForeignKey(d => d.SupplierId);
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.CountryCode).HasColumnName("CountryCode").HasMaxLength(3);
+              this.HasMany(t => t.EntryData).WithOptional(t => t.Suppliers).HasForeignKey(d => d.SupplierCode);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

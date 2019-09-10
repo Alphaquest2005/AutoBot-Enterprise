@@ -531,24 +531,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Double? _totalInternalFreightFilter;
-        public Double? TotalInternalFreightFilter
-        {
-            get
-            {
-                return _totalInternalFreightFilter;
-            }
-            set
-            {
-                _totalInternalFreightFilter = value;
-				NotifyPropertyChanged(x => TotalInternalFreightFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Int32? _totalPackagesFilter;
         public Int32? TotalPackagesFilter
         {
@@ -578,6 +560,96 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _lastFileNumberFilter = value;
 				NotifyPropertyChanged(x => LastFileNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _totalInvoicesFilter;
+        public Int32? TotalInvoicesFilter
+        {
+            get
+            {
+                return _totalInvoicesFilter;
+            }
+            set
+            {
+                _totalInvoicesFilter = value;
+				NotifyPropertyChanged(x => TotalInvoicesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _importedInvoicesFilter;
+        public Int32? ImportedInvoicesFilter
+        {
+            get
+            {
+                return _importedInvoicesFilter;
+            }
+            set
+            {
+                _importedInvoicesFilter = value;
+				NotifyPropertyChanged(x => ImportedInvoicesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _classifiedLinesFilter;
+        public Int32? ClassifiedLinesFilter
+        {
+            get
+            {
+                return _classifiedLinesFilter;
+            }
+            set
+            {
+                _classifiedLinesFilter = value;
+				NotifyPropertyChanged(x => ClassifiedLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _totalLinesFilter;
+        public Int32? TotalLinesFilter
+        {
+            get
+            {
+                return _totalLinesFilter;
+            }
+            set
+            {
+                _totalLinesFilter = value;
+				NotifyPropertyChanged(x => TotalLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _maxLinesFilter;
+        public Int32? MaxLinesFilter
+        {
+            get
+            {
+                return _maxLinesFilter;
+            }
+            set
+            {
+                _maxLinesFilter = value;
+				NotifyPropertyChanged(x => MaxLinesFilter);
                 FilterData();
                 
             }
@@ -689,14 +761,26 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 					if(TotalWeightFilter.HasValue)
 						res.Append(" && " + string.Format("TotalWeight == {0}",  TotalWeightFilter.ToString()));				 
 
-					if(TotalInternalFreightFilter.HasValue)
-						res.Append(" && " + string.Format("TotalInternalFreight == {0}",  TotalInternalFreightFilter.ToString()));				 
-
 					if(TotalPackagesFilter.HasValue)
 						res.Append(" && " + string.Format("TotalPackages == {0}",  TotalPackagesFilter.ToString()));				 
 
 					if(LastFileNumberFilter.HasValue)
-						res.Append(" && " + string.Format("LastFileNumber == {0}",  LastFileNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("LastFileNumber == {0}",  LastFileNumberFilter.ToString()));				 
+
+					if(TotalInvoicesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInvoices == {0}",  TotalInvoicesFilter.ToString()));				 
+
+					if(ImportedInvoicesFilter.HasValue)
+						res.Append(" && " + string.Format("ImportedInvoices == {0}",  ImportedInvoicesFilter.ToString()));				 
+
+					if(ClassifiedLinesFilter.HasValue)
+						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
+
+					if(TotalLinesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));				 
+
+					if(MaxLinesFilter.HasValue)
+						res.Append(" && " + string.Format("MaxLines == {0}",  MaxLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -761,13 +845,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalWeight = x.TotalWeight ,
                     
  
-                    TotalInternalFreight = x.TotalInternalFreight ,
-                    
- 
                     TotalPackages = x.TotalPackages ,
                     
  
-                    LastFileNumber = x.LastFileNumber 
+                    LastFileNumber = x.LastFileNumber ,
+                    
+ 
+                    TotalInvoices = x.TotalInvoices ,
+                    
+ 
+                    ImportedInvoices = x.ImportedInvoices ,
+                    
+ 
+                    ClassifiedLines = x.ClassifiedLines ,
+                    
+ 
+                    TotalLines = x.TotalLines ,
+                    
+ 
+                    MaxLines = x.MaxLines 
                     
                 }).ToList()
             };
@@ -822,13 +918,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> TotalWeight { get; set; } 
                     
  
-                    public Nullable<double> TotalInternalFreight { get; set; } 
-                    
- 
                     public Nullable<int> TotalPackages { get; set; } 
                     
  
                     public Nullable<int> LastFileNumber { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalInvoices { get; set; } 
+                    
+ 
+                    public Nullable<int> ImportedInvoices { get; set; } 
+                    
+ 
+                    public Nullable<int> ClassifiedLines { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalLines { get; set; } 
+                    
+ 
+                    public Nullable<int> MaxLines { get; set; } 
                     
         }
 

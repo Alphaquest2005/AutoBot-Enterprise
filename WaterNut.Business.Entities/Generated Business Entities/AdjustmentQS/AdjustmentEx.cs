@@ -74,21 +74,6 @@ namespace AdjustmentQS.Business.Entities
         }
         string _dutyfreepaid;
         [DataMember]
-        public Nullable<double> Total 
-        {
-            get
-            {
-                return _total;
-            }
-            set
-            {
-                _total = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _total;
-        [DataMember]
         public string InvoiceNo 
         {
             get
@@ -103,21 +88,6 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         string _invoiceno;
-        [DataMember]
-        public Nullable<double> ImportedTotal 
-        {
-            get
-            {
-                return _importedtotal;
-            }
-            set
-            {
-                _importedtotal = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _importedtotal;
         [DataMember]
         public Nullable<int> ImportedLines 
         {
@@ -208,6 +178,36 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         Nullable<int> _filetypeid;
+        [DataMember]
+        public Nullable<double> InvoiceTotal 
+        {
+            get
+            {
+                return _invoicetotal;
+            }
+            set
+            {
+                _invoicetotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _invoicetotal;
+        [DataMember]
+        public Nullable<double> ImportedTotal 
+        {
+            get
+            {
+                return _importedtotal;
+            }
+            set
+            {
+                _importedtotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _importedtotal;
         [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         [DataMember]

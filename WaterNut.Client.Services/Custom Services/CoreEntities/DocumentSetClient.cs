@@ -77,7 +77,12 @@ namespace CoreEntities.Client.Services
            await Channel.CleanLines(docSetId, lst, perIM7).ConfigureAwait(false);
        }
 
-       #region IDisposable implementation
+        public async Task AttachDocuments(int asycudaDocumentSetId, List<string> files)
+        {
+            await Channel.AttachDocuments(asycudaDocumentSetId, files).ConfigureAwait(false);
+        }
+
+        #region IDisposable implementation
 
         /// <summary>
         /// IDisposable.Dispose implementation, calls Dispose(true).
@@ -118,7 +123,6 @@ namespace CoreEntities.Client.Services
 
 
         #endregion
-
 
 
 

@@ -113,6 +113,20 @@
              sv.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
              sv.Output.File = @"DbContextMappings\SalesDataQS.Mappings.cs";
              sv.Render();
+    sv = new DbContextMappingsTPL();  
+             sv.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx";
+             sv.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx";
+             sv.outputProject = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
+             sv.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+             sv.Output.File = @"DbContextMappings\ValuationDS.Mappings.cs";
+             sv.Render();
+    sv = new DbContextMappingsTPL();  
+             sv.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx";
+             sv.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx";
+             sv.outputProject = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
+             sv.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+             sv.Output.File = @"DbContextMappings\LicenseDS.Mappings.cs";
+             sv.Render();
 
 
 	

@@ -26,15 +26,15 @@ namespace AdjustmentQS
         public System.DateTime InvoiceDate { get; set; }
         public string Type { get; set; }
         public string DutyFreePaid { get; set; }
-        public Nullable<double> Total { get; set; }
         public string InvoiceNo { get; set; }
-        public Nullable<double> ImportedTotal { get; set; }
         public Nullable<int> ImportedLines { get; set; }
         public Nullable<int> TotalLines { get; set; }
         public string Currency { get; set; }
         public int ApplicationSettingsId { get; set; }
         public Nullable<int> EmailId { get; set; }
         public Nullable<int> FileTypeId { get; set; }
+        public Nullable<double> InvoiceTotal { get; set; }
+        public Nullable<double> ImportedTotal { get; set; }
     
         public virtual ICollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         public virtual ICollection<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }

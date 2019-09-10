@@ -60,6 +60,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _DocumentCode;
 
+        [DataMember]
+        public string Reference
+		{ 
+		    get { return _Reference; }
+			set
+			{
+			    if (value == _Reference) return;
+				_Reference = value;
+				NotifyPropertyChanged();//m => this.Reference
+			}
+		}
+        private string _Reference;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments

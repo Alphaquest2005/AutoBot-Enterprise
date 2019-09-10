@@ -1120,6 +1120,24 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }	
 
  
+
+		private string _typeFilter;
+        public string TypeFilter
+        {
+            get
+            {
+                return _typeFilter;
+            }
+            set
+            {
+                _typeFilter = value;
+				NotifyPropertyChanged(x => TypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1446,6 +1464,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 									if(string.IsNullOrEmpty(xStatusFilter) == false)
 						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TypeFilter) == false)
+						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1589,7 +1611,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
-                    xStatus = x.xStatus 
+                    xStatus = x.xStatus ,
+                    
+ 
+                    Type = x.Type 
                     
                 }).ToList()
             };
@@ -1723,6 +1748,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public string xStatus { get; set; } 
+                    
+ 
+                    public string Type { get; set; } 
                     
         }
 

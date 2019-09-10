@@ -125,6 +125,7 @@
     <Compile Include="CoreEntities\SessionsClient.cs" />
     <Compile Include="CoreEntities\SubItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_AdjustmentsToXMLClient.cs" />
+    <Compile Include="CoreEntities\TODO_C71ToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_CreateDiscrepancyEntriesClient.cs" />
     <Compile Include="CoreEntities\TODO_CreateEx9Client.cs" />
     <Compile Include="CoreEntities\TODO_DeleteDocumentSetClient.cs" />
@@ -142,9 +143,14 @@
     <Compile Include="CoreEntities\TODO_ERRReport_EntryDataDetailsClient.cs" />
     <Compile Include="CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsClient.cs" />
     <Compile Include="CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_LicenseToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
     <Compile Include="CoreEntities\ToDo_POToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitInadequatePackagesClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitIncompleteEntryDataClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitUnclassifiedItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitXMLToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_UnallocatedSalesClient.cs" />
     <Compile Include="CoreEntities\TODO_UnallocatedShortsClient.cs" />

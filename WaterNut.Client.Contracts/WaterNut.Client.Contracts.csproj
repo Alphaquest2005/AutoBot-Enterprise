@@ -119,6 +119,7 @@
     <Compile Include="CoreEntities\ISessionsService.cs" />
     <Compile Include="CoreEntities\ISubItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_AdjustmentsToXMLService.cs" />
+    <Compile Include="CoreEntities\ITODO_C71ToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
     <Compile Include="CoreEntities\ITODO_CreateEx9Service.cs" />
     <Compile Include="CoreEntities\ITODO_DeleteDocumentSetService.cs" />
@@ -136,9 +137,14 @@
     <Compile Include="CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs" />
     <Compile Include="CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs" />
     <Compile Include="CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_LicenseToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
     <Compile Include="CoreEntities\IToDo_POToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedShortsService.cs" />

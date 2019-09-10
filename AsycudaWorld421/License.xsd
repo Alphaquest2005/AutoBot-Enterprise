@@ -49,6 +49,13 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
+              <xs:element minOccurs="0" name="Importer_email">
+                <xs:complexType mixed="true">
+                  <xs:sequence >
+                    <xs:element minOccurs="0" name="null" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
               <xs:element minOccurs="0" name="Exporter_name">
                 <xs:complexType mixed="true">
                   <xs:sequence >
@@ -99,9 +106,16 @@
                 </xs:complexType>
               </xs:element>
               
+              
               <xs:element name="Arrival_date" type="xs:string" />
               <xs:element name="Application_date" type="xs:string" />
-              <xs:element name="Expiry_date" />
+              <xs:element minOccurs="0" name="Expiry_date">
+                <xs:complexType mixed="true">
+                  <xs:sequence >
+                    <xs:element minOccurs="0" name="null" />
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
               <xs:element name="Importation_date" type="xs:string" />
             </xs:sequence>
           </xs:complexType>
@@ -110,11 +124,11 @@
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Description" type="xs:string" />
-              <xs:element name="Commodity_code" type="xs:unsignedInt" />
-              <xs:element name="Quantity_requested" type="xs:unsignedInt" />
+              <xs:element name="Commodity_code" type="xs:string" />
+              <xs:element name="Quantity_requested" type="xs:string" />
               <xs:element name="Origin" type="xs:string" />
               <xs:element name="Unit_of_measurement" type="xs:string" />
-              <xs:element name="Quantity_to_approve" type="xs:unsignedInt" />
+              <xs:element name="Quantity_to_approve" type="xs:string" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

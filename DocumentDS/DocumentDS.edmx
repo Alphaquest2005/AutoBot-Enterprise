@@ -41,9 +41,10 @@
           <Property Name="ApportionMethod" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="TotalFreight" Type="float" />
-          <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
           <Property Name="LastFileNumber" Type="int" />
+          <Property Name="TotalInvoices" Type="int" />
+          <Property Name="MaxLines" Type="int" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
@@ -72,6 +73,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -139,6 +141,7 @@
           <Property Name="ReplyToMail" Type="bit" Nullable="false" />
           <Property Name="FileGroupId" Type="int" />
           <Property Name="MergeEmails" Type="bit" Nullable="false" />
+          <Property Name="CopyEntryData" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Assessment">
           <Key>
@@ -372,6 +375,7 @@
           <Property Name="Currency_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Gs_external_freight">
           <Key>
@@ -393,6 +397,7 @@
           <Property Name="Currency_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Gs_internal_freight">
           <Key>
@@ -403,6 +408,7 @@
           <Property Name="Currency_name" Type="nvarchar(max)" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Gs_Invoice">
           <Key>
@@ -424,6 +430,7 @@
           <Property Name="Currency_name" Type="nvarchar" MaxLength="255" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Identification">
           <Key>
@@ -2178,7 +2185,6 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="ApportionMethod" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
-          <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
           <NavigationProperty Name="AsycudaDocumentSetEntryDatas" Relationship="WaterNutDBModel.FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSetEntryData" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
@@ -2186,6 +2192,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="AsycudaDocumentSet_Attachments" />
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="FileType" />
           <Property Name="LastFileNumber" Type="Int32" />
+          <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="MaxLines" Type="Int32" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -2492,6 +2500,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Currency_rate" Type="Double" Nullable="false" />
           <Property Name="Valuation_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDBModel.FK_xcuda_Gs_deduction_xcuda_Valuation" FromRole="xcuda_Gs_deduction" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Gs_external_freight">
           <Key>
@@ -2515,6 +2524,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Currency_rate" Type="Double" Nullable="false" />
           <Property Name="Valuation_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDBModel.FK_xcuda_Gs_insurance_xcuda_Valuation" FromRole="xcuda_Gs_insurance" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Gs_internal_freight">
           <Key>
@@ -2526,6 +2536,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Currency_rate" Type="Double" Nullable="false" />
           <Property Name="Valuation_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDBModel.FK_xcuda_Gs_internal_freight_xcuda_Valuation" FromRole="xcuda_Gs_internal_freight" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Gs_Invoice">
           <Key>
@@ -2549,6 +2560,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Currency_rate" Type="Double" Nullable="false" />
           <Property Name="Valuation_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDBModel.FK_xcuda_Gs_other_cost_xcuda_Valuation" FromRole="xcuda_Gs_other_cost" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Identification">
           <Key>
@@ -3697,6 +3709,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocument_Attachments" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocumentSet_Attachments" />
           <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaDocument_Attachments_Attachments">
           <End Type="WaterNutDBModel.Attachment" Role="Attachment" Multiplicity="1">
@@ -3771,6 +3784,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="MergeEmails" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_FileTypes_AsycudaDocumentSet" FromRole="FileType" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_FileTypes" FromRole="FileType" ToRole="AsycudaDocumentSet_Attachments" />
+          <Property Name="CopyEntryData" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_FileTypes_AsycudaDocumentSet">
           <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -3807,10 +3821,11 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSets">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
+                <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
                 <ScalarProperty Name="LastFileNumber" ColumnName="LastFileNumber" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
-                <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="ApportionMethod" ColumnName="ApportionMethod" />
@@ -4100,6 +4115,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Gs_deduction">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Gs_deduction">
               <MappingFragment StoreEntitySet="xcuda_Gs_deduction">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -4123,6 +4139,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Gs_insurance">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Gs_insurance">
               <MappingFragment StoreEntitySet="xcuda_Gs_insurance">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -4134,6 +4151,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Gs_internal_freight">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Gs_internal_freight">
               <MappingFragment StoreEntitySet="xcuda_Gs_internal_freight">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -4157,6 +4175,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Gs_other_cost">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Gs_other_cost">
               <MappingFragment StoreEntitySet="xcuda_Gs_other_cost">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -4459,6 +4478,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="Attachments">
             <EntityTypeMapping TypeName="WaterNutDBModel.Attachment">
               <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -4468,6 +4488,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileType">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="CopyEntryData" ColumnName="CopyEntryData" />
                 <ScalarProperty Name="MergeEmails" ColumnName="MergeEmails" />
                 <ScalarProperty Name="FileGroupId" ColumnName="FileGroupId" />
                 <ScalarProperty Name="ReplyToMail" ColumnName="ReplyToMail" />

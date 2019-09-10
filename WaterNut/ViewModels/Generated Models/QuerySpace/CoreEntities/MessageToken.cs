@@ -190,6 +190,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_AdjustmentsToXMLDeleted = "TODO_AdjustmentsToXMLDeleted";
 			public const string TODO_AdjustmentsToXMLCreated = "TODO_AdjustmentsToXMLCreated";
 			public const string TODO_AdjustmentsToXMLUpdated = "TODO_AdjustmentsToXMLUpdated";
+			public const string TODO_C71ToXMLFilterExpressionChanged = "TODO_C71ToXMLFilterExpressionChanged";
+			public const string SelectedTODO_C71ToXMLChanged = "SelectedTODO_C71ToXMLChanged";
+            public const string TODO_C71ToXMLChanged = "TODO_C71ToXMLChanged";
+			public const string TODO_C71ToXMLDeleted = "TODO_C71ToXMLDeleted";
+			public const string TODO_C71ToXMLCreated = "TODO_C71ToXMLCreated";
+			public const string TODO_C71ToXMLUpdated = "TODO_C71ToXMLUpdated";
 			public const string TODO_CreateDiscrepancyEntriesFilterExpressionChanged = "TODO_CreateDiscrepancyEntriesFilterExpressionChanged";
 			public const string SelectedTODO_CreateDiscrepancyEntriesChanged = "SelectedTODO_CreateDiscrepancyEntriesChanged";
             public const string TODO_CreateDiscrepancyEntriesChanged = "TODO_CreateDiscrepancyEntriesChanged";
@@ -292,6 +298,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_ERRReport_UnmappedItemsDeleted = "TODO_ERRReport_UnmappedItemsDeleted";
 			public const string TODO_ERRReport_UnmappedItemsCreated = "TODO_ERRReport_UnmappedItemsCreated";
 			public const string TODO_ERRReport_UnmappedItemsUpdated = "TODO_ERRReport_UnmappedItemsUpdated";
+			public const string TODO_LicenseToXMLFilterExpressionChanged = "TODO_LicenseToXMLFilterExpressionChanged";
+			public const string SelectedTODO_LicenseToXMLChanged = "SelectedTODO_LicenseToXMLChanged";
+            public const string TODO_LicenseToXMLChanged = "TODO_LicenseToXMLChanged";
+			public const string TODO_LicenseToXMLDeleted = "TODO_LicenseToXMLDeleted";
+			public const string TODO_LicenseToXMLCreated = "TODO_LicenseToXMLCreated";
+			public const string TODO_LicenseToXMLUpdated = "TODO_LicenseToXMLUpdated";
 			public const string TODO_PODocSetFilterExpressionChanged = "TODO_PODocSetFilterExpressionChanged";
 			public const string SelectedTODO_PODocSetChanged = "SelectedTODO_PODocSetChanged";
             public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
@@ -310,6 +322,30 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_SubmitDiscrepanciesToCustomsDeleted = "TODO_SubmitDiscrepanciesToCustomsDeleted";
 			public const string TODO_SubmitDiscrepanciesToCustomsCreated = "TODO_SubmitDiscrepanciesToCustomsCreated";
 			public const string TODO_SubmitDiscrepanciesToCustomsUpdated = "TODO_SubmitDiscrepanciesToCustomsUpdated";
+			public const string TODO_SubmitDocSetWithIncompleteInvoicesFilterExpressionChanged = "TODO_SubmitDocSetWithIncompleteInvoicesFilterExpressionChanged";
+			public const string SelectedTODO_SubmitDocSetWithIncompleteInvoicesChanged = "SelectedTODO_SubmitDocSetWithIncompleteInvoicesChanged";
+            public const string TODO_SubmitDocSetWithIncompleteInvoicesChanged = "TODO_SubmitDocSetWithIncompleteInvoicesChanged";
+			public const string TODO_SubmitDocSetWithIncompleteInvoicesDeleted = "TODO_SubmitDocSetWithIncompleteInvoicesDeleted";
+			public const string TODO_SubmitDocSetWithIncompleteInvoicesCreated = "TODO_SubmitDocSetWithIncompleteInvoicesCreated";
+			public const string TODO_SubmitDocSetWithIncompleteInvoicesUpdated = "TODO_SubmitDocSetWithIncompleteInvoicesUpdated";
+			public const string TODO_SubmitInadequatePackagesFilterExpressionChanged = "TODO_SubmitInadequatePackagesFilterExpressionChanged";
+			public const string SelectedTODO_SubmitInadequatePackagesChanged = "SelectedTODO_SubmitInadequatePackagesChanged";
+            public const string TODO_SubmitInadequatePackagesChanged = "TODO_SubmitInadequatePackagesChanged";
+			public const string TODO_SubmitInadequatePackagesDeleted = "TODO_SubmitInadequatePackagesDeleted";
+			public const string TODO_SubmitInadequatePackagesCreated = "TODO_SubmitInadequatePackagesCreated";
+			public const string TODO_SubmitInadequatePackagesUpdated = "TODO_SubmitInadequatePackagesUpdated";
+			public const string TODO_SubmitIncompleteEntryDataFilterExpressionChanged = "TODO_SubmitIncompleteEntryDataFilterExpressionChanged";
+			public const string SelectedTODO_SubmitIncompleteEntryDataChanged = "SelectedTODO_SubmitIncompleteEntryDataChanged";
+            public const string TODO_SubmitIncompleteEntryDataChanged = "TODO_SubmitIncompleteEntryDataChanged";
+			public const string TODO_SubmitIncompleteEntryDataDeleted = "TODO_SubmitIncompleteEntryDataDeleted";
+			public const string TODO_SubmitIncompleteEntryDataCreated = "TODO_SubmitIncompleteEntryDataCreated";
+			public const string TODO_SubmitIncompleteEntryDataUpdated = "TODO_SubmitIncompleteEntryDataUpdated";
+			public const string TODO_SubmitUnclassifiedItemsFilterExpressionChanged = "TODO_SubmitUnclassifiedItemsFilterExpressionChanged";
+			public const string SelectedTODO_SubmitUnclassifiedItemsChanged = "SelectedTODO_SubmitUnclassifiedItemsChanged";
+            public const string TODO_SubmitUnclassifiedItemsChanged = "TODO_SubmitUnclassifiedItemsChanged";
+			public const string TODO_SubmitUnclassifiedItemsDeleted = "TODO_SubmitUnclassifiedItemsDeleted";
+			public const string TODO_SubmitUnclassifiedItemsCreated = "TODO_SubmitUnclassifiedItemsCreated";
+			public const string TODO_SubmitUnclassifiedItemsUpdated = "TODO_SubmitUnclassifiedItemsUpdated";
 			public const string TODO_SubmitXMLToCustomsFilterExpressionChanged = "TODO_SubmitXMLToCustomsFilterExpressionChanged";
 			public const string SelectedTODO_SubmitXMLToCustomsChanged = "SelectedTODO_SubmitXMLToCustomsChanged";
             public const string TODO_SubmitXMLToCustomsChanged = "TODO_SubmitXMLToCustomsChanged";
@@ -366,6 +402,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string SessionScheduleChanged = "SessionScheduleChanged";
           // public const string SubItemsChanged = "SubItemsChanged";
           // public const string TODO_AdjustmentsToXMLChanged = "TODO_AdjustmentsToXMLChanged";
+          // public const string TODO_C71ToXMLChanged = "TODO_C71ToXMLChanged";
           // public const string TODO_CreateDiscrepancyEntriesChanged = "TODO_CreateDiscrepancyEntriesChanged";
           // public const string TODO_CreateEx9Changed = "TODO_CreateEx9Changed";
           // public const string TODO_DeleteDocumentSetChanged = "TODO_DeleteDocumentSetChanged";
@@ -383,9 +420,14 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_ERRReport_EntryDataDetailsChanged = "TODO_ERRReport_EntryDataDetailsChanged";
           // public const string TODO_ERRReport_SubmitWarehouseErrorsChanged = "TODO_ERRReport_SubmitWarehouseErrorsChanged";
           // public const string TODO_ERRReport_UnmappedItemsChanged = "TODO_ERRReport_UnmappedItemsChanged";
+          // public const string TODO_LicenseToXMLChanged = "TODO_LicenseToXMLChanged";
           // public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
           // public const string ToDo_POToXMLChanged = "ToDo_POToXMLChanged";
           // public const string TODO_SubmitDiscrepanciesToCustomsChanged = "TODO_SubmitDiscrepanciesToCustomsChanged";
+          // public const string TODO_SubmitDocSetWithIncompleteInvoicesChanged = "TODO_SubmitDocSetWithIncompleteInvoicesChanged";
+          // public const string TODO_SubmitInadequatePackagesChanged = "TODO_SubmitInadequatePackagesChanged";
+          // public const string TODO_SubmitIncompleteEntryDataChanged = "TODO_SubmitIncompleteEntryDataChanged";
+          // public const string TODO_SubmitUnclassifiedItemsChanged = "TODO_SubmitUnclassifiedItemsChanged";
           // public const string TODO_SubmitXMLToCustomsChanged = "TODO_SubmitXMLToCustomsChanged";
           // public const string TODO_UnallocatedSalesChanged = "TODO_UnallocatedSalesChanged";
           // public const string TODO_UnallocatedShortsChanged = "TODO_UnallocatedShortsChanged";
@@ -453,6 +495,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_AdjustmentsToXMLChanged = "CurrentTODO_AdjustmentsToXMLChanged";
    
+           public const string CurrentTODO_C71ToXMLChanged = "CurrentTODO_C71ToXMLChanged";
+   
            public const string CurrentTODO_CreateDiscrepancyEntriesChanged = "CurrentTODO_CreateDiscrepancyEntriesChanged";
    
            public const string CurrentTODO_CreateEx9Changed = "CurrentTODO_CreateEx9Changed";
@@ -487,11 +531,21 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_ERRReport_UnmappedItemsChanged = "CurrentTODO_ERRReport_UnmappedItemsChanged";
    
+           public const string CurrentTODO_LicenseToXMLChanged = "CurrentTODO_LicenseToXMLChanged";
+   
            public const string CurrentTODO_PODocSetChanged = "CurrentTODO_PODocSetChanged";
    
            public const string CurrentToDo_POToXMLChanged = "CurrentToDo_POToXMLChanged";
    
            public const string CurrentTODO_SubmitDiscrepanciesToCustomsChanged = "CurrentTODO_SubmitDiscrepanciesToCustomsChanged";
+   
+           public const string CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged = "CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged";
+   
+           public const string CurrentTODO_SubmitInadequatePackagesChanged = "CurrentTODO_SubmitInadequatePackagesChanged";
+   
+           public const string CurrentTODO_SubmitIncompleteEntryDataChanged = "CurrentTODO_SubmitIncompleteEntryDataChanged";
+   
+           public const string CurrentTODO_SubmitUnclassifiedItemsChanged = "CurrentTODO_SubmitUnclassifiedItemsChanged";
    
            public const string CurrentTODO_SubmitXMLToCustomsChanged = "CurrentTODO_SubmitXMLToCustomsChanged";
    
@@ -563,6 +617,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_AdjustmentsToXMLIDChanged = "OnCurrentTODO_AdjustmentsToXMLIDChanged";
    
+           public const string CurrentTODO_C71ToXMLIDChanged = "OnCurrentTODO_C71ToXMLIDChanged";
+   
            public const string CurrentTODO_CreateDiscrepancyEntriesIDChanged = "OnCurrentTODO_CreateDiscrepancyEntriesIDChanged";
    
            public const string CurrentTODO_CreateEx9IDChanged = "OnCurrentTODO_CreateEx9IDChanged";
@@ -597,11 +653,21 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_ERRReport_UnmappedItemsIDChanged = "OnCurrentTODO_ERRReport_UnmappedItemsIDChanged";
    
+           public const string CurrentTODO_LicenseToXMLIDChanged = "OnCurrentTODO_LicenseToXMLIDChanged";
+   
            public const string CurrentTODO_PODocSetIDChanged = "OnCurrentTODO_PODocSetIDChanged";
    
            public const string CurrentToDo_POToXMLIDChanged = "OnCurrentToDo_POToXMLIDChanged";
    
            public const string CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged = "OnCurrentTODO_SubmitDiscrepanciesToCustomsIDChanged";
+   
+           public const string CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged = "OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged";
+   
+           public const string CurrentTODO_SubmitInadequatePackagesIDChanged = "OnCurrentTODO_SubmitInadequatePackagesIDChanged";
+   
+           public const string CurrentTODO_SubmitIncompleteEntryDataIDChanged = "OnCurrentTODO_SubmitIncompleteEntryDataIDChanged";
+   
+           public const string CurrentTODO_SubmitUnclassifiedItemsIDChanged = "OnCurrentTODO_SubmitUnclassifiedItemsIDChanged";
    
            public const string CurrentTODO_SubmitXMLToCustomsIDChanged = "OnCurrentTODO_SubmitXMLToCustomsIDChanged";
    

@@ -83,6 +83,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSessionScheduleIDChanged, OnCurrentSessionScheduleIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSubItemsIDChanged, OnCurrentSubItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_AdjustmentsToXMLIDChanged, OnCurrentTODO_AdjustmentsToXMLIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_C71ToXMLIDChanged, OnCurrentTODO_C71ToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_CreateDiscrepancyEntriesIDChanged, OnCurrentTODO_CreateDiscrepancyEntriesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_CreateEx9IDChanged, OnCurrentTODO_CreateEx9IDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DeleteDocumentSetIDChanged, OnCurrentTODO_DeleteDocumentSetIDChanged);
@@ -100,9 +101,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsIDChanged, OnCurrentTODO_ERRReport_EntryDataDetailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, OnCurrentTODO_ERRReport_UnmappedItemsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, OnCurrentTODO_LicenseToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentToDo_POToXMLIDChanged, OnCurrentToDo_POToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitInadequatePackagesIDChanged, OnCurrentTODO_SubmitInadequatePackagesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataIDChanged, OnCurrentTODO_SubmitIncompleteEntryDataIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsIDChanged, OnCurrentTODO_SubmitUnclassifiedItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitXMLToCustomsIDChanged, OnCurrentTODO_SubmitXMLToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_UnallocatedSalesIDChanged, OnCurrentTODO_UnallocatedSalesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_UnallocatedShortsIDChanged, OnCurrentTODO_UnallocatedShortsIDChanged);
@@ -140,6 +146,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<SessionSchedule>(MessageToken.CurrentSessionScheduleChanged, OnCurrentSessionScheduleChanged);
                         RegisterToReceiveMessages<SubItems>(MessageToken.CurrentSubItemsChanged, OnCurrentSubItemsChanged);
                         RegisterToReceiveMessages<TODO_AdjustmentsToXML>(MessageToken.CurrentTODO_AdjustmentsToXMLChanged, OnCurrentTODO_AdjustmentsToXMLChanged);
+                        RegisterToReceiveMessages<TODO_C71ToXML>(MessageToken.CurrentTODO_C71ToXMLChanged, OnCurrentTODO_C71ToXMLChanged);
                         RegisterToReceiveMessages<TODO_CreateDiscrepancyEntries>(MessageToken.CurrentTODO_CreateDiscrepancyEntriesChanged, OnCurrentTODO_CreateDiscrepancyEntriesChanged);
                         RegisterToReceiveMessages<TODO_CreateEx9>(MessageToken.CurrentTODO_CreateEx9Changed, OnCurrentTODO_CreateEx9Changed);
                         RegisterToReceiveMessages<TODO_DeleteDocumentSet>(MessageToken.CurrentTODO_DeleteDocumentSetChanged, OnCurrentTODO_DeleteDocumentSetChanged);
@@ -157,9 +164,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_ERRReport_EntryDataDetails>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsChanged, OnCurrentTODO_ERRReport_EntryDataDetailsChanged);
                         RegisterToReceiveMessages<TODO_ERRReport_SubmitWarehouseErrors>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsChanged);
                         RegisterToReceiveMessages<TODO_ERRReport_UnmappedItems>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged, OnCurrentTODO_ERRReport_UnmappedItemsChanged);
+                        RegisterToReceiveMessages<TODO_LicenseToXML>(MessageToken.CurrentTODO_LicenseToXMLChanged, OnCurrentTODO_LicenseToXMLChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
                         RegisterToReceiveMessages<ToDo_POToXML>(MessageToken.CurrentToDo_POToXMLChanged, OnCurrentToDo_POToXMLChanged);
                         RegisterToReceiveMessages<TODO_SubmitDiscrepanciesToCustoms>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsChanged);
+                        RegisterToReceiveMessages<TODO_SubmitDocSetWithIncompleteInvoices>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged);
+                        RegisterToReceiveMessages<TODO_SubmitInadequatePackages>(MessageToken.CurrentTODO_SubmitInadequatePackagesChanged, OnCurrentTODO_SubmitInadequatePackagesChanged);
+                        RegisterToReceiveMessages<TODO_SubmitIncompleteEntryData>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataChanged, OnCurrentTODO_SubmitIncompleteEntryDataChanged);
+                        RegisterToReceiveMessages<TODO_SubmitUnclassifiedItems>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsChanged, OnCurrentTODO_SubmitUnclassifiedItemsChanged);
                         RegisterToReceiveMessages<TODO_SubmitXMLToCustoms>(MessageToken.CurrentTODO_SubmitXMLToCustomsChanged, OnCurrentTODO_SubmitXMLToCustomsChanged);
                         RegisterToReceiveMessages<TODO_UnallocatedSales>(MessageToken.CurrentTODO_UnallocatedSalesChanged, OnCurrentTODO_UnallocatedSalesChanged);
                         RegisterToReceiveMessages<TODO_UnallocatedShorts>(MessageToken.CurrentTODO_UnallocatedShortsChanged, OnCurrentTODO_UnallocatedShortsChanged);
@@ -993,6 +1005,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentTODO_C71ToXMLIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_C71ToXMLRepository ctx = new TODO_C71ToXMLRepository())
+                            {
+                                CurrentTODO_C71ToXML = await ctx.GetTODO_C71ToXML(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_C71ToXML);
+                        }
+
+                        private  string _currentTODO_C71ToXMLID = "";
+                        public string CurrentTODO_C71ToXMLID
+                        {
+                            get
+                            {
+                                return _currentTODO_C71ToXMLID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_C71ToXMLID != value)
+                                {
+                                    _currentTODO_C71ToXMLID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_C71ToXMLID)) BeginSendMessage(MessageToken.CurrentTODO_C71ToXMLIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_C71ToXMLIDChanged, _currentTODO_C71ToXMLID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_C71ToXMLID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentTODO_CreateDiscrepancyEntriesIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (TODO_CreateDiscrepancyEntriesRepository ctx = new TODO_CreateDiscrepancyEntriesRepository())
@@ -1452,6 +1491,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentTODO_LicenseToXMLIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_LicenseToXMLRepository ctx = new TODO_LicenseToXMLRepository())
+                            {
+                                CurrentTODO_LicenseToXML = await ctx.GetTODO_LicenseToXML(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_LicenseToXML);
+                        }
+
+                        private  string _currentTODO_LicenseToXMLID = "";
+                        public string CurrentTODO_LicenseToXMLID
+                        {
+                            get
+                            {
+                                return _currentTODO_LicenseToXMLID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_LicenseToXMLID != value)
+                                {
+                                    _currentTODO_LicenseToXMLID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_LicenseToXMLID)) BeginSendMessage(MessageToken.CurrentTODO_LicenseToXMLIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, _currentTODO_LicenseToXMLID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_LicenseToXMLID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentTODO_PODocSetIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (TODO_PODocSetRepository ctx = new TODO_PODocSetRepository())
@@ -1530,6 +1596,114 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_SubmitDiscrepanciesToCustomsID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged, _currentTODO_SubmitDiscrepanciesToCustomsID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_SubmitDiscrepanciesToCustomsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitDocSetWithIncompleteInvoicesRepository ctx = new TODO_SubmitDocSetWithIncompleteInvoicesRepository())
+                            {
+                                CurrentTODO_SubmitDocSetWithIncompleteInvoices = await ctx.GetTODO_SubmitDocSetWithIncompleteInvoices(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitDocSetWithIncompleteInvoices);
+                        }
+
+                        private  string _currentTODO_SubmitDocSetWithIncompleteInvoicesID = "";
+                        public string CurrentTODO_SubmitDocSetWithIncompleteInvoicesID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitDocSetWithIncompleteInvoicesID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitDocSetWithIncompleteInvoicesID != value)
+                                {
+                                    _currentTODO_SubmitDocSetWithIncompleteInvoicesID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitDocSetWithIncompleteInvoicesID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged, _currentTODO_SubmitDocSetWithIncompleteInvoicesID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitDocSetWithIncompleteInvoicesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_SubmitInadequatePackagesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitInadequatePackagesRepository ctx = new TODO_SubmitInadequatePackagesRepository())
+                            {
+                                CurrentTODO_SubmitInadequatePackages = await ctx.GetTODO_SubmitInadequatePackages(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitInadequatePackages);
+                        }
+
+                        private  string _currentTODO_SubmitInadequatePackagesID = "";
+                        public string CurrentTODO_SubmitInadequatePackagesID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitInadequatePackagesID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitInadequatePackagesID != value)
+                                {
+                                    _currentTODO_SubmitInadequatePackagesID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitInadequatePackagesID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitInadequatePackagesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitInadequatePackagesIDChanged, _currentTODO_SubmitInadequatePackagesID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitInadequatePackagesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_SubmitIncompleteEntryDataIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitIncompleteEntryDataRepository ctx = new TODO_SubmitIncompleteEntryDataRepository())
+                            {
+                                CurrentTODO_SubmitIncompleteEntryData = await ctx.GetTODO_SubmitIncompleteEntryData(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitIncompleteEntryData);
+                        }
+
+                        private  string _currentTODO_SubmitIncompleteEntryDataID = "";
+                        public string CurrentTODO_SubmitIncompleteEntryDataID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitIncompleteEntryDataID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitIncompleteEntryDataID != value)
+                                {
+                                    _currentTODO_SubmitIncompleteEntryDataID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitIncompleteEntryDataID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitIncompleteEntryDataIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataIDChanged, _currentTODO_SubmitIncompleteEntryDataID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitIncompleteEntryDataID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_SubmitUnclassifiedItemsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitUnclassifiedItemsRepository ctx = new TODO_SubmitUnclassifiedItemsRepository())
+                            {
+                                CurrentTODO_SubmitUnclassifiedItems = await ctx.GetTODO_SubmitUnclassifiedItems(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitUnclassifiedItems);
+                        }
+
+                        private  string _currentTODO_SubmitUnclassifiedItemsID = "";
+                        public string CurrentTODO_SubmitUnclassifiedItemsID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitUnclassifiedItemsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitUnclassifiedItemsID != value)
+                                {
+                                    _currentTODO_SubmitUnclassifiedItemsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitUnclassifiedItemsID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitUnclassifiedItemsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsIDChanged, _currentTODO_SubmitUnclassifiedItemsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitUnclassifiedItemsID);  
                                 }
                             }
                         }
@@ -3181,6 +3355,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentTODO_C71ToXMLChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_C71ToXML> e)
+        {
+            //CurrentTODO_C71ToXML = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_C71ToXML);
+        }
+
+        private  TODO_C71ToXML _currentTODO_C71ToXML;
+        public TODO_C71ToXML CurrentTODO_C71ToXML
+        {
+            get
+            {
+                return _currentTODO_C71ToXML;
+            }
+            set
+            {
+                if (_currentTODO_C71ToXML != value)
+                {
+                    _currentTODO_C71ToXML = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_C71ToXMLChanged,
+                                                     new NotificationEventArgs<TODO_C71ToXML>(MessageToken.CurrentTODO_C71ToXMLChanged, _currentTODO_C71ToXML)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_C71ToXML);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_C71ToXML> _vcurrentTODO_C71ToXML;
+        public VirtualListItem<TODO_C71ToXML> VCurrentTODO_C71ToXML
+        {
+            get
+            {
+                return _vcurrentTODO_C71ToXML;
+            }
+            set
+            {
+                if (_vcurrentTODO_C71ToXML != value)
+                {
+                    _vcurrentTODO_C71ToXML = value;
+					if(_vcurrentTODO_C71ToXML != null) CurrentTODO_C71ToXML = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_C71ToXML);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentTODO_CreateDiscrepancyEntriesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_CreateDiscrepancyEntries> e)
         {
             //CurrentTODO_CreateDiscrepancyEntries = e.Data;
@@ -4031,6 +4255,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentTODO_LicenseToXMLChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_LicenseToXML> e)
+        {
+            //CurrentTODO_LicenseToXML = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_LicenseToXML);
+        }
+
+        private  TODO_LicenseToXML _currentTODO_LicenseToXML;
+        public TODO_LicenseToXML CurrentTODO_LicenseToXML
+        {
+            get
+            {
+                return _currentTODO_LicenseToXML;
+            }
+            set
+            {
+                if (_currentTODO_LicenseToXML != value)
+                {
+                    _currentTODO_LicenseToXML = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_LicenseToXMLChanged,
+                                                     new NotificationEventArgs<TODO_LicenseToXML>(MessageToken.CurrentTODO_LicenseToXMLChanged, _currentTODO_LicenseToXML)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_LicenseToXML);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_LicenseToXML> _vcurrentTODO_LicenseToXML;
+        public VirtualListItem<TODO_LicenseToXML> VCurrentTODO_LicenseToXML
+        {
+            get
+            {
+                return _vcurrentTODO_LicenseToXML;
+            }
+            set
+            {
+                if (_vcurrentTODO_LicenseToXML != value)
+                {
+                    _vcurrentTODO_LicenseToXML = value;
+					if(_vcurrentTODO_LicenseToXML != null) CurrentTODO_LicenseToXML = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_LicenseToXML);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentTODO_PODocSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PODocSet> e)
         {
             //CurrentTODO_PODocSet = e.Data;
@@ -4172,6 +4446,206 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_SubmitDiscrepanciesToCustoms = value;
 					if(_vcurrentTODO_SubmitDiscrepanciesToCustoms != null) CurrentTODO_SubmitDiscrepanciesToCustoms = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_SubmitDiscrepanciesToCustoms);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitDocSetWithIncompleteInvoices> e)
+        {
+            //CurrentTODO_SubmitDocSetWithIncompleteInvoices = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitDocSetWithIncompleteInvoices);
+        }
+
+        private  TODO_SubmitDocSetWithIncompleteInvoices _currentTODO_SubmitDocSetWithIncompleteInvoices;
+        public TODO_SubmitDocSetWithIncompleteInvoices CurrentTODO_SubmitDocSetWithIncompleteInvoices
+        {
+            get
+            {
+                return _currentTODO_SubmitDocSetWithIncompleteInvoices;
+            }
+            set
+            {
+                if (_currentTODO_SubmitDocSetWithIncompleteInvoices != value)
+                {
+                    _currentTODO_SubmitDocSetWithIncompleteInvoices = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged,
+                                                     new NotificationEventArgs<TODO_SubmitDocSetWithIncompleteInvoices>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged, _currentTODO_SubmitDocSetWithIncompleteInvoices)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitDocSetWithIncompleteInvoices);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitDocSetWithIncompleteInvoices> _vcurrentTODO_SubmitDocSetWithIncompleteInvoices;
+        public VirtualListItem<TODO_SubmitDocSetWithIncompleteInvoices> VCurrentTODO_SubmitDocSetWithIncompleteInvoices
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitDocSetWithIncompleteInvoices;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitDocSetWithIncompleteInvoices != value)
+                {
+                    _vcurrentTODO_SubmitDocSetWithIncompleteInvoices = value;
+					if(_vcurrentTODO_SubmitDocSetWithIncompleteInvoices != null) CurrentTODO_SubmitDocSetWithIncompleteInvoices = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitDocSetWithIncompleteInvoices);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitInadequatePackagesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitInadequatePackages> e)
+        {
+            //CurrentTODO_SubmitInadequatePackages = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitInadequatePackages);
+        }
+
+        private  TODO_SubmitInadequatePackages _currentTODO_SubmitInadequatePackages;
+        public TODO_SubmitInadequatePackages CurrentTODO_SubmitInadequatePackages
+        {
+            get
+            {
+                return _currentTODO_SubmitInadequatePackages;
+            }
+            set
+            {
+                if (_currentTODO_SubmitInadequatePackages != value)
+                {
+                    _currentTODO_SubmitInadequatePackages = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitInadequatePackagesChanged,
+                                                     new NotificationEventArgs<TODO_SubmitInadequatePackages>(MessageToken.CurrentTODO_SubmitInadequatePackagesChanged, _currentTODO_SubmitInadequatePackages)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitInadequatePackages);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitInadequatePackages> _vcurrentTODO_SubmitInadequatePackages;
+        public VirtualListItem<TODO_SubmitInadequatePackages> VCurrentTODO_SubmitInadequatePackages
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitInadequatePackages;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitInadequatePackages != value)
+                {
+                    _vcurrentTODO_SubmitInadequatePackages = value;
+					if(_vcurrentTODO_SubmitInadequatePackages != null) CurrentTODO_SubmitInadequatePackages = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitInadequatePackages);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitIncompleteEntryDataChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitIncompleteEntryData> e)
+        {
+            //CurrentTODO_SubmitIncompleteEntryData = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitIncompleteEntryData);
+        }
+
+        private  TODO_SubmitIncompleteEntryData _currentTODO_SubmitIncompleteEntryData;
+        public TODO_SubmitIncompleteEntryData CurrentTODO_SubmitIncompleteEntryData
+        {
+            get
+            {
+                return _currentTODO_SubmitIncompleteEntryData;
+            }
+            set
+            {
+                if (_currentTODO_SubmitIncompleteEntryData != value)
+                {
+                    _currentTODO_SubmitIncompleteEntryData = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitIncompleteEntryDataChanged,
+                                                     new NotificationEventArgs<TODO_SubmitIncompleteEntryData>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataChanged, _currentTODO_SubmitIncompleteEntryData)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitIncompleteEntryData);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitIncompleteEntryData> _vcurrentTODO_SubmitIncompleteEntryData;
+        public VirtualListItem<TODO_SubmitIncompleteEntryData> VCurrentTODO_SubmitIncompleteEntryData
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitIncompleteEntryData;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitIncompleteEntryData != value)
+                {
+                    _vcurrentTODO_SubmitIncompleteEntryData = value;
+					if(_vcurrentTODO_SubmitIncompleteEntryData != null) CurrentTODO_SubmitIncompleteEntryData = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitIncompleteEntryData);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitUnclassifiedItemsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitUnclassifiedItems> e)
+        {
+            //CurrentTODO_SubmitUnclassifiedItems = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitUnclassifiedItems);
+        }
+
+        private  TODO_SubmitUnclassifiedItems _currentTODO_SubmitUnclassifiedItems;
+        public TODO_SubmitUnclassifiedItems CurrentTODO_SubmitUnclassifiedItems
+        {
+            get
+            {
+                return _currentTODO_SubmitUnclassifiedItems;
+            }
+            set
+            {
+                if (_currentTODO_SubmitUnclassifiedItems != value)
+                {
+                    _currentTODO_SubmitUnclassifiedItems = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitUnclassifiedItemsChanged,
+                                                     new NotificationEventArgs<TODO_SubmitUnclassifiedItems>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsChanged, _currentTODO_SubmitUnclassifiedItems)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitUnclassifiedItems);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitUnclassifiedItems> _vcurrentTODO_SubmitUnclassifiedItems;
+        public VirtualListItem<TODO_SubmitUnclassifiedItems> VCurrentTODO_SubmitUnclassifiedItems
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitUnclassifiedItems;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitUnclassifiedItems != value)
+                {
+                    _vcurrentTODO_SubmitUnclassifiedItems = value;
+					if(_vcurrentTODO_SubmitUnclassifiedItems != null) CurrentTODO_SubmitUnclassifiedItems = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitUnclassifiedItems);                    
                 }
             }
         }

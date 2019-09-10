@@ -528,6 +528,32 @@ namespace CoreEntities.Client.DTO
 		}
         private string _AsycudaPassword;
 
+        [DataMember]
+        public Nullable<bool> AssessIM7
+		{ 
+		    get { return _AssessIM7; }
+			set
+			{
+			    if (value == _AssessIM7) return;
+				_AssessIM7 = value;
+				NotifyPropertyChanged();//m => this.AssessIM7
+			}
+		}
+        private Nullable<bool> _AssessIM7;
+
+        [DataMember]
+        public Nullable<bool> AssessEX
+		{ 
+		    get { return _AssessEX; }
+			set
+			{
+			    if (value == _AssessEX) return;
+				_AssessEX = value;
+				NotifyPropertyChanged();//m => this.AssessEX
+			}
+		}
+        private Nullable<bool> _AssessEX;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

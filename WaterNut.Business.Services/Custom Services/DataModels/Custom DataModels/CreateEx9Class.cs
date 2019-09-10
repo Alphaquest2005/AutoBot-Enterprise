@@ -1967,7 +1967,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                                     cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number,
                                                     cdoc.Document.ReferenceNumber + ".csv.pdf"),
                                                 TrackingState = TrackingState.Added,
-                                                DocumentCode = "DFS1"
+                                                DocumentCode = "DFS1",
+                                                Reference = cdoc.Document.ReferenceNumber ,
                                             },
                                             
                                             TrackingState = TrackingState.Added
@@ -2427,9 +2428,13 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                         cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code = Exp.Export_country_code;
                     }
 
+                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_code = Exp.Exporter_code;
+                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name = Exp.Exporter_name;
+                    cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = Exp.Consignee_name;
+                    cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = Exp.Consignee_code;
 
                     //cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
-                    
+
                 }
             }
             catch (Exception)

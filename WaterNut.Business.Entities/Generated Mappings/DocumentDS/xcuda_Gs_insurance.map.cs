@@ -18,6 +18,7 @@
               this.Property(t => t.Currency_name).HasColumnName("Currency_name").HasMaxLength(20);
               this.Property(t => t.Currency_rate).HasColumnName("Currency_rate");
               this.Property(t => t.Valuation_Id).HasColumnName("Valuation_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.Currency_code).HasColumnName("Currency_code").HasMaxLength(50);
               this.HasRequired(t => t.xcuda_Valuation).WithOptional(t => (xcuda_Gs_insurance)t.xcuda_Gs_insurance);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

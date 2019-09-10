@@ -295,50 +295,36 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
-		private DateTime? _startFileDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
-        public DateTime? StartFileDateFilter
+
+		private Int32? _invoicesFilter;
+        public Int32? InvoicesFilter
         {
             get
             {
-                return _startFileDateFilter;
+                return _invoicesFilter;
             }
             set
             {
-                _startFileDateFilter = value;
-				NotifyPropertyChanged(x => StartFileDateFilter);
+                _invoicesFilter = value;
+				NotifyPropertyChanged(x => InvoicesFilter);
                 FilterData();
                 
             }
         }	
 
-		private DateTime? _endFileDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
-        public DateTime? EndFileDateFilter
-        {
-            get
-            {
-                return _endFileDateFilter;
-            }
-            set
-            {
-                _endFileDateFilter = value;
-				NotifyPropertyChanged(x => EndFileDateFilter);
-                FilterData();
-                
-            }
-        }
  
 
-		private DateTime? _fileDateFilter;
-        public DateTime? FileDateFilter
+		private Int32? _totalInvoicesFilter;
+        public Int32? TotalInvoicesFilter
         {
             get
             {
-                return _fileDateFilter;
+                return _totalInvoicesFilter;
             }
             set
             {
-                _fileDateFilter = value;
-				NotifyPropertyChanged(x => FileDateFilter);
+                _totalInvoicesFilter = value;
+				NotifyPropertyChanged(x => TotalInvoicesFilter);
                 FilterData();
                 
             }
@@ -403,34 +389,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
  
 
- 
+					if(InvoicesFilter.HasValue)
+						res.Append(" && " + string.Format("Invoices == {0}",  InvoicesFilter.ToString()));				 
 
-				if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue &&
-		        Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue) res.Append(" && (");
-
-					if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue)
-						{
-							if(StartFileDateFilter.HasValue)
-								res.Append(
-                                            (Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue?"":" && ") +
-                                            string.Format("FileDate >= \"{0}\"",  Convert.ToDateTime(StartFileDateFilter).Date.ToString("MM/dd/yyyy")));
-						}
-
-					if (Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue)
-						{
-							if(EndFileDateFilter.HasValue)
-								res.Append(" && " + string.Format("FileDate <= \"{0}\"",  Convert.ToDateTime(EndFileDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
-						}
-
-				if (Convert.ToDateTime(StartFileDateFilter).Date != DateTime.MinValue &&
-		        Convert.ToDateTime(EndFileDateFilter).Date != DateTime.MinValue) res.Append(" )");
-
-					if (Convert.ToDateTime(_fileDateFilter).Date != DateTime.MinValue)
-						{
-							if(FileDateFilter.HasValue)
-								res.Append(" && " + string.Format("FileDate == \"{0}\"",  Convert.ToDateTime(FileDateFilter).Date.ToString("MM/dd/yyyy")));
-						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+					if(TotalInvoicesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInvoices == {0}",  TotalInvoicesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -474,7 +437,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
                     
  
-                    FileDate = x.FileDate 
+                    Invoices = x.Invoices ,
+                    
+ 
+                    TotalInvoices = x.TotalInvoices 
                     
                 }).ToList()
             };
@@ -508,7 +474,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Declarant_Reference_Number { get; set; } 
                     
  
-                    public Nullable<System.DateTime> FileDate { get; set; } 
+                    public Nullable<int> Invoices { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalInvoices { get; set; } 
                     
         }
 

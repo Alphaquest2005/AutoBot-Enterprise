@@ -111,6 +111,38 @@ public string Name
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
+       
+public int ApplicationSettingsId
+		{ 
+		    get { return this.contacts.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.contacts.ApplicationSettingsId) return;
+				this.contacts.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(10, ErrorMessage = "CellPhone has a max length of 10 letters ")]
+public string CellPhone
+		{ 
+		    get { return this.contacts.CellPhone; }
+			set
+			{
+			    if (value == this.contacts.CellPhone) return;
+				this.contacts.CellPhone = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CellPhone");
+			}
+		}
+     
+
         ObservableCollection<FileTypeContacts> _FileTypeContacts = null;
         public  ObservableCollection<FileTypeContacts> FileTypeContacts
 		{

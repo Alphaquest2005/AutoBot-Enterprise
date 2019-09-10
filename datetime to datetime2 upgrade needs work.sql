@@ -31,16 +31,51 @@ SELECT 'ALTER TABLE ' + isnull(schema_name(syo.id), 'dbo') + '.[' +  syo.name +'
    JOIN systypes syt ON 
      syt.xtype = syc.xtype 
    WHERE 
-     syt.name = 'nvarchar' 
+     syt.name = 'text' 
     and syo.xtype='U'
 
 
+SELECT 'ALTER TABLE ' + isnull(schema_name(syo.id), 'dbo') + '.[' +  syo.name +'] ' 
+    + ' ALTER COLUMN [' + syc.name + '] NVARCHAR(255)  NULL;' 
+   FROM sysobjects syo 
+   JOIN syscolumns syc ON 
+     syc.id = syo.id 
+   JOIN systypes syt ON 
+     syt.xtype = syc.xtype 
+   WHERE 
+     syt.name = 'text' 
+    and syo.xtype='U'
+	and syc.name ='null'
+
+SELECT 'EXEC sp_rename ''' + isnull(schema_name(syo.id), 'dbo') + '.[' +  syo.name +'].' + '[' + syc.name + ']'', ''Value'', ''COLUMN'';' 
+   FROM sysobjects syo 
+   JOIN syscolumns syc ON 
+     syc.id = syo.id 
+   JOIN systypes syt ON 
+     syt.xtype = syc.xtype 
+   WHERE 
+   --  syt.name = 'text' 
+   -- and 
+	syo.xtype='U'
+	and syc.name ='null'
 
 
+	SELECT 'ALTER TABLE ' + isnull(schema_name(syo.id), 'dbo') + '.[' +  syo.name +'] ' 
+    + ' ALTER COLUMN [' + syc.name + '] NVARCHAR(' + case syc.length when -1 then '255' 
+        ELSE convert(nvarchar(10),syc.length) end + ') '+ 
+        case  syc.isnullable when 1 then ' NULL' ELSE ' NOT NULL' END +';' 
+   FROM sysobjects syo 
+   JOIN syscolumns syc ON 
+     syc.id = syo.id 
+   JOIN systypes syt ON 
+     syt.xtype = syc.xtype 
+   WHERE 
+     syt.name = 'text' 
+    and syo.xtype='U'
 
-
-
-
+SELECT 'EXEC sp_rename ''' + isnull(schema_name(syo.id), 'dbo') + '.[' +  syo.name +']'', ''[x'+name+']'';' 
+FROM    sys.sysobjects AS syo
+WHERE (xtype = 'U') and syo.Name <> 'sysdiagrams'
 
 
 

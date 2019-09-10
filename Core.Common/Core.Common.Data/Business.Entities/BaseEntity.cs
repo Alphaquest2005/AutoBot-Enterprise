@@ -57,8 +57,8 @@ namespace Core.Common.Business.Entities
             return (_entityGuid.ToString()).GetHashCode();
         }
 
-        [NotMapped]
-        [IgnoreDataMember]
-        public virtual ChangeTrackingCollection<T> ChangeTracker { get; set; }
+        //[NotMapped]
+        //[IgnoreDataMember]
+        //public virtual ChangeTrackingCollection<T> ChangeTracker { get; set; }
     }
 }

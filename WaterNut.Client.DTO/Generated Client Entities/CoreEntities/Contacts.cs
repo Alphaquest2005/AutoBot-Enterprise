@@ -73,6 +73,32 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Name;
 
+        [DataMember]
+        public int ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private int _ApplicationSettingsId;
+
+        [DataMember]
+        public string CellPhone
+		{ 
+		    get { return _CellPhone; }
+			set
+			{
+			    if (value == _CellPhone) return;
+				_CellPhone = value;
+				NotifyPropertyChanged();//m => this.CellPhone
+			}
+		}
+        private string _CellPhone;
+
        
         [DataMember]
         public ChangeTrackingCollection<FileTypeContacts> FileTypeContacts

@@ -367,7 +367,7 @@ namespace WaterNut.DataSpace
                 if (LineTotalMat != null)
                     entryData.ImportedLines = LineTotalMat.Count;
 
-                entryData.ImportedTotal = container.TotalValue;
+                entryData.InvoiceTotal = container.TotalValue;
                 entryData.ContainerEntryData.Add(new ContainerEntryData()
                 {
                     Container_Id = container.Container_Id,

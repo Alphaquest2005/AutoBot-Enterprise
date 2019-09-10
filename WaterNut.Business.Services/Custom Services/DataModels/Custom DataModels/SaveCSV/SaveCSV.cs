@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Core.Common.CSV;
 using System.IO;
+using System.Text.RegularExpressions;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
-
+using MoreLinq;
+using MoreLinq.Extensions;
 
 
 namespace WaterNut.DataSpace
@@ -91,7 +93,11 @@ namespace WaterNut.DataSpace
                     emailId = res?.EmailUniqueId;
                     fileTypeId = res?.FileTypeId;
                 }
-                    var lines = File.ReadAllLines(droppedFilePath);
+
+                var fileTxt = File.ReadAllText(droppedFilePath).Replace("�", " ");
+
+                var fixedtxt = Regex.Replace(fileTxt, ",\"[^\"\n]*\n", "");
+                    var lines = fixedtxt.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 // identify header
                 var headerline = lines.FirstOrDefault();
 

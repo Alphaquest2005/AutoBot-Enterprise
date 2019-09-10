@@ -837,6 +837,23 @@ public string xStatus
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.adjustmentshortallocation.Type; }
+			set
+			{
+			    if (value == this.adjustmentshortallocation.Type) return;
+				this.adjustmentshortallocation.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AdjustmentShortAllocation> _changeTracker;    
         public ChangeTrackingCollection<DTO.AdjustmentShortAllocation> ChangeTracker

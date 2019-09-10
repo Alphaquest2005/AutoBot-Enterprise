@@ -6,7 +6,8 @@
 	
     string[] strs = new string[] {  "AllocationDS","AllocationQS","CounterPointQS","CoreEntities", "EntryDataQS"
                                     , "InventoryQS", "PreviousDocumentQS", "SalesDataQS", "DocumentDS", "DocumentItemDS",
-                                    "EntryDataDS", "InventoryDS", "PreviousDocumentDS", "QuickBooksDS", "AdjustmentQS"
+                                    "EntryDataDS", "InventoryDS", "PreviousDocumentDS", "QuickBooksDS", "AdjustmentQS",
+                                    "ValuationDS", "LicenseDS"
                                  };
 
     foreach (var conTextname in strs)

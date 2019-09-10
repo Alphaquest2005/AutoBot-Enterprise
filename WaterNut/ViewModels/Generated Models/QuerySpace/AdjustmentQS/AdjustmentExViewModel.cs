@@ -277,24 +277,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
  
 
-		private Double? _totalFilter;
-        public Double? TotalFilter
-        {
-            get
-            {
-                return _totalFilter;
-            }
-            set
-            {
-                _totalFilter = value;
-				NotifyPropertyChanged(x => TotalFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _invoiceNoFilter;
         public string InvoiceNoFilter
         {
@@ -306,24 +288,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             {
                 _invoiceNoFilter = value;
 				NotifyPropertyChanged(x => InvoiceNoFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Double? _importedTotalFilter;
-        public Double? ImportedTotalFilter
-        {
-            get
-            {
-                return _importedTotalFilter;
-            }
-            set
-            {
-                _importedTotalFilter = value;
-				NotifyPropertyChanged(x => ImportedTotalFilter);
                 FilterData();
                 
             }
@@ -378,6 +342,42 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             {
                 _currencyFilter = value;
 				NotifyPropertyChanged(x => CurrencyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _invoiceTotalFilter;
+        public Double? InvoiceTotalFilter
+        {
+            get
+            {
+                return _invoiceTotalFilter;
+            }
+            set
+            {
+                _invoiceTotalFilter = value;
+				NotifyPropertyChanged(x => InvoiceTotalFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _importedTotalFilter;
+        public Double? ImportedTotalFilter
+        {
+            get
+            {
+                return _importedTotalFilter;
+            }
+            set
+            {
+                _importedTotalFilter = value;
+				NotifyPropertyChanged(x => ImportedTotalFilter);
                 FilterData();
                 
             }
@@ -451,15 +451,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
  
 
-					if(TotalFilter.HasValue)
-						res.Append(" && " + string.Format("Total == {0}",  TotalFilter.ToString()));				 
-
 									if(string.IsNullOrEmpty(InvoiceNoFilter) == false)
 						res.Append(" && " + string.Format("InvoiceNo.Contains(\"{0}\")",  InvoiceNoFilter));						
  
-
-					if(ImportedTotalFilter.HasValue)
-						res.Append(" && " + string.Format("ImportedTotal == {0}",  ImportedTotalFilter.ToString()));				 
 
 					if(ImportedLinesFilter.HasValue)
 						res.Append(" && " + string.Format("ImportedLines == {0}",  ImportedLinesFilter.ToString()));				 
@@ -469,7 +463,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(CurrencyFilter) == false)
 						res.Append(" && " + string.Format("Currency.Contains(\"{0}\")",  CurrencyFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(InvoiceTotalFilter.HasValue)
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
+
+					if(ImportedTotalFilter.HasValue)
+						res.Append(" && " + string.Format("ImportedTotal == {0}",  ImportedTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -501,13 +501,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     DutyFreePaid = x.DutyFreePaid ,
                     
  
-                    Total = x.Total ,
-                    
- 
                     InvoiceNo = x.InvoiceNo ,
-                    
- 
-                    ImportedTotal = x.ImportedTotal ,
                     
  
                     ImportedLines = x.ImportedLines ,
@@ -516,7 +510,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     TotalLines = x.TotalLines ,
                     
  
-                    Currency = x.Currency 
+                    Currency = x.Currency ,
+                    
+ 
+                    InvoiceTotal = x.InvoiceTotal ,
+                    
+ 
+                    ImportedTotal = x.ImportedTotal 
                     
                 }).ToList()
             };
@@ -538,13 +538,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public string DutyFreePaid { get; set; } 
                     
  
-                    public Nullable<double> Total { get; set; } 
-                    
- 
                     public string InvoiceNo { get; set; } 
-                    
- 
-                    public Nullable<double> ImportedTotal { get; set; } 
                     
  
                     public Nullable<int> ImportedLines { get; set; } 
@@ -554,6 +548,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string Currency { get; set; } 
+                    
+ 
+                    public Nullable<double> InvoiceTotal { get; set; } 
+                    
+ 
+                    public Nullable<double> ImportedTotal { get; set; } 
                     
         }
 

@@ -692,6 +692,36 @@ public string AsycudaPassword
 		}
      
 
+       
+       
+public Nullable<bool> AssessIM7
+		{ 
+		    get { return this.applicationsettings.AssessIM7; }
+			set
+			{
+			    if (value == this.applicationsettings.AssessIM7) return;
+				this.applicationsettings.AssessIM7 = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AssessIM7");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> AssessEX
+		{ 
+		    get { return this.applicationsettings.AssessEX; }
+			set
+			{
+			    if (value == this.applicationsettings.AssessEX) return;
+				this.applicationsettings.AssessEX = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AssessEX");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

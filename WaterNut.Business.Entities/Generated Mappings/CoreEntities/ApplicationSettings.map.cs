@@ -52,6 +52,8 @@
               this.Property(t => t.EmailPassword).HasColumnName("EmailPassword").HasMaxLength(50);
               this.Property(t => t.AsycudaLogin).HasColumnName("AsycudaLogin").HasMaxLength(50);
               this.Property(t => t.AsycudaPassword).HasColumnName("AsycudaPassword").HasMaxLength(50);
+              this.Property(t => t.AssessIM7).HasColumnName("AssessIM7");
+              this.Property(t => t.AssessEX).HasColumnName("AssessEX");
               this.HasMany(t => t.AsycudaDocumentSetEx).WithRequired(t => (ApplicationSettings)t.ApplicationSettings);
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.ApplicationSettings).HasForeignKey(d => d.ApplicationSettingsId);

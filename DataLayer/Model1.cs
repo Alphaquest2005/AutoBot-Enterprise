@@ -3356,30 +3356,6 @@ namespace WaterNut.DataLayer
         /// </summary>
         [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
         [DataMemberAttribute()]
-        public Nullable<global::System.Double> TotalInternalFreight
-        {
-            get
-            {
-                return _TotalInternalFreight;
-            }
-            set
-            {
-                OnTotalInternalFreightChanging(value);
-                ReportPropertyChanging("TotalInternalFreight");
-                _TotalInternalFreight = StructuralObject.SetValidValue(value);
-                ReportPropertyChanged("TotalInternalFreight");
-                OnTotalInternalFreightChanged();
-            }
-        }
-        private Nullable<global::System.Double> _TotalInternalFreight;
-        partial void OnTotalInternalFreightChanging(Nullable<global::System.Double> value);
-        partial void OnTotalInternalFreightChanged();
-    
-        /// <summary>
-        /// No Metadata Documentation available.
-        /// </summary>
-        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
-        [DataMemberAttribute()]
         public Nullable<global::System.Int32> TotalPackages
         {
             get
@@ -3422,6 +3398,78 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _ApplicationSettingsId;
         partial void OnApplicationSettingsIdChanging(global::System.Int32 value);
         partial void OnApplicationSettingsIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> LastFileNumber
+        {
+            get
+            {
+                return _LastFileNumber;
+            }
+            set
+            {
+                OnLastFileNumberChanging(value);
+                ReportPropertyChanging("LastFileNumber");
+                _LastFileNumber = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("LastFileNumber");
+                OnLastFileNumberChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _LastFileNumber;
+        partial void OnLastFileNumberChanging(Nullable<global::System.Int32> value);
+        partial void OnLastFileNumberChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> TotalInvoices
+        {
+            get
+            {
+                return _TotalInvoices;
+            }
+            set
+            {
+                OnTotalInvoicesChanging(value);
+                ReportPropertyChanging("TotalInvoices");
+                _TotalInvoices = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("TotalInvoices");
+                OnTotalInvoicesChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _TotalInvoices;
+        partial void OnTotalInvoicesChanging(Nullable<global::System.Int32> value);
+        partial void OnTotalInvoicesChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> MaxLines
+        {
+            get
+            {
+                return _MaxLines;
+            }
+            set
+            {
+                OnMaxLinesChanging(value);
+                ReportPropertyChanging("MaxLines");
+                _MaxLines = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("MaxLines");
+                OnMaxLinesChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _MaxLines;
+        partial void OnMaxLinesChanging(Nullable<global::System.Int32> value);
+        partial void OnMaxLinesChanged();
 
         #endregion
 
@@ -3545,12 +3593,14 @@ namespace WaterNut.DataLayer
         /// <param name="id">Initial value of the Id property.</param>
         /// <param name="filePath">Initial value of the FilePath property.</param>
         /// <param name="documentCode">Initial value of the DocumentCode property.</param>
-        public static Attachments CreateAttachments(global::System.Int32 id, global::System.String filePath, global::System.String documentCode)
+        /// <param name="reference">Initial value of the Reference property.</param>
+        public static Attachments CreateAttachments(global::System.Int32 id, global::System.String filePath, global::System.String documentCode, global::System.String reference)
         {
             Attachments attachments = new Attachments();
             attachments.Id = id;
             attachments.FilePath = filePath;
             attachments.DocumentCode = documentCode;
+            attachments.Reference = reference;
             return attachments;
         }
 
@@ -3632,6 +3682,30 @@ namespace WaterNut.DataLayer
         private global::System.String _DocumentCode;
         partial void OnDocumentCodeChanging(global::System.String value);
         partial void OnDocumentCodeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String Reference
+        {
+            get
+            {
+                return _Reference;
+            }
+            set
+            {
+                OnReferenceChanging(value);
+                ReportPropertyChanging("Reference");
+                _Reference = StructuralObject.SetValidValue(value, false);
+                ReportPropertyChanged("Reference");
+                OnReferenceChanged();
+            }
+        }
+        private global::System.String _Reference;
+        partial void OnReferenceChanging(global::System.String value);
+        partial void OnReferenceChanged();
 
         #endregion
 
@@ -12088,6 +12162,30 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Valuation_Id;
         partial void OnValuation_IdChanging(global::System.Int32 value);
         partial void OnValuation_IdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Currency_code
+        {
+            get
+            {
+                return _Currency_code;
+            }
+            set
+            {
+                OnCurrency_codeChanging(value);
+                ReportPropertyChanging("Currency_code");
+                _Currency_code = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Currency_code");
+                OnCurrency_codeChanged();
+            }
+        }
+        private global::System.String _Currency_code;
+        partial void OnCurrency_codeChanging(global::System.String value);
+        partial void OnCurrency_codeChanged();
 
         #endregion
 
@@ -12512,6 +12610,30 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Valuation_Id;
         partial void OnValuation_IdChanging(global::System.Int32 value);
         partial void OnValuation_IdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Currency_code
+        {
+            get
+            {
+                return _Currency_code;
+            }
+            set
+            {
+                OnCurrency_codeChanging(value);
+                ReportPropertyChanging("Currency_code");
+                _Currency_code = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Currency_code");
+                OnCurrency_codeChanged();
+            }
+        }
+        private global::System.String _Currency_code;
+        partial void OnCurrency_codeChanging(global::System.String value);
+        partial void OnCurrency_codeChanged();
 
         #endregion
 
@@ -12712,6 +12834,30 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Valuation_Id;
         partial void OnValuation_IdChanging(global::System.Int32 value);
         partial void OnValuation_IdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Currency_code
+        {
+            get
+            {
+                return _Currency_code;
+            }
+            set
+            {
+                OnCurrency_codeChanging(value);
+                ReportPropertyChanging("Currency_code");
+                _Currency_code = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Currency_code");
+                OnCurrency_codeChanged();
+            }
+        }
+        private global::System.String _Currency_code;
+        partial void OnCurrency_codeChanging(global::System.String value);
+        partial void OnCurrency_codeChanged();
 
         #endregion
 
@@ -13136,6 +13282,30 @@ namespace WaterNut.DataLayer
         private global::System.Int32 _Valuation_Id;
         partial void OnValuation_IdChanging(global::System.Int32 value);
         partial void OnValuation_IdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Currency_code
+        {
+            get
+            {
+                return _Currency_code;
+            }
+            set
+            {
+                OnCurrency_codeChanging(value);
+                ReportPropertyChanging("Currency_code");
+                _Currency_code = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Currency_code");
+                OnCurrency_codeChanged();
+            }
+        }
+        private global::System.String _Currency_code;
+        partial void OnCurrency_codeChanging(global::System.String value);
+        partial void OnCurrency_codeChanged();
 
         #endregion
 

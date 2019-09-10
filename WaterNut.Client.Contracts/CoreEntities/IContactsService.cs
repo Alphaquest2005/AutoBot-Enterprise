@@ -79,7 +79,10 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<Contacts>> GetContactsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
+  		
     }
 }
 

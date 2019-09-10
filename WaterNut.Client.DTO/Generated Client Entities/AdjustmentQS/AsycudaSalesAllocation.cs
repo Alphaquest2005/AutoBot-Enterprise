@@ -138,6 +138,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<int> _xEntryItem_Id;
 
+        [DataMember]
+        public string xStatus
+		{ 
+		    get { return _xStatus; }
+			set
+			{
+			    if (value == _xStatus) return;
+				_xStatus = value;
+				NotifyPropertyChanged();//m => this.xStatus
+			}
+		}
+        private string _xStatus;
+
        
         [DataMember]
         public EntryDataDetail EntryDataDetail

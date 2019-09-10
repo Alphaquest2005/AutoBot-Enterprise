@@ -76,10 +76,37 @@ namespace DocumentDS.Business.Entities
                 xcuda_Valuation.Calculation_working_mode = "0";
                 xcuda_Valuation.xcuda_Gs_Invoice = new xcuda_Gs_Invoice(true) { TrackingState = TrackingState.Added };
             }
+            if (xcuda_Valuation.xcuda_Gs_other_cost == null)
+            {
+                
+                xcuda_Valuation.xcuda_Gs_other_cost = new xcuda_Gs_other_cost(true) { TrackingState = TrackingState.Added };
+            }
+            if (xcuda_Valuation.xcuda_Gs_deduction == null)
+            {
+                
+                xcuda_Valuation.xcuda_Gs_deduction = new xcuda_Gs_deduction(true) { TrackingState = TrackingState.Added };
+            }
+            if (xcuda_Valuation.xcuda_Gs_insurance == null)
+            {
+                
+                xcuda_Valuation.xcuda_Gs_insurance = new xcuda_Gs_insurance(true) { TrackingState = TrackingState.Added };
+            }
+            if (xcuda_Valuation.xcuda_Gs_internal_freight == null)
+            {
+
+                xcuda_Valuation.xcuda_Gs_internal_freight = new xcuda_Gs_internal_freight(true) { TrackingState = TrackingState.Added };
+            }
 
             if (xcuda_Property == null)
                 xcuda_Property = new xcuda_Property(true) { TrackingState = TrackingState.Added };
 
+            if (xcuda_Traders == null)
+                xcuda_Traders = new xcuda_Traders(true)
+                {
+                    xcuda_Exporter = new xcuda_Exporter(true) { TrackingState = TrackingState.Added},
+                    xcuda_Consignee = new xcuda_Consignee(true) { TrackingState = TrackingState.Added },
+                    TrackingState = TrackingState.Added
+                };
 
         }
 

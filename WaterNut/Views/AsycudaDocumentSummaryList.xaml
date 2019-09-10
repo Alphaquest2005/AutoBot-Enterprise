@@ -74,7 +74,7 @@
                  ItemsSource="{Binding AsycudaDocumentSetExs}" 
                  HorizontalAlignment="Stretch" Height="387" Margin="0,93,0,0" VerticalAlignment="Top" Width="Auto" SelectionChanged="DocSetGrd_SelectionChanged"  Style="{DynamicResource AlphaListBoxStyle}"/>
         <TextBlock MouseLeftButtonDown="ViewAll" HorizontalAlignment="Left" Height="26" Margin="545,67,0,0" TextWrapping="Wrap" Text="View All" VerticalAlignment="Top" Width="75" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" />
-        <TextBlock x:Name="ImportBtn" MouseLeftButtonDown="ImportBtn_MouseLeftButtonDown" HorizontalAlignment="Left" Height="26" Margin="547,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="75" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" ><Run Text="Import"/><LineBreak/><Run/></TextBlock>
+        <TextBlock x:Name="ImportBtn" MouseLeftButtonDown="ImportBtn_MouseLeftButtonDown" HorizontalAlignment="Left" Height="26" Margin="572,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" ><Run Text="Import"/><LineBreak/><Run/></TextBlock>
         <TextBlock x:Name="ExportBtn" MouseLeftButtonDown="ExportBtn_MouseLeftButtonDown" HorizontalAlignment="Left" Height="26" Margin="498,7,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="132" FontSize="16" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" Text="Export to XML file" />
         <TextBlock Text="{Binding AsycudaDocumentSetExs.Count, StringFormat=0 Results}" HorizontalAlignment="Left" Height="24" Margin="264,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="201" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
         <CheckBox IsChecked="{Binding ImportOnlyRegisteredDocuments}" x:Name="MultiSelectChk_Copy1" HorizontalAlignment="Left" Height="22" Margin="50,43,0,0" VerticalAlignment="Top" Width="145" Content="Import Only Reg. Docs" RenderTransformOrigin="0.488,0.464"/>
@@ -82,5 +82,6 @@
         <CheckBox IsChecked="{Binding NoMessages}" x:Name="MultiSelectChk_Copy3" HorizontalAlignment="Left" Height="22" Margin="225,44,0,0" VerticalAlignment="Top" Width="95" Content="No Messages" RenderTransformOrigin="0.488,0.464"/>
         <CheckBox IsChecked="{Binding OverwriteExisting}" x:Name="MultiSelectChk_Copy" HorizontalAlignment="Left"  Height="48" Margin="355,45,0,0" VerticalAlignment="Top" Width="95" Content="Overwrite &#xA;existing Docs" RenderTransformOrigin="0.488,0.464"/>
         <CheckBox IsChecked="{Binding LinkPi}" x:Name="MultiSelectChk_Copy4" HorizontalAlignment="Left" Height="22" Margin="225,66,0,0" VerticalAlignment="Top" Width="95" Content="Link Pi" RenderTransformOrigin="0.488,0.464"/>
+        <TextBlock x:Name="ImportBtn_Copy1" MouseLeftButtonDown="AttachDocuments" HorizontalAlignment="Left" Height="44" Margin="466,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="74" FontSize="12" Style="{DynamicResource TextButtonStyle}" TextAlignment="Right" ><Run Text="Attach"/><LineBreak/><Run Text="Documents"/></TextBlock>
     </Grid>
 </UserControl>

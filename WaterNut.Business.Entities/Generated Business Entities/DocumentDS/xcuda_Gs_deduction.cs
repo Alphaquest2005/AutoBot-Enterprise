@@ -95,6 +95,21 @@ namespace DocumentDS.Business.Entities
         }
         int _valuation_id;
         [DataMember]
+        public string Currency_code 
+        {
+            get
+            {
+                return _currency_code;
+            }
+            set
+            {
+                _currency_code = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _currency_code;
+        [DataMember]
         public xcuda_Valuation xcuda_Valuation { get; set; }
 
  //       [DataMember]

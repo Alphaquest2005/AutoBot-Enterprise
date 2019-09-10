@@ -17,6 +17,8 @@
               this.Property(t => t.Role).HasColumnName("Role").IsRequired().HasMaxLength(50);
               this.Property(t => t.EmailAddress).HasColumnName("EmailAddress").IsRequired().IsUnicode(false).HasMaxLength(255);
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(255);
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.CellPhone).HasColumnName("CellPhone").HasMaxLength(10);
               this.HasMany(t => t.FileTypeContacts).WithRequired(t => (Contacts)t.Contacts);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

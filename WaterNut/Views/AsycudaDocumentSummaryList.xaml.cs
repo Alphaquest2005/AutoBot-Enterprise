@@ -114,5 +114,11 @@ namespace WaterNut.Views
 		  
 		}
 
+	    private async void AttachDocuments(object sender, MouseButtonEventArgs e)
+	    {
+
+	        await im.AttachDocuments().ConfigureAwait(false);
+
+	    }
 	}
 }

@@ -64,6 +64,7 @@
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -133,6 +133,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentContacts__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentContacts.ApplicationSettings) == false) ApplicationSettings.Add(CurrentContacts.ApplicationSettings);
+                    //}
                  } 
         internal void OnContactsChanged(object sender, NotificationEventArgs e)
         {
@@ -144,11 +148,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    Contacts.Refresh();
+					NotifyPropertyChanged(x => this.Contacts);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()
         {
-		vloader.FilterExpression = "All";
+			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
 
 
 
@@ -223,6 +241,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _cellPhoneFilter;
+        public string CellPhoneFilter
+        {
+            get
+            {
+                return _cellPhoneFilter;
+            }
+            set
+            {
+                _cellPhoneFilter = value;
+				NotifyPropertyChanged(x => CellPhoneFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -263,6 +299,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CellPhoneFilter) == false)
+						res.Append(" && " + string.Format("CellPhone.Contains(\"{0}\")",  CellPhoneFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -292,7 +332,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     EmailAddress = x.EmailAddress ,
                     
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    CellPhone = x.CellPhone 
                     
                 }).ToList()
             };
@@ -312,6 +355,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Name { get; set; } 
+                    
+ 
+                    public string CellPhone { get; set; } 
                     
         }
 

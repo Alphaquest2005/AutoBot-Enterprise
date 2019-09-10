@@ -77,5 +77,13 @@
     CreateBusinessEntities("WaterNut",
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
 					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
-                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" );  
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" ); 
+    CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" ); 
+    CreateBusinessEntities("WaterNut",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx",
+					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx",
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj" ); 
 #>

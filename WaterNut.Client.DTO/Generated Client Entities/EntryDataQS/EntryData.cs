@@ -48,19 +48,6 @@ namespace EntryDataQS.Client.DTO
         private System.DateTime _EntryDataDate;
 
         [DataMember]
-        public Nullable<double> ImportedTotal
-		{ 
-		    get { return _ImportedTotal; }
-			set
-			{
-			    if (value == _ImportedTotal) return;
-				_ImportedTotal = value;
-				NotifyPropertyChanged();//m => this.ImportedTotal
-			}
-		}
-        private Nullable<double> _ImportedTotal;
-
-        [DataMember]
         public Nullable<int> ImportedLines
 		{ 
 		    get { return _ImportedLines; }
@@ -72,19 +59,6 @@ namespace EntryDataQS.Client.DTO
 			}
 		}
         private Nullable<int> _ImportedLines;
-
-        [DataMember]
-        public Nullable<int> SupplierId
-		{ 
-		    get { return _SupplierId; }
-			set
-			{
-			    if (value == _SupplierId) return;
-				_SupplierId = value;
-				NotifyPropertyChanged();//m => this.SupplierId
-			}
-		}
-        private Nullable<int> _SupplierId;
 
         [DataMember]
         public Nullable<double> TotalFreight
@@ -176,6 +150,71 @@ namespace EntryDataQS.Client.DTO
 			}
 		}
         private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public string SupplierCode
+		{ 
+		    get { return _SupplierCode; }
+			set
+			{
+			    if (value == _SupplierCode) return;
+				_SupplierCode = value;
+				NotifyPropertyChanged();//m => this.SupplierCode
+			}
+		}
+        private string _SupplierCode;
+
+        [DataMember]
+        public Nullable<double> InvoiceTotal
+		{ 
+		    get { return _InvoiceTotal; }
+			set
+			{
+			    if (value == _InvoiceTotal) return;
+				_InvoiceTotal = value;
+				NotifyPropertyChanged();//m => this.InvoiceTotal
+			}
+		}
+        private Nullable<double> _InvoiceTotal;
+
+        [DataMember]
+        public Nullable<double> TotalOtherCost
+		{ 
+		    get { return _TotalOtherCost; }
+			set
+			{
+			    if (value == _TotalOtherCost) return;
+				_TotalOtherCost = value;
+				NotifyPropertyChanged();//m => this.TotalOtherCost
+			}
+		}
+        private Nullable<double> _TotalOtherCost;
+
+        [DataMember]
+        public Nullable<double> TotalInsurance
+		{ 
+		    get { return _TotalInsurance; }
+			set
+			{
+			    if (value == _TotalInsurance) return;
+				_TotalInsurance = value;
+				NotifyPropertyChanged();//m => this.TotalInsurance
+			}
+		}
+        private Nullable<double> _TotalInsurance;
+
+        [DataMember]
+        public Nullable<double> TotalDeduction
+		{ 
+		    get { return _TotalDeduction; }
+			set
+			{
+			    if (value == _TotalDeduction) return;
+				_TotalDeduction = value;
+				NotifyPropertyChanged();//m => this.TotalDeduction
+			}
+		}
+        private Nullable<double> _TotalDeduction;
 
        
         [DataMember]

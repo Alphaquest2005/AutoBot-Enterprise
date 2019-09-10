@@ -19,7 +19,9 @@
             "EntryDataDS",
             "InventoryDS",
             "PreviousDocumentDS",
-            "QuickBooksDS"
+            "QuickBooksDS",
+            "ValuationDS",
+            "LicenseDS",
     };
     foreach (var conTextname in clst)
     {

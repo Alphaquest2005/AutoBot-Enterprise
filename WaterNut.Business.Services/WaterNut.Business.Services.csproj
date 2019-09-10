@@ -124,6 +124,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Asycuda\LicenseToDatabase.cs" />
     <Compile Include="Asycuda\C71ToDatabase.cs" />
     <Compile Include="Asycuda\AsycudaToDataBase421.cs" />
     <Compile Include="Contracts\AdjustmentQS\IAdjustmentDetailService.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="Contracts\CoreEntities\ISessionsService.cs" />
     <Compile Include="Contracts\CoreEntities\ISubItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_AdjustmentsToXMLService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_C71ToXMLService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_CreateEx9Service.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DeleteDocumentSetService.cs" />
@@ -227,9 +229,14 @@
     <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_LicenseToXMLService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetService.cs" />
     <Compile Include="Contracts\CoreEntities\IToDo_POToXMLService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_UnallocatedShortsService.cs" />
@@ -336,6 +343,7 @@
     <Compile Include="Contracts\EntryDataDS\IContainerTypeService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsExService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataExTotalsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IFileTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItemsExService.cs" />
@@ -371,6 +379,10 @@
     <Compile Include="Contracts\InventoryQS\ITariffCategoryService.cs" />
     <Compile Include="Contracts\InventoryQS\ITariffCodesService.cs" />
     <Compile Include="Contracts\InventoryQS\ITariffSupUnitLkpsService.cs" />
+    <Compile Include="Contracts\LicenseDS\IRegisteredService.cs" />
+    <Compile Include="Contracts\LicenseDS\IxLIC_General_segmentService.cs" />
+    <Compile Include="Contracts\LicenseDS\IxLIC_LicenseService.cs" />
+    <Compile Include="Contracts\LicenseDS\IxLIC_Lic_item_segmentService.cs" />
     <Compile Include="Contracts\PreviousDocumentDS\IEntryDataDetailsService.cs" />
     <Compile Include="Contracts\PreviousDocumentDS\IEntryPreviousItemsService.cs" />
     <Compile Include="Contracts\PreviousDocumentDS\IPreviousEntryService.cs" />
@@ -388,6 +400,13 @@
     <Compile Include="Contracts\SalesDataQS\ISalesDataAllocationsService.cs" />
     <Compile Include="Contracts\SalesDataQS\ISalesDataDetailService.cs" />
     <Compile Include="Contracts\SalesDataQS\ISalesDataService.cs" />
+    <Compile Include="Contracts\ValuationDS\IRegisteredService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Buyer_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Declarant_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Identification_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_ItemService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Seller_segmentService.cs" />
+    <Compile Include="Contracts\ValuationDS\IxC71_Value_declaration_formService.cs" />
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentOverService.cs" />
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
@@ -688,6 +707,7 @@
     <Compile Include="Services\CoreEntities\SessionsService.cs" />
     <Compile Include="Services\CoreEntities\SubItemsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_AdjustmentsToXMLService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_C71ToXMLService.cs" />
     <Compile Include="Services\CoreEntities\TODO_CreateDiscrepancyEntriesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_CreateEx9Service.cs" />
     <Compile Include="Services\CoreEntities\TODO_DeleteDocumentSetService.cs" />
@@ -705,9 +725,14 @@
     <Compile Include="Services\CoreEntities\TODO_ERRReport_EntryDataDetailsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_ERRReport_UnmappedItemsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_LicenseToXMLService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetService.cs" />
     <Compile Include="Services\CoreEntities\ToDo_POToXMLService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitInadequatePackagesService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitIncompleteEntryDataService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_UnallocatedSalesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_UnallocatedShortsService.cs" />
@@ -814,6 +839,7 @@
     <Compile Include="Services\EntryDataDS\ContainerTypeService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataDetailsExService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataExTotalsService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\FileTypesService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItemsExService.cs" />
@@ -849,6 +875,10 @@
     <Compile Include="Services\InventoryQS\TariffCategoryService.cs" />
     <Compile Include="Services\InventoryQS\TariffCodesService.cs" />
     <Compile Include="Services\InventoryQS\TariffSupUnitLkpsService.cs" />
+    <Compile Include="Services\LicenseDS\RegisteredService.cs" />
+    <Compile Include="Services\LicenseDS\xLIC_General_segmentService.cs" />
+    <Compile Include="Services\LicenseDS\xLIC_LicenseService.cs" />
+    <Compile Include="Services\LicenseDS\xLIC_Lic_item_segmentService.cs" />
     <Compile Include="Services\PreviousDocumentDS\EntryDataDetailsService.cs" />
     <Compile Include="Services\PreviousDocumentDS\EntryPreviousItemsService.cs" />
     <Compile Include="Services\PreviousDocumentDS\PreviousEntryService.cs" />
@@ -866,6 +896,13 @@
     <Compile Include="Services\SalesDataQS\SalesDataAllocationsService.cs" />
     <Compile Include="Services\SalesDataQS\SalesDataDetailService.cs" />
     <Compile Include="Services\SalesDataQS\SalesDataService.cs" />
+    <Compile Include="Services\ValuationDS\RegisteredService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Buyer_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Declarant_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Identification_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_ItemService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Seller_segmentService.cs" />
+    <Compile Include="Services\ValuationDS\xC71_Value_declaration_formService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

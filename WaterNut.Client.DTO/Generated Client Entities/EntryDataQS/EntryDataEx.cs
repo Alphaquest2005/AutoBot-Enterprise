@@ -35,19 +35,6 @@ namespace EntryDataQS.Client.DTO
         private string _Type;
 
         [DataMember]
-        public Nullable<double> Total
-		{ 
-		    get { return _Total; }
-			set
-			{
-			    if (value == _Total) return;
-				_Total = value;
-				NotifyPropertyChanged();//m => this.Total
-			}
-		}
-        private Nullable<double> _Total;
-
-        [DataMember]
         public System.DateTime InvoiceDate
 		{ 
 		    get { return _InvoiceDate; }
@@ -72,19 +59,6 @@ namespace EntryDataQS.Client.DTO
 			}
 		}
         private string _InvoiceNo;
-
-        [DataMember]
-        public Nullable<double> ImportedTotal
-		{ 
-		    get { return _ImportedTotal; }
-			set
-			{
-			    if (value == _ImportedTotal) return;
-				_ImportedTotal = value;
-				NotifyPropertyChanged();//m => this.ImportedTotal
-			}
-		}
-        private Nullable<double> _ImportedTotal;
 
         [DataMember]
         public Nullable<int> ImportedLines
@@ -176,6 +150,58 @@ namespace EntryDataQS.Client.DTO
 			}
 		}
         private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public Nullable<double> InvoiceTotal
+		{ 
+		    get { return _InvoiceTotal; }
+			set
+			{
+			    if (value == _InvoiceTotal) return;
+				_InvoiceTotal = value;
+				NotifyPropertyChanged();//m => this.InvoiceTotal
+			}
+		}
+        private Nullable<double> _InvoiceTotal;
+
+        [DataMember]
+        public string SupplierCode
+		{ 
+		    get { return _SupplierCode; }
+			set
+			{
+			    if (value == _SupplierCode) return;
+				_SupplierCode = value;
+				NotifyPropertyChanged();//m => this.SupplierCode
+			}
+		}
+        private string _SupplierCode;
+
+        [DataMember]
+        public Nullable<double> ImportedTotal
+		{ 
+		    get { return _ImportedTotal; }
+			set
+			{
+			    if (value == _ImportedTotal) return;
+				_ImportedTotal = value;
+				NotifyPropertyChanged();//m => this.ImportedTotal
+			}
+		}
+        private Nullable<double> _ImportedTotal;
+
+        [DataMember]
+        public double ExpectedTotal
+		{ 
+		    get { return _ExpectedTotal; }
+			set
+			{
+			    if (value == _ExpectedTotal) return;
+				_ExpectedTotal = value;
+				NotifyPropertyChanged();//m => this.ExpectedTotal
+			}
+		}
+        private double _ExpectedTotal;
 
        
         [DataMember]

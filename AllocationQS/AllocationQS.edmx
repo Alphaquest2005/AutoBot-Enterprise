@@ -79,6 +79,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="EmailId" Type="int" />
           <Property Name="SANumber" Type="int" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -134,7 +135,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsEx
           <Property Name="DoNotAllocateSales" Type="bit" />
           <Property Name="DoNotAllocatePreviousEntry" Type="bit" />
           <Property Name="WarehouseError" Type="nvarchar" MaxLength="50" />
-          <Property Name="SANumber" Type="int" />
           <Property Name="xReferenceNumber" Type="nvarchar" MaxLength="30" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Invalid" Type="bit" />
@@ -144,6 +144,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsEx
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="SANumber" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustmentAllocationsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -158,7 +159,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustment
             
             <PropertyRef Name="xBond_Item_Id" />
             <PropertyRef Name="DutyFreePaid" />
-            
             
             
           </Key>
@@ -208,7 +208,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustment
           <Property Name="pExpiryDate" Type="datetime" />
           <Property Name="pTariffCode" Type="nvarchar" MaxLength="20" />
           <Property Name="pItemNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="Type" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="AssessmentDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
@@ -265,7 +265,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustment
 [AdjustmentShortAllocations].[FileTypeId] AS [FileTypeId], 
 [AdjustmentShortAllocations].[EmailId] AS [EmailId], 
 [AdjustmentShortAllocations].[SANumber] AS [SANumber], 
-[AdjustmentShortAllocations].[xStatus] AS [xStatus]
+[AdjustmentShortAllocations].[xStatus] AS [xStatus], 
+[AdjustmentShortAllocations].[Type] AS [Type]
 FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaSalesAllocationsEx" EntityType="Self.AsycudaSalesAllocationsEx" store:Type="Views" store:Schema="dbo">
@@ -308,7 +309,6 @@ FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</Definin
 [AsycudaSalesAllocationsEx].[DoNotAllocateSales] AS [DoNotAllocateSales], 
 [AsycudaSalesAllocationsEx].[DoNotAllocatePreviousEntry] AS [DoNotAllocatePreviousEntry], 
 [AsycudaSalesAllocationsEx].[WarehouseError] AS [WarehouseError], 
-[AsycudaSalesAllocationsEx].[SANumber] AS [SANumber], 
 [AsycudaSalesAllocationsEx].[xReferenceNumber] AS [xReferenceNumber], 
 [AsycudaSalesAllocationsEx].[TariffCode] AS [TariffCode], 
 [AsycudaSalesAllocationsEx].[Invalid] AS [Invalid], 
@@ -317,7 +317,8 @@ FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</Definin
 [AsycudaSalesAllocationsEx].[pItemNumber] AS [pItemNumber], 
 [AsycudaSalesAllocationsEx].[AssessmentDate] AS [AssessmentDate], 
 [AsycudaSalesAllocationsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-[AsycudaSalesAllocationsEx].[xStatus] AS [xStatus]
+[AsycudaSalesAllocationsEx].[xStatus] AS [xStatus], 
+[AsycudaSalesAllocationsEx].[SANumber] AS [SANumber]
 FROM [dbo].[AsycudaSalesAllocationsEx] AS [AsycudaSalesAllocationsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaSalesAndAdjustmentAllocationsEx" EntityType="Self.AsycudaSalesAndAdjustmentAllocationsEx" store:Type="Views" store:Schema="dbo">
@@ -492,6 +493,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="EmailId" Type="Int32" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="AsycudaSalesAndAdjustmentAllocationsEx">
           <Key>
@@ -544,7 +546,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="pExpiryDate" Type="DateTime" Precision="3" />
           <Property Name="pTariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="pItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Type" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -612,6 +614,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <EntitySetMapping Name="AdjustmentShortAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.AdjustmentShortAllocation">
               <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />

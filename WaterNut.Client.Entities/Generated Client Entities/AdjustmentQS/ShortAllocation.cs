@@ -820,6 +820,40 @@ public Nullable<int> EmailId
 		}
      
 
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "xStatus has a max length of 255 letters ")]
+public string xStatus
+		{ 
+		    get { return this.shortallocation.xStatus; }
+			set
+			{
+			    if (value == this.shortallocation.xStatus) return;
+				this.shortallocation.xStatus = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("xStatus");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.shortallocation.Type; }
+			set
+			{
+			    if (value == this.shortallocation.Type) return;
+				this.shortallocation.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
        private AdjustmentShort _AdjustmentShort;
         public  AdjustmentShort AdjustmentShort
 		{

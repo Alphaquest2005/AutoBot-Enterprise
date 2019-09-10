@@ -684,6 +684,19 @@ namespace AllocationQS.Client.DTO
 		}
         private string _xStatus;
 
+        [DataMember]
+        public string Type
+		{ 
+		    get { return _Type; }
+			set
+			{
+			    if (value == _Type) return;
+				_Type = value;
+				NotifyPropertyChanged();//m => this.Type
+			}
+		}
+        private string _Type;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -1,15 +1,14 @@
 ﻿
 
+using System;
+
 namespace EntryDataQS.Client.Entities
 {
        public partial class EntryDataEx
     {
-           public bool TotalsEqual
-           {
-                get { return this.Total == this.ImportedTotal; }
-           }
+           public bool TotalsEqual => Math.Abs(ExpectedTotal - (InvoiceTotal?? ExpectedTotal)) < .001;
 
-           public int MissingLines
+        public int MissingLines
            {
                get
                {

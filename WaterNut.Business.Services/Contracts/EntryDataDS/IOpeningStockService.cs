@@ -107,9 +107,6 @@ namespace EntryDataDS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<OpeningStock>> GetOpeningStockBySupplierId(string SupplierId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<OpeningStock>> GetOpeningStockByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]

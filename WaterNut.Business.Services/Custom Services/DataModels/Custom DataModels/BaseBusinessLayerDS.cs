@@ -20,20 +20,25 @@ using Omu.ValueInjecter;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using System.Data.Entity;
+using System.Net;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks.Schedulers;
 using AllocationDS.Business.Entities;
 using Asycuda421;
-using AsycudaWorld421;
 using Core.Common.Business.Services;
 using Core.Common.Converters;
 using DocumentItemDS.Business.Entities;
 using Core.Common.UI;
+using Core.Common.Utils;
 using InventoryDS.Business.Entities;
 using DocumentDS.Business.Services;
 
 using InventoryDS.Business.Services;
+using LicenseDS.Business.Entities;
+using MoreLinq.Extensions;
+using ValuationDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.DataSpace.Asycuda;
 using WaterNut.Interfaces;
@@ -60,10 +65,14 @@ using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Suppleme
 using xcuda_Weight_itm = DocumentItemDS.Business.Entities.xcuda_Weight_itm;
 using xcuda_Weight = DocumentDS.Business.Entities.xcuda_Weight;
 using AsycudaDocument_Attachments = DocumentDS.Business.Entities.AsycudaDocument_Attachments;
+using FileTypes = CoreEntities.Business.Entities.FileTypes;
+using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
+using Attachments = CoreEntities.Business.Entities.Attachments;
+using Registered = LicenseDS.Business.Entities.Registered;
 
 namespace WaterNut.DataSpace
 {
-    public partial  class BaseDataModel
+    public partial class BaseDataModel
     {
         private static readonly BaseDataModel instance;
 
@@ -71,14 +80,15 @@ namespace WaterNut.DataSpace
         {
 
 
-            instance = new BaseDataModel();
-           
-            instance.CurrentApplicationSettings = null;
+            instance = new BaseDataModel
+            {
+                CurrentApplicationSettings = null
+            };
 
             Initialization = InitializationAsync();
         }
 
-        public static  BaseDataModel Instance
+        public static BaseDataModel Instance
         {
             get { return BaseDataModel.instance; }
         }
@@ -91,20 +101,20 @@ namespace WaterNut.DataSpace
 
 
 
-           // _inventoryCache =
-           //     new DataCache<InventoryItem>(
-           //         await InventoryDS.DataModels.BaseDataModel.Instance.SearchInventoryItem(new List<string>() {"All"},
-           //             new List<string>()
-           //             {
-           //                 "InventoryItemAlias",
-           //                 "TariffCodes.TariffCategory.TariffSupUnitLkps"
-           //             }).ConfigureAwait(false));
+            // _inventoryCache =
+            //     new DataCache<InventoryItem>(
+            //         await InventoryDS.DataModels.BaseDataModel.Instance.SearchInventoryItem(new List<string>() {"All"},
+            //             new List<string>()
+            //             {
+            //                 "InventoryItemAlias",
+            //                 "TariffCodes.TariffCategory.TariffSupUnitLkps"
+            //             }).ConfigureAwait(false));
 
-           //_tariffCodeCache =
-           //     new DataCache<TariffCode>(
-           //         await
-           //             InventoryDS.DataModels.BaseDataModel.Instance.SearchTariffCode(new List<string>() {"All"})
-           //                 .ConfigureAwait(false));
+            //_tariffCodeCache =
+            //     new DataCache<TariffCode>(
+            //         await
+            //             InventoryDS.DataModels.BaseDataModel.Instance.SearchTariffCode(new List<string>() {"All"})
+            //                 .ConfigureAwait(false));
 
             _document_TypeCache =
                 new DataCache<Document_Type>(
@@ -118,7 +128,7 @@ namespace WaterNut.DataSpace
                         DocumentDS.DataModels.BaseDataModel.Instance.SearchCustoms_Procedure(new List<string>() {"All"})
                             .ConfigureAwait(false));
 
-           
+
             StatusModel.StopStatusUpdate();
         }
 
@@ -126,20 +136,27 @@ namespace WaterNut.DataSpace
         //public static DataCache<TariffCode> _tariffCodeCache;
         public static DataCache<Customs_Procedure> _customs_ProcedureCache;
         public static DataCache<Document_Type> _document_TypeCache;
-     
+
 
 
         //public DataCache<InventoryItem> InventoryCache { get { return BaseDataModel._inventoryCache; } }
         //public DataCache<TariffCode> TariffCodeCache {  get { return BaseDataModel._tariffCodeCache; } }
-        public DataCache<Customs_Procedure> Customs_ProcedureCache {  get { return BaseDataModel._customs_ProcedureCache; } }
-        public DataCache<Document_Type> Document_TypeCache {  get { return BaseDataModel._document_TypeCache; } }
-       
+        public DataCache<Customs_Procedure> Customs_ProcedureCache
+        {
+            get { return BaseDataModel._customs_ProcedureCache; }
+        }
+
+        public DataCache<Document_Type> Document_TypeCache
+        {
+            get { return BaseDataModel._document_TypeCache; }
+        }
+
 
         public bool ValidateInstallation()
         {
             try
             {
-               // if (DateTime.Now >= DateTime.Parse("4/11/2019")) return false;
+                // if (DateTime.Now >= DateTime.Parse("4/11/2019")) return false;
 
                 return true;
 
@@ -178,7 +195,7 @@ namespace WaterNut.DataSpace
             AsycudaDocumentSet docset = null;
             using (var ctx = new AsycudaDocumentSetService())
             {
-                docset = await ctx.GetAsycudaDocumentSetByKey(AsycudaDocumentSetId.ToString(), 
+                docset = await ctx.GetAsycudaDocumentSetByKey(AsycudaDocumentSetId.ToString(),
                     new List<string>()
                     {
                         "xcuda_ASYCUDA_ExtendedProperties",
@@ -186,14 +203,16 @@ namespace WaterNut.DataSpace
                         "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_PreviousItem"
                     }).ConfigureAwait(false);
             }
+
             Clear(docset);
         }
-        internal async  void Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
+
+        internal async void Clear(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
-                await ClearAsycudaDocumentSet(currentAsycudaDocumentSet).ConfigureAwait(false);
+            await ClearAsycudaDocumentSet(currentAsycudaDocumentSet).ConfigureAwait(false);
         }
 
-        public  async Task ClearAsycudaDocumentSet(int AsycudaDocumentSetId)
+        public async Task ClearAsycudaDocumentSet(int AsycudaDocumentSetId)
         {
             var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
             await ClearAsycudaDocumentSet(docset).ConfigureAwait(false);
@@ -211,74 +230,76 @@ namespace WaterNut.DataSpace
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = cp;
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = cp.Document_TypeId;
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = cp.Document_Type;
-                cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code = cp.Document_Type.Declaration_gen_procedure_code;
-                cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration = cp.Document_Type.Type_of_declaration;
+                cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
+                    cp.Document_Type.Declaration_gen_procedure_code;
+                cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration =
+                    cp.Document_Type.Type_of_declaration;
             }
         }
 
         public async Task ClearAsycudaDocumentSet(AsycudaDocumentSet docset)
         {
-            
-            StatusModel.StartStatusUpdate("Deleting Documents from '' Document Set", docset.xcuda_ASYCUDA_ExtendedProperties.Count());
+
+            StatusModel.StartStatusUpdate("Deleting Documents from '' Document Set",
+                docset.xcuda_ASYCUDA_ExtendedProperties.Count());
 
             var doclst = docset.xcuda_ASYCUDA_ExtendedProperties.Where(x => x.xcuda_ASYCUDA != null).ToList();
             //foreach (var item in doclst)
             var exceptions = new ConcurrentQueue<Exception>();
-            Parallel.ForEach(doclst, new ParallelOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount * 2}, item =>
-            {
-                StatusModel.StatusUpdate();
-                try
+            Parallel.ForEach(doclst, new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount * 2},
+                item =>
                 {
-                    DeleteAsycudaDocument(item.xcuda_ASYCUDA).Wait();
-                }
-                catch (Exception ex)
-                {
+                    StatusModel.StatusUpdate();
+                    try
+                    {
+                        DeleteAsycudaDocument(item.xcuda_ASYCUDA).Wait();
+                    }
+                    catch (Exception ex)
+                    {
 
-                    exceptions.Enqueue(
-                                new ApplicationException(
-                                    $"Could not import file - '{item.xcuda_ASYCUDA.CNumber + item.xcuda_ASYCUDA.RegistrationDate.ToShortDateString()}. Error:{ex.Message} Stacktrace:{ex.StackTrace}"));
-                }
-                 
+                        exceptions.Enqueue(
+                            new ApplicationException(
+                                $"Could not import file - '{item.xcuda_ASYCUDA.CNumber + item.xcuda_ASYCUDA.RegistrationDate.ToShortDateString()}. Error:{ex.Message} Stacktrace:{ex.StackTrace}"));
+                    }
 
-            }
-                );
-          if(exceptions.Count > 0) throw new AggregateException(exceptions);
+
+                }
+            );
+            if (exceptions.Count > 0) throw new AggregateException(exceptions);
             await CalculateDocumentSetFreight(docset.AsycudaDocumentSetId).ConfigureAwait(false);
             StatusModel.StopStatusUpdate();
-            
+
         }
 
         public interface IEntryLineData
         {
             string ItemNumber { get; set; }
-             string ItemDescription { get; set; }
-             string TariffCode { get; set; }
-             double Cost { get; set; }
-             int PreviousDocumentItemId { get; set; }
-             double Quantity { get; set; }
-            
+            string ItemDescription { get; set; }
+            string TariffCode { get; set; }
+            double Cost { get; set; }
+            int PreviousDocumentItemId { get; set; }
+            double Quantity { get; set; }
+
             List<EntryDataDetailSummary> EntryDataDetails { get; set; }
-           //  IDocumentItem PreviousDocumentItem { get; set; }
+            //  IDocumentItem PreviousDocumentItem { get; set; }
             // IInventoryItem InventoryItem { get; set; }
-         
+
 
             double Weight { get; set; }
 
-             double InternalFreight { get; set; }
+            double InternalFreight { get; set; }
 
-             double Freight { get; set; }
+            double Freight { get; set; }
             List<ITariffSupUnitLkp> TariffSupUnitLkps { get; set; }
         }
 
         public class EntryLineData : IEntryLineData
         {
             string _itemNumber;
-            public string ItemNumber 
+
+            public string ItemNumber
             {
-                get 
-                {
-                    return _itemNumber;
-                }
+                get { return _itemNumber; }
                 set
                 {
                     _itemNumber = value;
@@ -290,9 +311,9 @@ namespace WaterNut.DataSpace
                             InventoryItem = ctx.GetInventoryItemsByExpression(
                                 $"ItemNumber == \"{_itemNumber}\" && ApplicationSettingsId == {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}"
                                 , new List<string>()
-                            {
-                                "TariffCodes.TariffCategory.TariffCategoryCodeSuppUnits.TariffSupUnitLkp"
-                            }, false ).Result.FirstOrDefault();
+                                {
+                                    "TariffCodes.TariffCategory.TariffCategoryCodeSuppUnits.TariffSupUnitLkp"
+                                }, false).Result.FirstOrDefault();
                         }
                         else
                         {
@@ -301,17 +322,16 @@ namespace WaterNut.DataSpace
                     }
                 }
             }
+
             public string ItemDescription { get; set; }
             public string TariffCode { get; set; }
             public double Cost { get; set; }
-            
+
             int _previousDocumentItemId;
+
             public int PreviousDocumentItemId
             {
-                get
-                {
-                    return _previousDocumentItemId;
-                }
+                get { return _previousDocumentItemId; }
                 set
                 {
                     _previousDocumentItemId = value;
@@ -329,6 +349,7 @@ namespace WaterNut.DataSpace
                     }
                 }
             }
+
             public double Quantity { get; set; }
             public List<EntryDataDetailSummary> EntryDataDetails { get; set; }
             public IDocumentItem PreviousDocumentItem { get; set; }
@@ -345,7 +366,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        public  void IntCdoc(xcuda_ASYCUDA doc, AsycudaDocumentSet ads)
+        public void IntCdoc(xcuda_ASYCUDA doc, AsycudaDocumentSet ads)
         {
             var cdoc = new DocumentCT {Document = doc};
             IntCdoc(cdoc, ads);
@@ -358,9 +379,9 @@ namespace WaterNut.DataSpace
                 var cdoc = new DocumentCT();
                 //using (var ctx = new xcuda_ASYCUDAService())
                 //{
-                    cdoc.Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet);
-                    //d.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = null;// this is to save with out 2 extended properties with new entityid = 0
-                    //cdoc.Document = await ctx.Createxcuda_ASYCUDA(d).ConfigureAwait(false);
+                cdoc.Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet);
+                //d.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = null;// this is to save with out 2 extended properties with new entityid = 0
+                //cdoc.Document = await ctx.Createxcuda_ASYCUDA(d).ConfigureAwait(false);
                 //}
                 cdoc.DocumentItems = new List<xcuda_Item>();
                 return cdoc;
@@ -382,7 +403,7 @@ namespace WaterNut.DataSpace
 
         public xcuda_ASYCUDA CreateNewAsycudaDocument(AsycudaDocumentSet CurrentAsycudaDocumentSet)
         {
-            var ndoc = new xcuda_ASYCUDA(true) { TrackingState = TrackingState.Added };// 
+            var ndoc = new xcuda_ASYCUDA(true) {TrackingState = TrackingState.Added}; // 
             //ndoc.SetupProperties();
 
             if (CurrentAsycudaDocumentSet != null)
@@ -390,20 +411,23 @@ namespace WaterNut.DataSpace
                 CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Add(ndoc.xcuda_ASYCUDA_ExtendedProperties);
                 ndoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = CurrentAsycudaDocumentSet;
                 ndoc.xcuda_ASYCUDA_ExtendedProperties.FileNumber =
-                    CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault() ;// the number is forward looking //CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Count();
-                CurrentAsycudaDocumentSet.LastFileNumber = UpdateAsycudaDocumentSetLastNumber(CurrentAsycudaDocumentSet.AsycudaDocumentSetId, CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault());
+                    CurrentAsycudaDocumentSet.LastFileNumber
+                        .GetValueOrDefault(); // the number is forward looking //CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Count();
+                CurrentAsycudaDocumentSet.LastFileNumber = UpdateAsycudaDocumentSetLastNumber(
+                    CurrentAsycudaDocumentSet.AsycudaDocumentSetId,
+                    CurrentAsycudaDocumentSet.LastFileNumber.GetValueOrDefault());
             }
+
             return ndoc;
         }
+
 
         public int UpdateAsycudaDocumentSetLastNumber(int docSetId, int num)
         {
             using (var ctx = new CoreEntitiesContext())
             {
                 var sql = $@"UPDATE AsycudaDocumentSet
-                                SET         LastFileNumber = {
-                       num + 1
-                    }
+                                SET         LastFileNumber = {num + 1}
                                 FROM    AsycudaDocumentSet 
                                 where AsycudaDocumentSet.AsycudaDocumentSetId = {docSetId}";
                 ctx.Database.ExecuteSqlCommand(sql);
@@ -411,72 +435,72 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public  void IntCdoc(DocumentCT cdoc, AsycudaDocumentSet ads)
+        public void IntCdoc(DocumentCT cdoc, AsycudaDocumentSet ads)
         {
-           
-                cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + "-F" +
-                                                       cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
-                                                           .ToString();
-                cdoc.Document.xcuda_Declarant.Declarant_code = CurrentApplicationSettings.DeclarantCode;
-                cdoc.Document.xcuda_Identification.Manifest_reference_number = ads.Manifest_Number;
-                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
 
-                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = ads.Customs_Procedure.Document_Type;
-                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId =
-                    ads.Customs_Procedure.Document_Type.Document_TypeId;
-                cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
-                    ads.Customs_Procedure.Document_Type.Declaration_gen_procedure_code;
-                cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration =
-                    ads.Customs_Procedure.Document_Type.Type_of_declaration;
-                cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination =
-                    ads.Country_of_origin_code;
-                cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = ads.Country_of_origin_code;
-                cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code =
-                    ads.Country_of_origin_code;
-                
-                cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
-                cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = ads.Currency_Code;
+            cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + "-F" +
+                                                   cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
+                                                       .ToString();
+            cdoc.Document.xcuda_Declarant.Declarant_code = CurrentApplicationSettings.DeclarantCode;
+            cdoc.Document.xcuda_Identification.Manifest_reference_number = ads.Manifest_Number;
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
 
-                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId !=
-                    ads.Customs_Procedure.Customs_ProcedureId)
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = ads.Customs_Procedure.Document_Type;
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId =
+                ads.Customs_Procedure.Document_Type.Document_TypeId;
+            cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
+                ads.Customs_Procedure.Document_Type.Declaration_gen_procedure_code;
+            cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration =
+                ads.Customs_Procedure.Document_Type.Type_of_declaration;
+            cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination =
+                ads.Country_of_origin_code;
+            cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = ads.Country_of_origin_code;
+            cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code =
+                ads.Country_of_origin_code;
+
+            cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
+            cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = ads.Currency_Code;
+
+            if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId !=
+                ads.Customs_Procedure.Customs_ProcedureId)
+            {
+                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId != 0)
                 {
-                    if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId != 0)
+                    var c = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure;
+                    foreach (var item in cdoc.DocumentItems.Where(x =>
+                        x.xcuda_Tarification.Extended_customs_procedure == c.Extended_customs_procedure &&
+                        x.xcuda_Tarification.National_customs_procedure == c.National_customs_procedure).ToList())
                     {
-                        var c = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure;
-                        foreach (var item in cdoc.DocumentItems.Where(x =>
-                            x.xcuda_Tarification.Extended_customs_procedure == c.Extended_customs_procedure &&
-                            x.xcuda_Tarification.National_customs_procedure == c.National_customs_procedure).ToList())
-                        {
-                            item.xcuda_Tarification.Extended_customs_procedure =
-                                ads.Customs_Procedure.Extended_customs_procedure;
-                            item.xcuda_Tarification.National_customs_procedure =
-                                ads.Customs_Procedure.National_customs_procedure;
-                        }
+                        item.xcuda_Tarification.Extended_customs_procedure =
+                            ads.Customs_Procedure.Extended_customs_procedure;
+                        item.xcuda_Tarification.National_customs_procedure =
+                            ads.Customs_Procedure.National_customs_procedure;
                     }
-
-                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = ads.Customs_ProcedureId;
-                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = ads.Customs_Procedure;
                 }
 
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = ads.Customs_ProcedureId;
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = ads.Customs_Procedure;
+            }
 
-                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != ads.BLNumber)
+
+            if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != ads.BLNumber)
+            {
+                if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != null)
                 {
-                    if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != null)
+                    var b = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber;
+                    foreach (var item in cdoc.DocumentItems
+                        .Where(x => x.xcuda_Previous_doc.Summary_declaration == b).ToList())
                     {
-                        var b = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber;
-                        foreach (var item in cdoc.DocumentItems
-                            .Where(x => x.xcuda_Previous_doc.Summary_declaration == b).ToList())
-                        {
-                            item.xcuda_Previous_doc.Summary_declaration = ads.BLNumber;
-                        }
+                        item.xcuda_Previous_doc.Summary_declaration = ads.BLNumber;
                     }
-
-                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber = ads.BLNumber;
                 }
 
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber = ads.BLNumber;
+            }
 
 
-                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = ads.Description;
+
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = ads.Description;
 
             //    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = true;
             using (var ctx = new DocumentDSContext())
@@ -494,15 +518,48 @@ namespace WaterNut.DataSpace
                     Exp.Destination_country_code;
                 cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =
                     Exp.Trading_country;
-                if (string.IsNullOrEmpty(ads.Currency_Code)) cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
+                if (string.IsNullOrEmpty(ads.Currency_Code))
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
                 if (string.IsNullOrEmpty(ads.Country_of_origin_code))
                 {
                     cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = Exp.Trading_country;
-                    cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination = Exp.Country_first_destination;
+                    cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination =
+                        Exp.Country_first_destination;
 
-                    cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code = Exp.Export_country_code;
+                    cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code =
+                        Exp.Export_country_code;
                 }
 
+                if (Exp.Delivery_terms_Code != null)
+                {
+                    if (cdoc.Document.xcuda_Transport == null)
+                        cdoc.Document.xcuda_Transport = new List<xcuda_Transport>();
+                    var deliveryTerms = cdoc.Document.xcuda_Transport.FirstOrDefault()?.xcuda_Delivery_terms
+                        .FirstOrDefault();
+                    if (deliveryTerms == null)
+                    {
+                        cdoc.Document.xcuda_Transport.Add(new xcuda_Transport(true)
+                        {
+                            xcuda_Delivery_terms = new List<xcuda_Delivery_terms>()
+                            {
+                                new xcuda_Delivery_terms(true)
+                                {
+                                    Code = Exp.Delivery_terms_Code,
+                                    TrackingState = TrackingState.Added
+                                }
+
+                            },
+                            TrackingState = TrackingState.Added
+                        });
+
+                    }
+                    else
+                    {
+                        deliveryTerms.Code = Exp.Delivery_terms_Code;
+                    }
+
+
+                }
 
                 //cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
 
@@ -511,8 +568,9 @@ namespace WaterNut.DataSpace
 
         }
 
-        
-        public async Task AddToEntry(IEnumerable<string> entryDatalst, AsycudaDocumentSet currentAsycudaDocumentSet, bool perInvoice)
+
+        public async Task AddToEntry(IEnumerable<string> entryDatalst, AsycudaDocumentSet currentAsycudaDocumentSet,
+            bool perInvoice)
         {
             try
             {
@@ -525,7 +583,8 @@ namespace WaterNut.DataSpace
                 ;
                 if (!IsValidEntryData(slstSource)) return;
 
-                await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false).ConfigureAwait(false);
+                await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false)
+                    .ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -538,8 +597,18 @@ namespace WaterNut.DataSpace
             try
             {
 
-                var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
+                var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId)
+                    .ConfigureAwait(false);
                 if (!IsValidDocument(docSet)) return;
+                if (perInvoice)
+                {
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        var ds = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId);
+                        if (ds.TotalPackages.GetValueOrDefault() > ds.TotalInvoices.GetValueOrDefault())
+                            perInvoice = false;
+                    }
+                }
 
                 var slstSource =
                     (from s in await GetSelectedPODetails(entryDatalst).ConfigureAwait(false)
@@ -558,7 +627,7 @@ namespace WaterNut.DataSpace
 
         public async Task ValidateExistingTariffCodes(AsycudaDocumentSet currentAsycudaDocumentSet)
         {
-           
+
         }
 
 
@@ -574,7 +643,7 @@ namespace WaterNut.DataSpace
         //            (from s in await GetSelectedPODetails(entryDataDetailslst).ConfigureAwait(false)
         //                //.Where(p => p.Downloaded == false)
         //                select s).ToList();
-                
+
         //        if (!IsValidEntryData(slstSource)) return;
 
         //        await CreateEntryItems(slstSource, currentAsycudaDocumentSet).ConfigureAwait(false);
@@ -589,12 +658,13 @@ namespace WaterNut.DataSpace
 
         private bool IsValidEntryData(List<EntryDataDetails> slstSource)
         {
-            
+
             if (!slstSource.Any())
             {
-               throw new ApplicationException("Please Select Entry Data before proceeding");
-                
+                throw new ApplicationException("Please Select Entry Data before proceeding");
+
             }
+
             return true;
         }
 
@@ -610,8 +680,9 @@ namespace WaterNut.DataSpace
             {
                 throw new ApplicationException(
                     "Please Select Document Type & Customs Procedure for selected Asycuda Document Set before proceeding");
-                
+
             }
+
             return true;
         }
 
@@ -633,12 +704,13 @@ namespace WaterNut.DataSpace
             EntryData entryData = null;
 
 
-            var curLst = slstSource.Select(x => x.EntryData.Currency).Where(x => !string.IsNullOrEmpty(x)).Distinct().ToList();
-            if (curLst.Any() && perInvoice == false)
-            {
-                if (curLst.Count() > 1)
-                    throw new ApplicationException("EntryDataDetails Contains More than 1 Currencies");
-            }
+            //var curLst = slstSource.Select(x => x.EntryData.Currency).Where(x => !string.IsNullOrEmpty(x)).Distinct()
+            //    .ToList();
+            //if (curLst.Any() && perInvoice == false)
+            //{
+            //    if (curLst.Count() > 1)
+            //        throw new ApplicationException("EntryDataDetails Contains More than 1 Currencies");
+            //}
 
 
             //////////////////////////////////////////////////////
@@ -647,21 +719,21 @@ namespace WaterNut.DataSpace
             /// left as is because this is not a problem
             /// 
             switch (CurrentApplicationSettings.OrderEntriesBy)
-                {
-                    case "TariffCode":
-                        entryLineDatas = entryLineDatas.OrderBy(p => p.InventoryItem.TariffCode).ToList();
-                        break;
-                    case "Invoice":
-                        entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.EntryDataId).ToList();
-                        break;
-                    default:
-                        break;
-                }
-            
+            {
+                case "TariffCode":
+                    entryLineDatas = entryLineDatas.OrderBy(p => p.InventoryItem.TariffCode).ToList();
+                    break;
+                case "Invoice":
+                    entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.EntryDataId).ToList();
+                    break;
+                default:
+                    break;
+            }
+
 
 
             var oldentryData = "";
-            foreach (var pod in entryLineDatas)//
+            foreach (var pod in entryLineDatas) //
             {
 
                 if (oldentryData != pod.EntryData.EntryDataId)
@@ -680,40 +752,43 @@ namespace WaterNut.DataSpace
                             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
                             if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
                             AttachCustomProcedure(cdoc, currentAsycudaDocumentSet.Customs_Procedure);
-                            
+
                             itmcount = 0;
                         }
                     }
-                    
+
                 }
 
                 //invoice dictates currency to prevent currencies mismatch
-                 if (curLst.Any() && cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code != curLst.First())
-                        {
-                            cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = curLst.First();
-                        }
+                //if (curLst.Any() && cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code != curLst.First())
+                //{
+                cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code =
+                    pod.EntryData.Currency ?? currentAsycudaDocumentSet.Currency_Code;//curLst.First();
+                //}
 
                 if (entryData == null || entryData.EntryDataId != pod.EntryData.EntryDataId)
                 {
                     // do container
-                    if (entryData == null || !pod.EntryData.ContainerEntryData.OrderBy(x => x.Container_Id).SequenceEqual(entryData.ContainerEntryData.OrderBy(z => z.Container_Id)))
+                    if (entryData == null || !pod.EntryData.ContainerEntryData.OrderBy(x => x.Container_Id)
+                            .SequenceEqual(entryData.ContainerEntryData.OrderBy(z => z.Container_Id)))
                     {
                         foreach (var c in pod.EntryData.ContainerEntryData)
                         {
-                            var cnt =(await EntryDataDS.DataModels.BaseDataModel.Instance.SearchContainer(new List<string>()
-                            {
-                                $"Container_Id == {c.Container_Id}"
-                            }).ConfigureAwait(false)).FirstOrDefault();
+                            var cnt = (await EntryDataDS.DataModels.BaseDataModel.Instance.SearchContainer(
+                                new List<string>()
+                                {
+                                    $"Container_Id == {c.Container_Id}"
+                                }).ConfigureAwait(false)).FirstOrDefault();
                             //c.Container = cnt;
-                                var xcnt =
-                                    cdoc.Document.xcuda_Container.FirstOrDefault(
-                                        x => x.Container_identity == cnt.Container_identity);
+                            var xcnt =
+                                cdoc.Document.xcuda_Container.FirstOrDefault(
+                                    x => x.Container_identity == cnt.Container_identity);
                             if (xcnt == null)
                             {
                                 xcnt = new xcuda_Container(true)
                                 {
                                     ASYCUDA_Id = cdoc.Document.ASYCUDA_Id,
-                                    Container_identity =  cnt.Container_identity,
+                                    Container_identity = cnt.Container_identity,
                                     Container_type = cnt.Container_type,
                                     Packages_number = cnt.Packages_number,
                                     Packages_type = cnt.Packages_type,
@@ -723,72 +798,71 @@ namespace WaterNut.DataSpace
                                 };
                                 cdoc.Document.xcuda_Container.Add(xcnt);
                             }
-                            
-                            
+
+
                         }
                     }
+
                     entryData = pod.EntryData;
                 }
 
-                
+
 
                 var itm = CreateItemFromEntryDataDetail(pod, cdoc);
 
-             
+
                 if (itm == null) continue;
                 itmcount += 1;
 
                 if (oldentryData != pod.EntryData.EntryDataId)
                 {
-                    if(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Document_Type.DisplayName != "IM7")
-                    itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
-                    {
-                        Attached_document_code = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x => x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.DisplayName)?.AttachedDocumentCode ?? "IV05",
-                        Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                        Attached_document_reference = pod.EntryData.EntryDataId,
-                        TrackingState = TrackingState.Added
-                    });
-
-                    var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
-                        .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) || (x.DocumentSpecific == false
-                                                                                                  && x.EmailUniqueId == pod.EntryData.EmailId
-                                                                                                  && !cdoc.Document.AsycudaDocument_Attachments.Any(z => z.AttachmentId == x.AttachmentId) ))
-                        .Select(x => x.Attachment);
-                    foreach (var att in alst)
-                    {
-                        cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
-                        {
-                            AttachmentId = att.Id, AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
-                            //Attachment = att,
-                            //xcuda_ASYCUDA = cdoc.Document,
-                            TrackingState = TrackingState.Added
-                        });
-
-                        var f = new FileInfo(att.FilePath);
+                    if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Document_Type.DisplayName !=
+                        "IM7")
                         itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
                         {
-                            Attached_document_code = att.DocumentCode,
+                            Attached_document_code =
+                                BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                    x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                                        .Customs_Procedure.DisplayName)?.AttachedDocumentCode ?? "IV05",
                             Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                            Attached_document_reference = f.Name.Replace(f.Extension, ""),//pod.EntryData.EntryDataId,
-                            xcuda_Attachments = new List<xcuda_Attachments>()
-                            {
-                                new xcuda_Attachments(true)
-                                {
-                                    AttachmentId = att.Id,
-                                    TrackingState = TrackingState.Added
-                                }
-                            },
+                            Attached_document_reference = pod.EntryData.EntryDataId,
                             TrackingState = TrackingState.Added
                         });
-                    }
-                    
+
+                    var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
+                        .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) ||
+                                    (x.DocumentSpecific == false
+                                     && x.EmailUniqueId == pod.EntryData.EmailId
+                                     && !cdoc.Document.AsycudaDocument_Attachments.Any(z =>
+                                         z.AttachmentId == x.AttachmentId)))
+                        .Select(x => x.Attachment);
+                    AttachToDocument(alst, cdoc.Document, itm);
+
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Amount_foreign_currency +=
+                        pod.EntryData.TotalInternalFreight.GetValueOrDefault();
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Currency_code = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code;
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_deduction.Amount_foreign_currency +=
+                        pod.EntryData.TotalDeduction.GetValueOrDefault();
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_deduction.Currency_code = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code;
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_insurance.Amount_foreign_currency +=
+                        pod.EntryData.TotalInsurance.GetValueOrDefault();
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_insurance.Currency_code = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code;
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_other_cost.Amount_foreign_currency +=
+                        pod.EntryData.TotalOtherCost.GetValueOrDefault();
+                    cdoc.Document.xcuda_Valuation.xcuda_Gs_other_cost.Currency_code = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code;
+
+
+                    cdoc.Document.xcuda_Traders.xcuda_Exporter.Exporter_name =
+                        $"{pod.EntryData.Suppliers.SupplierName}\r\n" +
+                        $"{pod.EntryData.Suppliers.Street}\r\n" +
+                        $"{pod.EntryData.Suppliers.Country}\r\n";
 
                     oldentryData = pod.EntryData.EntryDataId;
                 }
 
 
 
-                if (itmcount%CurrentApplicationSettings.MaxEntryLines == 0)
+                if (itmcount % (currentAsycudaDocumentSet.MaxLines?? CurrentApplicationSettings.MaxEntryLines) == 0)
                 {
                     if (cdoc.DocumentItems.Any())
                     {
@@ -809,6 +883,7 @@ namespace WaterNut.DataSpace
                 StatusModel.StatusUpdate();
                 //System.Windows.Forms.MessageBox.
             }
+
             StatusModel.Timer("Saving To Database");
             if (cdoc.DocumentItems.Any())
             {
@@ -819,8 +894,101 @@ namespace WaterNut.DataSpace
             await CalculateDocumentSetFreight(currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false);
             StatusModel.StopStatusUpdate();
 
+            AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId);
 
-          
+        }
+
+        private static void AttachToDocument(IEnumerable<int> alst, int docId, int itmId)
+        {
+            try
+            {
+                xcuda_ASYCUDA doc;
+                List<Attachment> attlst;
+                xcuda_Item itm;
+                using (var docCtx = new DocumentDSContext())
+                {
+
+                    doc = docCtx.xcuda_ASYCUDA.First(x => x.ASYCUDA_Id == docId);
+
+                    attlst = docCtx.Attachments.Where(x => alst.Contains(x.Id)).ToList();
+                }
+
+                using (var docItemCtx = new DocumentItemDSContext())
+                {
+                    itm = docItemCtx.xcuda_Item.First(x => x.Item_Id == itmId);
+                }
+
+                AttachToDocument(attlst, doc, itm);
+                using (var docItemCtx = new DocumentItemDSContext(){StartTracking = true})
+                {
+                    foreach (var ad in itm.xcuda_Attached_documents)
+                    {
+                        if (docItemCtx.xcuda_Attached_documents.FirstOrDefault(x =>
+                                x.Item_Id == itm.Item_Id && x.Attached_document_reference == ad.Attached_document_reference) !=
+                            null) continue;
+                        ad.Item_Id = itm.Item_Id;
+                        docItemCtx.xcuda_Attached_documents.Add(ad);
+                    }
+                    docItemCtx.SaveChanges();
+                }
+
+                using (var ctx = new DocumentDSContext(){StartTracking = true})
+                {
+                    foreach (var at in doc.AsycudaDocument_Attachments)
+                    {
+                        if (ctx.AsycudaDocument_Attachments.FirstOrDefault(x =>
+                                x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == at.AttachmentId) !=
+                            null) continue;
+                        at.AsycudaDocumentId = doc.ASYCUDA_Id;
+                        ctx.AsycudaDocument_Attachments.Add(at);
+                    }
+                    ctx.SaveChanges();
+                }
+                
+            }
+
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        private static void AttachToDocument(IEnumerable<Attachment> alst, xcuda_ASYCUDA doc, xcuda_Item itm)
+        {
+            
+            foreach (var att in alst)
+            {
+               
+                doc.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
+                {
+                    AttachmentId = att.Id,
+                    AsycudaDocumentId = doc.ASYCUDA_Id,
+                    //Attachment = att,
+                    //xcuda_ASYCUDA = cdoc.Document,
+                    TrackingState = TrackingState.Added
+                });
+
+                var f = new FileInfo(att.FilePath);
+                itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                {
+                    Attached_document_code = att.DocumentCode,
+                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                    Attached_document_reference = att.Reference, //pod.EntryData.EntryDataId,
+                    xcuda_Attachments = new List<xcuda_Attachments>()
+                    {
+                        new xcuda_Attachments(true)
+                        {
+                            AttachmentId = att.Id,
+                            TrackingState = TrackingState.Added
+                        }
+                    },
+                    TrackingState = TrackingState.Added
+                });
+            }
+
+            
         }
 
         private static void SetEffectiveAssessmentDate(DocumentCT cdoc)
@@ -834,9 +1002,9 @@ namespace WaterNut.DataSpace
         }
 
 
-        private  IEnumerable<BaseDataModel.EntryLineData> CreateEntryLineData(IEnumerable<EntryDataDetails> slstSource)
+        private IEnumerable<BaseDataModel.EntryLineData> CreateEntryLineData(IEnumerable<EntryDataDetails> slstSource)
         {
-            var slst = from s in slstSource.AsEnumerable()//.Where(p => p.Downloaded == false)
+            var slst = from s in slstSource.AsEnumerable() //.Where(p => p.Downloaded == false)
                 group s by new {s.ItemNumber, s.ItemDescription, s.TariffCode, s.Cost, s.EntryData, s.InventoryItems}
                 into g
                 select new BaseDataModel.EntryLineData
@@ -861,16 +1029,25 @@ namespace WaterNut.DataSpace
                     Freight = Convert.ToDouble(g.Sum(x => x.Freight)),
                     Weight = Convert.ToDouble(g.Sum(x => x.Weight)),
                     InternalFreight = Convert.ToDouble(g.Sum(x => x.InternalFreight)),
-                    TariffSupUnitLkps = g.Key.InventoryItems.SuppUnitCode2 != null ? new List<ITariffSupUnitLkp>() { new TariffSupUnitLkps() { SuppUnitCode2 = g.Key.InventoryItems.SuppUnitCode2, SuppQty = g.Key.InventoryItems.SuppQty.GetValueOrDefault()} }: null, 
+                    TariffSupUnitLkps = g.Key.InventoryItems.SuppUnitCode2 != null
+                        ? new List<ITariffSupUnitLkp>()
+                        {
+                            new TariffSupUnitLkps()
+                            {
+                                SuppUnitCode2 = g.Key.InventoryItems.SuppUnitCode2,
+                                SuppQty = g.Key.InventoryItems.SuppQty.GetValueOrDefault()
+                            }
+                        }
+                        : null,
                     InventoryItemEx = g.Key.InventoryItems,
-                    
+
                 };
             return slst;
         }
 
-        public async Task<xcuda_ASYCUDA> GetDocument(int ASYCUDA_Id, List<string> includeLst = null )
+        public async Task<xcuda_ASYCUDA> GetDocument(int ASYCUDA_Id, List<string> includeLst = null)
         {
-            using (var ctx = new xcuda_ASYCUDAService(){StartTracking = true})
+            using (var ctx = new xcuda_ASYCUDAService() {StartTracking = true})
             {
                 return await ctx.Getxcuda_ASYCUDAByKey(ASYCUDA_Id.ToString(), includeLst).ConfigureAwait(false);
             }
@@ -884,7 +1061,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public  async Task<AsycudaDocumentItem> Getxcuda_Item(int p)
+        public async Task<AsycudaDocumentItem> Getxcuda_Item(int p)
         {
             using (var ctx = new AsycudaDocumentItemService())
             {
@@ -896,10 +1073,10 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                
+
                 if (cdoc == null) return;
                 //var docset = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet;
-                 using (var ctx = new xcuda_ASYCUDAService())
+                using (var ctx = new xcuda_ASYCUDAService())
                 {
                     cdoc.Document = await ctx.CleanAndUpdateXcuda_ASYCUDA(cdoc.Document).ConfigureAwait(false);
                 }
@@ -909,52 +1086,53 @@ namespace WaterNut.DataSpace
                 //    {
                 //        "xcuda_ASYCUDA_ExtendedProperties"
                 //    }).ConfigureAwait(false);
-               
-               
-               // ------------------- took it out cuz i want to import generated documents
-               // if (cdoc.Document.ASYCUDA_Id == 0) return;
-               
-                    // prepare items for parrallel import
-                    foreach (var item in cdoc.DocumentItems)
+
+
+                // ------------------- took it out cuz i want to import generated documents
+                // if (cdoc.Document.ASYCUDA_Id == 0) return;
+
+                // prepare items for parrallel import
+                foreach (var item in cdoc.DocumentItems)
+                {
+                    item.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
+                    item.LineNumber = cdoc.DocumentItems.IndexOf(item) + 1;
+                    if (item.xcuda_PreviousItem != null)
                     {
-                        item.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
-                        item.LineNumber = cdoc.DocumentItems.IndexOf(item) + 1;
-                        if (item.xcuda_PreviousItem != null)
-                        {
-                            item.xcuda_PreviousItem.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
-                            item.xcuda_PreviousItem.Current_item_number = item.LineNumber.ToString();
-                            
-                        }
+                        item.xcuda_PreviousItem.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
+                        item.xcuda_PreviousItem.Current_item_number = item.LineNumber.ToString();
+
                     }
+                }
 
-                    //Parallel.ForEach(cdoc.DocumentItems, new ParallelOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount * 2}, item =>
-                    //{
-                    
-                        using (var ctx = new xcuda_ItemService())
+                //Parallel.ForEach(cdoc.DocumentItems, new ParallelOptions(){MaxDegreeOfParallelism = Environment.ProcessorCount * 2}, item =>
+                //{
+
+                using (var ctx = new xcuda_ItemService())
+                {
+                    foreach (var t in cdoc.DocumentItems)
+                    {
+                        var exceptions = new ConcurrentQueue<Exception>();
+                        //cdoc.DocumentItems.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll((t) =>
+                        //{
+                        try
                         {
-                            foreach (var t in cdoc.DocumentItems)
-                            {
-                                var exceptions = new ConcurrentQueue<Exception>();
-                                //cdoc.DocumentItems.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll((t) =>
-                                //{
-                                try
-                                {
-                                    if (t.ChangeTracker != null)
-                                        ctx.Updatexcuda_Item(t).Wait(); //.ChangeTracker.GetChanges().FirstOrDefault()
-                                }
-                                catch (Exception ex)
-                                {
-
-                                    exceptions.Enqueue(ex);
-                                }
-
-                                //});
-                                if (exceptions.Count > 0) throw new AggregateException(exceptions);
-                                //    await ctx.Updatexcuda_Item(cdoc.DocumentItems).ConfigureAwait(false);
-                            }
+                            if (t.ChangeTracker != null)
+                                ctx.Updatexcuda_Item(t).Wait(); //.ChangeTracker.GetChanges().FirstOrDefault()
                         }
+                        catch (Exception ex)
+                        {
+
+                            exceptions.Enqueue(ex);
+                        }
+
+                        //});
+                        if (exceptions.Count > 0) throw new AggregateException(exceptions);
+                        //    await ctx.Updatexcuda_Item(cdoc.DocumentItems).ConfigureAwait(false);
+                    }
+                }
+
                 //});
-              //  await CalculateDocumentSetFreight(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId.GetValueOrDefault()).ConfigureAwait(false);
+                //  await CalculateDocumentSetFreight(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId.GetValueOrDefault()).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -977,38 +1155,44 @@ namespace WaterNut.DataSpace
                 AsycudaDocumentSet asycudaDocumentSet;
                 using (var ctx = new DocumentDSContext())
                 {
-                    
-                    asycudaDocumentSet = ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
+
+                    asycudaDocumentSet =
+                        ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
                     if (asycudaDocumentSet != null)
                     {
-                        if (asycudaDocumentSet.TotalFreight != null) totalFreight =asycudaDocumentSet.TotalFreight.Value;
+                        if (asycudaDocumentSet.TotalFreight != null)
+                            totalFreight = asycudaDocumentSet.TotalFreight.Value;
                         if (asycudaDocumentSet.TotalWeight != null) totalWeight = asycudaDocumentSet.TotalWeight.Value;
 
                         currency = asycudaDocumentSet.Currency_Code;
                     }
-                    
+
                     doclst =
                         ctx.xcuda_ASYCUDA_ExtendedProperties.Where(x => x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                            .Where(x => (x.IsManuallyAssessed != true && x.ImportComplete == false)) // prevent recalculating weights of assessed entries
+                            .Where(x => (x.IsManuallyAssessed != true &&
+                                         x.ImportComplete ==
+                                         false)) // prevent recalculating weights of assessed entries
                             .Select(x => x.ASYCUDA_Id)
                             .ToList();
                     if (!doclst.Any()) return;
                 }
+
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    
+
                     foreach (var doc in doclst)
                     {
                         var t = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
                             .Select(y => y.TotalCIF).DefaultIfEmpty(0).Sum();
-                       
+
                         docValues.Add(doc, t.GetValueOrDefault());
                         totalfob += t.GetValueOrDefault();
                     }
-                    
+
                 }
-                double freightRate = totalFreight != 0? totalFreight /totalfob: 0;
-                double weightRate = totalWeight != 0 ?  totalWeight / totalfob: 0;
+
+                double freightRate = totalFreight != 0 ? totalFreight / totalfob : 0;
+                double weightRate = totalWeight != 0 ? totalWeight / totalfob : 0;
                 using (var ctx = new DocumentDSContext() {StartTracking = true})
                 {
                     foreach (var doc in docValues.Where(x => x.Value != 0))
@@ -1016,16 +1200,17 @@ namespace WaterNut.DataSpace
                         if (asycudaDocumentSet.ApportionMethod == "Equal")
                         {
                             UpdateFreight(ctx, doc, totalFreight / doclst.Count(), currency);
-                            UpdateWeight(ctx, doc, totalWeight/doclst.Count(), currency);
+                            UpdateWeight(ctx, doc, totalWeight / doclst.Count(), currency);
                         }
                         else
                         {
                             UpdateFreight(ctx, doc, doc.Value * freightRate, currency);
                             UpdateWeight(ctx, doc, doc.Value * weightRate, currency);
                         }
-                        
+
 
                     }
+
                     ctx.SaveChanges();
 
                 }
@@ -1038,7 +1223,8 @@ namespace WaterNut.DataSpace
         }
 
 
-        private static void UpdateFreight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double freightRate, string currency)
+        private static void UpdateFreight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double freightRate,
+            string currency)
         {
             var val = ctx.xcuda_Valuation.Include(x => x.xcuda_Gs_external_freight).First(x => x.ASYCUDA_Id == doc.Key);
             if (val == null) return;
@@ -1061,63 +1247,67 @@ namespace WaterNut.DataSpace
             ctx.ApplyChanges(xcuda_Gs_external_freight);
         }
 
-        private static void UpdateWeight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double weightRate, string currency)
+        private static void UpdateWeight(DocumentDSContext ctx, KeyValuePair<int, double> doc, double weightRate,
+            string currency)
         {
             try
             {
 
-            
-            if (instance.CurrentApplicationSettings.WeightCalculationMethod.ToLower() != "Value".ToLower()) return;
-            var val = ctx.xcuda_Valuation.Include(x => x.xcuda_Weight).FirstOrDefault(x => x.ASYCUDA_Id == doc.Key);
-            if (val == null) return;
-            var xcuda_Weight = val.xcuda_Weight;
-            if (xcuda_Weight == null)
-            {
-                xcuda_Weight = new xcuda_Weight(true)
+
+                if (instance.CurrentApplicationSettings.WeightCalculationMethod.ToLower() != "Value".ToLower()) return;
+                var val = ctx.xcuda_Valuation.Include(x => x.xcuda_Weight).FirstOrDefault(x => x.ASYCUDA_Id == doc.Key);
+                if (val == null) return;
+                var xcuda_Weight = val.xcuda_Weight;
+                if (xcuda_Weight == null)
                 {
-                    Valuation_Id = doc.Key,
-                    xcuda_Valuation = val,
-                    TrackingState = TrackingState.Added
-                };
-                val.xcuda_Weight = xcuda_Weight;
-            }
-
-            xcuda_Weight.Gross_weight =  weightRate < 0.01 ?0.01 : weightRate;
-            
-            if (xcuda_Weight.TrackingState != TrackingState.Added)
-                xcuda_Weight.TrackingState = TrackingState.Modified;
-            ctx.ApplyChanges(xcuda_Weight);
-
-            using (var ictx = new DocumentItemDSContext(){StartTracking = true})
-            {
-                var lst = ictx.xcuda_Weight_itm
-                    .Include(x => x.xcuda_Valuation_item)
-                   .Where(x => x.xcuda_Valuation_item.xcuda_Item.ASYCUDA_Id == doc.Key).ToList();
-                var mw = 0.0;
-                foreach (var itm in lst)
-                {
-
-
-                    var calWgt = weightRate * (itm.xcuda_Valuation_item.Total_CIF_itm / doc.Value);
-                    var minWgt = ictx.xcuda_Tarification.Include(x => x.Unordered_xcuda_Supplementary_unit)
-                                     .First(z => z.Item_Id == itm.Valuation_item_Id).Unordered_xcuda_Supplementary_unit.First(x => x.IsFirstRow == true).Suppplementary_unit_quantity.GetValueOrDefault() * .01;
-
-                    if (calWgt - mw < minWgt)
+                    xcuda_Weight = new xcuda_Weight(true)
                     {
-                        itm.Gross_weight_itm = minWgt;
-                        mw += minWgt;
-                    }
-                    else
-                    {
-                        itm.Gross_weight_itm = calWgt - mw;
-                        mw = 0;
-                    }
-                    itm.Net_weight_itm =
-                        itm.Gross_weight_itm;
+                        Valuation_Id = doc.Key,
+                        xcuda_Valuation = val,
+                        TrackingState = TrackingState.Added
+                    };
+                    val.xcuda_Weight = xcuda_Weight;
                 }
 
-                ictx.SaveChanges();
-            }
+                xcuda_Weight.Gross_weight = weightRate < 0.01 ? 0.01 : weightRate;
+
+                if (xcuda_Weight.TrackingState != TrackingState.Added)
+                    xcuda_Weight.TrackingState = TrackingState.Modified;
+                ctx.ApplyChanges(xcuda_Weight);
+
+                using (var ictx = new DocumentItemDSContext() {StartTracking = true})
+                {
+                    var lst = ictx.xcuda_Weight_itm
+                        .Include(x => x.xcuda_Valuation_item)
+                        .Where(x => x.xcuda_Valuation_item.xcuda_Item.ASYCUDA_Id == doc.Key).ToList();
+                    var mw = 0.0;
+                    foreach (var itm in lst)
+                    {
+
+
+                        var calWgt = weightRate * (itm.xcuda_Valuation_item.Total_CIF_itm / doc.Value);
+                        var minWgt = ictx.xcuda_Tarification.Include(x => x.Unordered_xcuda_Supplementary_unit)
+                                         .First(z => z.Item_Id == itm.Valuation_item_Id)
+                                         .Unordered_xcuda_Supplementary_unit.First(x => x.IsFirstRow == true)
+                                         .Suppplementary_unit_quantity.GetValueOrDefault() * .01;
+
+                        if (calWgt - mw < minWgt)
+                        {
+                            itm.Gross_weight_itm = minWgt;
+                            mw += minWgt;
+                        }
+                        else
+                        {
+                            itm.Gross_weight_itm = calWgt - mw;
+                            mw = 0;
+                        }
+
+                        itm.Net_weight_itm =
+                            itm.Gross_weight_itm;
+                    }
+
+                    ictx.SaveChanges();
+                }
             }
             catch (Exception e)
             {
@@ -1134,49 +1324,66 @@ namespace WaterNut.DataSpace
             }
         }
 
-        internal  xcuda_Item CreateItemFromEntryDataDetail(BaseDataModel.IEntryLineData pod, DocumentCT cdoc)
+        internal xcuda_Item CreateItemFromEntryDataDetail(BaseDataModel.IEntryLineData pod, DocumentCT cdoc)
         {
-           // if (pod.TariffCode != null)
-           // {
+            // if (pod.TariffCode != null)
+            // {
             try
             {
-               
 
-               var itm = CreateNewDocumentItem();
+
+                var itm = CreateNewDocumentItem();
                 cdoc.DocumentItems.Add(itm);
                 //itm.SetupProperties();
-                
+
 
                 itm.xcuda_Goods_description.Commercial_Description = CleanText(pod.ItemDescription);
                 if (cdoc.Document.xcuda_General_information != null)
-                    itm.xcuda_Goods_description.Country_of_origin_code = cdoc.Document.xcuda_General_information.xcuda_Country.Country_first_destination;
+                    itm.xcuda_Goods_description.Country_of_origin_code = cdoc.Document.xcuda_General_information
+                        .xcuda_Country.Country_first_destination;
                 itm.xcuda_Tarification.Item_price = Convert.ToSingle(pod.Cost * pod.Quantity);
-                itm.xcuda_Tarification.National_customs_procedure = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.National_customs_procedure; //cdoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Customs_Procedure.National_customs_procedure;
-                itm.xcuda_Tarification.Extended_customs_procedure = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Extended_customs_procedure;//cdoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Customs_Procedure.Extended_customs_procedure;
+                itm.xcuda_Tarification.National_customs_procedure = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                    .Customs_Procedure
+                    .National_customs_procedure; //cdoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Customs_Procedure.National_customs_procedure;
+                itm.xcuda_Tarification.Extended_customs_procedure = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                    .Customs_Procedure
+                    .Extended_customs_procedure; //cdoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Customs_Procedure.Extended_customs_procedure;
 
                 itm.xcuda_Tarification.xcuda_HScode.Commodity_code = pod.TariffCode ?? "NULL";
-                itm.xcuda_Tarification.xcuda_HScode.Precision_4 = pod.ItemNumber; //pod.PreviousDocumentItem == null ? pod.ItemNumber : pod.PreviousDocumentItem.ItemNumber;
+                itm.xcuda_Tarification.xcuda_HScode.Precision_4 =
+                    pod.ItemNumber; //pod.PreviousDocumentItem == null ? pod.ItemNumber : pod.PreviousDocumentItem.ItemNumber;
                 //itm.xcuda_Tarification.xcuda_HScode.InventoryItems = pod.InventoryItem ;
 
                 if (cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber != null)
-                    itm.xcuda_Previous_doc.Summary_declaration = cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber;
+                    itm.xcuda_Previous_doc.Summary_declaration =
+                        cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber;
 
-                itm.xcuda_Valuation_item.Total_CIF_itm = Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
-                itm.xcuda_Valuation_item.Statistical_value = Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
+                itm.xcuda_Valuation_item.Total_CIF_itm =
+                    Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
+                itm.xcuda_Valuation_item.Statistical_value =
+                    Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
 
 
 
-                var ivc = new xcuda_Item_Invoice(true) { TrackingState = TrackingState.Added };
+                var ivc = new xcuda_Item_Invoice(true) {TrackingState = TrackingState.Added};
 
-                ivc.Amount_national_currency = Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost) * Convert.ToDecimal(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Exchange_Rate), 4));
-                ivc.Amount_foreign_currency = Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
+                ivc.Amount_national_currency = Convert.ToSingle(Math.Round(
+                    Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost) *
+                    Convert.ToDecimal(cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Exchange_Rate),
+                    4));
+                ivc.Amount_foreign_currency =
+                    Convert.ToSingle(Math.Round(Convert.ToDecimal(pod.Quantity) * Convert.ToDecimal(pod.Cost), 4));
 
 
                 if (cdoc.Document.xcuda_Valuation != null && cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice != null)
                 {
                     //;
-                    ivc.Currency_code = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code;//xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Currency_Code;
-                    ivc.Currency_rate = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate;//Convert.ToSingle(cdoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Exchange_Rate);
+                    ivc.Currency_code =
+                        cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice
+                            .Currency_code; //xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Currency_Code;
+                    ivc.Currency_rate =
+                        cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice
+                            .Currency_rate; //Convert.ToSingle(cdoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Exchange_Rate);
                 }
 
                 itm.xcuda_Valuation_item.xcuda_Item_Invoice = ivc;
@@ -1197,16 +1404,16 @@ namespace WaterNut.DataSpace
 
                         break;
                     case "OneOrMore":
-                        if ((Single)pod.Quantity > 99)
+                        if ((Single) pod.Quantity > 99)
                         {
                             itm.xcuda_Valuation_item.xcuda_Weight_itm = new xcuda_Weight_itm(true)
                             {
                                 TrackingState = TrackingState.Added
                             };
-                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (Single)pod.Quantity *
+                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Gross_weight_itm = (Single) pod.Quantity *
                                                                                          Convert.ToSingle(.1);
                             //(Decimal)ops.Quantity;
-                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (Single)pod.Quantity *
+                            itm.xcuda_Valuation_item.xcuda_Weight_itm.Net_weight_itm = (Single) pod.Quantity *
                                                                                        Convert.ToSingle(.1);
                             //(Decimal)ops.Quantity;
                         }
@@ -1222,7 +1429,7 @@ namespace WaterNut.DataSpace
                                     Convert.ToSingle(
                                         Math.Round(pod.Weight, 4));
                         break;
-                    case "MinimumWeight" :
+                    case "MinimumWeight":
                         SetMinWeight(pod, itm);
                         break;
                     case "Value":
@@ -1236,16 +1443,18 @@ namespace WaterNut.DataSpace
 
                 }
 
-                
 
-                if (pod.InternalFreight != 0) itm.xcuda_Valuation_item.xcuda_item_internal_freight.Amount_foreign_currency =
-                    Convert.ToSingle(pod.InternalFreight);
-               
 
-                if (pod.Freight != 0) itm.xcuda_Valuation_item.xcuda_item_external_freight.Amount_foreign_currency =
-                    Convert.ToSingle(pod.Freight);
+                if (pod.InternalFreight != 0)
+                    itm.xcuda_Valuation_item.xcuda_item_internal_freight.Amount_foreign_currency =
+                        Convert.ToSingle(pod.InternalFreight);
+
+
+                if (pod.Freight != 0)
+                    itm.xcuda_Valuation_item.xcuda_item_external_freight.Amount_foreign_currency =
+                        Convert.ToSingle(pod.Freight);
                 // set on each line in event of grouped invoices per IM7 etc.
-                if (pod.EntryDataDetails.Count() == 1)//if (cdoc.DocumentItems.Count() == 1)
+                if (pod.EntryDataDetails.Count() == 1) //if (cdoc.DocumentItems.Count() == 1)
                 {
                     var fr = pod.EntryDataDetails.FirstOrDefault();
                     if (fr != null)
@@ -1255,10 +1464,16 @@ namespace WaterNut.DataSpace
                     }
 
                 }
+
                 foreach (var ed in pod.EntryDataDetails)
                 {
                     if (itm.EntryDataDetails.All(x => x.EntryDataDetailsId != ed.EntryDataDetailsId))
-                        itm.EntryDataDetails.Add(new xcuda_ItemEntryDataDetails(true) { Item_Id = itm.Item_Id, EntryDataDetailsId = ed.EntryDataDetailsId, TrackingState = TrackingState.Added });
+                        itm.EntryDataDetails.Add(new xcuda_ItemEntryDataDetails(true)
+                        {
+                            Item_Id = itm.Item_Id,
+                            EntryDataDetailsId = ed.EntryDataDetailsId,
+                            TrackingState = TrackingState.Added
+                        });
 
                     if (cdoc.Document.AsycudaDocumentEntryDatas.All(x => x.EntryDataId != ed.EntryDataId))
                     {
@@ -1270,12 +1485,24 @@ namespace WaterNut.DataSpace
                         });
                     }
 
-                    cdoc.EntryDataDetails.Add(new EntryDataDetails(){EntryDataDetailsId = ed.EntryDataDetailsId, EntryDataId = ed.EntryDataId, EffectiveDate = ed.EffectiveDate == DateTime.MinValue ? ed.EntryDataDate: ed.EffectiveDate});
+                    cdoc.EntryDataDetails.Add(new EntryDataDetails()
+                    {
+                        EntryDataDetailsId = ed.EntryDataDetailsId,
+                        EntryDataId = ed.EntryDataId,
+                        EffectiveDate = ed.EffectiveDate == DateTime.MinValue ? ed.EntryDataDate : ed.EffectiveDate
+                    });
 
                 }
 
 
-                itm.xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(new xcuda_Supplementary_unit(true) { Tarification_Id = itm.xcuda_Tarification.Item_Id, Suppplementary_unit_code = "NMB", Suppplementary_unit_quantity = pod.Quantity, IsFirstRow = true, TrackingState = TrackingState.Added });
+                itm.xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(new xcuda_Supplementary_unit(true)
+                {
+                    Tarification_Id = itm.xcuda_Tarification.Item_Id,
+                    Suppplementary_unit_code = "NMB",
+                    Suppplementary_unit_quantity = pod.Quantity,
+                    IsFirstRow = true,
+                    TrackingState = TrackingState.Added
+                });
 
                 ProcessItemTariff(pod, cdoc.Document, itm);
 
@@ -1286,8 +1513,9 @@ namespace WaterNut.DataSpace
 
                 throw;
             }
-                // }
-           // return null;
+
+            // }
+            // return null;
         }
 
         private static void SetMinWeight(IEntryLineData pod, xcuda_Item itm)
@@ -1308,38 +1536,44 @@ namespace WaterNut.DataSpace
             return p?.Replace(",", "");
         }
 
-        private  xcuda_Item CreateNewDocumentItem()
+        private xcuda_Item CreateNewDocumentItem()
         {
-            return new xcuda_Item(true) { TrackingState = TrackingState.Added };//
+            return new xcuda_Item(true) {TrackingState = TrackingState.Added}; //
         }
 
-        private  void ProcessItemTariff(BaseDataModel.IEntryLineData pod, xcuda_ASYCUDA cdoc, xcuda_Item itm)
+        private void ProcessItemTariff(BaseDataModel.IEntryLineData pod, xcuda_ASYCUDA cdoc, xcuda_Item itm)
         {
 
             if (pod.TariffCode != null)
             {
 
-               
-                    var tariffSupUnitLkps = pod.TariffSupUnitLkps;
-                    if (tariffSupUnitLkps != null)
-                        foreach (var item in tariffSupUnitLkps.ToList())
-                        {
-                            itm.xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(new xcuda_Supplementary_unit(true) { Suppplementary_unit_code = item.SuppUnitCode2, Suppplementary_unit_quantity = pod.Quantity /* * item.SuppQty*/, TrackingState = TrackingState.Added });
-                        }
-               
-                    
+
+                var tariffSupUnitLkps = pod.TariffSupUnitLkps;
+                if (tariffSupUnitLkps != null)
+                    foreach (var item in tariffSupUnitLkps.ToList())
+                    {
+                        itm.xcuda_Tarification.Unordered_xcuda_Supplementary_unit.Add(
+                            new xcuda_Supplementary_unit(true)
+                            {
+                                Suppplementary_unit_code = item.SuppUnitCode2,
+                                Suppplementary_unit_quantity = pod.Quantity /* * item.SuppQty*/,
+                                TrackingState = TrackingState.Added
+                            });
+                    }
+
+
 
                 //if (pod.InventoryItem.TariffCodes.TariffCategory != null && pod.InventoryItem.TariffCodes.TariffCategory.LicenseRequired == true)
                 //{
                 //    Licences lic = cdoc.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Licences.Where(l => l.TariffCateoryCode == pod.InventoryItem.TariffCodes.TariffCategoryCode).FirstOrDefault();
                 //    if (lic != null)
                 //    {
-                        
+
                 //        itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents() { Attached_document_code = "LC02", Attached_document_from_rule = 1, Attached_document_name = "IMPORT LICENCE", Attached_document_reference = lic.LicenceNumber + " " + lic.Year, Attached_document_date = DateTime.Now.Date.ToShortDateString() });
                 //    }
                 //}
             }
-            
+
         }
 
         public async Task RemoveEntryData(string po)
@@ -1348,63 +1582,66 @@ namespace WaterNut.DataSpace
             {
                 if (po != null) await ctx.DeleteEntryData(po).ConfigureAwait(false);
             }
-            
+
         }
 
 
-        public  async Task RemoveItem(int id)
+        public async Task RemoveItem(int id)
         {
             //if (CurrentAsycudaItemEntryId == null) return;
             xcuda_Item r;
             using (var ctx = new xcuda_ItemService())
             {
                 r = await ctx.Getxcuda_ItemByKey(id.ToString()).ConfigureAwait(false);
-               await ctx.Deletexcuda_Item(id.ToString()).ConfigureAwait(false);                
+                await ctx.Deletexcuda_Item(id.ToString()).ConfigureAwait(false);
             }
 
             await ReDoDocumentLineNumbers(r.ASYCUDA_Id).ConfigureAwait(false);
 
-            
+
         }
 
-        public  async Task ReDoDocumentLineNumbers(int ASYCUDA_Id)
+        public async Task ReDoDocumentLineNumbers(int ASYCUDA_Id)
         {
             using (var ctx = new xcuda_ItemService())
             {
-                var lst = (await ctx.Getxcuda_ItemByASYCUDA_Id(ASYCUDA_Id.ToString()).ConfigureAwait(false)).OrderBy(x => x.LineNumber);
+                var lst =
+                    (await ctx.Getxcuda_ItemByASYCUDA_Id(ASYCUDA_Id.ToString()).ConfigureAwait(false)).OrderBy(x =>
+                        x.LineNumber);
 
                 for (var i = 0; i < lst.Count(); i++)
                 {
                     var itm = lst.ElementAt(i);
                     itm.LineNumber = i + 1;
                     await ctx.Updatexcuda_Item(itm).ConfigureAwait(false);
-                }                
+                }
             }
         }
 
 
-        internal  async Task RemoveSelectedItems(List<xcuda_Item> lst)
+        internal async Task RemoveSelectedItems(List<xcuda_Item> lst)
         {
-          
-               
-                StatusModel.StartStatusUpdate("Removing selected items", lst.Count());
-
-                var docs = lst.Select(x => x.ASYCUDA_Id).ToList();
-
-                foreach (var item in lst.ToList())
-                {
-                    await DeleteItem(item.Item_Id).ConfigureAwait(false);
-                    StatusModel.StatusUpdate();
-                }
-                foreach (var docId in docs)
-                {
-                    await ReDoDocumentLineNumbers(docId).ConfigureAwait(false);
-                }
-                
-                StatusModel.StopStatusUpdate();
 
 
-           
+            StatusModel.StartStatusUpdate("Removing selected items", lst.Count());
+
+            var docs = lst.Select(x => x.ASYCUDA_Id).ToList();
+
+            foreach (var item in lst.ToList())
+            {
+                await DeleteItem(item.Item_Id).ConfigureAwait(false);
+                StatusModel.StatusUpdate();
+            }
+
+            foreach (var docId in docs)
+            {
+                await ReDoDocumentLineNumbers(docId).ConfigureAwait(false);
+            }
+
+            StatusModel.StopStatusUpdate();
+
+
+
         }
 
         public async Task DeleteItem(int p)
@@ -1415,19 +1652,22 @@ namespace WaterNut.DataSpace
                 //res = await ctx.Getxcuda_Item(p.ToString()).ConfigureAwait(false);
                 await ctx.Deletexcuda_Item(p.ToString()).ConfigureAwait(false);
             }
-           // await DeleteItem(res).ConfigureAwait(false);
+
+            // await DeleteItem(res).ConfigureAwait(false);
         }
 
 
 
 
 
-        public  async Task<AsycudaDocumentSet> CreateAsycudaDocumentSet(int applicationSettingsId)
+        public async Task<AsycudaDocumentSet> CreateAsycudaDocumentSet(int applicationSettingsId)
         {
             using (var ctx = new AsycudaDocumentSetService())
             {
-                var doc = await ctx.CreateAsycudaDocumentSet(new AsycudaDocumentSet(){ApplicationSettingsId = applicationSettingsId}).ConfigureAwait(false);
-                return doc ;
+                var doc = await ctx
+                    .CreateAsycudaDocumentSet(new AsycudaDocumentSet() {ApplicationSettingsId = applicationSettingsId})
+                    .ConfigureAwait(false);
+                return doc;
             }
         }
 
@@ -1441,10 +1681,13 @@ namespace WaterNut.DataSpace
             xcuda_ASYCUDA doc = null;
             using (var ctx = new xcuda_ASYCUDAService())
             {
-                doc = await ctx.Getxcuda_ASYCUDAByKey(ASYCUDA_Id.ToString(),new List<string>(){ "xcuda_ASYCUDA_ExtendedProperties" }).ConfigureAwait(false);
+                doc = await ctx
+                    .Getxcuda_ASYCUDAByKey(ASYCUDA_Id.ToString(),
+                        new List<string>() {"xcuda_ASYCUDA_ExtendedProperties"}).ConfigureAwait(false);
             }
+
             await DeleteAsycudaDocument(doc).ConfigureAwait(false);
-            
+
         }
 
         public async Task Save_xcuda_PreviousItem(xcuda_PreviousItem pi)
@@ -1493,13 +1736,14 @@ namespace WaterNut.DataSpace
         private async Task DeleteDocumentSalesAllocations(xcuda_ASYCUDA doc)
         {
 
-            if(doc.TrackingState == TrackingState.Added) return;
+            if (doc.TrackingState == TrackingState.Added) return;
             using (var ctx = new WaterNutDBEntities())
             {
                 await ctx.ExecuteStoreCommandAsync($@"DELETE FROM AsycudaSalesAllocations
                                                 FROM    AsycudaSalesAllocations INNER JOIN
                                                 xcuda_Item ON AsycudaSalesAllocations.PreviousItem_Id = xcuda_Item.Item_Id
-                                                WHERE(xcuda_Item.ASYCUDA_Id = {doc.ASYCUDA_Id})").ConfigureAwait(false);
+                                                WHERE(xcuda_Item.ASYCUDA_Id = {doc.ASYCUDA_Id})")
+                    .ConfigureAwait(false);
             }
             //var lst = new List<AsycudaSalesAllocationsEx>();
             //using (var ctx = new AsycudaSalesAllocationsExService())
@@ -1520,14 +1764,15 @@ namespace WaterNut.DataSpace
             {
                 await ctx.Deletexcuda_ASYCUDA(docid.ToString()).ConfigureAwait(false);
             }
-            
+
         }
 
-        private  async Task DeleteItem(xcuda_ASYCUDA doc)
+        private async Task DeleteItem(xcuda_ASYCUDA doc)
         {
             using (var ctx = new xcuda_ItemService())
             {
-                foreach (var item in await ctx.Getxcuda_ItemByASYCUDA_Id(doc.ASYCUDA_Id.ToString()).ConfigureAwait(false))
+                foreach (var item in await ctx.Getxcuda_ItemByASYCUDA_Id(doc.ASYCUDA_Id.ToString())
+                    .ConfigureAwait(false))
                 {
                     await ctx.Deletexcuda_Item(item.Item_Id.ToString()).ConfigureAwait(false);
                 }
@@ -1546,13 +1791,14 @@ namespace WaterNut.DataSpace
         //    }
         //}
 
-        private  async Task DeleteDocumentPreviousItems(xcuda_ASYCUDA doc)
+        private async Task DeleteDocumentPreviousItems(xcuda_ASYCUDA doc)
         {
             using (var ctx = new global::DocumentItemDS.Business.Services.xcuda_PreviousItemService())
             {
                 //TODO: replace with deletebyAsycuda_id command
                 foreach (
-                    var item in await ctx.Getxcuda_PreviousItemByASYCUDA_Id(doc.ASYCUDA_Id.ToString()).ConfigureAwait(false))
+                    var item in await ctx.Getxcuda_PreviousItemByASYCUDA_Id(doc.ASYCUDA_Id.ToString())
+                        .ConfigureAwait(false))
                 {
                     //item.xcuda_Items.Clear();
                     await ctx.Deletexcuda_PreviousItem(item.PreviousItem_Id.ToString()).ConfigureAwait(false);
@@ -1581,13 +1827,13 @@ namespace WaterNut.DataSpace
         //    }
         //}
 
-        internal  void ExporttoXML(string f, xcuda_ASYCUDA currentDocument)
+        internal void ExporttoXML(string f, xcuda_ASYCUDA currentDocument)
         {
 
             if (currentDocument != null)
             {
                 DocToXML(currentDocument, new FileInfo(f));
-               // ExportDocumentToExcel(currentDocument, f);
+                // ExportDocumentToExcel(currentDocument, f);
             }
             else
             {
@@ -1603,7 +1849,7 @@ namespace WaterNut.DataSpace
         //            {
         //                var s = new ExportToExcel<SaleReportLine, List<SaleReportLine>>();
         //                s.StartUp();
-                      
+
         //                    try
         //                    {
         //                        var data =GetDocumentSalesReport(doc.ASYCUDA_Id);
@@ -1624,7 +1870,7 @@ namespace WaterNut.DataSpace
         //                    {
         //                        throw ex;
         //                    }
-                       
+
         //                s.ShutDown();
         //            },
         //            CancellationToken.None, TaskCreationOptions.None, sta);
@@ -1688,7 +1934,7 @@ namespace WaterNut.DataSpace
         //}
 
 
-        internal  void DocToXML(xcuda_ASYCUDA doc, FileInfo f)
+        internal void DocToXML(xcuda_ASYCUDA doc, FileInfo f)
         {
             File.AppendAllText(Path.Combine(f.DirectoryName, "Instructions.txt"), $"File\t{f.FullName}\r\n");
             var a = new Asycuda421.ASYCUDA();
@@ -1696,28 +1942,35 @@ namespace WaterNut.DataSpace
             a.SaveToFile(f.FullName);
         }
 
-        public async Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames, bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting, bool linkPi)
+        public async Task ImportDocuments(int asycudaDocumentSetId, List<string> fileNames,
+            bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting,
+            bool linkPi)
         {
             using (var ctx = new DocumentDSContext())
             {
-                var docSet = ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
+                var docSet =
+                    ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId);
                 if (docSet == null) throw new ApplicationException("Document Set with reference not found");
                 await Task.Run(() =>
-                        ImportDocuments(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages, overwriteExisting, linkPi, fileNames))
+                        ImportDocuments(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages,
+                            overwriteExisting, linkPi, fileNames))
                     .ConfigureAwait(false);
             }
         }
 
-        public async Task ImportDocuments(AsycudaDocumentSet docSet, IEnumerable<string> fileNames, bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting ,bool linkPi)
+        public async Task ImportDocuments(AsycudaDocumentSet docSet, IEnumerable<string> fileNames,
+            bool importOnlyRegisteredDocument, bool importTariffCodes, bool noMessages, bool overwriteExisting,
+            bool linkPi)
         {
-                await Task.Run(() =>
-                    ImportDocuments(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages, overwriteExisting,linkPi, fileNames))
-                    .ConfigureAwait(false);
+            await Task.Run(() =>
+                    ImportDocuments(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages,
+                        overwriteExisting, linkPi, fileNames))
+                .ConfigureAwait(false);
         }
 
         public void ImportC71(int asycudaDocumentSetId, List<string> files)
         {
-            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result();
+            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result;
             var exceptions = new ConcurrentQueue<Exception>();
             foreach (var file in files)
             {
@@ -1741,7 +1994,7 @@ namespace WaterNut.DataSpace
 
         public void ImportLicense(int asycudaDocumentSetId, List<string> files)
         {
-            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result();
+            var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result;
             var exceptions = new ConcurrentQueue<Exception>();
             foreach (var file in files)
             {
@@ -1771,12 +2024,14 @@ namespace WaterNut.DataSpace
                 var a = Licence.LoadFromFile(file);
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var declarantCode = ctx.ApplicationSettings.First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var declarantCode = ctx.ApplicationSettings
+                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
                     var fileCode = a.General_segment.Importer_code.Text.FirstOrDefault();
                     if (fileCode == null) return;
                     if (!fileCode.Contains(declarantCode))
                     {
-                        throw new ApplicationException($"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                        throw new ApplicationException(
+                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
                     }
                 }
 
@@ -1807,19 +2062,22 @@ namespace WaterNut.DataSpace
                 var a = Value_declaration_form.LoadFromFile(file);
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var declarantCode = ctx.ApplicationSettings.First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
-                    var fileCode = a.Identification_segment.Declarant_segment.Code.ToString();
+                    var declarantCode = ctx.ApplicationSettings
+                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var fileCode = a.Identification_segment.Declarant_segment.Code.Text.FirstOrDefault();
                     if (!fileCode.Contains(declarantCode))
                     {
-                        throw new ApplicationException($"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                        throw new ApplicationException(
+                            $"Could not import file - '{file} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
                     }
                 }
+
 
 
                 if (a != null)
                 {
                     var importer = new C71ToDataBase();
-                    importer.SaveToDatabase(a, docSet, new FileInfo(file)).Wait();
+                    importer.SaveToDatabase(a, docSet, new FileInfo(file));
                 }
                 //await a.SaveToDatabase(a).ConfigureAwait(false);
 
@@ -1828,30 +2086,38 @@ namespace WaterNut.DataSpace
 
             catch (Exception Ex)
             {
-               exceptions.Enqueue(
-                        new ApplicationException(
-                            $"Could not import file - '{file}. Error:{(Ex.InnerException ?? Ex).Message} Stacktrace:{(Ex.InnerException ?? Ex).StackTrace}"));
+                exceptions.Enqueue(
+                    new ApplicationException(
+                        $"Could not import file - '{file}. Error:{(Ex.InnerException ?? Ex).Message} Stacktrace:{(Ex.InnerException ?? Ex).StackTrace}"));
             }
         }
 
         private void ImportDocuments(AsycudaDocumentSet docSet, bool importOnlyRegisteredDocument,
             bool importTariffCodes, bool noMessages,
-            bool overwriteExisting, bool linkPi,  IEnumerable<string> fileNames)
+            bool overwriteExisting, bool linkPi, IEnumerable<string> fileNames)
         {
             //Asycuda.ASYCUDA.NewAsycudaDocumentSet()
             //StatusModel.RefreshNow();
             var exceptions = new ConcurrentQueue<Exception>();
-            Parallel.ForEach(fileNames, new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount*1},//
+            Parallel.ForEach(fileNames,
+                new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount * 1}, //
                 f => //
                 {
                     try
                     {
                         
-
                         if (ASYCUDA.CanLoadFromFile(f))
                         {
                             LoadAsycuda421(docSet, importOnlyRegisteredDocument, importTariffCodes, noMessages,
-                                overwriteExisting, linkPi, f,ref exceptions);
+                                overwriteExisting, linkPi, f, ref exceptions);
+                        }
+                        else if(Value_declaration_form.CanLoadFromFile(f))
+                        {
+                            LoadC71(docSet, f, ref exceptions);
+                        }
+                        else if (Licence.CanLoadFromFile(f))
+                        {
+                            LoadLicence(docSet, f, ref exceptions);
                         }
                         else
                         {
@@ -1865,15 +2131,18 @@ namespace WaterNut.DataSpace
                     }
 
                 }
-                );
+            );
 
-            if (exceptions.Count > 0) throw new ApplicationException(exceptions.FirstOrDefault().Message + "|" + exceptions.FirstOrDefault().StackTrace);
+            if (exceptions.Count > 0)
+                throw new ApplicationException(exceptions.FirstOrDefault().Message + "|" +
+                                               exceptions.FirstOrDefault().StackTrace);
         }
 
 
 
-        private void LoadAsycuda421(AsycudaDocumentSet docSet, bool importOnlyRegisteredDocument, bool importTariffCodes,
-           bool noMessages, bool overwriteExisting, bool linkPi, string f,ref ConcurrentQueue<Exception> exceptions)
+        private void LoadAsycuda421(AsycudaDocumentSet docSet, bool importOnlyRegisteredDocument,
+            bool importTariffCodes,
+            bool noMessages, bool overwriteExisting, bool linkPi, string f, ref ConcurrentQueue<Exception> exceptions)
         {
             StatusModel.StatusUpdate();
             try
@@ -1882,14 +2151,17 @@ namespace WaterNut.DataSpace
                 var a = Asycuda421.ASYCUDA.LoadFromFile(f);
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var declarantCode = ctx.ApplicationSettings.First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
-                    var fileCode = a.Warehouse.Identification.Text.FirstOrDefault()?? a.Declarant.Declarant_code.Text.FirstOrDefault();
+                    var declarantCode = ctx.ApplicationSettings
+                        .First(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId).DeclarantCode;
+                    var fileCode = a.Warehouse.Identification.Text.FirstOrDefault() ??
+                                   a.Declarant.Declarant_code.Text.FirstOrDefault();
                     if (!fileCode.Contains(declarantCode))
                     {
-                        throw new ApplicationException($"Could not import file - '{f} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
+                        throw new ApplicationException(
+                            $"Could not import file - '{f} - The file is for another warehouse{fileCode}. While this Warehouse is {declarantCode}");
                     }
                 }
-                    
+
 
                 if (a != null)
                 {
@@ -1915,13 +2187,13 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public async Task ExportDocument(string filename, xcuda_ASYCUDA doc )
+        public async Task ExportDocument(string filename, xcuda_ASYCUDA doc)
         {
             Instance.ExporttoXML(filename, doc);
-           
+
         }
 
-        public  void IM72Ex9Document(string filename)
+        public void IM72Ex9Document(string filename)
         {
             try
             {
@@ -1939,12 +2211,12 @@ namespace WaterNut.DataSpace
                 }
                 else
                 {
-                    
-                        throw new ApplicationException($"Can not Load file '{filename}'");
+
+                    throw new ApplicationException($"Can not Load file '{filename}'");
                 }
 
 
-                
+
                 var newdoc = Asycuda421.ASYCUDA.LoadFromFile(filename);
 
                 newdoc.Container = null;
@@ -1996,25 +2268,32 @@ namespace WaterNut.DataSpace
                     pitm.Prev_decl_current_item = linenumber.ToString(); // piggy back the previous item count
                     pitm.Prev_decl_item_number = linenumber.ToString();
 
-                    pitm.Prev_decl_weight = olditem.Valuation_item.Weight_itm.Net_weight_itm.ToString(); //System.Convert.ToDecimal(pline.Net_weight_itm) / System.Convert.ToDecimal(pline.ItemQuantity) * System.Convert.ToDecimal(fa.DutyFreeQuantity);
+                    pitm.Prev_decl_weight =
+                        olditem.Valuation_item.Weight_itm.Net_weight_itm
+                            .ToString(); //System.Convert.ToDecimal(pline.Net_weight_itm) / System.Convert.ToDecimal(pline.ItemQuantity) * System.Convert.ToDecimal(fa.DutyFreeQuantity);
                     pitm.Prev_decl_weight_written_off = olditem.Valuation_item.Weight_itm.Net_weight_itm.ToString();
 
 
 
 
-                    pitm.Prev_decl_number_packages_written_off = Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
-                    pitm.Prev_decl_number_packages = Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
+                    pitm.Prev_decl_number_packages_written_off =
+                        Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
+                    pitm.Prev_decl_number_packages =
+                        Math.Round(Convert.ToDouble(olditem.Packages.Number_of_packages), 0).ToString();
 
 
-                    pitm.Prev_decl_supp_quantity = olditem.Tarification.Supplementary_unit[0].Suppplementary_unit_quantity.ToString();
-                    pitm.Prev_decl_supp_quantity_written_off = olditem.Tarification.Supplementary_unit[0].Suppplementary_unit_quantity.ToString();
+                    pitm.Prev_decl_supp_quantity = olditem.Tarification.Supplementary_unit[0]
+                        .Suppplementary_unit_quantity.ToString();
+                    pitm.Prev_decl_supp_quantity_written_off = olditem.Tarification.Supplementary_unit[0]
+                        .Suppplementary_unit_quantity.ToString();
 
 
                     pitm.Prev_decl_country_origin = olditem.Goods_description.Country_of_origin_code;
 
                     var oq = "";
 
-                    if (string.IsNullOrEmpty(olditem.Tarification.Supplementary_unit[0].Suppplementary_unit_quantity) || olditem.Tarification.Supplementary_unit[0].Suppplementary_unit_quantity == "0")
+                    if (string.IsNullOrEmpty(olditem.Tarification.Supplementary_unit[0].Suppplementary_unit_quantity) ||
+                        olditem.Tarification.Supplementary_unit[0].Suppplementary_unit_quantity == "0")
                     {
                         oq = "1";
                         zeroitems = "ZeroItems";
@@ -2025,12 +2304,16 @@ namespace WaterNut.DataSpace
                     }
 
 
-                    pitm.Prev_decl_ref_value_written_off = (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq)).ToString();
-                    pitm.Prev_decl_ref_value = (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq)).ToString();// * System.Convert.ToDecimal(fa.QUANTITY);
+                    pitm.Prev_decl_ref_value_written_off =
+                        (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq)).ToString();
+                    pitm.Prev_decl_ref_value =
+                        (Convert.ToDecimal(olditem.Valuation_item.Total_CIF_itm) / Convert.ToDecimal(oq))
+                        .ToString(); // * System.Convert.ToDecimal(fa.QUANTITY);
                     pitm.Prev_decl_reg_serial = "C";
                     pitm.Prev_decl_reg_number = olddoc.Identification.Registration.Number;
                     pitm.Prev_decl_reg_year = DateTime.Parse(olddoc.Identification.Registration.Date).Year.ToString();
-                    pitm.Prev_decl_office_code = olddoc.Identification.Office_segment.Customs_clearance_office_code.Text[0];
+                    pitm.Prev_decl_office_code =
+                        olddoc.Identification.Office_segment.Customs_clearance_office_code.Text[0];
 
                     newdoc.Prev_decl.Add(pitm);
 
@@ -2050,14 +2333,17 @@ namespace WaterNut.DataSpace
                 newdoc.Identification.Manifest_reference_number = null;
                 newdoc.Identification.Type.Type_of_declaration = "Ex";
                 newdoc.Identification.Type.Declaration_gen_procedure_code = "9";
-                newdoc.Declarant.Reference.Number.Text.Add("Ex9For" + newdoc.Identification.Registration.Number); 
-                
+                newdoc.Declarant.Reference.Number.Text.Add("Ex9For" + newdoc.Identification.Registration.Number);
+
                 newdoc.Valuation.Gs_Invoice.Currency_code.Text.Add("XCD");
-                newdoc.Valuation.Gs_Invoice.Amount_foreign_currency = Math.Round(newdoc.Item.Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
-                newdoc.Valuation.Gs_Invoice.Amount_national_currency = Math.Round(newdoc.Item.Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
+                newdoc.Valuation.Gs_Invoice.Amount_foreign_currency = Math
+                    .Round(newdoc.Item.Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
+                newdoc.Valuation.Gs_Invoice.Amount_national_currency = Math
+                    .Round(newdoc.Item.Sum(i => Convert.ToDouble(i.Valuation_item.Total_CIF_itm)), 2).ToString();
 
                 var oldfile = new FileInfo(filename);
-                newdoc.SaveToFile(Path.Combine(oldfile.DirectoryName, oldfile.Name.Replace(oldfile.Extension, "") + "-Ex9" + zeroitems + oldfile.Extension));
+                newdoc.SaveToFile(Path.Combine(oldfile.DirectoryName,
+                    oldfile.Name.Replace(oldfile.Extension, "") + "-Ex9" + zeroitems + oldfile.Extension));
             }
             catch (Exception Ex)
             {
@@ -2068,25 +2354,25 @@ namespace WaterNut.DataSpace
 
         public async Task ExportDocSet(int AsycudaDocumentSetId, string directoryName, bool overWrite)
         {
-           var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
-           ExportDocSet(docset, directoryName, overWrite);
+            var docset = await GetAsycudaDocumentSet(AsycudaDocumentSetId).ConfigureAwait(false);
+            ExportDocSet(docset, directoryName, overWrite);
         }
 
-        public  async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int asycudaDocumentSetId )
+        public async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int asycudaDocumentSetId)
         {
-            
+
             using (var ctx = new AsycudaDocumentSetService())
             {
-               return await ctx.GetAsycudaDocumentSetByKey(asycudaDocumentSetId.ToString(),
-                   new List<string>()
-                   {
-                       "xcuda_ASYCUDA_ExtendedProperties",
-                       "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
-                       "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant",
-                       "AsycudaDocumentSet_Attachments.Attachment",
+                return await ctx.GetAsycudaDocumentSetByKey(asycudaDocumentSetId.ToString(),
+                    new List<string>()
+                    {
+                        "xcuda_ASYCUDA_ExtendedProperties",
+                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA",
+                        "xcuda_ASYCUDA_ExtendedProperties.xcuda_ASYCUDA.xcuda_Declarant",
+                        "AsycudaDocumentSet_Attachments.Attachment",
                         "Customs_Procedure.Document_Type",
                         "Document_Type"
-                   }).ConfigureAwait(false);
+                    }).ConfigureAwait(false);
             }
         }
 
@@ -2166,7 +2452,7 @@ namespace WaterNut.DataSpace
         //    set
         //    {
         //       _currentAsycudaDocumentSet = value;
-               
+
         //       MessageBus.Default.BeginNotify<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, null,
         //           new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged,
         //                                _currentAsycudaDocumentSet != null ? _currentAsycudaDocumentSet.AsycudaDocumentSetId.ToString() : "0"));
@@ -2176,7 +2462,7 @@ namespace WaterNut.DataSpace
 
         //       MessageBus.Default.BeginNotify(MessageToken.AsycudaDocumentSetExsChanged, null,
         //               new NotificationEventArgs(MessageToken.AsycudaDocumentSetExsChanged));
-              
+
         //    }
         //}
 
@@ -2270,16 +2556,18 @@ namespace WaterNut.DataSpace
         //    }
         //}
 
-        
-         public  ApplicationSettings CurrentApplicationSettings { get; set; }
+
+        public ApplicationSettings CurrentApplicationSettings { get; set; }
+
         //{
         //    get
         //    {
         //        return QuerySpace.CoreEntities.DataModels.BaseDataModel.Instance.CurrentApplicationSettings;
         //    }
         //}
-         IEnumerable<ExportTemplate> _exportTemplates = null;
-        public  IEnumerable<ExportTemplate> ExportTemplates
+        IEnumerable<ExportTemplate> _exportTemplates = null;
+
+        public IEnumerable<ExportTemplate> ExportTemplates
         {
             get
             {
@@ -2287,14 +2575,17 @@ namespace WaterNut.DataSpace
                 {
                     using (var ctx = new ExportTemplateService())
                     {
-                        _exportTemplates =  ctx.GetExportTemplates().Result;
+                        _exportTemplates = ctx.GetExportTemplates().Result;
                     }
                 }
+
                 return _exportTemplates;
             }
         }
-         IEnumerable<Customs_Procedure> _customs_Procedures = null;
-        public  IEnumerable<Customs_Procedure> Customs_Procedures
+
+        IEnumerable<Customs_Procedure> _customs_Procedures = null;
+
+        public IEnumerable<Customs_Procedure> Customs_Procedures
         {
             get
             {
@@ -2302,17 +2593,18 @@ namespace WaterNut.DataSpace
                 {
                     using (var ctx = new Customs_ProcedureService())
                     {
-                       _customs_Procedures = ctx.GetCustoms_Procedure(new List<string>(){ "Document_Type" }).Result;
+                        _customs_Procedures = ctx.GetCustoms_Procedure(new List<string>() {"Document_Type"}).Result;
                     }
                 }
+
                 return _customs_Procedures;
             }
         }
 
-         IEnumerable<Document_Type> _document_Types = null;
+        IEnumerable<Document_Type> _document_Types = null;
         private readonly CreateIM9 _createIm9;
 
-        public  IEnumerable<Document_Type> Document_Types
+        public IEnumerable<Document_Type> Document_Types
         {
             get
             {
@@ -2323,6 +2615,7 @@ namespace WaterNut.DataSpace
                         _document_Types = ctx.GetDocument_Type().Result;
                     }
                 }
+
                 return _document_Types;
             }
         }
@@ -2344,13 +2637,14 @@ namespace WaterNut.DataSpace
                                 "EntryDataDetailsEx",
                                 "InventoryItems",
                                 "EntryData.ContainerEntryData"
-                              // , "InventoryItem.TariffCodes.TariffCategory.TariffSupUnitLkps"
+                                // , "InventoryItem.TariffCodes.TariffCategory.TariffSupUnitLkps"
                             }).ConfigureAwait(false));
                     }
                 }
-               
+
             }
-             return res.OrderBy(x => x.EntryDataDetailsId);
+
+            return res.OrderBy(x => x.EntryDataDetailsId);
         }
 
         public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(IEnumerable<int> lst)
@@ -2368,38 +2662,44 @@ namespace WaterNut.DataSpace
                             {
                                 "EntryDataDetailsEx",
                                 "InventoryItems",
-                                "EntryData.ContainerEntryData"
+                                "EntryData.ContainerEntryData",
+                                "EntryData.EntryDataTotals",
+                                "EntryData.Suppliers"
                                 // , "InventoryItem.TariffCodes.TariffCategory.TariffSupUnitLkps"
                             }).ConfigureAwait(false));
                     }
                 }
 
             }
-            return res.OrderBy(x => x.EntryDataDetailsId);
+
+            return res.OrderBy(x => x.EntryDataDetailsId).Where(x => Math.Abs(x.EntryData.EntryDataTotals.Total.GetValueOrDefault() - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataTotals.Total.GetValueOrDefault())) < 0.01);
         }
 
-        public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(IEnumerable<string> elst )
+        public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(IEnumerable<string> elst)
         {
-                
-                var res = new List<EntryDataDetails>();
-               if (elst.Any())
-                    {
-                        using (var ctx = new EntryDataDetailsService())
-                        {
-                            foreach (var item in elst.Where(x => x != null))
-                            {
 
-                                res.AddRange(await ctx.GetEntryDataDetailsByEntryDataId(item, new List<string>()
-                                {
-                                    "EntryDataDetailsEx",
-                                    "InventoryItems",
-                                    "EntryData.ContainerEntryData"
-                                   //,"InventoryItems.TariffCodes.TariffCategory.TariffSupUnitLkps"
-                                }).ConfigureAwait(false));
-                            }
-                        }
+            var res = new List<EntryDataDetails>();
+            if (elst.Any())
+            {
+                using (var ctx = new EntryDataDetailsService())
+                {
+                    foreach (var item in elst.Where(x => x != null))
+                    {
+
+                        res.AddRange(await ctx.GetEntryDataDetailsByEntryDataId(item, new List<string>()
+                        {
+                            "EntryDataDetailsEx",
+                            "InventoryItems",
+                            "EntryData.ContainerEntryData",
+                            "EntryData.EntryDataTotals",
+                            "EntryData.Suppliers"
+                            //,"InventoryItems.TariffCodes.TariffCategory.TariffSupUnitLkps"
+                        }).ConfigureAwait(false));
                     }
-               return res.OrderBy(x => x.EntryDataDetailsId);
+                }
+            }
+
+            return res.OrderBy(x => x.EntryDataDetailsId).Where(x => Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01);
         }
 
 
@@ -2417,35 +2717,36 @@ namespace WaterNut.DataSpace
         {
             if (asycudaDocumentItem == null) return;
             //get the original item
-          var i =  await GetDocumentItem(asycudaDocumentItem.Item_Id, new List<string>()
-          {
-              "xcuda_Tarification.xcuda_HScode",
-              "xcuda_Valuation_item.xcuda_Weight_itm",
-              "xcuda_PreviousItem"
-          }).ConfigureAwait(false);
+            var i = await GetDocumentItem(asycudaDocumentItem.Item_Id, new List<string>()
+            {
+                "xcuda_Tarification.xcuda_HScode",
+                "xcuda_Valuation_item.xcuda_Weight_itm",
+                "xcuda_PreviousItem"
+            }).ConfigureAwait(false);
             if (i.xcuda_Goods_description.TrackingState == TrackingState.Added) i.xcuda_Goods_description = null;
             if (i.xcuda_Previous_doc.TrackingState == TrackingState.Added) i.xcuda_Previous_doc = null;
             i.StartTracking();
-    
-           asycudaDocumentItem.ModifiedProperties = null;
+
+            asycudaDocumentItem.ModifiedProperties = null;
             // null for now cuz there are no navigation properties involved.
-            
+
             i.InjectFrom(asycudaDocumentItem);
 
+
             if (i.xcuda_PreviousItem != null)
-            {
-                i.xcuda_PreviousItem.Net_weight = asycudaDocumentItem.Net_weight_itm;
-                i.Net_weight = asycudaDocumentItem.Net_weight_itm;
-                i.Gross_weight = asycudaDocumentItem.Net_weight_itm;
-            }
-       
+                {
+                    i.xcuda_PreviousItem.Net_weight = asycudaDocumentItem.Net_weight_itm;
+                    i.Net_weight = asycudaDocumentItem.Net_weight_itm;
+                    i.Gross_weight = asycudaDocumentItem.Net_weight_itm;
+                }
+
             await Save_xcuda_Item(i).ConfigureAwait(false);
 
         }
 
         private async Task<xcuda_Item> GetDocumentItem(int item_Id, List<string> includeLst)
         {
-            using (var ctx = new xcuda_ItemService(){StartTracking = true})
+            using (var ctx = new xcuda_ItemService() {StartTracking = true})
             {
                 xcuda_Item i = null;
                 i = await ctx.Getxcuda_ItemByKey(item_Id.ToString(), includeLst).ConfigureAwait(false);
@@ -2458,13 +2759,14 @@ namespace WaterNut.DataSpace
             using (var ctx = new EntryDataDetailsService())
             {
                 var i =
-                   await ctx.GetEntryDataDetailsByKey(entryDataDetailsEx.EntryDataDetailsId.ToString()).ConfigureAwait(false);
+                    await ctx.GetEntryDataDetailsByKey(entryDataDetailsEx.EntryDataDetailsId.ToString())
+                        .ConfigureAwait(false);
                 i.InjectFrom(entryDataDetailsEx);
                 await ctx.UpdateEntryDataDetails(i).ConfigureAwait(false);
 
-               
+
                 //MessageBus.Default.BeginNotify(QuerySpace.EntryDataQS.MessageToken.CurrentEntryDataDetailsExChanged, this, new NotificationEventArgs<EntryDataDetailsEx>(QuerySpace.EntryDataQS.MessageToken.CurrentEntryDataDetailsExChanged, null));
-            } 
+            }
         }
 
         public async Task SaveAsycudaDocument(AsycudaDocument asycudaDocument)
@@ -2473,14 +2775,14 @@ namespace WaterNut.DataSpace
             if (asycudaDocument == null) return;
             //get the original item
             var i = await GetDocument(asycudaDocument.ASYCUDA_Id, new List<string>()
-          {
-              "xcuda_ASYCUDA_ExtendedProperties",
+            {
+                "xcuda_ASYCUDA_ExtendedProperties",
                 "xcuda_Identification",
                 "xcuda_Valuation.xcuda_Gs_Invoice",
                 "xcuda_Declarant",
                 "xcuda_General_information.xcuda_Country",
                 "xcuda_Property"
-          }).ConfigureAwait(false);
+            }).ConfigureAwait(false);
             i.StartTracking();
             // null for now cuz there are no navigation properties involved.
             i.InjectFrom(asycudaDocument);
@@ -2499,22 +2801,24 @@ namespace WaterNut.DataSpace
             }
         }
 
-        
+
         public async Task DeleteDocumentCt(DocumentCT da)
         {
             if (da.Document.TrackingState == TrackingState.Added) return;
             using (var ctx = new WaterNutDBEntities())
             {
-               await ctx.ExecuteStoreCommandAsync(@"delete from xcuda_Item
+                await ctx.ExecuteStoreCommandAsync(@"delete from xcuda_Item
                                                where ASYCUDA_Id = @ASYCUDA_Id
 
                                                delete from xcuda_ASYCUDA
-                                               where ASYCUDA_Id = @ASYCUDA_Id", new SqlParameter("@ASYCUDA_Id", SqlDbType.Int).Value = da.Document.ASYCUDA_Id).ConfigureAwait(false);
-                
+                                               where ASYCUDA_Id = @ASYCUDA_Id",
+                    new SqlParameter("@ASYCUDA_Id", SqlDbType.Int).Value = da.Document.ASYCUDA_Id)
+                .ConfigureAwait(false);
+
 
 
             }
-            
+
         }
 
         public async Task LinkExistingPreviousItems(DocumentCT da)
@@ -2575,7 +2879,7 @@ namespace WaterNut.DataSpace
 
         public static Task Initialization { get; private set; }
 
-     
+
         #endregion
 
 
@@ -2587,7 +2891,233 @@ namespace WaterNut.DataSpace
             }
         }
 
-        
+
+        public async Task SaveAttachedDocuments(FileInfo[] csvFiles, FileTypes fileType)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+
+                foreach (var file in csvFiles)
+                {
+
+                    var attachment =
+                        ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x =>
+                            x.Attachments.FilePath == file.FullName &&
+                            x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
+
+                    using (var ctx1 = new CoreEntitiesContext() {StartTracking = true})
+                    {
+                        if (attachment == null)
+                        {
+                            var reference = GetReference(file,fileType);
+                            ctx1.AsycudaDocumentSet_Attachments.Add(
+                                new AsycudaDocumentSet_Attachments(true)
+                                {
+                                    AsycudaDocumentSetId = fileType.AsycudaDocumentSetId,
+                                    Attachments = new Attachments(true)
+                                    {
+                                        FilePath = file.FullName,
+                                        DocumentCode = fileType.DocumentCode,
+                                        Reference = reference,
+                                    },
+                                    DocumentSpecific = fileType.DocumentSpecific,
+                                    FileDate = file.LastWriteTime,
+
+                                    FileTypeId = fileType.Id,
+                                    TrackingState = TrackingState.Added
+                                });
+                        }
+                        else
+                        {
+                            attachment.DocumentSpecific = fileType.DocumentSpecific;
+                            attachment.FileDate = file.LastWriteTime;
+
+                            attachment.FileTypeId = fileType.Id;
+                        }
+
+                        ctx1.SaveChanges();
+                    }
+
+
+
+                }
+
+                ctx.SaveChanges();
+
+            }
+        }
+
+        private string GetReference(FileInfo file, FileTypes fileType)
+        {
+            switch (fileType.Type)
+            {
+                case "C71":
+                {
+                    C71ToDataBase.GetRegNumber(file, out string regNumber);
+                    return regNumber;
+                }
+                case "LIC":
+                {
+                    LicenseToDataBase.GetLicenceRegNumber(file, out string regNumber);
+                    return regNumber;
+                }
+                default:
+                    return file.Name.Replace(file.Extension, "");
+            }
+        }
+
+        public void AttachToExistingDocuments(int asycudaDocumentSetId)
+        {
+            //AttachToDocument
+            try
+            {
+                AttachLicense(asycudaDocumentSetId);
+                AttachC71(asycudaDocumentSetId);
+                AttachPDF(asycudaDocumentSetId);
+                AttachBL(asycudaDocumentSetId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private static void AttachPDF(int asycudaDocumentSetId)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1"
+                                                              && x.AsycudaDocument.AsycudaDocumentSetId ==
+                                                              asycudaDocumentSetId);
+                var pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                        (x.FileTypes.Type == "PDF")&& x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
+
+                
+                
+
+                foreach (var al in pdfs)
+                {
+                    
+                        var itms = lst.Where(x => x.AsycudaDocumentItemEntryDataDetails.Any(z => z.key.Contains(al.Reference))).ToList();
+
+                        foreach (var itm in itms)
+                        {
+                            AttachToDocument(new List<int>() { al.Id },
+                                itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+
+                        }
+                    
+                }
+            }
+        }
+
+        private static void AttachBL(int asycudaDocumentSetId)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1"
+                                                              && x.AsycudaDocument.AsycudaDocumentSetId ==
+                                                              asycudaDocumentSetId);
+                var pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                        (x.FileTypes.Type == "BL") && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
+
+
+
+
+                foreach (var al in pdfs)
+                {
+                    
+                    foreach (var itm in lst)
+                    {
+                        AttachToDocument(new List<int>() { al.Id },
+                            itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+
+                    }
+
+                }
+            }
+        }
+
+        private static void AttachLicense(int asycudaDocumentSetId)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.AsycudaDocumentItems.Where(x => x.TariffCodeLicenseRequired == true
+                                                              && x.AsycudaDocument.AsycudaDocumentSetId ==
+                                                              asycudaDocumentSetId);
+                var licAtt = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                        x.FileTypes.Type == "LIC" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
+
+                var res = new Dictionary<Attachments, xLIC_License>();
+                foreach (var i in licAtt)
+                {
+                    var xLicLicense = new LicenseDSContext().xLIC_License.OfType<Registered>()
+                        .Include(x => x.xLIC_Lic_item_segment)
+                        .Include(x => x.xLIC_General_segment).FirstOrDefault(x => x.SourceFile == i.FilePath);
+                    if (xLicLicense != null) res.Add(i, xLicLicense);
+                }
+
+                foreach (var al in res)
+                {
+                    foreach (var lic in al.Value.xLIC_Lic_item_segment)
+                    {
+                        var truncate = lic.Commodity_code.Truncate(8);
+                        var itms = lst.Where(x => x.TariffCode == truncate).ToList();
+                        double rtotal = 0;
+                        foreach (var itm in itms)
+                        {
+                            if (itm.ItemQuantity <= lic.Quantity_to_approve - rtotal)
+                            {
+                                rtotal += itm.ItemQuantity.GetValueOrDefault();
+                                AttachToDocument(new List<int>() {al.Key.Id},
+                                    itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private static void AttachC71(int asycudaDocumentSetId)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1" 
+                                                              && x.AsycudaDocument.AsycudaDocumentSetId ==
+                                                              asycudaDocumentSetId);
+                var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                        x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
+
+                var res = new Dictionary<Attachments, ValuationDS.Business.Entities.Registered>();
+                foreach (var i in c71Att)
+                {
+                    var c71 = new ValuationDSContext().xC71_Value_declaration_form.OfType<ValuationDS.Business.Entities.Registered>()
+                        .Include(x => x.xC71_Item)
+                        .Include(x => x.xC71_Identification_segment)
+                        .FirstOrDefault(x => x.SourceFile == i.FilePath);
+                    if (c71 != null) res.Add(i, c71);
+                }
+
+                foreach (var al in res)
+                {
+                    foreach (var c71Item in al.Value.xC71_Item)
+                    {
+                        var itms = lst.Where(x => x.AsycudaDocumentItemEntryDataDetails.Any(z => z.key.Contains(c71Item.Invoice_Number))).ToList();
+                        
+                        foreach (var itm in itms)
+                        {
+                            AttachToDocument(new List<int>() { al.Key.Id },
+                                    itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+                            
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public class SaleReportLine

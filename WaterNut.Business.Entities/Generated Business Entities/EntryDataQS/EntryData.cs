@@ -57,21 +57,6 @@ namespace EntryDataQS.Business.Entities
         }
         System.DateTime _entrydatadate;
         [DataMember]
-        public Nullable<double> ImportedTotal 
-        {
-            get
-            {
-                return _importedtotal;
-            }
-            set
-            {
-                _importedtotal = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _importedtotal;
-        [DataMember]
         public Nullable<int> ImportedLines 
         {
             get
@@ -86,21 +71,6 @@ namespace EntryDataQS.Business.Entities
             }
         }
         Nullable<int> _importedlines;
-        [DataMember]
-        public Nullable<int> SupplierId 
-        {
-            get
-            {
-                return _supplierid;
-            }
-            set
-            {
-                _supplierid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _supplierid;
         [DataMember]
         public Nullable<double> TotalFreight 
         {
@@ -206,6 +176,81 @@ namespace EntryDataQS.Business.Entities
             }
         }
         Nullable<int> _filetypeid;
+        [DataMember]
+        public string SupplierCode 
+        {
+            get
+            {
+                return _suppliercode;
+            }
+            set
+            {
+                _suppliercode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _suppliercode;
+        [DataMember]
+        public Nullable<double> InvoiceTotal 
+        {
+            get
+            {
+                return _invoicetotal;
+            }
+            set
+            {
+                _invoicetotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _invoicetotal;
+        [DataMember]
+        public Nullable<double> TotalOtherCost 
+        {
+            get
+            {
+                return _totalothercost;
+            }
+            set
+            {
+                _totalothercost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalothercost;
+        [DataMember]
+        public Nullable<double> TotalInsurance 
+        {
+            get
+            {
+                return _totalinsurance;
+            }
+            set
+            {
+                _totalinsurance = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalinsurance;
+        [DataMember]
+        public Nullable<double> TotalDeduction 
+        {
+            get
+            {
+                return _totaldeduction;
+            }
+            set
+            {
+                _totaldeduction = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totaldeduction;
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas { get; set; }
         [DataMember]

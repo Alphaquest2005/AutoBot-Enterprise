@@ -393,7 +393,7 @@ public string PreviousCNumber
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
        
                 
                 [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
@@ -413,7 +413,7 @@ public string DutyFreePaid
        
        
                 
-                [MaxLength(5, ErrorMessage = "Type has a max length of 5 letters ")]
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
 public string Type
 		{ 
 		    get { return this.adjustmentdetail.Type; }

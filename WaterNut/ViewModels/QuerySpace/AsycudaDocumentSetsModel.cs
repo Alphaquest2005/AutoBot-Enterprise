@@ -308,5 +308,45 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 _asycudaDocuments = value;
                 NotifyPropertyChanged(x => this.AsycudaDocuments);
             } }
+
+        public async Task AttachDocuments()
+        {
+            StatusModel.Timer("Attaching Documents");
+            //import asycuda xml id and details
+            if (BaseViewModel.Instance.CurrentAsycudaDocumentSetEx == null)
+            {
+                MessageBox.Show("Please Select Asycuda Document Set");
+                return;
+            }
+
+
+            var od = new OpenFileDialog();
+            od.DefaultExt = ".*";
+            od.Filter = "C71, LIC Documents (.xml)|*.xml|PDF Documents (.pdf)|*.pdf";
+            od.Multiselect = true;
+            var result = od.ShowDialog();
+            if (result == true)
+            {
+                
+                StatusModel.Timer($"Attaching {od.FileNames.Count()} files");
+                StatusModel.StartStatusUpdate("Attaching files", od.FileNames.Count());
+                StatusModel.RefreshNow();
+                // foreach (var f in od.FileNames)
+                await
+                    AsycudaDocumentSetExRepository.Instance.AttachDocuments(BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, od.FileNames.ToList()).ConfigureAwait(false);
+
+                MessageBus.Default.BeginNotify(MessageToken.AsycudaDocumentsChanged, null,
+                           new NotificationEventArgs(MessageToken.AsycudaDocumentsChanged));
+
+                MessageBus.Default.BeginNotify(MessageToken.AsycudaDocumentSetExsChanged, null,
+                                new NotificationEventArgs(MessageToken.AsycudaDocumentSetExsChanged));
+
+                StatusModel.StopStatusUpdate();
+
+            }
+            StatusModel.StopStatusUpdate();
+            MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+        }
     }
 }

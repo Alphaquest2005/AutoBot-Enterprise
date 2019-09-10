@@ -62,21 +62,6 @@ public string Type
 		}
      
 
-       
-       [NumberValidationAttribute]
-public Nullable<double> Total
-		{ 
-		    get { return this.entrydataex.Total; }
-			set
-			{
-			    if (value == this.entrydataex.Total) return;
-				this.entrydataex.Total = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Total");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "InvoiceDate is required")]
        
 public System.DateTime InvoiceDate
@@ -105,21 +90,6 @@ public string InvoiceNo
 				this.entrydataex.InvoiceNo = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("InvoiceNo");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<double> ImportedTotal
-		{ 
-		    get { return this.entrydataex.ImportedTotal; }
-			set
-			{
-			    if (value == this.entrydataex.ImportedTotal) return;
-				this.entrydataex.ImportedTotal = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ImportedTotal");
 			}
 		}
      
@@ -229,6 +199,68 @@ public Nullable<int> FileTypeId
 				this.entrydataex.FileTypeId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> InvoiceTotal
+		{ 
+		    get { return this.entrydataex.InvoiceTotal; }
+			set
+			{
+			    if (value == this.entrydataex.InvoiceTotal) return;
+				this.entrydataex.InvoiceTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceTotal");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(100, ErrorMessage = "SupplierCode has a max length of 100 letters ")]
+public string SupplierCode
+		{ 
+		    get { return this.entrydataex.SupplierCode; }
+			set
+			{
+			    if (value == this.entrydataex.SupplierCode) return;
+				this.entrydataex.SupplierCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SupplierCode");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> ImportedTotal
+		{ 
+		    get { return this.entrydataex.ImportedTotal; }
+			set
+			{
+			    if (value == this.entrydataex.ImportedTotal) return;
+				this.entrydataex.ImportedTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ImportedTotal");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ExpectedTotal is required")]
+       [NumberValidationAttribute]
+public double ExpectedTotal
+		{ 
+		    get { return this.entrydataex.ExpectedTotal; }
+			set
+			{
+			    if (value == this.entrydataex.ExpectedTotal) return;
+				this.entrydataex.ExpectedTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExpectedTotal");
 			}
 		}
      

@@ -71,8 +71,9 @@ namespace AutoBot
                             Email = appSetting.Email,
                             EmailMappings = appSetting.EmailMapping.Select(x => x.Pattern).ToList()
                         };
-                        
-                        var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client, appSetting.FileTypes.Select(x => x.FilePattern).ToList())).Result;
+
+                        var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client,
+                            appSetting.FileTypes.Select(x => x.FilePattern).ToList())).Result;
                         // get downloads
                         Console.WriteLine($"{msgLst.Count} Emails Processed");
                         foreach (var msg in msgLst)
@@ -81,7 +82,9 @@ namespace AutoBot
                             foreach (var fileType in appSetting.FileTypes)
                             {
                                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                                    .Where(x => msg.Value.Contains(x.Name) && Regex.IsMatch(x.FullName, fileType.FilePattern, RegexOptions.IgnoreCase) &&
+                                    .Where(x => msg.Value.Contains(x.Name) &&
+                                                Regex.IsMatch(x.FullName, fileType.FilePattern,
+                                                    RegexOptions.IgnoreCase) &&
                                                 x.LastWriteTime >= beforeImport).ToArray();
 
                                 if (csvFiles.Length == 0)
@@ -90,6 +93,8 @@ namespace AutoBot
                                     continue;
                                 }
 
+                                if (fileType.Type == "Info" && !Utils.CanSaveFileInfo(csvFiles).Any()) continue;
+
                                 var oldDocSet =
                                     ctx.AsycudaDocumentSetExs
                                         .FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
@@ -97,30 +102,42 @@ namespace AutoBot
                                 {
                                     var docSet =
                                         ctx.AsycudaDocumentSetExs
-                                            .FirstOrDefault(x => x.Declarant_Reference_Number == msg.Key.Item1);
+                                            .FirstOrDefault(x =>
+                                                x.Declarant_Reference_Number == msg.Key.Item1 &&
+                                                x.ApplicationSettingsId == BaseDataModel.Instance
+                                                    .CurrentApplicationSettings.ApplicationSettingsId);
                                     if (docSet == null)
                                     {
                                         ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({oldDocSet.ApplicationSettingsId},'{msg.Key.Item1}',{oldDocSet.Document_TypeId},{
-                                                oldDocSet.Customs_ProcedureId
-                                            },0)");
+                                    VALUES({oldDocSet.ApplicationSettingsId},'{msg.Key.Item1}',{
+                                                oldDocSet.Document_TypeId
+                                            },{oldDocSet.Customs_ProcedureId},0)");
 
                                     }
                                 }
 
                                 var ndocSet =
                                     ctx.AsycudaDocumentSetExs
-                                        .First(x => x.Declarant_Reference_Number == msg.Key.Item1);
+                                        .FirstOrDefault(x => x.Declarant_Reference_Number == msg.Key.Item1);
+                                if (ndocSet != null)
+                                {
+                                    if (fileType.Type == "Info")
+                                        Utils.SaveInfo(csvFiles, ndocSet.AsycudaDocumentSetId);
+                                    else
+                                    {
 
-                                if (fileType.Type == "Info")
-                                    Utils.SaveInfo(csvFiles, ndocSet.AsycudaDocumentSetId);
+                                        fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
+                                        Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
+                                    }
+                                }
                                 else
                                 {
-                                    
-                                    fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
-                                    Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
+                                    fileType.FileTypeActions.OrderBy(x => x.Id)
+                                        .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
+                                        .ForEach(x => { x.Invoke(fileType, csvFiles); });
                                 }
+
                             }
                         }
 
@@ -128,67 +145,103 @@ namespace AutoBot
                         {
                             Utils.CurrentSalesInfo().Item3,
                         };
+                        docLst.Remove(null);
                         foreach (var i in Utils.CurrentPOInfo().Select(x => x.Item1))
                         {
-                            if (docLst.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                                           && x.AsycudaDocumentSetId == i.AsycudaDocumentSetId) == null)
+                            if (docLst.FirstOrDefault(x =>
+                                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                        .ApplicationSettingsId
+                                    && x.AsycudaDocumentSetId == i.AsycudaDocumentSetId) == null)
                                 docLst.AddRange(Utils.CurrentPOInfo().Select(x => x.Item1));
                         }
 
                         var fdate = DateTime.Now.Date;
-                        docLst.AddRange(ctx.AsycudaDocumentSetExs.Where(x => x.ApplicationSettingsId == appSetting.ApplicationSettingsId && x.AsycudaDocumentSet_Attachments.Any(z => z.FileDate == fdate)));
+                        docLst.AddRange(ctx.AsycudaDocumentSetExs.Where(x =>
+                            x.ApplicationSettingsId == appSetting.ApplicationSettingsId &&
+                            x.AsycudaDocumentSet_Attachments.Any(z => z.FileDate == fdate)));
 
 
 
-                        foreach (var dSet in docLst.DistinctBy(x => x.AsycudaDocumentSetId))
+                        foreach (var dSet in docLst.Where(x => x != null).DistinctBy(x => x.AsycudaDocumentSetId))
                         {
                             foreach (var fileType in appSetting.FileTypes
                             ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
                             {
                                 var desFolder = Path.Combine(appSetting.DataFolder, dSet.Declarant_Reference_Number);
-                                fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet? dSet.AsycudaDocumentSetId : fileType.AsycudaDocumentSetId;
-                                fileType.DocReference = fileType.CreateDocumentSet ? dSet.Declarant_Reference_Number: fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
+                                fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet
+                                    ? dSet.AsycudaDocumentSetId
+                                    : fileType.AsycudaDocumentSetId;
+                                fileType.DocReference = fileType.CreateDocumentSet
+                                    ? dSet.Declarant_Reference_Number
+                                    : fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
                                 if (!Directory.Exists(desFolder)) continue;
                                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                                     .Where(x =>
                                         Regex.IsMatch(x.FullName, fileType.FilePattern, RegexOptions.IgnoreCase) &&
-                                        x.LastWriteTime >= beforeImport ).ToArray();// set to 10 mins so it works within the email import time
+                                        x.LastWriteTime >= beforeImport)
+                                    .ToArray(); // set to 10 mins so it works within the email import time
                                 if (!csvFiles.Any()) continue;
 
                                 fileType.FileTypeActions.OrderBy(x => x.Id)
                                     .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                                    .ForEach(x =>
-                                    {
-                                        x.Invoke(fileType, csvFiles);
-
-                                    });
+                                    .ForEach(x => { x.Invoke(fileType, csvFiles); });
 
                             }
                         }
 
+
                         ctx.SessionActions.OrderBy(x => x.Id)
-                           .Include(x => x.Actions)
-                           .Where(x => x.Sessions.Name == "End").ToList()
-                           .Select(x => Utils.SessionActions[x.Actions.Name])
-                           .ForEach(x =>
-                               x.Invoke());
+                            .Include(x => x.Actions)
+                            .Where(x => x.Sessions.Name == "End").ToList()
+                            .Select(x => Utils.SessionActions[x.Actions.Name])
+                            .ForEach(x =>
+                                x.Invoke());
 
 
-                       var sLst = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
-                                           .Where(x => x.RunDateTime >= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes * -1, DateTime.Now)
-                                                        && x.RunDateTime <= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes, DateTime.Now)).ToList();
-                        foreach (var item in sLst.Where(x => x.ApplicationSettingId == null || x.ApplicationSettingId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+
+
+                        var sLst = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
+                            .Where(x => x.RunDateTime >= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes * -1,
+                                            DateTime.Now)
+                                        && x.RunDateTime <= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes,
+                                            DateTime.Now)).ToList();
+                        if (sLst.Any())
                         {
-                            item.Sessions.SessionActions.Where(x => item.ActionId == null || x.ActionId == item.ActionId)
-                                .Select(x => Utils.SessionActions[x.Actions.Name])
-                                .ForEach(x => x.Invoke());
+                            foreach (var item in sLst.Where(x =>
+                                x.ApplicationSettingId == null || x.ApplicationSettingId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                            {
+                                item.Sessions.SessionActions
+                                    .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
+                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .ForEach(x => x.Invoke());
+                            }
+
+                        }
+                        else
+                        {
+                            //if (appSetting.AssessIM7 == true)
+                            //    ctx.SessionActions.OrderBy(x => x.Id)
+                            //        .Include(x => x.Actions)
+                            //        .Where(x => x.Sessions.Name == "AssessIM7").ToList()
+                            //        .Select(x => Utils.SessionActions[x.Actions.Name])
+                            //        .ForEach(x =>
+                            //            x.Invoke());
+
+                            //if (appSetting.AssessEX == true)
+                            //    ctx.SessionActions.OrderBy(x => x.Id)
+                            //        .Include(x => x.Actions)
+                            //        .Where(x => x.Sessions.Name == "AssessEX").ToList()
+                            //        .Select(x => Utils.SessionActions[x.Actions.Name])
+                            //        .ForEach(x =>
+                            //            x.Invoke());
                         }
 
 
                     }
                 }
 
-                
+
                 // Application.SetSuspendState(PowerState.Suspend, true, true);
             }
             catch (Exception e)

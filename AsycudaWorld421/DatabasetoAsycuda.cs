@@ -25,11 +25,11 @@ namespace Asycuda421
         {
             _destinatonFile = fileInfo;
             var doc = db.xcuda_ASYCUDA.FirstOrDefault(x => x.ASYCUDA_Id == ASYCUDA_Id);
-            LoadFromDataBase(doc,a,fileInfo);
+            LoadFromDataBase(doc,a);
 
         }
 
-        public void LoadFromDataBase(xcuda_ASYCUDA da, ASYCUDA a, FileInfo fileInfo)
+        public void LoadFromDataBase(xcuda_ASYCUDA da, ASYCUDA a)
         {
             try
             {
@@ -133,6 +133,7 @@ namespace Asycuda421
                         t.Consignee.Consignee_code.Text.Add(da.xcuda_Traders.xcuda_Consignee.Consignee_code);
                     if (da.xcuda_Traders.xcuda_Consignee.Consignee_name != null)
                         t.Consignee.Consignee_name.Text.Add(da.xcuda_Traders.xcuda_Consignee.Consignee_name);
+                    
                 }
                 if (da.xcuda_Traders.xcuda_Exporter != null)
                 {
@@ -162,8 +163,68 @@ namespace Asycuda421
                     v.Calculation_working_mode = da.xcuda_Valuation.Calculation_working_mode;
                 SaveGSInvoice(v, da.xcuda_Valuation.xcuda_Gs_Invoice);
                 SaveGSExternalFreight(v, da.xcuda_Valuation.xcuda_Gs_external_freight);
+                SaveGSInternalFreight(v, da.xcuda_Valuation.xcuda_Gs_internal_freight);
+                SaveGSOtherCost(v, da.xcuda_Valuation.xcuda_Gs_other_cost);
+                SaveGSInsurance(v, da.xcuda_Valuation.xcuda_Gs_insurance);
+                SaveGSDeduction(v, da.xcuda_Valuation.xcuda_Gs_deduction);
                 SaveWeight(v, da.xcuda_Valuation.xcuda_Weight);
                 a.Valuation = v;
+            }
+        }
+
+        private void SaveGSDeduction(ASYCUDAValuation v, xcuda_Gs_deduction df)
+        {
+            if (df != null && df.Amount_foreign_currency != 0)
+            {
+                var f = new ASYCUDAValuationGs_deduction();
+                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
+                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                if (df.Currency_code != null)
+                    f.Currency_code.Text.Add(df.Currency_code.Trim());
+                f.Currency_rate = df.Currency_rate.ToString();
+                v.Gs_deduction = f;
+            }
+        }
+
+        private void SaveGSInsurance(ASYCUDAValuation v, xcuda_Gs_insurance df)
+        {
+            if (df != null && df.Amount_foreign_currency != 0)
+            {
+                var f = new ASYCUDAValuationGs_insurance();
+                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
+                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                if (df.Currency_code != null)
+                    f.Currency_code.Text.Add(df.Currency_code.Trim());
+                f.Currency_rate = df.Currency_rate.ToString();
+                v.Gs_insurance = f;
+            }
+        }
+
+        private void SaveGSOtherCost(ASYCUDAValuation v, xcuda_Gs_other_cost df)
+        {
+            if (df != null && df.Amount_foreign_currency != 0)
+            {
+                var f = new ASYCUDAValuationGs_other_cost();
+                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
+                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                if (df.Currency_code != null)
+                    f.Currency_code.Text.Add(df.Currency_code.Trim());
+                f.Currency_rate = df.Currency_rate.ToString();
+                v.Gs_other_cost = f;
+            }
+        }
+
+        private void SaveGSInternalFreight(ASYCUDAValuation v, xcuda_Gs_internal_freight df)
+        {
+            if (df != null && df.Amount_foreign_currency != 0)
+            {
+                var f = new ASYCUDAValuationGs_internal_freight();
+                f.Amount_foreign_currency = df.Amount_foreign_currency.ToString();
+                f.Amount_national_currency = df.Amount_national_currency.ToString();
+                if (df.Currency_code != null)
+                    f.Currency_code.Text.Add(df.Currency_code.Trim());
+                f.Currency_rate = df.Currency_rate.ToString();
+                v.Gs_internal_freight = f;
             }
         }
 
@@ -186,7 +247,7 @@ namespace Asycuda421
                 f.Amount_national_currency = df.Amount_national_currency.ToString();
                 if (df.Currency_code != null)
                     f.Currency_code.Text.Add(df.Currency_code.Trim());
-                if (df.Currency_rate != null)
+                
                     f.Currency_rate = df.Currency_rate.ToString();
                 v.Gs_external_freight = f;
             }

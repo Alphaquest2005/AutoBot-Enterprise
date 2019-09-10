@@ -24,6 +24,7 @@
               this.Property(t => t.ReplyToMail).HasColumnName("ReplyToMail");
               this.Property(t => t.FileGroupId).HasColumnName("FileGroupId");
               this.Property(t => t.MergeEmails).HasColumnName("MergeEmails");
+              this.Property(t => t.CopyEntryData).HasColumnName("CopyEntryData");
               this.HasMany(t => t.EntryData).WithOptional(t => t.FileTypes).HasForeignKey(d => d.FileTypeId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

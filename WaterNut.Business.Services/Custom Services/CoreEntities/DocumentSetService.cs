@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Linq;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AllocationQS.Business.Services;
 using Core.Common.Contracts;
@@ -9,6 +12,7 @@ using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using DocumentDS.Business.Services;
 using Omu.ValueInjecter;
+using WaterNut.DataSpace;
 
 
 namespace CoreEntities.Business.Services
@@ -53,11 +57,40 @@ namespace CoreEntities.Business.Services
 
         public async Task SaveAsycudaDocumentSetEx(AsycudaDocumentSetEx asycudaDocumentSetEx)
         {
-            var docset = new AsycudaDocumentSet();
-            asycudaDocumentSetEx.ModifiedProperties = null;
-            docset.InjectFrom(asycudaDocumentSetEx);
+            try
+            {
+                var docset = new AsycudaDocumentSet();
+                asycudaDocumentSetEx.ModifiedProperties = null;
+                docset.InjectFrom(asycudaDocumentSetEx);
+                //docset.ApplicationSettingsId = asycudaDocumentSetEx.ApplicationSettingsId;
+                //docset.ApportionMethod = asycudaDocumentSetEx.ApportionMethod;
+                //docset.AsycudaDocumentSetId = asycudaDocumentSetEx.AsycudaDocumentSetId;
+                //docset.BLNumber = asycudaDocumentSetEx.BLNumber;
+                //docset.Country_of_origin_code = asycudaDocumentSetEx.Country_of_origin_code;
+                //docset.Currency_Code = asycudaDocumentSetEx.Currency_Code;
+                //docset.Customs_ProcedureId = asycudaDocumentSetEx.Customs_ProcedureId;
+                //docset.Declarant_Reference_Number = asycudaDocumentSetEx.Declarant_Reference_Number;
+                //docset.Description = asycudaDocumentSetEx.Description;
+                //docset.Document_TypeId = asycudaDocumentSetEx.Document_TypeId;
+                //docset.Exchange_Rate = asycudaDocumentSetEx.Exchange_Rate.GetValueOrDefault();
+                //docset.EntryTimeStamp = asycudaDocumentSetEx.EntryTimeStamp;
+                //docset.LastFileNumber = asycudaDocumentSetEx.LastFileNumber;
+                //docset.Manifest_Number = asycudaDocumentSetEx.Manifest_Number;
+                //docset.StartingFileCount = asycudaDocumentSetEx.StartingFileCount;
+                //docset.TotalFreight = asycudaDocumentSetEx.TotalFreight;
+                //docset.TotalInvoices = asycudaDocumentSetEx.TotalInvoices;
+                //docset.TotalPackages = asycudaDocumentSetEx.TotalPackages;
+                //docset.TotalWeight = asycudaDocumentSetEx.TotalWeight;
+                
+                await WaterNut.DataSpace.DocumentDS.DataModels.BaseDataModel.Instance.SaveAsycudaDocumentSet(docset)
+                    .ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
-            await WaterNut.DataSpace.DocumentDS.DataModels.BaseDataModel.Instance.SaveAsycudaDocumentSet(docset).ConfigureAwait(false);
         }
 
         public async Task<AsycudaDocumentSetEx> NewDocumentSet(int applicationSettingsId)
@@ -86,6 +119,31 @@ namespace CoreEntities.Business.Services
         {
             var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
             await WaterNut.DataSpace.CreateIM9.Instance.CleanLines(docSet, lst, perIM7).ConfigureAwait(false);
+        }
+
+        public async Task AttachDocuments(int asycudaDocumentSetId, List<string> files)
+        {
+            foreach (var fileType in new CoreEntitiesContext().FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList())
+            {
+                var csvFiles = files.Where(x => Regex.IsMatch(x, fileType.FilePattern, RegexOptions.IgnoreCase)).Select(x => new FileInfo(x)).ToArray();
+                if (csvFiles.Length == 0)continue;
+
+                
+
+                if (fileType.Type == "LIC")
+                    BaseDataModel.Instance.ImportLicense(fileType.AsycudaDocumentSetId,
+                        csvFiles.Select(x => x.FullName).ToList());
+
+                if (fileType.Type == "C71")
+                    BaseDataModel.Instance.ImportC71(fileType.AsycudaDocumentSetId,
+                        csvFiles.Select(x => x.FullName).ToList());
+
+                fileType.AsycudaDocumentSetId = asycudaDocumentSetId;
+                await BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, fileType).ConfigureAwait(false);
+
+                BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId);
+
+            }
         }
 
         public async Task CleanBond(int docSetId, bool perIM7)

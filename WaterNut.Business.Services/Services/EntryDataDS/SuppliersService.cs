@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<Suppliers> GetSuppliersByKey(string SupplierId, List<string> includesLst = null, bool tracking = true)
+        public async Task<Suppliers> GetSuppliersByKey(string SupplierCode, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(SupplierId))return null; 
+			   if(string.IsNullOrEmpty(SupplierCode))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(SupplierId);
+                var i = SupplierCode;
 				var set = AddIncludes(includesLst, dbContext);
-                Suppliers entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.SupplierId == i).ConfigureAwait(continueOnCapturedContext: false);
+                Suppliers entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.SupplierCode == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -298,11 +298,11 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<Suppliers> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.SupplierId);
+                                    dset = set.OrderBy(x => x.SupplierCode);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.SupplierId).Where(exp);
+                                    dset = set.OrderBy(x => x.SupplierCode).Where(exp);
                                 }
 
                                 var lst = dset
@@ -372,12 +372,12 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<Suppliers> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.SupplierId);
+                                    dset = set.OrderBy(x => x.SupplierCode);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.SupplierId);
+                                    dset = set.OrderBy(x => x.SupplierCode);
                                 }
 
                                 var lst = dset
@@ -523,15 +523,15 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteSuppliers(string SupplierId)
+        public async Task<bool> DeleteSuppliers(string SupplierCode)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(SupplierId);
+                var i = SupplierCode;
                 Suppliers entity = await dbContext.Suppliers
-													.SingleOrDefaultAsync(x => x.SupplierId == i)
+													.SingleOrDefaultAsync(x => x.SupplierCode == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -681,7 +681,7 @@ namespace EntryDataDS.Business.Services
                     {
                         return await dbContext.Suppliers
 										.AsNoTracking()
-                                        .OrderBy(y => y.SupplierId)
+                                        .OrderBy(y => y.SupplierCode)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -693,7 +693,7 @@ namespace EntryDataDS.Business.Services
                         return await dbContext.Suppliers
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.SupplierId)
+										.OrderBy(y => y.SupplierCode)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -738,7 +738,7 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.Suppliers.Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                    return await dbContext.Suppliers.Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -781,9 +781,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Suppliers>()
-                .Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                .Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
                 .Distinct()
-                .OrderBy("SupplierId")
+                .OrderBy("SupplierCode")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -802,9 +802,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Suppliers>()
-                .Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                .Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
                 .Distinct()
-                .OrderBy("SupplierId")
+                .OrderBy("SupplierCode")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -830,7 +830,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.SupplierId)
+                                    .OrderBy(y => y.SupplierCode)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -855,8 +855,8 @@ namespace EntryDataDS.Business.Services
                     }
                     return await set//dbContext.Suppliers
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
-								.OrderBy(y => y.SupplierId)
+                                .Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
+								.OrderBy(y => y.SupplierCode)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -908,9 +908,9 @@ namespace EntryDataDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                .Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.SupplierId)
+                .OrderBy(y => y.SupplierCode)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -937,9 +937,9 @@ namespace EntryDataDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                .Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.SupplierId)
+                .OrderBy(y => y.SupplierCode)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -989,7 +989,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<Suppliers>()
-							.Where(exp == "All" || exp == null?"SupplierId != null":exp)
+							.Where(exp == "All" || exp == null?"SupplierCode != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -999,7 +999,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Suppliers>()
-                .Where(exp == "All" || exp == null?"SupplierId != null":exp)
+                .Where(exp == "All" || exp == null?"SupplierCode != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1026,7 +1026,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<Suppliers>()
-							.Where(exp == "All" || exp == null?"SupplierId != null":exp)
+							.Where(exp == "All" || exp == null?"SupplierCode != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1036,7 +1036,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Suppliers>()
-                .Where(exp == "All" || exp == null?"SupplierId != null":exp)
+                .Where(exp == "All" || exp == null?"SupplierCode != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1051,7 +1051,37 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<Suppliers>> GetSuppliersByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Suppliers> entities = await set//dbContext.Suppliers
+                                                    // .Include(x => x.EntryData)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1109,7 +1139,7 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.Suppliers.Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                    return Convert.ToDecimal(dbContext.Suppliers.Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1150,9 +1180,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Suppliers>()
-                .Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                .Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
                 .Distinct()
-                .OrderBy("SupplierId")
+                .OrderBy("SupplierCode")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1170,9 +1200,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Suppliers>()
-                .Where(exp == "All" || exp == null ? "SupplierId != null" : exp)
+                .Where(exp == "All" || exp == null ? "SupplierCode != null" : exp)
                 .Distinct()
-                .OrderBy("SupplierId")
+                .OrderBy("SupplierCode")
                 .Sum(field));
 			}
 			catch (Exception)

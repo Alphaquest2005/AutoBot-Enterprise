@@ -1081,39 +1081,7 @@ namespace EntryDataQS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<EntryData>> GetEntryDataBySupplierId(string SupplierId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(SupplierId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<EntryData> entities = await set//dbContext.EntryDatas
-                                                    // .Include(x => x.AsycudaDocumentEntryDatas)									  
-                                                    // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
-                                                    // .Include(x => x.ContainerEntryDatas)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.SupplierId.ToString() == SupplierId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {

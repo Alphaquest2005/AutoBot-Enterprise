@@ -97,5 +97,17 @@ BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\QuickBooksDS\QuickBooksDS.edmx",
 					
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DomainInterfaces\InterfacesModel.csproj",
-                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces );  
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces );
+  
+    BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx",
+					 
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DomainInterfaces\InterfacesModel.csproj",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces ); 
+
+    BusinessprocessedInterfaces = CreateDomainInterface("WaterNut","Business",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx",
+					 
+                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DomainInterfaces\InterfacesModel.csproj",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj",ref  BusinessprocessedInterfaces ); 
 #>

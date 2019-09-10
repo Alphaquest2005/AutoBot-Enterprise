@@ -202,6 +202,13 @@ namespace CoreEntities.Client.Repositories
         }
 
 
+        public async Task AttachDocuments(int asycudaDocumentSetId, List<string> files)
+        {
+            using (var t = new DocumentSetClient())
+            {
+                await t.AttachDocuments(asycudaDocumentSetId, files).ConfigureAwait(false);
+            }
+        }
     }
 }
 

@@ -44,6 +44,8 @@ namespace CoreEntities.Client.Contracts
 
         [OperationContract]
         Task CleanLines(int docSetId, IEnumerable<int> lst, bool perIM7);
+        [OperationContract]
+        Task AttachDocuments(int asycudaDocumentSetId, List<string> files);
     }
 }
 

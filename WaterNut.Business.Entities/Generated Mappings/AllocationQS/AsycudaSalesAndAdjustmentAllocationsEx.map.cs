@@ -58,7 +58,7 @@
               this.Property(t => t.pExpiryDate).HasColumnName("pExpiryDate");
               this.Property(t => t.pTariffCode).HasColumnName("pTariffCode").HasMaxLength(20);
               this.Property(t => t.pItemNumber).HasColumnName("pItemNumber").HasMaxLength(50);
-              this.Property(t => t.Type).HasColumnName("Type").IsRequired().IsUnicode(false).HasMaxLength(4);
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);

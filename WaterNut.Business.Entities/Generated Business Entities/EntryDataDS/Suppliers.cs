@@ -25,21 +25,6 @@ namespace EntryDataDS.Business.Entities
         }
 
         [DataMember]
-        public int SupplierId 
-        {
-            get
-            {
-                return _supplierid;
-            }
-            set
-            {
-                _supplierid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _supplierid;
-        [DataMember]
         public string SupplierCode 
         {
             get
@@ -100,21 +85,6 @@ namespace EntryDataDS.Business.Entities
         }
         string _city;
         [DataMember]
-        public string ZipCode 
-        {
-            get
-            {
-                return _zipcode;
-            }
-            set
-            {
-                _zipcode = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _zipcode;
-        [DataMember]
         public string Country 
         {
             get
@@ -129,6 +99,36 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _country;
+        [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
+        public string CountryCode 
+        {
+            get
+            {
+                return _countrycode;
+            }
+            set
+            {
+                _countrycode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _countrycode;
         [DataMember]
         public List<EntryData> EntryData { get; set; }
 

@@ -256,19 +256,6 @@ namespace CoreEntities.Client.DTO
         private int _ApplicationSettingsId;
 
         [DataMember]
-        public Nullable<double> TotalInternalFreight
-		{ 
-		    get { return _TotalInternalFreight; }
-			set
-			{
-			    if (value == _TotalInternalFreight) return;
-				_TotalInternalFreight = value;
-				NotifyPropertyChanged();//m => this.TotalInternalFreight
-			}
-		}
-        private Nullable<double> _TotalInternalFreight;
-
-        [DataMember]
         public Nullable<int> TotalPackages
 		{ 
 		    get { return _TotalPackages; }
@@ -293,6 +280,71 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<int> _LastFileNumber;
+
+        [DataMember]
+        public Nullable<int> TotalInvoices
+		{ 
+		    get { return _TotalInvoices; }
+			set
+			{
+			    if (value == _TotalInvoices) return;
+				_TotalInvoices = value;
+				NotifyPropertyChanged();//m => this.TotalInvoices
+			}
+		}
+        private Nullable<int> _TotalInvoices;
+
+        [DataMember]
+        public Nullable<int> ImportedInvoices
+		{ 
+		    get { return _ImportedInvoices; }
+			set
+			{
+			    if (value == _ImportedInvoices) return;
+				_ImportedInvoices = value;
+				NotifyPropertyChanged();//m => this.ImportedInvoices
+			}
+		}
+        private Nullable<int> _ImportedInvoices;
+
+        [DataMember]
+        public Nullable<int> ClassifiedLines
+		{ 
+		    get { return _ClassifiedLines; }
+			set
+			{
+			    if (value == _ClassifiedLines) return;
+				_ClassifiedLines = value;
+				NotifyPropertyChanged();//m => this.ClassifiedLines
+			}
+		}
+        private Nullable<int> _ClassifiedLines;
+
+        [DataMember]
+        public Nullable<int> TotalLines
+		{ 
+		    get { return _TotalLines; }
+			set
+			{
+			    if (value == _TotalLines) return;
+				_TotalLines = value;
+				NotifyPropertyChanged();//m => this.TotalLines
+			}
+		}
+        private Nullable<int> _TotalLines;
+
+        [DataMember]
+        public Nullable<int> MaxLines
+		{ 
+		    get { return _MaxLines; }
+			set
+			{
+			    if (value == _MaxLines) return;
+				_MaxLines = value;
+				NotifyPropertyChanged();//m => this.MaxLines
+			}
+		}
+        private Nullable<int> _MaxLines;
 
        
         [DataMember]

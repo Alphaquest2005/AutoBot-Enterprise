@@ -155,20 +155,35 @@ namespace CoreEntities.Business.Entities
         }
         string _declarant_reference_number;
         [DataMember]
-        public Nullable<System.DateTime> FileDate 
+        public Nullable<int> Invoices 
         {
             get
             {
-                return _filedate;
+                return _invoices;
             }
             set
             {
-                _filedate = value;
+                _invoices = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<System.DateTime> _filedate;
+        Nullable<int> _invoices;
+        [DataMember]
+        public Nullable<int> TotalInvoices 
+        {
+            get
+            {
+                return _totalinvoices;
+            }
+            set
+            {
+                _totalinvoices = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _totalinvoices;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

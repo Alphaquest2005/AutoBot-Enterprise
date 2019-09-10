@@ -366,35 +366,7 @@ namespace EntryDataQS.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<EntryData>> GetEntryDataBySupplierId(string SupplierId, List<string> includesLst = null)
-        {
-             if (SupplierId == "0") return null;
-            try
-            {
-                 using (EntryDataClient t = new EntryDataClient())
-                    {
-                        var res = await t.GetEntryDataBySupplierId(SupplierId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new EntryData(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
- 	 public async Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+	 public async Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
              if (ApplicationSettingsId == "0") return null;
             try

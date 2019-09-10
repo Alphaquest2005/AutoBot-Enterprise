@@ -1178,6 +1178,42 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _xStatusFilter;
+        public string xStatusFilter
+        {
+            get
+            {
+                return _xStatusFilter;
+            }
+            set
+            {
+                _xStatusFilter = value;
+				NotifyPropertyChanged(x => xStatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _typeFilter;
+        public string TypeFilter
+        {
+            get
+            {
+                return _typeFilter;
+            }
+            set
+            {
+                _typeFilter = value;
+				NotifyPropertyChanged(x => TypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1500,6 +1536,14 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(DutyFreePaidFilter) == false)
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
+ 
+
+									if(string.IsNullOrEmpty(xStatusFilter) == false)
+						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TypeFilter) == false)
+						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1640,7 +1684,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     AssessmentDate = x.AssessmentDate ,
                     
  
-                    DutyFreePaid = x.DutyFreePaid 
+                    DutyFreePaid = x.DutyFreePaid ,
+                    
+ 
+                    xStatus = x.xStatus ,
+                    
+ 
+                    Type = x.Type 
                     
                 }).ToList()
             };
@@ -1771,6 +1821,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string DutyFreePaid { get; set; } 
+                    
+ 
+                    public string xStatus { get; set; } 
+                    
+ 
+                    public string Type { get; set; } 
                     
         }
 

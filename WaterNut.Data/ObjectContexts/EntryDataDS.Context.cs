@@ -77,6 +77,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<InventoryItems> InventoryItems { get; set; }
      
+        public DbSet<EntryDataExTotals> EntryDataExTotals { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -110,6 +112,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new InventoryItems_NonStockMap());
          
             modelBuilder.Configurations.Add(new InventoryItemsMap());
+         
+            modelBuilder.Configurations.Add(new EntryDataExTotalsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

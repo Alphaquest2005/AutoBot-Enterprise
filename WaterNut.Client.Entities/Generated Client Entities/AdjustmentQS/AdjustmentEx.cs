@@ -63,7 +63,7 @@ public System.DateTime InvoiceDate
        
        
                 
-                [MaxLength(5, ErrorMessage = "Type has a max length of 5 letters ")]
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
 public string Type
 		{ 
 		    get { return this.adjustmentex.Type; }
@@ -94,21 +94,6 @@ public string DutyFreePaid
 		}
      
 
-       
-       [NumberValidationAttribute]
-public Nullable<double> Total
-		{ 
-		    get { return this.adjustmentex.Total; }
-			set
-			{
-			    if (value == this.adjustmentex.Total) return;
-				this.adjustmentex.Total = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Total");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "InvoiceNo is required")]
        
                 
@@ -122,21 +107,6 @@ public string InvoiceNo
 				this.adjustmentex.InvoiceNo = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("InvoiceNo");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
-public Nullable<double> ImportedTotal
-		{ 
-		    get { return this.adjustmentex.ImportedTotal; }
-			set
-			{
-			    if (value == this.adjustmentex.ImportedTotal) return;
-				this.adjustmentex.ImportedTotal = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ImportedTotal");
 			}
 		}
      
@@ -229,6 +199,36 @@ public Nullable<int> FileTypeId
 				this.adjustmentex.FileTypeId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> InvoiceTotal
+		{ 
+		    get { return this.adjustmentex.InvoiceTotal; }
+			set
+			{
+			    if (value == this.adjustmentex.InvoiceTotal) return;
+				this.adjustmentex.InvoiceTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceTotal");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> ImportedTotal
+		{ 
+		    get { return this.adjustmentex.ImportedTotal; }
+			set
+			{
+			    if (value == this.adjustmentex.ImportedTotal) return;
+				this.adjustmentex.ImportedTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ImportedTotal");
 			}
 		}
      

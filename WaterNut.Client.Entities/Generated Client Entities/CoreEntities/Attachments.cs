@@ -94,6 +94,23 @@ public string DocumentCode
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Reference is required")]
+       
+                
+                [MaxLength(50, ErrorMessage = "Reference has a max length of 50 letters ")]
+public string Reference
+		{ 
+		    get { return this.attachments.Reference; }
+			set
+			{
+			    if (value == this.attachments.Reference) return;
+				this.attachments.Reference = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Reference");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = null;
         public  ObservableCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
 		{

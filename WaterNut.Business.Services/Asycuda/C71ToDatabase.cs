@@ -1,23 +1,21 @@
-﻿using DocumentDS.Business.Entities;
-using DocumentDS.Business.Services;
-using DocumentItemDS.Business.Entities;
-using DocumentItemDS.Business.Services;
-using InventoryDS.Business.Entities;
+﻿using Asycuda421;
+using CoreEntities.Business.Entities;
+using DocumentDS.Business.Entities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
+using EntryDataDS.Business.Entities;
 //using WaterNut.DataLayer;
 using TrackableEntities;
-using Asycuda421;
-using CoreEntities.Business.Entities;
-using TrackableEntities.Common;
 using TrackableEntities.EF6;
-using WaterNut.Business.Entities;
-using WaterNut.Interfaces;
+using ValuationDS.Business.Entities;
+using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 
 
 namespace WaterNut.DataSpace.Asycuda
@@ -37,89 +35,34 @@ namespace WaterNut.DataSpace.Asycuda
             get { return instance; }
         }
 
-        private C71 da;
+        private ValuationDS.Business.Entities.Registered da;
         private Value_declaration_form a;
 
        
         
-        public async Task SaveToDatabase(ASYCUDA adoc, AsycudaDocumentSet docSet, FileInfo file)
+        public void SaveToDatabase(Value_declaration_form adoc, AsycudaDocumentSet docSet, FileInfo file)
         {
 
             try
             {
+                var mat = Regex.Match(file.FullName,
+                    @"[A-Z\\ -.]*(?<RegNumber>[0-9]+)-C71.*.xml",
+                    RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                if (!mat.Success) return;
+                var regNumber = mat.Groups[1].Captures[0].Value;
 
-                // db = new WaterNutDBEntities();
-                a = adoc;
-                xcuda_ASYCUDA doc;
-                if (await DeleteExistingDocument().ConfigureAwait(false)) return;
-
-                var ads = docSet; //await GetAsycudaDocumentSet().ConfigureAwait(false);
                 //}
-                da = await CreateDocumentCt(ads, file).ConfigureAwait(false);
+                da =  CreateNewC71(docSet, file, regNumber, adoc.id);
 
-                
+                SaveValuationForm(adoc, da);
+                SaveIdentification(adoc.Identification_segment, da.xC71_Identification_segment);
+                SaveItems(adoc.Item, da);
 
-                await SaveGeneralInformation().ConfigureAwait(false);
-                await SaveDeclarant().ConfigureAwait(false);
-                await SaveTraders().ConfigureAwait(false);
-                await SaveProperty().ConfigureAwait(false);
-                await SaveIdentification().ConfigureAwait(false);
-                await SaveTransport().ConfigureAwait(false);
-                await SaveFinancial().ConfigureAwait(false);
-                await Save_Warehouse().ConfigureAwait(false);
-                await Save_Valuation().ConfigureAwait(false);
-                await SaveContainer().ConfigureAwait(false);
-              
-
-                await Save_Items().ConfigureAwait(false);
-                
-                if (!da.DocumentItems.Any() == true)
+                using (var ctx = new ValuationDSContext())
                 {
-                    await BaseDataModel.Instance.DeleteAsycudaDocument(da.Document.ASYCUDA_Id).ConfigureAwait(false);
-                    return;
-                }
-                
-                if(LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da).ConfigureAwait(false);
-
-                if(da.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7000" && da.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7400")
-                await SavePreviousItem().ConfigureAwait(false);
-
-                await Save_Suppliers_Documents().ConfigureAwait(false);
-
-                if(!da.DocumentItems.Any(x => x.ImportComplete == false))
-                    da.Document.xcuda_ASYCUDA_ExtendedProperties.ImportComplete = true;
-
-                //await
-                    //DBaseDataModel.Instance.Savexcuda_ASYCUDA_ExtendedProperties(
-                    //    da.Document.xcuda_ASYCUDA_ExtendedProperties).ConfigureAwait(false);
-
-                await BaseDataModel.Instance.SaveDocumentCT(da).ConfigureAwait(false);
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    
-                    var res = new AsycudaDocumentSet_Attachments(true)
-                        {
-                            AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
-                            DocumentSpecific = true,
-                            FileDate = file.LastWriteTime,
-                            EmailUniqueId = null,
-                            FileTypeId = ctx.FileTypes.FirstOrDefault(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                                                                           x.Type == "XML")?.Id,
-                            TrackingState = TrackingState.Added,
-                            Attachments = new Attachments(true)
-                            {
-                                FilePath = file.FullName,
-                                DocumentCode = "NA",
-                                TrackingState = TrackingState.Added,
-                            }
-                        };
-                    ctx.AsycudaDocumentSet_Attachments.Add(res);
+                    ctx.ApplyChanges(da);
                     ctx.SaveChanges();
-
                 }
-                    Debug.WriteLine($"{a.Identification.Registration.Number}");
-               // BuildSalesReportClass.Instance.ReBuildSalesReports(da.Document.id);
-
 
             }
             catch (Exception)
@@ -129,600 +72,493 @@ namespace WaterNut.DataSpace.Asycuda
             }
             finally
             {
-                if (da != null && da.Document != null && !da.Document.xcuda_ASYCUDA_ExtendedProperties.ImportComplete)
+               
+            }
+
+        }
+
+        public static bool GetRegNumber(FileInfo file, out string regNumber)
+        {
+            using (var ctx = new ValuationDSContext())
+            {
+                var c71 = ctx.xC71_Value_declaration_form.OfType<Registered>()
+                    .Include(x => x.xC71_Identification_segment)
+                    .FirstOrDefault(x => x.SourceFile == file.FullName);
+                if (c71 != null)
                 {
-                    da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties
-                        .Remove(da.Document.xcuda_ASYCUDA_ExtendedProperties);
-                   await BaseDataModel.Instance.DeleteDocumentCt(da).ConfigureAwait(false);
+                    regNumber = c71.RegNumber;
+                    return true;
                 }
-            }
-
-        }
-
-        private  async Task<DocumentCT> CreateDocumentCt(AsycudaDocumentSet ads, FileInfo file)
-        {
-            DocumentCT da = await BaseDataModel.Instance.CreateDocumentCt(ads).ConfigureAwait(false);
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.ImportComplete = false;
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.SourceFileName = file.FullName;
-            da.Document.id = a.id;
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId = ads.AsycudaDocumentSetId;
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet = ads;
-            //await BaseDataModel.Instance.SaveDocumentCT(da).ConfigureAwait(false);
-            
-            return da;
-        }
-
-        private async Task<AsycudaDocumentSet> GetAsycudaDocumentSet(int docSetId = -1)
-        {
-            AsycudaDocumentSet ads;
-            //db.AsycudaDocumentSet.FirstOrDefault(
-            //    x =>
-            //    x.Declarant_Reference_Number.Replace(" ", "")
-            //     .Contains(refstr.Substring(0, refstr.Length - refstr.IndexOf("-F"))));
-            //if (ads == null)
-            //{
-            if (docSetId == -1)
-            {
-                ads = await NewAsycudaDocumentSet(a).ConfigureAwait(false);
-            }
-            else
-            {
-                ads =
-                    await
-                        BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
-            }
-            return ads;
-        }
-
-        private async Task<bool> DeleteExistingDocument()
-        {
-            xcuda_ASYCUDA doc = null;
-            if (string.IsNullOrEmpty(a.Identification.Registration.Number))
-            {
-                if (ImportOnlyRegisteredDocuments) return true;
-                a.Identification.Registration.Number = "0";
-            }
-            if (a.Identification.Registration.Date == "")
-                a.Identification.Registration.Date = DateTime.MinValue.ToShortDateString();
-
-            //docs =  db.xcuda_ASYCUDA.Where(x => x.id == a.id).ToList();
-            doc = (await DBaseDataModel.Instance.Searchxcuda_ASYCUDA(new List<string>()
-            {
-                $"id == \"{a.id}\""
-            }, new List<string>()
-            {
-                "xcuda_Identification ",
-                "xcuda_ASYCUDA_ExtendedProperties",
-                "xcuda_Identification.xcuda_Registration",
-                "xcuda_Identification.xcuda_Office_segment",
-                "xcuda_Declarant"
-            }).ConfigureAwait(false)).FirstOrDefault();
-
-            ////if (doc == null)
-            ////{
-            ////    using (var ctx = new xcuda_ASYCUDAService())
-            ////    {
-            ////        doc = (await ctx.Getxcuda_ASYCUDAByExpressionLst(new List<string>()
-            ////        {
-            ////            string.Format("xcuda_Identification.xcuda_Registration.Number == \"{0}\"",
-            ////                a.Identification.Registration.Number),
-            ////            string.Format("xcuda_Identification.xcuda_Registration.Date != null && Convert.ToDateTime(xcuda_Identification.xcuda_Registration.Date).Year == {0}",
-            ////                Convert.ToDateTime(a.Identification.Registration.Date).Year),
-            ////            string.Format(
-            ////                "xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code == \"{0}\"",
-            ////                a.Identification.Office_segment.Customs_clearance_office_code.Text)
-            ////        }, new List<string>()
-            ////        {
-            ////            "xcuda_Identification ",
-            ////            "xcuda_ASYCUDA_ExtendedProperties",
-            ////            "xcuda_Identification.xcuda_Registration",
-            ////            "xcuda_Identification.xcuda_Office_segment",
-            ////            "xcuda_Declarant"
-            ////        }).ConfigureAwait(false)).FirstOrDefault();
-            ////    }
-            ////}
-            //// check the declarant reference number
-            //if (doc == null)
-            //{
-            //    doc =
-            //        db.xcuda_ASYCUDA.Where(x => x.xcuda_Identification.xcuda_Registration.Number == null
-            //                                    && x.xcuda_Declarant != null
-            //                                    && x.xcuda_Declarant.Number != null
-            //                                    && x.xcuda_Declarant.Number.Replace(" ", "")
-            //                                    == a.Declarant.Reference.Number.Replace(" ", ""))
-            //            .AsEnumerable()
-            //            .Where(c => c.RegistrationDate == DateTime.MinValue
-            //                        || (c.RegistrationDate != DateTime.MinValue
-            //                            &&
-            //                            c.RegistrationDate.Year ==
-            //                            Convert.ToDateTime(a.Identification.Registration.Date).Year)
-            //                        &&
-            //                        c.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code ==
-            //                        a.Identification.Office_segment.Customs_clearance_office_code.Text
-            //                            .FirstOrDefault()
-            //            ).Distinct().ToList();
-
-
-            //}
-
-            if (doc != null)
-            {
-                if (!OverwriteExisting && doc.xcuda_ASYCUDA_ExtendedProperties.ImportComplete) return true;
-                await BaseDataModel.Instance.DeleteAsycudaDocument(doc.ASYCUDA_Id).ConfigureAwait(false);
-            }
-            return false;
-        }
-
-        
-  
-
-        private async Task SavePreviousItem()
-        {
-
-            try
-            {
-
-                for (var i = 0; i < a.Prev_decl.Count; i++)
+                else
                 {
-
-
-                    var ai = a.Prev_decl.ElementAt(i);
-                    if (ai == null) continue;
-                    var itm = da.DocumentItems.OrderBy(x => x.LineNumber).ElementAt(i);
-                    if (itm.xcuda_Tarification.Extended_customs_procedure == "9071") return;
-                    var pi = new xcuda_PreviousItem(true)
-                    {
-                        PreviousItem_Id = itm.Item_Id,
-                        TrackingState = TrackingState.Added
-                    };
-
-                    itm.xcuda_PreviousItem = pi;
-                    pi.xcuda_Item = itm;
-
-                    if (LinkPi )
-                    {
-                        await LinkPIItem(ai, itm, pi).ConfigureAwait(false);
-                    }
-
-                    pi.Commodity_code = ai.Prev_decl_HS_prec;
-                        pi.Current_item_number = ai.Prev_decl_current_item;
-                        pi.Current_value = Convert.ToSingle(Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value), 2));
-                        pi.Goods_origin = ai.Prev_decl_country_origin;
-                        pi.Hs_code = ai.Prev_decl_HS_code;
-                        pi.Net_weight = Convert.ToSingle(ai.Prev_decl_weight);
-                        pi.Packages_number = ai.Prev_decl_number_packages;
-                        pi.Prev_net_weight = Convert.ToSingle(ai.Prev_decl_weight_written_off);
-                        pi.Prev_reg_cuo = ai.Prev_decl_office_code;
-                        pi.Prev_decl_HS_spec = ai.Prev_decl_HS_spec;
-                        pi.Prev_reg_dat = ai.Prev_decl_reg_year;
-                        pi.Prev_reg_nbr = ai.Prev_decl_reg_number;
-                        pi.Prev_reg_ser = ai.Prev_decl_reg_serial;
-                       if(!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity_written_off)) pi.Preveious_suplementary_quantity = Convert.ToSingle(ai.Prev_decl_supp_quantity_written_off);
-                        pi.Previous_item_number = ai.Prev_decl_item_number;
-                        pi.Previous_Packages_number = ai.Prev_decl_number_packages_written_off;
-                        if (ai.Prev_decl_ref_value_written_off != null)
-                            pi.Previous_value = (float)Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value_written_off), 2);
-                    if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity)) pi.Suplementary_Quantity = Convert.ToSingle(ai.Prev_decl_supp_quantity);
-
-                      //await DataSpace.DocumentItemDS.ViewModels.BaseDataModel.Instance.Savexcuda_PreviousItem(pi).ConfigureAwait(false);
-
+                    regNumber = null;
+                    return false;
                 }
+
             }
-            catch (Exception Ex)
-            {
-                throw;
-            }
+
         }
 
-        private async Task LinkPIItem(ASYCUDAPrev_decl ai, xcuda_Item itm, xcuda_PreviousItem pi)
-        {
-            var itemId = await GetOriginalEntryItemId(ai, itm.ItemNumber).ConfigureAwait(false);
-
-            var bl =
-                $"{ai.Prev_decl_office_code} {ai.Prev_decl_reg_year} C {ai.Prev_decl_reg_number} art. {ai.Prev_decl_item_number}";
-
-            if (itemId != 0)
-            {
-                await LinkPi2Item(itemId, pi).ConfigureAwait(false);
-            }
-            else
-            {
-                if (!NoMessages)
-                {
-                    throw new ApplicationException("Can not find Original entry: " + bl);
-                }
-            }
-        }
-
-
-        private async Task<IEnumerable<xcuda_Item>> SearchDocumentItems(List<string> explst, List<string> includeLst = null)
-        {
-            using (var ctx = new xcuda_ItemService())
-            {
-
-                return await ctx.Getxcuda_ItemByExpressionLst(explst, includeLst).ConfigureAwait(false);
-            }
-        }
-
-        private async Task<int> GetOriginalEntryItemId(ASYCUDAPrev_decl ai, string itemNumber)
+        private void SaveItems(ObservableCollection<Value_declaration_formItem> aItems,
+            xC71_Value_declaration_form xC71ValueDeclarationForm)
         {
             try
             {
-               xcuda_ASYCUDA pdoc = null;
-                using (var ctx = new DocumentDSContext())
+                foreach (var aItem in aItems)
                 {
-                     pdoc = ctx.xcuda_ASYCUDA.FirstOrDefault(
-                        x =>
-                            x.xcuda_Identification.xcuda_Registration.Date != null &&
-                            x.xcuda_Identification.xcuda_Registration.Date.Substring(x.xcuda_Identification.xcuda_Registration.Date.Length-2) == ai.Prev_decl_reg_year.Substring(ai.Prev_decl_reg_year.Length - 2)
-                            && x.xcuda_Identification.xcuda_Registration.Number == ai.Prev_decl_reg_number &&
-                            x.xcuda_Identification.xcuda_Office_segment.Customs_clearance_office_code == ai.Prev_decl_office_code);
-                }
-                if (pdoc == null)
-              throw new ApplicationException(
-                  $"Please Import CNumber {ai.Prev_decl_reg_number} Year {ai.Prev_decl_reg_year} Office {ai.Prev_decl_office_code} before importing this file {a.Identification.Registration.Number}-{a.Identification.Registration.Date}");
-                using (var ctx = new DocumentItemDSContext())
-                {
-                    var itm = ctx.xcuda_Item.FirstOrDefault(
-                        x => x.LineNumber.ToString() == ai.Prev_decl_item_number
-                             && x.ASYCUDA_Id == pdoc.ASYCUDA_Id
-                             //&& x.xcuda_Tarification.xcuda_HScode.Precision_4 == itemNumber // cuz of c#39457
-                             );
-
-                    if (itm != null) return itm.Item_Id;
-                    return 0;
-                }
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
-
-        private async Task LinkPi2Item(int itemId, xcuda_PreviousItem pi)
-        {
-            if (pi.xcuda_Items.Any(x => x.Item_Id == itemId)) return;
-                        var ep = new EntryPreviousItems(true)
+                    var dItem = da.xC71_Item.FirstOrDefault(x => x.Invoice_Number == aItem.Invoice_Number.Text.FirstOrDefault());
+                    if (dItem == null)
+                    {
+                        dItem = new xC71_Item(true)
                         {
-                            Item_Id = itemId,
-                            PreviousItem_Id = pi.PreviousItem_Id,
                             TrackingState = TrackingState.Added
                         };
-                       // //await DIBaseDataModel.Instance.SaveEntryPreviousItems(ep).ConfigureAwait(false);
-                        pi.xcuda_Items.Add(ep);
-        
+                        da.xC71_Item.Add(dItem);
+                    }
+
+                    dItem.Terms_of_Delivery_Code = aItem.Terms_of_Delivery_Code.Text.FirstOrDefault();
+                    dItem.Terms_of_Delivery_Desc = aItem.Terms_of_Delivery_Desc.Text.FirstOrDefault();
+                    dItem.Invoice_Number = aItem.Invoice_Number.Text.FirstOrDefault();
+                    dItem.Invoice_Date = aItem.Invoice_Date;
+                    dItem.Currency_Rate_ind = aItem.Currency_Rate_ind;
+                    dItem.Net_Price = aItem.Net_Price;
+                    dItem.Currency_code_net = aItem.Currency_code_net.Text.FirstOrDefault();
+                    dItem.Currency_Name_net = aItem.Currency_Name_net.Text.FirstOrDefault();
+                    dItem.Currency_Rate_net = aItem.Currency_Rate_net.Text.FirstOrDefault();
+                    dItem.Indirect_Payments = aItem.Indirect_Payments;
+                    dItem.Currency_Rate_com = aItem.Currency_Rate_com;
+                    dItem.Commissions = aItem.Commissions;
+                    dItem.Currency_Rate_brg = aItem.Currency_Rate_brg;
+                    dItem.Brokerage = aItem.Brokerage;
+                    dItem.Currency_Rate_cap = aItem.Currency_Rate_cap;
+                    dItem.Containers_Packaging = aItem.Containers_Packaging;
+                    dItem.Currency_Rate_mcp = aItem.Currency_Rate_mcp;
+                    dItem.Material_Components = aItem.Material_Components;
+                    dItem.Currency_Rate_tls = aItem.Currency_Rate_tls;
+                    dItem.Tool_Dies = aItem.Tool_Dies;
+                    dItem.Currency_Rate_mcg = aItem.Currency_Rate_mcg;
+                    dItem.Materials_Consumed = aItem.Materials_Consumed;
+                    dItem.Currency_Rate_eng = aItem.Currency_Rate_eng;
+                    dItem.Engineering_Development = aItem.Engineering_Development;
+                    dItem.Currency_Rate_roy = aItem.Currency_Rate_roy;
+                    dItem.Royalties_licence_fees = aItem.Royalties_licence_fees;
+                    dItem.Currency_Rate_pro = aItem.Currency_Rate_pro.Text.FirstOrDefault();
+                    dItem.Proceeds = aItem.Proceeds.Text.FirstOrDefault();
+                    dItem.Currency_code_tpt = aItem.Currency_code_tpt.Text.FirstOrDefault();
+                    dItem.Currency_Name_tpt = aItem.Currency_Name_tpt.Text.FirstOrDefault();
+                    dItem.Currency_Rate_tpt = aItem.Currency_Rate_tpt.Text.FirstOrDefault();
+                    dItem.Transport = aItem.Transport.Text.FirstOrDefault();
+                    dItem.Currency_Rate_lhc = aItem.Currency_Rate_lhc.Text.FirstOrDefault();
+                    dItem.Loading_handling = aItem.Loading_handling.Text.FirstOrDefault();
+                    dItem.Currency_Rate_ins = aItem.Currency_Rate_ins;
+                    dItem.Insurance = aItem.Insurance;
+                    dItem.Currency_Rate_aim = aItem.Currency_Rate_aim;
+                    dItem.Transport_after_import = aItem.Transport_after_import;
+                    dItem.Currency_Rate_cfc = aItem.Currency_Rate_cfc;
+                    dItem.Construction = aItem.Construction;
+                    dItem.Currency_Rate_oth = aItem.Currency_Rate_oth;
+                    dItem.Other_charges = aItem.Other_charges;
+                    dItem.Currency_Rate_txs = aItem.Currency_Rate_txs;
+                    dItem.Customs_duties_taxes = aItem.Customs_duties_taxes;
+                    dItem.Currency_Name_com = aItem.Currency_Name_com.Text.FirstOrDefault();
+                    dItem.Currency_code_ind = aItem.Currency_code_ind.Text.FirstOrDefault();
+                    dItem.Currency_code_mcp = aItem.Currency_code_mcp.Text.FirstOrDefault();
+                    dItem.Currency_code_ins = aItem.Currency_code_ins.Text.FirstOrDefault();
+                    dItem.Currency_Name_ind = aItem.Currency_Name_ind.Text.FirstOrDefault();
+                    dItem.Currency_Name_mcg = aItem.Currency_Name_mcg.Text.FirstOrDefault();
+                  //  dItem.Other_specify = aItem.Other_specify.Text.FirstOrDefault();
+                    dItem.Currency_Name_mcp = aItem.Currency_Name_mcp.Text.FirstOrDefault();
+                    dItem.Currency_Name_brg = aItem.Currency_Name_brg.Text.FirstOrDefault();
+                    dItem.Currency_code_tls = aItem.Currency_code_tls.Text.FirstOrDefault();
+                    dItem.Currency_code_txs = aItem.Currency_code_txs.Text.FirstOrDefault();
+                    dItem.Currency_code_oth = aItem.Currency_code_oth.Text.FirstOrDefault();
+                    dItem.Currency_Name_eng = aItem.Currency_Name_eng.Text.FirstOrDefault();
+                    dItem.Currency_Name_cap = aItem.Currency_Name_cap.Text.FirstOrDefault();
+                    dItem.Currency_Name_aim = aItem.Currency_Name_aim.Text.FirstOrDefault();
+                    dItem.Currency_code_eng = aItem.Currency_code_eng.Text.FirstOrDefault();
+                    dItem.Currency_code_com = aItem.Currency_code_com.Text.FirstOrDefault();
+                    dItem.Currency_Name_lhc = aItem.Currency_Name_lhc.Text.FirstOrDefault();
+                    dItem.Currency_code_roy = aItem.Currency_code_roy.Text.FirstOrDefault();
+                    dItem.Currency_code_aim = aItem.Currency_code_aim.Text.FirstOrDefault();
+                    dItem.Currency_Name_tls = aItem.Currency_Name_tls.Text.FirstOrDefault();
+                    dItem.Currency_code_mcg = aItem.Currency_code_mcg.Text.FirstOrDefault();
+                    dItem.Currency_code_pro = aItem.Currency_code_pro.Text.FirstOrDefault();
+                    dItem.Currency_Name_cfc = aItem.Currency_Name_cfc.Text.FirstOrDefault();
+                    dItem.Currency_Name_roy = aItem.Currency_Name_roy.Text.FirstOrDefault();
+                    dItem.Currency_code_brg = aItem.Currency_code_brg.Text.FirstOrDefault();
+                    dItem.Currency_code_cap = aItem.Currency_code_cap.Text.FirstOrDefault();
+                    dItem.Currency_Name_ins = aItem.Currency_Name_ins.Text.FirstOrDefault();
+                    dItem.Currency_Name_pro = aItem.Currency_Name_pro.Text.FirstOrDefault();
+                    dItem.Currency_code_cfc = aItem.Currency_code_cfc.Text.FirstOrDefault();
+                    dItem.Currency_Name_txs = aItem.Currency_Name_txs.Text.FirstOrDefault();
+                    dItem.Currency_code_lhc = aItem.Currency_code_lhc.Text.FirstOrDefault();
+                    dItem.Currency_Name_oth = aItem.Currency_Name_oth.Text.FirstOrDefault();
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
-
-
-        public static async Task<AsycudaDocumentSet> NewAsycudaDocumentSet(ASYCUDA a)
+        private void SaveIdentification(Value_declaration_formIdentification_segment aId, xC71_Identification_segment dId)
         {
-            var ads = (await DBaseDataModel.Instance.SearchAsycudaDocumentSet(new List<string>()
+            try
             {
-                $"Declarant_Reference_Number == \"{a.Declarant.Reference.Number}\""
-            }).ConfigureAwait(false)).FirstOrDefault();//.AsycudaDocumentSet.FirstOrDefault(d => d.Declarant_Reference_Number == a.Declarant.Reference.Number);
-            if (ads == null)
+                
+                dId.Customs_Decision_Date = aId.Customs_Decision_Date.Text.FirstOrDefault();
+                dId.Contract_Date = aId.Contract_Date.Text.FirstOrDefault();
+                dId.No_7A = ToBool(aId.No_7A);
+                dId.No_7B = ToBool(aId.No_7B);
+                dId.No_7C = ToBool(aId.No_7C);
+                dId.No_8A = ToBool(aId.No_8A);
+                dId.No_8B = ToBool(aId.No_8B);
+                dId.No_9A = ToBool(aId.No_9A);
+                dId.No_9B = ToBool(aId.No_9B);
+                dId.Yes_7A = ToBool(aId.Yes_7A);
+                dId.Yes_7B = ToBool(aId.Yes_7B);
+                dId.Yes_7C = ToBool(aId.Yes_7C);
+                dId.Yes_8A = ToBool(aId.Yes_8A);
+                dId.Yes_8B = ToBool(aId.Yes_8B);
+                dId.Yes_9A = ToBool(aId.Yes_9A);
+                dId.Yes_9B = ToBool(aId.Yes_9B);
+
+                SaveBuyer(aId.Buyer_segment, dId.xC71_Buyer_segment);
+                SaveDeclarant(aId.Declarant_segment, dId.xC71_Declarant_segment);
+                SaveSeller(aId.Seller_segment, dId.xC71_Seller_segment);
+
+
+            }
+            catch (Exception e)
             {
-                ads = new AsycudaDocumentSet(true)
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        private static bool ToBool(string val)
+        {
+            return !string.IsNullOrEmpty(val) && Convert.ToBoolean(val);
+        }
+
+        private void SaveSeller(Value_declaration_formIdentification_segmentSeller_segment aseller, xC71_Seller_segment dseller)
+        {
+            try
+            {
+                dseller.Address = aseller.Address.Text.FirstOrDefault();
+                dseller.Name = aseller.Name.Text.FirstOrDefault();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        private void SaveBuyer(Value_declaration_formIdentification_segmentBuyer_segment abuyer, xC71_Buyer_segment dbuyer)
+        {
+            try
+            {
+                dbuyer.Address = abuyer.Address.Text.FirstOrDefault();
+                dbuyer.Code = abuyer.Code.Text.FirstOrDefault();
+                dbuyer.Name = abuyer.Name.Text.FirstOrDefault();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private void SaveDeclarant(Value_declaration_formIdentification_segmentDeclarant_segment aDecl, xC71_Declarant_segment dDecl)
+        {
+            try
+            {
+                dDecl.Address = aDecl.Address.Text.FirstOrDefault();
+                dDecl.Code = aDecl.Code.Text.FirstOrDefault();
+                dDecl.Name = aDecl.Name.Text.FirstOrDefault();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private void SaveValuationForm(Value_declaration_form adoc, ValuationDS.Business.Entities.Registered da)
+        {
+            try
+            {
+                da.id = adoc.id;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        private ValuationDS.Business.Entities.Registered CreateNewC71(AsycudaDocumentSet docSet, FileInfo file,string regNumber ,string id)
+        {
+            ValuationDS.Business.Entities.Registered  ndoc;// 
+            using (var ctx = new ValuationDSContext())
+            {
+                ndoc = ctx.xC71_Value_declaration_form.OfType<ValuationDS.Business.Entities.Registered>()
+                    .Include(x => x.xC71_Identification_segment)
+                    .Include(x => x.xC71_Identification_segment.xC71_Buyer_segment)
+                    .Include(x => x.xC71_Identification_segment.xC71_Declarant_segment)
+                    .Include(x => x.xC71_Identification_segment.xC71_Seller_segment)
+                    .Include(x => x.xC71_Item)
+                    .FirstOrDefault(x => x.id == id);
+                if (ndoc == null)
+                {
+                    ndoc = (ValuationDS.Business.Entities.Registered) CreateNewRegisteredC71();
+                    ndoc.RegNumber = regNumber;
+                    ndoc.SourceFile = file.FullName;
+                    AttachC71ToDocset(docSet, file);
+                }
+            }
+
+
+
+            //ndoc.SetupProperties();
+            
+
+            return ndoc;
+        }
+
+        private Registered CreateNewRegisteredC71()
+        {
+            return new Registered(true)
+            {
+
+                xC71_Identification_segment = new xC71_Identification_segment(true)
+                {
+                    xC71_Buyer_segment = new xC71_Buyer_segment(true) { TrackingState = TrackingState.Added },
+                    xC71_Seller_segment = new xC71_Seller_segment(true) { TrackingState = TrackingState.Added },
+                    xC71_Declarant_segment = new xC71_Declarant_segment(true) { TrackingState = TrackingState.Added },
+                    TrackingState = TrackingState.Added
+
+                },
+                xC71_Item = new List<xC71_Item>(),
+                TrackingState = TrackingState.Added
+            };
+        }
+
+        private static void AttachC71ToDocset(AsycudaDocumentSet docSet, FileInfo file)
+        {
+            using (var cctx = new CoreEntitiesContext())
+            {
+                var fileType = cctx.FileTypes.First(x =>
+                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                    x.Type == "C71");
+                var res = new AsycudaDocumentSet_Attachments(true)
+                {
+                    AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
+                    DocumentSpecific = true,
+                    FileDate = file.LastWriteTime,
+                    EmailUniqueId = null,
+                    FileTypeId = fileType.Id,
+                    TrackingState = TrackingState.Added,
+                    Attachments = new CoreEntities.Business.Entities.Attachments(true)
                     {
+                        FilePath = file.FullName,
+                        DocumentCode = fileType.DocumentCode,
+                        Reference = "C71",
                         TrackingState = TrackingState.Added,
-                        Declarant_Reference_Number = a.Declarant.Reference.Number.Text.FirstOrDefault(),
-                        Currency_Code = a.Valuation.Gs_Invoice.Currency_code.Text.FirstOrDefault(),
-                        Document_Type =
-                            BaseDataModel.Instance.Document_Types
-                              .FirstOrDefault(
-                                  d =>
-                                  d.Type_of_declaration == a.Identification.Type.Type_of_declaration &&
-                                  d.Declaration_gen_procedure_code == a.Identification.Type.Declaration_gen_procedure_code)
-                    };
-
-
-                if (ads.Document_Type == null)
-                {
-                    var dt = new Document_Type(true)
-                        {
-                            Declaration_gen_procedure_code = a.Identification.Type.Declaration_gen_procedure_code,
-                            Type_of_declaration = a.Identification.Type.Type_of_declaration,
-                            TrackingState = TrackingState.Added
-                        };
-                    //await DBaseDataModel.Instance.SaveDocument_Type(dt).ConfigureAwait(false);
-                    ads.Document_Type = dt;
-                }
-
-                ads.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures
-                                       .FirstOrDefault(cp => cp.National_customs_procedure == a.Item.FirstOrDefault().Tarification.National_customs_procedure.Text.FirstOrDefault() 
-                                                    && cp.Extended_customs_procedure == a.Item.FirstOrDefault().Tarification.Extended_customs_procedure.Text.FirstOrDefault());
-                if (ads.Customs_Procedure == null)
-                {
-                    var cp = new Customs_Procedure(true)
-                        {
-                            Extended_customs_procedure = a.Item[0].Tarification.Extended_customs_procedure.Text.FirstOrDefault(),
-                        National_customs_procedure = a.Item[0].Tarification.National_customs_procedure.Text.FirstOrDefault(),
-                        Document_Type = ads.Document_Type,
-                            TrackingState = TrackingState.Added
-                        };
-                    //await DBaseDataModel.Instance.SaveCustoms_Procedure(cp).ConfigureAwait(false);
-                    ads.Customs_Procedure = cp;
-                }
-
-                ads.Exchange_Rate = Convert.ToSingle(a.Valuation.Gs_Invoice.Currency_rate);
-
-                //await DBaseDataModel.Instance.SaveAsycudaDocumentSet(ads).ConfigureAwait(false);
-
-                return ads;
+                    }
+                };
+                cctx.AsycudaDocumentSet_Attachments.Add(res);
+                cctx.SaveChanges();
             }
-            else
-            {
-                return ads;
-            }
-
         }
 
-        private async Task Save_Suppliers_Documents()
+        private static xC71_Value_declaration_form CreateNewC71()
         {
-            if (a.Supplier_documents.Count > 0 && a.Supplier_documents[0] == null) return;
-            for (int i = 0; i < a.Supplier_documents.Count; i++)
+            return new xC71_Value_declaration_form(true)
             {
-                var asd = a.Supplier_documents.ElementAt(i);  
-            
-                var s = da.Document.xcuda_Suppliers_documents.ElementAtOrDefault(i);
-                if (s == null)
-                {
-                    s = new xcuda_Suppliers_documents(true)
-                    {
-                        ASYCUDA_Id = da.Document.ASYCUDA_Id,
-                        TrackingState = TrackingState.Added
-                    };
-                    da.Document.xcuda_Suppliers_documents.Add(s);
-                }
-                // var asd = a.Suppliers_documents[0];
-                if (asd.Invoice_supplier_city.Text.Count > 0)
-                    s.Suppliers_document_city = asd.Invoice_supplier_city.Text[0];
-
-               
-
-                if (asd.Invoice_supplier_country.Text.Count > 0)
-                    s.Suppliers_document_country = asd.Invoice_supplier_country.Text[0];
-
-                if (asd.Invoice_supplier_fax.Text.Count > 0)
-                    s.Suppliers_document_fax = asd.Invoice_supplier_fax.Text[0];
-
-                if (asd.Invoice_supplier_name.Text.Count > 0)
-                    s.Suppliers_document_name = asd.Invoice_supplier_name.Text[0];
-
-                if (asd.Invoice_supplier_street.Text.Count > 0)
-                    s.Suppliers_document_street = asd.Invoice_supplier_street.Text[0];
-
-                if (asd.Invoice_supplier_telephone.Text.Count > 0)
-                    s.Suppliers_document_telephone = asd.Invoice_supplier_telephone.Text[0];
-
                 
-                if (asd.Invoice_supplier_zip_code.Text.Count > 0)
-                    s.Suppliers_document_zip_code = asd.Invoice_supplier_zip_code.Text[0];
+                xC71_Identification_segment = new xC71_Identification_segment(true)
+                {
+                    xC71_Buyer_segment = new xC71_Buyer_segment(true) {TrackingState = TrackingState.Added},
+                    xC71_Seller_segment = new xC71_Seller_segment(true) {TrackingState = TrackingState.Added},
+                    xC71_Declarant_segment = new xC71_Declarant_segment(true) {TrackingState = TrackingState.Added},
+                    TrackingState = TrackingState.Added
 
-                //await DBaseDataModel.Instance.Savexcuda_Suppliers_documents(s).ConfigureAwait(false);
-
-            }
+                },
+                xC71_Item = new List<xC71_Item>(),
+                TrackingState = TrackingState.Added
+            };
         }
 
+        public xC71_Value_declaration_form CreateC71(Suppliers supplier, List<TODO_C71ToXML> lst,
+            string docRef)
+        {
+            var c71 = CreateNewC71();
+            c71.xC71_Identification_segment.xC71_Seller_segment.Name = supplier.SupplierName ?? supplier.SupplierCode;
+            c71.xC71_Identification_segment.xC71_Seller_segment.Address = $"Ref:{docRef}\r\n{supplier.Street}\r\n{supplier.City},{supplier.CountryCode}\r\n{supplier.Country}" ;
 
+            c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
+            c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
+            c71.xC71_Identification_segment.No_7A = true;
+            c71.xC71_Identification_segment.No_8A = true;
+            c71.xC71_Identification_segment.No_9A = true;
+            c71.xC71_Identification_segment.No_9B = true;
 
-        private async Task Save_Items()
+            foreach (var item in lst)
+            {
+                c71.xC71_Item.Add(new xC71_Item(true)
+                {
+                    Terms_of_Delivery_Code = item.Code,
+                    Invoice_Number = item.InvoiceNo,
+                    Invoice_Date = item.InvoiceDate.ToShortDateString(),
+                    Currency_code_net = item.Currency,
+                    Net_Price = item.InvoiceTotal.ToString(CultureInfo.InvariantCulture),
+                    
+                    TrackingState = TrackingState.Added
+                });
+            }
+
+            return c71;
+        }
+
+        public bool ExportC71(int docSetId,xC71_Value_declaration_form c71, string fileName)
         {
             try
             {
+                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).Result;
+                var adoc = DatabaseToC71(c71);
+                adoc.SaveToFile(fileName);
+                var fileInfo = new FileInfo(fileName);
+                AttachC71ToDocset(docSet, fileInfo);
 
-          da.Document.xcuda_ASYCUDA_ExtendedProperties.DocumentLines = a.Item.Count;
-          for (var i = 0; i < a.Item.Count; i++)
-           // Parallel.For(0, a.Item.Count, i =>
-            {
-               
-                        var ai = a.Item.ElementAt(i);
-                xcuda_Item di;
-
-                if (!ai.Tarification.HScode.Commodity_code.Text.Any()) continue;
-
-                    di = da.DocumentItems.ElementAtOrDefault(i);
-                
-
-                if (di == null)
-                {
-                    di = new xcuda_Item(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, ImportComplete = false, TrackingState = TrackingState.Added };
-                        // db.xcuda_Item.CreateObject();//
-                    //DIBaseDataModel.Instance.Savexcuda_Item(di);
-                    da.DocumentItems.Add(di);
-
-                }
-
-                if (!string.IsNullOrEmpty(a.Identification.Registration.Number))
-                {
-                    di.IsAssessed = true;
-                }
-
-
-
-                di.LineNumber = i + 1;
-                di.SalesFactor = 1;
-
-                if (ai.Licence_number.Text.Count > 0)
-                {
-                    di.Licence_number = ai.Licence_number.Text[0];
-                    di.Amount_deducted_from_licence = ai.Amount_deducted_from_licence;
-                    di.Quantity_deducted_from_licence = ai.Quantity_deducted_from_licence;
-                }
-
-                await Save_PreviousInvoiceInfo(di, ai).ConfigureAwait(false);
-
-                    //DIBaseDataModel.Instance.Savexcuda_Item(di).Wait();
-                    //await DIBaseDataModel.Instance.Savexcuda_Item(di).ConfigureAwait(false);
-
-                    await Save_Item_Suppliers_link(di, ai).ConfigureAwait(false);
-               
-                await Save_Item_Attached_documents(di, ai).ConfigureAwait(false);
-
-                await Save_Item_Packages(di, ai).ConfigureAwait(false);
-
-                // SaveInventoryItem(ai);
-
-
-                await Save_Item_Tarification(di, ai).ConfigureAwait(false);
-                //Save_Item_Tarification(di, ai).Wait();
-                await Save_Item_Goods_description(di, ai).ConfigureAwait(false);
-                await Save_Item_Previous_doc(di, ai).ConfigureAwait(false);
-                await Save_Item_Taxation(di, ai).ConfigureAwait(false);
-                //Save_Item_Taxation(di, ai).Wait();
-               await Save_Item_Valuation_item(di, ai).ConfigureAwait(false);
-               // Save_Item_Valuation_item(di, ai).Wait();
-
-                
-                di.ImportComplete = true;
-               //await DIBaseDataModel.Instance.Savexcuda_Item(di).ConfigureAwait(false);
-                if (UpdateItemsTariffCode)
-                {
-                    Update_TarrifCodes(ai);
-                }
-
-
+                var results = new FileInfo(Path.Combine(fileInfo.DirectoryName, "C71-Results.txt"));
+                if (File.Exists(results.FullName)) File.Delete(results.FullName);
+                File.AppendAllText(Path.Combine(fileInfo.DirectoryName, "C71-Instructions.txt"), $"File\t{fileInfo.FullName}\r\n");
+                return true;
             }
-            //    );
-            }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                throw;
+                Console.WriteLine(e);
+                throw e;
             }
         }
 
-        private async Task Save_PreviousInvoiceInfo(xcuda_Item di, ASYCUDAItem ai)
+        private Value_declaration_form DatabaseToC71(xC71_Value_declaration_form c71)
         {
-            di.Free_text_1 = ai.Free_text_1.Text.FirstOrDefault();
-            di.Free_text_2 = ai.Free_text_2.Text.FirstOrDefault();
-            if (!string.IsNullOrEmpty(di.Free_text_1))
-            {
-                var lst = di.Free_text_1.Split('|');
-                di.PreviousInvoiceNumber = lst.FirstOrDefault()?.Trim();
-                di.PreviousInvoiceLineNumber = lst.LastOrDefault()?.Trim();
-            }
-
-            if (!string.IsNullOrEmpty(di.Free_text_2))
-            {
-                di.PreviousInvoiceItemNumber = di.Free_text_2.Trim();
-            }
-
+            Value_declaration_form adoc = new Value_declaration_form();
+            ExportIdentification(adoc.Identification_segment, c71.xC71_Identification_segment);
+            ExportItems(adoc.Item, c71);
+            return adoc;
         }
 
-        private void Update_TarrifCodes(ASYCUDAItem ai)
+        private void ExportItems(ObservableCollection<Value_declaration_formItem> adocItem, xC71_Value_declaration_form c71)
         {
             try
             {
-                if (!ai.Tarification.HScode.Commodity_code.Text.Any()) return;
-
-                using (var ctx = new InventoryDSContext())
+                foreach (var dItem in c71.xC71_Item)
                 {
-                    var tariffCode = ctx.TariffCodes
-                        .Include("TariffCategory.TariffCategoryCodeSuppUnits.TariffSupUnitLkp")
-                        .FirstOrDefault(x => x.TariffCodeName == ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault());
-                        if(tariffCode == null)
-                        tariffCode = new TariffCode(true)
-                                     {
-                                         TariffCodeName = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault(),
-                            TariffCategory = ctx.TariffCategories.FirstOrDefault(x =>
-                                                              x.TariffCategoryCode == ai.Tarification.HScode
-                                                                  .Commodity_code.Text.FirstOrDefault().Substring(0, 4))
-                                                          ,
-                                         TrackingState = TrackingState.Added
-
-                                     };
-
-                    if (tariffCode.TariffCategory == null)
+                    var aItem = adocItem.FirstOrDefault(x => x.Invoice_Number.Text.FirstOrDefault() == dItem.Invoice_Number);
+                    if (aItem == null)
                     {
-                        tariffCode.TariffCategory = new TariffCategory(true)
-                        {
-                            TariffCategoryCode =
-                                ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault().Substring(0, 4),
-                            Description = ai.Goods_description.Description_of_goods.Text.Any()?ai.Goods_description.Description_of_goods.Text[0]:"",
-                        TrackingState = TrackingState.Added
-                        };
+                        aItem = new Value_declaration_formItem();
+                        adocItem.Add(aItem);
                     }
 
-                    for (var i = 0;
-                        i < ai.Tarification.Supplementary_unit.Count(x => x.Suppplementary_unit_code.Text.Count > 0);
-                        i++)
-                    {
-                        var au = ai.Tarification.Supplementary_unit.ElementAt(i);
+                    aItem.Terms_of_Delivery_Code.Text.Add(dItem.Terms_of_Delivery_Code);
+                    if (dItem.Terms_of_Delivery_Desc == null) aItem.Terms_of_Delivery_Desc = new Value_declaration_formItemTerms_of_Delivery_Desc() { @null = new object() }; else aItem.Terms_of_Delivery_Desc.Text.Add(dItem.Terms_of_Delivery_Desc);
+                    aItem.Invoice_Number.Text.Add(dItem.Invoice_Number);
+                    aItem.Invoice_Date = dItem.Invoice_Date;
+                    if (dItem.Currency_code_ind == null) aItem.Currency_code_ind = new Value_declaration_formItemCurrency_code_ind() { @null = new object() }; else aItem.Currency_code_ind.Text.Add(dItem.Currency_code_ind);
+                    if (dItem.Currency_Name_ind == null) aItem.Currency_Name_ind = new Value_declaration_formItemCurrency_Name_ind() { @null = new object() }; else aItem.Currency_Name_ind.Text.Add(dItem.Currency_Name_ind);
+                    aItem.Currency_Rate_ind = dItem.Currency_Rate_ind??"0";
+                    aItem.Net_Price = dItem.Net_Price;
+                    if (dItem.Currency_code_net == null) aItem.Currency_code_net = new Value_declaration_formItemCurrency_code_net() { @null = new object() }; else aItem.Currency_code_net.Text.Add(dItem.Currency_code_net);
+                    if (dItem.Currency_Name_net == null) aItem.Currency_Name_net = new Value_declaration_formItemCurrency_Name_net() { @null = new object() }; else aItem.Currency_Name_net.Text.Add(dItem.Currency_Name_net);
+                    if (dItem.Currency_Rate_net == null) aItem.Currency_Rate_net = new Value_declaration_formItemCurrency_Rate_net() { @null = new object() }; else aItem.Currency_Rate_net.Text.Add(dItem.Currency_Rate_net);
+                    
+                    aItem.Indirect_Payments = dItem.Indirect_Payments??"0";
+                    aItem.Currency_Rate_com = dItem.Currency_Rate_com ?? "0";
+                    aItem.Commissions = dItem.Commissions ?? "0";
+                    aItem.Currency_Rate_brg = dItem.Currency_Rate_brg ?? "0";
+                    aItem.Brokerage = dItem.Brokerage ?? "0";
+                    aItem.Currency_Rate_cap = dItem.Currency_Rate_cap ?? "0";
+                    aItem.Containers_Packaging = dItem.Containers_Packaging??"0";
+                    aItem.Currency_Rate_mcp = dItem.Currency_Rate_mcp ?? "0";
+                    aItem.Material_Components = dItem.Material_Components??"0";
+                    aItem.Currency_Rate_tls = dItem.Currency_Rate_tls ?? "0";
+                    aItem.Tool_Dies = dItem.Tool_Dies ?? "0";
+                    aItem.Currency_Rate_mcg = dItem.Currency_Rate_mcg ?? "0";
+                    aItem.Materials_Consumed = dItem.Materials_Consumed??"0";
+                    aItem.Currency_Rate_eng = dItem.Currency_Rate_eng ?? "0";
+                    aItem.Engineering_Development = dItem.Engineering_Development??"0";
+                    aItem.Currency_Rate_roy = dItem.Currency_Rate_roy ?? "0";
+                    aItem.Royalties_licence_fees = dItem.Royalties_licence_fees??"0";
+                    aItem.Currency_Rate_ins = dItem.Currency_Rate_ins ?? "0";
+                    aItem.Insurance = dItem.Insurance??"0";
+                    aItem.Currency_Rate_aim = dItem.Currency_Rate_aim ?? "0";
+                    aItem.Transport_after_import = dItem.Transport_after_import ?? "0";
+                    aItem.Currency_Rate_cfc = dItem.Currency_Rate_cfc ?? "0";
+                    aItem.Construction = dItem.Construction ?? "0";
+                    aItem.Currency_Rate_oth = dItem.Currency_Rate_oth ?? "0";
+                    aItem.Other_charges = dItem.Other_charges ?? "0";
+                    aItem.Currency_Rate_txs = dItem.Currency_Rate_txs ?? "0";
+                    aItem.Customs_duties_taxes = dItem.Customs_duties_taxes ?? "0";
+                    if (dItem.Currency_Name_com == null) aItem.Currency_Name_com = new Value_declaration_formItemCurrency_Name_com() { @null = new object() }; else aItem.Currency_Name_com.Text.Add(dItem.Currency_Name_com);
+                    if (dItem.Currency_Rate_pro == null) aItem.Currency_Rate_pro = new Value_declaration_formItemCurrency_Rate_pro() { @null = new object() }; else aItem.Currency_Rate_pro.Text.Add(dItem.Currency_Rate_pro);
+                    if (dItem.Proceeds == null) aItem.Proceeds = new Value_declaration_formItemProceeds() { @null = new object() }; else aItem.Proceeds.Text.Add(dItem.Proceeds);
+                    if (dItem.Currency_code_tpt == null) aItem.Currency_code_tpt = new Value_declaration_formItemCurrency_code_tpt() { @null = new object() }; else aItem.Currency_code_tpt.Text.Add(dItem.Currency_code_tpt);
+                    if (dItem.Currency_Name_tpt == null) aItem.Currency_Name_tpt = new Value_declaration_formItemCurrency_Name_tpt() { @null = new object() }; else aItem.Currency_Name_tpt.Text.Add(dItem.Currency_Name_tpt);
+                    if (dItem.Currency_Rate_tpt == null) aItem.Currency_Rate_tpt = new Value_declaration_formItemCurrency_Rate_tpt() { @null = new object() }; else aItem.Currency_Rate_tpt.Text.Add(dItem.Currency_Rate_tpt);
+                    if (dItem.Transport == null) aItem.Transport = new Value_declaration_formItemTransport() { @null = new object() }; else aItem.Transport.Text.Add(dItem.Transport);
+                    if (dItem.Currency_Rate_lhc == null) aItem.Currency_Rate_lhc = new Value_declaration_formItemCurrency_Rate_lhc() { @null = new object() }; else aItem.Currency_Rate_lhc.Text.Add(dItem.Currency_Rate_lhc);
+                    if (dItem.Loading_handling == null) aItem.Loading_handling = new Value_declaration_formItemLoading_handling() { @null = new object() }; else aItem.Loading_handling.Text.Add(dItem.Loading_handling);
 
-                        var lst = tariffCode.TariffCategory?.TariffCategoryCodeSuppUnits?
-                            .Where(z => z.TariffSupUnitLkp.SuppUnitCode2 == au.Suppplementary_unit_code.Text[0]);
-                        if (lst == null || !lst.Any())
-                        {
-                            var tcc = au.Suppplementary_unit_code.Text[0];
-                            var tn = au.Suppplementary_unit_name.Text.Any() ? au.Suppplementary_unit_name.Text[0] : "";
+                    if (dItem.Currency_code_mcp == null) aItem.Currency_code_mcp = new Value_declaration_formItemCurrency_code_mcp() { @null = new object() }; else aItem.Currency_code_mcp.Text.Add(dItem.Currency_code_mcp);
+                    if (dItem.Currency_code_ins == null) aItem.Currency_code_ins = new Value_declaration_formItemCurrency_code_ins() { @null = new object() }; else aItem.Currency_code_ins.Text.Add(dItem.Currency_code_ins);
+
+                    if (dItem.Currency_Name_mcg == null) aItem.Currency_Name_mcg = new Value_declaration_formItemCurrency_Name_mcg() { @null = new object() }; else aItem.Currency_Name_mcg.Text.Add(dItem.Currency_Name_mcg);
+                    //if (dItem.Other_specify == null) aItem.Other_specify = new Value_declaration_formItemOther_specify() { @null = new object() }; else aItem.Other_specify.Text.Add(dItem.Other_specify);
 
 
-                            TariffSupUnitLkp tariffSupUnitLkp =
-                                ctx.TariffSupUnitLkps.FirstOrDefault(x => x.SuppUnitCode2 == tcc)
-                                ?? new TariffSupUnitLkp(true)
-                                {
-                                    SuppUnitCode2 = tcc,
-                                    SuppUnitName2 = tn,
-                                    SuppQty = 1,
-                                    TrackingState = TrackingState.Added
-                                };
+                    aItem.Other_specify = null;
 
-                            var supUnit = new TariffCategoryCodeSuppUnit(true)
-                            {
-                                TariffCategory = tariffCode.TariffCategory,
-                                TariffSupUnitLkp = tariffSupUnitLkp,
-                                TrackingState = TrackingState.Added
-                            };
 
-                            
+                    if (dItem.Currency_Name_mcp == null) aItem.Currency_Name_mcp = new Value_declaration_formItemCurrency_Name_mcp() { @null = new object() }; else aItem.Currency_Name_mcp.Text.Add(dItem.Currency_Name_mcp);
+                    if (dItem.Currency_Name_brg == null) aItem.Currency_Name_brg = new Value_declaration_formItemCurrency_Name_brg() { @null = new object() }; else aItem.Currency_Name_brg.Text.Add(dItem.Currency_Name_brg);
+                    if (dItem.Currency_code_tls == null) aItem.Currency_code_tls = new Value_declaration_formItemCurrency_code_tls() { @null = new object() }; else aItem.Currency_code_tls.Text.Add(dItem.Currency_code_tls);
+                    if (dItem.Currency_code_txs == null) aItem.Currency_code_txs = new Value_declaration_formItemCurrency_code_txs() { @null = new object() }; else aItem.Currency_code_txs.Text.Add(dItem.Currency_code_txs);
+                    if (dItem.Currency_code_oth == null) aItem.Currency_code_oth = new Value_declaration_formItemCurrency_code_oth() { @null = new object() }; else aItem.Currency_code_oth.Text.Add(dItem.Currency_code_oth);
+                    if (dItem.Currency_Name_eng == null) aItem.Currency_Name_eng = new Value_declaration_formItemCurrency_Name_eng() { @null = new object() }; else aItem.Currency_Name_eng.Text.Add(dItem.Currency_Name_eng);
+                    if (dItem.Currency_Name_cap == null) aItem.Currency_Name_cap = new Value_declaration_formItemCurrency_Name_cap() { @null = new object() }; else aItem.Currency_Name_cap.Text.Add(dItem.Currency_Name_cap);
+                    if (dItem.Currency_Name_aim == null) aItem.Currency_Name_aim = new Value_declaration_formItemCurrency_Name_aim() { @null = new object() }; else aItem.Currency_Name_aim.Text.Add(dItem.Currency_Name_aim);
+                    if (dItem.Currency_code_eng == null) aItem.Currency_code_eng = new Value_declaration_formItemCurrency_code_eng() { @null = new object() }; else aItem.Currency_code_eng.Text.Add(dItem.Currency_code_eng);
+                    if (dItem.Currency_code_com == null) aItem.Currency_code_com = new Value_declaration_formItemCurrency_code_com() { @null = new object() }; else aItem.Currency_code_com.Text.Add(dItem.Currency_code_com);
+                    if (dItem.Currency_Name_lhc == null) aItem.Currency_Name_lhc = new Value_declaration_formItemCurrency_Name_lhc() { @null = new object() }; else aItem.Currency_Name_lhc.Text.Add(dItem.Currency_Name_lhc);
+                    if (dItem.Currency_code_roy == null) aItem.Currency_code_roy = new Value_declaration_formItemCurrency_code_roy() { @null = new object() }; else aItem.Currency_code_roy.Text.Add(dItem.Currency_code_roy);
+                    if (dItem.Currency_code_aim == null) aItem.Currency_code_aim = new Value_declaration_formItemCurrency_code_aim() { @null = new object() }; else aItem.Currency_code_aim.Text.Add(dItem.Currency_code_aim);
+                    if (dItem.Currency_Name_tls == null) aItem.Currency_Name_tls = new Value_declaration_formItemCurrency_Name_tls() { @null = new object() }; else aItem.Currency_Name_tls.Text.Add(dItem.Currency_Name_tls);
+                    if (dItem.Currency_code_mcg == null) aItem.Currency_code_mcg = new Value_declaration_formItemCurrency_code_mcg() { @null = new object() }; else aItem.Currency_code_mcg.Text.Add(dItem.Currency_code_mcg);
+                    if (dItem.Currency_code_pro == null) aItem.Currency_code_pro = new Value_declaration_formItemCurrency_code_pro() { @null = new object() }; else aItem.Currency_code_pro.Text.Add(dItem.Currency_code_pro);
+                    if (dItem.Currency_Name_cfc == null) aItem.Currency_Name_cfc = new Value_declaration_formItemCurrency_Name_cfc() { @null = new object() }; else aItem.Currency_Name_cfc.Text.Add(dItem.Currency_Name_cfc);
+                    if (dItem.Currency_Name_roy == null) aItem.Currency_Name_roy = new Value_declaration_formItemCurrency_Name_roy() { @null = new object() }; else aItem.Currency_Name_roy.Text.Add(dItem.Currency_Name_roy);
+                    if (dItem.Currency_code_brg == null) aItem.Currency_code_brg = new Value_declaration_formItemCurrency_code_brg() { @null = new object() }; else aItem.Currency_code_brg.Text.Add(dItem.Currency_code_brg);
+                    if (dItem.Currency_code_cap == null) aItem.Currency_code_cap = new Value_declaration_formItemCurrency_code_cap() { @null = new object() }; else aItem.Currency_code_cap.Text.Add(dItem.Currency_code_cap);
+                    if (dItem.Currency_Name_ins == null) aItem.Currency_Name_ins = new Value_declaration_formItemCurrency_Name_ins() { @null = new object() }; else aItem.Currency_Name_ins.Text.Add(dItem.Currency_Name_ins);
+                    if (dItem.Currency_Name_pro == null) aItem.Currency_Name_pro = new Value_declaration_formItemCurrency_Name_pro() { @null = new object() }; else aItem.Currency_Name_pro.Text.Add(dItem.Currency_Name_pro);
+                    if (dItem.Currency_code_cfc == null) aItem.Currency_code_cfc = new Value_declaration_formItemCurrency_code_cfc() { @null = new object() }; else aItem.Currency_code_cfc.Text.Add(dItem.Currency_code_cfc);
+                    if (dItem.Currency_Name_txs == null) aItem.Currency_Name_txs = new Value_declaration_formItemCurrency_Name_txs() { @null = new object() }; else aItem.Currency_Name_txs.Text.Add(dItem.Currency_Name_txs);
+                    if (dItem.Currency_code_lhc == null) aItem.Currency_code_lhc = new Value_declaration_formItemCurrency_code_lhc() { @null = new object() }; else aItem.Currency_code_lhc.Text.Add(dItem.Currency_code_lhc);
+                    if (dItem.Currency_Name_oth == null) aItem.Currency_Name_oth = new Value_declaration_formItemCurrency_Name_oth() { @null = new object() }; else aItem.Currency_Name_oth.Text.Add(dItem.Currency_Name_oth);
 
-                            tariffCode.TariffCategory.TariffCategoryCodeSuppUnits.Add(supUnit);
-                            ctx.ApplyChanges(supUnit);
-                            ctx.SaveChanges();
-                            supUnit.AcceptChanges();
 
-                        }
 
-                    }
-
-                    if(ai.Goods_description.Description_of_goods.Text.Any()) tariffCode.Description = ai.Goods_description.Description_of_goods.Text[0];
-                    if (ai.Licence_number.Text.Any()) tariffCode.TariffCategory.LicenseRequired = true;
-
-                    for (var i = 0; i < ai.Taxation.Taxation_line.Count(x => x.Duty_tax_code.Text.Count > 0); i++)
-                    {
-                        var au = ai.Taxation.Taxation_line.ElementAt(i);
-                        var rate = (Convert.ToDouble(au.Duty_tax_rate) / 100).ToString("00.00");
-                        switch (au.Duty_tax_code.Text[0])
-                        {
-                            case "CET":
-                                tariffCode.RateofDuty = rate;
-                                break;
-                            case "CSC":
-                                tariffCode.CustomsServiceCharge = rate;
-                                break;
-                            case "EVL":
-                                tariffCode.EnvironmentalLevy = rate;
-                                break;
-                            case "EXT":
-                                tariffCode.ExciseTax = rate;
-                                break;
-                            case "VAT":
-                                tariffCode.VatRate = rate;
-                                break;
-                            case "PET":
-                                tariffCode.PetrolTax = rate;
-                                break;
-                            default:
-                                break;
-                        }
-
-                    }
-                    ctx.ApplyChanges(tariffCode);
-                    ctx.SaveChanges();
 
                 }
             }
@@ -733,1010 +569,87 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        private async Task<InventoryItem> SaveInventoryItem(ASYCUDAItem ai)
+        private void ExportIdentification(Value_declaration_formIdentification_segment aId, xC71_Identification_segment dId)
         {
             try
             {
-                using (var ctx = new InventoryDSContext())
-                {
-                    var iv = ctx.InventoryItems.FirstOrDefault(x =>
-                        x.ItemNumber == ai.Tarification.HScode.Precision_4.Text.FirstOrDefault() && x.ApplicationSettingsId == da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId);
-                    ////    (await DataSpace.InventoryDS.ViewModels.BaseDataModel.Instance.SearchInventoryItem(new List<string>()
-                    ////{
-                    ////    string.Format("ItemNumber == \"{0}\"",ai.Tarification.HScode.Precision_4.Text.FirstOrDefault())
-                    ////}).ConfigureAwait(false)).FirstOrDefault();
-                    //InventoryItems.FirstOrDefault(i => i.ItemNumber == ai.Tarification.HScode.Precision_4.Text.FirstOrDefault());
-                    if (iv == null && ai.Tarification.HScode.Precision_4.Text.FirstOrDefault() != null)
-                    {
+                if(aId == null) aId = new Value_declaration_formIdentification_segment();
+                //aId.Customs_Decision_Date = dId.Customs_Decision_Date;
+                //aId.Contract_Date = dId.Contract_Date;
+                aId.No_7A = dId.No_7A.ToString();
+                aId.No_7B = dId.No_7B.ToString();
+                aId.No_7C = dId.No_7C.ToString();
+                aId.No_8A = dId.No_8A.ToString();
+                aId.No_8B = dId.No_8B.ToString();
+                aId.No_9A = dId.No_9A.ToString();
+                aId.No_9B = dId.No_9B.ToString();
+                aId.Yes_7A = dId.Yes_7A.ToString();
+                aId.Yes_7B = dId.Yes_7B.ToString();
+                aId.Yes_7C = dId.Yes_7C.ToString();
+                aId.Yes_8A = dId.Yes_8A.ToString();
+                aId.Yes_8B = dId.Yes_8B.ToString();
+                aId.Yes_9A = dId.Yes_9A.ToString();
+                aId.Yes_9B = dId.Yes_9B.ToString();
 
-                        iv = new InventoryItem(true)
-                        {
-                            ItemNumber = ai.Tarification.HScode.Precision_4.Text.FirstOrDefault(),
-                            ApplicationSettingsId = da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId,
-                            Description = ai.Goods_description.Commercial_Description.Text.FirstOrDefault()??"",
-                            TariffCode = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault(),
-                            TrackingState = TrackingState.Added
-                        };
-                        
-                        ctx.ApplyChanges(iv);
-                        ctx.SaveChanges();
-
-                        return iv;
-
-                    }
-
-                    if (iv == null || !updateItemsTariffCode || iv.TariffCode == ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault()) return iv;
-                    iv.StartTracking();
-                    iv.TariffCode = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
-                    
-                    ctx.ApplyChanges(iv);
-                    ctx.SaveChanges();
+                ExportBuyer(aId.Buyer_segment, dId.xC71_Buyer_segment);
+                ExportDeclarant(aId.Declarant_segment, dId.xC71_Declarant_segment);
+                ExportSeller(aId.Seller_segment, dId.xC71_Seller_segment);
 
 
-                    //include tarrifcode
-                    return iv;
-                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-
         }
 
-
-        private async Task Save_Item_Valuation_item(xcuda_Item di, ASYCUDAItem ai)
-        {
-            var vi = di.xcuda_Valuation_item;//.FirstOrDefault();
-            if (vi == null)
-            {
-                vi = new xcuda_Valuation_item(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-              //  DIBaseDataModel.Instance.Savexcuda_Valuation_item(vi);
-                di.xcuda_Valuation_item = vi;//di.xcuda_Valuation_item.Add(vi);
-            }
-            if (ai.Valuation_item.Alpha_coeficient_of_apportionment != "")
-                vi.Alpha_coeficient_of_apportionment = ai.Valuation_item.Alpha_coeficient_of_apportionment;
-            if (ai.Valuation_item.Rate_of_adjustement != "")
-                vi.Rate_of_adjustement = Convert.ToDouble(ai.Valuation_item.Rate_of_adjustement);
-            if (ai.Valuation_item.Statistical_value != "")
-                vi.Statistical_value = Convert.ToSingle(ai.Valuation_item.Statistical_value);
-            if (ai.Valuation_item.Total_CIF_itm != "")
-                vi.Total_CIF_itm = Convert.ToSingle(ai.Valuation_item.Total_CIF_itm);
-            if (ai.Valuation_item.Total_cost_itm != "")
-                vi.Total_cost_itm = Convert.ToSingle(ai.Valuation_item.Total_cost_itm);
-
-            Save_Item_Invoice(vi, ai);
-            Save_item_External_freight(vi, ai);
-            Save_Weight_Item(vi, ai);
-
-           //await DIBaseDataModel.Instance.Savexcuda_Valuation_item(vi).ConfigureAwait(false);
-        }
-
-        private void Save_Weight_Item(xcuda_Valuation_item vi, ASYCUDAItem ai)
-        {
-            var wi = vi.xcuda_Weight_itm;
-            if (wi == null)
-            {
-                wi = new xcuda_Weight_itm(true) { Valuation_item_Id = vi.Item_Id, TrackingState = TrackingState.Added };
-                vi.xcuda_Weight_itm = wi;
-            }
-            if (ai.Valuation_item.Weight_itm.Gross_weight_itm != "")
-                wi.Gross_weight_itm = Convert.ToSingle(ai.Valuation_item.Weight_itm.Gross_weight_itm);
-
-            if (ai.Valuation_item.Weight_itm.Net_weight_itm != "")
-                wi.Net_weight_itm = Convert.ToSingle(ai.Valuation_item.Weight_itm.Net_weight_itm);
-
-        }
-
-        private void Save_item_External_freight(xcuda_Valuation_item vi, ASYCUDAItem ai)
-        {
-            var i = vi.xcuda_item_external_freight;
-            if (i == null)
-            {
-                i = new xcuda_item_external_freight(true) { Valuation_item_Id = vi.Item_Id, TrackingState = TrackingState.Added };
-                vi.xcuda_item_external_freight = i;
-            }
-            if (ai.Valuation_item.item_external_freight.Amount_foreign_currency != "")
-                i.Amount_foreign_currency = Convert.ToSingle(ai.Valuation_item.item_external_freight.Amount_foreign_currency);
-            if (ai.Valuation_item.item_external_freight.Amount_national_currency != "")
-                i.Amount_national_currency = Convert.ToSingle(ai.Valuation_item.item_external_freight.Amount_national_currency);
-
-            i.Currency_code = ai.Valuation_item.item_external_freight.Currency_code.Text.FirstOrDefault();
-
-            if (ai.Valuation_item.item_external_freight.Currency_rate != "")
-                i.Currency_rate = Convert.ToSingle(ai.Valuation_item.item_external_freight.Currency_rate);
-
-        }
-
-        private void Save_Item_Invoice(xcuda_Valuation_item vi, ASYCUDAItem ai)
-        {
-            var i = vi.xcuda_Item_Invoice;
-            if (i == null)
-            {
-                i = new xcuda_Item_Invoice(true) { Valuation_item_Id = vi.Item_Id, TrackingState = TrackingState.Added };
-                vi.xcuda_Item_Invoice = i;
-            }
-            if (ai.Valuation_item.Item_Invoice.Amount_foreign_currency != "")
-                i.Amount_foreign_currency = Convert.ToSingle(ai.Valuation_item.Item_Invoice.Amount_foreign_currency);
-            if (ai.Valuation_item.Item_Invoice.Amount_national_currency != "")
-                i.Amount_national_currency = Convert.ToSingle(ai.Valuation_item.Item_Invoice.Amount_national_currency);
-            if (ai.Valuation_item.Item_Invoice.Currency_code?.Text?.FirstOrDefault() != null)
-                i.Currency_code = ai.Valuation_item.Item_Invoice.Currency_code.Text.FirstOrDefault();
-            if (ai.Valuation_item.Item_Invoice.Currency_rate != "")
-                i.Currency_rate = Convert.ToSingle(ai.Valuation_item.Item_Invoice.Currency_rate);
-
-        }
-
-        private async Task Save_Item_Taxation(xcuda_Item di, ASYCUDAItem ai)
-        {
-            var t = di.xcuda_Taxation.FirstOrDefault();
-            if (t == null)
-            {
-
-                t = new xcuda_Taxation(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-                di.xcuda_Taxation.Add(t);
-               
-            }
-
-            //t.Counter_of_normal_mode_of_payment = ai.Taxation.Counter_of_normal_mode_of_payment
-            //t.Displayed_item_taxes_amount = ai.Taxation.Displayed_item_taxes_amount;
-            if (ai.Taxation.Item_taxes_amount != "")
-                t.Item_taxes_amount = Convert.ToSingle(ai.Taxation.Item_taxes_amount);
-            //t.Item_taxes_guaranted_amount = ai.Taxation.Item_taxes_guaranted_amount;
-            if (ai.Taxation.Item_taxes_mode_of_payment.Text.Count > 0)
-                t.Item_taxes_mode_of_payment = ai.Taxation.Item_taxes_mode_of_payment.Text[0];
-
-
-            Save_Taxation_line(t, ai);
-
-            //await DIBaseDataModel.Instance.Savexcuda_Taxation(t).ConfigureAwait(false);
-        }
-
-        private void Save_Taxation_line(xcuda_Taxation t, ASYCUDAItem ai)
-        {
-            for (var i = 0; i < ai.Taxation.Taxation_line.Count; i++)
-            {
-                var au = ai.Taxation.Taxation_line.ElementAt(i);
-
-                if (au.Duty_tax_code.Text.Count == 0) break;
-
-                var tl = t.xcuda_Taxation_line.ElementAtOrDefault(i);
-                if (tl == null)
-                {
-                    tl = new xcuda_Taxation_line(true) { TrackingState = TrackingState.Added };
-                    t.xcuda_Taxation_line.Add(tl);
-                    
-                }
-
-                tl.Duty_tax_amount = Convert.ToDouble(au.Duty_tax_amount);
-                tl.Duty_tax_Base = au.Duty_tax_Base;
-                tl.Duty_tax_code = au.Duty_tax_code.Text[0];
-
-                if (au.Duty_tax_MP.Text.Count > 0)
-                    tl.Duty_tax_MP = au.Duty_tax_MP.Text[0];
-
-                tl.Duty_tax_rate = Convert.ToDouble(au.Duty_tax_rate);
-
-            }
-        }
-
-        private async Task Save_Item_Previous_doc(xcuda_Item di, ASYCUDAItem ai)
-        {
-            var pd = di.xcuda_Previous_doc;
-            if (pd == null)
-            {
-                pd = new xcuda_Previous_doc(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-                // di.xcuda_Previous_doc.Add(pd);
-                di.xcuda_Previous_doc = pd;
-            }
-            pd.Summary_declaration = ai.Previous_doc.Summary_declaration.Text.FirstOrDefault();
-            if (da.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber == null && ai.Previous_doc.Summary_declaration != null)
-                da.Document.xcuda_ASYCUDA_ExtendedProperties.BLNumber = ai.Previous_doc.Summary_declaration.Text.FirstOrDefault();
-
-            //await DIBaseDataModel.Instance.Savexcuda_Previous_doc(pd).ConfigureAwait(false);
-        }
-
-        private async Task Save_Item_Goods_description(xcuda_Item di, ASYCUDAItem ai)
-        {
-            var g = di.xcuda_Goods_description;//.FirstOrDefault();
-            if (g == null)
-            {
-                g = new xcuda_Goods_description(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-                di.xcuda_Goods_description = g;
-            }
-            g.Commercial_Description = ai.Goods_description.Commercial_Description.Text.FirstOrDefault();
-            g.Country_of_origin_code = ai.Goods_description.Country_of_origin_code.Text.FirstOrDefault();
-            g.Description_of_goods = ai.Goods_description.Description_of_goods.Text.FirstOrDefault();
-
-            //await DIBaseDataModel.Instance.Savexcuda_Goods_description(g).ConfigureAwait(false);
-        }
-
-        private async Task Save_Item_Tarification(xcuda_Item di, ASYCUDAItem ai)
-        {
-            var t = di.xcuda_Tarification;//.FirstOrDefault();
-            if (t == null)
-            {
-                t = new xcuda_Tarification(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-                di.xcuda_Tarification = t;
-
-            }
-
-            t.Extended_customs_procedure = ai.Tarification.Extended_customs_procedure.Text.FirstOrDefault();
-            t.National_customs_procedure = ai.Tarification.National_customs_procedure.Text.FirstOrDefault();
-            if (ai.Tarification.Item_price != "")
-                t.Item_price = Convert.ToSingle(ai.Tarification.Item_price);
-            if (ai.Tarification.Value_item.Text.Count > 0)
-                t.Value_item = ai.Tarification.Value_item.Text[0];
-
-            Save_Supplementary_unit(t, ai);
-            
-            if (ai.Tarification.Attached_doc_item.Text.Count > 0)
-                t.Attached_doc_item = ai.Tarification.Attached_doc_item.Text[0];
-            
-            await SaveCustomsProcedure(t).ConfigureAwait(false);
-
-            await Save_HScode(t, di,ai).ConfigureAwait(false);
-
-            //await DIBaseDataModel.Instance.Savexcuda_Tarification(t).ConfigureAwait(false);
-        }
-
-        private async Task<Customs_Procedure> SaveCustomsProcedure(xcuda_Tarification t)
-        {
-            var cp = BaseDataModel.Instance.Customs_ProcedureCache.Data.FirstOrDefault(x => x.Extended_customs_procedure == t.Extended_customs_procedure
-                                                            && x.National_customs_procedure == t.National_customs_procedure 
-                                                            && x.Document_TypeId == da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type.Document_TypeId);
-            //    (await DBaseDataModel.Instance.SearchCustoms_Procedure(new List<string>()
-            //{
-            //    string.Format("Extended_customs_procedure == \"{0}\"", t.Extended_customs_procedure),
-            //    string.Format("National_customs_procedure == \"{0}\"", t.National_customs_procedure)
-            //}).ConfigureAwait(false)).FirstOrDefault();
-            if (cp == null)
-            {
-                cp = new Customs_Procedure(true)
-                {
-                    Extended_customs_procedure = t.Extended_customs_procedure,
-                    National_customs_procedure = t.National_customs_procedure,
-                    TrackingState = TrackingState.Added
-                };
-                
-                    if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type != null)
-                    {
-                        //if (da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type
-                        //    .DefaultCustoms_Procedure == null)
-                        //    da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type
-                        //        .DefaultCustoms_Procedure = cp;
-
-                        cp.Document_TypeId = da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type.Document_TypeId;
-                    }
-
-                using (var ctx = new Customs_ProcedureService())
-                {
-                    cp = await ctx.UpdateCustoms_Procedure(cp).ConfigureAwait(false);
-                }
-                    //await DBaseDataModel.Instance.SaveCustoms_Procedure(cp).ConfigureAwait(false);
-                    BaseDataModel.Instance.Customs_ProcedureCache.AddItem(cp);
-                
-            }
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = cp.Customs_ProcedureId;
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = cp;
-            //await
-            //    DBaseDataModel.Instance.Savexcuda_ASYCUDA_ExtendedProperties(
-            //        da.Document.xcuda_ASYCUDA_ExtendedProperties).ConfigureAwait(false);
-            return cp;
-        }
-
-        private void Save_Supplementary_unit(xcuda_Tarification t, ASYCUDAItem ai)
-        {
-            for (var i = 0; i < ai.Tarification.Supplementary_unit.Count; i++)
-            {
-                var au = ai.Tarification.Supplementary_unit.ElementAt(i);
-
-                if (au.Suppplementary_unit_code.Text.Count == 0) continue;
-
-                var su = t.xcuda_Supplementary_unit.ElementAtOrDefault(i);
-                if (su == null)
-                {
-                    su = new xcuda_Supplementary_unit(true) { Tarification_Id = t.Item_Id, TrackingState = TrackingState.Added };
-                    t.Unordered_xcuda_Supplementary_unit.Add(su);
-                }
-
-                su.Suppplementary_unit_quantity = Convert.ToDouble(string.IsNullOrEmpty(au.Suppplementary_unit_quantity) ? "0" : au.Suppplementary_unit_quantity);
-
-                if (au.Suppplementary_unit_code.Text.Count > 0)
-                    su.Suppplementary_unit_code = au.Suppplementary_unit_code.Text[0];
-
-                if (au.Suppplementary_unit_name.Text.Count > 0)
-                    su.Suppplementary_unit_name = au.Suppplementary_unit_name.Text[0];
-
-                if (i == 0) su.IsFirstRow = true;
-
-                
-                    
-                        
-                    
-                }
-            }
-        
-    
-
-        private async Task Save_HScode(xcuda_Tarification t,xcuda_Item di, ASYCUDAItem ai)
-        {
-            var h = t.xcuda_HScode;//.FirstOrDefault();
-            if (h == null)
-            {
-                h = new xcuda_HScode(true) { Item_Id = t.Item_Id, TrackingState = TrackingState.Added };
-                t.xcuda_HScode = h;
-            }
-
-            h.Commodity_code = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault();
-            h.Precision_1 = ai.Tarification.HScode.Precision_1.Text.FirstOrDefault();
-            if (ai.Tarification.HScode.Precision_4.Text.FirstOrDefault() != null)
-            {
-                h.Precision_4 = ai.Tarification.HScode.Precision_4.Text.FirstOrDefault();
-            }
-            else
-            {
-                //if (!NoMessages)
-                //    throw new ApplicationException(string.Format("Null Product Code on Line{0}", di.LineNumber));
-            }
-
-         
-
-            var i = await SaveInventoryItem(ai).ConfigureAwait(false);
-            
-        }
-
-        private async Task Save_Item_Packages(xcuda_Item di, ASYCUDAItem ai)
-        {
-            var p = di.xcuda_Packages.FirstOrDefault();
-            if (p == null)
-            {
-                p = new xcuda_Packages(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-                di.xcuda_Packages.Add(p);
-            }
-            p.Kind_of_packages_code = ai.Packages.Kind_of_packages_code.Text.FirstOrDefault();
-            p.Kind_of_packages_name = ai.Packages.Kind_of_packages_name.Text.FirstOrDefault();
-            p.Number_of_packages = string.IsNullOrEmpty(ai.Packages.Number_of_packages)? 0 : Convert.ToSingle(ai.Packages.Number_of_packages);
-
-            if (ai.Packages.Marks1_of_packages.Text.Count > 0)
-                p.Marks1_of_packages = ai.Packages.Marks1_of_packages.Text[0];
-
-            if (ai.Packages.Marks2_of_packages.Text.Count > 0)
-                p.Marks2_of_packages = ai.Packages.Marks2_of_packages.Text[0];
-
-            //await DIBaseDataModel.Instance.Savexcuda_Packages(p).ConfigureAwait(false);
-        }
-
-        private async Task Save_Item_Suppliers_link(xcuda_Item di, ASYCUDAItem ai)
-        {
-            var sl = di.xcuda_Suppliers_link.FirstOrDefault();
-            if (sl == null)
-            {
-                sl = new xcuda_Suppliers_link(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-                di.xcuda_Suppliers_link.Add(sl);
-            }
-
-            sl.Suppliers_link_code = ai.Suppliers_link.Suppliers_link_code;
-            //await DIBaseDataModel.Instance.Savexcuda_Suppliers_link(sl).ConfigureAwait(false);
-        }
-
-        private async Task Save_Item_Attached_documents(xcuda_Item di, ASYCUDAItem ai)
-        {
-            for (var i = 0; i < ai.Attached_documents.Count; i++)
-            {
-                if (ai.Attached_documents[i].Attached_document_code.Text.Count == 0) break;
-
-                var ad = di.xcuda_Attached_documents.ElementAtOrDefault(i);
-                if (ad == null)
-                {
-                    ad = new xcuda_Attached_documents(true) { Item_Id = di.Item_Id, TrackingState = TrackingState.Added };
-                    di.xcuda_Attached_documents.Add(ad);
-                }
-
-                ad.Attached_document_date = ai.Attached_documents[i].Attached_document_date;
-
-                if (ai.Attached_documents[i].Attached_document_code.Text.Count != 0)
-                    ad.Attached_document_code = ai.Attached_documents[i].Attached_document_code.Text[0];
-
-                if (ai.Attached_documents[i].Attached_document_from_rule.Text.Count != 0)
-                    ad.Attached_document_from_rule = Convert.ToInt32(ai.Attached_documents[i].Attached_document_from_rule.Text[0]);
-
-                if (ai.Attached_documents[i].Attached_document_name.Text.Count != 0)
-                    ad.Attached_document_name = ai.Attached_documents[i].Attached_document_name.Text[0];
-
-                if (ai.Attached_documents[i].Attached_document_reference.Text.Count != 0)
-                    ad.Attached_document_reference = ai.Attached_documents[i].Attached_document_reference.Text[0];
-
-                //await DIBaseDataModel.Instance.Savexcuda_Attached_documents(ad).ConfigureAwait(false);
-
-            }
-        }
-
-        private async Task SaveContainer()
+        private void ExportSeller(Value_declaration_formIdentification_segmentSeller_segment aseller, xC71_Seller_segment dseller)
         {
             try
             {
-                foreach (var ac in a.Container)
-                {
-                var c = da.Document.xcuda_Container.FirstOrDefault(x => x.Container_identity == ac.Container_identity);
-                if (c == null)
-                {
-                    c = new xcuda_Container(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                    da.Document.xcuda_Container.Add(c);
-                }
-                
-                    
-                        c.Container_identity = ac.Container_identity;
-                        c.Container_type = ac.Container_type;
-                        c.Empty_full_indicator = ac.Empty_full_indicator;
-                        c.Goods_description = ac.Goods_description;
-                        c.Gross_weight = Convert.ToSingle(ac.Gross_weight.Text.FirstOrDefault());
-                        c.Item_Number = ac.Item_Number;
-                        c.Packages_number = ac.Packages_number;
-                        c.Packages_type = ac.Packages_type;
-                        c.Packages_weight = Convert.ToSingle(ac.Packages_weight);
-                   
-                }
+                aseller.Address.Text.Add(dseller.Address);
+                aseller.Name.Text.Add(dseller.Name);
 
-               
-                //await DBaseDataModel.Instance.Savexcuda_Container(c).ConfigureAwait(false);
             }
-            catch (Exception Ex)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 throw;
             }
         }
 
-        private async Task Save_Valuation()
-        {
-            var v = da.Document.xcuda_Valuation;
-            if (v == null)
-            {
-                v = new xcuda_Valuation(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                da.Document.xcuda_Valuation = v;
-            }
-            v.Calculation_working_mode = a.Valuation.Calculation_working_mode;
-            v.Total_CIF = Convert.ToSingle(a.Valuation.Total_CIF);
-            v.Total_cost = Convert.ToSingle(a.Valuation.Total_cost);
-
-            Save_Valuation_Weight(v);
-            Save_Gs_Invoice(v);
-            Save_Gs_External_freight(v);
-            Save_Total(v);
-            //await DBaseDataModel.Instance.Savexcuda_Valuation(v).ConfigureAwait(false);
-        }
-
-        private void Save_Total(xcuda_Valuation v)
-        {
-            var t = v.xcuda_Total;
-            if (t == null)
-            {
-                t = new xcuda_Total(true) { Valuation_Id = v.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                v.xcuda_Total = t;
-            }
-            t.Total_invoice = Convert.ToSingle(a.Valuation.Total.Total_invoice);
-            t.Total_weight = Convert.ToSingle(a.Valuation.Total.Total_weight);
-        }
-
-        private void Save_Gs_External_freight(xcuda_Valuation v)
-        {
-            var gf = v.xcuda_Gs_external_freight;
-            if (gf == null)
-            {
-                gf = new xcuda_Gs_external_freight(true) { Valuation_Id = v.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                v.xcuda_Gs_external_freight = gf;
-            }
-
-            gf.Amount_foreign_currency = Convert.ToSingle(a.Valuation.Gs_external_freight.Amount_foreign_currency);
-            gf.Amount_national_currency = Convert.ToSingle(a.Valuation.Gs_external_freight.Amount_national_currency);
-            gf.Currency_code = a.Valuation.Gs_external_freight.Currency_code.Text.FirstOrDefault();
-            gf.Currency_name = a.Valuation.Gs_external_freight.Currency_name.Text.FirstOrDefault();
-            gf.Currency_rate = Convert.ToSingle(a.Valuation.Gs_external_freight.Currency_rate);
-
-
-        }
-
-        private void Save_Gs_Invoice(xcuda_Valuation v)
-        {
-            var gi = v.xcuda_Gs_Invoice;
-            if (gi == null)
-            {
-                gi = new xcuda_Gs_Invoice(true) { Valuation_Id = v.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                v.xcuda_Gs_Invoice = gi;
-            }
-
-            gi.Amount_foreign_currency = Convert.ToSingle(a.Valuation.Gs_Invoice.Amount_foreign_currency);
-            gi.Amount_national_currency = Convert.ToSingle(a.Valuation.Gs_Invoice.Amount_national_currency);
-            gi.Currency_code = a.Valuation.Gs_Invoice.Currency_code.Text.FirstOrDefault();
-            gi.Currency_rate = Convert.ToSingle(a.Valuation.Gs_Invoice.Currency_rate);
-            if (a.Valuation.Gs_Invoice.Currency_name.Text.Count != 0)
-                gi.Currency_name = a.Valuation.Gs_Invoice.Currency_name.Text[0];
-        }
-
-        private void Save_Valuation_Weight(xcuda_Valuation v)
-        {
-            var w = v.xcuda_Weight;
-            if (w == null)
-            {
-                w = new xcuda_Weight(true) { Valuation_Id = v.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                v.xcuda_Weight = w;
-            }
-            // w.Gross_weight = a.Valuation.Weight.Gross_weight
-        }
-
-        private async Task Save_Warehouse()
-        {
-            var w = da.Document.xcuda_Warehouse.FirstOrDefault();
-            if (w == null)
-            {
-                w = new xcuda_Warehouse(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                da.Document.xcuda_Warehouse.Add(w);
-            }
-            w.Identification = a.Warehouse.Identification.Text.FirstOrDefault();
-            w.Delay = a.Warehouse.Delay;
-            //await DBaseDataModel.Instance.Savexcuda_Warehouse(w).ConfigureAwait(false);
-        }
-
-        private async Task SaveFinancial()
-        {
-            var f = da.Document.xcuda_Financial.FirstOrDefault();
-            if (f == null)
-            {
-                f = new xcuda_Financial(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-               // await DBaseDataModel.Instance.Savexcuda_Financial(f).ConfigureAwait(false); 
-               // da.Document.xcuda_Financial.Add(f);
-            }
-            if (a.Financial.Deffered_payment_reference.Text.Count != 0)
-                f.Deffered_payment_reference = a.Financial.Deffered_payment_reference.Text[0];
-
-            f.Mode_of_payment = a.Financial.Mode_of_payment;
-
-            Save_Amounts(f);
-            Save_Guarantee(f);
-                //await DBaseDataModel.Instance.Savexcuda_Financial(f).ConfigureAwait(false); 
-
-        }
-
-        public ASYCUDA A
-        {
-            get { return a; }
-            set { a = value; }
-        }
-
-        private void Save_Guarantee(xcuda_Financial f)
-        {
-            var g = f.xcuda_Financial_Guarantee.FirstOrDefault();
-            if (g == null)
-            {
-                g = new xcuda_Financial_Guarantee(true) { Financial_Id = f.Financial_Id, TrackingState = TrackingState.Added };
-                f.xcuda_Financial_Guarantee.Add(g);
-            }
-            if (a.Financial.Guarantee.Amount != "")
-                g.Amount = Convert.ToDecimal(a.Financial.Guarantee.Amount);
-            //  g.Date = a.Financial.Guarantee.Date;
-        }
-
-        private void Save_Amounts(xcuda_Financial f)
-        {
-            var fa = f.xcuda_Financial_Amounts.FirstOrDefault();
-            if (fa == null)
-            {
-                fa = new xcuda_Financial_Amounts(true) { Financial_Id = f.Financial_Id, TrackingState = TrackingState.Added };
-                f.xcuda_Financial_Amounts.Add(fa);
-            }
-            if (a.Financial.Amounts.Global_taxes != "")
-                fa.Global_taxes = Convert.ToDecimal(a.Financial.Amounts.Global_taxes);
-            // fa.Total_manual_taxes = a.Financial.Amounts.Total_manual_taxes;
-            if (a.Financial.Amounts.Totals_taxes != "")
-                fa.Totals_taxes = Convert.ToDecimal(a.Financial.Amounts.Totals_taxes);
-        }
-
-        private async Task SaveTransport()
-        {
-            var t = da.Document.xcuda_Transport.FirstOrDefault();
-            if (t == null)
-            {
-                t = new xcuda_Transport(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                da.Document.xcuda_Transport.Add(t);
-            }
-            t.Container_flag = a.Transport.Container_flag;
-            t.Single_waybill_flag = a.Transport.Single_waybill_flag;
-            if (a.Transport.Location_of_goods.Text.Count != 0)
-            {
-                t.Location_of_goods = a.Transport.Location_of_goods.Text[0];
-            }
-            SaveMeansofTransport(t);
-            Save_Delivery_terms(t);
-            Save_Border_office(t);
-            //await DBaseDataModel.Instance.Savexcuda_Transport(t).ConfigureAwait(false);
-        }
-
-        private void Save_Border_office(xcuda_Transport t)
-        {
-            var bo = t.xcuda_Border_office.FirstOrDefault();
-            if (bo == null)
-            {
-                bo = new xcuda_Border_office(true) { Transport_Id = t.Transport_Id, TrackingState = TrackingState.Added };
-                t.xcuda_Border_office.Add(bo);
-            }
-            if (a.Transport.Border_office.Code.Text.Count != 0)
-                bo.Code = a.Transport.Border_office.Code.Text[0];
-
-            if (a.Transport.Border_office.Name.Text.Count != 0)
-                bo.Name = a.Transport.Border_office.Name.Text[0];
-
-        }
-
-        private void Save_Delivery_terms(xcuda_Transport t)
-        {
-            var d = t.xcuda_Delivery_terms.FirstOrDefault();
-            if (d == null)
-            {
-                d = new xcuda_Delivery_terms(true) { Transport_Id = t.Transport_Id, TrackingState = TrackingState.Added };
-                t.xcuda_Delivery_terms.Add(d);
-            }
-            if (a.Transport.Delivery_terms.Code.Text.Count != 0)
-                d.Code = a.Transport.Delivery_terms.Code.Text[0];
-            //d.Place = a.Transport.Delivery_terms.Place
-        }
-
-        private void SaveMeansofTransport(xcuda_Transport t)
-        {
-            var m = t.xcuda_Means_of_transport.FirstOrDefault();
-            if (m == null)
-            {
-                m = new xcuda_Means_of_transport(true) { Transport_Id = t.Transport_Id, TrackingState = TrackingState.Added };
-                t.xcuda_Means_of_transport.Add(m);
-
-            }
-
-            SaveDepartureArrivalInformation(m);
-            SaveBorderInformation(m);
-            //m.Inland_mode_of_transport = a.Transport.Means_of_transport.Inland_mode_of_transport.
-
-        }
-
-
-
-        private void SaveBorderInformation(xcuda_Means_of_transport m)
-        {
-            var d = m.xcuda_Border_information.FirstOrDefault();
-            if (d == null)
-            {
-                d = new xcuda_Border_information(true) { Means_of_transport_Id = m.Means_of_transport_Id, TrackingState = TrackingState.Added };
-                m.xcuda_Border_information.Add(d);
-            }
-            //if (a.Transport.Means_of_transport.Border_information.Nationality.ToString() != null)
-            //    d.Nationality = a.Transport.Means_of_transport.Departure_arrival_information.Nationality.Text[0];
-
-            //if (a.Transport.Means_of_transport.Departure_arrival_information.Identity.Text.Count != 0)
-            //    d.Identity = a.Transport.Means_of_transport.Departure_arrival_information.Identity.Text[0];
-            if (a.Transport.Means_of_transport.Border_information.Mode.Text.Count != 0)
-                d.Mode = Convert.ToInt32(a.Transport.Means_of_transport.Border_information.Mode.Text[0]);
-        }
-
-        private void SaveDepartureArrivalInformation(xcuda_Means_of_transport m)
-        {
-            var d = m.xcuda_Departure_arrival_information.FirstOrDefault();
-            if (d == null)
-            {
-                d = new xcuda_Departure_arrival_information(true) { Means_of_transport_Id = m.Means_of_transport_Id, TrackingState = TrackingState.Added };
-                m.xcuda_Departure_arrival_information.Add(d);
-            }
-            if (a.Transport.Means_of_transport.Departure_arrival_information.Nationality.Text.Count != 0)
-                d.Nationality = a.Transport.Means_of_transport.Departure_arrival_information.Nationality.Text[0];
-
-            if (a.Transport.Means_of_transport.Departure_arrival_information.Identity.Text.Count != 0)
-                d.Identity = a.Transport.Means_of_transport.Departure_arrival_information.Identity.Text[0];
-        }
-
-        private async Task SaveGeneralInformation()
-        {
-            var gi = da.Document.xcuda_General_information;
-            if (gi == null)
-            {
-                gi = new xcuda_General_information() {ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                da.Document.xcuda_General_information = gi;
-            }
-            gi.Value_details = a.General_information.Value_details;
-            gi.Comments_free_text = a.General_information.Comments_free_text.Text.FirstOrDefault();
-
-            SetEffectiveAssessmentDate(da, gi.Comments_free_text);
-
-            SaveCountry(gi);
-            //await DBaseDataModel.Instance.Savexcuda_General_information(gi).ConfigureAwait(false);
-        }
-
-        private void SetEffectiveAssessmentDate(DocumentCT documentCt, string commentsFreeText)
-        {
-            if (string.IsNullOrEmpty(commentsFreeText)) return;
-            documentCt.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = DateTime.ParseExact(commentsFreeText.Replace("EffectiveAssessmentDate:",""),"MMM-dd-yyyy",null);
-        }
-
-        private void SaveCountry(xcuda_General_information gi)
-        {
-            var c = gi.xcuda_Country;
-            if (c == null)
-            {
-                c = new xcuda_Country(true) {Country_Id = gi.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                gi.xcuda_Country = c;
-            }
-            c.Country_first_destination = a.General_information.Country.Country_first_destination.Text.FirstOrDefault();
-            c.Country_of_origin_name = a.General_information.Country.Country_of_origin_name;
-            c.Trading_country = a.General_information.Country.Trading_country.Text.FirstOrDefault();
-            SaveExport(c);
-            SaveDestination(c);
-        }
-
-        private void SaveDestination(xcuda_Country c)
-        {
-            var des = c.xcuda_Destination;
-            if (des == null)
-            {
-                des = new xcuda_Destination(true) { Country_Id = c.Country_Id, TrackingState = TrackingState.Added };
-                c.xcuda_Destination = des;
-                des.xcuda_Country = c;
-                //await BaseDataModel.Instance.SaveDocumentCT(da).ConfigureAwait(false);
-            }
-            des.Destination_country_code = a.General_information.Country.Destination.Destination_country_code.Text.FirstOrDefault();
-            if (a.General_information.Country.Destination.Destination_country_name != null)
-                des.Destination_country_name = a.General_information.Country.Destination.Destination_country_name.Text.FirstOrDefault();
-            //Exp.Export_country_region = a.General_information.Country.Export.Export_country_region.;
-        }
-
-        private void SaveExport(xcuda_Country c)
-        {
-            var Exp = c.xcuda_Export;
-            if (Exp == null)
-            {
-                Exp = new xcuda_Export(true) { Country_Id = c.Country_Id, TrackingState = TrackingState.Added };
-                c.xcuda_Export = Exp;
-            }
-            Exp.Export_country_code = a.General_information.Country.Export.Export_country_code.Text.FirstOrDefault();
-            Exp.Export_country_name = a.General_information.Country.Export.Export_country_name.Text.FirstOrDefault();
-            //Exp.Export_country_region = a.General_information.Country.Export.Export_country_region.;
-        }
-
-        private async Task SaveDeclarant()
+        private void ExportDeclarant(Value_declaration_formIdentification_segmentDeclarant_segment aDecl, xC71_Declarant_segment dDecl)
         {
             try
             {
-                var d = da.Document.xcuda_Declarant;//.FirstOrDefault();
-                if (d == null)
-                {
-                    da.Document.xcuda_Declarant = new xcuda_Declarant(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                    d = da.Document.xcuda_Declarant;
-                    //da.xcuda_Declarant.Add(d);
-                }
+                aDecl.Address.Text.Add(dDecl.Address);
+                aDecl.Code.Text.Add(dDecl.Code);
+                aDecl.Name.Text.Add(dDecl.Name);
 
-                d.Declarant_name = a.Declarant.Declarant_name.Text.FirstOrDefault();
-                d.Declarant_representative = a.Declarant.Declarant_representative.Text.FirstOrDefault();
-                d.Declarant_code = a.Declarant.Declarant_code.Text.FirstOrDefault();
-
-                //if(a.Declarant.Reference.Number.Text.Count > 0)
-                d.Number = a.Declarant.Reference.Number.Text.FirstOrDefault();
-                //await DBaseDataModel.Instance.Savexcuda_Declarant(d).ConfigureAwait(false);
             }
-            catch (Exception Ex)
+            catch (Exception e)
             {
-                throw new Exception("Declarant fail to import - " + a.Declarant.Reference.Number);
+                Console.WriteLine(e);
+                throw;
             }
-
         }
 
-        private async Task SaveTraders()
+        private void ExportBuyer(Value_declaration_formIdentification_segmentBuyer_segment abuyer, xC71_Buyer_segment dbuyer)
         {
-            var t = da.Document.xcuda_Traders;
-            if (t == null)
+            try
             {
-                t = new xcuda_Traders(true) { Traders_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                da.Document.xcuda_Traders = t;
-            }
-            SaveExporter(t);
-            SaveConsignee(t);
-            SaveTradersFinancial(t);
-            //await DBaseDataModel.Instance.Savexcuda_Traders(t).ConfigureAwait(false);
-        }
+                abuyer.Address.Text.Add(dbuyer.Address);
+                abuyer.Code.Text.Add(dbuyer.Code);
+                abuyer.Name.Text.Add(dbuyer.Name);
 
-        private void SaveTradersFinancial(xcuda_Traders t)
-        {
-            if (a.Traders.Financial.Financial_code.Text.Count == 0) return;
-            var f = t.xcuda_Traders_Financial;
-            if (f == null)
-            {
-                f = new xcuda_Traders_Financial(true) { Traders_Id = t.Traders_Id, TrackingState = TrackingState.Added };
-                t.xcuda_Traders_Financial = f;
             }
-            if (a.Traders.Financial.Financial_code.Text.Count != 0)
+            catch (Exception e)
             {
-                f.Financial_code = a.Traders.Financial.Financial_code.Text[0];
-            }
-            if (a.Traders.Financial.Financial_name.Text.Count != 0)
-            {
-                f.Financial_name = a.Traders.Financial.Financial_name.Text[0];
+                Console.WriteLine(e);
+                throw;
             }
         }
 
-        private void SaveConsignee(xcuda_Traders t)
-        {
-            var c = t.xcuda_Consignee;
-            if (c == null)
-            {
-                c = new xcuda_Consignee(true) { Traders_Id = t.Traders_Id, TrackingState = TrackingState.Added };
-                t.xcuda_Consignee = c;
-            }
-            if (a.Traders.Consignee.Consignee_code.Text.Count != 0)
-            {
-                c.Consignee_code = a.Traders.Consignee.Consignee_code.Text[0];
-            }
-            if (a.Traders.Consignee.Consignee_name.Text.Count != 0)
-            {
-                c.Consignee_name = a.Traders.Consignee.Consignee_name.Text[0];
-            }
-        }
-
-        private void SaveExporter(xcuda_Traders t)
-        {
-            var e = t.xcuda_Exporter;
-            if (e == null)
-            {
-                e = new xcuda_Exporter(true) { Traders_Id = t.Traders_Id, TrackingState = TrackingState.Added };
-                t.xcuda_Exporter = e;
-            }
-
-            if (a.Traders.Exporter.Exporter_name.Text.Count != 0)
-            {
-                e.Exporter_name = a.Traders.Exporter.Exporter_name.Text[0];
-            }
-
-            if (a.Traders.Exporter.Exporter_code.Text.Count != 0)
-            {
-                e.Exporter_code = a.Traders.Exporter.Exporter_code.Text[0];
-            }
-        }
-
-        private async Task SaveProperty()
-        {
-            var p = da.Document.xcuda_Property;//.FirstOrDefault();
-
-            if (p == null)
-            {
-                p = new xcuda_Property(true) { TrackingState = TrackingState.Added };
-                da.Document.xcuda_Property = p;
-                // da.xcuda_Property.Add(p);
-            }
-            // p.Date_of_declaration = a.Property.Date_of_declaration.ToString();
-            SaveNbers(p);
-            //await DBaseDataModel.Instance.Savexcuda_Property(p).ConfigureAwait(false);
-        }
-
-        private void SaveNbers(xcuda_Property p)
-        {
-
-            var n = p.xcuda_Nbers;//.FirstOrDefault();
-            if (n == null)
-            {
-                n = new xcuda_Nbers(true) { ASYCUDA_Id = p.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                p.xcuda_Nbers = n;
-                //  p.xcuda_Nbers.Add(n);
-            }
-            n.Number_of_loading_lists = a.Property.Nbers.Number_of_loading_lists;
-            n.Total_number_of_packages = Convert.ToSingle(string.IsNullOrEmpty(a.Property.Nbers.Total_number_of_packages) ? "0" : a.Property.Nbers.Total_number_of_packages);
-            n.Total_number_of_items = a.Property.Nbers.Total_number_of_items;
-
-        }
-
-        private async Task SaveIdentification()
-        {
-            var di = da.Document.xcuda_Identification;//.FirstOrDefault();
-            if (di == null)
-            {
-                di = new xcuda_Identification(true) { TrackingState = TrackingState.Added };
-                da.Document.xcuda_Identification = di;
-                // da.xcuda_Identification.Add(di);
-            }
-
-            SaveManifestReferenceNumber(di);
-            SaveOfficeSegment(di);
-            SaveRegistration(di);
-            await SaveType(di).ConfigureAwait(false);
-
-            //await DBaseDataModel.Instance.Savexcuda_Identification(di).ConfigureAwait(false);
-
-        }
-
-        private async Task SaveType(xcuda_Identification di)
-        {
-            var t = di.xcuda_Type;
-            if (t == null)
-            {
-                t = new xcuda_Type(true) { TrackingState = TrackingState.Added };
-                di.xcuda_Type = t;
-            }
-
-            t.Declaration_gen_procedure_code = a.Identification.Type.Declaration_gen_procedure_code;
-            t.Type_of_declaration = a.Identification.Type.Type_of_declaration;
-
-            var dt = await GetDocumentType(t).ConfigureAwait(false);
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = dt.Document_TypeId;
-            da.Document.xcuda_ASYCUDA_ExtendedProperties.Document_Type = dt;
-
-            //await
-            //    DBaseDataModel.Instance.Savexcuda_ASYCUDA_ExtendedProperties(
-            //        da.Document.xcuda_ASYCUDA_ExtendedProperties).ConfigureAwait(false);
-        }
-
-        private async Task<Document_Type> GetDocumentType(xcuda_Type t)
-        {
-            var dt =
-                 BaseDataModel.Instance.Document_TypeCache.GetSingle(x => x.Declaration_gen_procedure_code == t.Declaration_gen_procedure_code
-                                                   && x.Type_of_declaration == t.Type_of_declaration );
-            ////    (await DBaseDataModel.Instance.SearchDocument_Type(new List<string>()
-            ////{
-            ////    string.Format("Declaration_gen_procedure_code == \"{0}\"", t.Declaration_gen_procedure_code),
-            ////    string.Format("Type_of_declaration == \"{0}\"", t.Type_of_declaration)
-            ////}).ConfigureAwait(false)).FirstOrDefault();
-
-            if (dt == null)
-            {
-
-                dt = new Document_Type(true)
-                {
-                    Type_of_declaration = t.Type_of_declaration,
-                    Declaration_gen_procedure_code = t.Declaration_gen_procedure_code,
-                    TrackingState = TrackingState.Added
-                };
-               
-                await DBaseDataModel.Instance.SaveDocument_Type(dt).ConfigureAwait(false);
-                BaseDataModel.Instance.Document_TypeCache.AddItem(dt);
-               
-            }
-            return dt;
-        }
-
-        private void SaveManifestReferenceNumber(xcuda_Identification di)
-        {
-            //xcuda_Manifest_reference_number r = di.xcuda_Manifest_reference_number;//.FirstOrDefault();
-            //if (r == null)
-            //{
-            //    r = new xcuda_Manifest_reference_number();
-            //    di.xcuda_Manifest_reference_number = r;
-            //    //di.xcuda_Manifest_reference_number.Add(r);
-            //}
-            if (a.Identification.Manifest_reference_number.Text.Count != 0)
-                di.Manifest_reference_number = a.Identification.Manifest_reference_number.Text[0];
-
-        }
-
-        private void SaveOfficeSegment(xcuda_Identification di)
-        {
-            var o = di.xcuda_Office_segment;//.FirstOrDefault();
-            if (o == null)
-            {
-                o = new xcuda_Office_segment(true) { ASYCUDA_Id = di.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                di.xcuda_Office_segment = o;
-                // di.xcuda_Office_segment.Add(o);
-            }
-            o.Customs_clearance_office_code = a.Identification.Office_segment.Customs_clearance_office_code.Text.FirstOrDefault();
-            o.Customs_Clearance_office_name = a.Identification.Office_segment.Customs_Clearance_office_name.Text.FirstOrDefault();
-
-        }
-
-        private void SaveRegistration(xcuda_Identification di)
-        {
-            var r = di.xcuda_Registration;
-            if (r == null)
-            {
-                r = new xcuda_Registration(true) { ASYCUDA_Id = di.ASYCUDA_Id, TrackingState = TrackingState.Added };
-                di.xcuda_Registration = r;
-                // di.xcuda_Registration.Add(r);
-            }
-            if (a.Identification.Registration.Date != "1/1/0001")
-                r.Date = a.Identification.Registration.Date;
-            if (a.Identification.Registration.Number != "")
-                r.Number = a.Identification.Registration.Number;
-
-        }
     }
 }

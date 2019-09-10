@@ -105,4 +105,16 @@
                            @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
                            null, null );  
+
+    CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\ValuationDS\ValuationDS.edmx",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           null, null); 
+
+    CreateServices("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\LicenseDS\LicenseDS.edmx",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Services\WaterNut.Business.Services.csproj",
+                           null, null); 
 #>

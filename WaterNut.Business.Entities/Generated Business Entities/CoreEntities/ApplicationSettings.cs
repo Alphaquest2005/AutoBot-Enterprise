@@ -616,6 +616,36 @@ namespace CoreEntities.Business.Entities
         }
         string _asycudapassword;
         [DataMember]
+        public Nullable<bool> AssessIM7 
+        {
+            get
+            {
+                return _assessim7;
+            }
+            set
+            {
+                _assessim7 = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _assessim7;
+        [DataMember]
+        public Nullable<bool> AssessEX 
+        {
+            get
+            {
+                return _assessex;
+            }
+            set
+            {
+                _assessex = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _assessex;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

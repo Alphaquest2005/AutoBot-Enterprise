@@ -150,6 +150,7 @@ namespace WaterNut.DataSpace.Asycuda
                             {
                                 FilePath = file.FullName,
                                 DocumentCode = "NA",
+                                Reference = file.Name.Replace(file.Extension, ""),
                                 TrackingState = TrackingState.Added,
                             }
                         };

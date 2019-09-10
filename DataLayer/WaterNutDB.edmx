@@ -25,8 +25,10 @@
           <Property Name="ApportionMethod" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="TotalFreight" Type="float" />
-          <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
+          <Property Name="LastFileNumber" Type="int" />
+          <Property Name="TotalInvoices" Type="int" />
+          <Property Name="MaxLines" Type="int" />
         </EntityType>
         <EntityType Name="Attachments">
           <Key>
@@ -35,6 +37,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -400,6 +403,7 @@
           <Property Name="Currency_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Gs_external_freight">
           <Key>
@@ -421,6 +425,7 @@
           <Property Name="Currency_name" Type="nvarchar" MaxLength="20" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Gs_internal_freight">
           <Key>
@@ -431,6 +436,7 @@
           <Property Name="Currency_name" Type="nvarchar(max)" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Gs_Invoice">
           <Key>
@@ -452,6 +458,7 @@
           <Property Name="Currency_name" Type="nvarchar" MaxLength="255" />
           <Property Name="Currency_rate" Type="float" Nullable="false" />
           <Property Name="Valuation_Id" Type="int" Nullable="false" />
+          <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_HScode">
           <Key>
@@ -3250,6 +3257,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_deduction_xcuda_Valuation" FromRole="xcuda_Gs_deduction" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Gs_external_freight">
           <Key>
@@ -3273,6 +3281,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_insurance_xcuda_Valuation" FromRole="xcuda_Gs_insurance" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Gs_internal_freight">
           <Key>
@@ -3284,6 +3293,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_internal_freight_xcuda_Valuation" FromRole="xcuda_Gs_internal_freight" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Gs_other_cost">
           <Key>
@@ -3295,6 +3305,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Type="Single" Name="Currency_rate" Nullable="false" />
           <Property Type="Int32" Name="Valuation_Id" Nullable="false" />
           <NavigationProperty Name="xcuda_Valuation" Relationship="WaterNutDB.DataLayer.FK_xcuda_Gs_other_cost_xcuda_Valuation" FromRole="xcuda_Gs_other_cost" ToRole="xcuda_Valuation" />
+          <Property Name="Currency_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Total">
           <Key>
@@ -3507,9 +3518,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="ApportionMethod" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="TotalFreight" Type="Double" />
-          <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="LastFileNumber" Type="Int32" />
+          <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="MaxLines" Type="Int32" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -5286,6 +5299,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments" FromRole="Attachments" ToRole="xcuda_Attachments" />
+          <Property Name="Reference" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Attachments">
           <Key>
@@ -5410,6 +5424,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_Gs_deduction">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Gs_deduction">
               <MappingFragment StoreEntitySet="xcuda_Gs_deduction">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -5433,6 +5448,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_Gs_insurance">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Gs_insurance">
               <MappingFragment StoreEntitySet="xcuda_Gs_insurance">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -5444,6 +5460,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_Gs_internal_freight">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Gs_internal_freight">
               <MappingFragment StoreEntitySet="xcuda_Gs_internal_freight">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -5455,6 +5472,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_Gs_other_cost">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Gs_other_cost">
               <MappingFragment StoreEntitySet="xcuda_Gs_other_cost">
+                <ScalarProperty Name="Currency_code" ColumnName="Currency_code" />
                 <ScalarProperty Name="Valuation_Id" ColumnName="Valuation_Id" />
                 <ScalarProperty Name="Currency_rate" ColumnName="Currency_rate" />
                 <ScalarProperty Name="Currency_name" ColumnName="Currency_name" />
@@ -5567,9 +5585,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="AsycudaDocumentSet">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
+                <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
+                <ScalarProperty Name="LastFileNumber" ColumnName="LastFileNumber" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
-                <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="ApportionMethod" ColumnName="ApportionMethod" />
@@ -6282,6 +6302,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="Attachments">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.Attachments">
               <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

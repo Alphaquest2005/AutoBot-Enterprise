@@ -61,19 +61,6 @@ namespace AdjustmentQS.Client.DTO
         private string _DutyFreePaid;
 
         [DataMember]
-        public Nullable<double> Total
-		{ 
-		    get { return _Total; }
-			set
-			{
-			    if (value == _Total) return;
-				_Total = value;
-				NotifyPropertyChanged();//m => this.Total
-			}
-		}
-        private Nullable<double> _Total;
-
-        [DataMember]
         public string InvoiceNo
 		{ 
 		    get { return _InvoiceNo; }
@@ -85,19 +72,6 @@ namespace AdjustmentQS.Client.DTO
 			}
 		}
         private string _InvoiceNo;
-
-        [DataMember]
-        public Nullable<double> ImportedTotal
-		{ 
-		    get { return _ImportedTotal; }
-			set
-			{
-			    if (value == _ImportedTotal) return;
-				_ImportedTotal = value;
-				NotifyPropertyChanged();//m => this.ImportedTotal
-			}
-		}
-        private Nullable<double> _ImportedTotal;
 
         [DataMember]
         public Nullable<int> ImportedLines
@@ -176,6 +150,32 @@ namespace AdjustmentQS.Client.DTO
 			}
 		}
         private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public Nullable<double> InvoiceTotal
+		{ 
+		    get { return _InvoiceTotal; }
+			set
+			{
+			    if (value == _InvoiceTotal) return;
+				_InvoiceTotal = value;
+				NotifyPropertyChanged();//m => this.InvoiceTotal
+			}
+		}
+        private Nullable<double> _InvoiceTotal;
+
+        [DataMember]
+        public Nullable<double> ImportedTotal
+		{ 
+		    get { return _ImportedTotal; }
+			set
+			{
+			    if (value == _ImportedTotal) return;
+				_ImportedTotal = value;
+				NotifyPropertyChanged();//m => this.ImportedTotal
+			}
+		}
+        private Nullable<double> _ImportedTotal;
 
        
         [DataMember]

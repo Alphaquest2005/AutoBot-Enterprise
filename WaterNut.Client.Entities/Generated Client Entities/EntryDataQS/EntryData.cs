@@ -79,21 +79,6 @@ public System.DateTime EntryDataDate
 
        
        [NumberValidationAttribute]
-public Nullable<double> ImportedTotal
-		{ 
-		    get { return this.entrydata.ImportedTotal; }
-			set
-			{
-			    if (value == this.entrydata.ImportedTotal) return;
-				this.entrydata.ImportedTotal = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ImportedTotal");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
 public Nullable<int> ImportedLines
 		{ 
 		    get { return this.entrydata.ImportedLines; }
@@ -103,21 +88,6 @@ public Nullable<int> ImportedLines
 				this.entrydata.ImportedLines = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ImportedLines");
-			}
-		}
-     
-
-       
-       
-public Nullable<int> SupplierId
-		{ 
-		    get { return this.entrydata.SupplierId; }
-			set
-			{
-			    if (value == this.entrydata.SupplierId) return;
-				this.entrydata.SupplierId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("SupplierId");
 			}
 		}
      
@@ -225,6 +195,83 @@ public Nullable<int> FileTypeId
 				this.entrydata.FileTypeId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(100, ErrorMessage = "SupplierCode has a max length of 100 letters ")]
+public string SupplierCode
+		{ 
+		    get { return this.entrydata.SupplierCode; }
+			set
+			{
+			    if (value == this.entrydata.SupplierCode) return;
+				this.entrydata.SupplierCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SupplierCode");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> InvoiceTotal
+		{ 
+		    get { return this.entrydata.InvoiceTotal; }
+			set
+			{
+			    if (value == this.entrydata.InvoiceTotal) return;
+				this.entrydata.InvoiceTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceTotal");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalOtherCost
+		{ 
+		    get { return this.entrydata.TotalOtherCost; }
+			set
+			{
+			    if (value == this.entrydata.TotalOtherCost) return;
+				this.entrydata.TotalOtherCost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalOtherCost");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalInsurance
+		{ 
+		    get { return this.entrydata.TotalInsurance; }
+			set
+			{
+			    if (value == this.entrydata.TotalInsurance) return;
+				this.entrydata.TotalInsurance = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalInsurance");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalDeduction
+		{ 
+		    get { return this.entrydata.TotalDeduction; }
+			set
+			{
+			    if (value == this.entrydata.TotalDeduction) return;
+				this.entrydata.TotalDeduction = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalDeduction");
 			}
 		}
      

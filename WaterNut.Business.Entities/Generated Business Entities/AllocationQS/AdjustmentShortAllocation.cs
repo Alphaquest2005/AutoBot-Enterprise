@@ -784,6 +784,21 @@ namespace AllocationQS.Business.Entities
             }
         }
         string _xstatus;
+        [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
