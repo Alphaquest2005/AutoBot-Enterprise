@@ -12,10 +12,10 @@ namespace EntryDataQS.Business.Services
 
     public partial class EntryDataExService
     {
-        public async Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice)
+        public async Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice, bool combineEntryDataInSameFile)
         {
             var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
-            await WaterNut.DataSpace.BaseDataModel.Instance.AddToEntry(lst, docSet, perInvoice).ConfigureAwait(false);
+            await WaterNut.DataSpace.BaseDataModel.Instance.AddToEntry(lst, docSet, perInvoice, combineEntryDataInSameFile).ConfigureAwait(false);
         }
 
 

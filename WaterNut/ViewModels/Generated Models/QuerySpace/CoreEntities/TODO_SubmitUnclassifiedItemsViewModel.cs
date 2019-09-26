@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_SubmitUnclassifiedItemsChanged(object sender, NotificationEventArgs<TODO_SubmitUnclassifiedItems> e)
+        internal virtual void OnCurrentTODO_SubmitUnclassifiedItemsChanged(object sender, NotificationEventArgs<TODO_SubmitUnclassifiedItems> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_SubmitUnclassifiedItems != null) BaseViewModel.Instance.CurrentTODO_SubmitUnclassifiedItems.PropertyChanged += CurrentTODO_SubmitUnclassifiedItems__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_SubmitUnclassifiedItems);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_SubmitUnclassifiedItems__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_SubmitUnclassifiedItemsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_SubmitUnclassifiedItemsChanged(object sender, NotificationEventArgs e)
         {
             _TODO_SubmitUnclassifiedItems.Refresh();
 			NotifyPropertyChanged(x => this.TODO_SubmitUnclassifiedItems);
@@ -259,6 +259,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _typeFilter;
+        public string TypeFilter
+        {
+            get
+            {
+                return _typeFilter;
+            }
+            set
+            {
+                _typeFilter = value;
+				NotifyPropertyChanged(x => TypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _declarant_Reference_NumberFilter;
+        public string Declarant_Reference_NumberFilter
+        {
+            get
+            {
+                return _declarant_Reference_NumberFilter;
+            }
+            set
+            {
+                _declarant_Reference_NumberFilter = value;
+				NotifyPropertyChanged(x => Declarant_Reference_NumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -306,6 +342,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(TariffCodeFilter) == false)
 						res.Append(" && " + string.Format("TariffCode.Contains(\"{0}\")",  TariffCodeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TypeFilter) == false)
+						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
+						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -341,7 +385,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ItemDescription = x.ItemDescription ,
                     
  
-                    TariffCode = x.TariffCode 
+                    TariffCode = x.TariffCode ,
+                    
+ 
+                    Type = x.Type ,
+                    
+ 
+                    Declarant_Reference_Number = x.Declarant_Reference_Number 
                     
                 }).ToList()
             };
@@ -367,6 +417,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string TariffCode { get; set; } 
+                    
+ 
+                    public string Type { get; set; } 
+                    
+ 
+                    public string Declarant_Reference_Number { get; set; } 
                     
         }
 

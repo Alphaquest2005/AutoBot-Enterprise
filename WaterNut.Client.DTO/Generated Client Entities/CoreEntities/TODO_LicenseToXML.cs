@@ -48,19 +48,6 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _Quantity;
 
         [DataMember]
-        public string TariffCodeDescription
-		{ 
-		    get { return _TariffCodeDescription; }
-			set
-			{
-			    if (value == _TariffCodeDescription) return;
-				_TariffCodeDescription = value;
-				NotifyPropertyChanged();//m => this.TariffCodeDescription
-			}
-		}
-        private string _TariffCodeDescription;
-
-        [DataMember]
         public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
@@ -137,6 +124,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private string _EntryDataId;
+
+        [DataMember]
+        public string LicenseDescription
+		{ 
+		    get { return _LicenseDescription; }
+			set
+			{
+			    if (value == _LicenseDescription) return;
+				_LicenseDescription = value;
+				NotifyPropertyChanged();//m => this.LicenseDescription
+			}
+		}
+        private string _LicenseDescription;
 
        
    //     [DataMember]

@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentEntryDataExChanged(object sender, NotificationEventArgs<EntryDataEx> e)
+        internal virtual void OnCurrentEntryDataExChanged(object sender, NotificationEventArgs<EntryDataEx> e)
         {
             if(BaseViewModel.Instance.CurrentEntryDataEx != null) BaseViewModel.Instance.CurrentEntryDataEx.PropertyChanged += CurrentEntryDataEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEntryDataEx);
@@ -141,7 +141,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentEntryDataEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentEntryDataEx.ApplicationSettings);
                     //}
                  } 
-        internal void OnEntryDataExChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEntryDataExChanged(object sender, NotificationEventArgs e)
         {
             _EntryDataEx.Refresh();
 			NotifyPropertyChanged(x => this.EntryDataEx);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {
@@ -420,6 +420,96 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Int32? _classifiedLinesFilter;
+        public Int32? ClassifiedLinesFilter
+        {
+            get
+            {
+                return _classifiedLinesFilter;
+            }
+            set
+            {
+                _classifiedLinesFilter = value;
+				NotifyPropertyChanged(x => ClassifiedLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalInternalFreightFilter;
+        public Double? TotalInternalFreightFilter
+        {
+            get
+            {
+                return _totalInternalFreightFilter;
+            }
+            set
+            {
+                _totalInternalFreightFilter = value;
+				NotifyPropertyChanged(x => TotalInternalFreightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalInternalInsuranceFilter;
+        public Double? TotalInternalInsuranceFilter
+        {
+            get
+            {
+                return _totalInternalInsuranceFilter;
+            }
+            set
+            {
+                _totalInternalInsuranceFilter = value;
+				NotifyPropertyChanged(x => TotalInternalInsuranceFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalOtherCostFilter;
+        public Double? TotalOtherCostFilter
+        {
+            get
+            {
+                return _totalOtherCostFilter;
+            }
+            set
+            {
+                _totalOtherCostFilter = value;
+				NotifyPropertyChanged(x => TotalOtherCostFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalDeductionsFilter;
+        public Double? TotalDeductionsFilter
+        {
+            get
+            {
+                return _totalDeductionsFilter;
+            }
+            set
+            {
+                _totalDeductionsFilter = value;
+				NotifyPropertyChanged(x => TotalDeductionsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -512,7 +602,22 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("ImportedTotal == {0}",  ImportedTotalFilter.ToString()));				 
 
 					if(ExpectedTotalFilter.HasValue)
-						res.Append(" && " + string.Format("ExpectedTotal == {0}",  ExpectedTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("ExpectedTotal == {0}",  ExpectedTotalFilter.ToString()));				 
+
+					if(ClassifiedLinesFilter.HasValue)
+						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
+
+					if(TotalInternalFreightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInternalFreight == {0}",  TotalInternalFreightFilter.ToString()));				 
+
+					if(TotalInternalInsuranceFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInternalInsurance == {0}",  TotalInternalInsuranceFilter.ToString()));				 
+
+					if(TotalOtherCostFilter.HasValue)
+						res.Append(" && " + string.Format("TotalOtherCost == {0}",  TotalOtherCostFilter.ToString()));				 
+
+					if(TotalDeductionsFilter.HasValue)
+						res.Append(" && " + string.Format("TotalDeductions == {0}",  TotalDeductionsFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -565,7 +670,22 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     ImportedTotal = x.ImportedTotal ,
                     
  
-                    ExpectedTotal = x.ExpectedTotal 
+                    ExpectedTotal = x.ExpectedTotal ,
+                    
+ 
+                    ClassifiedLines = x.ClassifiedLines ,
+                    
+ 
+                    TotalInternalFreight = x.TotalInternalFreight ,
+                    
+ 
+                    TotalInternalInsurance = x.TotalInternalInsurance ,
+                    
+ 
+                    TotalOtherCost = x.TotalOtherCost ,
+                    
+ 
+                    TotalDeductions = x.TotalDeductions 
                     
                 }).ToList()
             };
@@ -609,6 +729,21 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public double ExpectedTotal { get; set; } 
+                    
+ 
+                    public Nullable<int> ClassifiedLines { get; set; } 
+                    
+ 
+                    public double TotalInternalFreight { get; set; } 
+                    
+ 
+                    public double TotalInternalInsurance { get; set; } 
+                    
+ 
+                    public double TotalOtherCost { get; set; } 
+                    
+ 
+                    public double TotalDeductions { get; set; } 
                     
         }
 

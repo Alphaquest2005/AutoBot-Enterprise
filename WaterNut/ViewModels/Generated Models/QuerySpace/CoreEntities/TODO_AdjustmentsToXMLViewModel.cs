@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_AdjustmentsToXMLChanged(object sender, NotificationEventArgs<TODO_AdjustmentsToXML> e)
+        internal virtual void OnCurrentTODO_AdjustmentsToXMLChanged(object sender, NotificationEventArgs<TODO_AdjustmentsToXML> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_AdjustmentsToXML != null) BaseViewModel.Instance.CurrentTODO_AdjustmentsToXML.PropertyChanged += CurrentTODO_AdjustmentsToXML__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_AdjustmentsToXML);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_AdjustmentsToXML__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_AdjustmentsToXMLChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_AdjustmentsToXMLChanged(object sender, NotificationEventArgs e)
         {
             _TODO_AdjustmentsToXML.Refresh();
 			NotifyPropertyChanged(x => this.TODO_AdjustmentsToXML);

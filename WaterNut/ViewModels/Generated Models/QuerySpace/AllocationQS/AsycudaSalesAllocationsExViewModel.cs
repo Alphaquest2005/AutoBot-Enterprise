@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAllocationsEx> e)
+        internal virtual void OnCurrentAsycudaSalesAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAllocationsEx> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaSalesAllocationsEx != null) BaseViewModel.Instance.CurrentAsycudaSalesAllocationsEx.PropertyChanged += CurrentAsycudaSalesAllocationsEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaSalesAllocationsEx);
@@ -141,7 +141,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentAsycudaSalesAllocationsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaSalesAllocationsEx.ApplicationSettings);
                     //}
                  } 
-        internal void OnAsycudaSalesAllocationsExsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaSalesAllocationsExsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaSalesAllocationsExs.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaSalesAllocationsExs);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

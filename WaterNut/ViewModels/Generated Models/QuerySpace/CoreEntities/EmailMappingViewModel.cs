@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentEmailMappingChanged(object sender, NotificationEventArgs<EmailMapping> e)
+        internal virtual void OnCurrentEmailMappingChanged(object sender, NotificationEventArgs<EmailMapping> e)
         {
             if(BaseViewModel.Instance.CurrentEmailMapping != null) BaseViewModel.Instance.CurrentEmailMapping.PropertyChanged += CurrentEmailMapping__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEmailMapping);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentEmailMapping.ApplicationSettings) == false) ApplicationSettings.Add(CurrentEmailMapping.ApplicationSettings);
                     //}
                  } 
-        internal void OnEmailMappingChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEmailMappingChanged(object sender, NotificationEventArgs e)
         {
             _EmailMapping.Refresh();
 			NotifyPropertyChanged(x => this.EmailMapping);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+		 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 			{
 			if(ViewCurrentApplicationSettings == false) return;
 			if (e.Data == null || e.Data.ApplicationSettingsId == null)

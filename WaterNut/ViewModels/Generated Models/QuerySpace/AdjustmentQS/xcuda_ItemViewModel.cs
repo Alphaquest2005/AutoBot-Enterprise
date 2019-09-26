@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentxcuda_ItemChanged(object sender, NotificationEventArgs<xcuda_Item> e)
+        internal virtual void OnCurrentxcuda_ItemChanged(object sender, NotificationEventArgs<xcuda_Item> e)
         {
             if(BaseViewModel.Instance.Currentxcuda_Item != null) BaseViewModel.Instance.Currentxcuda_Item.PropertyChanged += Currentxcuda_Item__propertyChanged;
            // NotifyPropertyChanged(x => this.Currentxcuda_Item);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             void Currentxcuda_Item__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void Onxcuda_ItemChanged(object sender, NotificationEventArgs e)
+        internal virtual void Onxcuda_ItemChanged(object sender, NotificationEventArgs e)
         {
             _xcuda_Item.Refresh();
 			NotifyPropertyChanged(x => this.xcuda_Item);

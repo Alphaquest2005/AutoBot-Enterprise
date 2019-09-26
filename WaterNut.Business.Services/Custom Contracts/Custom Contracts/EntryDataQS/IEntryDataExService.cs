@@ -10,7 +10,7 @@ namespace EntryDataQS.Business.Services
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice);
+        Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice, bool combineEntryDataInSameFile);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]

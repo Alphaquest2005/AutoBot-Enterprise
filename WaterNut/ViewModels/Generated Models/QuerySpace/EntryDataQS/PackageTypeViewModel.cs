@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentPackageTypeChanged(object sender, NotificationEventArgs<PackageType> e)
+        internal virtual void OnCurrentPackageTypeChanged(object sender, NotificationEventArgs<PackageType> e)
         {
             if(BaseViewModel.Instance.CurrentPackageType != null) BaseViewModel.Instance.CurrentPackageType.PropertyChanged += CurrentPackageType__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentPackageType);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             void CurrentPackageType__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnPackageTypesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnPackageTypesChanged(object sender, NotificationEventArgs e)
         {
             _PackageTypes.Refresh();
 			NotifyPropertyChanged(x => this.PackageTypes);

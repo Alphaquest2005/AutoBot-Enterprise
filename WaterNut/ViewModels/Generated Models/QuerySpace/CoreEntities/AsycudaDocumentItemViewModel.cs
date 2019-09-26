@@ -131,7 +131,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentItemChanged(object sender, NotificationEventArgs<AsycudaDocumentItem> e)
+        internal virtual void OnCurrentAsycudaDocumentItemChanged(object sender, NotificationEventArgs<AsycudaDocumentItem> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentItem != null) BaseViewModel.Instance.CurrentAsycudaDocumentItem.PropertyChanged += CurrentAsycudaDocumentItem__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentItem);
@@ -152,7 +152,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(InventoryItemX.Contains(CurrentAsycudaDocumentItem.InventoryItemsEx) == false) InventoryItemX.Add(CurrentAsycudaDocumentItem.InventoryItemsEx);
                     //}
                  } 
-        internal void OnAsycudaDocumentItemsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentItemsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentItems.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentItems);
@@ -160,7 +160,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAsycudaDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocument> e)
+		 internal virtual void OnCurrentAsycudaDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocument> e)
 			{
 			if(ViewCurrentAsycudaDocument == false) return;
 			if (e.Data == null || e.Data.ASYCUDA_Id == null)
@@ -179,7 +179,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentAsycudaDocumentItem = null;
 			}
 	
-		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+		 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 			{
 			if(ViewCurrentApplicationSettings == false) return;
 			if (e.Data == null || e.Data.ApplicationSettingsId == null)
@@ -198,7 +198,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentAsycudaDocumentItem = null;
 			}
 	
-		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemX> e)
+		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemX> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
 			if (e.Data == null || e.Data.ItemNumber == null)

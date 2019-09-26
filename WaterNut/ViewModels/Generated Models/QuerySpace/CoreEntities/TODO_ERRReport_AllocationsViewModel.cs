@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_ERRReport_AllocationsChanged(object sender, NotificationEventArgs<TODO_ERRReport_Allocations> e)
+        internal virtual void OnCurrentTODO_ERRReport_AllocationsChanged(object sender, NotificationEventArgs<TODO_ERRReport_Allocations> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_ERRReport_Allocations != null) BaseViewModel.Instance.CurrentTODO_ERRReport_Allocations.PropertyChanged += CurrentTODO_ERRReport_Allocations__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_Allocations);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_ERRReport_Allocations__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_ERRReport_AllocationsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_ERRReport_AllocationsChanged(object sender, NotificationEventArgs e)
         {
             _TODO_ERRReport_Allocations.Refresh();
 			NotifyPropertyChanged(x => this.TODO_ERRReport_Allocations);

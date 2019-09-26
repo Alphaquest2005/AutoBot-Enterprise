@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_DiscrepanciesToSubmitChanged(object sender, NotificationEventArgs<TODO_DiscrepanciesToSubmit> e)
+        internal virtual void OnCurrentTODO_DiscrepanciesToSubmitChanged(object sender, NotificationEventArgs<TODO_DiscrepanciesToSubmit> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_DiscrepanciesToSubmit != null) BaseViewModel.Instance.CurrentTODO_DiscrepanciesToSubmit.PropertyChanged += CurrentTODO_DiscrepanciesToSubmit__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_DiscrepanciesToSubmit);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_DiscrepanciesToSubmit__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_DiscrepanciesToSubmitChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_DiscrepanciesToSubmitChanged(object sender, NotificationEventArgs e)
         {
             _TODO_DiscrepanciesToSubmit.Refresh();
 			NotifyPropertyChanged(x => this.TODO_DiscrepanciesToSubmit);

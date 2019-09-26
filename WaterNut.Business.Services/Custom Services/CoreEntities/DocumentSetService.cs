@@ -123,12 +123,15 @@ namespace CoreEntities.Business.Services
 
         public async Task AttachDocuments(int asycudaDocumentSetId, List<string> files)
         {
-            foreach (var fileType in new CoreEntitiesContext().FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList())
+            foreach (var fileType in new CoreEntitiesContext().FileTypes.Where(x =>
+                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                .ToList())
             {
-                var csvFiles = files.Where(x => Regex.IsMatch(x, fileType.FilePattern, RegexOptions.IgnoreCase)).Select(x => new FileInfo(x)).ToArray();
-                if (csvFiles.Length == 0)continue;
+                var csvFiles = files.Where(x => Regex.IsMatch(x, fileType.FilePattern, RegexOptions.IgnoreCase))
+                    .Select(x => new FileInfo(x)).ToArray();
+                if (csvFiles.Length == 0) continue;
 
-                
+
 
                 if (fileType.Type == "LIC")
                     BaseDataModel.Instance.ImportLicense(fileType.AsycudaDocumentSetId,
@@ -140,10 +143,10 @@ namespace CoreEntities.Business.Services
 
                 fileType.AsycudaDocumentSetId = asycudaDocumentSetId;
                 await BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, fileType).ConfigureAwait(false);
-
-                BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId);
-
+                
             }
+
+            BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId);
         }
 
         public async Task CleanBond(int docSetId, bool perIM7)

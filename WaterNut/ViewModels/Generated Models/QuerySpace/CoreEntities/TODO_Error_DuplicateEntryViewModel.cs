@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_Error_DuplicateEntryChanged(object sender, NotificationEventArgs<TODO_Error_DuplicateEntry> e)
+        internal virtual void OnCurrentTODO_Error_DuplicateEntryChanged(object sender, NotificationEventArgs<TODO_Error_DuplicateEntry> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_Error_DuplicateEntry != null) BaseViewModel.Instance.CurrentTODO_Error_DuplicateEntry.PropertyChanged += CurrentTODO_Error_DuplicateEntry__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_Error_DuplicateEntry);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_Error_DuplicateEntry__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_Error_DuplicateEntryChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_Error_DuplicateEntryChanged(object sender, NotificationEventArgs e)
         {
             _TODO_Error_DuplicateEntry.Refresh();
 			NotifyPropertyChanged(x => this.TODO_Error_DuplicateEntry);

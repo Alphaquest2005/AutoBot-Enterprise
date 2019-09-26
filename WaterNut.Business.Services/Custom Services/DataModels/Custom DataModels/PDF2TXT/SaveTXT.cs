@@ -6,13 +6,17 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DocumentDS.Business.Entities;
+using DocumentDS.Business.Services;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
+using EntryDataQS.Business.Entities;
 using InventoryDS.Business.Entities;
 using InventoryDS.Business.Services;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using AsycudaDocumentSetEntryData = EntryDataDS.Business.Entities.AsycudaDocumentSetEntryData;
+
+using EntryData = EntryDataDS.Business.Entities.EntryData;
 
 namespace WaterNut.DataSpace
 {
@@ -116,29 +120,13 @@ namespace WaterNut.DataSpace
                 if (invoiceTotalMat != null)
                     cnt.TotalValue = Convert.ToDouble(invoiceTotalMat.Groups["InvoiceTotal"].Value);
 
-                if (palletTotalPat != null)
-                {
-                    cnt.Packages_number = palletTotalMat.Groups["PalletTotal"].Value;
-                    using (var ctx = new PackageTypesService())
-                    {
-                        var pklst =
-                            await
-                                ctx.GetPackageTypesByExpression("PackageDescription == \"Pallet\"")
-                                    .ConfigureAwait(false);
-                        cnt.Packages_type = pklst.FirstOrDefault().PackageType;
-                    }
-
-                }
+               
                 if (shipDateSealMat != null)
                 {
                     cnt.ShipDate = Convert.ToDateTime(shipDateSealMat.Groups["ShipDate"].Value);
                     cnt.Seal = shipDateSealMat.Groups["Seal"].Value;
                 }
-                if (WeightTotalsMat != null)
-                {
-                    cnt.Gross_weight = Convert.ToDouble(WeightTotalsMat.Groups["TotalKGS"].Value);
-                    cnt.Packages_weight = Convert.ToDouble(WeightTotalsMat.Groups["TotalKGS"].Value);
-                }
+                
 
                 cnt.Goods_description = "Food Stuff";
 
@@ -148,13 +136,6 @@ namespace WaterNut.DataSpace
                     cnt.Container_type = m3 > 34 ? "40RG" : "20RG";
                 }
 
-                if (!cnt.ContainerAsycudaDocumentSets.Any(x => x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId))
-                    cnt.ContainerAsycudaDocumentSets.Add(new ContainerAsycudaDocumentSet()
-                    {
-                        AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
-                        Container = cnt,
-                        TrackingState = TrackingState.Added
-                    });
 
                 using (var ctx = new ContainerService())
                 {
@@ -368,12 +349,7 @@ namespace WaterNut.DataSpace
                     entryData.ImportedLines = LineTotalMat.Count;
 
                 entryData.InvoiceTotal = container.TotalValue;
-                entryData.ContainerEntryData.Add(new ContainerEntryData()
-                {
-                    Container_Id = container.Container_Id,
-                    EntryDataId = entryData.PONumber,
-                    TrackingState = TrackingState.Added
-                });
+               
 
 
                 //get Regex Groups

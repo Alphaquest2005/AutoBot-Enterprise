@@ -233,7 +233,7 @@ namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
             }
         }
 
-        internal void OnCurrent<#=code.Escape(mainEntity)#>Changed(object sender, NotificationEventArgs<<#=code.Escape(mainEntity)#>> e)
+        internal virtual void OnCurrent<#=code.Escape(mainEntity)#>Changed(object sender, NotificationEventArgs<<#=code.Escape(mainEntity)#>> e)
         {
             if(BaseViewModel.Instance.Current<#=code.Escape(mainEntity)#> != null) BaseViewModel.Instance.Current<#=code.Escape(mainEntity)#>.PropertyChanged += Current<#=code.Escape(mainEntity)#>__propertyChanged;
            // NotifyPropertyChanged(x => this.Current<#=code.Escape(mainEntity)#>);
@@ -257,7 +257,7 @@ namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
          //   if(mainEntity.BaseType == null)
            // {
 #>
-        internal void On<#=mainEntitySet#>Changed(object sender, NotificationEventArgs e)
+        internal virtual void On<#=mainEntitySet#>Changed(object sender, NotificationEventArgs e)
         {
             _<#=mainEntitySet#>.Refresh();
 			NotifyPropertyChanged(x => this.<#=mainEntitySet#>);
@@ -278,7 +278,7 @@ namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
 						if(mainEntity.Name != mEntity.Name)
 						{
  #>	
-		 internal void OnCurrent<#=npe.navprop.Name#>Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<<#=code.Escape(mEntity)#>> e)
+		 internal virtual void OnCurrent<#=npe.navprop.Name#>Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<<#=code.Escape(mEntity)#>> e)
 			{
 			if(ViewCurrent<#=npe.navprop.Name#> == false) return;
 			if (e.Data == null || e.Data.<#=mEntity.KeyMembers[0].Name#> == null)
@@ -337,7 +337,7 @@ namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
 						if(pEntity == null) continue;
 						
 #>
-                internal void OnCurrent<#=code.Escape(pEntity)#>Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<<#=code.Escape(pEntity)#>> e)
+                internal virtual void OnCurrent<#=code.Escape(pEntity)#>Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<<#=code.Escape(pEntity)#>> e)
 				{
 				if (e.Data == null || e.Data.<#=pEntity.KeyMembers[0].Name#> == null)
                 {

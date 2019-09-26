@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentCustoms_ProcedureChanged(object sender, NotificationEventArgs<Customs_Procedure> e)
+        internal virtual void OnCurrentCustoms_ProcedureChanged(object sender, NotificationEventArgs<Customs_Procedure> e)
         {
             if(BaseViewModel.Instance.CurrentCustoms_Procedure != null) BaseViewModel.Instance.CurrentCustoms_Procedure.PropertyChanged += CurrentCustoms_Procedure__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentCustoms_Procedure);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(Document_Type.Contains(CurrentCustoms_Procedure.Document_Type) == false) Document_Type.Add(CurrentCustoms_Procedure.Document_Type);
                     //}
                  } 
-        internal void OnCustoms_ProcedureChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnCustoms_ProcedureChanged(object sender, NotificationEventArgs e)
         {
             _Customs_Procedure.Refresh();
 			NotifyPropertyChanged(x => this.Customs_Procedure);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentDocument_TypeChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Document_Type> e)
+		 internal virtual void OnCurrentDocument_TypeChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Document_Type> e)
 			{
 			if(ViewCurrentDocument_Type == false) return;
 			if (e.Data == null || e.Data.Document_TypeId == null)

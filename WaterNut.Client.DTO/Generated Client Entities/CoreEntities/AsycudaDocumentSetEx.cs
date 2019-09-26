@@ -346,6 +346,45 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _MaxLines;
 
+        [DataMember]
+        public string LocationOfGoods
+		{ 
+		    get { return _LocationOfGoods; }
+			set
+			{
+			    if (value == _LocationOfGoods) return;
+				_LocationOfGoods = value;
+				NotifyPropertyChanged();//m => this.LocationOfGoods
+			}
+		}
+        private string _LocationOfGoods;
+
+        [DataMember]
+        public Nullable<int> LicenseLines
+		{ 
+		    get { return _LicenseLines; }
+			set
+			{
+			    if (value == _LicenseLines) return;
+				_LicenseLines = value;
+				NotifyPropertyChanged();//m => this.LicenseLines
+			}
+		}
+        private Nullable<int> _LicenseLines;
+
+        [DataMember]
+        public Nullable<double> InvoiceTotal
+		{ 
+		    get { return _InvoiceTotal; }
+			set
+			{
+			    if (value == _InvoiceTotal) return;
+				_InvoiceTotal = value;
+				NotifyPropertyChanged();//m => this.InvoiceTotal
+			}
+		}
+        private Nullable<double> _InvoiceTotal;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocument> AsycudaDocuments

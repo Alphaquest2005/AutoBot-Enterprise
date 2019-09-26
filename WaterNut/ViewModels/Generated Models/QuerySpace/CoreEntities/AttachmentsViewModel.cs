@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentAttachmentsChanged(object sender, NotificationEventArgs<Attachments> e)
+        internal virtual void OnCurrentAttachmentsChanged(object sender, NotificationEventArgs<Attachments> e)
         {
             if(BaseViewModel.Instance.CurrentAttachments != null) BaseViewModel.Instance.CurrentAttachments.PropertyChanged += CurrentAttachments__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAttachments);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentAttachments__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnAttachmentsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAttachmentsChanged(object sender, NotificationEventArgs e)
         {
             _Attachments.Refresh();
 			NotifyPropertyChanged(x => this.Attachments);

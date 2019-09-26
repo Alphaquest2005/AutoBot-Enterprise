@@ -87,19 +87,6 @@ namespace CoreEntities.Client.DTO
         private string _TariffCode;
 
         [DataMember]
-        public int ApplicationSettingsId
-		{ 
-		    get { return _ApplicationSettingsId; }
-			set
-			{
-			    if (value == _ApplicationSettingsId) return;
-				_ApplicationSettingsId = value;
-				NotifyPropertyChanged();//m => this.ApplicationSettingsId
-			}
-		}
-        private int _ApplicationSettingsId;
-
-        [DataMember]
         public Nullable<int> EmailId
 		{ 
 		    get { return _EmailId; }
@@ -111,6 +98,58 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<int> _EmailId;
+
+        [DataMember]
+        public string Type
+		{ 
+		    get { return _Type; }
+			set
+			{
+			    if (value == _Type) return;
+				_Type = value;
+				NotifyPropertyChanged();//m => this.Type
+			}
+		}
+        private string _Type;
+
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
+
+        [DataMember]
+        public string Declarant_Reference_Number
+		{ 
+		    get { return _Declarant_Reference_Number; }
+			set
+			{
+			    if (value == _Declarant_Reference_Number) return;
+				_Declarant_Reference_Number = value;
+				NotifyPropertyChanged();//m => this.Declarant_Reference_Number
+			}
+		}
+        private string _Declarant_Reference_Number;
+
+        [DataMember]
+        public int ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private int _ApplicationSettingsId;
 
        
    //     [DataMember]

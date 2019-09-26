@@ -30,7 +30,6 @@
               this.Property(t => t.TotalDeduction).HasColumnName("TotalDeduction");
               this.HasMany(t => t.AsycudaDocumentEntryDatas).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocumentSetEntryDatas).WithRequired(t => (EntryData)t.EntryData);
-              this.HasMany(t => t.ContainerEntryDatas).WithRequired(t => (EntryData)t.EntryData);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

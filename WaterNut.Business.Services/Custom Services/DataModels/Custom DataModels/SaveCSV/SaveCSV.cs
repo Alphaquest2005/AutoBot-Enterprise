@@ -115,7 +115,7 @@ namespace WaterNut.DataSpace
                         return;
                     }
 
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType.Type, lines, headings, csvType, docSet, overWriteExisting, emailId, fileTypeId).ConfigureAwait(false)) return;
+                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType.Type, lines, headings, csvType, docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath).ConfigureAwait(false)) return;
                 }
             }
             catch (Exception Ex)

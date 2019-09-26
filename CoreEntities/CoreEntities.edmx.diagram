@@ -47,7 +47,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_UnallocatedSales" Width="1.5" PointX="13.375" PointY="15.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Contacts" Width="1.5" PointX="5.625" PointY="18.25" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_CreateEx9" Width="1.75" PointX="7.375" PointY="16.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DeleteDocumentSet" Width="2.75" PointX="9.375" PointY="16.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_DocumentsToDelete" Width="1.5" PointX="17.375" PointY="12.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Actions" Width="1.5" PointX="7.5" PointY="10.625" />
@@ -96,8 +95,10 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitIncompleteEntryData" Width="1.5" PointX="24.375" PointY="21.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSet" Width="1.5" PointX="4.375" PointY="25.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitDocSetWithIncompleteInvoices" Width="1.5" PointX="20.375" PointY="24.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitUnclassifiedItems" Width="1.5" PointX="6.375" PointY="25.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitUnclassifiedItems" Width="2.875" PointX="6.375" PointY="25.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitInadequatePackages" Width="1.5" PointX="25.375" PointY="7.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSetToExport" Width="2.5" PointX="26.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_CreateEx9" Width="1.5" PointX="25.375" PointY="11.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

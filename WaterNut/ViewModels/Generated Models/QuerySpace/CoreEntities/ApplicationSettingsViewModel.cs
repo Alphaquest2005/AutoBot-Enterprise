@@ -126,7 +126,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<ApplicationSettings> e)
+        internal virtual void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<ApplicationSettings> e)
         {
             if(BaseViewModel.Instance.CurrentApplicationSettings != null) BaseViewModel.Instance.CurrentApplicationSettings.PropertyChanged += CurrentApplicationSettings__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentApplicationSettings);
@@ -135,7 +135,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentApplicationSettings__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnApplicationSettingsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnApplicationSettingsChanged(object sender, NotificationEventArgs e)
         {
             _ApplicationSettings.Refresh();
 			NotifyPropertyChanged(x => this.ApplicationSettings);

@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentAdjustmentExChanged(object sender, NotificationEventArgs<AdjustmentEx> e)
+        internal virtual void OnCurrentAdjustmentExChanged(object sender, NotificationEventArgs<AdjustmentEx> e)
         {
             if(BaseViewModel.Instance.CurrentAdjustmentEx != null) BaseViewModel.Instance.CurrentAdjustmentEx.PropertyChanged += CurrentAdjustmentEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAdjustmentEx);
@@ -141,7 +141,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentAdjustmentEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAdjustmentEx.ApplicationSettings);
                     //}
                  } 
-        internal void OnAdjustmentExesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAdjustmentExesChanged(object sender, NotificationEventArgs e)
         {
             _AdjustmentExes.Refresh();
 			NotifyPropertyChanged(x => this.AdjustmentExes);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

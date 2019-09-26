@@ -23,7 +23,6 @@ namespace EntryDataQS.Business.Entities
         {
             this.AsycudaDocumentEntryDatas = new List<AsycudaDocumentEntryData>();
             this.AsycudaDocumentSetEntryDatas = new List<AsycudaDocumentSetEntryData>();
-            this.ContainerEntryDatas = new List<ContainerEntryData>();
         }
 
         [DataMember]
@@ -255,8 +254,6 @@ namespace EntryDataQS.Business.Entities
         public List<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas { get; set; }
         [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryDatas { get; set; }
-        [DataMember]
-        public List<ContainerEntryData> ContainerEntryDatas { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -131,7 +131,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentSetEntryDataChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEntryData> e)
+        internal virtual void OnCurrentAsycudaDocumentSetEntryDataChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEntryData> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentSetEntryData != null) BaseViewModel.Instance.CurrentAsycudaDocumentSetEntryData.PropertyChanged += CurrentAsycudaDocumentSetEntryData__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetEntryData);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    //    if(EntryDatas.Contains(CurrentAsycudaDocumentSetEntryData.EntryData) == false) EntryDatas.Add(CurrentAsycudaDocumentSetEntryData.EntryData);
                     //}
                  } 
-        internal void OnAsycudaDocumentSetEntryDatasChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentSetEntryDatasChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentSetEntryDatas.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentSetEntryDatas);
@@ -156,7 +156,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 
  	
-		 internal void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
+		 internal virtual void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
 			{
 			if(ViewCurrentEntryDataEx == false) return;
 			if (e.Data == null || e.Data.InvoiceNo == null)
@@ -174,7 +174,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                 // SendMessage(MessageToken.AsycudaDocumentSetEntryDatasChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentSetEntryDatasChanged));
                 			}
 	
-		 internal void OnCurrentEntryDataChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryData> e)
+		 internal virtual void OnCurrentEntryDataChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryData> e)
 			{
 			if(ViewCurrentEntryData == false) return;
 			if (e.Data == null || e.Data.EntryDataId == null)

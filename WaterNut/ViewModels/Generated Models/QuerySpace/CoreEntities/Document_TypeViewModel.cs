@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentDocument_TypeChanged(object sender, NotificationEventArgs<Document_Type> e)
+        internal virtual void OnCurrentDocument_TypeChanged(object sender, NotificationEventArgs<Document_Type> e)
         {
             if(BaseViewModel.Instance.CurrentDocument_Type != null) BaseViewModel.Instance.CurrentDocument_Type.PropertyChanged += CurrentDocument_Type__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentDocument_Type);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentDocument_Type__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnDocument_TypeChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnDocument_TypeChanged(object sender, NotificationEventArgs e)
         {
             _Document_Type.Refresh();
 			NotifyPropertyChanged(x => this.Document_Type);

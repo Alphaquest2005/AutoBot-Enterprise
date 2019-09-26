@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_SubmitInadequatePackagesChanged(object sender, NotificationEventArgs<TODO_SubmitInadequatePackages> e)
+        internal virtual void OnCurrentTODO_SubmitInadequatePackagesChanged(object sender, NotificationEventArgs<TODO_SubmitInadequatePackages> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_SubmitInadequatePackages != null) BaseViewModel.Instance.CurrentTODO_SubmitInadequatePackages.PropertyChanged += CurrentTODO_SubmitInadequatePackages__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_SubmitInadequatePackages);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_SubmitInadequatePackages__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_SubmitInadequatePackagesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_SubmitInadequatePackagesChanged(object sender, NotificationEventArgs e)
         {
             _TODO_SubmitInadequatePackages.Refresh();
 			NotifyPropertyChanged(x => this.TODO_SubmitInadequatePackages);

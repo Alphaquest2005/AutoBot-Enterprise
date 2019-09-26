@@ -130,7 +130,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
-        internal void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
+        internal virtual void OnCurrentPreviousDocumentItemChanged(object sender, NotificationEventArgs<PreviousDocumentItem> e)
         {
             if(BaseViewModel.Instance.CurrentPreviousDocumentItem != null) BaseViewModel.Instance.CurrentPreviousDocumentItem.PropertyChanged += CurrentPreviousDocumentItem__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentPreviousDocumentItem);
@@ -147,7 +147,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentPreviousDocumentItem.ApplicationSettings) == false) ApplicationSettings.Add(CurrentPreviousDocumentItem.ApplicationSettings);
                     //}
                  } 
-        internal void OnPreviousDocumentItemsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnPreviousDocumentItemsChanged(object sender, NotificationEventArgs e)
         {
             _PreviousDocumentItems.Refresh();
 			NotifyPropertyChanged(x => this.PreviousDocumentItems);
@@ -155,7 +155,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
 
  	
-		 internal void OnCurrentPreviousDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<PreviousDocument> e)
+		 internal virtual void OnCurrentPreviousDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<PreviousDocument> e)
 			{
 			if(ViewCurrentPreviousDocument == false) return;
 			if (e.Data == null || e.Data.ASYCUDA_Id == null)
@@ -174,7 +174,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

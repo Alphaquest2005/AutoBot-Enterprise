@@ -18,9 +18,10 @@ namespace EntryDataQS.Client.Services
 
     public partial class EntryDataExClient 
     {
-        public async Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice)
+        public async Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice,
+            bool combineEntryDataInSameFile)
         {
-            await Channel.AddDocToEntry(lst, docSetId, perInvoice).ConfigureAwait(false);
+            await Channel.AddDocToEntry(lst, docSetId, perInvoice, combineEntryDataInSameFile).ConfigureAwait(false);
         }
 
 

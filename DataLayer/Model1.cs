@@ -106,6 +106,8 @@ using System.Xml.Serialization;
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "InventoryItemsExxcuda_Inventory_Item", "InventoryItemsEx", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.InventoryItemsEx), "xcuda_Inventory_Item", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Inventory_Item), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_Attachments", "Attachments", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.Attachments), "xcuda_Attachments", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Attachments), true)]
 [assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_xcuda_Attachments_xcuda_Attached_documents", "xcuda_Attached_documents", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.xcuda_Attached_documents), "xcuda_Attachments", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.xcuda_Attachments), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Container_AsycudaDocumentSet", "AsycudaDocumentSet", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.One, typeof(WaterNut.DataLayer.AsycudaDocumentSet), "Container", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.Container), true)]
+[assembly: EdmRelationshipAttribute("WaterNutDB.DataLayer", "FK_Containers_PackageTypes", "PackageTypes", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.ZeroOrOne, typeof(WaterNut.DataLayer.PackageTypes), "Container", System.Data.Entity.Core.Metadata.Edm.RelationshipMultiplicity.Many, typeof(WaterNut.DataLayer.Container), true)]
 
 #endregion
 
@@ -1500,6 +1502,38 @@ namespace WaterNut.DataLayer
             }
         }
         private ObjectSet<xcuda_Attachments> _xcuda_Attachments;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<Container> Container
+        {
+            get
+            {
+                if ((_Container == null))
+                {
+                    _Container = base.CreateObjectSet<Container>("Container");
+                }
+                return _Container;
+            }
+        }
+        private ObjectSet<Container> _Container;
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        public ObjectSet<PackageTypes> PackageTypes
+        {
+            get
+            {
+                if ((_PackageTypes == null))
+                {
+                    _PackageTypes = base.CreateObjectSet<PackageTypes>("PackageTypes");
+                }
+                return _PackageTypes;
+            }
+        }
+        private ObjectSet<PackageTypes> _PackageTypes;
 
         #endregion
 
@@ -2175,6 +2209,22 @@ namespace WaterNut.DataLayer
         public void AddToxcuda_Attachments(xcuda_Attachments xcuda_Attachments)
         {
             base.AddObject("xcuda_Attachments", xcuda_Attachments);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the Container EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToContainer(Container container)
+        {
+            base.AddObject("Container", container);
+        }
+    
+        /// <summary>
+        /// Deprecated Method for adding a new object to the PackageTypes EntitySet. Consider using the .Add method of the associated ObjectSet&lt;T&gt; property instead.
+        /// </summary>
+        public void AddToPackageTypes(PackageTypes packageTypes)
+        {
+            base.AddObject("PackageTypes", packageTypes);
         }
 
         #endregion
@@ -3470,6 +3520,30 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Int32> _MaxLines;
         partial void OnMaxLinesChanging(Nullable<global::System.Int32> value);
         partial void OnMaxLinesChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String LocationOfGoods
+        {
+            get
+            {
+                return _LocationOfGoods;
+            }
+            set
+            {
+                OnLocationOfGoodsChanging(value);
+                ReportPropertyChanging("LocationOfGoods");
+                _LocationOfGoods = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("LocationOfGoods");
+                OnLocationOfGoodsChanged();
+            }
+        }
+        private global::System.String _LocationOfGoods;
+        partial void OnLocationOfGoodsChanging(global::System.String value);
+        partial void OnLocationOfGoodsChanged();
 
         #endregion
 
@@ -3569,6 +3643,44 @@ namespace WaterNut.DataLayer
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_ASYCUDA_ExtendedProperties>("WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet", "xcuda_ASYCUDA_ExtendedProperties", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_Container_AsycudaDocumentSet", "Container")]
+        public Container Container
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Container>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "Container").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Container>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "Container").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<Container> ContainerReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<Container>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "Container");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<Container>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "Container", value);
                 }
             }
         }
@@ -3729,6 +3841,430 @@ namespace WaterNut.DataLayer
                 if ((value != null))
                 {
                     ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<xcuda_Attachments>("WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments", "xcuda_Attachments", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="Container")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class Container : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new Container object.
+        /// </summary>
+        /// <param name="asycudaDocumentSetId">Initial value of the AsycudaDocumentSetId property.</param>
+        public static Container CreateContainer(global::System.Int32 asycudaDocumentSetId)
+        {
+            Container container = new Container();
+            container.AsycudaDocumentSetId = asycudaDocumentSetId;
+            return container;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Container_identity
+        {
+            get
+            {
+                return _Container_identity;
+            }
+            set
+            {
+                OnContainer_identityChanging(value);
+                ReportPropertyChanging("Container_identity");
+                _Container_identity = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Container_identity");
+                OnContainer_identityChanged();
+            }
+        }
+        private global::System.String _Container_identity;
+        partial void OnContainer_identityChanging(global::System.String value);
+        partial void OnContainer_identityChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Container_type
+        {
+            get
+            {
+                return _Container_type;
+            }
+            set
+            {
+                OnContainer_typeChanging(value);
+                ReportPropertyChanging("Container_type");
+                _Container_type = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Container_type");
+                OnContainer_typeChanged();
+            }
+        }
+        private global::System.String _Container_type;
+        partial void OnContainer_typeChanging(global::System.String value);
+        partial void OnContainer_typeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Empty_full_indicator
+        {
+            get
+            {
+                return _Empty_full_indicator;
+            }
+            set
+            {
+                OnEmpty_full_indicatorChanging(value);
+                ReportPropertyChanging("Empty_full_indicator");
+                _Empty_full_indicator = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Empty_full_indicator");
+                OnEmpty_full_indicatorChanged();
+            }
+        }
+        private global::System.String _Empty_full_indicator;
+        partial void OnEmpty_full_indicatorChanging(global::System.String value);
+        partial void OnEmpty_full_indicatorChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Double> Gross_weight
+        {
+            get
+            {
+                return _Gross_weight;
+            }
+            set
+            {
+                OnGross_weightChanging(value);
+                ReportPropertyChanging("Gross_weight");
+                _Gross_weight = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Gross_weight");
+                OnGross_weightChanged();
+            }
+        }
+        private Nullable<global::System.Double> _Gross_weight;
+        partial void OnGross_weightChanging(Nullable<global::System.Double> value);
+        partial void OnGross_weightChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Goods_description
+        {
+            get
+            {
+                return _Goods_description;
+            }
+            set
+            {
+                OnGoods_descriptionChanging(value);
+                ReportPropertyChanging("Goods_description");
+                _Goods_description = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Goods_description");
+                OnGoods_descriptionChanged();
+            }
+        }
+        private global::System.String _Goods_description;
+        partial void OnGoods_descriptionChanging(global::System.String value);
+        partial void OnGoods_descriptionChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Packages_type
+        {
+            get
+            {
+                return _Packages_type;
+            }
+            set
+            {
+                OnPackages_typeChanging(value);
+                ReportPropertyChanging("Packages_type");
+                _Packages_type = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Packages_type");
+                OnPackages_typeChanged();
+            }
+        }
+        private global::System.String _Packages_type;
+        partial void OnPackages_typeChanging(global::System.String value);
+        partial void OnPackages_typeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Packages_number
+        {
+            get
+            {
+                return _Packages_number;
+            }
+            set
+            {
+                OnPackages_numberChanging(value);
+                ReportPropertyChanging("Packages_number");
+                _Packages_number = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Packages_number");
+                OnPackages_numberChanged();
+            }
+        }
+        private global::System.String _Packages_number;
+        partial void OnPackages_numberChanging(global::System.String value);
+        partial void OnPackages_numberChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Double> Packages_weight
+        {
+            get
+            {
+                return _Packages_weight;
+            }
+            set
+            {
+                OnPackages_weightChanging(value);
+                ReportPropertyChanging("Packages_weight");
+                _Packages_weight = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("Packages_weight");
+                OnPackages_weightChanged();
+            }
+        }
+        private Nullable<global::System.Double> _Packages_weight;
+        partial void OnPackages_weightChanging(Nullable<global::System.Double> value);
+        partial void OnPackages_weightChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.Int32 AsycudaDocumentSetId
+        {
+            get
+            {
+                return _AsycudaDocumentSetId;
+            }
+            set
+            {
+                if (_AsycudaDocumentSetId != value)
+                {
+                    OnAsycudaDocumentSetIdChanging(value);
+                    ReportPropertyChanging("AsycudaDocumentSetId");
+                    _AsycudaDocumentSetId = StructuralObject.SetValidValue(value);
+                    ReportPropertyChanged("AsycudaDocumentSetId");
+                    OnAsycudaDocumentSetIdChanged();
+                }
+            }
+        }
+        private global::System.Int32 _AsycudaDocumentSetId;
+        partial void OnAsycudaDocumentSetIdChanging(global::System.Int32 value);
+        partial void OnAsycudaDocumentSetIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Double> TotalValue
+        {
+            get
+            {
+                return _TotalValue;
+            }
+            set
+            {
+                OnTotalValueChanging(value);
+                ReportPropertyChanging("TotalValue");
+                _TotalValue = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("TotalValue");
+                OnTotalValueChanged();
+            }
+        }
+        private Nullable<global::System.Double> _TotalValue;
+        partial void OnTotalValueChanging(Nullable<global::System.Double> value);
+        partial void OnTotalValueChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> ShipDate
+        {
+            get
+            {
+                return _ShipDate;
+            }
+            set
+            {
+                OnShipDateChanging(value);
+                ReportPropertyChanging("ShipDate");
+                _ShipDate = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ShipDate");
+                OnShipDateChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _ShipDate;
+        partial void OnShipDateChanging(Nullable<global::System.DateTime> value);
+        partial void OnShipDateChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.DateTime> DeliveryDate
+        {
+            get
+            {
+                return _DeliveryDate;
+            }
+            set
+            {
+                OnDeliveryDateChanging(value);
+                ReportPropertyChanging("DeliveryDate");
+                _DeliveryDate = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("DeliveryDate");
+                OnDeliveryDateChanged();
+            }
+        }
+        private Nullable<global::System.DateTime> _DeliveryDate;
+        partial void OnDeliveryDateChanging(Nullable<global::System.DateTime> value);
+        partial void OnDeliveryDateChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String Seal
+        {
+            get
+            {
+                return _Seal;
+            }
+            set
+            {
+                OnSealChanging(value);
+                ReportPropertyChanging("Seal");
+                _Seal = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("Seal");
+                OnSealChanged();
+            }
+        }
+        private global::System.String _Seal;
+        partial void OnSealChanging(global::System.String value);
+        partial void OnSealChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_Container_AsycudaDocumentSet", "AsycudaDocumentSet")]
+        public AsycudaDocumentSet AsycudaDocumentSet
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<AsycudaDocumentSet>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "AsycudaDocumentSet").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<AsycudaDocumentSet>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "AsycudaDocumentSet").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<AsycudaDocumentSet> AsycudaDocumentSetReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<AsycudaDocumentSet>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "AsycudaDocumentSet");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<AsycudaDocumentSet>("WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet", "AsycudaDocumentSet", value);
+                }
+            }
+        }
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_Containers_PackageTypes", "PackageTypes")]
+        public PackageTypes PackageTypes
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<PackageTypes>("WaterNutDB.DataLayer.FK_Containers_PackageTypes", "PackageTypes").Value;
+            }
+            set
+            {
+                ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<PackageTypes>("WaterNutDB.DataLayer.FK_Containers_PackageTypes", "PackageTypes").Value = value;
+            }
+        }
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [BrowsableAttribute(false)]
+        [DataMemberAttribute()]
+        public EntityReference<PackageTypes> PackageTypesReference
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedReference<PackageTypes>("WaterNutDB.DataLayer.FK_Containers_PackageTypes", "PackageTypes");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedReference<PackageTypes>("WaterNutDB.DataLayer.FK_Containers_PackageTypes", "PackageTypes", value);
                 }
             }
         }
@@ -5328,6 +5864,112 @@ namespace WaterNut.DataLayer
     /// <summary>
     /// No Metadata Documentation available.
     /// </summary>
+    [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="PackageTypes")]
+    [Serializable()]
+    [DataContractAttribute(IsReference=true)]
+    public partial class PackageTypes : EntityObject
+    {
+        #region Factory Method
+    
+        /// <summary>
+        /// Create a new PackageTypes object.
+        /// </summary>
+        /// <param name="packageType">Initial value of the PackageType property.</param>
+        public static PackageTypes CreatePackageTypes(global::System.String packageType)
+        {
+            PackageTypes packageTypes = new PackageTypes();
+            packageTypes.PackageType = packageType;
+            return packageTypes;
+        }
+
+        #endregion
+
+        #region Simple Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=true, IsNullable=false)]
+        [DataMemberAttribute()]
+        public global::System.String PackageType
+        {
+            get
+            {
+                return _PackageType;
+            }
+            set
+            {
+                if (_PackageType != value)
+                {
+                    OnPackageTypeChanging(value);
+                    ReportPropertyChanging("PackageType");
+                    _PackageType = StructuralObject.SetValidValue(value, false);
+                    ReportPropertyChanged("PackageType");
+                    OnPackageTypeChanged();
+                }
+            }
+        }
+        private global::System.String _PackageType;
+        partial void OnPackageTypeChanging(global::System.String value);
+        partial void OnPackageTypeChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String PackageDescription
+        {
+            get
+            {
+                return _PackageDescription;
+            }
+            set
+            {
+                OnPackageDescriptionChanging(value);
+                ReportPropertyChanging("PackageDescription");
+                _PackageDescription = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("PackageDescription");
+                OnPackageDescriptionChanged();
+            }
+        }
+        private global::System.String _PackageDescription;
+        partial void OnPackageDescriptionChanging(global::System.String value);
+        partial void OnPackageDescriptionChanged();
+
+        #endregion
+
+        #region Navigation Properties
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [XmlIgnoreAttribute()]
+        [SoapIgnoreAttribute()]
+        [DataMemberAttribute()]
+        [EdmRelationshipNavigationPropertyAttribute("WaterNutDB.DataLayer", "FK_Containers_PackageTypes", "Container")]
+        public EntityCollection<Container> Container
+        {
+            get
+            {
+                return ((IEntityWithRelationships)this).RelationshipManager.GetRelatedCollection<Container>("WaterNutDB.DataLayer.FK_Containers_PackageTypes", "Container");
+            }
+            set
+            {
+                if ((value != null))
+                {
+                    ((IEntityWithRelationships)this).RelationshipManager.InitializeRelatedCollection<Container>("WaterNutDB.DataLayer.FK_Containers_PackageTypes", "Container", value);
+                }
+            }
+        }
+
+        #endregion
+
+    }
+    
+    /// <summary>
+    /// No Metadata Documentation available.
+    /// </summary>
     [EdmEntityTypeAttribute(NamespaceName="WaterNutDB.DataLayer", Name="TariffCategory")]
     [Serializable()]
     [DataContractAttribute(IsReference=true)]
@@ -6028,6 +6670,30 @@ namespace WaterNut.DataLayer
         private Nullable<global::System.Boolean> _Invalid;
         partial void OnInvalidChanging(Nullable<global::System.Boolean> value);
         partial void OnInvalidChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public global::System.String LicenseDescription
+        {
+            get
+            {
+                return _LicenseDescription;
+            }
+            set
+            {
+                OnLicenseDescriptionChanging(value);
+                ReportPropertyChanging("LicenseDescription");
+                _LicenseDescription = StructuralObject.SetValidValue(value, true);
+                ReportPropertyChanged("LicenseDescription");
+                OnLicenseDescriptionChanged();
+            }
+        }
+        private global::System.String _LicenseDescription;
+        partial void OnLicenseDescriptionChanging(global::System.String value);
+        partial void OnLicenseDescriptionChanged();
 
         #endregion
 

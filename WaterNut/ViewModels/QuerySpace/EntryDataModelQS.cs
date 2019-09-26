@@ -50,9 +50,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
             if (e.Data != null)
             {
-                vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
-                vloader.SetNavigationExpression("AsycudaDocumentSets",
-                    $"AsycudaDocumentSetId == {e.Data.AsycudaDocumentSetId}");
+                vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}" +
+                                           $" && AsycudaDocumentSetId == {e.Data.AsycudaDocumentSetId}";
+                //vloader.SetNavigationExpression("AsycudaDocumentSets",
+                //    $"AsycudaDocumentSetId == {e.Data.AsycudaDocumentSetId}");
                 EntryDataEx.Refresh();
             }
         }
@@ -77,7 +78,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                             new NotificationEventArgs(MessageToken.EntryDataExChanged));
         }
 
-        internal async Task AddDocToEntry(System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataEx> lst, bool perInvoice = false)
+        internal async Task AddDocToEntry(System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataEx> lst, bool perInvoice,bool combineEntryDataInSameFile)
         {
             StatusModel.Timer($"Creating Entries");
             var docSet = CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx;
@@ -86,7 +87,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                 MessageBox.Show("Please select a Document Set.");
                 return;
             }
-            await EntryDataExRepository.Instance.AddDocToEntry(lst.Select(x => x.InvoiceNo),docSet.AsycudaDocumentSetId, perInvoice).ConfigureAwait(false);
+            await EntryDataExRepository.Instance.AddDocToEntry(lst.Select(x => x.InvoiceNo),docSet.AsycudaDocumentSetId, perInvoice, combineEntryDataInSameFile).ConfigureAwait(false);
             //----- think this causing the docset to overwrite with empty one and not necessary
             //await AsycudaDocumentSetExRepository.Instance.SaveAsycudaDocumentSetEx(docSet).ConfigureAwait(false);
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,

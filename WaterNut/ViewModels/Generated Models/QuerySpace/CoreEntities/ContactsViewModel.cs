@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentContactsChanged(object sender, NotificationEventArgs<Contacts> e)
+        internal virtual void OnCurrentContactsChanged(object sender, NotificationEventArgs<Contacts> e)
         {
             if(BaseViewModel.Instance.CurrentContacts != null) BaseViewModel.Instance.CurrentContacts.PropertyChanged += CurrentContacts__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentContacts);
@@ -138,7 +138,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentContacts.ApplicationSettings) == false) ApplicationSettings.Add(CurrentContacts.ApplicationSettings);
                     //}
                  } 
-        internal void OnContactsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnContactsChanged(object sender, NotificationEventArgs e)
         {
             _Contacts.Refresh();
 			NotifyPropertyChanged(x => this.Contacts);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

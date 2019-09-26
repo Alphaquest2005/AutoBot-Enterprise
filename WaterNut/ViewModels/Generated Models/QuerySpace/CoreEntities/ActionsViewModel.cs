@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentActionsChanged(object sender, NotificationEventArgs<Actions> e)
+        internal virtual void OnCurrentActionsChanged(object sender, NotificationEventArgs<Actions> e)
         {
             if(BaseViewModel.Instance.CurrentActions != null) BaseViewModel.Instance.CurrentActions.PropertyChanged += CurrentActions__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentActions);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentActions__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnActionsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnActionsChanged(object sender, NotificationEventArgs e)
         {
             _Actions.Refresh();
 			NotifyPropertyChanged(x => this.Actions);

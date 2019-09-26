@@ -34,6 +34,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _ponumber;
+        [DataMember]
+        public string SupplierInvoiceNo 
+        {
+            get
+            {
+                return _supplierinvoiceno;
+            }
+            set
+            {
+                _supplierinvoiceno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _supplierinvoiceno;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

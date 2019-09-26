@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentEntryPreviousItemsChanged(object sender, NotificationEventArgs<EntryPreviousItems> e)
+        internal virtual void OnCurrentEntryPreviousItemsChanged(object sender, NotificationEventArgs<EntryPreviousItems> e)
         {
             if(BaseViewModel.Instance.CurrentEntryPreviousItems != null) BaseViewModel.Instance.CurrentEntryPreviousItems.PropertyChanged += CurrentEntryPreviousItems__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEntryPreviousItems);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(AsycudaDocumentItems.Contains(CurrentEntryPreviousItems.AsycudaDocumentItem) == false) AsycudaDocumentItems.Add(CurrentEntryPreviousItems.AsycudaDocumentItem);
                     //}
                  } 
-        internal void OnEntryPreviousItemsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEntryPreviousItemsChanged(object sender, NotificationEventArgs e)
         {
             _EntryPreviousItems.Refresh();
 			NotifyPropertyChanged(x => this.EntryPreviousItems);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
+		 internal virtual void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
 			{
 			if(ViewCurrentAsycudaDocumentItem == false) return;
 			if (e.Data == null || e.Data.Item_Id == null)

@@ -52,11 +52,21 @@ namespace WaterNut.Views
                 MessageBoxButton.YesNo);
             if (res == MessageBoxResult.Yes)
             {
-                await im.AddDocToEntry(lst, true).ConfigureAwait(false);
+                var res1 = MessageBox.Show("Do You Want Combine EntryData in Same File?", "Add Invoice To Document",
+                    MessageBoxButton.YesNo);
+                if (res1 == MessageBoxResult.Yes)
+                {
+
+                    await im.AddDocToEntry(lst, true, true).ConfigureAwait(false);
+                }
+                else
+                {
+                    await im.AddDocToEntry(lst, true, false).ConfigureAwait(false);
+                }
             }
             else
             {
-                await im.AddDocToEntry(lst, false).ConfigureAwait(false);
+                await im.AddDocToEntry(lst, false, false).ConfigureAwait(false);
             }
             
 

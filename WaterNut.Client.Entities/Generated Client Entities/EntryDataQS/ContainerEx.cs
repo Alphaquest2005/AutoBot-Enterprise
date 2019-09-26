@@ -42,9 +42,6 @@ namespace EntryDataQS.Client.Entities
                 containerex = value;
             }
         }
-        
-
-
        
        
                 
@@ -319,60 +316,6 @@ public string ContainerTypeDescription
 			}
 		}
      
-
-        ObservableCollection<ContainerEntryData> _ContainerEntryDatas = null;
-        public  ObservableCollection<ContainerEntryData> ContainerEntryDatas
-		{
-            
-		    get 
-				{ 
-					if(_ContainerEntryDatas != null) return _ContainerEntryDatas;
-					//if (this.containerex.ContainerEntryDatas == null) Debugger.Break();
-					if(this.containerex.ContainerEntryDatas != null)
-					{
-						_ContainerEntryDatas = new ObservableCollection<ContainerEntryData>(this.containerex.ContainerEntryDatas.Select(x => new ContainerEntryData(x)));
-					}
-					
-						_ContainerEntryDatas.CollectionChanged += ContainerEntryDatas_CollectionChanged; 
-					
-					return _ContainerEntryDatas; 
-				}
-			set
-			{
-			    if (Equals(value, _ContainerEntryDatas)) return;
-				if (value != null)
-					this.containerex.ContainerEntryDatas = new ChangeTrackingCollection<DTO.ContainerEntryData>(value.Select(x => x.DTO).ToList());
-                _ContainerEntryDatas = value;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_ContainerEntryDatas != null)
-				_ContainerEntryDatas.CollectionChanged += ContainerEntryDatas_CollectionChanged;               
-				NotifyPropertyChanged("ContainerEntryDatas");
-			}
-		}
-        
-        void ContainerEntryDatas_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (ContainerEntryData itm in e.NewItems)
-                    {
-                        if (itm != null)
-                        containerex.ContainerEntryDatas.Add(itm.DTO);
-                    }
-                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (ContainerEntryData itm in e.OldItems)
-                    {
-                        if (itm != null)
-                        containerex.ContainerEntryDatas.Remove(itm.DTO);
-                    }
-					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                
-            }
-        }
 
 
         ChangeTrackingCollection<DTO.ContainerEx> _changeTracker;    

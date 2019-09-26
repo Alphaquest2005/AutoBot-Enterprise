@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentSetExChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
+        internal virtual void OnCurrentAsycudaDocumentSetExChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentSetEx != null) BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.PropertyChanged += CurrentAsycudaDocumentSetEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetEx);
@@ -149,7 +149,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(Document_Type.Contains(CurrentAsycudaDocumentSetEx.Document_Type) == false) Document_Type.Add(CurrentAsycudaDocumentSetEx.Document_Type);
                     //}
                  } 
-        internal void OnAsycudaDocumentSetExsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentSetExsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentSetExs.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentSetExs);
@@ -157,7 +157,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+		 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 			{
 			if(ViewCurrentApplicationSettings == false) return;
 			if (e.Data == null || e.Data.ApplicationSettingsId == null)
@@ -178,7 +178,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentCustoms_ProcedureChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Customs_Procedure> e)
+                internal virtual void OnCurrentCustoms_ProcedureChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Customs_Procedure> e)
 				{
 				if (e.Data == null || e.Data.Customs_ProcedureId == null)
                 {
@@ -192,7 +192,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AsycudaDocumentSetExs.Refresh();
 					NotifyPropertyChanged(x => this.AsycudaDocumentSetExs);
 				}
-                internal void OnCurrentDocument_TypeChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Document_Type> e)
+                internal virtual void OnCurrentDocument_TypeChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Document_Type> e)
 				{
 				if (e.Data == null || e.Data.Document_TypeId == null)
                 {
@@ -656,6 +656,60 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _locationOfGoodsFilter;
+        public string LocationOfGoodsFilter
+        {
+            get
+            {
+                return _locationOfGoodsFilter;
+            }
+            set
+            {
+                _locationOfGoodsFilter = value;
+				NotifyPropertyChanged(x => LocationOfGoodsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _licenseLinesFilter;
+        public Int32? LicenseLinesFilter
+        {
+            get
+            {
+                return _licenseLinesFilter;
+            }
+            set
+            {
+                _licenseLinesFilter = value;
+				NotifyPropertyChanged(x => LicenseLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _invoiceTotalFilter;
+        public Double? InvoiceTotalFilter
+        {
+            get
+            {
+                return _invoiceTotalFilter;
+            }
+            set
+            {
+                _invoiceTotalFilter = value;
+				NotifyPropertyChanged(x => InvoiceTotalFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -780,7 +834,17 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));				 
 
 					if(MaxLinesFilter.HasValue)
-						res.Append(" && " + string.Format("MaxLines == {0}",  MaxLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("MaxLines == {0}",  MaxLinesFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(LocationOfGoodsFilter) == false)
+						res.Append(" && " + string.Format("LocationOfGoods.Contains(\"{0}\")",  LocationOfGoodsFilter));						
+ 
+
+					if(LicenseLinesFilter.HasValue)
+						res.Append(" && " + string.Format("LicenseLines == {0}",  LicenseLinesFilter.ToString()));				 
+
+					if(InvoiceTotalFilter.HasValue)
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -863,7 +927,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalLines = x.TotalLines ,
                     
  
-                    MaxLines = x.MaxLines 
+                    MaxLines = x.MaxLines ,
+                    
+ 
+                    LocationOfGoods = x.LocationOfGoods ,
+                    
+ 
+                    LicenseLines = x.LicenseLines ,
+                    
+ 
+                    InvoiceTotal = x.InvoiceTotal 
                     
                 }).ToList()
             };
@@ -937,6 +1010,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> MaxLines { get; set; } 
+                    
+ 
+                    public string LocationOfGoods { get; set; } 
+                    
+ 
+                    public Nullable<int> LicenseLines { get; set; } 
+                    
+ 
+                    public Nullable<double> InvoiceTotal { get; set; } 
                     
         }
 

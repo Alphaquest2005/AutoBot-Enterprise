@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_SubmitDiscrepanciesToCustomsChanged(object sender, NotificationEventArgs<TODO_SubmitDiscrepanciesToCustoms> e)
+        internal virtual void OnCurrentTODO_SubmitDiscrepanciesToCustomsChanged(object sender, NotificationEventArgs<TODO_SubmitDiscrepanciesToCustoms> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_SubmitDiscrepanciesToCustoms != null) BaseViewModel.Instance.CurrentTODO_SubmitDiscrepanciesToCustoms.PropertyChanged += CurrentTODO_SubmitDiscrepanciesToCustoms__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_SubmitDiscrepanciesToCustoms);
@@ -138,7 +138,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentTODO_SubmitDiscrepanciesToCustoms.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_SubmitDiscrepanciesToCustoms.ApplicationSettings);
                     //}
                  } 
-        internal void OnTODO_SubmitDiscrepanciesToCustomsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_SubmitDiscrepanciesToCustomsChanged(object sender, NotificationEventArgs e)
         {
             _TODO_SubmitDiscrepanciesToCustoms.Refresh();
 			NotifyPropertyChanged(x => this.TODO_SubmitDiscrepanciesToCustoms);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

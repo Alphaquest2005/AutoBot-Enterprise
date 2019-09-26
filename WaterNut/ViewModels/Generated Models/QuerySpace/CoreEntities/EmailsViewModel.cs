@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentEmailsChanged(object sender, NotificationEventArgs<Emails> e)
+        internal virtual void OnCurrentEmailsChanged(object sender, NotificationEventArgs<Emails> e)
         {
             if(BaseViewModel.Instance.CurrentEmails != null) BaseViewModel.Instance.CurrentEmails.PropertyChanged += CurrentEmails__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEmails);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentEmails__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnEmailsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEmailsChanged(object sender, NotificationEventArgs e)
         {
             _Emails.Refresh();
 			NotifyPropertyChanged(x => this.Emails);

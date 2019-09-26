@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentInventoryItemXChanged(object sender, NotificationEventArgs<InventoryItemX> e)
+        internal virtual void OnCurrentInventoryItemXChanged(object sender, NotificationEventArgs<InventoryItemX> e)
         {
             if(BaseViewModel.Instance.CurrentInventoryItemX != null) BaseViewModel.Instance.CurrentInventoryItemX.PropertyChanged += CurrentInventoryItemX__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentInventoryItemX);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentInventoryItemX.ApplicationSettings) == false) ApplicationSettings.Add(CurrentInventoryItemX.ApplicationSettings);
                     //}
                  } 
-        internal void OnInventoryItemXChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnInventoryItemXChanged(object sender, NotificationEventArgs e)
         {
             _InventoryItemX.Refresh();
 			NotifyPropertyChanged(x => this.InventoryItemX);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+		 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 			{
 			if(ViewCurrentApplicationSettings == false) return;
 			if (e.Data == null || e.Data.ApplicationSettingsId == null)

@@ -74,23 +74,6 @@ public Nullable<double> Quantity
 		}
      
 
-       
-       
-                
-                [MaxLength(999, ErrorMessage = "TariffCodeDescription has a max length of 999 letters ")]
-public string TariffCodeDescription
-		{ 
-		    get { return this.todo_licensetoxml.TariffCodeDescription; }
-			set
-			{
-			    if (value == this.todo_licensetoxml.TariffCodeDescription) return;
-				this.todo_licensetoxml.TariffCodeDescription = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("TariffCodeDescription");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
 public int AsycudaDocumentSetId
@@ -185,6 +168,23 @@ public string EntryDataId
 				this.todo_licensetoxml.EntryDataId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EntryDataId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "LicenseDescription has a max length of 50 letters ")]
+public string LicenseDescription
+		{ 
+		    get { return this.todo_licensetoxml.LicenseDescription; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.LicenseDescription) return;
+				this.todo_licensetoxml.LicenseDescription = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LicenseDescription");
 			}
 		}
      

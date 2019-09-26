@@ -24,7 +24,6 @@ namespace EntryDataQS.Business.Entities
             this.AsycudaDocumentSets = new List<AsycudaDocumentSetEntryData>();
             this.AsycudaDocuments = new List<AsycudaDocumentEntryData>();
             this.EntryDataDetailsExs = new List<EntryDataDetailsEx>();
-            this.ContainerEntryDatas = new List<ContainerEntryData>();
         }
 
         [DataMember]
@@ -238,13 +237,101 @@ namespace EntryDataQS.Business.Entities
         }
         double _expectedtotal;
         [DataMember]
+        public Nullable<int> ClassifiedLines 
+        {
+            get
+            {
+                return _classifiedlines;
+            }
+            set
+            {
+                _classifiedlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _classifiedlines;
+        [DataMember]
+        public int AsycudaDocumentSetId 
+        {
+            get
+            {
+                return _asycudadocumentsetid;
+            }
+            set
+            {
+                _asycudadocumentsetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycudadocumentsetid;
+        [DataMember]
+        public double TotalInternalFreight 
+        {
+            get
+            {
+                return _totalinternalfreight;
+            }
+            set
+            {
+                _totalinternalfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _totalinternalfreight;
+        [DataMember]
+        public double TotalInternalInsurance 
+        {
+            get
+            {
+                return _totalinternalinsurance;
+            }
+            set
+            {
+                _totalinternalinsurance = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _totalinternalinsurance;
+        [DataMember]
+        public double TotalOtherCost 
+        {
+            get
+            {
+                return _totalothercost;
+            }
+            set
+            {
+                _totalothercost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _totalothercost;
+        [DataMember]
+        public double TotalDeductions 
+        {
+            get
+            {
+                return _totaldeductions;
+            }
+            set
+            {
+                _totaldeductions = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _totaldeductions;
+        [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }
         [DataMember]
         public List<EntryDataDetailsEx> EntryDataDetailsExs { get; set; }
-        [DataMember]
-        public List<ContainerEntryData> ContainerEntryDatas { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

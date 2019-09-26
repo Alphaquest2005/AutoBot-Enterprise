@@ -434,6 +434,53 @@ public Nullable<int> MaxLines
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "LocationOfGoods has a max length of 50 letters ")]
+public string LocationOfGoods
+		{ 
+		    get { return this.asycudadocumentsetex.LocationOfGoods; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.LocationOfGoods) return;
+				this.asycudadocumentsetex.LocationOfGoods = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LocationOfGoods");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> LicenseLines
+		{ 
+		    get { return this.asycudadocumentsetex.LicenseLines; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.LicenseLines) return;
+				this.asycudadocumentsetex.LicenseLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LicenseLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> InvoiceTotal
+		{ 
+		    get { return this.asycudadocumentsetex.InvoiceTotal; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.InvoiceTotal) return;
+				this.asycudadocumentsetex.InvoiceTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceTotal");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocument> _AsycudaDocuments = null;
         public  ObservableCollection<AsycudaDocument> AsycudaDocuments
 		{

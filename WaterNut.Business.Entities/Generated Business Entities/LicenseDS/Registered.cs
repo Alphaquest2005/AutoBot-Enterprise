@@ -49,6 +49,21 @@ namespace LicenseDS.Business.Entities
             }
         }
         string _sourcefile;
+        [DataMember]
+        public string DocumentReference 
+        {
+            get
+            {
+                return _documentreference;
+            }
+            set
+            {
+                _documentreference = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documentreference;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

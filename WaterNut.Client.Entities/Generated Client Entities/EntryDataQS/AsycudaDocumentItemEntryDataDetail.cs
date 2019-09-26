@@ -138,6 +138,21 @@ public Nullable<double> Quantity
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ImportComplete is required")]
+       
+public bool ImportComplete
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.ImportComplete; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.ImportComplete) return;
+				this.asycudadocumentitementrydatadetail.ImportComplete = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ImportComplete");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaDocumentItemEntryDataDetail> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaDocumentItemEntryDataDetail> ChangeTracker

@@ -131,7 +131,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        internal void OnCurrentTariffCategoryCodeSuppUnitChanged(object sender, NotificationEventArgs<TariffCategoryCodeSuppUnit> e)
+        internal virtual void OnCurrentTariffCategoryCodeSuppUnitChanged(object sender, NotificationEventArgs<TariffCategoryCodeSuppUnit> e)
         {
             if(BaseViewModel.Instance.CurrentTariffCategoryCodeSuppUnit != null) BaseViewModel.Instance.CurrentTariffCategoryCodeSuppUnit.PropertyChanged += CurrentTariffCategoryCodeSuppUnit__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTariffCategoryCodeSuppUnit);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                    //    if(TariffSupUnitLkps.Contains(CurrentTariffCategoryCodeSuppUnit.TariffSupUnitLkps) == false) TariffSupUnitLkps.Add(CurrentTariffCategoryCodeSuppUnit.TariffSupUnitLkps);
                     //}
                  } 
-        internal void OnTariffCategoryCodeSuppUnitChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTariffCategoryCodeSuppUnitChanged(object sender, NotificationEventArgs e)
         {
             _TariffCategoryCodeSuppUnit.Refresh();
 			NotifyPropertyChanged(x => this.TariffCategoryCodeSuppUnit);
@@ -156,7 +156,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
 
  	
-		 internal void OnCurrentTariffCategoryChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffCategory> e)
+		 internal virtual void OnCurrentTariffCategoryChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffCategory> e)
 			{
 			if(ViewCurrentTariffCategory == false) return;
 			if (e.Data == null || e.Data.TariffCategoryCode == null)
@@ -176,7 +176,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                 BaseViewModel.Instance.CurrentTariffCategoryCodeSuppUnit = null;
 			}
 	
-		 internal void OnCurrentTariffSupUnitLkpsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffSupUnitLkps> e)
+		 internal virtual void OnCurrentTariffSupUnitLkpsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffSupUnitLkps> e)
 			{
 			if(ViewCurrentTariffSupUnitLkps == false) return;
 			if (e.Data == null || e.Data.Id == null)

@@ -193,21 +193,6 @@ public string Declarant_Reference_Number
 
        
        [NumberValidationAttribute]
-public Nullable<int> Invoices
-		{ 
-		    get { return this.todo_podocset.Invoices; }
-			set
-			{
-			    if (value == this.todo_podocset.Invoices) return;
-				this.todo_podocset.Invoices = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Invoices");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
 public Nullable<int> TotalInvoices
 		{ 
 		    get { return this.todo_podocset.TotalInvoices; }
@@ -217,6 +202,21 @@ public Nullable<int> TotalInvoices
 				this.todo_podocset.TotalInvoices = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("TotalInvoices");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> DocumentsCount
+		{ 
+		    get { return this.todo_podocset.DocumentsCount; }
+			set
+			{
+			    if (value == this.todo_podocset.DocumentsCount) return;
+				this.todo_podocset.DocumentsCount = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DocumentsCount");
 			}
 		}
      

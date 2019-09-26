@@ -103,6 +103,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, OnCurrentTODO_ERRReport_UnmappedItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, OnCurrentTODO_LicenseToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetToExportIDChanged, OnCurrentTODO_PODocSetToExportIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentToDo_POToXMLIDChanged, OnCurrentToDo_POToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged);
@@ -166,6 +167,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_ERRReport_UnmappedItems>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged, OnCurrentTODO_ERRReport_UnmappedItemsChanged);
                         RegisterToReceiveMessages<TODO_LicenseToXML>(MessageToken.CurrentTODO_LicenseToXMLChanged, OnCurrentTODO_LicenseToXMLChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
+                        RegisterToReceiveMessages<TODO_PODocSetToExport>(MessageToken.CurrentTODO_PODocSetToExportChanged, OnCurrentTODO_PODocSetToExportChanged);
                         RegisterToReceiveMessages<ToDo_POToXML>(MessageToken.CurrentToDo_POToXMLChanged, OnCurrentToDo_POToXMLChanged);
                         RegisterToReceiveMessages<TODO_SubmitDiscrepanciesToCustoms>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsChanged);
                         RegisterToReceiveMessages<TODO_SubmitDocSetWithIncompleteInvoices>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged);
@@ -1542,6 +1544,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_PODocSetID)) BeginSendMessage(MessageToken.CurrentTODO_PODocSetIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_PODocSetIDChanged, _currentTODO_PODocSetID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_PODocSetID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_PODocSetToExportIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_PODocSetToExportRepository ctx = new TODO_PODocSetToExportRepository())
+                            {
+                                CurrentTODO_PODocSetToExport = await ctx.GetTODO_PODocSetToExport(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_PODocSetToExport);
+                        }
+
+                        private  string _currentTODO_PODocSetToExportID = "";
+                        public string CurrentTODO_PODocSetToExportID
+                        {
+                            get
+                            {
+                                return _currentTODO_PODocSetToExportID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_PODocSetToExportID != value)
+                                {
+                                    _currentTODO_PODocSetToExportID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_PODocSetToExportID)) BeginSendMessage(MessageToken.CurrentTODO_PODocSetToExportIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_PODocSetToExportIDChanged, _currentTODO_PODocSetToExportID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_PODocSetToExportID);  
                                 }
                             }
                         }
@@ -4346,6 +4375,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_PODocSet = value;
 					if(_vcurrentTODO_PODocSet != null) CurrentTODO_PODocSet = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_PODocSet);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_PODocSetToExportChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PODocSetToExport> e)
+        {
+            //CurrentTODO_PODocSetToExport = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_PODocSetToExport);
+        }
+
+        private  TODO_PODocSetToExport _currentTODO_PODocSetToExport;
+        public TODO_PODocSetToExport CurrentTODO_PODocSetToExport
+        {
+            get
+            {
+                return _currentTODO_PODocSetToExport;
+            }
+            set
+            {
+                if (_currentTODO_PODocSetToExport != value)
+                {
+                    _currentTODO_PODocSetToExport = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_PODocSetToExportChanged,
+                                                     new NotificationEventArgs<TODO_PODocSetToExport>(MessageToken.CurrentTODO_PODocSetToExportChanged, _currentTODO_PODocSetToExport)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_PODocSetToExport);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_PODocSetToExport> _vcurrentTODO_PODocSetToExport;
+        public VirtualListItem<TODO_PODocSetToExport> VCurrentTODO_PODocSetToExport
+        {
+            get
+            {
+                return _vcurrentTODO_PODocSetToExport;
+            }
+            set
+            {
+                if (_vcurrentTODO_PODocSetToExport != value)
+                {
+                    _vcurrentTODO_PODocSetToExport = value;
+					if(_vcurrentTODO_PODocSetToExport != null) CurrentTODO_PODocSetToExport = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_PODocSetToExport);                    
                 }
             }
         }

@@ -129,7 +129,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentFileTypeContactsChanged(object sender, NotificationEventArgs<FileTypeContacts> e)
+        internal virtual void OnCurrentFileTypeContactsChanged(object sender, NotificationEventArgs<FileTypeContacts> e)
         {
             if(BaseViewModel.Instance.CurrentFileTypeContacts != null) BaseViewModel.Instance.CurrentFileTypeContacts.PropertyChanged += CurrentFileTypeContacts__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentFileTypeContacts);
@@ -146,7 +146,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(FileTypes.Contains(CurrentFileTypeContacts.FileTypes) == false) FileTypes.Add(CurrentFileTypeContacts.FileTypes);
                     //}
                  } 
-        internal void OnFileTypeContactsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnFileTypeContactsChanged(object sender, NotificationEventArgs e)
         {
             _FileTypeContacts.Refresh();
 			NotifyPropertyChanged(x => this.FileTypeContacts);
@@ -154,7 +154,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentContactsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Contacts> e)
+		 internal virtual void OnCurrentContactsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Contacts> e)
 			{
 			if(ViewCurrentContacts == false) return;
 			if (e.Data == null || e.Data.Id == null)
@@ -173,7 +173,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentFileTypeContacts = null;
 			}
 	
-		 internal void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
+		 internal virtual void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
 			{
 			if(ViewCurrentFileTypes == false) return;
 			if (e.Data == null || e.Data.Id == null)

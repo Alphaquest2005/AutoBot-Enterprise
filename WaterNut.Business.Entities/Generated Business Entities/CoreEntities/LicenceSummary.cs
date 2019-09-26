@@ -110,6 +110,21 @@ namespace CoreEntities.Business.Entities
         }
         long _rownumber;
         [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
 
  //       [DataMember]

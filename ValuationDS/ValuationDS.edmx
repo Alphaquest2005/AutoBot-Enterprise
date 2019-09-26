@@ -138,9 +138,10 @@
           <Key>
             <PropertyRef Name="Identification_segment_Id" />
           </Key>
-          <Property Name="Name" Type="varchar" MaxLength="255" />
-          <Property Name="Address" Type="varchar" MaxLength="255" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
           <Property Name="Identification_segment_Id" Type="int" Nullable="false" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="2" />
         </EntityType>
         <EntityType Name="xC71_Value_declaration_form">
           <Key>
@@ -156,6 +157,7 @@
           <Property Name="id" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="RegNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_xC71_Identification_segment_xC71_Value_declaration_form">
           <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1">
@@ -446,10 +448,11 @@
           <Key>
             <PropertyRef Name="Identification_segment_Id" />
           </Key>
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Identification_segment_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xC71_Identification_segment" Relationship="WaterNutModelDB.Identification_segment_Seller_segment" FromRole="xC71_Seller_segment" ToRole="xC71_Identification_segment" />
+          <Property Name="CountryCode" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="Identification_segment_Buyer_segment">
           <End Type="WaterNutModelDB.xC71_Identification_segment" Role="xC71_Identification_segment" Multiplicity="1">
@@ -533,6 +536,7 @@
           <Property Name="id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RegNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -676,6 +680,7 @@
           <EntitySetMapping Name="xC71_Seller_segment">
             <EntityTypeMapping TypeName="WaterNutModelDB.xC71_Seller_segment">
               <MappingFragment StoreEntitySet="xC71_Seller_segment">
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
                 <ScalarProperty Name="Identification_segment_Id" ColumnName="Identification_segment_Id" />
                 <ScalarProperty Name="Address" ColumnName="Address" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -690,6 +695,7 @@
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutModelDB.Registered)">
               <MappingFragment StoreEntitySet="xC71_Value_declaration_form_Registered">
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
                 <ScalarProperty Name="id" ColumnName="id" />

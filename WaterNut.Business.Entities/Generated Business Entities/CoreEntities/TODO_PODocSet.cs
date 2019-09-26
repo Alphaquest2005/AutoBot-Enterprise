@@ -155,21 +155,6 @@ namespace CoreEntities.Business.Entities
         }
         string _declarant_reference_number;
         [DataMember]
-        public Nullable<int> Invoices 
-        {
-            get
-            {
-                return _invoices;
-            }
-            set
-            {
-                _invoices = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _invoices;
-        [DataMember]
         public Nullable<int> TotalInvoices 
         {
             get
@@ -184,6 +169,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _totalinvoices;
+        [DataMember]
+        public Nullable<int> DocumentsCount 
+        {
+            get
+            {
+                return _documentscount;
+            }
+            set
+            {
+                _documentscount = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _documentscount;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

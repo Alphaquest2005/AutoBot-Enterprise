@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentEmptyFullCodeChanged(object sender, NotificationEventArgs<EmptyFullCode> e)
+        internal virtual void OnCurrentEmptyFullCodeChanged(object sender, NotificationEventArgs<EmptyFullCode> e)
         {
             if(BaseViewModel.Instance.CurrentEmptyFullCode != null) BaseViewModel.Instance.CurrentEmptyFullCode.PropertyChanged += CurrentEmptyFullCode__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEmptyFullCode);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             void CurrentEmptyFullCode__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnEmptyFullCodesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEmptyFullCodesChanged(object sender, NotificationEventArgs e)
         {
             _EmptyFullCodes.Refresh();
 			NotifyPropertyChanged(x => this.EmptyFullCodes);

@@ -89,8 +89,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<Contacts> Contacts { get; set; }
      
-        public DbSet<TODO_CreateEx9> TODO_CreateEx9 { get; set; }
-     
         public DbSet<TODO_DeleteDocumentSet> TODO_DeleteDocumentSet { get; set; }
      
         public DbSet<TODO_DocumentsToDelete> TODO_DocumentsToDelete { get; set; }
@@ -167,6 +165,10 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_SubmitInadequatePackages> TODO_SubmitInadequatePackages { get; set; }
      
+        public DbSet<TODO_PODocSetToExport> TODO_PODocSetToExport { get; set; }
+     
+        public DbSet<TODO_CreateEx9> TODO_CreateEx9 { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -212,8 +214,6 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_UnallocatedSalesMap());
          
             modelBuilder.Configurations.Add(new ContactsMap());
-         
-            modelBuilder.Configurations.Add(new TODO_CreateEx9Map());
          
             modelBuilder.Configurations.Add(new TODO_DeleteDocumentSetMap());
          
@@ -290,6 +290,10 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_SubmitUnclassifiedItemsMap());
          
             modelBuilder.Configurations.Add(new TODO_SubmitInadequatePackagesMap());
+         
+            modelBuilder.Configurations.Add(new TODO_PODocSetToExportMap());
+         
+            modelBuilder.Configurations.Add(new TODO_CreateEx9Map());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

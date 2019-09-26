@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentAttachmentLogChanged(object sender, NotificationEventArgs<AttachmentLog> e)
+        internal virtual void OnCurrentAttachmentLogChanged(object sender, NotificationEventArgs<AttachmentLog> e)
         {
             if(BaseViewModel.Instance.CurrentAttachmentLog != null) BaseViewModel.Instance.CurrentAttachmentLog.PropertyChanged += CurrentAttachmentLog__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAttachmentLog);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(AsycudaDocumentSet_Attachments.Contains(CurrentAttachmentLog.AsycudaDocumentSet_Attachments) == false) AsycudaDocumentSet_Attachments.Add(CurrentAttachmentLog.AsycudaDocumentSet_Attachments);
                     //}
                  } 
-        internal void OnAttachmentLogChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAttachmentLogChanged(object sender, NotificationEventArgs e)
         {
             _AttachmentLog.Refresh();
 			NotifyPropertyChanged(x => this.AttachmentLog);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAsycudaDocumentSet_AttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet_Attachments> e)
+		 internal virtual void OnCurrentAsycudaDocumentSet_AttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSet_Attachments> e)
 			{
 			if(ViewCurrentAsycudaDocumentSet_Attachments == false) return;
 			if (e.Data == null || e.Data.Id == null)

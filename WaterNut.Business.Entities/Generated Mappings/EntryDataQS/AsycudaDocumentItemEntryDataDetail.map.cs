@@ -11,7 +11,7 @@
     {
         public AsycudaDocumentItemEntryDataDetailMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.Item_Id});        
+              this.HasKey(t => new {t.EntryDataDetailsId, t.Item_Id, t.ImportComplete});        
               this.ToTable("AsycudaDocumentItemEntryDataDetails");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
@@ -19,6 +19,7 @@
               this.Property(t => t.key).HasColumnName("key").HasMaxLength(101);
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.Quantity).HasColumnName("Quantity");
+              this.Property(t => t.ImportComplete).HasColumnName("ImportComplete");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentInfoMappingChanged(object sender, NotificationEventArgs<InfoMapping> e)
+        internal virtual void OnCurrentInfoMappingChanged(object sender, NotificationEventArgs<InfoMapping> e)
         {
             if(BaseViewModel.Instance.CurrentInfoMapping != null) BaseViewModel.Instance.CurrentInfoMapping.PropertyChanged += CurrentInfoMapping__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentInfoMapping);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentInfoMapping.ApplicationSettings) == false) ApplicationSettings.Add(CurrentInfoMapping.ApplicationSettings);
                     //}
                  } 
-        internal void OnInfoMappingChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnInfoMappingChanged(object sender, NotificationEventArgs e)
         {
             _InfoMapping.Refresh();
 			NotifyPropertyChanged(x => this.InfoMapping);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+		 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 			{
 			if(ViewCurrentApplicationSettings == false) return;
 			if (e.Data == null || e.Data.ApplicationSettingsId == null)

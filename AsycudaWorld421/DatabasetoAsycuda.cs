@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.ServiceModel;
@@ -422,7 +423,7 @@ namespace Asycuda421
                 a.Transport.Means_of_transport.Departure_arrival_information.Nationality.Text.Add(Exp.TransportNationality);
 
             if (Exp.Location_of_goods != null)
-                a.Transport.Location_of_goods.Text.Add(Exp.Location_of_goods);
+                a.Transport.Location_of_goods.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.LocationOfGoods??Exp.Location_of_goods);
 
             if (Exp.Border_information_Mode != null)
             {
@@ -534,11 +535,18 @@ namespace Asycuda421
                     SavePreviousDoc(item, ai);
 
                     SaveValuationItem(item, ai);
-
+                    if (db.TariffCodes.FirstOrDefault(x =>
+                            x.TariffCode == item.xcuda_Tarification.xcuda_HScode.Commodity_code &&
+                            x.LicenseRequired == true) != null)
+                    {
+                        ai.Quantity_deducted_from_licence = item.ItemQuantity.ToString(CultureInfo.InvariantCulture);
+                    }
                     a.Item.Add(ai);
                 }
                 if (a.Item.Count != 0)
                     a.Item[0].Packages.Number_of_packages = "1";
+
+
             }
         }
 
@@ -583,7 +591,7 @@ namespace Asycuda421
                 if (doc.xcuda_Attachments.Any())
                 {
                     var fileinfo = new FileInfo(doc.xcuda_Attachments.FirstOrDefault().Attachments.FilePath);
-                    if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
+                    if (item.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName != "IM7" && fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
                     File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name)}\r\n");
                 }
                     

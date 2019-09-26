@@ -136,6 +136,21 @@ public long RowNumber
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
+       
+public int ApplicationSettingsId
+		{ 
+		    get { return this.licencesummary.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.licencesummary.ApplicationSettingsId) return;
+				this.licencesummary.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
        private AsycudaDocumentSetEx _AsycudaDocumentSetEx;
         public  AsycudaDocumentSetEx AsycudaDocumentSetEx
 		{

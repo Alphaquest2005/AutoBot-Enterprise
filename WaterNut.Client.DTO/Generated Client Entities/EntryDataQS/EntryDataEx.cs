@@ -203,6 +203,84 @@ namespace EntryDataQS.Client.DTO
 		}
         private double _ExpectedTotal;
 
+        [DataMember]
+        public Nullable<int> ClassifiedLines
+		{ 
+		    get { return _ClassifiedLines; }
+			set
+			{
+			    if (value == _ClassifiedLines) return;
+				_ClassifiedLines = value;
+				NotifyPropertyChanged();//m => this.ClassifiedLines
+			}
+		}
+        private Nullable<int> _ClassifiedLines;
+
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
+
+        [DataMember]
+        public double TotalInternalFreight
+		{ 
+		    get { return _TotalInternalFreight; }
+			set
+			{
+			    if (value == _TotalInternalFreight) return;
+				_TotalInternalFreight = value;
+				NotifyPropertyChanged();//m => this.TotalInternalFreight
+			}
+		}
+        private double _TotalInternalFreight;
+
+        [DataMember]
+        public double TotalInternalInsurance
+		{ 
+		    get { return _TotalInternalInsurance; }
+			set
+			{
+			    if (value == _TotalInternalInsurance) return;
+				_TotalInternalInsurance = value;
+				NotifyPropertyChanged();//m => this.TotalInternalInsurance
+			}
+		}
+        private double _TotalInternalInsurance;
+
+        [DataMember]
+        public double TotalOtherCost
+		{ 
+		    get { return _TotalOtherCost; }
+			set
+			{
+			    if (value == _TotalOtherCost) return;
+				_TotalOtherCost = value;
+				NotifyPropertyChanged();//m => this.TotalOtherCost
+			}
+		}
+        private double _TotalOtherCost;
+
+        [DataMember]
+        public double TotalDeductions
+		{ 
+		    get { return _TotalDeductions; }
+			set
+			{
+			    if (value == _TotalDeductions) return;
+				_TotalDeductions = value;
+				NotifyPropertyChanged();//m => this.TotalDeductions
+			}
+		}
+        private double _TotalDeductions;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets
@@ -242,19 +320,6 @@ namespace EntryDataQS.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<EntryDataDetailsEx> _EntryDataDetailsExs = new ChangeTrackingCollection<EntryDataDetailsEx>();
-
-        [DataMember]
-        public ChangeTrackingCollection<ContainerEntryData> ContainerEntryDatas
-		{
-		    get { return _ContainerEntryDatas; }
-			set
-			{
-			    if (Equals(value, _ContainerEntryDatas)) return;
-				_ContainerEntryDatas = value;
-				NotifyPropertyChanged();//m => this.ContainerEntryDatas
-			}
-		}
-        private ChangeTrackingCollection<ContainerEntryData> _ContainerEntryDatas = new ChangeTrackingCollection<ContainerEntryData>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

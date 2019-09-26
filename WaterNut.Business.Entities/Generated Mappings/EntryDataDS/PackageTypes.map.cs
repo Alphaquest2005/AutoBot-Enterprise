@@ -15,7 +15,6 @@
               this.ToTable("PackageTypes");
               this.Property(t => t.PackageType).HasColumnName("PackageType").IsRequired().HasMaxLength(4);
               this.Property(t => t.PackageDescription).HasColumnName("PackageDescription").HasMaxLength(50);
-              this.HasMany(t => t.Container).WithOptional(t => t.PackageTypes).HasForeignKey(d => d.Packages_type);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

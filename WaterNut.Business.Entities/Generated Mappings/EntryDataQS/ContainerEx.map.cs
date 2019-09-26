@@ -30,7 +30,6 @@
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").HasMaxLength(50);
               this.Property(t => t.PackageDescription).HasColumnName("PackageDescription").HasMaxLength(50);
               this.Property(t => t.ContainerTypeDescription).HasColumnName("ContainerTypeDescription").HasMaxLength(50);
-              this.HasMany(t => t.ContainerEntryDatas).WithRequired(t => (ContainerEx)t.ContainerEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

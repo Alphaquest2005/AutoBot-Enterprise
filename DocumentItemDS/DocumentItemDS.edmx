@@ -1383,7 +1383,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.xcuda_Goods_description" Role="xcuda_Goods_description" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.xcuda_Goods_description" Role="xcuda_Goods_description" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="xcuda_Item">
               <PropertyRef Name="Item_Id" />

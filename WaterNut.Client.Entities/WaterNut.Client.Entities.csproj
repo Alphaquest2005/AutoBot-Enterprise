@@ -175,6 +175,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -193,9 +194,7 @@
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated Client Entities\EntryDataQS\ContainerEntryData.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\ContainerEx.cs" />
-    <Compile Include="Generated Client Entities\EntryDataQS\ContainerType.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated Client Entities\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -284,6 +283,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -302,9 +302,7 @@
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated Constructors Models\EntryDataQS\ContainerEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\ContainerEx.cs" />
-    <Compile Include="Generated Constructors Models\EntryDataQS\ContainerType.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -393,6 +391,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -411,9 +410,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\ContainerEx.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\ContainerType.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\EntryDataDetailsEx.cs" />
@@ -506,6 +503,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
@@ -524,9 +522,7 @@
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\AsycudaDocumentSetEntryDataDetail.cs" />
-    <Compile Include="Generated MyNavProp Models\EntryDataQS\ContainerEntryData.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\ContainerEx.cs" />
-    <Compile Include="Generated MyNavProp Models\EntryDataQS\ContainerType.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\EmptyFullCode.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\EntryData.cs" />
     <Compile Include="Generated MyNavProp Models\EntryDataQS\EntryDataDetailsEx.cs" />

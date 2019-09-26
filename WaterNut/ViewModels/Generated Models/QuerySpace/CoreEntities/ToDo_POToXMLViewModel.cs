@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentToDo_POToXMLChanged(object sender, NotificationEventArgs<ToDo_POToXML> e)
+        internal virtual void OnCurrentToDo_POToXMLChanged(object sender, NotificationEventArgs<ToDo_POToXML> e)
         {
             if(BaseViewModel.Instance.CurrentToDo_POToXML != null) BaseViewModel.Instance.CurrentToDo_POToXML.PropertyChanged += CurrentToDo_POToXML__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentToDo_POToXML);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentToDo_POToXML__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnToDo_POToXMLChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnToDo_POToXMLChanged(object sender, NotificationEventArgs e)
         {
             _ToDo_POToXML.Refresh();
 			NotifyPropertyChanged(x => this.ToDo_POToXML);

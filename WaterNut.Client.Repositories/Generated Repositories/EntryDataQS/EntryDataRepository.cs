@@ -203,8 +203,7 @@ namespace EntryDataQS.Client.Repositories
                             return new EntryData(res)
                     {
                      // AsycudaDocumentEntryDatas = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentEntryData>(res.AsycudaDocumentEntryDatas.Select(y => new AsycudaDocumentEntryData(y))),    
-                     // AsycudaDocumentSetEntryDatas = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetEntryData>(res.AsycudaDocumentSetEntryDatas.Select(y => new AsycudaDocumentSetEntryData(y))),    
-                     // ContainerEntryDatas = new System.Collections.ObjectModel.ObservableCollection<ContainerEntryData>(res.ContainerEntryDatas.Select(y => new ContainerEntryData(y)))    
+                     // AsycudaDocumentSetEntryDatas = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetEntryData>(res.AsycudaDocumentSetEntryDatas.Select(y => new AsycudaDocumentSetEntryData(y)))    
                   };
                     }
                     else

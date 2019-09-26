@@ -14,7 +14,7 @@ namespace EntryDataQS.Client.Contracts
     public partial interface IEntryDataExService
     {
         [OperationContract]
-        Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice);
+        Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice, bool combineEntryDataInSameFile);
         
         
         [OperationContract]

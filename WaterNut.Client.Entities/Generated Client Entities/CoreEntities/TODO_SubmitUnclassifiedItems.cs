@@ -125,21 +125,6 @@ public string TariffCode
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
-       
-public int ApplicationSettingsId
-		{ 
-		    get { return this.todo_submitunclassifieditems.ApplicationSettingsId; }
-			set
-			{
-			    if (value == this.todo_submitunclassifieditems.ApplicationSettingsId) return;
-				this.todo_submitunclassifieditems.ApplicationSettingsId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ApplicationSettingsId");
-			}
-		}
-     
-
        
        
 public Nullable<int> EmailId
@@ -151,6 +136,70 @@ public Nullable<int> EmailId
 				this.todo_submitunclassifieditems.EmailId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.todo_submitunclassifieditems.Type; }
+			set
+			{
+			    if (value == this.todo_submitunclassifieditems.Type) return;
+				this.todo_submitunclassifieditems.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.todo_submitunclassifieditems.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.todo_submitunclassifieditems.AsycudaDocumentSetId) return;
+				this.todo_submitunclassifieditems.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Declarant_Reference_Number has a max length of 50 letters ")]
+public string Declarant_Reference_Number
+		{ 
+		    get { return this.todo_submitunclassifieditems.Declarant_Reference_Number; }
+			set
+			{
+			    if (value == this.todo_submitunclassifieditems.Declarant_Reference_Number) return;
+				this.todo_submitunclassifieditems.Declarant_Reference_Number = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Declarant_Reference_Number");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
+       
+public int ApplicationSettingsId
+		{ 
+		    get { return this.todo_submitunclassifieditems.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.todo_submitunclassifieditems.ApplicationSettingsId) return;
+				this.todo_submitunclassifieditems.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
 			}
 		}
      

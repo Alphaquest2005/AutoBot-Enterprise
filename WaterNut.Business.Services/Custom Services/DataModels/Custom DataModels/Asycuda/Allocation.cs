@@ -156,9 +156,9 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
             Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-                                    // .Where(x => x.Key.Contains("354415")) // 
-                                     // .Where(x => "337493".Contains(x.Key))
-                                     //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
+                    //.Where(x => x.Key.Contains("116520")) //.Where(x => x.Key.Contains("255100")) // 
+                                                                          // .Where(x => "337493".Contains(x.Key))
+                                                                          //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
                                      , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
              {
             //     foreach (var itm in itemSets.Values)//.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))
@@ -864,18 +864,28 @@ namespace WaterNut.DataSpace
                 }
         }
 
-        private  async Task<ConcurrentDictionary<string, ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber(int applicationSettingsId)
+        private async Task<ConcurrentDictionary<string, ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber(
+            int applicationSettingsId)
         {
-            var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+            try
+            {
+                var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId).ConfigureAwait(false);
 
-            var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+                var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
 
-            var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
-            saleslst.AddRange(adjlst);
+                var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+                saleslst.AddRange(adjlst);
 
-            var itmLst = CreateItemSetsWithItemNumbers(saleslst, asycudaEntries);
+                var itmLst = CreateItemSetsWithItemNumbers(saleslst, asycudaEntries);
 
-            return itmLst; 
+                return itmLst;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         //private async Task<ConcurrentDictionary<string, ItemSet>> MatchSalestoAsycudaEntriesOnDescription()
@@ -1210,6 +1220,17 @@ namespace WaterNut.DataSpace
                             .ConfigureAwait(false);
                         continue;
                     }
+
+                    if (cAsycudaItm.AsycudaDocument.DocumentType == "IM7" &&
+                        (cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
+                    {
+                        if (CurrentAsycudaItemIndex == 0)
+                        {
+                            await AddExceptionAllocation(saleitm, "Early Sales").ConfigureAwait(false);
+                            continue;
+                        }
+                    }
+
                     for (var i = CurrentAsycudaItemIndex; i < asycudaEntries.Count(); i++)
                     {
                         // reset in event earlier dat

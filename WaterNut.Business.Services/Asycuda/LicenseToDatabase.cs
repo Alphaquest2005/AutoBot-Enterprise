@@ -55,6 +55,8 @@ namespace WaterNut.DataSpace.Asycuda
                 var da =  CreateLicense(docSet, file,regNumber);
                 
                 SaveGeneralInfo(adoc.General_segment, da.xLIC_General_segment);
+
+                SaveDocumentRef(da);
                 SaveItems(adoc.Lic_item_segment, da);
 
                 using (var ctx = new LicenseDSContext())
@@ -75,6 +77,14 @@ namespace WaterNut.DataSpace.Asycuda
                
             }
 
+        }
+
+        private static void SaveDocumentRef(Registered da)
+        {
+            var match = Regex.Match(da.xLIC_General_segment.Exporter_address,
+                @"((?<Key>.[a-zA-Z\s\(\)]*):(?<Value>.[a-zA-Z0-9\- :$.,]*))", RegexOptions.IgnoreCase);
+            if (match.Success)
+                da.DocumentReference = match.Groups["Value"].Value.Trim().Replace(",","");
         }
 
         public static bool GetLicenceRegNumber(FileInfo file, out string regNumber)
@@ -209,11 +219,11 @@ namespace WaterNut.DataSpace.Asycuda
 
             lic.xLIC_General_segment.Importer_code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
 
-            foreach (var item in lst.GroupBy(x => new{ x.TariffCode, x.TariffCodeDescription}))
+            foreach (var item in lst.GroupBy(x => new{ x.TariffCode, x.LicenseDescription}))
             {
                 lic.xLIC_Lic_item_segment.Add(new xLIC_Lic_item_segment(true)
                 {
-                    Description = item.Key.TariffCodeDescription,
+                    Description = item.Key.LicenseDescription,
                     Commodity_code = item.Key.TariffCode,
                     Quantity_requested = Convert.ToInt32(item.Sum(x => x.Quantity)),
                     Quantity_to_approve = Convert.ToInt32(item.Sum(x => x.Quantity)),
@@ -298,7 +308,7 @@ namespace WaterNut.DataSpace.Asycuda
                 File.AppendAllText(instructions, $"File\t{fileInfo.FullName}\r\n");
                 foreach (var itm in invoices)
                 {
-                    File.AppendAllText(instructions, $"Attach\t{Path.Combine(fileInfo.DirectoryName, $"{itm}.pdf")}\r\n");
+                    File.AppendAllText(instructions, $"Attach\t{Path.Combine(fileInfo.DirectoryName, $"{itm}.pdf")}\t{itm}\t{"IV05"}\r\n");
                 }
                 return true;
             }
@@ -353,6 +363,7 @@ namespace WaterNut.DataSpace.Asycuda
             {
                 aItem.Arrival_date = dItem.Arrival_date;
                 aItem.Application_date = dItem.Application_date;
+                
                 //if (dItem.Expiry_date == null) aItem.Expiry_date = new LicenceGeneral_segmentExpiry_date() { @null = new object() }; else aItem.Expiry_date.Text.Add(dItem.Expiry_date);
                 aItem.Importation_date = dItem.Importation_date;
                 aItem.Importer_cellphone.Text.Add(dItem.Importer_cellphone);

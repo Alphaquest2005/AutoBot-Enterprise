@@ -95,6 +95,36 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _tax;
         [DataMember]
+        public Nullable<int> ClassifiedLines 
+        {
+            get
+            {
+                return _classifiedlines;
+            }
+            set
+            {
+                _classifiedlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _classifiedlines;
+        [DataMember]
+        public Nullable<int> LicenseLines 
+        {
+            get
+            {
+                return _licenselines;
+            }
+            set
+            {
+                _licenselines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _licenselines;
+        [DataMember]
         public EntryData EntryData { get; set; }
 
  //       [DataMember]

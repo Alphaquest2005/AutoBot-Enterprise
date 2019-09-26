@@ -169,6 +169,10 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<FileType> FileTypes { get; set; }
      
+        public DbSet<Container> Containers { get; set; }
+     
+        public DbSet<PackageType> PackageTypes { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -294,6 +298,10 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new AttachmentMap());
          
             modelBuilder.Configurations.Add(new FileTypeMap());
+         
+            modelBuilder.Configurations.Add(new ContainerMap());
+         
+            modelBuilder.Configurations.Add(new PackageTypeMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

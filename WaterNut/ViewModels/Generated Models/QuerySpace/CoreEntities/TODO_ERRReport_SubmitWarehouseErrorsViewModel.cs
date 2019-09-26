@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_ERRReport_SubmitWarehouseErrorsChanged(object sender, NotificationEventArgs<TODO_ERRReport_SubmitWarehouseErrors> e)
+        internal virtual void OnCurrentTODO_ERRReport_SubmitWarehouseErrorsChanged(object sender, NotificationEventArgs<TODO_ERRReport_SubmitWarehouseErrors> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_ERRReport_SubmitWarehouseErrors != null) BaseViewModel.Instance.CurrentTODO_ERRReport_SubmitWarehouseErrors.PropertyChanged += CurrentTODO_ERRReport_SubmitWarehouseErrors__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_SubmitWarehouseErrors);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_ERRReport_SubmitWarehouseErrors__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_ERRReport_SubmitWarehouseErrorsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_ERRReport_SubmitWarehouseErrorsChanged(object sender, NotificationEventArgs e)
         {
             _TODO_ERRReport_SubmitWarehouseErrors.Refresh();
 			NotifyPropertyChanged(x => this.TODO_ERRReport_SubmitWarehouseErrors);

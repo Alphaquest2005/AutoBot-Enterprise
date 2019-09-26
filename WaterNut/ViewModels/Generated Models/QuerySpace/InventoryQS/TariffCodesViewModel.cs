@@ -129,7 +129,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        internal void OnCurrentTariffCodesChanged(object sender, NotificationEventArgs<TariffCodes> e)
+        internal virtual void OnCurrentTariffCodesChanged(object sender, NotificationEventArgs<TariffCodes> e)
         {
             if(BaseViewModel.Instance.CurrentTariffCodes != null) BaseViewModel.Instance.CurrentTariffCodes.PropertyChanged += CurrentTariffCodes__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTariffCodes);
@@ -142,7 +142,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                    //    if(TariffCategory.Contains(CurrentTariffCodes.TariffCategory) == false) TariffCategory.Add(CurrentTariffCodes.TariffCategory);
                     //}
                  } 
-        internal void OnTariffCodesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTariffCodesChanged(object sender, NotificationEventArgs e)
         {
             _TariffCodes.Refresh();
 			NotifyPropertyChanged(x => this.TariffCodes);
@@ -150,7 +150,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
 
  	
-		 internal void OnCurrentTariffCategoryChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffCategory> e)
+		 internal virtual void OnCurrentTariffCategoryChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffCategory> e)
 			{
 			if(ViewCurrentTariffCategory == false) return;
 			if (e.Data == null || e.Data.TariffCategoryCode == null)

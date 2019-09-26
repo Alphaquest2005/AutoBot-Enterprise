@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentInventoryItemsExChanged(object sender, NotificationEventArgs<InventoryItemsEx> e)
+        internal virtual void OnCurrentInventoryItemsExChanged(object sender, NotificationEventArgs<InventoryItemsEx> e)
         {
             if(BaseViewModel.Instance.CurrentInventoryItemsEx != null) BaseViewModel.Instance.CurrentInventoryItemsEx.PropertyChanged += CurrentInventoryItemsEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentInventoryItemsEx);
@@ -141,7 +141,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentInventoryItemsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentInventoryItemsEx.ApplicationSettings);
                     //}
                  } 
-        internal void OnInventoryItemsExChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnInventoryItemsExChanged(object sender, NotificationEventArgs e)
         {
             _InventoryItemsEx.Refresh();
 			NotifyPropertyChanged(x => this.InventoryItemsEx);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

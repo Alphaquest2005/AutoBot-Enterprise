@@ -59,15 +59,7 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<AsycudaDocumentSetEntryData> AsycudaDocumentSetEntryData { get; set; }
      
-        public DbSet<Container> Containers { get; set; }
-     
-        public DbSet<ContainerType> ContainerTypes { get; set; }
-     
         public DbSet<PackageTypes> PackageTypes { get; set; }
-     
-        public DbSet<ContainerEntryData> ContainerEntryData { get; set; }
-     
-        public DbSet<ContainerAsycudaDocumentSet> ContainerAsycudaDocumentSets { get; set; }
      
         public DbSet<Suppliers> Suppliers { get; set; }
      
@@ -78,6 +70,10 @@ namespace EntryDataDS.Business.Entities
         public DbSet<InventoryItems> InventoryItems { get; set; }
      
         public DbSet<EntryDataExTotals> EntryDataExTotals { get; set; }
+     
+        public DbSet<EntryDataEx> EntryDataEx { get; set; }
+     
+        public DbSet<EDDocumentTypes> EDDocumentType { get; set; }
      
 
 
@@ -95,15 +91,7 @@ namespace EntryDataDS.Business.Entities
          
             modelBuilder.Configurations.Add(new AsycudaDocumentSetEntryDataMap());
          
-            modelBuilder.Configurations.Add(new ContainerMap());
-         
-            modelBuilder.Configurations.Add(new ContainerTypeMap());
-         
             modelBuilder.Configurations.Add(new PackageTypesMap());
-         
-            modelBuilder.Configurations.Add(new ContainerEntryDataMap());
-         
-            modelBuilder.Configurations.Add(new ContainerAsycudaDocumentSetMap());
          
             modelBuilder.Configurations.Add(new SuppliersMap());
          
@@ -114,6 +102,10 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new InventoryItemsMap());
          
             modelBuilder.Configurations.Add(new EntryDataExTotalsMap());
+         
+            modelBuilder.Configurations.Add(new EntryDataExMap());
+         
+            modelBuilder.Configurations.Add(new EDDocumentTypesMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

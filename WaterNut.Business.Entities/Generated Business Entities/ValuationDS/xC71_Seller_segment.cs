@@ -65,6 +65,21 @@ namespace ValuationDS.Business.Entities
         }
         int _identification_segment_id;
         [DataMember]
+        public string CountryCode 
+        {
+            get
+            {
+                return _countrycode;
+            }
+            set
+            {
+                _countrycode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _countrycode;
+        [DataMember]
         public xC71_Identification_segment xC71_Identification_segment { get; set; }
 
  //       [DataMember]

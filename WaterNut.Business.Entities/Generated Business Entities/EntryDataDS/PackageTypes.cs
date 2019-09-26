@@ -19,11 +19,6 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class PackageTypes : BaseEntity<PackageTypes>, ITrackable 
     {
-        partial void AutoGenStartUp() //PackageTypes()
-        {
-            this.Container = new List<Container>();
-        }
-
         [DataMember]
         public string PackageType 
         {
@@ -54,8 +49,6 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _packagedescription;
-        [DataMember]
-        public List<Container> Container { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

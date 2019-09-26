@@ -109,6 +109,21 @@ namespace EntryDataQS.Business.Entities
             }
         }
         Nullable<double> _quantity;
+        [DataMember]
+        public bool ImportComplete 
+        {
+            get
+            {
+                return _importcomplete;
+            }
+            set
+            {
+                _importcomplete = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _importcomplete;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -114,6 +114,9 @@ namespace EntryDataQS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryDataEx>> GetEntryDataExByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataEx>> GetEntryDataExByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
   
 
 

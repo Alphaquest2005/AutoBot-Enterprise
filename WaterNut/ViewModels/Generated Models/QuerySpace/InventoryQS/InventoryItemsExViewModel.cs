@@ -130,7 +130,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        internal void OnCurrentInventoryItemsExChanged(object sender, NotificationEventArgs<InventoryItemsEx> e)
+        internal virtual void OnCurrentInventoryItemsExChanged(object sender, NotificationEventArgs<InventoryItemsEx> e)
         {
             if(BaseViewModel.Instance.CurrentInventoryItemsEx != null) BaseViewModel.Instance.CurrentInventoryItemsEx.PropertyChanged += CurrentInventoryItemsEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentInventoryItemsEx);
@@ -143,7 +143,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                    //    if(TariffCodes.Contains(CurrentInventoryItemsEx.TariffCodes) == false) TariffCodes.Add(CurrentInventoryItemsEx.TariffCodes);
                     //}
                  } 
-        internal void OnInventoryItemsExChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnInventoryItemsExChanged(object sender, NotificationEventArgs e)
         {
             _InventoryItemsEx.Refresh();
 			NotifyPropertyChanged(x => this.InventoryItemsEx);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
 
  	
-		 internal void OnCurrentTariffCodesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffCodes> e)
+		 internal virtual void OnCurrentTariffCodesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TariffCodes> e)
 			{
 			if(ViewCurrentTariffCodes == false) return;
 			if (e.Data == null || e.Data.TariffCode == null)

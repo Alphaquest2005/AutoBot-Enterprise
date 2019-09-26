@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             }
         }
 
-        internal void OnCurrentTariffSupUnitLkpsChanged(object sender, NotificationEventArgs<TariffSupUnitLkps> e)
+        internal virtual void OnCurrentTariffSupUnitLkpsChanged(object sender, NotificationEventArgs<TariffSupUnitLkps> e)
         {
             if(BaseViewModel.Instance.CurrentTariffSupUnitLkps != null) BaseViewModel.Instance.CurrentTariffSupUnitLkps.PropertyChanged += CurrentTariffSupUnitLkps__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTariffSupUnitLkps);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             void CurrentTariffSupUnitLkps__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTariffSupUnitLkpsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTariffSupUnitLkpsChanged(object sender, NotificationEventArgs e)
         {
             _TariffSupUnitLkps.Refresh();
 			NotifyPropertyChanged(x => this.TariffSupUnitLkps);

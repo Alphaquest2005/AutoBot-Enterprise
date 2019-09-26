@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentSessionsChanged(object sender, NotificationEventArgs<Sessions> e)
+        internal virtual void OnCurrentSessionsChanged(object sender, NotificationEventArgs<Sessions> e)
         {
             if(BaseViewModel.Instance.CurrentSessions != null) BaseViewModel.Instance.CurrentSessions.PropertyChanged += CurrentSessions__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentSessions);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentSessions__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnSessionsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnSessionsChanged(object sender, NotificationEventArgs e)
         {
             _Sessions.Refresh();
 			NotifyPropertyChanged(x => this.Sessions);

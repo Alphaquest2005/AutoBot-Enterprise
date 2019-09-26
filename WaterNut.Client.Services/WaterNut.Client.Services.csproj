@@ -145,6 +145,7 @@
     <Compile Include="CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_LicenseToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
+    <Compile Include="CoreEntities\TODO_PODocSetToExportClient.cs" />
     <Compile Include="CoreEntities\ToDo_POToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesClient.cs" />
@@ -179,9 +180,7 @@
     <Compile Include="EntryDataQS\AsycudaDocumentItemEntryDataDetailClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataClient.cs" />
     <Compile Include="EntryDataQS\AsycudaDocumentSetEntryDataDetailClient.cs" />
-    <Compile Include="EntryDataQS\ContainerEntryDataClient.cs" />
     <Compile Include="EntryDataQS\ContainerExClient.cs" />
-    <Compile Include="EntryDataQS\ContainerTypeClient.cs" />
     <Compile Include="EntryDataQS\EmptyFullCodeClient.cs" />
     <Compile Include="EntryDataQS\EntryDataClient.cs" />
     <Compile Include="EntryDataQS\EntryDataDetailsExClient.cs" />

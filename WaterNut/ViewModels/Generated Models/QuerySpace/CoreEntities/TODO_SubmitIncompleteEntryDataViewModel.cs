@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_SubmitIncompleteEntryDataChanged(object sender, NotificationEventArgs<TODO_SubmitIncompleteEntryData> e)
+        internal virtual void OnCurrentTODO_SubmitIncompleteEntryDataChanged(object sender, NotificationEventArgs<TODO_SubmitIncompleteEntryData> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_SubmitIncompleteEntryData != null) BaseViewModel.Instance.CurrentTODO_SubmitIncompleteEntryData.PropertyChanged += CurrentTODO_SubmitIncompleteEntryData__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_SubmitIncompleteEntryData);
@@ -138,7 +138,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentTODO_SubmitIncompleteEntryData.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_SubmitIncompleteEntryData.ApplicationSettings);
                     //}
                  } 
-        internal void OnTODO_SubmitIncompleteEntryDataChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_SubmitIncompleteEntryDataChanged(object sender, NotificationEventArgs e)
         {
             _TODO_SubmitIncompleteEntryData.Refresh();
 			NotifyPropertyChanged(x => this.TODO_SubmitIncompleteEntryData);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

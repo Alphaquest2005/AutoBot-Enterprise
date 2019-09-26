@@ -251,12 +251,6 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "ContainerEntryData":
-                                return
-                                    await
-                                        GetWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "FileTypes":
                                 return
                                     await
@@ -273,6 +267,18 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         GetWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EntryDataEx":
+                                return
+                                    await
+                                        GetWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "DocumentType":
+                                return
+                                    await
+                                        GetWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -778,9 +784,6 @@ namespace EntryDataDS.Business.Services
                             case "AsycudaDocumentSets":
                                 return await CountWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ContainerEntryData":
-                                return await CountWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileTypes":
                                 return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -789,6 +792,12 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataTotals":
                                 return await CountWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryDataEx":
+                                return await CountWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "DocumentType":
+                                return await CountWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -913,12 +922,6 @@ namespace EntryDataDS.Business.Services
                                         LoadRangeWhere<AsycudaDocumentSetEntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "ContainerEntryData":
-                                return
-                                    await
-                                        LoadRangeWhere<ContainerEntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "FileTypes":
                                 return
                                     await
@@ -935,6 +938,18 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EntryDataExTotals>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EntryDataEx":
+                                return
+                                    await
+                                        LoadRangeWhere<EntryDataEx>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "DocumentType":
+                                return
+                                    await
+                                        LoadRangeWhere<EDDocumentTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1290,9 +1305,6 @@ namespace EntryDataDS.Business.Services
                             case "AsycudaDocumentSets":
                                 return await SumWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ContainerEntryData":
-                                return await SumWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileTypes":
                                 return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -1301,6 +1313,12 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataTotals":
                                 return await SumWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryDataEx":
+                                return await SumWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "DocumentType":
+                                return await SumWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

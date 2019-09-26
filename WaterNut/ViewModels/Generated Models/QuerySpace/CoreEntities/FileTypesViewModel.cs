@@ -131,7 +131,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentFileTypesChanged(object sender, NotificationEventArgs<FileTypes> e)
+        internal virtual void OnCurrentFileTypesChanged(object sender, NotificationEventArgs<FileTypes> e)
         {
             if(BaseViewModel.Instance.CurrentFileTypes != null) BaseViewModel.Instance.CurrentFileTypes.PropertyChanged += CurrentFileTypes__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentFileTypes);
@@ -152,7 +152,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(FileGroups.Contains(CurrentFileTypes.FileGroups) == false) FileGroups.Add(CurrentFileTypes.FileGroups);
                     //}
                  } 
-        internal void OnFileTypesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnFileTypesChanged(object sender, NotificationEventArgs e)
         {
             _FileTypes.Refresh();
 			NotifyPropertyChanged(x => this.FileTypes);
@@ -160,7 +160,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+		 internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 			{
 			if(ViewCurrentApplicationSettings == false) return;
 			if (e.Data == null || e.Data.ApplicationSettingsId == null)
@@ -179,7 +179,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentFileTypes = null;
 			}
 	
-		 internal void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
+		 internal virtual void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
 			{
 			if(ViewCurrentAsycudaDocumentSetEx == false) return;
 			if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
@@ -198,7 +198,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentFileTypes = null;
 			}
 	
-		 internal void OnCurrentFileGroupsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileGroups> e)
+		 internal virtual void OnCurrentFileGroupsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileGroups> e)
 			{
 			if(ViewCurrentFileGroups == false) return;
 			if (e.Data == null || e.Data.Id == null)

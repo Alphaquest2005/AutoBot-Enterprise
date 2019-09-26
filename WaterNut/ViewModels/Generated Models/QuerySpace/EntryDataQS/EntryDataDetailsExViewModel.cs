@@ -132,7 +132,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentEntryDataDetailsExChanged(object sender, NotificationEventArgs<EntryDataDetailsEx> e)
+        internal virtual void OnCurrentEntryDataDetailsExChanged(object sender, NotificationEventArgs<EntryDataDetailsEx> e)
         {
             if(BaseViewModel.Instance.CurrentEntryDataDetailsEx != null) BaseViewModel.Instance.CurrentEntryDataDetailsEx.PropertyChanged += CurrentEntryDataDetailsEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEntryDataDetailsEx);
@@ -153,7 +153,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentEntryDataDetailsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentEntryDataDetailsEx.ApplicationSettings);
                     //}
                  } 
-        internal void OnEntryDataDetailsExesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEntryDataDetailsExesChanged(object sender, NotificationEventArgs e)
         {
             _EntryDataDetailsExes.Refresh();
 			NotifyPropertyChanged(x => this.EntryDataDetailsExes);
@@ -161,7 +161,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 
  	
-		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
+		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
 			if (e.Data == null || e.Data.ItemNumber == null)
@@ -179,7 +179,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                 // SendMessage(MessageToken.EntryDataDetailsExesChanged, new NotificationEventArgs(MessageToken.EntryDataDetailsExesChanged));
                 			}
 	
-		 internal void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
+		 internal virtual void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
 			{
 			if(ViewCurrentEntryDataEx == false) return;
 			if (e.Data == null || e.Data.InvoiceNo == null)
@@ -199,7 +199,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

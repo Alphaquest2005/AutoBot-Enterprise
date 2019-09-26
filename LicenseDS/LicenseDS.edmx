@@ -55,6 +55,7 @@
           <Property Name="LicenseId" Type="int" Nullable="false" />
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_xLIC_General_segment_xLIC_License">
           <End Role="xLIC_License" Type="Self.xLIC_License" Multiplicity="1">
@@ -211,6 +212,7 @@
         <EntityType Name="Registered" BaseType="WaterNutDBModel.xLIC_License">
           <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -265,6 +267,7 @@
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Registered)">
               <MappingFragment StoreEntitySet="xLIC_License_Registered">
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
                 <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />

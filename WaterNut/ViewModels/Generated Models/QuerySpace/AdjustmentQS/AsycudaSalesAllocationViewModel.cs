@@ -131,7 +131,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaSalesAllocationChanged(object sender, NotificationEventArgs<AsycudaSalesAllocation> e)
+        internal virtual void OnCurrentAsycudaSalesAllocationChanged(object sender, NotificationEventArgs<AsycudaSalesAllocation> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaSalesAllocation != null) BaseViewModel.Instance.CurrentAsycudaSalesAllocation.PropertyChanged += CurrentAsycudaSalesAllocation__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaSalesAllocation);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    //    if(xcuda_Item.Contains(CurrentAsycudaSalesAllocation.xcuda_Item) == false) xcuda_Item.Add(CurrentAsycudaSalesAllocation.xcuda_Item);
                     //}
                  } 
-        internal void OnAsycudaSalesAllocationsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaSalesAllocationsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaSalesAllocations.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaSalesAllocations);
@@ -156,7 +156,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  	
-		 internal void OnCurrentEntryDataDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataDetail> e)
+		 internal virtual void OnCurrentEntryDataDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataDetail> e)
 			{
 			if(ViewCurrentEntryDataDetail == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)
@@ -173,7 +173,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 // SendMessage(MessageToken.AsycudaSalesAllocationsChanged, new NotificationEventArgs(MessageToken.AsycudaSalesAllocationsChanged));
                 			}
 	
-		 internal void OnCurrentxcuda_ItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<xcuda_Item> e)
+		 internal virtual void OnCurrentxcuda_ItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<xcuda_Item> e)
 			{
 			if(ViewCurrentxcuda_Item == false) return;
 			if (e.Data == null || e.Data.Item_Id == null)

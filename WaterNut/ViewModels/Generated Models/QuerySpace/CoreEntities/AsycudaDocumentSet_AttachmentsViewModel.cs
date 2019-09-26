@@ -133,7 +133,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentSet_AttachmentsChanged(object sender, NotificationEventArgs<AsycudaDocumentSet_Attachments> e)
+        internal virtual void OnCurrentAsycudaDocumentSet_AttachmentsChanged(object sender, NotificationEventArgs<AsycudaDocumentSet_Attachments> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments != null) BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments.PropertyChanged += CurrentAsycudaDocumentSet_Attachments__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSet_Attachments);
@@ -158,7 +158,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(Emails.Contains(CurrentAsycudaDocumentSet_Attachments.Emails) == false) Emails.Add(CurrentAsycudaDocumentSet_Attachments.Emails);
                     //}
                  } 
-        internal void OnAsycudaDocumentSet_AttachmentsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentSet_AttachmentsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentSet_Attachments.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentSet_Attachments);
@@ -166,7 +166,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Attachments> e)
+		 internal virtual void OnCurrentAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Attachments> e)
 			{
 			if(ViewCurrentAttachments == false) return;
 			if (e.Data == null || e.Data.Id == null)
@@ -185,7 +185,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
 			}
 	
-		 internal void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
+		 internal virtual void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
 			{
 			if(ViewCurrentAsycudaDocumentSetEx == false) return;
 			if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
@@ -204,7 +204,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
 			}
 	
-		 internal void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
+		 internal virtual void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
 			{
 			if(ViewCurrentFileTypes == false) return;
 			if (e.Data == null || e.Data.Id == null)
@@ -223,7 +223,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentAsycudaDocumentSet_Attachments = null;
 			}
 	
-		 internal void OnCurrentEmailsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Emails> e)
+		 internal virtual void OnCurrentEmailsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Emails> e)
 			{
 			if(ViewCurrentEmails == false) return;
 			if (e.Data == null || e.Data.EmailUniqueId == null)

@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_EntriesExpiringNextMonthChanged(object sender, NotificationEventArgs<TODO_EntriesExpiringNextMonth> e)
+        internal virtual void OnCurrentTODO_EntriesExpiringNextMonthChanged(object sender, NotificationEventArgs<TODO_EntriesExpiringNextMonth> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_EntriesExpiringNextMonth != null) BaseViewModel.Instance.CurrentTODO_EntriesExpiringNextMonth.PropertyChanged += CurrentTODO_EntriesExpiringNextMonth__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_EntriesExpiringNextMonth);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_EntriesExpiringNextMonth__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_EntriesExpiringNextMonthChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_EntriesExpiringNextMonthChanged(object sender, NotificationEventArgs e)
         {
             _TODO_EntriesExpiringNextMonth.Refresh();
 			NotifyPropertyChanged(x => this.TODO_EntriesExpiringNextMonth);

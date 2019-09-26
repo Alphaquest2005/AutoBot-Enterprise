@@ -43,8 +43,14 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             RegisterToReceiveMessages<AsycudaDocument>(CoreEntities.MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
             RegisterToReceiveMessages<AsycudaDocumentSetEx>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetChanged);
             RegisterToReceiveMessages<EntryDataEx>(EntryDataQS.MessageToken.CurrentEntryDataExChanged, OnCurrentEntryDataExChanged);
-           // RegisterToReceiveMessages<TariffCategory>(MessageToken.CurrentTariffCategoryChanged, OnCurrentTariffCategoryChanged);
-		}
+		    RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+            // RegisterToReceiveMessages<TariffCategory>(MessageToken.CurrentTariffCategoryChanged, OnCurrentTariffCategoryChanged);
+        }
+
+        private void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<ApplicationSettings> e)
+        {
+            FilterData();
+        }
 
         private void OnCurrentAsycudaDocumentChanged(object sender, NotificationEventArgs<AsycudaDocument> e)
         {
@@ -175,6 +181,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
         public override void FilterData()
         {
             var res = GetAutoPropertyFilterString();
+            res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
             vloader.ClearNavigationExpression();
 
             var navExp = new StringBuilder();

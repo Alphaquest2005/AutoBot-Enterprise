@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_PODocSetChanged(object sender, NotificationEventArgs<TODO_PODocSet> e)
+        internal virtual void OnCurrentTODO_PODocSetChanged(object sender, NotificationEventArgs<TODO_PODocSet> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_PODocSet != null) BaseViewModel.Instance.CurrentTODO_PODocSet.PropertyChanged += CurrentTODO_PODocSet__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_PODocSet);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_PODocSet__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_PODocSetChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_PODocSetChanged(object sender, NotificationEventArgs e)
         {
             _TODO_PODocSet.Refresh();
 			NotifyPropertyChanged(x => this.TODO_PODocSet);
@@ -296,24 +296,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _invoicesFilter;
-        public Int32? InvoicesFilter
-        {
-            get
-            {
-                return _invoicesFilter;
-            }
-            set
-            {
-                _invoicesFilter = value;
-				NotifyPropertyChanged(x => InvoicesFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Int32? _totalInvoicesFilter;
         public Int32? TotalInvoicesFilter
         {
@@ -325,6 +307,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _totalInvoicesFilter = value;
 				NotifyPropertyChanged(x => TotalInvoicesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _documentsCountFilter;
+        public Int32? DocumentsCountFilter
+        {
+            get
+            {
+                return _documentsCountFilter;
+            }
+            set
+            {
+                _documentsCountFilter = value;
+				NotifyPropertyChanged(x => DocumentsCountFilter);
                 FilterData();
                 
             }
@@ -389,11 +389,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
  
 
-					if(InvoicesFilter.HasValue)
-						res.Append(" && " + string.Format("Invoices == {0}",  InvoicesFilter.ToString()));				 
-
 					if(TotalInvoicesFilter.HasValue)
-						res.Append(" && " + string.Format("TotalInvoices == {0}",  TotalInvoicesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalInvoices == {0}",  TotalInvoicesFilter.ToString()));				 
+
+					if(DocumentsCountFilter.HasValue)
+						res.Append(" && " + string.Format("DocumentsCount == {0}",  DocumentsCountFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -437,10 +437,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
                     
  
-                    Invoices = x.Invoices ,
+                    TotalInvoices = x.TotalInvoices ,
                     
  
-                    TotalInvoices = x.TotalInvoices 
+                    DocumentsCount = x.DocumentsCount 
                     
                 }).ToList()
             };
@@ -474,10 +474,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Declarant_Reference_Number { get; set; } 
                     
  
-                    public Nullable<int> Invoices { get; set; } 
+                    public Nullable<int> TotalInvoices { get; set; } 
                     
  
-                    public Nullable<int> TotalInvoices { get; set; } 
+                    public Nullable<int> DocumentsCount { get; set; } 
                     
         }
 

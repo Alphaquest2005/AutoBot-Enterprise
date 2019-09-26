@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_CreateEx9Changed(object sender, NotificationEventArgs<TODO_CreateEx9> e)
+        internal virtual void OnCurrentTODO_CreateEx9Changed(object sender, NotificationEventArgs<TODO_CreateEx9> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_CreateEx9 != null) BaseViewModel.Instance.CurrentTODO_CreateEx9.PropertyChanged += CurrentTODO_CreateEx9__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_CreateEx9);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_CreateEx9__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_CreateEx9Changed(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_CreateEx9Changed(object sender, NotificationEventArgs e)
         {
             _TODO_CreateEx9.Refresh();
 			NotifyPropertyChanged(x => this.TODO_CreateEx9);

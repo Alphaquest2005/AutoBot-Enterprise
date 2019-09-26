@@ -132,7 +132,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentShortAllocationChanged(object sender, NotificationEventArgs<ShortAllocation> e)
+        internal virtual void OnCurrentShortAllocationChanged(object sender, NotificationEventArgs<ShortAllocation> e)
         {
             if(BaseViewModel.Instance.CurrentShortAllocation != null) BaseViewModel.Instance.CurrentShortAllocation.PropertyChanged += CurrentShortAllocation__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentShortAllocation);
@@ -153,7 +153,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentShortAllocation.ApplicationSettings) == false) ApplicationSettings.Add(CurrentShortAllocation.ApplicationSettings);
                     //}
                  } 
-        internal void OnShortAllocationsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnShortAllocationsChanged(object sender, NotificationEventArgs e)
         {
             _ShortAllocations.Refresh();
 			NotifyPropertyChanged(x => this.ShortAllocations);
@@ -161,7 +161,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  	
-		 internal void OnCurrentAdjustmentShortChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentShort> e)
+		 internal virtual void OnCurrentAdjustmentShortChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentShort> e)
 			{
 			if(ViewCurrentAdjustmentShort == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)
@@ -178,7 +178,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 // SendMessage(MessageToken.ShortAllocationsChanged, new NotificationEventArgs(MessageToken.ShortAllocationsChanged));
                 			}
 	
-		 internal void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
+		 internal virtual void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
 			{
 			if(ViewCurrentAdjustmentDetail == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)
@@ -197,7 +197,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

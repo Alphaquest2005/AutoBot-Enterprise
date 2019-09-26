@@ -33,12 +33,14 @@
               this.Property(t => t.LastFileNumber).HasColumnName("LastFileNumber");
               this.Property(t => t.TotalInvoices).HasColumnName("TotalInvoices");
               this.Property(t => t.MaxLines).HasColumnName("MaxLines");
+              this.Property(t => t.LocationOfGoods).HasColumnName("LocationOfGoods").HasMaxLength(50);
               this.HasOptional(t => t.Customs_Procedure).WithMany(t =>(ICollection<AsycudaDocumentSet>) t.AsycudaDocumentSets).HasForeignKey(d => d.Customs_ProcedureId);
               this.HasOptional(t => t.Document_Type).WithMany(t =>(ICollection<AsycudaDocumentSet>) t.AsycudaDocumentSets).HasForeignKey(d => d.Document_TypeId);
               this.HasMany(t => t.AsycudaDocumentSetEntryDatas).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
               this.HasMany(t => t.xcuda_ASYCUDA_ExtendedProperties).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
               this.HasMany(t => t.FileTypes).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
+              this.HasOptional(t => t.Container).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -28,13 +28,15 @@
               this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
               this.Property(t => t.TotalInsurance).HasColumnName("TotalInsurance");
               this.Property(t => t.TotalDeduction).HasColumnName("TotalDeduction");
+              this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.HasOptional(t => t.FileTypes).WithMany(t =>(ICollection<EntryData>) t.EntryData).HasForeignKey(d => d.FileTypeId);
               this.HasOptional(t => t.Suppliers).WithMany(t =>(ICollection<EntryData>) t.EntryData).HasForeignKey(d => d.SupplierCode);
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocuments).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryData)t.EntryData);
-              this.HasMany(t => t.ContainerEntryData).WithRequired(t => (EntryData)t.EntryData);
               this.HasOptional(t => t.EntryDataTotals).WithRequired(t => (EntryData)t.EntryData);
+              this.HasMany(t => t.EntryDataEx).WithRequired(t => (EntryData)t.EntryData);
+              this.HasOptional(t => t.DocumentType).WithRequired(t => (EntryData)t.EntryData);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -220,13 +220,13 @@ namespace AutoBot
                         }
                         else
                         {
-                            //if (appSetting.AssessIM7 == true)
-                            //    ctx.SessionActions.OrderBy(x => x.Id)
-                            //        .Include(x => x.Actions)
-                            //        .Where(x => x.Sessions.Name == "AssessIM7").ToList()
-                            //        .Select(x => Utils.SessionActions[x.Actions.Name])
-                            //        .ForEach(x =>
-                            //            x.Invoke());
+                            if (appSetting.AssessIM7 == true)
+                                ctx.SessionActions.OrderBy(x => x.Id)
+                                    .Include(x => x.Actions)
+                                    .Where(x => x.Sessions.Name == "AssessIM7").ToList()
+                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .ForEach(x =>
+                                        x.Invoke());
 
                             //if (appSetting.AssessEX == true)
                             //    ctx.SessionActions.OrderBy(x => x.Id)

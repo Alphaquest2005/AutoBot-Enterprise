@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_DocumentsToDeleteChanged(object sender, NotificationEventArgs<TODO_DocumentsToDelete> e)
+        internal virtual void OnCurrentTODO_DocumentsToDeleteChanged(object sender, NotificationEventArgs<TODO_DocumentsToDelete> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_DocumentsToDelete != null) BaseViewModel.Instance.CurrentTODO_DocumentsToDelete.PropertyChanged += CurrentTODO_DocumentsToDelete__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_DocumentsToDelete);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_DocumentsToDelete__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_DocumentsToDeleteChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_DocumentsToDeleteChanged(object sender, NotificationEventArgs e)
         {
             _TODO_DocumentsToDelete.Refresh();
 			NotifyPropertyChanged(x => this.TODO_DocumentsToDelete);

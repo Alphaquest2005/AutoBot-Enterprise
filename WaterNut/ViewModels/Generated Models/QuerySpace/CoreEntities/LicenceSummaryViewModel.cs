@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentLicenceSummaryChanged(object sender, NotificationEventArgs<LicenceSummary> e)
+        internal virtual void OnCurrentLicenceSummaryChanged(object sender, NotificationEventArgs<LicenceSummary> e)
         {
             if(BaseViewModel.Instance.CurrentLicenceSummary != null) BaseViewModel.Instance.CurrentLicenceSummary.PropertyChanged += CurrentLicenceSummary__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentLicenceSummary);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(AsycudaDocumentSetExs.Contains(CurrentLicenceSummary.AsycudaDocumentSetEx) == false) AsycudaDocumentSetExs.Add(CurrentLicenceSummary.AsycudaDocumentSetEx);
                     //}
                  } 
-        internal void OnLicenceSummaryChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnLicenceSummaryChanged(object sender, NotificationEventArgs e)
         {
             _LicenceSummary.Refresh();
 			NotifyPropertyChanged(x => this.LicenceSummary);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
+		 internal virtual void OnCurrentAsycudaDocumentSetExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetEx> e)
 			{
 			if(ViewCurrentAsycudaDocumentSetEx == false) return;
 			if (e.Data == null || e.Data.AsycudaDocumentSetId == null)
@@ -188,7 +188,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
          }
 		public void ViewAll()
         {
-		vloader.FilterExpression = "All";
+			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
 
 
 

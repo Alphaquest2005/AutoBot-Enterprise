@@ -229,19 +229,6 @@ namespace EntryDataQS.Business.Services
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "ContainerEntryDatas":
-                                return
-                                    await
-                                        GetWhere<ContainerEntryData>(dbContext, exp, itm.Value, "ContainerEx", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                        }
-
-                    }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = await set.AsNoTracking().Where(exp)
 									.ToListAsync()
@@ -729,15 +716,6 @@ namespace EntryDataQS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "ContainerEntryDatas":
-                                return await CountWhere<ContainerEntryData>(dbContext, exp, itm.Value, "ContainerEx", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
-                    }
                     return await dbContext.ContainerExes.Where(exp == "All" || exp == null ? "Container_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
@@ -836,22 +814,6 @@ namespace EntryDataQS.Business.Services
                                     .Take(count)
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "ContainerEntryDatas":
-                                return
-                                    await
-                                        LoadRangeWhere<ContainerEntryData>(startIndex, count, dbContext, exp, itm.Value, "ContainerEx", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                          
-							default:
-                                throw new ArgumentException("No Navigation property found for " + itm.Key);
-						}
-
                     }
                     return await set//dbContext.ContainerExes
 								.AsNoTracking()
@@ -1060,7 +1022,6 @@ namespace EntryDataQS.Business.Services
                 var i = Convert.ToInt32(AsycudaDocumentSetId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ContainerEx> entities = await set//dbContext.ContainerExes
-                                                    // .Include(x => x.ContainerEntryDatas)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
@@ -1090,7 +1051,6 @@ namespace EntryDataQS.Business.Services
                 var i = EntryDataId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ContainerEx> entities = await set//dbContext.ContainerExes
-                                                    // .Include(x => x.ContainerEntryDatas)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
@@ -1159,15 +1119,6 @@ namespace EntryDataQS.Business.Services
                         return Convert.ToDecimal(dbContext.ContainerExes
 										.AsNoTracking()
                                         .Sum(field)??0);
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "ContainerEntryDatas":
-                                return await SumWhere<ContainerEntryData>(dbContext, exp, itm.Value, "ContainerEx", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
                     }
                     return Convert.ToDecimal(dbContext.ContainerExes.Where(exp == "All" || exp == null ? "Container_Id != null" : exp)
 											.AsNoTracking()

@@ -132,7 +132,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentEntryDataChanged(object sender, NotificationEventArgs<AsycudaDocumentEntryData> e)
+        internal virtual void OnCurrentAsycudaDocumentEntryDataChanged(object sender, NotificationEventArgs<AsycudaDocumentEntryData> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentEntryData != null) BaseViewModel.Instance.CurrentAsycudaDocumentEntryData.PropertyChanged += CurrentAsycudaDocumentEntryData__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentEntryData);
@@ -153,7 +153,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    //    if(AsycudaDocuments.Contains(CurrentAsycudaDocumentEntryData.AsycudaDocument) == false) AsycudaDocuments.Add(CurrentAsycudaDocumentEntryData.AsycudaDocument);
                     //}
                  } 
-        internal void OnAsycudaDocumentEntryDatasChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentEntryDatasChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentEntryDatas.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentEntryDatas);
@@ -161,7 +161,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 
  	
-		 internal void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
+		 internal virtual void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
 			{
 			if(ViewCurrentEntryDataEx == false) return;
 			if (e.Data == null || e.Data.InvoiceNo == null)
@@ -179,7 +179,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                 // SendMessage(MessageToken.AsycudaDocumentEntryDatasChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentEntryDatasChanged));
                 			}
 	
-		 internal void OnCurrentEntryDataChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryData> e)
+		 internal virtual void OnCurrentEntryDataChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryData> e)
 			{
 			if(ViewCurrentEntryData == false) return;
 			if (e.Data == null || e.Data.EntryDataId == null)
@@ -199,7 +199,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentAsycudaDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocument> e)
+                internal virtual void OnCurrentAsycudaDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocument> e)
 				{
 				if (e.Data == null || e.Data.ASYCUDA_Id == null)
                 {

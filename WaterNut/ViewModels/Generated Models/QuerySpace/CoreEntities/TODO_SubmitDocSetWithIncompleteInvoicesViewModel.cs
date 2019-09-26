@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged(object sender, NotificationEventArgs<TODO_SubmitDocSetWithIncompleteInvoices> e)
+        internal virtual void OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged(object sender, NotificationEventArgs<TODO_SubmitDocSetWithIncompleteInvoices> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_SubmitDocSetWithIncompleteInvoices != null) BaseViewModel.Instance.CurrentTODO_SubmitDocSetWithIncompleteInvoices.PropertyChanged += CurrentTODO_SubmitDocSetWithIncompleteInvoices__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_SubmitDocSetWithIncompleteInvoices);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_SubmitDocSetWithIncompleteInvoices__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_SubmitDocSetWithIncompleteInvoicesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_SubmitDocSetWithIncompleteInvoicesChanged(object sender, NotificationEventArgs e)
         {
             _TODO_SubmitDocSetWithIncompleteInvoices.Refresh();
 			NotifyPropertyChanged(x => this.TODO_SubmitDocSetWithIncompleteInvoices);

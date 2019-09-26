@@ -358,6 +358,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="Item_Id" />
             
+            <PropertyRef Name="ImportComplete" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
@@ -365,6 +366,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="key" Type="nvarchar" MaxLength="101" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="Quantity" Type="float" />
+          <Property Name="ImportComplete" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -398,6 +400,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="ClassifiedLines" Type="int" />
           <Property Name="TotalLines" Type="int" />
           <Property Name="MaxLines" Type="int" />
+          <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="50" />
+          <Property Name="LicenseLines" Type="int" />
+          <Property Name="InvoiceTotal" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -435,29 +440,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="LicenceSummary">
-          
           <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="RowNumber" />
+            
           </Key>
           <Property Name="TariffCode" Type="nvarchar" MaxLength="20" />
           <Property Name="Quantity" Type="float" />
           <Property Name="Total" Type="float" />
           <Property Name="TariffCodeDescription" Type="nvarchar" MaxLength="999" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="RowNumber" Type="bigint" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO_CreateEx9' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="TODO_CreateEx9">
-          <Key>
-            <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="PreviousItem_Id" />
-          </Key>
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
-          <Property Name="QtyAllocated" Type="float" />
-          <Property Name="pQuantity" Type="float" />
-          <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentsToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -521,6 +515,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateDiscrepancyEnt
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateEx9' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-CreateEx9">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="PreviousItem_Id" />
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="QtyAllocated" Type="float" />
+          <Property Name="pQuantity" Type="float" />
+          <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DeleteDocumentSet' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -790,7 +797,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does n
           </Key>
           <Property Name="TariffCode" Type="nvarchar" MaxLength="52" />
           <Property Name="Quantity" Type="float" />
-          <Property Name="TariffCodeDescription" Type="nvarchar" MaxLength="999" />
+          <Property Name="LicenseDescription" Type="nvarchar" MaxLength="50" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
@@ -814,8 +821,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not h
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
-          <Property Name="Invoices" Type="int" />
           <Property Name="TotalInvoices" Type="int" />
+          <Property Name="DocumentsCount" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToExport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-PODocSetToExport">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="NeedC71" />
+            <PropertyRef Name="NeedLicense" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalInvoices" Type="int" />
+          <Property Name="NeedC71" Type="int" Nullable="false" />
+          <Property Name="NeedLicense" Type="int" Nullable="false" />
+          <Property Name="DocumentsCount" Type="int" />
+          <Property Name="InvoiceTotal" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -917,6 +948,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitUnclassifiedIt
             <PropertyRef Name="InvoiceNo" />
             <PropertyRef Name="ItemNumber" />
             <PropertyRef Name="ItemDescription" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
             <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -924,8 +956,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitUnclassifiedIt
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
-          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="int" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1338,7 +1373,8 @@ FROM [dbo].[AsycudaDocumentItem] AS [AsycudaDocumentItem]</DefiningQuery>
 [AsycudaDocumentItemEntryDataDetails].[ItemNumber] AS [ItemNumber], 
 [AsycudaDocumentItemEntryDataDetails].[key] AS [key], 
 [AsycudaDocumentItemEntryDataDetails].[DocumentType] AS [DocumentType], 
-[AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity]
+[AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
+[AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete]
 FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentSetEx" EntityType="Self.AsycudaDocumentSetEx" store:Type="Views" store:Schema="dbo">
@@ -1367,7 +1403,10 @@ FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDat
 [AsycudaDocumentSetEx].[ImportedInvoices] AS [ImportedInvoices], 
 [AsycudaDocumentSetEx].[ClassifiedLines] AS [ClassifiedLines], 
 [AsycudaDocumentSetEx].[TotalLines] AS [TotalLines], 
-[AsycudaDocumentSetEx].[MaxLines] AS [MaxLines]
+[AsycudaDocumentSetEx].[MaxLines] AS [MaxLines], 
+[AsycudaDocumentSetEx].[LocationOfGoods] AS [LocationOfGoods], 
+[AsycudaDocumentSetEx].[LicenseLines] AS [LicenseLines], 
+[AsycudaDocumentSetEx].[InvoiceTotal] AS [InvoiceTotal]
 FROM [dbo].[AsycudaDocumentSetEx] AS [AsycudaDocumentSetEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -1397,18 +1436,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
 [LicenceSummary].[Quantity] AS [Quantity], 
 [LicenceSummary].[Total] AS [Total], 
 [LicenceSummary].[TariffCodeDescription] AS [TariffCodeDescription], 
+[LicenceSummary].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [LicenceSummary].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [LicenceSummary].[RowNumber] AS [RowNumber]
 FROM [dbo].[LicenceSummary] AS [LicenceSummary]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="TODO_CreateEx9" EntityType="Self.TODO_CreateEx9" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-[TODO_CreateEx9].[ItemNumber] AS [ItemNumber], 
-[TODO_CreateEx9].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-[TODO_CreateEx9].[QtyAllocated] AS [QtyAllocated], 
-[TODO_CreateEx9].[pQuantity] AS [pQuantity], 
-[TODO_CreateEx9].[PreviousItem_Id] AS [PreviousItem_Id]
-FROM [dbo].[TODO_CreateEx9] AS [TODO_CreateEx9]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-AdjustmentsToXML" EntityType="Self.TODO-AdjustmentsToXML" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1450,6 +1481,15 @@ FROM [dbo].[TODO-C71ToXML] AS [TODO-C71ToXML]</DefiningQuery>
 [TODO-CreateDiscrepancyEntries].[InvoiceDate] AS [InvoiceDate], 
 [TODO-CreateDiscrepancyEntries].[Declarant_Reference_Number] AS [Declarant_Reference_Number]
 FROM [dbo].[TODO-CreateDiscrepancyEntries] AS [TODO-CreateDiscrepancyEntries]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-CreateEx9" EntityType="Self.TODO-CreateEx9" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-CreateEx9].[ItemNumber] AS [ItemNumber], 
+[TODO-CreateEx9].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-CreateEx9].[QtyAllocated] AS [QtyAllocated], 
+[TODO-CreateEx9].[pQuantity] AS [pQuantity], 
+[TODO-CreateEx9].[PreviousItem_Id] AS [PreviousItem_Id]
+FROM [dbo].[TODO-CreateEx9] AS [TODO-CreateEx9]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-DeleteDocumentSet" EntityType="Self.TODO-DeleteDocumentSet" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1647,7 +1687,7 @@ FROM [dbo].[TODO-ERRReport-UnmappedItems] AS [TODO-ERRReport-UnmappedItems]</Def
             <DefiningQuery>SELECT 
 [TODO-LicenseToXML].[TariffCode] AS [TariffCode], 
 [TODO-LicenseToXML].[Quantity] AS [Quantity], 
-[TODO-LicenseToXML].[TariffCodeDescription] AS [TariffCodeDescription], 
+[TODO-LicenseToXML].[LicenseDescription] AS [LicenseDescription], 
 [TODO-LicenseToXML].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [TODO-LicenseToXML].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [TODO-LicenseToXML].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
@@ -1667,9 +1707,27 @@ FROM [dbo].[TODO-LicenseToXML] AS [TODO-LicenseToXML]</DefiningQuery>
 [TODO-PODocSet].[Type_of_declaration] AS [Type_of_declaration], 
 [TODO-PODocSet].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
 [TODO-PODocSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
-[TODO-PODocSet].[Invoices] AS [Invoices], 
-[TODO-PODocSet].[TotalInvoices] AS [TotalInvoices]
+[TODO-PODocSet].[TotalInvoices] AS [TotalInvoices], 
+[TODO-PODocSet].[DocumentsCount] AS [DocumentsCount]
 FROM [dbo].[TODO-PODocSet] AS [TODO-PODocSet]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TODO-PODocSetToExport" EntityType="Self.TODO-PODocSetToExport" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-PODocSetToExport].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-PODocSetToExport].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-PODocSetToExport].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-PODocSetToExport].[Currency_Code] AS [Currency_Code], 
+[TODO-PODocSetToExport].[Manifest_Number] AS [Manifest_Number], 
+[TODO-PODocSetToExport].[BLNumber] AS [BLNumber], 
+[TODO-PODocSetToExport].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-PODocSetToExport].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-PODocSetToExport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-PODocSetToExport].[TotalInvoices] AS [TotalInvoices], 
+[TODO-PODocSetToExport].[NeedC71] AS [NeedC71], 
+[TODO-PODocSetToExport].[NeedLicense] AS [NeedLicense], 
+[TODO-PODocSetToExport].[DocumentsCount] AS [DocumentsCount], 
+[TODO-PODocSetToExport].[InvoiceTotal] AS [InvoiceTotal]
+FROM [dbo].[TODO-PODocSetToExport] AS [TODO-PODocSetToExport]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ToDo-POToXML" EntityType="Self.ToDo-POToXML" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -1745,8 +1803,11 @@ FROM [dbo].[TODO-SubmitIncompleteEntryData] AS [TODO-SubmitIncompleteEntryData]<
 [TODO-SubmitUnclassifiedItems].[ItemNumber] AS [ItemNumber], 
 [TODO-SubmitUnclassifiedItems].[ItemDescription] AS [ItemDescription], 
 [TODO-SubmitUnclassifiedItems].[TariffCode] AS [TariffCode], 
-[TODO-SubmitUnclassifiedItems].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-[TODO-SubmitUnclassifiedItems].[EmailId] AS [EmailId]
+[TODO-SubmitUnclassifiedItems].[EmailId] AS [EmailId], 
+[TODO-SubmitUnclassifiedItems].[Type] AS [Type], 
+[TODO-SubmitUnclassifiedItems].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitUnclassifiedItems].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-SubmitUnclassifiedItems].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[TODO-SubmitUnclassifiedItems] AS [TODO-SubmitUnclassifiedItems]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-SubmitXMLToCustoms" EntityType="Self.TODO-SubmitXMLToCustoms" store:Type="Views" store:Schema="dbo">
@@ -1973,7 +2034,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           </AssociationSet>
           <EntitySet Name="TODO_UnallocatedSales" EntityType="WaterNutDBModel.TODO_UnallocatedSales" />
           <EntitySet Name="Contacts" EntityType="WaterNutDBModel.Contacts" />
-          <EntitySet Name="TODO_CreateEx9" EntityType="WaterNutDBModel.TODO_CreateEx9" />
           <EntitySet Name="TODO_DeleteDocumentSet" EntityType="WaterNutDBModel.TODO_DeleteDocumentSet" />
           <EntitySet Name="TODO_DocumentsToDelete" EntityType="WaterNutDBModel.TODO_DocumentsToDelete" />
           <EntitySet Name="Actions" EntityType="WaterNutDBModel.Actions" />
@@ -2060,6 +2120,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="TODO_SubmitDocSetWithIncompleteInvoices" EntityType="WaterNutDBModel.TODO_SubmitDocSetWithIncompleteInvoices" />
           <EntitySet Name="TODO_SubmitUnclassifiedItems" EntityType="WaterNutDBModel.TODO_SubmitUnclassifiedItems" />
           <EntitySet Name="TODO_SubmitInadequatePackages" EntityType="WaterNutDBModel.TODO_SubmitInadequatePackages" />
+          <EntitySet Name="TODO_PODocSetToExport" EntityType="WaterNutDBModel.TODO_PODocSetToExport" />
+          <EntitySet Name="TODO_CreateEx9" EntityType="WaterNutDBModel.TODO_CreateEx9" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -2291,6 +2353,9 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ClassifiedLines" Type="Int32" />
           <Property Name="TotalLines" Type="Int32" />
           <Property Name="MaxLines" Type="Int32" />
+          <Property Name="LocationOfGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LicenseLines" Type="Int32" />
+          <Property Name="InvoiceTotal" Type="Double" />
           <a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <Association Name="AsycudaDocumentSetExAsycudaDocument">
@@ -2308,6 +2373,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
         <EntityType Name="LicenceSummary">
           <Key>
             <PropertyRef Name="RowNumber" />
+            <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="TariffCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" />
@@ -2316,6 +2382,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentSetEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExLicenceSummary" FromRole="LicenceSummary" ToRole="AsycudaDocumentSetEx" />
           <Property Name="RowNumber" Type="Int64" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AsycudaDocumentSetExLicenceSummary">
           <End Type="WaterNutDBModel.AsycudaDocumentSetEx" Role="AsycudaDocumentSetEx" Multiplicity="1" />
@@ -2402,6 +2469,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="Item_Id" />
+            <PropertyRef Name="ImportComplete" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
@@ -2410,6 +2478,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" />
           <NavigationProperty Name="AsycudaDocumentItem" Relationship="WaterNutDBModel.AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails" FromRole="AsycudaDocumentItemEntryDataDetails" ToRole="AsycudaDocumentItem" />
+          <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="AsycudaDocumentItemAsycudaDocumentItemEntryDataDetails">
           <End Type="WaterNutDBModel.AsycudaDocumentItem" Role="AsycudaDocumentItem" Multiplicity="1" />
@@ -2735,17 +2804,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="FileTypeContacts" Relationship="WaterNutDBModel.FK_FileTypeContacts_Contacts" FromRole="Contacts" ToRole="FileTypeContacts" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="CellPhone" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="TODO_CreateEx9">
-          <Key>
-            <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="PreviousItem_Id" />
-          </Key>
-          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="QtyAllocated" Type="Double" />
-          <Property Name="pQuantity" Type="Double" />
-          <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_DeleteDocumentSet">
           <Key>
@@ -3351,13 +3409,13 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           </Key>
           <Property Name="TariffCode" Type="String" MaxLength="52" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" />
-          <Property Name="TariffCodeDescription" Type="String" MaxLength="999" FixedLength="false" Unicode="true" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="UOM" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TODO_SubmitIncompleteEntryData">
           <Key>
@@ -3392,8 +3450,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Invoices" Type="Int32" />
           <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="DocumentsCount" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_SubmitDocSetWithIncompleteInvoices">
           <Key>
@@ -3417,6 +3475,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <PropertyRef Name="InvoiceNo" />
             <PropertyRef Name="ItemNumber" />
             <PropertyRef Name="ItemDescription" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
             <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3424,8 +3483,11 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EmailId" Type="Int32" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_SubmitInadequatePackages">
           <Key>
@@ -3439,6 +3501,39 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="TotalLines" Type="Int32" />
           <Property Name="RequiredPackages" Type="Int32" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TODO_PODocSetToExport">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="NeedC71" />
+            <PropertyRef Name="NeedLicense" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="NeedC71" Type="Int32" Nullable="false" />
+          <Property Name="NeedLicense" Type="Int32" Nullable="false" />
+          <Property Name="DocumentsCount" Type="Int32" />
+          <Property Name="InvoiceTotal" Type="Double" />
+        </EntityType>
+        <EntityType Name="TODO_CreateEx9">
+          <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="PreviousItem_Id" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="QtyAllocated" Type="Double" />
+          <Property Name="pQuantity" Type="Double" />
+          <Property Name="PreviousItem_Id" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -3606,6 +3701,9 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSetExs">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSetEx">
               <MappingFragment StoreEntitySet="AsycudaDocumentSetEx">
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />
+                <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
                 <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
                 <ScalarProperty Name="TotalLines" ColumnName="TotalLines" />
                 <ScalarProperty Name="ClassifiedLines" ColumnName="ClassifiedLines" />
@@ -3637,6 +3735,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="LicenceSummary">
             <EntityTypeMapping TypeName="WaterNutDBModel.LicenceSummary">
               <MappingFragment StoreEntitySet="LicenceSummary">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="RowNumber" ColumnName="RowNumber" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="TariffCodeDescription" ColumnName="TariffCodeDescription" />
@@ -3682,6 +3781,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="ImportComplete" ColumnName="ImportComplete" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
                 <ScalarProperty Name="key" ColumnName="key" />
@@ -3812,17 +3912,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TODO_CreateEx9">
-            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_CreateEx9">
-              <MappingFragment StoreEntitySet="TODO_CreateEx9">
-                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
-                <ScalarProperty Name="pQuantity" ColumnName="pQuantity" />
-                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
-                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4250,13 +4339,13 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_LicenseToXML">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenseToXML">
               <MappingFragment StoreEntitySet="TODO-LicenseToXML">
+                <ScalarProperty Name="LicenseDescription" ColumnName="LicenseDescription" />
                 <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
                 <ScalarProperty Name="UOM" ColumnName="UOM" />
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="TariffCodeDescription" ColumnName="TariffCodeDescription" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
               </MappingFragment>
@@ -4285,8 +4374,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_PODocSet">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_PODocSet">
               <MappingFragment StoreEntitySet="TODO-PODocSet">
+                <ScalarProperty Name="DocumentsCount" ColumnName="DocumentsCount" />
                 <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
-                <ScalarProperty Name="Invoices" ColumnName="Invoices" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
                 <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
                 <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
@@ -4317,8 +4406,11 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_SubmitUnclassifiedItems">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitUnclassifiedItems">
               <MappingFragment StoreEntitySet="TODO-SubmitUnclassifiedItems">
-                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
@@ -4337,6 +4429,37 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="MaxEntryLines" ColumnName="MaxEntryLines" />
                 <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_PODocSetToExport">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_PODocSetToExport">
+              <MappingFragment StoreEntitySet="TODO-PODocSetToExport">
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="DocumentsCount" ColumnName="DocumentsCount" />
+                <ScalarProperty Name="NeedLicense" ColumnName="NeedLicense" />
+                <ScalarProperty Name="NeedC71" ColumnName="NeedC71" />
+                <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
+                <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Manifest_Number" ColumnName="Manifest_Number" />
+                <ScalarProperty Name="Currency_Code" ColumnName="Currency_Code" />
+                <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_CreateEx9">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_CreateEx9">
+              <MappingFragment StoreEntitySet="TODO-CreateEx9">
+                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
+                <ScalarProperty Name="pQuantity" ColumnName="pQuantity" />
+                <ScalarProperty Name="QtyAllocated" ColumnName="QtyAllocated" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

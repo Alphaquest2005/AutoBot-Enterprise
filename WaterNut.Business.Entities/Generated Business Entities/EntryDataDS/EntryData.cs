@@ -24,7 +24,7 @@ namespace EntryDataDS.Business.Entities
             this.EntryDataDetails = new List<EntryDataDetails>();
             this.AsycudaDocuments = new List<AsycudaDocumentEntryData>();
             this.AsycudaDocumentSets = new List<AsycudaDocumentSetEntryData>();
-            this.ContainerEntryData = new List<ContainerEntryData>();
+            this.EntryDataEx = new List<EntryDataEx>();
         }
 
         [DataMember]
@@ -253,19 +253,36 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _totaldeduction;
         [DataMember]
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }
         [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         [DataMember]
-        public List<ContainerEntryData> ContainerEntryData { get; set; }
-        [DataMember]
         public FileTypes FileTypes { get; set; }
         [DataMember]
         public Suppliers Suppliers { get; set; }
         [DataMember]
         public EntryDataExTotals EntryDataTotals { get; set; }
+        [DataMember]
+        public List<EntryDataEx> EntryDataEx { get; set; }
+        [DataMember]
+        public EDDocumentTypes DocumentType { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

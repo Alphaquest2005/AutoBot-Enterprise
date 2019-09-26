@@ -139,19 +139,6 @@ namespace CoreEntities.Client.DTO
         private string _Declarant_Reference_Number;
 
         [DataMember]
-        public Nullable<int> Invoices
-		{ 
-		    get { return _Invoices; }
-			set
-			{
-			    if (value == _Invoices) return;
-				_Invoices = value;
-				NotifyPropertyChanged();//m => this.Invoices
-			}
-		}
-        private Nullable<int> _Invoices;
-
-        [DataMember]
         public Nullable<int> TotalInvoices
 		{ 
 		    get { return _TotalInvoices; }
@@ -163,6 +150,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<int> _TotalInvoices;
+
+        [DataMember]
+        public Nullable<int> DocumentsCount
+		{ 
+		    get { return _DocumentsCount; }
+			set
+			{
+			    if (value == _DocumentsCount) return;
+				_DocumentsCount = value;
+				NotifyPropertyChanged();//m => this.DocumentsCount
+			}
+		}
+        private Nullable<int> _DocumentsCount;
 
        
    //     [DataMember]

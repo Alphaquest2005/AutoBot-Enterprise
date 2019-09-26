@@ -133,7 +133,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentItemEntryDataDetailChanged(object sender, NotificationEventArgs<AsycudaDocumentItemEntryDataDetail> e)
+        internal virtual void OnCurrentAsycudaDocumentItemEntryDataDetailChanged(object sender, NotificationEventArgs<AsycudaDocumentItemEntryDataDetail> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentItemEntryDataDetail != null) BaseViewModel.Instance.CurrentAsycudaDocumentItemEntryDataDetail.PropertyChanged += CurrentAsycudaDocumentItemEntryDataDetail__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentItemEntryDataDetail);
@@ -154,7 +154,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    //    if(AdjustmentDetails.Contains(CurrentAsycudaDocumentItemEntryDataDetail.AdjustmentDetail) == false) AdjustmentDetails.Add(CurrentAsycudaDocumentItemEntryDataDetail.AdjustmentDetail);
                     //}
                  } 
-        internal void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentItemEntryDataDetails.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentItemEntryDataDetails);
@@ -162,7 +162,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  	
-		 internal void OnCurrentAdjustmentOverChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentOver> e)
+		 internal virtual void OnCurrentAdjustmentOverChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentOver> e)
 			{
 			if(ViewCurrentAdjustmentOver == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)
@@ -179,7 +179,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 // SendMessage(MessageToken.AsycudaDocumentItemEntryDataDetailsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentItemEntryDataDetailsChanged));
                 			}
 	
-		 internal void OnCurrentAdjustmentShortChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentShort> e)
+		 internal virtual void OnCurrentAdjustmentShortChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentShort> e)
 			{
 			if(ViewCurrentAdjustmentShort == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)
@@ -196,7 +196,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 // SendMessage(MessageToken.AsycudaDocumentItemEntryDataDetailsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentItemEntryDataDetailsChanged));
                 			}
 	
-		 internal void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
+		 internal virtual void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
 			{
 			if(ViewCurrentAdjustmentDetail == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)

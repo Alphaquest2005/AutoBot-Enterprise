@@ -68,7 +68,7 @@ namespace AdjustmentQS.Business.Services
                         }).ToList().GroupBy(x => x.EffectiveDate.GetValueOrDefault().ToString("MM-yyyy"));
                     foreach (var set in olst)
                     {
-                        await BaseDataModel.Instance.CreateEntryItems(set.ToList(), docSet, perInvoice, false, true)
+                        await BaseDataModel.Instance.CreateEntryItems(set.ToList(), docSet, perInvoice, false, true, false)
                         .ConfigureAwait(false);
                     }
                     

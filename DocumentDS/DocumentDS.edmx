@@ -45,6 +45,7 @@
           <Property Name="LastFileNumber" Type="int" />
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="MaxLines" Type="int" />
+          <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
@@ -74,6 +75,21 @@
           <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Reference" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Container">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Container_identity" Type="nvarchar" MaxLength="255" />
+          <Property Name="Container_type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Empty_full_indicator" Type="nvarchar" MaxLength="255" />
+          <Property Name="Gross_weight" Type="float" />
+          <Property Name="Goods_description" Type="nvarchar" MaxLength="255" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="TotalValue" Type="float" />
+          <Property Name="ShipDate" Type="date" />
+          <Property Name="DeliveryDate" Type="date" />
+          <Property Name="Seal" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -142,6 +158,13 @@
           <Property Name="FileGroupId" Type="int" />
           <Property Name="MergeEmails" Type="bit" Nullable="false" />
           <Property Name="CopyEntryData" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PackageTypes">
+          <Key>
+            <PropertyRef Name="PackageType" />
+          </Key>
+          <Property Name="PackageType" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Assessment">
           <Key>
@@ -947,6 +970,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Container_AsycudaDocumentSet">
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Container" Type="Self.Container" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="Container">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Customs_Procedure_Document_Type">
           <End Role="Document_Type" Type="Self.Document_Type" Multiplicity="1" />
           <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="*" />
@@ -1520,10 +1557,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.xcuda_ASYCUDAEx' does not
           <EntitySet Name="AsycudaDocumentSet_Attachments" EntityType="Self.AsycudaDocumentSet_Attachments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Container" EntityType="Self.Container" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExportTemplate" EntityType="Self.ExportTemplate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Assessment" EntityType="Self.xcuda_Assessment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Assessment_notice" EntityType="Self.xcuda_Assessment_notice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_ASYCUDA" EntityType="Self.xcuda_ASYCUDA" Schema="dbo" store:Type="Tables" />
@@ -1671,6 +1710,10 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <AssociationSet Name="FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet" Association="Self.FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet">
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
             <End Role="AsycudaDocumentSetEntryData" EntitySet="AsycudaDocumentSetEntryData" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Container_AsycudaDocumentSet" Association="Self.FK_Container_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="Container" EntitySet="Container" />
           </AssociationSet>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
@@ -2163,6 +2206,12 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <End Role="FileType" EntitySet="FileTypes" />
             <End Role="AsycudaDocumentSet_Attachments" EntitySet="AsycudaDocumentSet_Attachments" />
           </AssociationSet>
+          <EntitySet Name="Containers" EntityType="WaterNutDBModel.Container" />
+          <EntitySet Name="PackageTypes" EntityType="WaterNutDBModel.PackageType" />
+          <AssociationSet Name="FK_Container_AsycudaDocumentSet" Association="WaterNutDBModel.FK_Container_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSets" />
+            <End Role="Container" EntitySet="Containers" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="AsycudaDocumentSet">
           <Key>
@@ -2194,6 +2243,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="LastFileNumber" Type="Int32" />
           <Property Name="TotalInvoices" Type="Int32" />
           <Property Name="MaxLines" Type="Int32" />
+          <Property Name="LocationOfGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Container" Relationship="WaterNutDBModel.FK_Container_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="Container" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3812,6 +3863,43 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Container">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Container_identity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Container_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Empty_full_indicator" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Gross_weight" Type="Double" />
+          <Property Name="Goods_description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="TotalValue" Type="Double" />
+          <Property Name="ShipDate" Type="DateTime" Precision="0" />
+          <Property Name="DeliveryDate" Type="DateTime" Precision="0" />
+          <Property Name="Seal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDBModel.FK_Container_AsycudaDocumentSet" FromRole="Container" ToRole="AsycudaDocumentSet" />
+        </EntityType>
+        <EntityType Name="PackageType">
+          <Key>
+            <PropertyRef Name="PackageType1" />
+          </Key>
+          <Property Name="PackageType1" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_Container_AsycudaDocumentSet">
+          <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.Container" Role="Container" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="Container">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3821,6 +3909,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSets">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
                 <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
                 <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
                 <ScalarProperty Name="LastFileNumber" ColumnName="LastFileNumber" />
@@ -4500,6 +4589,30 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
                 <ScalarProperty Name="FilePattern" ColumnName="FilePattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Containers">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Container">
+              <MappingFragment StoreEntitySet="Container">
+                <ScalarProperty Name="Seal" ColumnName="Seal" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+                <ScalarProperty Name="ShipDate" ColumnName="ShipDate" />
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Goods_description" ColumnName="Goods_description" />
+                <ScalarProperty Name="Gross_weight" ColumnName="Gross_weight" />
+                <ScalarProperty Name="Empty_full_indicator" ColumnName="Empty_full_indicator" />
+                <ScalarProperty Name="Container_type" ColumnName="Container_type" />
+                <ScalarProperty Name="Container_identity" ColumnName="Container_identity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageTypes">
+            <EntityTypeMapping TypeName="WaterNutDBModel.PackageType">
+              <MappingFragment StoreEntitySet="PackageTypes">
+                <ScalarProperty Name="PackageDescription" ColumnName="PackageDescription" />
+                <ScalarProperty Name="PackageType1" ColumnName="PackageType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

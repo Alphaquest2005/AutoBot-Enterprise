@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaSalesAndAdjustmentAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAndAdjustmentAllocationsEx> e)
+        internal virtual void OnCurrentAsycudaSalesAndAdjustmentAllocationsExChanged(object sender, NotificationEventArgs<AsycudaSalesAndAdjustmentAllocationsEx> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaSalesAndAdjustmentAllocationsEx != null) BaseViewModel.Instance.CurrentAsycudaSalesAndAdjustmentAllocationsEx.PropertyChanged += CurrentAsycudaSalesAndAdjustmentAllocationsEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaSalesAndAdjustmentAllocationsEx);
@@ -141,7 +141,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentAsycudaSalesAndAdjustmentAllocationsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAsycudaSalesAndAdjustmentAllocationsEx.ApplicationSettings);
                     //}
                  } 
-        internal void OnAsycudaSalesAndAdjustmentAllocationsExesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaSalesAndAdjustmentAllocationsExesChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaSalesAndAdjustmentAllocationsExes.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaSalesAndAdjustmentAllocationsExes);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

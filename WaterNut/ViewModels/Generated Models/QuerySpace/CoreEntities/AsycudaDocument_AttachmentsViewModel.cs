@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocument_AttachmentsChanged(object sender, NotificationEventArgs<AsycudaDocument_Attachments> e)
+        internal virtual void OnCurrentAsycudaDocument_AttachmentsChanged(object sender, NotificationEventArgs<AsycudaDocument_Attachments> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocument_Attachments != null) BaseViewModel.Instance.CurrentAsycudaDocument_Attachments.PropertyChanged += CurrentAsycudaDocument_Attachments__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocument_Attachments);
@@ -144,7 +144,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(AsycudaDocuments.Contains(CurrentAsycudaDocument_Attachments.AsycudaDocument) == false) AsycudaDocuments.Add(CurrentAsycudaDocument_Attachments.AsycudaDocument);
                     //}
                  } 
-        internal void OnAsycudaDocument_AttachmentsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocument_AttachmentsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocument_Attachments.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocument_Attachments);
@@ -152,7 +152,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Attachments> e)
+		 internal virtual void OnCurrentAttachmentsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Attachments> e)
 			{
 			if(ViewCurrentAttachments == false) return;
 			if (e.Data == null || e.Data.Id == null)
@@ -173,7 +173,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentAsycudaDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocument> e)
+                internal virtual void OnCurrentAsycudaDocumentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocument> e)
 				{
 				if (e.Data == null || e.Data.ASYCUDA_Id == null)
                 {

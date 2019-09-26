@@ -66,73 +66,7 @@ namespace WaterNut.DataSpace.EntryDataDS.DataModels
             }
         }
    
-        public async Task<IEnumerable<Container>> SearchContainer(List<string> lst, List<string> includeLst = null )
-        {
-            using (var ctx = new ContainerService())
-            {
-                return await ctx.GetContainersByExpressionLst(lst, includeLst).ConfigureAwait(false);
-            }
-        }
-
-        public async Task SaveContainer(Container i)
-        {
-            if (i == null) return;
-            using (var ctx = new ContainerService())
-            {
-                await ctx.UpdateContainer(i).ConfigureAwait(false);
-            }
-        }
-   
-        public async Task<IEnumerable<ContainerAsycudaDocumentSet>> SearchContainerAsycudaDocumentSet(List<string> lst, List<string> includeLst = null )
-        {
-            using (var ctx = new ContainerAsycudaDocumentSetService())
-            {
-                return await ctx.GetContainerAsycudaDocumentSetsByExpressionLst(lst, includeLst).ConfigureAwait(false);
-            }
-        }
-
-        public async Task SaveContainerAsycudaDocumentSet(ContainerAsycudaDocumentSet i)
-        {
-            if (i == null) return;
-            using (var ctx = new ContainerAsycudaDocumentSetService())
-            {
-                await ctx.UpdateContainerAsycudaDocumentSet(i).ConfigureAwait(false);
-            }
-        }
-   
-        public async Task<IEnumerable<ContainerEntryData>> SearchContainerEntryData(List<string> lst, List<string> includeLst = null )
-        {
-            using (var ctx = new ContainerEntryDataService())
-            {
-                return await ctx.GetContainerEntryDataByExpressionLst(lst, includeLst).ConfigureAwait(false);
-            }
-        }
-
-        public async Task SaveContainerEntryData(ContainerEntryData i)
-        {
-            if (i == null) return;
-            using (var ctx = new ContainerEntryDataService())
-            {
-                await ctx.UpdateContainerEntryData(i).ConfigureAwait(false);
-            }
-        }
-   
-        public async Task<IEnumerable<ContainerType>> SearchContainerType(List<string> lst, List<string> includeLst = null )
-        {
-            using (var ctx = new ContainerTypeService())
-            {
-                return await ctx.GetContainerTypesByExpressionLst(lst, includeLst).ConfigureAwait(false);
-            }
-        }
-
-        public async Task SaveContainerType(ContainerType i)
-        {
-            if (i == null) return;
-            using (var ctx = new ContainerTypeService())
-            {
-                await ctx.UpdateContainerType(i).ConfigureAwait(false);
-            }
-        }
+      
    
         public async Task<IEnumerable<EntryData>> SearchEntryData(List<string> lst, List<string> includeLst = null )
         {

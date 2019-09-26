@@ -38,6 +38,9 @@
               this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
               this.Property(t => t.TotalLines).HasColumnName("TotalLines");
               this.Property(t => t.MaxLines).HasColumnName("MaxLines");
+              this.Property(t => t.LocationOfGoods).HasColumnName("LocationOfGoods").HasMaxLength(50);
+              this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
+              this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentSetEx>) t.AsycudaDocumentSetEx).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocuments).WithOptional(t => t.AsycudaDocumentSetEx).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.LicenceSummary).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);

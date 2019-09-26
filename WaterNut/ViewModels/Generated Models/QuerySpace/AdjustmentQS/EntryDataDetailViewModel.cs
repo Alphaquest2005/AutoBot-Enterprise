@@ -129,7 +129,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentEntryDataDetailChanged(object sender, NotificationEventArgs<EntryDataDetail> e)
+        internal virtual void OnCurrentEntryDataDetailChanged(object sender, NotificationEventArgs<EntryDataDetail> e)
         {
             if(BaseViewModel.Instance.CurrentEntryDataDetail != null) BaseViewModel.Instance.CurrentEntryDataDetail.PropertyChanged += CurrentEntryDataDetail__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEntryDataDetail);
@@ -142,7 +142,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    //    if(InventoryItemsExes.Contains(CurrentEntryDataDetail.InventoryItemsEx) == false) InventoryItemsExes.Add(CurrentEntryDataDetail.InventoryItemsEx);
                     //}
                  } 
-        internal void OnEntryDataDetailsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
             _EntryDataDetails.Refresh();
 			NotifyPropertyChanged(x => this.EntryDataDetails);
@@ -150,7 +150,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  	
-		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
+		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
 			if (e.Data == null || e.Data.ItemNumber == null)

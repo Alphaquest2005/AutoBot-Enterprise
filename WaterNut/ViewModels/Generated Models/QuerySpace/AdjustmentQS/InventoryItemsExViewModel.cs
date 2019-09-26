@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentInventoryItemsExChanged(object sender, NotificationEventArgs<InventoryItemsEx> e)
+        internal virtual void OnCurrentInventoryItemsExChanged(object sender, NotificationEventArgs<InventoryItemsEx> e)
         {
             if(BaseViewModel.Instance.CurrentInventoryItemsEx != null) BaseViewModel.Instance.CurrentInventoryItemsEx.PropertyChanged += CurrentInventoryItemsEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentInventoryItemsEx);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             void CurrentInventoryItemsEx__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnInventoryItemsExesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnInventoryItemsExesChanged(object sender, NotificationEventArgs e)
         {
             _InventoryItemsExes.Refresh();
 			NotifyPropertyChanged(x => this.InventoryItemsExes);

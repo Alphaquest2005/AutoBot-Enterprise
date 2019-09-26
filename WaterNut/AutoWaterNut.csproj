@@ -261,6 +261,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_UnmappedItemsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenseToXMLViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToExportViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ToDo_POToXMLViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs" />
@@ -278,9 +279,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataDetailViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\AsycudaDocumentSetEntryDataViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\BaseViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerEntryDataViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerExViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\ContainerTypeViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EmptyFullCodeViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataDetailsExViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\EntryDataQS\EntryDataExViewModel.cs" />
@@ -379,6 +378,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_UnmappedItemsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenseToXMLTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToExportTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ToDo_POToXMLTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs" />
@@ -398,9 +398,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentItemEntryDataDetailTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataDetailTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\AsycudaDocumentSetEntryDataTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerEntryDataTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerExTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\ContainerTypeTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EmptyFullCodeTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataDetailsExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\EntryDataQS\EntryDataExTotals.cs" />
@@ -488,6 +486,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_UnmappedItemsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenseToXMLVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToExportVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ToDo_POToXMLVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs" />
@@ -503,9 +502,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentItemEntryDataDetailVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataDetailVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\AsycudaDocumentSetEntryDataVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerEntryDataVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerExVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\ContainerTypeVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EmptyFullCodeVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataDetailsExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\EntryDataQS\EntryDataExVirturalListLoader.cs" />

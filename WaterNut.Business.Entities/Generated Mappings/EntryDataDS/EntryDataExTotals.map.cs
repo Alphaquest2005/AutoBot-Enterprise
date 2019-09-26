@@ -18,6 +18,8 @@
               this.Property(t => t.AllocatedTotal).HasColumnName("AllocatedTotal");
               this.Property(t => t.TotalLines).HasColumnName("TotalLines");
               this.Property(t => t.Tax).HasColumnName("Tax");
+              this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
+              this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
               this.HasRequired(t => t.EntryData).WithOptional(t => (EntryDataExTotals)t.EntryDataTotals);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

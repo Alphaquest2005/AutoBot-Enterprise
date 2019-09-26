@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs<AsycudaDocumentItemEntryDataDetails> e)
+        internal virtual void OnCurrentAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs<AsycudaDocumentItemEntryDataDetails> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentItemEntryDataDetails != null) BaseViewModel.Instance.CurrentAsycudaDocumentItemEntryDataDetails.PropertyChanged += CurrentAsycudaDocumentItemEntryDataDetails__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentItemEntryDataDetails);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(AsycudaDocumentItems.Contains(CurrentAsycudaDocumentItemEntryDataDetails.AsycudaDocumentItem) == false) AsycudaDocumentItems.Add(CurrentAsycudaDocumentItemEntryDataDetails.AsycudaDocumentItem);
                     //}
                  } 
-        internal void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentItemEntryDataDetails.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentItemEntryDataDetails);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
+		 internal virtual void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
 			{
 			if(ViewCurrentAsycudaDocumentItem == false) return;
 			if (e.Data == null || e.Data.Item_Id == null)
@@ -281,6 +281,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _importCompleteFilter;
+        public Boolean? ImportCompleteFilter
+        {
+            get
+            {
+                return _importCompleteFilter;
+            }
+            set
+            {
+                _importCompleteFilter = value;
+				NotifyPropertyChanged(x => ImportCompleteFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -324,7 +342,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 
 					if(QuantityFilter.HasValue)
-						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
+
+									if(ImportCompleteFilter.HasValue)
+						res.Append(" && " + string.Format("ImportComplete == {0}",  ImportCompleteFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -356,7 +378,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DocumentType = x.DocumentType ,
                     
  
-                    Quantity = x.Quantity 
+                    Quantity = x.Quantity ,
+                    
+ 
+                    ImportComplete = x.ImportComplete 
                     
                 }).ToList()
             };
@@ -379,6 +404,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> Quantity { get; set; } 
+                    
+ 
+                    public bool ImportComplete { get; set; } 
                     
         }
 

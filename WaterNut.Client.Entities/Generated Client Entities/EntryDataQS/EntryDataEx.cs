@@ -265,6 +265,96 @@ public double ExpectedTotal
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> ClassifiedLines
+		{ 
+		    get { return this.entrydataex.ClassifiedLines; }
+			set
+			{
+			    if (value == this.entrydataex.ClassifiedLines) return;
+				this.entrydataex.ClassifiedLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ClassifiedLines");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.entrydataex.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.entrydataex.AsycudaDocumentSetId) return;
+				this.entrydataex.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "TotalInternalFreight is required")]
+       [NumberValidationAttribute]
+public double TotalInternalFreight
+		{ 
+		    get { return this.entrydataex.TotalInternalFreight; }
+			set
+			{
+			    if (value == this.entrydataex.TotalInternalFreight) return;
+				this.entrydataex.TotalInternalFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalInternalFreight");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "TotalInternalInsurance is required")]
+       [NumberValidationAttribute]
+public double TotalInternalInsurance
+		{ 
+		    get { return this.entrydataex.TotalInternalInsurance; }
+			set
+			{
+			    if (value == this.entrydataex.TotalInternalInsurance) return;
+				this.entrydataex.TotalInternalInsurance = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalInternalInsurance");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "TotalOtherCost is required")]
+       [NumberValidationAttribute]
+public double TotalOtherCost
+		{ 
+		    get { return this.entrydataex.TotalOtherCost; }
+			set
+			{
+			    if (value == this.entrydataex.TotalOtherCost) return;
+				this.entrydataex.TotalOtherCost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalOtherCost");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "TotalDeductions is required")]
+       [NumberValidationAttribute]
+public double TotalDeductions
+		{ 
+		    get { return this.entrydataex.TotalDeductions; }
+			set
+			{
+			    if (value == this.entrydataex.TotalDeductions) return;
+				this.entrydataex.TotalDeductions = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalDeductions");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEntryData> _AsycudaDocumentSets = null;
         public  ObservableCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets
 		{
@@ -420,60 +510,6 @@ public double ExpectedTotal
                     {
                         if (itm != null)
                         entrydataex.EntryDataDetailsExs.Remove(itm.DTO);
-                    }
-					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                
-            }
-        }
-
-        ObservableCollection<ContainerEntryData> _ContainerEntryDatas = null;
-        public  ObservableCollection<ContainerEntryData> ContainerEntryDatas
-		{
-            
-		    get 
-				{ 
-					if(_ContainerEntryDatas != null) return _ContainerEntryDatas;
-					//if (this.entrydataex.ContainerEntryDatas == null) Debugger.Break();
-					if(this.entrydataex.ContainerEntryDatas != null)
-					{
-						_ContainerEntryDatas = new ObservableCollection<ContainerEntryData>(this.entrydataex.ContainerEntryDatas.Select(x => new ContainerEntryData(x)));
-					}
-					
-						_ContainerEntryDatas.CollectionChanged += ContainerEntryDatas_CollectionChanged; 
-					
-					return _ContainerEntryDatas; 
-				}
-			set
-			{
-			    if (Equals(value, _ContainerEntryDatas)) return;
-				if (value != null)
-					this.entrydataex.ContainerEntryDatas = new ChangeTrackingCollection<DTO.ContainerEntryData>(value.Select(x => x.DTO).ToList());
-                _ContainerEntryDatas = value;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_ContainerEntryDatas != null)
-				_ContainerEntryDatas.CollectionChanged += ContainerEntryDatas_CollectionChanged;               
-				NotifyPropertyChanged("ContainerEntryDatas");
-			}
-		}
-        
-        void ContainerEntryDatas_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (ContainerEntryData itm in e.NewItems)
-                    {
-                        if (itm != null)
-                        entrydataex.ContainerEntryDatas.Add(itm.DTO);
-                    }
-                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (ContainerEntryData itm in e.OldItems)
-                    {
-                        if (itm != null)
-                        entrydataex.ContainerEntryDatas.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

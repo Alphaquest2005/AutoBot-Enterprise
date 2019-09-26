@@ -95,21 +95,6 @@ namespace CoreEntities.Business.Entities
         }
         string _tariffcode;
         [DataMember]
-        public int ApplicationSettingsId 
-        {
-            get
-            {
-                return _applicationsettingsid;
-            }
-            set
-            {
-                _applicationsettingsid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _applicationsettingsid;
-        [DataMember]
         public Nullable<int> EmailId 
         {
             get
@@ -124,6 +109,66 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _emailid;
+        [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
+        [DataMember]
+        public int AsycudaDocumentSetId 
+        {
+            get
+            {
+                return _asycudadocumentsetid;
+            }
+            set
+            {
+                _asycudadocumentsetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycudadocumentsetid;
+        [DataMember]
+        public string Declarant_Reference_Number 
+        {
+            get
+            {
+                return _declarant_reference_number;
+            }
+            set
+            {
+                _declarant_reference_number = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _declarant_reference_number;
+        [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

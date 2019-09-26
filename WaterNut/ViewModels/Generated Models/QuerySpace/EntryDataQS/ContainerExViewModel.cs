@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentContainerExChanged(object sender, NotificationEventArgs<ContainerEx> e)
+        internal virtual void OnCurrentContainerExChanged(object sender, NotificationEventArgs<ContainerEx> e)
         {
             if(BaseViewModel.Instance.CurrentContainerEx != null) BaseViewModel.Instance.CurrentContainerEx.PropertyChanged += CurrentContainerEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentContainerEx);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             void CurrentContainerEx__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnContainerExesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnContainerExesChanged(object sender, NotificationEventArgs e)
         {
             _ContainerExes.Refresh();
 			NotifyPropertyChanged(x => this.ContainerExes);

@@ -25,11 +25,11 @@ namespace EntryDataQS.Client.Repositories
    
     public partial class EntryDataExRepository 
     {
-        public async Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice)
+        public async Task AddDocToEntry(IEnumerable<string> lst, int docSetId, bool perInvoice, bool combineEntryDataInSameFile)
         {
             using (var ctx = new EntryDataExClient())
             {
-                await ctx.AddDocToEntry(lst, docSetId, perInvoice).ConfigureAwait(false);
+                await ctx.AddDocToEntry(lst, docSetId, perInvoice, combineEntryDataInSameFile).ConfigureAwait(false);
             }
         }
 

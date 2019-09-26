@@ -28,6 +28,7 @@ using Core.Common.Data.Contracts;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
 using CoreEntities.Business.Services;
+using DocumentDS.Business.Entities;
 using DocumentDS.Business.Services;
 using EmailDownloader;
 using EntryDataDS.Business.Entities;
@@ -43,6 +44,8 @@ using TrackableEntities.Client;
 using ValuationDS.Business.Entities;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.Asycuda;
+using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
+using AsycudaDocument_Attachments = CoreEntities.Business.Entities.AsycudaDocument_Attachments;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
@@ -123,9 +126,62 @@ namespace AutoBot
                 {"SubmitIncompleteEntryData", SubmitIncompleteEntryData },
                 {"SubmitUnclassifiedItems", SubmitUnclassifiedItems },
                 {"SubmitInadequatePackages", SubmitInadequatePackages },
-
-
+                {"AssessC71", AssessC71 },
+                {"AssessLicense", AssessLicense },
+                {"AttachToDocSetByRef", AttachToDocSetByRef },
+                {"CreatePOEntries",CreatePOEntries },
+                {"ExportPOEntries", ExportPOEntries },
+                
             };
+
+        private static void ExportPOEntries()
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                foreach (var docset in ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                {
+                    ExportPOEntries(docset.AsycudaDocumentSetId);
+                }
+            }
+        }
+
+        private static void CreatePOEntries()
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                foreach (var docset in ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId ))
+                {
+                    CreatePOEntries(docset.AsycudaDocumentSetId);
+                }
+            }
+        }
+
+        private static void AssessLicense()
+        {
+            //throw new NotImplementedException();
+        }
+
+        private static void AssessC71()
+        {
+            //throw new NotImplementedException();
+        }
+
+        private static void AttachToDocSetByRef()
+        {
+            //try
+            //{
+            //    using (var ctx = new VaContext())
+            //    {
+            //        //get C71 with just one docset
+
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e);
+            //    throw;
+            //}
+        }
 
 
         private static void UpdateSupplierInfo(FileTypes ft, FileInfo[] fs)
@@ -187,30 +243,43 @@ namespace AutoBot
                 {
                     foreach (var pO in pOs)
                     {
+                        //if (pO.Item1.Declarant_Reference_Number != "30-15936") continue;
                         var directoryName = pO.Item2;
-                        var fileName = Path.Combine(directoryName, "LIC.xml");
-                        var lst = new CoreEntitiesContext().TODO_LicenseToXML.Where(x =>
-                            x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId &&
-                            x.AsycudaDocumentSetId == pO.Item1.AsycudaDocumentSetId).ToList();
-                        var lstdetails = new CoreEntitiesContext().TODO_LicenseToXML.Where(x =>
-                            x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId &&
-                            x.AsycudaDocumentSetId == pO.Item1.AsycudaDocumentSetId).ToList();
-                        var contact = new CoreEntitiesContext().Contacts.FirstOrDefault(x => x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                        Suppliers supplier;
+                        if (!Directory.Exists(directoryName)) continue;
 
-                        using (var ectx = new EntryDataDSContext())
+                        
+                        var lst = new CoreEntitiesContext().Database
+                            .SqlQuery<TODO_LicenseToXML>(
+                                $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.Item1.AsycudaDocumentSetId}")
+                            .ToList();
+                        foreach (var itm in lst)
                         {
-                            var elst = lst.Select(s => s.EntryDataId).ToList();
-                            supplier = ectx.Suppliers.FirstOrDefault(x =>
-                                ectx.EntryData.Where(z => elst.Contains(z.EntryDataId)).Select(z => z.SupplierCode).Any(z => z == x.SupplierCode) &&
-                                x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId);
-                        }
+                            var fileName = Path.Combine(directoryName, $"{itm.EntryDataId}-LIC.xml");
+                            if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault() &&
+                                File.Exists(fileName)) continue;
+                            var contact = new CoreEntitiesContext().Contacts.FirstOrDefault(x =>
+                                x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance
+                                    .CurrentApplicationSettings.ApplicationSettingsId);
+                            Suppliers supplier;
 
-                        var lic = LicenseToDataBase.Instance.CreateLicense(lst,contact,supplier,pO.Item1.Declarant_Reference_Number);
-                        var invoices = lst.Select(x => x.EntryDataId).Distinct().ToList();
-                        ctx.xLIC_License.Add(lic);
-                        ctx.SaveChanges();
-                        LicenseToDataBase.Instance.ExportLicense(pO.Item1.AsycudaDocumentSetId, lic, fileName, invoices);
+                            using (var ectx = new EntryDataDSContext())
+                            {
+                                //var elst = lst.Select(s => s.EntryDataId).ToList();
+                                supplier = ectx.Suppliers.FirstOrDefault(x =>
+                                    ectx.EntryData.Where(z => z.EntryDataId == itm.EntryDataId).Select(z => z.SupplierCode)
+                                        .Any(z => z == x.SupplierCode) &&
+                                    x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId);
+                            }
+
+                            var lic = LicenseToDataBase.Instance.CreateLicense(new List<TODO_LicenseToXML>(){itm}, contact, supplier,
+                                itm.EntryDataId);
+                            var invoices = lst.Where(x => x.EntryDataId == itm.EntryDataId).Select(x => x.EntryDataId).Distinct().ToList();
+                            ctx.xLIC_License.Add(lic);
+                            ctx.SaveChanges();
+                            LicenseToDataBase.Instance.ExportLicense(pO.Item1.AsycudaDocumentSetId, lic, fileName,
+                                invoices);
+
+                        }
                     }
                 }
             }
@@ -234,12 +303,16 @@ namespace AutoBot
                 {
                     foreach (var pO in pOs)
                     {
+                        //if (pO.Item1.Declarant_Reference_Number != "30-15936") continue;
                         var directoryName = pO.Item2;
                         var fileName = Path.Combine(directoryName, "C71.xml");
+                        if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault() && File.Exists(fileName)) continue;
                         var lst = new CoreEntitiesContext().TODO_C71ToXML.Where(x =>
                             x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId &&
-                            x.AsycudaDocumentSetId == pO.Item1.AsycudaDocumentSetId).ToList();
-                        var supplierCode = lst.Select(x => x.SupplierCode).FirstOrDefault(x => !string.IsNullOrEmpty(x));
+                            x.AsycudaDocumentSetId == pO.Item1.AsycudaDocumentSetId)
+                            .GroupBy(x => x.AsycudaDocumentSetId)
+                            .Where(x => (x.Sum(z => z.InvoiceTotal) > 184 && x.Any(z => z.Currency == "USD")) || (x.Sum(z => z.InvoiceTotal) > 500 && x.Any(z => z.Currency == "XCD"))).ToList();
+                        var supplierCode = lst.SelectMany(x => x.Select(z => z.SupplierCode)).FirstOrDefault(x => !string.IsNullOrEmpty(x));
                         Suppliers supplier = new Suppliers();
                         if (supplierCode == null)
                         {
@@ -252,7 +325,7 @@ namespace AutoBot
                                 x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId);
                         }
                         if(!lst.Any()) continue;
-                        var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst, pO.Item1.Declarant_Reference_Number);
+                        var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst.SelectMany(x => x.Select(z => z)).ToList(), pO.Item1.Declarant_Reference_Number);
                         ctx.xC71_Value_declaration_form.Add(c71);
                         ctx.SaveChanges();
                         C71ToDataBase.Instance.ExportC71(pO.Item1.AsycudaDocumentSetId,c71, fileName);
@@ -1032,8 +1105,9 @@ namespace AutoBot
             try
             {
 
-
+                
                 if (!contacts.Any() || BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true) return;
+                if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
                 var lst = CurrentPOInfo();
                 foreach (var poInfo in lst.Where(x => x.Item1.AsycudaDocumentSetId == asycudaDocumentSetId))
                 {
@@ -1221,6 +1295,7 @@ namespace AutoBot
 
         public static void AssessEntry(string docReference, int asycudaDocumentSetId)
         {
+            if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
 
             if (docReference == null) return;
             var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -1646,13 +1721,49 @@ namespace AutoBot
 
         public static List<Tuple<AsycudaDocumentSetEx, string>> CurrentPOInfo()
         {
+            try
+            {
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var poDocSet = ctx.TODO_PODocSet.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                    if (poDocSet != null)
+                    {
+                        var docSet = ctx.AsycudaDocumentSetExs.Where(x =>
+                            poDocSet.Any(z => z.AsycudaDocumentSetId == x.AsycudaDocumentSetId));
+                        var lst = new List<Tuple<AsycudaDocumentSetEx, string>>();
+                        foreach (var item in docSet)
+                        {
+
+                            var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(
+                                BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                                item.Declarant_Reference_Number));
+                            lst.Add(new Tuple<AsycudaDocumentSetEx, string>(item, dirPath));
+                        }
+
+                        return lst;
+                    }
+
+                    return new List<Tuple<AsycudaDocumentSetEx, string>>();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        public static List<Tuple<AsycudaDocumentSetEx, string>> CurrentLICInfo()
+        {
             using (var ctx = new CoreEntitiesContext())
             {
-                var poDocSet = ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                if (poDocSet != null)
-                {
-                    var docSet = ctx.AsycudaDocumentSetExs.Where(x =>
-                         poDocSet.Any(z => z.AsycudaDocumentSetId == x.AsycudaDocumentSetId));
+                var poDocSet = ctx.LicenceSummary.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x => x.AsycudaDocumentSetId).Distinct().ToList();
+                
+                    var docSet = ctx.AsycudaDocumentSetExs.Where(x => poDocSet.Any(z => z == x.AsycudaDocumentSetId)
+                                                                && x.AsycudaDocumentSet_Attachments.All(z => z.FileTypes.Type != "LIC"));
                     var lst = new List<Tuple<AsycudaDocumentSetEx, string>>();
                     foreach (var item in docSet)
                     {
@@ -1662,8 +1773,8 @@ namespace AutoBot
                         lst.Add(new Tuple<AsycudaDocumentSetEx, string>(item, dirPath));
                     }
                     return lst;
-                }
-                return new List<Tuple<AsycudaDocumentSetEx, string>>();
+                
+                
             }
         }
 
@@ -1716,6 +1827,11 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
+                    if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault())
+                    {
+                        if (ctx.TODO_PODocSet.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
+
+                    }
                     var res = ctx.ToDo_POToXML.Where(x =>
                             x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                             x.AsycudaDocumentSetId == asycudaDocumentSetId)
@@ -1744,9 +1860,9 @@ namespace AutoBot
 
 
                         BaseDataModel.Instance.AddToEntry(
-                               docSetId.Entrylst.Select(x => x.EntryDataDetailsId),
-                               docSetId.DocSetId,
-                               BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true).Wait();
+                               (IEnumerable<int>) docSetId.Entrylst.Select(x => x.EntryDataDetailsId),
+                                docSetId.DocSetId,
+                               (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true).Wait();
 
                     }
 
@@ -1767,15 +1883,46 @@ namespace AutoBot
             {
                 using (var ctx = new DocumentDS.Business.Entities.DocumentDSContext())
                 {
-                    var res = ctx.xcuda_ASYCUDA
-                        .Include(x => x.xcuda_Declarant)
-                        .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                   && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId == asycudaDocumentSetId
-                                   && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
-                                   && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Type_of_declaration == "IM" 
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Declaration_gen_procedure_code == "7")
-                        .GroupBy(x => new { x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId, ReferenceNumber = x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number })
-                        .Select(x => new
+                    
+                    IQueryable<xcuda_ASYCUDA> docs;
+                    if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true)
+                    {
+                        if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x =>
+                            x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
+
+                            docs = ctx.xcuda_ASYCUDA
+                                .Include(x => x.xcuda_Declarant)
+                                
+                                .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                            && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId == asycudaDocumentSetId
+                                            && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
+                                            && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Type_of_declaration == "IM"
+                                            && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Declaration_gen_procedure_code == "7")
+                            ;
+                    }
+                    else
+                    {
+
+
+                        docs = ctx.xcuda_ASYCUDA
+                            .Include(x => x.xcuda_Declarant)
+                            .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId ==
+                                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                        && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId ==
+                                        asycudaDocumentSetId
+                                        && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
+                                        && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type
+                                            .Type_of_declaration == "IM"
+                                        && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type
+                                            .Declaration_gen_procedure_code == "7");
+                    }
+
+                    var res = docs.GroupBy(x => new
+                            {
+                                x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId,
+                                ReferenceNumber = x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
+                                    .Declarant_Reference_Number
+                            }).Select(x => new
                         {
                             DocSet = x.Key,
                             Entrylst = x.Select(z => new { z, ReferenceNumber = z.xcuda_Declarant.Number }).ToList()
@@ -2271,7 +2418,7 @@ namespace AutoBot
 
                 try
                 {
-                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType,  false)
+                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType,  true)
                         .Wait();
                     
                     

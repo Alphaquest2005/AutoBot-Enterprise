@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentSubItemsChanged(object sender, NotificationEventArgs<SubItems> e)
+        internal virtual void OnCurrentSubItemsChanged(object sender, NotificationEventArgs<SubItems> e)
         {
             if(BaseViewModel.Instance.CurrentSubItems != null) BaseViewModel.Instance.CurrentSubItems.PropertyChanged += CurrentSubItems__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentSubItems);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(AsycudaDocumentItems.Contains(CurrentSubItems.AsycudaDocumentItem) == false) AsycudaDocumentItems.Add(CurrentSubItems.AsycudaDocumentItem);
                     //}
                  } 
-        internal void OnSubItemsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnSubItemsChanged(object sender, NotificationEventArgs e)
         {
             _SubItems.Refresh();
 			NotifyPropertyChanged(x => this.SubItems);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
+		 internal virtual void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
 			{
 			if(ViewCurrentAsycudaDocumentItem == false) return;
 			if (e.Data == null || e.Data.Item_Id == null)

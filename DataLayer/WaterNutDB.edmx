@@ -29,6 +29,7 @@
           <Property Name="LastFileNumber" Type="int" />
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="MaxLines" Type="int" />
+          <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Attachments">
           <Key>
@@ -38,6 +39,24 @@
           <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Reference" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Container">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Container_identity" Type="nvarchar" MaxLength="255" />
+          <Property Name="Container_type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Empty_full_indicator" Type="nvarchar" MaxLength="255" />
+          <Property Name="Gross_weight" Type="float" />
+          <Property Name="Goods_description" Type="nvarchar" MaxLength="255" />
+          <Property Name="Packages_type" Type="nvarchar" MaxLength="4" />
+          <Property Name="Packages_number" Type="nvarchar" MaxLength="3" />
+          <Property Name="Packages_weight" Type="float" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="TotalValue" Type="float" />
+          <Property Name="ShipDate" Type="date" />
+          <Property Name="DeliveryDate" Type="date" />
+          <Property Name="Seal" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -98,6 +117,13 @@
           <Property Name="Deffered_payment_reference" Type="nvarchar" MaxLength="100" />
           <Property Name="AttachedDocumentCode" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="PackageTypes">
+          <Key>
+            <PropertyRef Name="PackageType" />
+          </Key>
+          <Property Name="PackageType" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
             <PropertyRef Name="TariffCategoryCode" />
@@ -132,6 +158,7 @@
           <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="LicenseRequired" Type="bit" />
           <Property Name="Invalid" Type="bit" />
+          <Property Name="LicenseDescription" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -1144,6 +1171,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Container_AsycudaDocumentSet">
+          <End Role="AsycudaDocumentSet" Type="Self.AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Container" Type="Self.Container" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="Container">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Containers_PackageTypes">
+          <End Role="PackageTypes" Type="Self.PackageTypes" Multiplicity="0..1" />
+          <End Role="Container" Type="Self.Container" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PackageTypes">
+              <PropertyRef Name="PackageType" />
+            </Principal>
+            <Dependent Role="Container">
+              <PropertyRef Name="Packages_type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Customs_Procedure_Document_Type">
           <End Role="Document_Type" Type="Self.Document_Type" Multiplicity="1" />
           <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="*" />
@@ -2080,10 +2133,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityContainer Name="WaterNutDBDataLayerStoreContainer">
           <EntitySet Name="AsycudaDocumentSet" EntityType="Self.AsycudaDocumentSet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Attachments" EntityType="Self.Attachments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Container" EntityType="Self.Container" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customs_Procedure" EntityType="Self.Customs_Procedure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExportTemplate" EntityType="Self.ExportTemplate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategory" EntityType="Self.TariffCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategoryCodeSuppUnit" EntityType="Self.TariffCategoryCodeSuppUnit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCodes" EntityType="Self.TariffCodes" Schema="dbo" store:Type="Tables" />
@@ -2244,6 +2299,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <AssociationSet Name="FK_AsycudaDocumentSet_Document_Type" Association="Self.FK_AsycudaDocumentSet_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Container_AsycudaDocumentSet" Association="Self.FK_Container_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="Container" EntitySet="Container" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Containers_PackageTypes" Association="Self.FK_Containers_PackageTypes">
+            <End Role="PackageTypes" EntitySet="PackageTypes" />
+            <End Role="Container" EntitySet="Container" />
           </AssociationSet>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
@@ -3046,6 +3109,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="xcuda_Attached_documents" EntitySet="xcuda_Attached_documents" />
             <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
           </AssociationSet>
+          <EntitySet Name="Container" EntityType="WaterNutDB.DataLayer.Container" />
+          <EntitySet Name="PackageTypes" EntityType="WaterNutDB.DataLayer.PackageTypes" />
+          <AssociationSet Name="FK_Container_AsycudaDocumentSet" Association="WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet">
+            <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
+            <End Role="Container" EntitySet="Container" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Containers_PackageTypes" Association="WaterNutDB.DataLayer.FK_Containers_PackageTypes">
+            <End Role="PackageTypes" EntitySet="PackageTypes" />
+            <End Role="Container" EntitySet="Container" />
+          </AssociationSet>
           </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
           <Property Type="Int32" Name="version" Nullable="true" />
@@ -3523,6 +3596,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="LastFileNumber" Type="Int32" />
           <Property Name="TotalInvoices" Type="Int32" />
           <Property Name="MaxLines" Type="Int32" />
+          <Property Name="LocationOfGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Container" Relationship="WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="Container" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3612,6 +3687,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <NavigationProperty Name="TariffCategory" Relationship="WaterNutDB.DataLayer.FK_TariffCodes_TariffCategory" FromRole="TariffCodes" ToRole="TariffCategory" />
           <Property Name="Invalid" Type="Boolean" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDB.DataLayer.TariffCodesInventoryItemsEx" FromRole="TariffCodes" ToRole="InventoryItemsEx" />
+          <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -5339,6 +5415,60 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Container">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+          </Key>
+          <Property Name="Container_identity" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Container_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Empty_full_indicator" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Gross_weight" Type="Double" />
+          <Property Name="Goods_description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_type" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_number" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Packages_weight" Type="Double" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="TotalValue" Type="Double" />
+          <Property Name="ShipDate" Type="DateTime" Precision="0" />
+          <Property Name="DeliveryDate" Type="DateTime" Precision="0" />
+          <Property Name="Seal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet" FromRole="Container" ToRole="AsycudaDocumentSet" />
+          <NavigationProperty Name="PackageTypes" Relationship="WaterNutDB.DataLayer.FK_Containers_PackageTypes" FromRole="Container" ToRole="PackageTypes" />
+        </EntityType>
+        <EntityType Name="PackageTypes">
+          <Key>
+            <PropertyRef Name="PackageType" />
+          </Key>
+          <Property Name="PackageType" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Container" Relationship="WaterNutDB.DataLayer.FK_Containers_PackageTypes" FromRole="PackageTypes" ToRole="Container" />
+        </EntityType>
+        <Association Name="FK_Container_AsycudaDocumentSet">
+          <End Type="WaterNutDB.DataLayer.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDB.DataLayer.Container" Role="Container" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="AsycudaDocumentSet">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Principal>
+            <Dependent Role="Container">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Containers_PackageTypes">
+          <End Type="WaterNutDB.DataLayer.PackageTypes" Role="PackageTypes" Multiplicity="0..1" />
+          <End Type="WaterNutDB.DataLayer.Container" Role="Container" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PackageTypes">
+              <PropertyRef Name="PackageType" />
+            </Principal>
+            <Dependent Role="Container">
+              <PropertyRef Name="Packages_type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -5585,6 +5715,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="AsycudaDocumentSet">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
                 <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
                 <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
                 <ScalarProperty Name="LastFileNumber" ColumnName="LastFileNumber" />
@@ -5675,6 +5806,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="TariffCodes">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.TariffCodes">
               <MappingFragment StoreEntitySet="TariffCodes">
+                <ScalarProperty Name="LicenseDescription" ColumnName="LicenseDescription" />
                 <ScalarProperty Name="Invalid" ColumnName="Invalid" />
                 <ScalarProperty Name="LicenseRequired" ColumnName="LicenseRequired" />
                 <ScalarProperty Name="TariffCategoryCode" ColumnName="TariffCategoryCode" />
@@ -6315,6 +6447,33 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
                 <ScalarProperty Name="Attached_documents_Id" ColumnName="Attached_documents_Id" />
                 <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Container">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.Container">
+              <MappingFragment StoreEntitySet="Container">
+                <ScalarProperty Name="Seal" ColumnName="Seal" />
+                <ScalarProperty Name="DeliveryDate" ColumnName="DeliveryDate" />
+                <ScalarProperty Name="ShipDate" ColumnName="ShipDate" />
+                <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Packages_weight" ColumnName="Packages_weight" />
+                <ScalarProperty Name="Packages_number" ColumnName="Packages_number" />
+                <ScalarProperty Name="Packages_type" ColumnName="Packages_type" />
+                <ScalarProperty Name="Goods_description" ColumnName="Goods_description" />
+                <ScalarProperty Name="Gross_weight" ColumnName="Gross_weight" />
+                <ScalarProperty Name="Empty_full_indicator" ColumnName="Empty_full_indicator" />
+                <ScalarProperty Name="Container_type" ColumnName="Container_type" />
+                <ScalarProperty Name="Container_identity" ColumnName="Container_identity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PackageTypes">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.PackageTypes">
+              <MappingFragment StoreEntitySet="PackageTypes">
+                <ScalarProperty Name="PackageDescription" ColumnName="PackageDescription" />
+                <ScalarProperty Name="PackageType" ColumnName="PackageType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

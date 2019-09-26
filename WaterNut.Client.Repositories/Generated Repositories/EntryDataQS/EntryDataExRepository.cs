@@ -204,8 +204,7 @@ namespace EntryDataQS.Client.Repositories
                     {
                      // AsycudaDocumentSets = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSetEntryData>(res.AsycudaDocumentSets.Select(y => new AsycudaDocumentSetEntryData(y))),    
                      // AsycudaDocuments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentEntryData>(res.AsycudaDocuments.Select(y => new AsycudaDocumentEntryData(y))),    
-                     // EntryDataDetailsExs = new System.Collections.ObjectModel.ObservableCollection<EntryDataDetailsEx>(res.EntryDataDetailsExs.Select(y => new EntryDataDetailsEx(y))),    
-                     // ContainerEntryDatas = new System.Collections.ObjectModel.ObservableCollection<ContainerEntryData>(res.ContainerEntryDatas.Select(y => new ContainerEntryData(y)))    
+                     // EntryDataDetailsExs = new System.Collections.ObjectModel.ObservableCollection<EntryDataDetailsEx>(res.EntryDataDetailsExs.Select(y => new EntryDataDetailsEx(y)))    
                   };
                     }
                     else
@@ -431,6 +430,34 @@ namespace EntryDataQS.Client.Repositories
                  using (EntryDataExClient t = new EntryDataExClient())
                     {
                         var res = await t.GetEntryDataExByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EntryDataEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<EntryDataEx>> GetEntryDataExByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+             if (AsycudaDocumentSetId == "0") return null;
+            try
+            {
+                 using (EntryDataExClient t = new EntryDataExClient())
+                    {
+                        var res = await t.GetEntryDataExByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new EntryDataEx(x)).AsEnumerable();

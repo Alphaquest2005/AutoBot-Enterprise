@@ -27,8 +27,27 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         private EntryDataDetailsModel()
         {
             RegisterToReceiveMessages<AsycudaDocumentSetEx>(CoreEntities.MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
+            //RegisterToReceiveMessages<EntryDataEx>(MessageToken.EntryDataExChanged, OnCurrentEntryDataExChanged);
 
         }
+
+	    internal override void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
+        {
+	        if (ViewCurrentEntryDataEx == false) return;
+	        if (e.Data == null || e.Data.InvoiceNo == null)
+	        {
+	            vloader.FilterExpression = "None";
+	        }
+	        else
+	        {
+
+	            vloader.FilterExpression = $"EntryDataId == \"{e.Data.InvoiceNo}\" && AsycudaDocumentSetId = \"{e.Data.AsycudaDocumentSetId}\"";
+	        }
+
+	        EntryDataDetailsExes.Refresh();
+	        NotifyPropertyChanged(x => this.EntryDataDetailsExes);
+	        // SendMessage(MessageToken.EntryDataDetailsExesChanged, new NotificationEventArgs(MessageToken.EntryDataDetailsExesChanged));
+	    }
 
         private void OnCurrentAsycudaDocumentSetExChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEx> e)
         {
@@ -134,12 +153,12 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                   if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx != null)
                   {
                      
-                      vloader.SetNavigationExpression("AsycudaDocumentSets",
-                          $@"AsycudaDocumentSetId == {
-                              CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx
-                                  .AsycudaDocumentSetId
-                          }");
-                      //res.Append(string.Format(@" && AsycudaDocumentSetId == {0}", CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId));
+                      //vloader.SetNavigationExpression("AsycudaDocumentSets",
+                      //    $@"AsycudaDocumentSetId == {
+                      //        CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx
+                      //            .AsycudaDocumentSetId
+                      //    }");
+                      res.Append(string.Format(@" && AsycudaDocumentSetId == {0}", CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId));
                   }
               }
              

@@ -50,21 +50,6 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _quantity;
         [DataMember]
-        public string TariffCodeDescription 
-        {
-            get
-            {
-                return _tariffcodedescription;
-            }
-            set
-            {
-                _tariffcodedescription = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _tariffcodedescription;
-        [DataMember]
         public int AsycudaDocumentSetId 
         {
             get
@@ -154,6 +139,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _entrydataid;
+        [DataMember]
+        public string LicenseDescription 
+        {
+            get
+            {
+                return _licensedescription;
+            }
+            set
+            {
+                _licensedescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _licensedescription;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

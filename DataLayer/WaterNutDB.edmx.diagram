@@ -148,6 +148,10 @@
         <EntityTypeShape EntityType="WaterNutDB.DataLayer.xcuda_Attachments" Width="1.5" PointX="7.5" PointY="53.125" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments" />
         <AssociationConnector Association="WaterNutDB.DataLayer.FK_xcuda_Attachments_xcuda_Attached_documents" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.Container" Width="1.5" PointX="6" PointY="21.5" />
+        <EntityTypeShape EntityType="WaterNutDB.DataLayer.PackageTypes" Width="1.5" PointX="3.75" PointY="17.625" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet" />
+        <AssociationConnector Association="WaterNutDB.DataLayer.FK_Containers_PackageTypes" />
         </Diagram>
       <Diagram DiagramId="b567f2678d3d49a3818d4cb1141ba6eb" Name="WaterNut" ZoomLevel="74" >
         </Diagram>

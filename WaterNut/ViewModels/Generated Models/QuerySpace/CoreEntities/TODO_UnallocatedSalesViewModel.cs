@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_UnallocatedSalesChanged(object sender, NotificationEventArgs<TODO_UnallocatedSales> e)
+        internal virtual void OnCurrentTODO_UnallocatedSalesChanged(object sender, NotificationEventArgs<TODO_UnallocatedSales> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_UnallocatedSales != null) BaseViewModel.Instance.CurrentTODO_UnallocatedSales.PropertyChanged += CurrentTODO_UnallocatedSales__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_UnallocatedSales);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_UnallocatedSales__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_UnallocatedSalesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_UnallocatedSalesChanged(object sender, NotificationEventArgs e)
         {
             _TODO_UnallocatedSales.Refresh();
 			NotifyPropertyChanged(x => this.TODO_UnallocatedSales);

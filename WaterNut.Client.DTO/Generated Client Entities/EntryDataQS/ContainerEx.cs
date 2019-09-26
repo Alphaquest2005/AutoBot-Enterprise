@@ -243,19 +243,6 @@ namespace EntryDataQS.Client.DTO
         private string _ContainerTypeDescription;
 
        
-        [DataMember]
-        public ChangeTrackingCollection<ContainerEntryData> ContainerEntryDatas
-		{
-		    get { return _ContainerEntryDatas; }
-			set
-			{
-			    if (Equals(value, _ContainerEntryDatas)) return;
-				_ContainerEntryDatas = value;
-				NotifyPropertyChanged();//m => this.ContainerEntryDatas
-			}
-		}
-        private ChangeTrackingCollection<ContainerEntryData> _ContainerEntryDatas = new ChangeTrackingCollection<ContainerEntryData>();
-
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

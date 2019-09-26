@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentEntryDataChanged(object sender, NotificationEventArgs<EntryData> e)
+        internal virtual void OnCurrentEntryDataChanged(object sender, NotificationEventArgs<EntryData> e)
         {
             if(BaseViewModel.Instance.CurrentEntryData != null) BaseViewModel.Instance.CurrentEntryData.PropertyChanged += CurrentEntryData__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentEntryData);
@@ -141,7 +141,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentEntryData.ApplicationSettings) == false) ApplicationSettings.Add(CurrentEntryData.ApplicationSettings);
                     //}
                  } 
-        internal void OnEntryDatasChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnEntryDatasChanged(object sender, NotificationEventArgs e)
         {
             _EntryDatas.Refresh();
 			NotifyPropertyChanged(x => this.EntryDatas);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

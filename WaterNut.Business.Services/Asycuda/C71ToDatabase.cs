@@ -56,6 +56,7 @@ namespace WaterNut.DataSpace.Asycuda
 
                 SaveValuationForm(adoc, da);
                 SaveIdentification(adoc.Identification_segment, da.xC71_Identification_segment);
+                SaveDocumentRef(da);
                 SaveItems(adoc.Item, da);
 
                 using (var ctx = new ValuationDSContext())
@@ -75,6 +76,14 @@ namespace WaterNut.DataSpace.Asycuda
                
             }
 
+        }
+
+        private static void SaveDocumentRef(Registered da)
+        {
+            var match = Regex.Match(da.xC71_Identification_segment.xC71_Seller_segment.Address,
+                @"((?<Key>.[a-zA-Z\s\(\)]*):(?<Value>.[a-zA-Z0-9\- :$.,]*))", RegexOptions.IgnoreCase);
+            if (match.Success)
+                da.DocumentReference = match.Groups["Value"].Value.Trim().Replace(",","");
         }
 
         public static bool GetRegNumber(FileInfo file, out string regNumber)
@@ -402,7 +411,8 @@ namespace WaterNut.DataSpace.Asycuda
         {
             var c71 = CreateNewC71();
             c71.xC71_Identification_segment.xC71_Seller_segment.Name = supplier.SupplierName ?? supplier.SupplierCode;
-            c71.xC71_Identification_segment.xC71_Seller_segment.Address = $"Ref:{docRef}\r\n{supplier.Street}\r\n{supplier.City},{supplier.CountryCode}\r\n{supplier.Country}" ;
+            c71.xC71_Identification_segment.xC71_Seller_segment.Address = $"Ref:{docRef},\r\n{supplier.Street}" ;
+            c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode = supplier.CountryCode;
 
             c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
             c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
@@ -440,7 +450,8 @@ namespace WaterNut.DataSpace.Asycuda
 
                 var results = new FileInfo(Path.Combine(fileInfo.DirectoryName, "C71-Results.txt"));
                 if (File.Exists(results.FullName)) File.Delete(results.FullName);
-                File.AppendAllText(Path.Combine(fileInfo.DirectoryName, "C71-Instructions.txt"), $"File\t{fileInfo.FullName}\r\n");
+                File.AppendAllText(Path.Combine(fileInfo.DirectoryName, "C71-Instructions.txt"),
+                    $"File\t{fileInfo.FullName}\t{c71.xC71_Identification_segment.xC71_Seller_segment.Address.Replace("\r\n","|")}\t{c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode}\r\n");
                 return true;
             }
             catch (Exception e)
@@ -610,6 +621,7 @@ namespace WaterNut.DataSpace.Asycuda
             {
                 aseller.Address.Text.Add(dseller.Address);
                 aseller.Name.Text.Add(dseller.Name);
+                
 
             }
             catch (Exception e)

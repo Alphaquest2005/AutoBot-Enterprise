@@ -13,9 +13,10 @@
         {                        
               this.HasKey(t => t.Identification_segment_Id);        
               this.ToTable("xC71_Seller_segment");
-              this.Property(t => t.Name).HasColumnName("Name").IsUnicode(false).HasMaxLength(255);
-              this.Property(t => t.Address).HasColumnName("Address").IsUnicode(false).HasMaxLength(255);
+              this.Property(t => t.Name).HasColumnName("Name").HasMaxLength(255);
+              this.Property(t => t.Address).HasColumnName("Address").HasMaxLength(255);
               this.Property(t => t.Identification_segment_Id).HasColumnName("Identification_segment_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.CountryCode).HasColumnName("CountryCode").HasMaxLength(2);
               this.HasRequired(t => t.xC71_Identification_segment).WithOptional(t => (xC71_Seller_segment)t.xC71_Seller_segment);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

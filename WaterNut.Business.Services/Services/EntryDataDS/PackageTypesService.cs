@@ -229,19 +229,6 @@ namespace EntryDataDS.Business.Services
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "Container":
-                                return
-                                    await
-                                        GetWhere<Container>(dbContext, exp, itm.Value, "PackageTypes", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                        }
-
-                    }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = await set.AsNoTracking().Where(exp)
 									.ToListAsync()
@@ -729,15 +716,6 @@ namespace EntryDataDS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "Container":
-                                return await CountWhere<Container>(dbContext, exp, itm.Value, "PackageTypes", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
-                    }
                     return await dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageType != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
@@ -836,22 +814,6 @@ namespace EntryDataDS.Business.Services
                                     .Take(count)
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "Container":
-                                return
-                                    await
-                                        LoadRangeWhere<Container>(startIndex, count, dbContext, exp, itm.Value, "PackageTypes", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                          
-							default:
-                                throw new ArgumentException("No Navigation property found for " + itm.Key);
-						}
-
                     }
                     return await set//dbContext.PackageTypes
 								.AsNoTracking()
@@ -1099,15 +1061,6 @@ namespace EntryDataDS.Business.Services
                         return Convert.ToDecimal(dbContext.PackageTypes
 										.AsNoTracking()
                                         .Sum(field)??0);
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "Container":
-                                return await SumWhere<Container>(dbContext, exp, itm.Value, "PackageTypes", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
                     }
                     return Convert.ToDecimal(dbContext.PackageTypes.Where(exp == "All" || exp == null ? "PackageType != null" : exp)
 											.AsNoTracking()

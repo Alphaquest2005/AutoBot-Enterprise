@@ -128,7 +128,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
-        internal void OnCurrentPreviousDocumentChanged(object sender, NotificationEventArgs<PreviousDocument> e)
+        internal virtual void OnCurrentPreviousDocumentChanged(object sender, NotificationEventArgs<PreviousDocument> e)
         {
             if(BaseViewModel.Instance.CurrentPreviousDocument != null) BaseViewModel.Instance.CurrentPreviousDocument.PropertyChanged += CurrentPreviousDocument__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentPreviousDocument);
@@ -141,7 +141,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentPreviousDocument.ApplicationSettings) == false) ApplicationSettings.Add(CurrentPreviousDocument.ApplicationSettings);
                     //}
                  } 
-        internal void OnPreviousDocumentsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnPreviousDocumentsChanged(object sender, NotificationEventArgs e)
         {
             _PreviousDocuments.Refresh();
 			NotifyPropertyChanged(x => this.PreviousDocuments);
@@ -151,7 +151,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

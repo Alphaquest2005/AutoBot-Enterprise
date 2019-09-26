@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentItemLastItemCostChanged(object sender, NotificationEventArgs<AsycudaDocumentItemLastItemCost> e)
+        internal virtual void OnCurrentAsycudaDocumentItemLastItemCostChanged(object sender, NotificationEventArgs<AsycudaDocumentItemLastItemCost> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentItemLastItemCost != null) BaseViewModel.Instance.CurrentAsycudaDocumentItemLastItemCost.PropertyChanged += CurrentAsycudaDocumentItemLastItemCost__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentItemLastItemCost);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             void CurrentAsycudaDocumentItemLastItemCost__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnAsycudaDocumentItemLastItemCostsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentItemLastItemCostsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentItemLastItemCosts.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentItemLastItemCosts);

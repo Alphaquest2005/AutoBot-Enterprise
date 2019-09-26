@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentTODO_LicenseToXMLChanged(object sender, NotificationEventArgs<TODO_LicenseToXML> e)
+        internal virtual void OnCurrentTODO_LicenseToXMLChanged(object sender, NotificationEventArgs<TODO_LicenseToXML> e)
         {
             if(BaseViewModel.Instance.CurrentTODO_LicenseToXML != null) BaseViewModel.Instance.CurrentTODO_LicenseToXML.PropertyChanged += CurrentTODO_LicenseToXML__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentTODO_LicenseToXML);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentTODO_LicenseToXML__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnTODO_LicenseToXMLChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnTODO_LicenseToXMLChanged(object sender, NotificationEventArgs e)
         {
             _TODO_LicenseToXML.Refresh();
 			NotifyPropertyChanged(x => this.TODO_LicenseToXML);
@@ -199,24 +199,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _quantityFilter = value;
 				NotifyPropertyChanged(x => QuantityFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _tariffCodeDescriptionFilter;
-        public string TariffCodeDescriptionFilter
-        {
-            get
-            {
-                return _tariffCodeDescriptionFilter;
-            }
-            set
-            {
-                _tariffCodeDescriptionFilter = value;
-				NotifyPropertyChanged(x => TariffCodeDescriptionFilter);
                 FilterData();
                 
             }
@@ -295,6 +277,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _licenseDescriptionFilter;
+        public string LicenseDescriptionFilter
+        {
+            get
+            {
+                return _licenseDescriptionFilter;
+            }
+            set
+            {
+                _licenseDescriptionFilter = value;
+				NotifyPropertyChanged(x => LicenseDescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -332,10 +332,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 					if(QuantityFilter.HasValue)
 						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
 
-									if(string.IsNullOrEmpty(TariffCodeDescriptionFilter) == false)
-						res.Append(" && " + string.Format("TariffCodeDescription.Contains(\"{0}\")",  TariffCodeDescriptionFilter));						
- 
-
 									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
  
@@ -350,6 +346,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(EntryDataIdFilter) == false)
 						res.Append(" && " + string.Format("EntryDataId.Contains(\"{0}\")",  EntryDataIdFilter));						
+ 
+
+									if(string.IsNullOrEmpty(LicenseDescriptionFilter) == false)
+						res.Append(" && " + string.Format("LicenseDescription.Contains(\"{0}\")",  LicenseDescriptionFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -379,9 +379,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Quantity = x.Quantity ,
                     
  
-                    TariffCodeDescription = x.TariffCodeDescription ,
-                    
- 
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
                     
  
@@ -391,7 +388,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     UOM = x.UOM ,
                     
  
-                    EntryDataId = x.EntryDataId 
+                    EntryDataId = x.EntryDataId ,
+                    
+ 
+                    LicenseDescription = x.LicenseDescription 
                     
                 }).ToList()
             };
@@ -410,9 +410,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> Quantity { get; set; } 
                     
  
-                    public string TariffCodeDescription { get; set; } 
-                    
- 
                     public string Declarant_Reference_Number { get; set; } 
                     
  
@@ -423,6 +420,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string EntryDataId { get; set; } 
+                    
+ 
+                    public string LicenseDescription { get; set; } 
                     
         }
 

@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentSessionScheduleChanged(object sender, NotificationEventArgs<SessionSchedule> e)
+        internal virtual void OnCurrentSessionScheduleChanged(object sender, NotificationEventArgs<SessionSchedule> e)
         {
             if(BaseViewModel.Instance.CurrentSessionSchedule != null) BaseViewModel.Instance.CurrentSessionSchedule.PropertyChanged += CurrentSessionSchedule__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentSessionSchedule);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(Sessions.Contains(CurrentSessionSchedule.Sessions) == false) Sessions.Add(CurrentSessionSchedule.Sessions);
                     //}
                  } 
-        internal void OnSessionScheduleChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnSessionScheduleChanged(object sender, NotificationEventArgs e)
         {
             _SessionSchedule.Refresh();
 			NotifyPropertyChanged(x => this.SessionSchedule);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentSessionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Sessions> e)
+		 internal virtual void OnCurrentSessionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Sessions> e)
 			{
 			if(ViewCurrentSessions == false) return;
 			if (e.Data == null || e.Data.Id == null)

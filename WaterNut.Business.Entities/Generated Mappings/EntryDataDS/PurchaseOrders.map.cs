@@ -15,6 +15,7 @@
               this.ToTable("EntryData_PurchaseOrders");
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.PONumber).HasColumnName("PONumber").IsRequired().HasMaxLength(50);
+              this.Property(t => t.SupplierInvoiceNo).HasColumnName("SupplierInvoiceNo").HasMaxLength(50);
              // Nav Property Names
                   
     

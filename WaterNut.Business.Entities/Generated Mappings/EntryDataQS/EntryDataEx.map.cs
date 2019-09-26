@@ -27,10 +27,15 @@
               this.Property(t => t.SupplierCode).HasColumnName("SupplierCode").HasMaxLength(100);
               this.Property(t => t.ImportedTotal).HasColumnName("ImportedTotal");
               this.Property(t => t.ExpectedTotal).HasColumnName("ExpectedTotal");
+              this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
+              this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
+              this.Property(t => t.TotalInternalInsurance).HasColumnName("TotalInternalInsurance");
+              this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
+              this.Property(t => t.TotalDeductions).HasColumnName("TotalDeductions");
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.AsycudaDocuments).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.EntryDataDetailsExs).WithRequired(t => (EntryDataEx)t.EntryDataEx);
-              this.HasMany(t => t.ContainerEntryDatas).WithRequired(t => (EntryDataEx)t.EntryDataEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

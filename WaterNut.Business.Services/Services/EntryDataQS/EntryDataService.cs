@@ -245,12 +245,6 @@ namespace EntryDataQS.Business.Services
                                         GetWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "ContainerEntryDatas":
-                                return
-                                    await
-                                        GetWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                         }
 
                     }
@@ -751,9 +745,6 @@ namespace EntryDataQS.Business.Services
                             case "AsycudaDocumentSetEntryDatas":
                                 return await CountWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ContainerEntryDatas":
-                                return await CountWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EntryDatas.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
@@ -869,12 +860,6 @@ namespace EntryDataQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AsycudaDocumentSetEntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ContainerEntryDatas":
-                                return
-                                    await
-                                        LoadRangeWhere<ContainerEntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1092,7 +1077,6 @@ namespace EntryDataQS.Business.Services
                 IEnumerable<EntryData> entities = await set//dbContext.EntryDatas
                                                     // .Include(x => x.AsycudaDocumentEntryDatas)									  
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
-                                                    // .Include(x => x.ContainerEntryDatas)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1124,7 +1108,6 @@ namespace EntryDataQS.Business.Services
                 IEnumerable<EntryData> entities = await set//dbContext.EntryDatas
                                                     // .Include(x => x.AsycudaDocumentEntryDatas)									  
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
-                                                    // .Include(x => x.ContainerEntryDatas)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1156,7 +1139,6 @@ namespace EntryDataQS.Business.Services
                 IEnumerable<EntryData> entities = await set//dbContext.EntryDatas
                                                     // .Include(x => x.AsycudaDocumentEntryDatas)									  
                                                     // .Include(x => x.AsycudaDocumentSetEntryDatas)									  
-                                                    // .Include(x => x.ContainerEntryDatas)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
@@ -1235,9 +1217,6 @@ namespace EntryDataQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentSetEntryDatas":
                                 return await SumWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ContainerEntryDatas":
-                                return await SumWhere<ContainerEntryData>(dbContext, exp, itm.Value, "EntryData", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

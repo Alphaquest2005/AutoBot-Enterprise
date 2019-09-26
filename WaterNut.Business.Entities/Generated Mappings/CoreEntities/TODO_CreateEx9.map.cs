@@ -12,7 +12,7 @@
         public TODO_CreateEx9Map()
         {                        
               this.HasKey(t => new {t.ApplicationSettingsId, t.PreviousItem_Id});        
-              this.ToTable("TODO_CreateEx9");
+              this.ToTable("TODO-CreateEx9");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");

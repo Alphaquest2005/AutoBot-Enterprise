@@ -403,6 +403,51 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _maxlines;
         [DataMember]
+        public string LocationOfGoods 
+        {
+            get
+            {
+                return _locationofgoods;
+            }
+            set
+            {
+                _locationofgoods = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _locationofgoods;
+        [DataMember]
+        public Nullable<int> LicenseLines 
+        {
+            get
+            {
+                return _licenselines;
+            }
+            set
+            {
+                _licenselines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _licenselines;
+        [DataMember]
+        public Nullable<double> InvoiceTotal 
+        {
+            get
+            {
+                return _invoicetotal;
+            }
+            set
+            {
+                _invoicetotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _invoicetotal;
+        [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]
         public List<LicenceSummary> LicenceSummary { get; set; }

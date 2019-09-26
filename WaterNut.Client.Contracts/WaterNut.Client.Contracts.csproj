@@ -139,6 +139,7 @@
     <Compile Include="CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_LicenseToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_PODocSetToExportService.cs" />
     <Compile Include="CoreEntities\IToDo_POToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
@@ -172,9 +173,7 @@
     <Compile Include="EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
     <Compile Include="EntryDataQS\IAsycudaDocumentSetEntryDataService.cs" />
-    <Compile Include="EntryDataQS\IContainerEntryDataService.cs" />
     <Compile Include="EntryDataQS\IContainerExService.cs" />
-    <Compile Include="EntryDataQS\IContainerTypeService.cs" />
     <Compile Include="EntryDataQS\IEmptyFullCodeService.cs" />
     <Compile Include="EntryDataQS\IEntryDataDetailsExService.cs" />
     <Compile Include="EntryDataQS\IEntryDataExService.cs" />

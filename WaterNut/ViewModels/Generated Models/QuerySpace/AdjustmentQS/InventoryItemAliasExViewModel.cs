@@ -129,7 +129,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentInventoryItemAliasExChanged(object sender, NotificationEventArgs<InventoryItemAliasEx> e)
+        internal virtual void OnCurrentInventoryItemAliasExChanged(object sender, NotificationEventArgs<InventoryItemAliasEx> e)
         {
             if(BaseViewModel.Instance.CurrentInventoryItemAliasEx != null) BaseViewModel.Instance.CurrentInventoryItemAliasEx.PropertyChanged += CurrentInventoryItemAliasEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentInventoryItemAliasEx);
@@ -142,7 +142,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    //    if(InventoryItemsExes.Contains(CurrentInventoryItemAliasEx.InventoryItemsEx) == false) InventoryItemsExes.Add(CurrentInventoryItemAliasEx.InventoryItemsEx);
                     //}
                  } 
-        internal void OnInventoryItemAliasExesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnInventoryItemAliasExesChanged(object sender, NotificationEventArgs e)
         {
             _InventoryItemAliasExes.Refresh();
 			NotifyPropertyChanged(x => this.InventoryItemAliasExes);
@@ -150,7 +150,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  	
-		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
+		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
 			if (e.Data == null || e.Data.ItemNumber == null)

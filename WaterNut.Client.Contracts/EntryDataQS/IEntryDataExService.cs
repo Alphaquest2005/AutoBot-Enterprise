@@ -88,6 +88,9 @@ namespace EntryDataQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<EntryDataEx>> GetEntryDataExByFileTypeId(string FileTypeId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<EntryDataEx>> GetEntryDataExByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+        
   		
     }
 }

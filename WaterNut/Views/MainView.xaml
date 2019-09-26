@@ -100,7 +100,7 @@
                     <view:EntryDataDetailsView Margin="0" MouseEnter="BringIntoView" />
                 </Expander>
 
-                <Expander x:Name="ContainersExP" ExpandDirection="Right"  BorderThickness="1" Visibility="{Binding CurrentApplicationSettings.AllowContainers}" HorizontalAlignment="Left" Height="525" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
+                <!--<Expander x:Name="ContainersExP" ExpandDirection="Right"  BorderThickness="1" Visibility="{Binding CurrentApplicationSettings.AllowContainers}" HorizontalAlignment="Left" Height="525" Margin="25,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
                     <Expander.Header>
                         <Grid Width="128" MouseEnter="BringIntoView"  Height="Auto">
                             <TextBlock Height="63" Style="{DynamicResource ExpHeadStyle}" MouseLeftButtonDown="BringIntoViewClick" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,33,0" Width="55" FontFamily="Segoe UI Symbol" FontSize="40" Text="&#xE115;"/>
@@ -108,7 +108,7 @@
                         </Grid>
                     </Expander.Header>
                     <view:EntryDataContainersView Margin="0" MouseEnter="BringIntoView" />
-                </Expander>
+                </Expander>-->
 
                 <Expander x:Name="TariffInventoryItemsExP" ExpandDirection="Right"  BorderThickness="1" Visibility="{Binding CurrentApplicationSettings.AllowTariffCodes}" HorizontalAlignment="Left" Height="495" Margin="150,10,0,0" VerticalAlignment="Top" Width="Auto" IsExpanded="True">
                     <Expander.Header>

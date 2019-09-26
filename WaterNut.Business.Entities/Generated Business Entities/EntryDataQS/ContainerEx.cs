@@ -19,11 +19,6 @@ namespace EntryDataQS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class ContainerEx : BaseEntity<ContainerEx>, ITrackable 
     {
-        partial void AutoGenStartUp() //ContainerEx()
-        {
-            this.ContainerEntryDatas = new List<ContainerEntryData>();
-        }
-
         [DataMember]
         public string Container_identity 
         {
@@ -279,8 +274,6 @@ namespace EntryDataQS.Business.Entities
             }
         }
         string _containertypedescription;
-        [DataMember]
-        public List<ContainerEntryData> ContainerEntryDatas { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

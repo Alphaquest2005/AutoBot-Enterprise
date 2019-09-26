@@ -200,10 +200,7 @@ namespace EntryDataQS.Client.Repositories
                         var res = await t.GetContainerExByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new ContainerEx(res)
-                    {
-                     // ContainerEntryDatas = new System.Collections.ObjectModel.ObservableCollection<ContainerEntryData>(res.ContainerEntryDatas.Select(y => new ContainerEntryData(y)))    
-                  };
+                            return new ContainerEx(res);
                     }
                     else
                     {

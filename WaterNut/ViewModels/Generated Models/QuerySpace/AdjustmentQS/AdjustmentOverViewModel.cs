@@ -133,7 +133,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             }
         }
 
-        internal void OnCurrentAdjustmentOverChanged(object sender, NotificationEventArgs<AdjustmentOver> e)
+        internal virtual void OnCurrentAdjustmentOverChanged(object sender, NotificationEventArgs<AdjustmentOver> e)
         {
             if(BaseViewModel.Instance.CurrentAdjustmentOver != null) BaseViewModel.Instance.CurrentAdjustmentOver.PropertyChanged += CurrentAdjustmentOver__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAdjustmentOver);
@@ -154,7 +154,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    //    if(InventoryItemsExes.Contains(CurrentAdjustmentOver.InventoryItemsEx) == false) InventoryItemsExes.Add(CurrentAdjustmentOver.InventoryItemsEx);
                     //}
                  } 
-        internal void OnAdjustmentOversChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAdjustmentOversChanged(object sender, NotificationEventArgs e)
         {
             _AdjustmentOvers.Refresh();
 			NotifyPropertyChanged(x => this.AdjustmentOvers);
@@ -162,7 +162,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  	
-		 internal void OnCurrentAdjustmentExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentEx> e)
+		 internal virtual void OnCurrentAdjustmentExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentEx> e)
 			{
 			if(ViewCurrentAdjustmentEx == false) return;
 			if (e.Data == null || e.Data.InvoiceNo == null)
@@ -180,7 +180,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 // SendMessage(MessageToken.AdjustmentOversChanged, new NotificationEventArgs(MessageToken.AdjustmentOversChanged));
                 			}
 	
-		 internal void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
+		 internal virtual void OnCurrentAdjustmentDetailChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentDetail> e)
 			{
 			if(ViewCurrentAdjustmentDetail == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)
@@ -197,7 +197,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 // SendMessage(MessageToken.AdjustmentOversChanged, new NotificationEventArgs(MessageToken.AdjustmentOversChanged));
                 			}
 	
-		 internal void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
+		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
 			if (e.Data == null || e.Data.ItemNumber == null)

@@ -132,7 +132,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             }
         }
 
-        internal void OnCurrentPreviousItemsExChanged(object sender, NotificationEventArgs<PreviousItemsEx> e)
+        internal virtual void OnCurrentPreviousItemsExChanged(object sender, NotificationEventArgs<PreviousItemsEx> e)
         {
             if(BaseViewModel.Instance.CurrentPreviousItemsEx != null) BaseViewModel.Instance.CurrentPreviousItemsEx.PropertyChanged += CurrentPreviousItemsEx__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentPreviousItemsEx);
@@ -153,7 +153,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                    //    if(ApplicationSettings.Contains(CurrentPreviousItemsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentPreviousItemsEx.ApplicationSettings);
                     //}
                  } 
-        internal void OnPreviousItemsExesChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnPreviousItemsExesChanged(object sender, NotificationEventArgs e)
         {
             _PreviousItemsExes.Refresh();
 			NotifyPropertyChanged(x => this.PreviousItemsExes);
@@ -161,7 +161,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
 
  	
-		 internal void OnCurrentPreviousDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<PreviousDocumentItem> e)
+		 internal virtual void OnCurrentPreviousDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<PreviousDocumentItem> e)
 			{
 			if(ViewCurrentPreviousDocumentItem == false) return;
 			if (e.Data == null || e.Data.Item_Id == null)
@@ -178,7 +178,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
                 // SendMessage(MessageToken.PreviousItemsExesChanged, new NotificationEventArgs(MessageToken.PreviousItemsExesChanged));
                 			}
 	
-		 internal void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<PreviousDocumentItem> e)
+		 internal virtual void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<PreviousDocumentItem> e)
 			{
 			if(ViewCurrentAsycudaDocumentItem == false) return;
 			if (e.Data == null || e.Data.Item_Id == null)
@@ -197,7 +197,7 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
 				{
 				if (e.Data == null || e.Data.ApplicationSettingsId == null)
                 {

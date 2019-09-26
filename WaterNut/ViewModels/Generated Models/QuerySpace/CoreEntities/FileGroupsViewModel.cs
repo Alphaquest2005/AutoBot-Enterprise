@@ -125,7 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentFileGroupsChanged(object sender, NotificationEventArgs<FileGroups> e)
+        internal virtual void OnCurrentFileGroupsChanged(object sender, NotificationEventArgs<FileGroups> e)
         {
             if(BaseViewModel.Instance.CurrentFileGroups != null) BaseViewModel.Instance.CurrentFileGroups.PropertyChanged += CurrentFileGroups__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentFileGroups);
@@ -134,7 +134,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             void CurrentFileGroups__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnFileGroupsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnFileGroupsChanged(object sender, NotificationEventArgs e)
         {
             _FileGroups.Refresh();
 			NotifyPropertyChanged(x => this.FileGroups);

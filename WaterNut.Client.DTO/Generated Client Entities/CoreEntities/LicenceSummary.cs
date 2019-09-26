@@ -99,6 +99,19 @@ namespace CoreEntities.Client.DTO
 		}
         private long _RowNumber;
 
+        [DataMember]
+        public int ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private int _ApplicationSettingsId;
+
        
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx

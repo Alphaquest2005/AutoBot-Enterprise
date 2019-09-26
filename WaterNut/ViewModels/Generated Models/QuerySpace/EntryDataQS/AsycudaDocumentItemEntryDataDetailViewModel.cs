@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentItemEntryDataDetailChanged(object sender, NotificationEventArgs<AsycudaDocumentItemEntryDataDetail> e)
+        internal virtual void OnCurrentAsycudaDocumentItemEntryDataDetailChanged(object sender, NotificationEventArgs<AsycudaDocumentItemEntryDataDetail> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentItemEntryDataDetail != null) BaseViewModel.Instance.CurrentAsycudaDocumentItemEntryDataDetail.PropertyChanged += CurrentAsycudaDocumentItemEntryDataDetail__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentItemEntryDataDetail);
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             void CurrentAsycudaDocumentItemEntryDataDetail__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
                  } 
-        internal void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentItemEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentItemEntryDataDetails.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentItemEntryDataDetails);
@@ -243,6 +243,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Boolean? _importCompleteFilter;
+        public Boolean? ImportCompleteFilter
+        {
+            get
+            {
+                return _importCompleteFilter;
+            }
+            set
+            {
+                _importCompleteFilter = value;
+				NotifyPropertyChanged(x => ImportCompleteFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -286,7 +304,11 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
  
 
 					if(QuantityFilter.HasValue)
-						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
+
+									if(ImportCompleteFilter.HasValue)
+						res.Append(" && " + string.Format("ImportComplete == {0}",  ImportCompleteFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -318,7 +340,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     DocumentType = x.DocumentType ,
                     
  
-                    Quantity = x.Quantity 
+                    Quantity = x.Quantity ,
+                    
+ 
+                    ImportComplete = x.ImportComplete 
                     
                 }).ToList()
             };
@@ -341,6 +366,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public Nullable<double> Quantity { get; set; } 
+                    
+ 
+                    public bool ImportComplete { get; set; } 
                     
         }
 

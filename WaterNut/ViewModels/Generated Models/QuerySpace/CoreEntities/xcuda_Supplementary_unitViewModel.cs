@@ -127,7 +127,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentxcuda_Supplementary_unitChanged(object sender, NotificationEventArgs<xcuda_Supplementary_unit> e)
+        internal virtual void OnCurrentxcuda_Supplementary_unitChanged(object sender, NotificationEventArgs<xcuda_Supplementary_unit> e)
         {
             if(BaseViewModel.Instance.Currentxcuda_Supplementary_unit != null) BaseViewModel.Instance.Currentxcuda_Supplementary_unit.PropertyChanged += Currentxcuda_Supplementary_unit__propertyChanged;
            // NotifyPropertyChanged(x => this.Currentxcuda_Supplementary_unit);
@@ -140,7 +140,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(AsycudaDocumentItems.Contains(Currentxcuda_Supplementary_unit.AsycudaDocumentItem) == false) AsycudaDocumentItems.Add(Currentxcuda_Supplementary_unit.AsycudaDocumentItem);
                     //}
                  } 
-        internal void Onxcuda_Supplementary_unitChanged(object sender, NotificationEventArgs e)
+        internal virtual void Onxcuda_Supplementary_unitChanged(object sender, NotificationEventArgs e)
         {
             _xcuda_Supplementary_unit.Refresh();
 			NotifyPropertyChanged(x => this.xcuda_Supplementary_unit);
@@ -148,7 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
+		 internal virtual void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
 			{
 			if(ViewCurrentAsycudaDocumentItem == false) return;
 			if (e.Data == null || e.Data.Item_Id == null)

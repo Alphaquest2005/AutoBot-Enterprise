@@ -328,6 +328,21 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _maxlines;
         [DataMember]
+        public string LocationOfGoods 
+        {
+            get
+            {
+                return _locationofgoods;
+            }
+            set
+            {
+                _locationofgoods = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _locationofgoods;
+        [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
         [DataMember]
         public Document_Type Document_Type { get; set; }
@@ -339,6 +354,8 @@ namespace DocumentDS.Business.Entities
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public List<FileType> FileTypes { get; set; }
+        [DataMember]
+        public Container Container { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

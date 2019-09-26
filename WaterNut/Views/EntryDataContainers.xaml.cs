@@ -135,7 +135,7 @@ namespace WaterNut.Views
 
 	    private async void AssignInvoice(object sender, MouseButtonEventArgs e)
 	    {
-	        await im.AssignInvoies().ConfigureAwait(false);
+	       // await im.AssignInvoies().ConfigureAwait(false);
 	    }
 
 	    private void ViewAll(object sender, MouseButtonEventArgs e)

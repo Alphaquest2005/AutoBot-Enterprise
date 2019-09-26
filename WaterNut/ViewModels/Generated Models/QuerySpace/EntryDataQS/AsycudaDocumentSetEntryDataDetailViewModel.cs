@@ -129,7 +129,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             }
         }
 
-        internal void OnCurrentAsycudaDocumentSetEntryDataDetailChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEntryDataDetail> e)
+        internal virtual void OnCurrentAsycudaDocumentSetEntryDataDetailChanged(object sender, NotificationEventArgs<AsycudaDocumentSetEntryDataDetail> e)
         {
             if(BaseViewModel.Instance.CurrentAsycudaDocumentSetEntryDataDetail != null) BaseViewModel.Instance.CurrentAsycudaDocumentSetEntryDataDetail.PropertyChanged += CurrentAsycudaDocumentSetEntryDataDetail__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetEntryDataDetail);
@@ -142,7 +142,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                    //    if(EntryDataDetailsExes.Contains(CurrentAsycudaDocumentSetEntryDataDetail.EntryDataDetailsEx) == false) EntryDataDetailsExes.Add(CurrentAsycudaDocumentSetEntryDataDetail.EntryDataDetailsEx);
                     //}
                  } 
-        internal void OnAsycudaDocumentSetEntryDataDetailsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnAsycudaDocumentSetEntryDataDetailsChanged(object sender, NotificationEventArgs e)
         {
             _AsycudaDocumentSetEntryDataDetails.Refresh();
 			NotifyPropertyChanged(x => this.AsycudaDocumentSetEntryDataDetails);
@@ -150,7 +150,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 
  	
-		 internal void OnCurrentEntryDataDetailsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataDetailsEx> e)
+		 internal virtual void OnCurrentEntryDataDetailsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataDetailsEx> e)
 			{
 			if(ViewCurrentEntryDataDetailsEx == false) return;
 			if (e.Data == null || e.Data.EntryDataDetailsId == null)

@@ -129,7 +129,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             }
         }
 
-        internal void OnCurrentFileTypeActionsChanged(object sender, NotificationEventArgs<FileTypeActions> e)
+        internal virtual void OnCurrentFileTypeActionsChanged(object sender, NotificationEventArgs<FileTypeActions> e)
         {
             if(BaseViewModel.Instance.CurrentFileTypeActions != null) BaseViewModel.Instance.CurrentFileTypeActions.PropertyChanged += CurrentFileTypeActions__propertyChanged;
            // NotifyPropertyChanged(x => this.CurrentFileTypeActions);
@@ -146,7 +146,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    //    if(FileTypes.Contains(CurrentFileTypeActions.FileTypes) == false) FileTypes.Add(CurrentFileTypeActions.FileTypes);
                     //}
                  } 
-        internal void OnFileTypeActionsChanged(object sender, NotificationEventArgs e)
+        internal virtual void OnFileTypeActionsChanged(object sender, NotificationEventArgs e)
         {
             _FileTypeActions.Refresh();
 			NotifyPropertyChanged(x => this.FileTypeActions);
@@ -154,7 +154,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
  	
-		 internal void OnCurrentActionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Actions> e)
+		 internal virtual void OnCurrentActionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Actions> e)
 			{
 			if(ViewCurrentActions == false) return;
 			if (e.Data == null || e.Data.Id == null)
@@ -173,7 +173,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 BaseViewModel.Instance.CurrentFileTypeActions = null;
 			}
 	
-		 internal void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
+		 internal virtual void OnCurrentFileTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypes> e)
 			{
 			if(ViewCurrentFileTypes == false) return;
 			if (e.Data == null || e.Data.Id == null)

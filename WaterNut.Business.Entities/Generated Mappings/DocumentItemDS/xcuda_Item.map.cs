@@ -38,7 +38,7 @@
               this.HasMany(t => t.SubItems).WithRequired(t => (xcuda_Item)t.xcuda_Item);
               this.HasMany(t => t.xBondAllocations).WithRequired(t => (xcuda_Item)t.xcuda_Item);
               this.HasMany(t => t.xcuda_Attached_documents).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.Item_Id);
-              this.HasOptional(t => t.xcuda_Goods_description).WithRequired(t => (xcuda_Item)t.xcuda_Item);
+              this.HasOptional(t => t.xcuda_Goods_description).WithRequired(t => (xcuda_Item) t.xcuda_Item);
               this.HasMany(t => t.xcuda_Packages).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.Item_Id);
               this.HasOptional(t => t.xcuda_Previous_doc).WithRequired(t => (xcuda_Item)t.xcuda_Item);
               this.HasOptional(t => t.xcuda_Tarification).WithRequired(t => (xcuda_Item)t.xcuda_Item);
