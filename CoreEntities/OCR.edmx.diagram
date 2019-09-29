@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="74">
+        <EntityTypeShape EntityType="WaterNutDBModel.LineTypeFieldMappings" Width="1.5" PointX="3" PointY="12" />
+        <EntityTypeShape EntityType="WaterNutDBModel.LineTypes" Width="1.5" PointX="0.75" PointY="10.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.RegExChain" Width="2.25" PointX="2.875" PointY="3.5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.RegularExpressions" Width="1.5" PointX="0.75" PointY="4" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TemplateLines" Width="1.5" PointX="3" PointY="8.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TemplateLinesRegularExpressions" Width="1.5" PointX="5.25" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TemplateRegularExpressions" Width="1.5" PointX="7.625" PointY="3.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Templates" Width="1.5" PointX="0.75" PointY="7.75" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_LineTypeFieldMappings_OCR_LineTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateLines_OCR_LineTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegExChain" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_RegExChain" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_RegExChain" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateLines_OCR_Templates" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_TemplateLines" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_Templates" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

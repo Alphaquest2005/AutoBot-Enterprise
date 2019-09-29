@@ -186,6 +186,14 @@
     <Compile Include="InventoryQS\ITariffCategoryService.cs" />
     <Compile Include="InventoryQS\ITariffCodesService.cs" />
     <Compile Include="InventoryQS\ITariffSupUnitLkpsService.cs" />
+    <Compile Include="OCR\ILineTypeFieldMappingsService.cs" />
+    <Compile Include="OCR\ILineTypesService.cs" />
+    <Compile Include="OCR\IRegExChainService.cs" />
+    <Compile Include="OCR\IRegularExpressionsService.cs" />
+    <Compile Include="OCR\ITemplateLinesRegularExpressionsService.cs" />
+    <Compile Include="OCR\ITemplateLinesService.cs" />
+    <Compile Include="OCR\ITemplateRegularExpressionsService.cs" />
+    <Compile Include="OCR\ITemplatesService.cs" />
     <Compile Include="PreviousDocumentQS\IPreviousDocumentItemService.cs" />
     <Compile Include="PreviousDocumentQS\IPreviousDocumentService.cs" />
     <Compile Include="PreviousDocumentQS\IPreviousItemsExService.cs" />

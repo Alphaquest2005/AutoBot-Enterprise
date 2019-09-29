@@ -1,4 +1,7 @@
 DELETE FROM AsycudaDocumentset_Attachments
+WHERE (AsycudaDocumentset_Attachments.AsycudaDocumentSetId = 1437 and AttachmentId >= 2121)
+
+DELETE FROM AsycudaDocumentset_Attachments
 WHERE (AsycudaDocumentset_Attachments.AsycudaDocumentSetId = 422)
 
 DELETE FROM AsycudaDocument_Attachments
@@ -23,7 +26,7 @@ SELECT Attachments.Reference, Attachments.DocumentCode, Attachments.FilePath, As
 FROM    AsycudaDocument_Attachments INNER JOIN
                  AsycudaDocument ON AsycudaDocument_Attachments.AsycudaDocumentId = AsycudaDocument.ASYCUDA_Id INNER JOIN
                  Attachments ON AsycudaDocument_Attachments.AttachmentId = Attachments.Id
-				 WHERE (AsycudaDocument.AsycudaDocumentSetId = '1431')
+				 WHERE (AsycudaDocument.AsycudaDocumentSetId = '1437')
 				-- WHERE (AsycudaDocument.ASYCUDA_Id = '7949')
 --WHERE (AsycudaDocument.ReferenceNumber = '30-15824-F12')
 ORDER BY AsycudaDocument.ReferenceNumber
@@ -34,7 +37,7 @@ FROM    AsycudaDocumentSet_Attachments INNER JOIN
                  Attachments ON AsycudaDocumentSet_Attachments.AttachmentId = Attachments.Id INNER JOIN
                  AsycudaDocumentSet ON AsycudaDocumentSet_Attachments.AsycudaDocumentSetId = AsycudaDocumentSet.AsycudaDocumentSetId INNER JOIN
                  FileTypes ON AsycudaDocumentSet_Attachments.FileTypeId = FileTypes.Id
-WHERE (AsycudaDocumentSet.AsycudaDocumentSetId = '422')
+WHERE (AsycudaDocumentSet.AsycudaDocumentSetId = '1437')
 ORDER BY AsycudaDocumentSet.Declarant_Reference_Number
 
 

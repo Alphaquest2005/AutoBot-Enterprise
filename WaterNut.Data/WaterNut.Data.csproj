@@ -114,6 +114,7 @@
     <Compile Include="DbContextMappings\InventoryDS.Mappings.cs" />
     <Compile Include="DbContextMappings\InventoryQS.Mappings.cs" />
     <Compile Include="DbContextMappings\LicenseDS.Mappings.cs" />
+    <Compile Include="DbContextMappings\OCR.Mappings.cs" />
     <Compile Include="DbContextMappings\PreviousDocumentDS.Mappings.cs" />
     <Compile Include="DbContextMappings\PreviousDocumentQS.Mappings.cs" />
     <Compile Include="DbContextMappings\QuickBooksDS.Mappings.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="ObjectContexts\InventoryDS.Context.cs" />
     <Compile Include="ObjectContexts\InventoryQS.Context.cs" />
     <Compile Include="ObjectContexts\LicenseDS.Context.cs" />
+    <Compile Include="ObjectContexts\OCR.Context.cs" />
     <Compile Include="ObjectContexts\PreviousDocumentDS.Context.cs" />
     <Compile Include="ObjectContexts\PreviousDocumentQS.Context.cs" />
     <Compile Include="ObjectContexts\QuickBooksDS.Context.cs" />

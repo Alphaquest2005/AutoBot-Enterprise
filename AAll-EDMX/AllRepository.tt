@@ -20,6 +20,10 @@
 					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                   
                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   
 
+    sv.CreateRepositories("WaterNut","OCR",
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx",                   
+                    @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   
+
 	sv.CreateRepositories("WaterNut","EntryDataQS",
 					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",                     
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj" );   

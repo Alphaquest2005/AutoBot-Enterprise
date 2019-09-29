@@ -21,6 +21,11 @@
 					                
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DomainInterfaces\InterfacesModel.csproj",
                            @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref  ClientprocessedInterfaces );   
+    	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
+                        @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx",   
+					                
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\DomainInterfaces\InterfacesModel.csproj",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",ref  ClientprocessedInterfaces ); 
 
 	ClientprocessedInterfaces = CreateDomainInterface("WaterNut","Client",
 					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",    

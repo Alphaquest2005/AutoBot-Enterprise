@@ -3120,7 +3120,7 @@ namespace WaterNut.DataSpace
                                                               asycudaDocumentSetId).ToList();
                 var licAtt = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
                         x.FileTypes.Type == "LIC" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
+                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).Where(x =>  x.Reference != "LIC").ToList();
 
                 var res = new Dictionary<Attachments, Registered>();
                 foreach (var i in licAtt)
@@ -3137,7 +3137,10 @@ namespace WaterNut.DataSpace
                     foreach (var lic in al.Value.xLIC_Lic_item_segment)
                     {
                         var truncate = lic.Commodity_code.Truncate(8);
-                        var itms = lst.Where(x => x.TariffCode == truncate && x.AsycudaDocumentItemEntryDataDetails.Any(z => z.key.Contains(entryDataId.EntryDataId))).ToList();
+                        var itms = entryDataId == null 
+                            ? lst.Where(x => x.TariffCode == truncate).ToList() 
+                            : lst.Where(x => x.TariffCode == truncate && x.AsycudaDocumentItemEntryDataDetails.Any(z => z.key.Contains(entryDataId.EntryDataId))).ToList();
+                        
                         double rtotal = 0;
                         foreach (var itm in itms)
                         {
@@ -3167,7 +3170,7 @@ namespace WaterNut.DataSpace
                                                               asycudaDocumentSetId);
                 var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
                         x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
+                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).Where(x => new FileInfo(x.FilePath).Name != "C71.xml" && x.Reference != "C71").ToList();
 
                 var res = new Dictionary<Attachments, ValuationDS.Business.Entities.Registered>();
                 foreach (var i in c71Att)

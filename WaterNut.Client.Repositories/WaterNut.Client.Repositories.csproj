@@ -219,6 +219,15 @@
     <Compile Include="Generated Repositories\InventoryQS\TariffCategoryRepository.cs" />
     <Compile Include="Generated Repositories\InventoryQS\TariffCodesRepository.cs" />
     <Compile Include="Generated Repositories\InventoryQS\TariffSupUnitLkpsRepository.cs" />
+    <Compile Include="Generated Repositories\OCRRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\LineTypeFieldMappingsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\LineTypesRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\RegExChainRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\RegularExpressionsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\TemplateLinesRegularExpressionsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\TemplateLinesRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\TemplateRegularExpressionsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\TemplatesRepository.cs" />
     <Compile Include="Generated Repositories\PreviousDocumentQSRepository.cs" />
     <Compile Include="Generated Repositories\PreviousDocumentQS\PreviousDocumentItemRepository.cs" />
     <Compile Include="Generated Repositories\PreviousDocumentQS\PreviousDocumentRepository.cs" />

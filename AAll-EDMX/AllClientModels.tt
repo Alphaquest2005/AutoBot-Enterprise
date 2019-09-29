@@ -19,7 +19,10 @@
 					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
                            @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
-
+	CreateClientModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx",   
+					@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj",
+                           @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj", false );   
 	CreateClientModels("WaterNut",
 					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\EntryDataQS\EntryDataQS.edmx",    
 					 @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",                 

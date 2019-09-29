@@ -29,6 +29,14 @@
              sv.Output.File = @"DbContextMappings\CoreEntities.Mappings.cs";
              sv.Render();
 
+    sv = new DbContextMappingsTPL();  
+             sv.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
+             sv.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx";
+             sv.outputProject = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
+             sv.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+             sv.Output.File = @"DbContextMappings\OCR.Mappings.cs";
+             sv.Render();
+
 	sv = new DbContextMappingsTPL();  
              sv.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CounterPointQS\CounterPointQS.edmx";
              sv.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx";

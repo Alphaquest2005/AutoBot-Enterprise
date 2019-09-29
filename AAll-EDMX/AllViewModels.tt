@@ -26,6 +26,9 @@
     CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
                      @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\AutoWaterNut.csproj", false, false ); 
+        CreateViewModels("WaterNut",@"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\CoreEntities.edmx",
+                     @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut\AutoWaterNut.csproj", false, false ); 
 
     //CreateServices("WaterNut", @"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",
 						   //@"C:\Users\josep\OneDrive\AutoBot-Enterprise\AllocationQS\AllocationQS.edmx",

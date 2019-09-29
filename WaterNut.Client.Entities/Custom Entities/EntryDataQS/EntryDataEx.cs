@@ -6,7 +6,7 @@ namespace EntryDataQS.Client.Entities
 {
        public partial class EntryDataEx
     {
-           public bool TotalsEqual => Math.Abs(ExpectedTotal - (InvoiceTotal?? ExpectedTotal)) < .001;
+           public bool TotalsEqual => Math.Abs(ExpectedTotal - (InvoiceTotal?? ExpectedTotal)) < .005;
 
         public int MissingLines
            {

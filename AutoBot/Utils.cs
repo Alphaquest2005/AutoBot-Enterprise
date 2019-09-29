@@ -1,4 +1,21 @@
-﻿using System;
+﻿using AdjustmentQS.Business.Services;
+using AllocationQS.Business.Entities;
+using AutoBotUtilities;
+using Core.Common.Converters;
+using Core.Common.Data.Contracts;
+using Core.Common.Utils;
+using CoreEntities.Business.Entities;
+using CoreEntities.Business.Services;
+using DocumentDS.Business.Entities;
+using EmailDownloader;
+using EntryDataDS.Business.Entities;
+using EntryDataQS.Business.Entities;
+using ExcelDataReader;
+using InventoryDS.Business.Entities;
+using LicenseDS.Business.Entities;
+using MoreLinq;
+using SalesDataQS.Business.Services;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,35 +34,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
-using System.Windows.Forms;
-using AdjustmentQS.Business.Services;
-using AllocationQS.Business.Entities;
-using AllocationQS.Client.Repositories;
-using Asycuda421;
-using Core.Common.Client.Entities;
-using Core.Common.Converters;
-using Core.Common.Data.Contracts;
-using Core.Common.Utils;
-using CoreEntities.Business.Entities;
-using CoreEntities.Business.Services;
-using DocumentDS.Business.Entities;
-using DocumentDS.Business.Services;
-using EmailDownloader;
-using EntryDataDS.Business.Entities;
-using EntryDataQS.Business.Entities;
-using ExcelDataReader;
-using InventoryDS.Business.Entities;
-using LicenseDS.Business.Entities;
-using MoreLinq;
-using SalesDataQS.Business.Services;
-using SalesDataQS.Client.Repositories;
 using TrackableEntities;
 using TrackableEntities.Client;
 using ValuationDS.Business.Entities;
 using WaterNut.DataSpace;
 using WaterNut.DataSpace.Asycuda;
-using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using AsycudaDocument_Attachments = CoreEntities.Business.Entities.AsycudaDocument_Attachments;
+using AsycudaDocumentSet_Attachments = CoreEntities.Business.Entities.AsycudaDocumentSet_Attachments;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
@@ -131,8 +126,25 @@ namespace AutoBot
                 {"AttachToDocSetByRef", AttachToDocSetByRef },
                 {"CreatePOEntries",CreatePOEntries },
                 {"ExportPOEntries", ExportPOEntries },
-                
+                {"ImportPDF", ImportPDF },
+                {"AssessPOEntries", AssessPOEntries },
+                {"DownloadPOFiles", DownloadPOFiles },
+
+
             };
+
+        private static void DownloadPOFiles()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void ImportPDF()
+        {
+            foreach (var file in Directory.GetFiles(@"C:\Users\josep\OneDrive\Clients\Budget Marine\Emails\August2019","*.pdf").Where(x => x.EndsWith(".pdf")))
+            {
+                InvoiceReader.Import(file);
+            }
+        }
 
         private static void ExportPOEntries()
         {
@@ -158,12 +170,50 @@ namespace AutoBot
 
         private static void AssessLicense()
         {
-            //throw new NotImplementedException();
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res = ctx.TODO_PODocSet.ToList();
+
+                foreach (var doc in res)
+                {
+
+                    
+                    var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        doc.Declarant_Reference_Number, "LIC-Instructions.txt");
+                    if (!File.Exists(instrFile)) continue;
+                    var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        doc.Declarant_Reference_Number, "LIC-InstructionResults.txt");
+                    var lcont = 0;
+                    while (AssessLICComplete(instrFile, resultsFile, out lcont) == false)
+                    {
+                        RunSiKuLi(doc.AsycudaDocumentSetId, "AssessLIC", lcont.ToString());
+                    }
+                }
+            }
         }
 
         private static void AssessC71()
         {
-            //throw new NotImplementedException();
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res = ctx.TODO_PODocSet.ToList();
+
+                foreach (var doc in res)
+                {
+                    
+                    
+                    var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        doc.Declarant_Reference_Number, "C71-Instructions.txt");
+                    if (!File.Exists(instrFile)) continue;
+                    var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        doc.Declarant_Reference_Number, "C71-InstructionResults.txt");
+                    var lcont = 0;
+                    while (AssessC71Complete(instrFile, resultsFile, out lcont) == false)
+                    {
+                        RunSiKuLi(doc.AsycudaDocumentSetId, "AssessC71", lcont.ToString());
+                    }
+                }
+            }
         }
 
         private static void AttachToDocSetByRef()
@@ -356,7 +406,7 @@ namespace AutoBot
                     var directoryName = pO.Item2;
                     Console.WriteLine("Download License Files");
                     var lcont = 0;
-                    while (ImportComplete(directoryName, out lcont) == false)
+                    while (ImportLICComplete(directoryName, out lcont) == false)
                     {
                         RunSiKuLi(pO.Item1.AsycudaDocumentSetId, "LIC", lcont.ToString());
                     }
@@ -380,7 +430,7 @@ namespace AutoBot
                     var directoryName = pO.Item2;
                     Console.WriteLine("Download C71 Files");
                     var lcont = 0;
-                    while (ImportComplete(directoryName, out lcont) == false)
+                    while (ImportC71Complete(directoryName, out lcont) == false)
                     {
                         RunSiKuLi(pO.Item1.AsycudaDocumentSetId, "C71", lcont.ToString());
                     }
@@ -765,6 +815,7 @@ namespace AutoBot
                     {
                         InvoiceNo = x.InvoiceNo,
                         ItemNumber = x.ItemNumber,
+                        LineNumber = x.LineNumber.GetValueOrDefault(),
                         ItemDescription = x.ItemDescription,
                         TariffCode = x.TariffCode
                     }).ToList();
@@ -1293,6 +1344,21 @@ namespace AutoBot
 
         }
 
+        public static void AssessPOEntries()
+        {
+            Console.WriteLine("Assessing PO Entries");
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res = ctx.TODO_PODocSetToExport.ToList();
+                foreach (var doc in res)
+                {
+                    AssessEntry(doc.Declarant_Reference_Number, doc.AsycudaDocumentSetId);
+                }
+
+            }
+
+        }
+
         public static void AssessEntry(string docReference, int asycudaDocumentSetId)
         {
             if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
@@ -1318,6 +1384,89 @@ namespace AutoBot
             //ImportSalesEntries();
             //CleanupEntries();
 
+        }
+
+        public static bool ImportLICComplete(string directoryName, out int lcont)
+        {
+            lcont = 0;
+
+            var desFolder = directoryName + "\\";
+            if (File.Exists(Path.Combine(desFolder, "LICOverView-PDF.txt")))
+            {
+                var lines = File.ReadAllText(Path.Combine(directoryName, "LICOverView-PDF.txt"))
+                    .Split(new[] { $"\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Length == 0)
+                {
+
+                    return false;
+                }
+
+                var existingfiles = 0;
+
+                foreach (var line in lines)
+                {
+                    lcont += 1;
+
+                    var p = line.Split('\t');
+                    if (p.Length < 5) continue;
+                    if (string.IsNullOrEmpty(p[3])) continue;
+                    if (File.Exists(Path.Combine(desFolder, $"{p[3]}-LIC.xml")))
+                    {
+                        existingfiles += 1;
+                        continue;
+                    }
+                    return false;
+                }
+
+                if (lines.Length == lcont && existingfiles == 0)
+                    return true;
+                else
+                    return existingfiles != 0;
+            }
+            else
+            {
+
+                return false;
+            }
+        }
+        public static bool ImportC71Complete(string directoryName, out int lcont)
+        {
+            lcont = 0;
+
+            var desFolder = directoryName + "\\";
+            if (File.Exists(Path.Combine(desFolder, "C71OverView-PDF.txt")))
+            {
+                var lines = File.ReadAllText(Path.Combine(directoryName, "C71OverView-PDF.txt"))
+                    .Split(new[] { $"\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                if (lines.Length == 0)
+                {
+
+                    return false;
+                }
+
+                var existingfiles = 0;
+
+                foreach (var line in lines)
+                {
+                    lcont += 1;
+
+                    var p = line.Split('\t');
+                    if (p.Length < 3) continue;
+                    if (File.Exists(Path.Combine(desFolder, $"{p[1]}-C71.xml")))
+                    {
+                        existingfiles += 1;
+                        continue;
+                    }
+                    return false;
+                }
+
+                return existingfiles != 0;
+            }
+            else
+            {
+
+                return false;
+            }
         }
 
         public static bool ImportComplete(string directoryName, out int lcont)
@@ -1361,6 +1510,91 @@ namespace AutoBot
                 return false;
             }
         }
+
+        public static bool AssessLICComplete(string instrFile, string resultsFile, out int lcont)
+        {
+            lcont = 0;
+
+
+            if (File.Exists(instrFile))
+            {
+                if (!File.Exists(resultsFile)) return false;
+                var lines = File.ReadAllLines(instrFile);
+                var res = File.ReadAllLines(resultsFile);
+                if (res.Length == 0)
+                {
+
+                    return false;
+                }
+
+
+                foreach (var line in lines)
+                {
+                    var p = line.Split('\t');
+                    if (lcont >= res.Length) return false;
+                    if (string.IsNullOrEmpty(res[lcont])) return false;
+                    var r = res[lcont].Split('\t');
+
+                    if (p[1] == r[1] && r.Length == 5 && r[4] == "Success")//for attachment
+                    {
+                        lcont += 1;
+                        continue;
+                    }
+                    if (p[1] == r[1] && r.Length == 3 && r[2] == "Success")// for file
+                    {
+                        lcont += 1;
+                        continue;
+                    }
+                    return false;
+                }
+
+                return true;
+            }
+            else
+            {
+
+                return true;
+            }
+        }
+        public static bool AssessC71Complete(string instrFile, string resultsFile, out int lcont)
+        {
+            lcont = 0;
+
+
+            if (File.Exists(instrFile))
+            {
+                if (!File.Exists(resultsFile)) return false;
+                var lines = File.ReadAllLines(instrFile);
+                var res = File.ReadAllLines(resultsFile);
+                if (res.Length == 0)
+                {
+
+                    return false;
+                }
+
+
+                foreach (var line in lines)
+                {
+                    var p = line.Split('\t');
+                    if (lcont >= res.Length) return false;
+                    if (string.IsNullOrEmpty(res[lcont])) return false;
+                    var r = res[lcont].Split('\t');
+                    lcont += 1;
+                    if (p[1] == r[1] && r.Length == 5 && r[4] == "Success")
+                    {
+                        continue;
+                    }
+                    return false;
+                }
+
+                return true;
+            }
+            else
+            {
+
+                return true;
+            }
+        }
         public static bool AssessComplete(string instrFile, string resultsFile, out int lcont)
         {
             lcont = 0;
@@ -1384,8 +1618,12 @@ namespace AutoBot
                     if (lcont >= res.Length) return false;
                     if(string.IsNullOrEmpty(res[lcont])) return false;
                     var r = res[lcont].Split('\t');
-                    lcont += 1;
-                    if (p[1] == r[1] && r.Length == 3 && r[2] == "Success") continue;
+                    
+                    if (p[1] == r[1] && r.Length == 3 && r[2] == "Success")
+                    {
+                        lcont += 1;
+                        continue;
+                    }
                     return false;
                 }
 
@@ -1436,13 +1674,15 @@ namespace AutoBot
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == poInfo.Item1.AsycudaDocumentSetId)
                             .Declarant_Reference_Number);
-                    var csvFiles = new DirectoryInfo(desFolder).GetFiles().Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase)).ToArray();
+                    var lastC71 = new DirectoryInfo(desFolder).GetFiles().LastOrDefault(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase));
+                    var csvFiles = new FileInfo[]{ lastC71 };
+
                     if (csvFiles.Length > 0)
                     {
                         
                         BaseDataModel.Instance.ImportC71(poInfo.Item1.AsycudaDocumentSetId,
                             csvFiles.Select(x => x.FullName).ToList());
-                        ft.ApplicationSettingsId = poInfo.Item1.AsycudaDocumentSetId;
+                        ft.AsycudaDocumentSetId = poInfo.Item1.AsycudaDocumentSetId;
                         BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, ft).Wait();
 
                     }
@@ -1475,7 +1715,7 @@ namespace AutoBot
                     if (csvFiles.Length > 0)
                     {
                         BaseDataModel.Instance.ImportLicense(poInfo.Item1.AsycudaDocumentSetId, csvFiles.Select(x => x.FullName).ToList());
-                        ft.ApplicationSettingsId = poInfo.Item1.AsycudaDocumentSetId;
+                        ft.AsycudaDocumentSetId = poInfo.Item1.AsycudaDocumentSetId;
                         BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, ft).Wait();
                     }
 
@@ -1829,7 +2069,7 @@ namespace AutoBot
                 {
                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault())
                     {
-                        if (ctx.TODO_PODocSet.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
+                        if (ctx.TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
 
                     }
                     var res = ctx.ToDo_POToXML.Where(x =>

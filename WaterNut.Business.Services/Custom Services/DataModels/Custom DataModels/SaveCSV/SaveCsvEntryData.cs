@@ -938,12 +938,12 @@ namespace WaterNut.DataSpace
                 foreach (var item in itmlst.Where(x => !string.IsNullOrEmpty(x.Key?.SupplierCode)))
                 {
                     
-                    var i = (await ctx.GetSuppliersByExpression($"SupplierCode == \"{item.Key.SupplierCode}\" && ApplicationSettingsId == \"{applicationSettingsId}\"", null, true).ConfigureAwait(false)).FirstOrDefault();
+                    var i = (await ctx.GetSuppliersByExpression($"SupplierCode == \"{item.Key.SupplierCode.ToUpper()}\" && ApplicationSettingsId == \"{applicationSettingsId}\"", null, true).ConfigureAwait(false)).FirstOrDefault();
                     if (i != null) continue;
                     i = new Suppliers(true)
                     {
                         ApplicationSettingsId = applicationSettingsId,
-                        SupplierCode = item.Key.SupplierCode,
+                        SupplierCode = item.Key.SupplierCode.ToUpper(),
                         SupplierName = item.Key.SupplierName,
                         Street = item.Key.SupplierAddress,
                         CountryCode =  item.Key.SupplierCountryCode,

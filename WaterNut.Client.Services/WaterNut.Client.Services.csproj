@@ -193,6 +193,14 @@
     <Compile Include="InventoryQS\TariffCategoryCodeSuppUnitClient.cs" />
     <Compile Include="InventoryQS\TariffCodesClient.cs" />
     <Compile Include="InventoryQS\TariffSupUnitLkpsClient.cs" />
+    <Compile Include="OCR\LineTypeFieldMappingsClient.cs" />
+    <Compile Include="OCR\LineTypesClient.cs" />
+    <Compile Include="OCR\RegExChainClient.cs" />
+    <Compile Include="OCR\RegularExpressionsClient.cs" />
+    <Compile Include="OCR\TemplateLinesClient.cs" />
+    <Compile Include="OCR\TemplateLinesRegularExpressionsClient.cs" />
+    <Compile Include="OCR\TemplateRegularExpressionsClient.cs" />
+    <Compile Include="OCR\TemplatesClient.cs" />
     <Compile Include="PreviousDocumentQS\PreviousDocumentClient.cs" />
     <Compile Include="PreviousDocumentQS\PreviousDocumentItemClient.cs" />
     <Compile Include="PreviousDocumentQS\PreviousItemsExClient.cs" />

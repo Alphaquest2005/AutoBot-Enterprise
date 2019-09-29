@@ -73,6 +73,11 @@
     <Reference Include="System.Windows" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OCR.Designer.cs">
+      <DependentUpon>OCR.edmx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="CoreEntities.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -94,6 +99,13 @@
   <ItemGroup>
     <None Include="App.Config">
       <SubType>Designer</SubType>
+    </None>
+    <EntityDeploy Include="OCR.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>OCR.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="OCR.edmx.diagram">
+      <DependentUpon>OCR.edmx</DependentUpon>
     </None>
     <None Include="CoreEntities.edmx.diagram">
       <DependentUpon>CoreEntities.edmx</DependentUpon>

@@ -21,6 +21,14 @@
         sv.Render();
         
     }
+    
+    DbContextMappingsTPL ov = new DbContextMappingsTPL(); 
+        ov.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
+        ov.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
+        ov.outputProject = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj"; 
+        ov.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+        ov.Output.File = @"DbContextMappings\OCR.Mappings.cs";
+        ov.Render();
 
 
 

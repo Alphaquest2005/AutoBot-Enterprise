@@ -33,5 +33,12 @@
         sv.Output.File = @"ObjectContexts\" + conTextname + ".Context.cs";
         sv.Render();
     }
+
+    ObjectContextTPL ov = new ObjectContextTPL();
+        ov.inputFile = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
+        ov.coreEdmx = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\CoreEntities\OCR.edmx";
+        ov.Output.Project = @"C:\Users\josep\OneDrive\AutoBot-Enterprise\WaterNut.Data\WaterNut.Data.csproj";
+        ov.Output.File = @"ObjectContexts\OCR.Context.cs";
+        ov.Render();
     
 #>
