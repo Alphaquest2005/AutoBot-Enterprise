@@ -97,7 +97,7 @@ public string DocumentCode
        [RequiredValidationAttribute(ErrorMessage= "Reference is required")]
        
                 
-                [MaxLength(50, ErrorMessage = "Reference has a max length of 50 letters ")]
+                
 public string Reference
 		{ 
 		    get { return this.attachments.Reference; }

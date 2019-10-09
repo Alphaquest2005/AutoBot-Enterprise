@@ -173,6 +173,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -289,6 +290,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -405,6 +407,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -525,6 +528,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs" />

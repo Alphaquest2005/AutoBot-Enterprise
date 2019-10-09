@@ -137,6 +137,7 @@
     <Compile Include="CoreEntities\ITODO_ERRReport_EntryDataDetailsService.cs" />
     <Compile Include="CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs" />
     <Compile Include="CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_ImportCompleteEntriesService.cs" />
     <Compile Include="CoreEntities\ITODO_LicenseToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetToExportService.cs" />

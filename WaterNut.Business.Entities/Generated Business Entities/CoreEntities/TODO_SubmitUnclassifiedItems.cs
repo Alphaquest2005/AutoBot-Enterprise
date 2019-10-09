@@ -35,7 +35,7 @@ namespace CoreEntities.Business.Entities
         }
         string _invoiceno;
         [DataMember]
-        public int? LineNumber 
+        public Nullable<int> LineNumber 
         {
             get
             {

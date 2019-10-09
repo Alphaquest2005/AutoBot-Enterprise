@@ -249,6 +249,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }
 
  
+
+		private Boolean? _assessIM7Filter;
+        public Boolean? AssessIM7Filter
+        {
+            get
+            {
+                return _assessIM7Filter;
+            }
+            set
+            {
+                _assessIM7Filter = value;
+				NotifyPropertyChanged(x => AssessIM7Filter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _assessEXFilter;
+        public Boolean? AssessEXFilter
+        {
+            get
+            {
+                return _assessEXFilter;
+            }
+            set
+            {
+                _assessEXFilter = value;
+				NotifyPropertyChanged(x => AssessEXFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -277,6 +313,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		internal virtual StringBuilder GetAutoPropertyFilterString()
 		{
 		var res = new StringBuilder();
+ 
+
+									if(AssessIM7Filter.HasValue)
+						res.Append(" && " + string.Format("AssessIM7 == {0}",  AssessIM7Filter));						
+ 
+
+									if(AssessEXFilter.HasValue)
+						res.Append(" && " + string.Format("AssessEX == {0}",  AssessEXFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -299,6 +343,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 dataToPrint = lst.Select(x => new FileTypeActionsExcelLine
                 {
+ 
+                    AssessIM7 = x.AssessIM7 ,
+                    
+ 
+                    AssessEX = x.AssessEX 
+                    
                 }).ToList()
             };
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -309,7 +359,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
         public class FileTypeActionsExcelLine
         {
-		        }
+		 
+                    public Nullable<bool> AssessIM7 { get; set; } 
+                    
+ 
+                    public Nullable<bool> AssessEX { get; set; } 
+                    
+        }
 
 		
     }

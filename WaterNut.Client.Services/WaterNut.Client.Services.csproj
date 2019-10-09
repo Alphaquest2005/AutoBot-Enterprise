@@ -143,6 +143,7 @@
     <Compile Include="CoreEntities\TODO_ERRReport_EntryDataDetailsClient.cs" />
     <Compile Include="CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsClient.cs" />
     <Compile Include="CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs" />
+    <Compile Include="CoreEntities\TODO_ImportCompleteEntriesClient.cs" />
     <Compile Include="CoreEntities\TODO_LicenseToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetToExportClient.cs" />

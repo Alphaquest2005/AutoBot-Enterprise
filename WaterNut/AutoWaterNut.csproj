@@ -260,6 +260,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_EntryDataDetailsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_UnmappedItemsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ImportCompleteEntriesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenseToXMLViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToExportViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs" />
@@ -388,6 +389,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_EntryDataDetailsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_UnmappedItemsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ImportCompleteEntriesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenseToXMLTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToExportTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs" />
@@ -504,6 +506,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_EntryDataDetailsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_UnmappedItemsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ImportCompleteEntriesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenseToXMLVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToExportVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs" />
@@ -582,7 +585,6 @@
     <Compile Include="ViewModels\QuerySpace\NullTarifInventoryItemsModelQS.cs" />
     <Compile Include="ViewModels\QuerySpace\CreateAsycudaDocumentModelQS.cs" />
     <Compile Include="ViewModels\QuerySpace\EntryDataDetailsModelQS.cs" />
-    <Compile Include="ViewModels\QuerySpace\OverShortDetailAllocationsModel.cs" />
     <Compile Include="ViewModels\QuerySpace\AdjustmentShortDetailsModel.cs" />
     <Compile Include="ViewModels\QuerySpace\PreviousDocumentsModelQS.cs" />
     <Compile Include="ViewModels\QuerySpace\PreviousItemsViewModel.cs" />

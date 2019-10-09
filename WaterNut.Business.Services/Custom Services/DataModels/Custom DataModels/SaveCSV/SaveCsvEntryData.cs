@@ -48,6 +48,11 @@ namespace WaterNut.DataSpace
 
                 var mapping = new Dictionary<string, int>();
                 GetMappings(mapping, headings);
+
+                if (fileType == "Sales" && !mapping.ContainsKey("Tax"))
+                    throw new ApplicationException("Sales file dose not contain Tax");
+                
+                
                 var eslst = GetCSVDataSummayList(lines, mapping, headings);
 
                 if (eslst == null) return true;
@@ -61,8 +66,10 @@ namespace WaterNut.DataSpace
                     }
                 }
 
+                
+
                 await ImportInventory(eslst, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
-                await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
+                await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
 
                 if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath)
                     .ConfigureAwait(false)) return true;
@@ -105,7 +112,7 @@ namespace WaterNut.DataSpace
                                      ApplicationSettingsId = docSet.First().ApplicationSettingsId,
                                      CustomerName = g.Key.CustomerName,
                                      Tax = g.Sum(x => x.Tax),
-                                     Supplier = g.Max(x => x.SupplierCode) == ""? null : g.Max(x => x.SupplierCode.ToUpper()),
+                                     Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))? null : g.Max(x => x.SupplierCode.ToUpper()),
                                      Currency = g.Key.Currency,
                                      EmailId = emailId,
                                      FileTypeId = fileTypeId,
@@ -235,7 +242,7 @@ namespace WaterNut.DataSpace
                                 await CreateSales(EDsale).ConfigureAwait(false);
                                 break;
                             case "PO":
-                                if (Math.Abs(item.f.Sum(x => x.InvoiceTotal)) < .001)
+                                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && Math.Abs(item.f.Sum(x => x.InvoiceTotal)) < .001)
                                     throw new ApplicationException(
                                         $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
                                 var EDpo = new PurchaseOrders(true)
@@ -811,7 +818,7 @@ namespace WaterNut.DataSpace
                 {"TotalDeductions", (c,mapping,splits) => c.TotalDeductions = Convert.ToSingle(mapping.ContainsKey("TotalDeductions") && !string.IsNullOrEmpty(splits[mapping["TotalDeductions"]]) ? splits[mapping["TotalDeductions"]] : "0")},
                 {"CNumber", (c,mapping,splits) => c.CNumber = mapping.ContainsKey("CNumber") ? splits[mapping["CNumber"]] : ""},
                 {"InvoiceQuantity", (c,mapping,splits) => c.InvoiceQuantity = mapping.ContainsKey("InvoiceQuantity") ? Convert.ToSingle(splits[mapping["InvoiceQuantity"]]) : 0},
-                {"ReceivedQuantity", (c,mapping,splits) => c.ReceivedQuantity = mapping.ContainsKey("ReceivedQuantity") ? Convert.ToSingle(splits[mapping["ReceivedQuantity"]]) : 0},
+                {"ReceivedQuantity", (c,mapping,splits) => c.ReceivedQuantity = mapping.ContainsKey("ReceivedQuantity") && splits.Length >= mapping["ReceivedQuantity"]? Convert.ToSingle(splits[mapping["ReceivedQuantity"]]) : 0},
                 {"Currency", (c,mapping,splits) => c.Currency = mapping.ContainsKey("Currency") ? splits[mapping["Currency"]] : ""},
                 {"Comment", (c,mapping,splits) => c.Comment = mapping.ContainsKey("Comment") ? splits[mapping["Comment"]] : ""},
                 {"PreviousInvoiceNumber", (c,mapping,splits) => c.PreviousInvoiceNumber = mapping.ContainsKey("PreviousInvoiceNumber") ? splits[mapping["PreviousInvoiceNumber"]] : ""},
@@ -920,11 +927,11 @@ namespace WaterNut.DataSpace
             public string SupplierInvoiceNo { get; set; }
         }
 
-        private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId)
+        private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)
         {
             var itmlst = eslst.GroupBy(x => new {x.SupplierCode, x.SupplierName, x.SupplierAddress, x.SupplierCountryCode}).ToList();
 
-            if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true)
+            if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType == "PO")
             {
                 if (itmlst.All(x => string.IsNullOrEmpty(x.Key?.SupplierCode)))
                 {

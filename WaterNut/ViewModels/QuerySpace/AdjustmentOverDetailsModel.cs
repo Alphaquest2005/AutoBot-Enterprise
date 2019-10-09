@@ -146,7 +146,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         {
 
             var res = GetAutoPropertyFilterString();
-            //res.Append(@" && InvoiceQty < ReceivedQty");
+            res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
             if (ViewDocSetData && CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx != null)
             {
                 res.Append($@" && AsycudaDocumentSetId == ""{CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId}""");

@@ -169,6 +169,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_CreateEx9> TODO_CreateEx9 { get; set; }
      
+        public DbSet<TODO_ImportCompleteEntries> TODO_ImportCompleteEntries { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -294,6 +296,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_PODocSetToExportMap());
          
             modelBuilder.Configurations.Add(new TODO_CreateEx9Map());
+         
+            modelBuilder.Configurations.Add(new TODO_ImportCompleteEntriesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

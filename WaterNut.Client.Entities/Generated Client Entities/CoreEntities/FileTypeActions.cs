@@ -87,6 +87,36 @@ public int ActionId
 		}
      
 
+       
+       
+public Nullable<bool> AssessIM7
+		{ 
+		    get { return this.filetypeactions.AssessIM7; }
+			set
+			{
+			    if (value == this.filetypeactions.AssessIM7) return;
+				this.filetypeactions.AssessIM7 = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AssessIM7");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> AssessEX
+		{ 
+		    get { return this.filetypeactions.AssessEX; }
+			set
+			{
+			    if (value == this.filetypeactions.AssessEX) return;
+				this.filetypeactions.AssessEX = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AssessEX");
+			}
+		}
+     
+
        private Actions _Actions;
         public  Actions Actions
 		{

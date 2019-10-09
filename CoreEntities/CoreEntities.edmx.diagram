@@ -99,6 +99,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitInadequatePackages" Width="1.5" PointX="25.375" PointY="7.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSetToExport" Width="2.5" PointX="26.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_CreateEx9" Width="1.5" PointX="25.375" PointY="11.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_ImportCompleteEntries" Width="1.5" PointX="13.375" PointY="26.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -65,14 +65,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         private void OnCurrentAdjustmentOverChanged(object sender, NotificationEventArgs<AdjustmentOver> e)
         {
             if (e.Data == null) return;
-            vloader.FilterExpression = $"InvoiceNo == \"{e.Data.EntryDataId}\"";
+            vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId} " +
+                                       $"&& InvoiceNo == \"{e.Data.EntryDataId}\"";
             AdjustmentExes.Refresh();
         }
 
         private void OnCurrentAdjustmentShortChanged(object sender, NotificationEventArgs<AdjustmentShort> e)
         {
             if (e.Data == null) return;
-            vloader.FilterExpression = $"InvoiceNo == \"{e.Data.EntryDataId}\"";
+            vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId} " +
+                                       $"&& InvoiceNo == \"{e.Data.EntryDataId}\"";
             AdjustmentExes.Refresh();
         }
 

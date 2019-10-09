@@ -737,7 +737,7 @@ namespace WaterNut.DataSpace
             EntryData oldentryData = new EntryData();
             foreach (var pod in entryLineDatas) //
             {
-                if (pod.EntryData.DocumentType.DocumentType != null && cdoc.DocumentItems.Count == 0 && string.IsNullOrEmpty(oldentryData.EntryDataId))
+                if (pod.EntryData.DocumentType?.DocumentType != null && cdoc.DocumentItems.Count == 0 && string.IsNullOrEmpty(oldentryData.EntryDataId))
                 {
                     var cp = AttachEntryDataDocumentType(cdoc, pod.EntryData.DocumentType);
                     
@@ -2123,7 +2123,7 @@ namespace WaterNut.DataSpace
             //StatusModel.RefreshNow();
             var exceptions = new ConcurrentQueue<Exception>();
             Parallel.ForEach(fileNames,
-                new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount * 1}, //
+                new ParallelOptions() {MaxDegreeOfParallelism =  1}, //Environment.ProcessorCount *
                 f => //
                 {
                     try
@@ -2698,7 +2698,9 @@ namespace WaterNut.DataSpace
                             .Where(x => x.EntryDataId == item &&
                                         x.EntryDataDetailsEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId)
                                         && x.EntryData.EntryDataEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId))
-                            .Where(x => Math.Abs((double) (x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal))) < 0.01)//Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
+                            .Where(x => BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true
+                                        ? Math.Abs((double) (x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal))) < 0.01
+                                          : true)//Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
                             .ToList());
                     }
                 }

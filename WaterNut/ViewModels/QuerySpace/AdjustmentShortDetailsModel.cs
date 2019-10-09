@@ -21,7 +21,27 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             instance = new AdjustmentShortDetailsModel() { ViewCurrentAdjustmentEx = true };
         }
 
-        
+
+        internal override void OnCurrentAdjustmentExChanged(object sender,
+            SimpleMvvmToolkit.NotificationEventArgs<AdjustmentEx> e)
+        {
+            if (ViewCurrentAdjustmentEx == false) return;
+            if (e.Data == null || e.Data.InvoiceNo == null)
+            {
+                vloader.FilterExpression = "None";
+            }
+            else
+            {
+
+                vloader.FilterExpression = $"EntryDataId == \"{e.Data.InvoiceNo.ToString()}\" " +
+                                           $"&& AsycudaDocumentSetId == \"{CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId}\"";
+            }
+
+            AdjustmentShorts.Refresh();
+            NotifyPropertyChanged(x => this.AdjustmentShorts);
+        }
+
+
 
         public static AdjustmentShortDetailsModel Instance
         {
@@ -167,7 +187,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         public override void FilterData()
         {
             var res = GetAutoPropertyFilterString();
-
+            res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
             if (ViewDocSetData && CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx != null)
             {
                 res.Append($@" && AsycudaDocumentSetId == ""{CoreEntities.ViewModels.BaseViewModel.Instance?.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId}""");
@@ -281,7 +301,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             StatusModel.Timer("Creating IM4");
             using (var ctx = new AdjustmentShortRepository())
             {
-                await ctx.CreateIM9(vloader.FilterExpression, PerInvoice, Process7100, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "IM4-801", "Duty Paid").ConfigureAwait(false);
+                await ctx.CreateIM9(vloader.FilterExpression, PerInvoice, Process7100, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "IM4-801", "Duty Free").ConfigureAwait(false);// the code 801 makes it duty free
             }
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentShortsChanged, this,

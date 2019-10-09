@@ -390,12 +390,12 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             AllocationDSContext ctx, List<ItemSalesPiSummary> res)
         {
             var resHistoricSales = ctx.ItemSalesPiSummary.AsNoTracking()
-                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                //.Where(x => x.ItemNumber == "AOR/112310F")
                 .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                 //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
                 .Where(x => x.EntryDataDate <= endDate)
                 .Where(x => x.PreviousItem_Id != 0)
-                //.Where(x => x.DutyFreePaid == dfp)///////////////////////TAKE OUT DFP because it can switch
+                .Where(x => x.DutyFreePaid == dfp)//need to determine adjustment is dutyfree/paid  - AOR/112310F/////////////////////TAKE OUT DFP because it can switch
                 .Where(x => x.Type == "ADJ")
                 .GroupBy(g => new
                 {
@@ -411,8 +411,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
             res.AddRange(resHistoricSales.GroupJoin(
                     ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
-                    g => g.Key.PreviousItem_Id.ToString()/* + g.Key.DutyFreePaid*/,///////////////////////TAKE OUT DFP because it can switch
-                    p => p.Item_Id.ToString()/* + p.DutyFreePaid*/, (g, p) => new { g, p })
+                    g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,///need to determine adjustment is dutyfree/paid  - AOR/112310F/////////////////////TAKE OUT DFP because it can switch
+                    p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new { g, p })
                 .Select(x => new ItemSalesPiSummary
                 {
                     PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
@@ -428,12 +428,12 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 }).ToList());
 
             var resCurrentSales = ctx.ItemSalesPiSummary.AsNoTracking()
-                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                //.Where(x => x.ItemNumber == "AOR/112310F")
                 .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                 //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
                 .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
                 .Where(x => x.PreviousItem_Id != 0)
-                //.Where(x => x.DutyFreePaid == dfp)///////////////////////TAKE OUT DFP because it can switch
+                .Where(x => x.DutyFreePaid == dfp)//need to determine adjustment is dutyfree/paid  - AOR/112310F//////////////////////TAKE OUT DFP because it can switch
                 .Where(x => x.Type == "ADJ")
                 .GroupBy(g => new
                 {
@@ -449,8 +449,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             res.AddRange(resCurrentSales.GroupJoin(
                     ctx.AsycudaItemPiQuantityData.AsNoTracking()
                         .Where(x => x.AssessmentDate >= startDate && x.AssessmentDate <= endDate),
-                    g => g.Key.PreviousItem_Id.ToString() /* + g.Key.DutyFreePaid*/,///////////////////////TAKE OUT DFP because it can switch
-                    p => p.Item_Id.ToString() /* + p.DutyFreePaid*/, (g, p) => new { g, p })
+                    g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,//need to determine adjustment is dutyfree/paid  - AOR/112310F//////////////////////TAKE OUT DFP because it can switch
+                    p => p.Item_Id.ToString()  + p.DutyFreePaid, (g, p) => new { g, p })
                 .Select(x => new ItemSalesPiSummary
                 {
                     PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
@@ -469,7 +469,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             AllocationDSContext ctx, List<ItemSalesPiSummary> res)
         {
             var resHistoricSales = ctx.ItemSalesPiSummary.AsNoTracking()
-                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                //.Where(x => x.ItemNumber == "AOR/112310F")
                 .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                 //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
                 .Where(x => x.EntryDataDate <= endDate)
@@ -507,7 +507,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 }).ToList());
 
             var resCurrentSales = ctx.ItemSalesPiSummary.AsNoTracking()
-                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
+                //.Where(x => x.ItemNumber == "AOR/112310F")
                 .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                 //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
                 .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
@@ -1689,17 +1689,22 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 if (checkQtyAllocatedGreaterThanPiQuantity)
                     if (im7Type == "7000" || im7Type == "7400")
                     {
-                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <= mypod.EntlnData.pDocumentItem.previousItems
-                                .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum())
+                        var psum = mypod.EntlnData.pDocumentItem.previousItems
+                            .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum();
+                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
                         {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed QtyAllocated < PiQuantity:: QtyAllocated: {mypod.EntlnData.pDocumentItem.QtyAllocated} PiQuantity: {psum}");
                             return 0;
                         }
                     }
                     else
                     {
-                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <
-                            itemSalesPiSummaryLst.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum())
+                        var psum = itemSalesPiSummaryLst.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
                         {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed QtyAllocated < PiQuantity:: QtyAllocated: {mypod.EntlnData.pDocumentItem.QtyAllocated} PiQuantity: {psum}");
                             return 0;
                         }
                     }
@@ -1766,9 +1771,9 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
-                var totalSalesHistoric = salesPiHistoric.Select(x => x.pQtyAllocated).DefaultIfEmpty(0).Sum();
-                var totalPiHistoric = salesPiHistoric.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
-
+                var totalSalesHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated).DefaultIfEmpty(0).Sum();
+                var totalPiHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+                var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
                     {
@@ -1789,7 +1794,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 Debug.WriteLine($"EX9Bucket Quantity {mypod.EntlnData.ItemNumber} - {mypod.EntlnData.Quantity}");
                 if (mypod.EntlnData.Quantity <= 0)
                 {
-
+                    updateXStatus(mypod.Allocations,
+                        $@"Failed Ex9Bucket set Qty to Zero:: preQty: {preEx9Bucket}");
                     return 0;
                 }
 
@@ -1814,17 +1820,22 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
 
-                //salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
+                
 
-                //piSummaries.Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
-                // var itemSalesHistoric = itemSalesPiHistoric.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum(); //salesSummary.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber && x.Type == "Historic").Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
+                var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
-                var itemPiHistoric = itemSalesPiHistoric.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
-                // var itemPiCurrent = itemSalesPiCurrent.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
                 if (applyHistoricChecks)
                 {
-                    if (totalSalesHistoric == 0) return 0; // no sales found
-                    if (Math.Round(totalSalesHistoric, 2) <
+                    if (totalSalesHistoric == 0)
+                    {
+                        updateXStatus(mypod.Allocations,
+                            $@"No Historical Sales Found");
+                        return 0; // no sales found
+                    }
+                
+
+
+                if (Math.Round(totalSalesHistoric, 2) <
                         Math.Round((totalPiHistoric + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
                     {
                         updateXStatus(mypod.Allocations,
@@ -1842,7 +1853,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     ///     Sales Cap/ Sales Bucket Current
                     var totalSalesCurrent = salesPiCurrent.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();
 
-                    var totalPiCurrent = salesPiCurrent.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
+                    var totalPiCurrent = salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
                     if (totalSalesCurrent == 0)
                     {
@@ -1883,12 +1894,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 var itmsToBeCreated = 1;
                 var itmsCreated = 0;
 
-                //itmsToBeCreated = BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == false && mypod.EntlnData.EX9Allocation.SalesFactor == 1
-                //    ? mypod.Allocations.Count()
-                //    : 1;
-
-                
-
+    
                 for (int i = 0; i < itmsToBeCreated; i++)
                 {
 
@@ -2125,7 +2131,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                // var totalSalesQtyAllocatedHistoric = salesSummary.Select(x => x.TotalQtyAllocated).DefaultIfEmpty(0).Sum() / salesFactor; // down to run levels
                 var allocationSales = itemSalesPiSummaryLst.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();//switch to QtyAllocated - 'CLC/124075'
 
-                var allocationPi = itemSalesPiSummaryLst.Select(x => x.PiQuantity).DefaultIfEmpty(0).Sum();
+                var allocationPi = itemSalesPiSummaryLst.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
                 //var totalPiQtyHistoric = piSummaries.Where(x => x.DutyFreePaid == dfp).Select(x => x.TotalQuantity).DefaultIfEmpty(0).Sum();
                 var dutyFreePaidAllocated = allocationSales;//totalSalesQtyAllocatedHistoric;// itemAllocated < allocationsAllocated ? itemAllocated : allocationsAllocated;
 
@@ -2143,7 +2149,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 //}
 
                 var alreadyTakenOutItemsLst = asycudaLine.previousItems;
-                var alreadyTakenOutDFPQty = alreadyTakenOutItemsLst.Any()? alreadyTakenOutItemsLst.Where(x => x.DutyFreePaid == dfp).Sum(xx => xx.Suplementary_Quantity):0;
+                //var alreadyTakenOutDFPQty = alreadyTakenOutItemsLst.Any()? alreadyTakenOutItemsLst.Where(x => x.DutyFreePaid == dfp).Sum(xx => xx.Suplementary_Quantity):0;
                 var alreadyTakenOutTotalQuantity = alreadyTakenOutItemsLst.Sum(xx => xx.Suplementary_Quantity);
 
                  var remainingQtyToBeTakenOut = Math.Round(allocationSales - (allocationPi + docPi) , 3); //Math.Round(dutyFreePaidAllocated - alreadyTakenOutDFPQty,3);

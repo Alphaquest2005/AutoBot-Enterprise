@@ -37,7 +37,7 @@ FROM    AsycudaDocumentSet_Attachments INNER JOIN
                  Attachments ON AsycudaDocumentSet_Attachments.AttachmentId = Attachments.Id INNER JOIN
                  AsycudaDocumentSet ON AsycudaDocumentSet_Attachments.AsycudaDocumentSetId = AsycudaDocumentSet.AsycudaDocumentSetId INNER JOIN
                  FileTypes ON AsycudaDocumentSet_Attachments.FileTypeId = FileTypes.Id
-WHERE (AsycudaDocumentSet.AsycudaDocumentSetId = '1437')
+WHERE (AsycudaDocumentSet.AsycudaDocumentSetId = '1446')
 ORDER BY AsycudaDocumentSet.Declarant_Reference_Number
 
 

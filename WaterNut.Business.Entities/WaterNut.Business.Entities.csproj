@@ -217,6 +217,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -504,6 +505,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -791,6 +793,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -1078,6 +1081,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -1365,6 +1369,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_EntryDataDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
@@ -1662,6 +1667,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_ERRReport_EntryDataDetails.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_ERRReport_UnmappedItems.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_ImportCompleteEntries.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_LicenseToXML.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSet.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs" />

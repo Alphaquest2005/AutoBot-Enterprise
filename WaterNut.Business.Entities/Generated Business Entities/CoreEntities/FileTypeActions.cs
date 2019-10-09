@@ -65,6 +65,36 @@ namespace CoreEntities.Business.Entities
         }
         int _actionid;
         [DataMember]
+        public Nullable<bool> AssessIM7 
+        {
+            get
+            {
+                return _assessim7;
+            }
+            set
+            {
+                _assessim7 = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _assessim7;
+        [DataMember]
+        public Nullable<bool> AssessEX 
+        {
+            get
+            {
+                return _assessex;
+            }
+            set
+            {
+                _assessex = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _assessex;
+        [DataMember]
         public Actions Actions { get; set; }
         [DataMember]
         public FileTypes FileTypes { get; set; }

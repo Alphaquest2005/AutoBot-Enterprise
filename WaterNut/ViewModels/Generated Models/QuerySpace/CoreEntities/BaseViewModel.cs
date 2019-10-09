@@ -101,6 +101,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsIDChanged, OnCurrentTODO_ERRReport_EntryDataDetailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, OnCurrentTODO_ERRReport_UnmappedItemsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged, OnCurrentTODO_ImportCompleteEntriesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, OnCurrentTODO_LicenseToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetToExportIDChanged, OnCurrentTODO_PODocSetToExportIDChanged);
@@ -165,6 +166,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_ERRReport_EntryDataDetails>(MessageToken.CurrentTODO_ERRReport_EntryDataDetailsChanged, OnCurrentTODO_ERRReport_EntryDataDetailsChanged);
                         RegisterToReceiveMessages<TODO_ERRReport_SubmitWarehouseErrors>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsChanged);
                         RegisterToReceiveMessages<TODO_ERRReport_UnmappedItems>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged, OnCurrentTODO_ERRReport_UnmappedItemsChanged);
+                        RegisterToReceiveMessages<TODO_ImportCompleteEntries>(MessageToken.CurrentTODO_ImportCompleteEntriesChanged, OnCurrentTODO_ImportCompleteEntriesChanged);
                         RegisterToReceiveMessages<TODO_LicenseToXML>(MessageToken.CurrentTODO_LicenseToXMLChanged, OnCurrentTODO_LicenseToXMLChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
                         RegisterToReceiveMessages<TODO_PODocSetToExport>(MessageToken.CurrentTODO_PODocSetToExportChanged, OnCurrentTODO_PODocSetToExportChanged);
@@ -1490,6 +1492,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_ERRReport_UnmappedItemsID)) BeginSendMessage(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, _currentTODO_ERRReport_UnmappedItemsID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_ERRReport_UnmappedItemsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_ImportCompleteEntriesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_ImportCompleteEntriesRepository ctx = new TODO_ImportCompleteEntriesRepository())
+                            {
+                                CurrentTODO_ImportCompleteEntries = await ctx.GetTODO_ImportCompleteEntries(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_ImportCompleteEntries);
+                        }
+
+                        private  string _currentTODO_ImportCompleteEntriesID = "";
+                        public string CurrentTODO_ImportCompleteEntriesID
+                        {
+                            get
+                            {
+                                return _currentTODO_ImportCompleteEntriesID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_ImportCompleteEntriesID != value)
+                                {
+                                    _currentTODO_ImportCompleteEntriesID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_ImportCompleteEntriesID)) BeginSendMessage(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged, _currentTODO_ImportCompleteEntriesID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_ImportCompleteEntriesID);  
                                 }
                             }
                         }
@@ -4275,6 +4304,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_ERRReport_UnmappedItems = value;
 					if(_vcurrentTODO_ERRReport_UnmappedItems != null) CurrentTODO_ERRReport_UnmappedItems = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_ERRReport_UnmappedItems);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_ImportCompleteEntriesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_ImportCompleteEntries> e)
+        {
+            //CurrentTODO_ImportCompleteEntries = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_ImportCompleteEntries);
+        }
+
+        private  TODO_ImportCompleteEntries _currentTODO_ImportCompleteEntries;
+        public TODO_ImportCompleteEntries CurrentTODO_ImportCompleteEntries
+        {
+            get
+            {
+                return _currentTODO_ImportCompleteEntries;
+            }
+            set
+            {
+                if (_currentTODO_ImportCompleteEntries != value)
+                {
+                    _currentTODO_ImportCompleteEntries = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_ImportCompleteEntriesChanged,
+                                                     new NotificationEventArgs<TODO_ImportCompleteEntries>(MessageToken.CurrentTODO_ImportCompleteEntriesChanged, _currentTODO_ImportCompleteEntries)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_ImportCompleteEntries);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_ImportCompleteEntries> _vcurrentTODO_ImportCompleteEntries;
+        public VirtualListItem<TODO_ImportCompleteEntries> VCurrentTODO_ImportCompleteEntries
+        {
+            get
+            {
+                return _vcurrentTODO_ImportCompleteEntries;
+            }
+            set
+            {
+                if (_vcurrentTODO_ImportCompleteEntries != value)
+                {
+                    _vcurrentTODO_ImportCompleteEntries = value;
+					if(_vcurrentTODO_ImportCompleteEntries != null) CurrentTODO_ImportCompleteEntries = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_ImportCompleteEntries);                    
                 }
             }
         }

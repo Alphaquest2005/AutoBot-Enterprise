@@ -223,6 +223,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
             
             
             
+            <PropertyRef Name="TotalFreight" />
           </Key>
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
@@ -244,6 +245,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="TotalInternalInsurance" Type="float" Nullable="false" />
           <Property Name="TotalOtherCost" Type="float" Nullable="false" />
           <Property Name="TotalDeductions" Type="float" Nullable="false" />
+          <Property Name="TotalFreight" Type="float" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataExTotals' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -497,7 +499,8 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
 [EntryDataEx].[TotalInternalFreight] AS [TotalInternalFreight], 
 [EntryDataEx].[TotalInternalInsurance] AS [TotalInternalInsurance], 
 [EntryDataEx].[TotalOtherCost] AS [TotalOtherCost], 
-[EntryDataEx].[TotalDeductions] AS [TotalDeductions]
+[EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
+[EntryDataEx].[TotalFreight] AS [TotalFreight]
 FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataExTotals" EntityType="Self.EntryDataExTotals" store:Type="Views" store:Schema="dbo">
@@ -972,6 +975,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Key>
             <PropertyRef Name="InvoiceNo" />
             <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="TotalFreight" />
           </Key>
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -994,6 +998,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="TotalOtherCost" Type="Double" Nullable="false" />
           <Property Name="TotalDeductions" Type="Double" Nullable="false" />
           <NavigationProperty Name="EntryData" Relationship="WaterNutDBModel.EntryDataEntryDataEx" FromRole="EntryDataEx" ToRole="EntryData" />
+          <Property Name="TotalFreight" Type="Double" Nullable="false" />
         </EntityType>
         <Association Name="EntryDataEntryDataEx">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1" />
@@ -1257,6 +1262,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataEx">
               <MappingFragment StoreEntitySet="EntryDataEx">
+                <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
                 <ScalarProperty Name="TotalDeductions" ColumnName="TotalDeductions" />
                 <ScalarProperty Name="TotalOtherCost" ColumnName="TotalOtherCost" />
                 <ScalarProperty Name="TotalInternalInsurance" ColumnName="TotalInternalInsurance" />

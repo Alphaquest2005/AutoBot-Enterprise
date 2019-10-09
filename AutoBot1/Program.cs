@@ -45,24 +45,7 @@ namespace AutoBot
                         BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
                         //check emails
 
-                        var salesInfo = Utils.CurrentSalesInfo();
-                        var dref = salesInfo.Item1.ToString("MMMM yyyy");
-                        if (salesInfo.Item3 == null)
-                        {
-
-                            var doctype = ctx.Document_Type.Include(x => x.Customs_Procedure).First(x =>
-                                x.Type_of_declaration == "IM" && x.Declaration_gen_procedure_code == "7");
-                            ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
-                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({appSetting.ApplicationSettingsId},'{dref}',{doctype.Document_TypeId},{
-                                    doctype.Customs_Procedure.First(z => z.IsDefault == true).Customs_ProcedureId
-                                },0)");
-                            Directory.CreateDirectory(Path.Combine(appSetting.DataFolder, dref));
-                        }
-
-                        if (!Directory.Exists(Path.Combine(appSetting.DataFolder, dref)))
-                            Directory.CreateDirectory(Path.Combine(appSetting.DataFolder, dref));
-                        //
+                       //
                         Utils.Client = new EmailDownloader.Client
                         {
                             CompanyName = appSetting.CompanyName,
@@ -119,7 +102,7 @@ namespace AutoBot
 
                                 var ndocSet =
                                     ctx.AsycudaDocumentSetExs
-                                        .FirstOrDefault(x => x.Declarant_Reference_Number == msg.Key.Item1);
+                                        .FirstOrDefault(x => x.Declarant_Reference_Number == msg.Key.Item1 && x.ApplicationSettingsId ==  BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                                 if (ndocSet != null)
                                 {
                                     if (fileType.Type == "Info")
@@ -133,9 +116,20 @@ namespace AutoBot
                                 }
                                 else
                                 {
-                                    fileType.FileTypeActions.OrderBy(x => x.Id)
-                                        .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                                        .ForEach(x => { x.Invoke(fileType, csvFiles); });
+                                    try
+                                    {
+                                        fileType.FileTypeActions.OrderBy(x => x.Id)
+                                            .Where(x => appSetting.AssessIM7 == x.AssessIM7 &&
+                                                        appSetting.AssessEX == x.AssessEX)
+                                            .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
+                                            .ForEach(x => { x.Invoke(fileType, csvFiles); });
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                            new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
+                                    }
+
                                 }
 
                             }
@@ -167,24 +161,37 @@ namespace AutoBot
                             foreach (var fileType in appSetting.FileTypes
                             ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
                             {
-                                var desFolder = Path.Combine(appSetting.DataFolder, dSet.Declarant_Reference_Number);
-                                fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet
-                                    ? dSet.AsycudaDocumentSetId
-                                    : fileType.AsycudaDocumentSetId;
-                                fileType.DocReference = fileType.CreateDocumentSet
-                                    ? dSet.Declarant_Reference_Number
-                                    : fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
-                                if (!Directory.Exists(desFolder)) continue;
-                                var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                                    .Where(x =>
-                                        Regex.IsMatch(x.FullName, fileType.FilePattern, RegexOptions.IgnoreCase) &&
-                                        x.LastWriteTime >= beforeImport)
-                                    .ToArray(); // set to 10 mins so it works within the email import time
-                                if (!csvFiles.Any()) continue;
+                                try
+                                {
+                                    var desFolder = Path.Combine(appSetting.DataFolder,
+                                        dSet.Declarant_Reference_Number);
+                                    fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet
+                                        ? dSet.AsycudaDocumentSetId
+                                        : fileType.AsycudaDocumentSetId;
+                                    fileType.DocReference = fileType.CreateDocumentSet
+                                        ? dSet.Declarant_Reference_Number
+                                        : fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
+                                    if (!Directory.Exists(desFolder)) continue;
+                                    var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                                        .Where(x =>
+                                            Regex.IsMatch(x.FullName, fileType.FilePattern, RegexOptions.IgnoreCase) &&
+                                            x.LastWriteTime >= beforeImport)
+                                        .ToArray(); // set to 10 mins so it works within the email import time
+                                    if (!csvFiles.Any()) continue;
 
-                                fileType.FileTypeActions.OrderBy(x => x.Id)
-                                    .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                                    .ForEach(x => { x.Invoke(fileType, csvFiles); });
+                                    fileType.FileTypeActions.OrderBy(x => x.Id)
+                                        .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
+                                                    (appSetting.AssessIM7 == x.AssessIM7 &&
+                                                     appSetting.AssessEX == x.AssessEX))
+                                        .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
+                                        .ForEach(x => { x.Invoke(fileType, csvFiles); });
+                                }
+                                catch (Exception e)
+                                {
+                                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                        new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
+                                }
+
 
                             }
                         }
@@ -228,13 +235,13 @@ namespace AutoBot
                                     .ForEach(x =>
                                          x.Invoke());
 
-                            //if (appSetting.AssessEX == true)
-                            //    ctx.SessionActions.OrderBy(x => x.Id)
-                            //        .Include(x => x.Actions)
-                            //        .Where(x => x.Sessions.Name == "AssessEX").ToList()
-                            //        .Select(x => Utils.SessionActions[x.Actions.Name])
-                            //        .ForEach(x =>
-                            //            x.Invoke());
+                            if (appSetting.AssessEX == true)
+                                ctx.SessionActions.OrderBy(x => x.Id)
+                                    .Include(x => x.Actions)
+                                    .Where(x => x.Sessions.Name == "AssessEX").ToList()
+                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .ForEach(x =>
+                                        x.Invoke());
                         }
 
 
