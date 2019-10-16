@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="AdjustmentQS\IAdjustmentDetailService.cs" />
     <Compile Include="AdjustmentQS\IAdjustmentExService.cs" />
+    <Compile Include="AdjustmentQS\IAdjustmentOversAllocationService.cs" />
     <Compile Include="AdjustmentQS\IAdjustmentOverService.cs" />
     <Compile Include="AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="AdjustmentQS\IAsycudaDocumentEntryDataService.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="CoreEntities\IContactsService.cs" />
     <Compile Include="CoreEntities\ICustoms_ProcedureService.cs" />
     <Compile Include="CoreEntities\IDocument_TypeService.cs" />
+    <Compile Include="CoreEntities\IEmailFileTypesService.cs" />
     <Compile Include="CoreEntities\IEmailMappingService.cs" />
     <Compile Include="CoreEntities\IEmailsService.cs" />
     <Compile Include="CoreEntities\IEntryPreviousItemsService.cs" />
@@ -118,13 +120,16 @@
     <Compile Include="CoreEntities\ISessionScheduleService.cs" />
     <Compile Include="CoreEntities\ISessionsService.cs" />
     <Compile Include="CoreEntities\ISubItemsService.cs" />
+    <Compile Include="CoreEntities\ITODO_AdjustmentsAlreadyXMLedService.cs" />
     <Compile Include="CoreEntities\ITODO_AdjustmentsToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_C71ToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_CreateDiscrepancyEntriesService.cs" />
     <Compile Include="CoreEntities\ITODO_CreateEx9Service.cs" />
     <Compile Include="CoreEntities\ITODO_DeleteDocumentSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
+    <Compile Include="CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs" />
     <Compile Include="CoreEntities\ITODO_DocumentsToDeleteService.cs" />
     <Compile Include="CoreEntities\ITODO_EntriesExpiringNextMonthService.cs" />
     <Compile Include="CoreEntities\ITODO_Error_DuplicateEntryService.cs" />
@@ -142,12 +147,14 @@
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetToExportService.cs" />
     <Compile Include="CoreEntities\IToDo_POToXMLService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesErrorReportService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
+    <Compile Include="CoreEntities\ITODO_TotalAdjustmentsToProcessService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedSalesService.cs" />
     <Compile Include="CoreEntities\ITODO_UnallocatedShortsService.cs" />
     <Compile Include="CoreEntities\Ixcuda_Supplementary_unitService.cs" />

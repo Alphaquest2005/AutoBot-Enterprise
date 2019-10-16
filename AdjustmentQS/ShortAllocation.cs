@@ -66,6 +66,7 @@ namespace AdjustmentQS
         public Nullable<int> EmailId { get; set; }
         public string xStatus { get; set; }
         public string Type { get; set; }
+        public Nullable<int> SalesLineNumber { get; set; }
     
         public virtual AdjustmentShort AdjustmentShort { get; set; }
         public virtual AdjustmentDetail AdjustmentDetail { get; set; }

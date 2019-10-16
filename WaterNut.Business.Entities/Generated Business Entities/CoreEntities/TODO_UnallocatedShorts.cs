@@ -139,6 +139,36 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<System.DateTime> _effectivedate;
+        [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
+        [DataMember]
+        public string Status 
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _status;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

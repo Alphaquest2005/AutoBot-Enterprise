@@ -110,6 +110,21 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<double> _quantity;
         [DataMember]
+        public bool ImportComplete 
+        {
+            get
+            {
+                return _importcomplete;
+            }
+            set
+            {
+                _importcomplete = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _importcomplete;
+        [DataMember]
         public AdjustmentOver AdjustmentOver { get; set; }
         [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }

@@ -116,6 +116,7 @@
     <Compile Include="Generated Repositories\AdjustmentQS\AdjustmentDetailRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AdjustmentExRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AdjustmentOverRepository.cs" />
+    <Compile Include="Generated Repositories\AdjustmentQS\AdjustmentOversAllocationRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AdjustmentShortRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AsycudaDocumentEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\AsycudaDocumentItemEntryDataDetailRepository.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Generated Repositories\CoreEntities\ContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Customs_ProcedureRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\Document_TypeRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\EmailFileTypesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailMappingRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs" />
@@ -161,13 +163,16 @@
     <Compile Include="Generated Repositories\CoreEntities\SessionScheduleRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SessionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\SubItemsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_AdjustmentsAlreadyXMLedRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_AdjustmentsToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_C71ToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_CreateDiscrepancyEntriesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_CreateEx9Repository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DeleteDocumentSetRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesAlreadyXMLedRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToSubmitRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepancyPreExecutionReportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_EntriesExpiringNextMonthRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_Error_DuplicateEntryRepository.cs" />
@@ -185,12 +190,14 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToExportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesErrorReportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitInadequatePackagesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitIncompleteEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitUnclassifiedItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_TotalAdjustmentsToProcessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedSalesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_UnallocatedShortsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\xcuda_Supplementary_unitRepository.cs" />

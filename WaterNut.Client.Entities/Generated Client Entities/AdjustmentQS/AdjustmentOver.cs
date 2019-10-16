@@ -158,9 +158,9 @@ public string ItemDescription
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Cost is required")]
        [NumberValidationAttribute]
-public Nullable<double> Cost
+public double Cost
 		{ 
 		    get { return this.adjustmentover.Cost; }
 			set
@@ -423,6 +423,117 @@ public int ApplicationSettingsId
 				this.adjustmentover.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.adjustmentover.Type; }
+			set
+			{
+			    if (value == this.adjustmentover.Type) return;
+				this.adjustmentover.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
+       
+                
+                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+public string DutyFreePaid
+		{ 
+		    get { return this.adjustmentover.DutyFreePaid; }
+			set
+			{
+			    if (value == this.adjustmentover.DutyFreePaid) return;
+				this.adjustmentover.DutyFreePaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DutyFreePaid");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.adjustmentover.EmailId; }
+			set
+			{
+			    if (value == this.adjustmentover.EmailId) return;
+				this.adjustmentover.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.adjustmentover.FileTypeId; }
+			set
+			{
+			    if (value == this.adjustmentover.FileTypeId) return;
+				this.adjustmentover.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "InvoiceDate is required")]
+       
+public System.DateTime InvoiceDate
+		{ 
+		    get { return this.adjustmentover.InvoiceDate; }
+			set
+			{
+			    if (value == this.adjustmentover.InvoiceDate) return;
+				this.adjustmentover.InvoiceDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceDate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
+                
+                
+public string Subject
+		{ 
+		    get { return this.adjustmentover.Subject; }
+			set
+			{
+			    if (value == this.adjustmentover.Subject) return;
+				this.adjustmentover.Subject = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Subject");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
+       
+public System.DateTime EmailDate
+		{ 
+		    get { return this.adjustmentover.EmailDate; }
+			set
+			{
+			    if (value == this.adjustmentover.EmailDate) return;
+				this.adjustmentover.EmailDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailDate");
 			}
 		}
      

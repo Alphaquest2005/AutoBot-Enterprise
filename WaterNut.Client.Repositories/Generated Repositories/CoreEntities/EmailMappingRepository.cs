@@ -202,7 +202,8 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new EmailMapping(res)
                     {
-                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null)    
+                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
+                     // EmailFileTypes = new System.Collections.ObjectModel.ObservableCollection<EmailFileTypes>(res.EmailFileTypes.Select(y => new EmailFileTypes(y)))    
                   };
                     }
                     else

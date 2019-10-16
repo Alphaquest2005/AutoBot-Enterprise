@@ -99,6 +99,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<double> _Quantity;
 
+        [DataMember]
+        public bool ImportComplete
+		{ 
+		    get { return _ImportComplete; }
+			set
+			{
+			    if (value == _ImportComplete) return;
+				_ImportComplete = value;
+				NotifyPropertyChanged();//m => this.ImportComplete
+			}
+		}
+        private bool _ImportComplete;
+
        
         [DataMember]
         public AdjustmentOver AdjustmentOver

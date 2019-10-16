@@ -19,6 +19,11 @@ namespace CoreEntities.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class EmailMapping : BaseEntity<EmailMapping>, ITrackable 
     {
+        partial void AutoGenStartUp() //EmailMapping()
+        {
+            this.EmailFileTypes = new List<EmailFileTypes>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -66,6 +71,8 @@ namespace CoreEntities.Business.Entities
         string _pattern;
         [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
+        [DataMember]
+        public List<EmailFileTypes> EmailFileTypes { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

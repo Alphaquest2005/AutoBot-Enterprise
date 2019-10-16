@@ -151,6 +151,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(FileGroups.Contains(CurrentFileTypes.FileGroups) == false) FileGroups.Add(CurrentFileTypes.FileGroups);
                     //}
+                    //if (e.PropertyName == "AddParentFileTypes")
+                   // {
+                   //    if(FileTypes.Contains(CurrentFileTypes.ParentFileTypes) == false) FileTypes.Add(CurrentFileTypes.ParentFileTypes);
+                    //}
                  } 
         internal virtual void OnFileTypesChanged(object sender, NotificationEventArgs e)
         {

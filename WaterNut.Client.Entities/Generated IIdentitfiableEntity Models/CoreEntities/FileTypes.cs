@@ -142,6 +142,44 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string ParentFileTypesEntityName
+        {
+            get
+            {
+                return this.ParentFileTypes == null ? "" : this.ParentFileTypes.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (FileTypesClient ctx = new FileTypesClient())
+                    {
+                        var dto = ctx.GetFileTypes().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ParentFileTypes = (FileTypes)new FileTypes().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.ParentFileTypes.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddParentFileTypes");
+                        }
+                        else
+                        {
+                            var obj = new FileTypes(dto);
+                           if (this.ParentFileTypes == null || this.ParentFileTypes.EntityId != obj.EntityId) this.ParentFileTypes = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

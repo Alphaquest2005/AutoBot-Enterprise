@@ -17,6 +17,7 @@ namespace AdjustmentQS
         public xcuda_Item()
         {
             this.AsycudaSalesAllocations = new HashSet<AsycudaSalesAllocation>();
+            this.AdjustmentOversAllocations = new HashSet<AdjustmentOversAllocation>();
         }
     
         public string Amount_deducted_from_licence { get; set; }
@@ -43,5 +44,6 @@ namespace AdjustmentQS
         public string PreviousInvoiceItemNumber { get; set; }
     
         public virtual ICollection<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
+        public virtual ICollection<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }
     }
 }

@@ -528,6 +528,60 @@ public Nullable<double> LastCost
 		}
         
 
+        ObservableCollection<AdjustmentOversAllocation> _AdjustmentOversAllocations = null;
+        public  ObservableCollection<AdjustmentOversAllocation> AdjustmentOversAllocations
+		{
+            
+		    get 
+				{ 
+					if(_AdjustmentOversAllocations != null) return _AdjustmentOversAllocations;
+					//if (this.entrydatadetail.AdjustmentOversAllocations == null) Debugger.Break();
+					if(this.entrydatadetail.AdjustmentOversAllocations != null)
+					{
+						_AdjustmentOversAllocations = new ObservableCollection<AdjustmentOversAllocation>(this.entrydatadetail.AdjustmentOversAllocations.Select(x => new AdjustmentOversAllocation(x)));
+					}
+					
+						_AdjustmentOversAllocations.CollectionChanged += AdjustmentOversAllocations_CollectionChanged; 
+					
+					return _AdjustmentOversAllocations; 
+				}
+			set
+			{
+			    if (Equals(value, _AdjustmentOversAllocations)) return;
+				if (value != null)
+					this.entrydatadetail.AdjustmentOversAllocations = new ChangeTrackingCollection<DTO.AdjustmentOversAllocation>(value.Select(x => x.DTO).ToList());
+                _AdjustmentOversAllocations = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AdjustmentOversAllocations != null)
+				_AdjustmentOversAllocations.CollectionChanged += AdjustmentOversAllocations_CollectionChanged;               
+				NotifyPropertyChanged("AdjustmentOversAllocations");
+			}
+		}
+        
+        void AdjustmentOversAllocations_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AdjustmentOversAllocation itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        entrydatadetail.AdjustmentOversAllocations.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AdjustmentOversAllocation itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        entrydatadetail.AdjustmentOversAllocations.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.EntryDataDetail> _changeTracker;    
         public ChangeTrackingCollection<DTO.EntryDataDetail> ChangeTracker

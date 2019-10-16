@@ -39,6 +39,7 @@
               this.Property(t => t.LastCost).HasColumnName("LastCost");
               this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetail>) t.EntryDataDetails).HasForeignKey(d => new {d.ItemNumber, d.EntryDataDetailsId});
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.EntryDataDetail).HasForeignKey(d => d.EntryDataDetailsId);
+              this.HasMany(t => t.AdjustmentOversAllocations).WithRequired(t => (EntryDataDetail)t.EntryDataDetail);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

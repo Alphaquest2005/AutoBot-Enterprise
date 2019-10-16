@@ -275,6 +275,24 @@ namespace CoreEntities.Business.Services
                                         GetWhere<FileGroups>(dbContext, exp, itm.Value, "FileTypes", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ChildFileTypes":
+                                return
+                                    await
+                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ParentFileTypes":
+                                return
+                                    await
+                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EmailFileTypes":
+                                return
+                                    await
+                                        GetWhere<EmailFileTypes>(dbContext, exp, itm.Value, "FileTypes", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -790,6 +808,15 @@ namespace CoreEntities.Business.Services
                             case "FileGroups":
                                 return await CountWhere<FileGroups>(dbContext, exp, itm.Value, "FileTypes", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ChildFileTypes":
+                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ParentFileTypes":
+                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailFileTypes":
+                                return await CountWhere<EmailFileTypes>(dbContext, exp, itm.Value, "FileTypes", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.FileTypes.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -935,6 +962,24 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<FileGroups>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ChildFileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "ChildFileTypes", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ParentFileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "ChildFileTypes", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EmailFileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<EmailFileTypes>(startIndex, count, dbContext, exp, itm.Value, "FileTypes", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1154,6 +1199,8 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.ChildFileTypes)									  
+                                                    // .Include(x => x.EmailFileTypes)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1187,6 +1234,8 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.ChildFileTypes)									  
+                                                    // .Include(x => x.EmailFileTypes)									  
                                       .AsNoTracking()
                                         .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
@@ -1220,8 +1269,45 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.FileTypeActions)									  
                                                     // .Include(x => x.FileTypeContacts)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.ChildFileTypes)									  
+                                                    // .Include(x => x.EmailFileTypes)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileGroupId.ToString() == FileGroupId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<FileTypes>> GetFileTypesByParentFileTypeId(string ParentFileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ParentFileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<FileTypes> entities = await set//dbContext.FileTypes
+                                                    // .Include(x => x.FileTypeMappings)									  
+                                                    // .Include(x => x.FileTypeActions)									  
+                                                    // .Include(x => x.FileTypeContacts)									  
+                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.ChildFileTypes)									  
+                                                    // .Include(x => x.EmailFileTypes)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.ParentFileTypeId.ToString() == ParentFileTypeId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1313,6 +1399,15 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FileGroups":
                                 return await SumWhere<FileGroups>(dbContext, exp, itm.Value, "FileTypes", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ChildFileTypes":
+                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ParentFileTypes":
+                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "ChildFileTypes", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EmailFileTypes":
+                                return await SumWhere<EmailFileTypes>(dbContext, exp, itm.Value, "FileTypes", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

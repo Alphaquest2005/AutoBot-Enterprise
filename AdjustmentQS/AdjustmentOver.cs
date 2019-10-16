@@ -26,7 +26,7 @@ namespace AdjustmentQS
         public double Quantity { get; set; }
         public string Units { get; set; }
         public string ItemDescription { get; set; }
-        public Nullable<double> Cost { get; set; }
+        public double Cost { get; set; }
         public double QtyAllocated { get; set; }
         public double UnitWeight { get; set; }
         public Nullable<bool> DoNotAllocate { get; set; }
@@ -43,6 +43,13 @@ namespace AdjustmentQS
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public string Currency { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public string Type { get; set; }
+        public string DutyFreePaid { get; set; }
+        public Nullable<int> EmailId { get; set; }
+        public Nullable<int> FileTypeId { get; set; }
+        public System.DateTime InvoiceDate { get; set; }
+        public string Subject { get; set; }
+        public System.DateTime EmailDate { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual ICollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }

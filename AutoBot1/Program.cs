@@ -36,8 +36,12 @@ namespace AutoBot
                         .Include("FileTypes.FileTypeContacts.Contacts")
                         .Include("FileTypes.FileTypeActions.Actions")
                         .Include("FileTypes.AsycudaDocumentSetEx")
-                        .Include(x => x.EmailMapping)
-
+                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeActions.Actions")
+                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeContacts.Contacts")
+                        .Include("EmailMapping.EmailFileTypes.FileTypes.AsycudaDocumentSetEx")
+                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeMappings")
+                        .Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
+                        .Include("FileTypes.ChildFileTypes")
                         .Include("FileTypes.FileTypeMappings").ToList())
                     {
                         appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
@@ -52,7 +56,7 @@ namespace AutoBot
                             DataFolder = appSetting.DataFolder,
                             Password = appSetting.EmailPassword,
                             Email = appSetting.Email,
-                            EmailMappings = appSetting.EmailMapping.Select(x => x.Pattern).ToList()
+                            EmailMappings = appSetting.EmailMapping.ToList()
                         };
 
                         var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client,
@@ -62,7 +66,7 @@ namespace AutoBot
                         foreach (var msg in msgLst)
                         {
                             var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1);
-                            foreach (var fileType in appSetting.FileTypes)
+                            foreach (var fileType in msg.Key.Item2.EmailMapping.EmailFileTypes.Select(x => x.FileTypes).ToList())
                             {
                                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
                                     .Where(x => msg.Value.Contains(x.Name) &&
@@ -102,7 +106,9 @@ namespace AutoBot
 
                                 var ndocSet =
                                     ctx.AsycudaDocumentSetExs
-                                        .FirstOrDefault(x => x.Declarant_Reference_Number == msg.Key.Item1 && x.ApplicationSettingsId ==  BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                                        .FirstOrDefault(x =>
+                                            x.Declarant_Reference_Number == msg.Key.Item1 && x.ApplicationSettingsId ==
+                                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                                 if (ndocSet != null)
                                 {
                                     if (fileType.Type == "Info")
@@ -114,87 +120,89 @@ namespace AutoBot
                                         Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
                                     }
                                 }
-                                else
-                                {
-                                    try
-                                    {
-                                        fileType.FileTypeActions.OrderBy(x => x.Id)
-                                            .Where(x => appSetting.AssessIM7 == x.AssessIM7 &&
-                                                        appSetting.AssessEX == x.AssessEX)
-                                            .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                                            .ForEach(x => { x.Invoke(fileType, csvFiles); });
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                            new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
-                                    }
 
-                                }
-
-                            }
-                        }
-
-                        var docLst = new List<AsycudaDocumentSetEx>()
-                        {
-                            Utils.CurrentSalesInfo().Item3,
-                        };
-                        docLst.Remove(null);
-                        foreach (var i in Utils.CurrentPOInfo().Select(x => x.Item1))
-                        {
-                            if (docLst.FirstOrDefault(x =>
-                                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                        .ApplicationSettingsId
-                                    && x.AsycudaDocumentSetId == i.AsycudaDocumentSetId) == null)
-                                docLst.AddRange(Utils.CurrentPOInfo().Select(x => x.Item1));
-                        }
-
-                        var fdate = DateTime.Now.Date;
-                        docLst.AddRange(ctx.AsycudaDocumentSetExs.Where(x =>
-                            x.ApplicationSettingsId == appSetting.ApplicationSettingsId &&
-                            x.AsycudaDocumentSet_Attachments.Any(z => z.FileDate == fdate)));
-
-
-
-                        foreach (var dSet in docLst.Where(x => x != null).DistinctBy(x => x.AsycudaDocumentSetId))
-                        {
-                            foreach (var fileType in appSetting.FileTypes
-                            ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
-                            {
+                                //else
+                                //{
                                 try
                                 {
-                                    var desFolder = Path.Combine(appSetting.DataFolder,
-                                        dSet.Declarant_Reference_Number);
-                                    fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet
-                                        ? dSet.AsycudaDocumentSetId
-                                        : fileType.AsycudaDocumentSetId;
-                                    fileType.DocReference = fileType.CreateDocumentSet
-                                        ? dSet.Declarant_Reference_Number
-                                        : fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
-                                    if (!Directory.Exists(desFolder)) continue;
-                                    var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                                        .Where(x =>
-                                            Regex.IsMatch(x.FullName, fileType.FilePattern, RegexOptions.IgnoreCase) &&
-                                            x.LastWriteTime >= beforeImport)
-                                        .ToArray(); // set to 10 mins so it works within the email import time
-                                    if (!csvFiles.Any()) continue;
-
                                     fileType.FileTypeActions.OrderBy(x => x.Id)
                                         .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                                    (appSetting.AssessIM7 == x.AssessIM7 &&
-                                                     appSetting.AssessEX == x.AssessEX))
+                                                    (appSetting.AssessIM7 == x.AssessIM7 && appSetting.AssessEX == x.AssessEX))
                                         .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
                                         .ForEach(x => { x.Invoke(fileType, csvFiles); });
                                 }
                                 catch (Exception e)
                                 {
                                     EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                        new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
+                                        new[] {"Josephbartholomew@outlook.com"}, $"{e.Message}\r\n{e.StackTrace}",
+                                        Array.Empty<string>());
                                 }
 
+                                //}
 
                             }
                         }
+
+                        //var docLst = new List<AsycudaDocumentSetEx>()
+                        //{
+                        //    Utils.CurrentSalesInfo().Item3,
+                        //};
+                        //docLst.Remove(null);
+                        //foreach (var i in Utils.CurrentPOInfo().Select(x => x.Item1))
+                        //{
+                        //    if (docLst.FirstOrDefault(x =>
+                        //            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                        //                .ApplicationSettingsId
+                        //            && x.AsycudaDocumentSetId == i.AsycudaDocumentSetId) == null)
+                        //        docLst.AddRange(Utils.CurrentPOInfo().Select(x => x.Item1));
+                        //}
+
+                        //var fdate = DateTime.Now.Date;
+                        //docLst.AddRange(ctx.AsycudaDocumentSetExs.Where(x =>
+                        //    x.ApplicationSettingsId == appSetting.ApplicationSettingsId &&
+                        //    x.AsycudaDocumentSet_Attachments.Any(z => z.FileDate == fdate)));
+
+
+
+                        //foreach (var dSet in docLst.Where(x => x != null).DistinctBy(x => x.AsycudaDocumentSetId))
+                        //{
+                        //    foreach (var fileType in appSetting.FileTypes
+                        //    ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
+                        //    {
+                        //        try
+                        //        {
+                        //            var desFolder = Path.Combine(appSetting.DataFolder,
+                        //                dSet.Declarant_Reference_Number);
+                        //            fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet
+                        //                ? dSet.AsycudaDocumentSetId
+                        //                : fileType.AsycudaDocumentSetId;
+                        //            fileType.DocReference = fileType.CreateDocumentSet
+                        //                ? dSet.Declarant_Reference_Number
+                        //                : fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
+                        //            if (!Directory.Exists(desFolder)) continue;
+                        //            var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                        //                .Where(x =>
+                        //                    Regex.IsMatch(x.Name, fileType.FilePattern, RegexOptions.IgnoreCase) &&
+                        //                    x.LastWriteTime >= beforeImport)
+                        //                .ToArray(); // set to 10 mins so it works within the email import time
+                        //            if (!csvFiles.Any()) continue;
+
+                        //            fileType.FileTypeActions.OrderBy(x => x.Id)
+                        //                .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
+                        //                            (appSetting.AssessIM7 == x.AssessIM7 &&
+                        //                             appSetting.AssessEX == x.AssessEX))
+                        //                .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
+                        //                .ForEach(x => { x.Invoke(fileType, csvFiles); });
+                        //        }
+                        //        catch (Exception e)
+                        //        {
+                        //            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                        //                new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
+                        //        }
+
+
+                        //    }
+                        //}
 
 
                         ctx.SessionActions.OrderBy(x => x.Id)

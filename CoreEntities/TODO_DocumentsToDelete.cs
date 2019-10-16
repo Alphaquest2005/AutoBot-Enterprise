@@ -18,5 +18,6 @@ namespace CoreEntities
         public string DocumentType { get; set; }
         public string Reference { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
     }
 }

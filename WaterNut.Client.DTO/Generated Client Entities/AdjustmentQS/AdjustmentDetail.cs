@@ -398,6 +398,71 @@ namespace AdjustmentQS.Client.DTO
 		}
         private int _ApplicationSettingsId;
 
+        [DataMember]
+        public Nullable<int> EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private Nullable<int> _EmailId;
+
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public System.DateTime InvoiceDate
+		{ 
+		    get { return _InvoiceDate; }
+			set
+			{
+			    if (value == _InvoiceDate) return;
+				_InvoiceDate = value;
+				NotifyPropertyChanged();//m => this.InvoiceDate
+			}
+		}
+        private System.DateTime _InvoiceDate;
+
+        [DataMember]
+        public string Subject
+		{ 
+		    get { return _Subject; }
+			set
+			{
+			    if (value == _Subject) return;
+				_Subject = value;
+				NotifyPropertyChanged();//m => this.Subject
+			}
+		}
+        private string _Subject;
+
+        [DataMember]
+        public System.DateTime EmailDate
+		{ 
+		    get { return _EmailDate; }
+			set
+			{
+			    if (value == _EmailDate) return;
+				_EmailDate = value;
+				NotifyPropertyChanged();//m => this.EmailDate
+			}
+		}
+        private System.DateTime _EmailDate;
+
        
         [DataMember]
         public AdjustmentEx AdjustmentEx

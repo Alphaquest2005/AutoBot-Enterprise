@@ -320,6 +320,21 @@ namespace EntryDataDS.Business.Entities
         }
         double _totaldeductions;
         [DataMember]
+        public double TotalFreight 
+        {
+            get
+            {
+                return _totalfreight;
+            }
+            set
+            {
+                _totalfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _totalfreight;
+        [DataMember]
         public EntryData EntryData { get; set; }
 
  //       [DataMember]

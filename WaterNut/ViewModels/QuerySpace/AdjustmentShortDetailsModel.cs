@@ -249,13 +249,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 return;
             }
 
-            //await EntryDataDetailsExRepository.Instance.MatchToCurrentItem(
-            //    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentItem.Item_Id, entryDataDetailsEx)
-            //    .ConfigureAwait(false);
+            using (var ctx = new AdjustmentShortRepository())
+            {
+                await ctx.MatchToAsycudaItem(entryDataDetailsEx.EntryDataDetailsId,CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentItem.Item_Id).ConfigureAwait(false);
+            }
+
 
             MessageBus.Default.BeginNotify(MessageToken.CurrentAdjustmentShortChanged, this,
               new NotificationEventArgs<AdjustmentShort>(
                   QuerySpace.AdjustmentQS.MessageToken.CurrentAdjustmentShortChanged, entryDataDetailsEx));
+            MessageBox.Show("Manual Match Complete");
         }
 
         internal async Task RemoveEntryDataDetail(AdjustmentShort EntryDataDetailsEX)

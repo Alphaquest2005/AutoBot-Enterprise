@@ -506,6 +506,83 @@ public int ApplicationSettingsId
 		}
      
 
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.adjustmentdetail.EmailId; }
+			set
+			{
+			    if (value == this.adjustmentdetail.EmailId) return;
+				this.adjustmentdetail.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.adjustmentdetail.FileTypeId; }
+			set
+			{
+			    if (value == this.adjustmentdetail.FileTypeId) return;
+				this.adjustmentdetail.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "InvoiceDate is required")]
+       
+public System.DateTime InvoiceDate
+		{ 
+		    get { return this.adjustmentdetail.InvoiceDate; }
+			set
+			{
+			    if (value == this.adjustmentdetail.InvoiceDate) return;
+				this.adjustmentdetail.InvoiceDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceDate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
+                
+                
+public string Subject
+		{ 
+		    get { return this.adjustmentdetail.Subject; }
+			set
+			{
+			    if (value == this.adjustmentdetail.Subject) return;
+				this.adjustmentdetail.Subject = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Subject");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
+       
+public System.DateTime EmailDate
+		{ 
+		    get { return this.adjustmentdetail.EmailDate; }
+			set
+			{
+			    if (value == this.adjustmentdetail.EmailDate) return;
+				this.adjustmentdetail.EmailDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailDate");
+			}
+		}
+     
+
        private AdjustmentEx _AdjustmentEx;
         public  AdjustmentEx AdjustmentEx
 		{

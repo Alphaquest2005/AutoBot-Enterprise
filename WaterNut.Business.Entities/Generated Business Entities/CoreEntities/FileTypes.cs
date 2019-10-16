@@ -25,6 +25,8 @@ namespace CoreEntities.Business.Entities
             this.FileTypeActions = new List<FileTypeActions>();
             this.FileTypeContacts = new List<FileTypeContacts>();
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
+            this.ChildFileTypes = new List<FileTypes>();
+            this.EmailFileTypes = new List<EmailFileTypes>();
         }
 
         [DataMember]
@@ -208,6 +210,21 @@ namespace CoreEntities.Business.Entities
         }
         bool _copyentrydata;
         [DataMember]
+        public Nullable<int> ParentFileTypeId 
+        {
+            get
+            {
+                return _parentfiletypeid;
+            }
+            set
+            {
+                _parentfiletypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _parentfiletypeid;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
@@ -221,6 +238,12 @@ namespace CoreEntities.Business.Entities
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         [DataMember]
         public FileGroups FileGroups { get; set; }
+        [DataMember]
+        public List<FileTypes> ChildFileTypes { get; set; }
+        [DataMember]
+        public FileTypes ParentFileTypes { get; set; }
+        [DataMember]
+        public List<EmailFileTypes> EmailFileTypes { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

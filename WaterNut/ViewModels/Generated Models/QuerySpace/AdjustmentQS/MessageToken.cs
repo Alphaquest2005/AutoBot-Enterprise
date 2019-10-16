@@ -28,6 +28,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS
 			public const string AdjustmentOversDeleted = "AdjustmentOversDeleted";
 			public const string AdjustmentOversCreated = "AdjustmentOversCreated";
 			public const string AdjustmentOversUpdated = "AdjustmentOversUpdated";
+			public const string AdjustmentOversAllocationsFilterExpressionChanged = "AdjustmentOversAllocationsFilterExpressionChanged";
+			public const string SelectedAdjustmentOversAllocationsChanged = "SelectedAdjustmentOversAllocationsChanged";
+            public const string AdjustmentOversAllocationsChanged = "AdjustmentOversAllocationsChanged";
+			public const string AdjustmentOversAllocationsDeleted = "AdjustmentOversAllocationsDeleted";
+			public const string AdjustmentOversAllocationsCreated = "AdjustmentOversAllocationsCreated";
+			public const string AdjustmentOversAllocationsUpdated = "AdjustmentOversAllocationsUpdated";
 			public const string AdjustmentShortsFilterExpressionChanged = "AdjustmentShortsFilterExpressionChanged";
 			public const string SelectedAdjustmentShortsChanged = "SelectedAdjustmentShortsChanged";
             public const string AdjustmentShortsChanged = "AdjustmentShortsChanged";
@@ -99,6 +105,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS
           // public const string AdjustmentDetailChanged = "AdjustmentDetailChanged";
           // public const string AdjustmentExChanged = "AdjustmentExChanged";
           // public const string AdjustmentOverChanged = "AdjustmentOverChanged";
+          // public const string AdjustmentOversAllocationChanged = "AdjustmentOversAllocationChanged";
           // public const string AdjustmentShortChanged = "AdjustmentShortChanged";
           // public const string AsycudaDocumentEntryDataChanged = "AsycudaDocumentEntryDataChanged";
           // public const string AsycudaDocumentItemEntryDataDetailChanged = "AsycudaDocumentItemEntryDataDetailChanged";
@@ -118,6 +125,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentAdjustmentExChanged = "CurrentAdjustmentExChanged";
    
            public const string CurrentAdjustmentOverChanged = "CurrentAdjustmentOverChanged";
+   
+           public const string CurrentAdjustmentOversAllocationChanged = "CurrentAdjustmentOversAllocationChanged";
    
            public const string CurrentAdjustmentShortChanged = "CurrentAdjustmentShortChanged";
    
@@ -148,6 +157,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentAdjustmentExIDChanged = "OnCurrentAdjustmentExIDChanged";
    
            public const string CurrentAdjustmentOverIDChanged = "OnCurrentAdjustmentOverIDChanged";
+   
+           public const string CurrentAdjustmentOversAllocationIDChanged = "OnCurrentAdjustmentOversAllocationIDChanged";
    
            public const string CurrentAdjustmentShortIDChanged = "OnCurrentAdjustmentShortIDChanged";
    

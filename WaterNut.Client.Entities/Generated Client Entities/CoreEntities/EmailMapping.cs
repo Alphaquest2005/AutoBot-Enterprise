@@ -42,6 +42,9 @@ namespace CoreEntities.Client.Entities
                 emailmapping = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= " is required")]
        
 public int Id
@@ -141,6 +144,60 @@ public string Pattern
 			}
 		}
         
+
+        ObservableCollection<EmailFileTypes> _EmailFileTypes = null;
+        public  ObservableCollection<EmailFileTypes> EmailFileTypes
+		{
+            
+		    get 
+				{ 
+					if(_EmailFileTypes != null) return _EmailFileTypes;
+					//if (this.emailmapping.EmailFileTypes == null) Debugger.Break();
+					if(this.emailmapping.EmailFileTypes != null)
+					{
+						_EmailFileTypes = new ObservableCollection<EmailFileTypes>(this.emailmapping.EmailFileTypes.Select(x => new EmailFileTypes(x)));
+					}
+					
+						_EmailFileTypes.CollectionChanged += EmailFileTypes_CollectionChanged; 
+					
+					return _EmailFileTypes; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailFileTypes)) return;
+				if (value != null)
+					this.emailmapping.EmailFileTypes = new ChangeTrackingCollection<DTO.EmailFileTypes>(value.Select(x => x.DTO).ToList());
+                _EmailFileTypes = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailFileTypes != null)
+				_EmailFileTypes.CollectionChanged += EmailFileTypes_CollectionChanged;               
+				NotifyPropertyChanged("EmailFileTypes");
+			}
+		}
+        
+        void EmailFileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailFileTypes itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        emailmapping.EmailFileTypes.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailFileTypes itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        emailmapping.EmailFileTypes.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.EmailMapping> _changeTracker;    

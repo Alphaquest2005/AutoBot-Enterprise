@@ -65,6 +65,7 @@
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
+              this.Property(t => t.SalesLineNumber).HasColumnName("SalesLineNumber");
               this.HasRequired(t => t.AdjustmentShort).WithMany(t =>(ICollection<ShortAllocation>) t.ShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AdjustmentDetail).WithMany(t =>(ICollection<ShortAllocation>) t.ShortAllocations).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties

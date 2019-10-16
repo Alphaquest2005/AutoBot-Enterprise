@@ -88,6 +88,12 @@ namespace AdjustmentQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AdjustmentShort>> GetAdjustmentShortByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentShort>> GetAdjustmentShortByEmailId(string EmailId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentShort>> GetAdjustmentShortByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
   		
     }
 }

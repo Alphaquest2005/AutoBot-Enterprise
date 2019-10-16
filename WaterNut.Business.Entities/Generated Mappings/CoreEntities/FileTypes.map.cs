@@ -25,13 +25,17 @@
               this.Property(t => t.FileGroupId).HasColumnName("FileGroupId");
               this.Property(t => t.MergeEmails).HasColumnName("MergeEmails");
               this.Property(t => t.CopyEntryData).HasColumnName("CopyEntryData");
+              this.Property(t => t.ParentFileTypeId).HasColumnName("ParentFileTypeId");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.FileGroups).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.FileGroupId);
+              this.HasOptional(t => t.ParentFileTypes).WithMany(t =>(ICollection<FileTypes>) t.ChildFileTypes).HasForeignKey(d => d.ParentFileTypeId);
               this.HasMany(t => t.FileTypeMappings).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.FileTypeActions).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.FileTypeContacts).WithRequired(t => (FileTypes)t.FileTypes);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithOptional(t => t.FileTypes).HasForeignKey(d => d.FileTypeId);
+              this.HasMany(t => t.ChildFileTypes).WithOptional(t => t.ParentFileTypes).HasForeignKey(d => d.ParentFileTypeId);
+              this.HasMany(t => t.EmailFileTypes).WithRequired(t => (FileTypes)t.FileTypes);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

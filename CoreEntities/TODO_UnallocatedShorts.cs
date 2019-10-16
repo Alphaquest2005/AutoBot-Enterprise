@@ -22,5 +22,7 @@ namespace CoreEntities
         public double QtyAllocated { get; set; }
         public double Cost { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
+        public string Type { get; set; }
+        public string Status { get; set; }
     }
 }

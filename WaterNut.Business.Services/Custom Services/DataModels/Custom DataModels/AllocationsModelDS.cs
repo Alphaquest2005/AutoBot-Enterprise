@@ -231,7 +231,14 @@ namespace WaterNut.DataSpace
                 using (var ctx = new AllocationDSContext())
                 {
                     await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction,
-                        $@"DELETE FROM AsycudaSalesAllocations
+                        $@"
+                            DELETE FROM AdjustmentOversAllocations
+                            FROM    AdjustmentOversAllocations INNER JOIN
+                                             EntryDataDetails ON AdjustmentOversAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
+                                             EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId
+                            WHERE (EntryData.ApplicationSettingsId = {appSettingsId})
+
+                            DELETE FROM AsycudaSalesAllocations
                             FROM    AsycudaSalesAllocations INNER JOIN
                                              EntryDataDetails ON AsycudaSalesAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
                                              EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId

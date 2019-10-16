@@ -87,5 +87,11 @@ namespace CoreEntities
         public virtual DbSet<TODO_PODocSetToExport> TODO_PODocSetToExport { get; set; }
         public virtual DbSet<TODO_CreateEx9> TODO_CreateEx9 { get; set; }
         public virtual DbSet<TODO_ImportCompleteEntries> TODO_ImportCompleteEntries { get; set; }
+        public virtual DbSet<TODO_AdjustmentsAlreadyXMLed> TODO_AdjustmentsAlreadyXMLed { get; set; }
+        public virtual DbSet<TODO_DiscrepancyPreExecutionReport> TODO_DiscrepancyPreExecutionReport { get; set; }
+        public virtual DbSet<TODO_SubmitDiscrepanciesErrorReport> TODO_SubmitDiscrepanciesErrorReport { get; set; }
+        public virtual DbSet<TODO_TotalAdjustmentsToProcess> TODO_TotalAdjustmentsToProcess { get; set; }
+        public virtual DbSet<TODO_DiscrepanciesAlreadyXMLed> TODO_DiscrepanciesAlreadyXMLed { get; set; }
+        public virtual DbSet<EmailFileTypes> EmailFileTypes { get; set; }
     }
 }

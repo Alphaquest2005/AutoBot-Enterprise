@@ -49,6 +49,11 @@ namespace AdjustmentQS
         public string Currency { get; set; }
         public Nullable<bool> IsReconciled { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public Nullable<int> EmailId { get; set; }
+        public Nullable<int> FileTypeId { get; set; }
+        public System.DateTime InvoiceDate { get; set; }
+        public string Subject { get; set; }
+        public System.DateTime EmailDate { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual AdjustmentShort AdjustmentShorts { get; set; }

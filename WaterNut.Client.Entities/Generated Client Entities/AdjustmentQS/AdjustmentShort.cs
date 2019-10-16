@@ -442,6 +442,117 @@ public int ApplicationSettingsId
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.adjustmentshort.Type; }
+			set
+			{
+			    if (value == this.adjustmentshort.Type) return;
+				this.adjustmentshort.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.adjustmentshort.EmailId; }
+			set
+			{
+			    if (value == this.adjustmentshort.EmailId) return;
+				this.adjustmentshort.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.adjustmentshort.FileTypeId; }
+			set
+			{
+			    if (value == this.adjustmentshort.FileTypeId) return;
+				this.adjustmentshort.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
+       
+                
+                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+public string DutyFreePaid
+		{ 
+		    get { return this.adjustmentshort.DutyFreePaid; }
+			set
+			{
+			    if (value == this.adjustmentshort.DutyFreePaid) return;
+				this.adjustmentshort.DutyFreePaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DutyFreePaid");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "InvoiceDate is required")]
+       
+public System.DateTime InvoiceDate
+		{ 
+		    get { return this.adjustmentshort.InvoiceDate; }
+			set
+			{
+			    if (value == this.adjustmentshort.InvoiceDate) return;
+				this.adjustmentshort.InvoiceDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceDate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
+                
+                
+public string Subject
+		{ 
+		    get { return this.adjustmentshort.Subject; }
+			set
+			{
+			    if (value == this.adjustmentshort.Subject) return;
+				this.adjustmentshort.Subject = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Subject");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
+       
+public System.DateTime EmailDate
+		{ 
+		    get { return this.adjustmentshort.EmailDate; }
+			set
+			{
+			    if (value == this.adjustmentshort.EmailDate) return;
+				this.adjustmentshort.EmailDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailDate");
+			}
+		}
+     
+
        private AdjustmentEx _AdjustmentEx;
         public  AdjustmentEx AdjustmentEx
 		{

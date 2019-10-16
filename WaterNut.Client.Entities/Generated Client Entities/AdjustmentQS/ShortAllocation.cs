@@ -854,6 +854,21 @@ public string Type
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> SalesLineNumber
+		{ 
+		    get { return this.shortallocation.SalesLineNumber; }
+			set
+			{
+			    if (value == this.shortallocation.SalesLineNumber) return;
+				this.shortallocation.SalesLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SalesLineNumber");
+			}
+		}
+     
+
        private AdjustmentShort _AdjustmentShort;
         public  AdjustmentShort AdjustmentShort
 		{

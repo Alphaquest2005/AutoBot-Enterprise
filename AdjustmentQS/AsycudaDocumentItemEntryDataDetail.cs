@@ -20,6 +20,7 @@ namespace AdjustmentQS
         public string key { get; set; }
         public string DocumentType { get; set; }
         public Nullable<double> Quantity { get; set; }
+        public bool ImportComplete { get; set; }
     
         public virtual AdjustmentOver AdjustmentOver { get; set; }
         public virtual AdjustmentShort AdjustmentShort { get; set; }

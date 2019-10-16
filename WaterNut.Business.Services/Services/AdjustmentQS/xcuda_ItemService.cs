@@ -239,6 +239,12 @@ namespace AdjustmentQS.Business.Services
                                         GetWhere<AsycudaSalesAllocation>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AdjustmentOversAllocations":
+                                return
+                                    await
+                                        GetWhere<AdjustmentOversAllocation>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace AdjustmentQS.Business.Services
                             case "AsycudaSalesAllocations":
                                 return await CountWhere<AsycudaSalesAllocation>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentOversAllocations":
+                                return await CountWhere<AdjustmentOversAllocation>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.xcuda_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
@@ -845,6 +854,12 @@ namespace AdjustmentQS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AsycudaSalesAllocation>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AdjustmentOversAllocations":
+                                return
+                                    await
+                                        LoadRangeWhere<AdjustmentOversAllocation>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1061,6 +1076,7 @@ namespace AdjustmentQS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<xcuda_Item> entities = await set//dbContext.xcuda_Item
                                                     // .Include(x => x.AsycudaSalesAllocations)									  
+                                                    // .Include(x => x.AdjustmentOversAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToListAsync()
@@ -1091,6 +1107,7 @@ namespace AdjustmentQS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<xcuda_Item> entities = await set//dbContext.xcuda_Item
                                                     // .Include(x => x.AsycudaSalesAllocations)									  
+                                                    // .Include(x => x.AdjustmentOversAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToListAsync()
@@ -1166,6 +1183,9 @@ namespace AdjustmentQS.Business.Services
                         {
                             case "AsycudaSalesAllocations":
                                 return await SumWhere<AsycudaSalesAllocation>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AdjustmentOversAllocations":
+                                return await SumWhere<AdjustmentOversAllocation>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

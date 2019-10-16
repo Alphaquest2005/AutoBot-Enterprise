@@ -231,6 +231,21 @@ public bool CopyEntryData
 		}
      
 
+       
+       
+public Nullable<int> ParentFileTypeId
+		{ 
+		    get { return this.filetypes.ParentFileTypeId; }
+			set
+			{
+			    if (value == this.filetypes.ParentFileTypeId) return;
+				this.filetypes.ParentFileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ParentFileTypeId");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{
@@ -605,6 +620,167 @@ public bool CopyEntryData
 			}
 		}
         
+
+        ObservableCollection<FileTypes> _ChildFileTypes = null;
+        public  ObservableCollection<FileTypes> ChildFileTypes
+		{
+            
+		    get 
+				{ 
+					if(_ChildFileTypes != null) return _ChildFileTypes;
+					//if (this.filetypes.ChildFileTypes == null) Debugger.Break();
+					if(this.filetypes.ChildFileTypes != null)
+					{
+						_ChildFileTypes = new ObservableCollection<FileTypes>(this.filetypes.ChildFileTypes.Select(x => new FileTypes(x)));
+					}
+					
+						_ChildFileTypes.CollectionChanged += ChildFileTypes_CollectionChanged; 
+					
+					return _ChildFileTypes; 
+				}
+			set
+			{
+			    if (Equals(value, _ChildFileTypes)) return;
+				if (value != null)
+					this.filetypes.ChildFileTypes = new ChangeTrackingCollection<DTO.FileTypes>(value.Select(x => x.DTO).ToList());
+                _ChildFileTypes = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_ChildFileTypes != null)
+				_ChildFileTypes.CollectionChanged += ChildFileTypes_CollectionChanged;               
+				NotifyPropertyChanged("ChildFileTypes");
+			}
+		}
+        
+        void ChildFileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FileTypes itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypes.ChildFileTypes.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FileTypes itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypes.ChildFileTypes.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+       private FileTypes _ParentFileTypes;
+        public  FileTypes ParentFileTypes
+		{
+		    get
+               { 
+                  if (this.filetypes != null)
+                   {
+                       if (_ParentFileTypes != null)
+                       {
+                           if (this.filetypes.ParentFileTypes !=
+                               _ParentFileTypes.DTO)
+                           {
+                                if (this.filetypes.ParentFileTypes  != null)
+                               _ParentFileTypes = new FileTypes(this.filetypes.ParentFileTypes);
+                           }
+                       }
+                       else
+                       {
+                             if (this.filetypes.ParentFileTypes  != null)
+                           _ParentFileTypes = new FileTypes(this.filetypes.ParentFileTypes);
+                       }
+                   }
+
+
+             //       if (_ParentFileTypes != null) return _ParentFileTypes;
+                       
+             //       var i = new FileTypes(){TrackingState = TrackingState.Added};
+			//		//if (this.filetypes.ParentFileTypes == null) Debugger.Break();
+			//		if (this.filetypes.ParentFileTypes != null)
+            //        {
+            //           i. = this.filetypes.ParentFileTypes;
+            //        }
+            //        else
+            //        {
+            //            this.filetypes.ParentFileTypes = i.;
+             //       }
+                           
+            //        _ParentFileTypes = i;
+                     
+                    return _ParentFileTypes;
+               }
+			set
+			{
+			    if (value == _ParentFileTypes) return;
+                _ParentFileTypes = value;
+                if(value != null)
+                     this.filetypes.ParentFileTypes = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("ParentFileTypes");
+			}
+		}
+        
+
+        ObservableCollection<EmailFileTypes> _EmailFileTypes = null;
+        public  ObservableCollection<EmailFileTypes> EmailFileTypes
+		{
+            
+		    get 
+				{ 
+					if(_EmailFileTypes != null) return _EmailFileTypes;
+					//if (this.filetypes.EmailFileTypes == null) Debugger.Break();
+					if(this.filetypes.EmailFileTypes != null)
+					{
+						_EmailFileTypes = new ObservableCollection<EmailFileTypes>(this.filetypes.EmailFileTypes.Select(x => new EmailFileTypes(x)));
+					}
+					
+						_EmailFileTypes.CollectionChanged += EmailFileTypes_CollectionChanged; 
+					
+					return _EmailFileTypes; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailFileTypes)) return;
+				if (value != null)
+					this.filetypes.EmailFileTypes = new ChangeTrackingCollection<DTO.EmailFileTypes>(value.Select(x => x.DTO).ToList());
+                _EmailFileTypes = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailFileTypes != null)
+				_EmailFileTypes.CollectionChanged += EmailFileTypes_CollectionChanged;               
+				NotifyPropertyChanged("EmailFileTypes");
+			}
+		}
+        
+        void EmailFileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailFileTypes itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypes.EmailFileTypes.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailFileTypes itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypes.EmailFileTypes.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.FileTypes> _changeTracker;    

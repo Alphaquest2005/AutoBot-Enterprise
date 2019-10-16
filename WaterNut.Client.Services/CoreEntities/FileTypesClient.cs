@@ -127,6 +127,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetFileTypesByFileGroupId(FileGroupId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<FileTypes>> GetFileTypesByParentFileTypeId(string ParentFileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetFileTypesByParentFileTypeId(ParentFileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

@@ -171,6 +171,18 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_ImportCompleteEntries> TODO_ImportCompleteEntries { get; set; }
      
+        public DbSet<TODO_AdjustmentsAlreadyXMLed> TODO_AdjustmentsAlreadyXMLed { get; set; }
+     
+        public DbSet<TODO_DiscrepancyPreExecutionReport> TODO_DiscrepancyPreExecutionReport { get; set; }
+     
+        public DbSet<TODO_SubmitDiscrepanciesErrorReport> TODO_SubmitDiscrepanciesErrorReport { get; set; }
+     
+        public DbSet<TODO_TotalAdjustmentsToProcess> TODO_TotalAdjustmentsToProcess { get; set; }
+     
+        public DbSet<TODO_DiscrepanciesAlreadyXMLed> TODO_DiscrepanciesAlreadyXMLed { get; set; }
+     
+        public DbSet<EmailFileTypes> EmailFileTypes { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -298,6 +310,18 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_CreateEx9Map());
          
             modelBuilder.Configurations.Add(new TODO_ImportCompleteEntriesMap());
+         
+            modelBuilder.Configurations.Add(new TODO_AdjustmentsAlreadyXMLedMap());
+         
+            modelBuilder.Configurations.Add(new TODO_DiscrepancyPreExecutionReportMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitDiscrepanciesErrorReportMap());
+         
+            modelBuilder.Configurations.Add(new TODO_TotalAdjustmentsToProcessMap());
+         
+            modelBuilder.Configurations.Add(new TODO_DiscrepanciesAlreadyXMLedMap());
+         
+            modelBuilder.Configurations.Add(new EmailFileTypesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

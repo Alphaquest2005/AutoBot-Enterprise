@@ -14,10 +14,18 @@ namespace CoreEntities
     
     public partial class EmailMapping
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public EmailMapping()
+        {
+            this.EmailFileTypes = new HashSet<EmailFileTypes>();
+        }
+    
         public int Id { get; set; }
         public int ApplicationSettingsId { get; set; }
         public string Pattern { get; set; }
     
         public virtual ApplicationSettings ApplicationSettings { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EmailFileTypes> EmailFileTypes { get; set; }
     }
 }

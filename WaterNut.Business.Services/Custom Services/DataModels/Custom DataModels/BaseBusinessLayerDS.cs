@@ -20,6 +20,7 @@ using Omu.ValueInjecter;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 using System.Globalization;
 using System.Net;
 using System.ServiceModel;
@@ -427,6 +428,13 @@ namespace WaterNut.DataSpace
         {
             using (var ctx = new CoreEntitiesContext())
             {
+                var docSetRef = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId)
+                    .Declarant_Reference_Number;
+                while (ctx.AsycudaDocuments.FirstOrDefault(x =>
+                           x.ReferenceNumber.Contains(docSetRef) && x.ReferenceNumber.EndsWith((num+1).ToString())) != null)
+                {
+                    num += 1;
+                }
                 var sql = $@"UPDATE AsycudaDocumentSet
                                 SET         LastFileNumber = {num + 1}
                                 FROM    AsycudaDocumentSet 

@@ -22,6 +22,7 @@ namespace AdjustmentQS.Business.Entities
         partial void AutoGenStartUp() //EntryDataDetail()
         {
             this.AsycudaSalesAllocations = new List<AsycudaSalesAllocation>();
+            this.AdjustmentOversAllocations = new List<AdjustmentOversAllocation>();
         }
 
         [DataMember]
@@ -388,6 +389,8 @@ namespace AdjustmentQS.Business.Entities
         public List<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
+        [DataMember]
+        public List<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

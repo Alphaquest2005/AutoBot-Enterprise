@@ -461,6 +461,81 @@ namespace AdjustmentQS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
+        public System.DateTime InvoiceDate 
+        {
+            get
+            {
+                return _invoicedate;
+            }
+            set
+            {
+                _invoicedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _invoicedate;
+        [DataMember]
+        public string Subject 
+        {
+            get
+            {
+                return _subject;
+            }
+            set
+            {
+                _subject = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _subject;
+        [DataMember]
+        public System.DateTime EmailDate 
+        {
+            get
+            {
+                return _emaildate;
+            }
+            set
+            {
+                _emaildate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _emaildate;
+        [DataMember]
         public AdjustmentEx AdjustmentEx { get; set; }
         [DataMember]
         public AdjustmentShort AdjustmentShorts { get; set; }

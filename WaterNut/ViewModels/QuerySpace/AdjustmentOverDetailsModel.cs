@@ -7,6 +7,7 @@ using System.Windows;
 using AdjustmentQS.Client.Entities;
 using AdjustmentQS.Client.Repositories;
 using Core.Common.UI;
+using EntryDataQS.Client.Repositories;
 using SimpleMvvmToolkit;
 
 
@@ -205,13 +206,14 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 return;
             }
 
-            //await EntryDataDetailsExRepository.Instance.MatchToCurrentItem(
-            //    CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentItem.Item_Id, entryDataDetailsEx)
-            //    .ConfigureAwait(false);
+            await AdjustmentShortRepository.Instance.MatchToAsycudaItem( entryDataDetailsEx.EntryDataDetailsId,
+                CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentItem.Item_Id)
+                .ConfigureAwait(false);
 
             MessageBus.Default.BeginNotify(MessageToken.CurrentAdjustmentOverChanged, this,
               new NotificationEventArgs<AdjustmentOver>(
                   QuerySpace.AdjustmentQS.MessageToken.CurrentAdjustmentOverChanged, entryDataDetailsEx));
+            MessageBox.Show("Manual Match Complete");
         }
 
         internal async Task RemoveEntryDataDetail(AdjustmentOver EntryDataDetailsEX)

@@ -36,6 +36,7 @@
               this.Property(t => t.PreviousInvoiceLineNumber).HasColumnName("PreviousInvoiceLineNumber").HasMaxLength(50);
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.PreviousItem_Id);
+              this.HasMany(t => t.AdjustmentOversAllocations).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.PreviousItem_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

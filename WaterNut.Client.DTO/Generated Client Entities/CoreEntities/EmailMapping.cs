@@ -77,6 +77,19 @@ namespace CoreEntities.Client.DTO
         private ApplicationSettings _ApplicationSettings;
         private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<EmailFileTypes> EmailFileTypes
+		{
+		    get { return _EmailFileTypes; }
+			set
+			{
+			    if (Equals(value, _EmailFileTypes)) return;
+				_EmailFileTypes = value;
+				NotifyPropertyChanged();//m => this.EmailFileTypes
+			}
+		}
+        private ChangeTrackingCollection<EmailFileTypes> _EmailFileTypes = new ChangeTrackingCollection<EmailFileTypes>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

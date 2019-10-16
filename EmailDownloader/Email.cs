@@ -1,4 +1,5 @@
 using System;
+using CoreEntities.Business.Entities;
 
 namespace EmailDownloader
 {
@@ -8,12 +9,15 @@ namespace EmailDownloader
         public string Subject { get; }
         public DateTime EmailDate { get; }
 
-        public Email(int EmailId, string Subject, DateTime EmailDate)
+        public Email(int emailId, string subject, DateTime emailDate, EmailMapping emailMapping)
         {
-            this.EmailId = EmailId;
-            this.Subject = Subject;
-            this.EmailDate = EmailDate;
-            
+            this.EmailId = emailId;
+            this.Subject = subject;
+            this.EmailDate = emailDate;
+            this.EmailMapping = emailMapping;
+
         }
+
+        public EmailMapping EmailMapping { get; }
     }
 }

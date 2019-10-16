@@ -37,6 +37,9 @@
         <AssociationConnector Association="Model.InventoryItemsExInventoryItemAliasEx" />
         <AssociationConnector Association="Model.InventoryItemsExEntryDataDetail" />
         <AssociationConnector Association="Model.InventoryItemsExAdjustmentOver" />
+        <EntityTypeShape EntityType="Model.AdjustmentOversAllocation" Width="1.5" PointX="26.625" PointY="7.875" />
+        <AssociationConnector Association="Model.FK_AdjustmentOversAllocations_EntryDataDetails" />
+        <AssociationConnector Association="Model.FK_AdjustmentOversAllocations_xcuda_Item" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -837,6 +837,7 @@ namespace WaterNut.DataSpace
             {
                 if (string.IsNullOrEmpty(line)) return null;
                 var splits = line.CsvSplit().Select(x => x.Trim()).ToArray();
+                if (splits.Length < headings.Length) return null;
                 if (!map.Keys.Contains("EntryDataId"))
                     throw new ApplicationException("Invoice# not Mapped");
                 if (!map.Keys.Contains("ItemNumber"))

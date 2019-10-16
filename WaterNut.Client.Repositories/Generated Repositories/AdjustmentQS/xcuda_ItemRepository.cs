@@ -202,7 +202,8 @@ namespace AdjustmentQS.Client.Repositories
                         {
                             return new xcuda_Item(res)
                     {
-                     // AsycudaSalesAllocations = new System.Collections.ObjectModel.ObservableCollection<AsycudaSalesAllocation>(res.AsycudaSalesAllocations.Select(y => new AsycudaSalesAllocation(y)))    
+                     // AsycudaSalesAllocations = new System.Collections.ObjectModel.ObservableCollection<AsycudaSalesAllocation>(res.AsycudaSalesAllocations.Select(y => new AsycudaSalesAllocation(y))),    
+                     // AdjustmentOversAllocations = new System.Collections.ObjectModel.ObservableCollection<AdjustmentOversAllocation>(res.AdjustmentOversAllocations.Select(y => new AdjustmentOversAllocation(y)))    
                   };
                     }
                     else

@@ -327,6 +327,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _typeFilter;
+        public string TypeFilter
+        {
+            get
+            {
+                return _typeFilter;
+            }
+            set
+            {
+                _typeFilter = value;
+				NotifyPropertyChanged(x => TypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _statusFilter;
+        public string StatusFilter
+        {
+            get
+            {
+                return _statusFilter;
+            }
+            set
+            {
+                _statusFilter = value;
+				NotifyPropertyChanged(x => StatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -405,7 +441,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(EffectiveDateFilter.HasValue)
 								res.Append(" && " + string.Format("EffectiveDate == \"{0}\"",  Convert.ToDateTime(EffectiveDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(string.IsNullOrEmpty(TypeFilter) == false)
+						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(StatusFilter) == false)
+						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -446,7 +490,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Cost = x.Cost ,
                     
  
-                    EffectiveDate = x.EffectiveDate 
+                    EffectiveDate = x.EffectiveDate ,
+                    
+ 
+                    Type = x.Type ,
+                    
+ 
+                    Status = x.Status 
                     
                 }).ToList()
             };
@@ -478,6 +528,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<System.DateTime> EffectiveDate { get; set; } 
+                    
+ 
+                    public string Type { get; set; } 
+                    
+ 
+                    public string Status { get; set; } 
                     
         }
 

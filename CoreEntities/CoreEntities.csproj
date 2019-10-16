@@ -122,6 +122,9 @@
     <Compile Include="Document_Type.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="EmailFileTypes.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="EmailMapping.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -186,6 +189,9 @@
     <Compile Include="SubItems.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_AdjustmentsAlreadyXMLed.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_AdjustmentsToXML.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -201,10 +207,16 @@
     <Compile Include="TODO_DeleteDocumentSet.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_DiscrepanciesAlreadyXMLed.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_DiscrepanciesToAssess.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_DiscrepanciesToSubmit.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TODO_DiscrepancyPreExecutionReport.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_DocumentsToDelete.cs">
@@ -258,6 +270,9 @@
     <Compile Include="ToDo_POToXML.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_SubmitDiscrepanciesErrorReport.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_SubmitDiscrepanciesToCustoms.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -274,6 +289,9 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitXMLToCustoms.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TODO_TotalAdjustmentsToProcess.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_UnallocatedSales.cs">

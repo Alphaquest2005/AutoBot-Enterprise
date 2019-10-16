@@ -321,6 +321,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private ChangeTrackingCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = new ChangeTrackingCollection<AsycudaSalesAllocation>();
 
+        [DataMember]
+        public ChangeTrackingCollection<AdjustmentOversAllocation> AdjustmentOversAllocations
+		{
+		    get { return _AdjustmentOversAllocations; }
+			set
+			{
+			    if (Equals(value, _AdjustmentOversAllocations)) return;
+				_AdjustmentOversAllocations = value;
+				NotifyPropertyChanged();//m => this.AdjustmentOversAllocations
+			}
+		}
+        private ChangeTrackingCollection<AdjustmentOversAllocation> _AdjustmentOversAllocations = new ChangeTrackingCollection<AdjustmentOversAllocation>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

@@ -11,12 +11,13 @@
     {
         public TODO_DocumentsToDeleteMap()
         {                        
-              this.HasKey(t => new {t.ASYCUDA_Id, t.ApplicationSettingsId});        
+              this.HasKey(t => new {t.ASYCUDA_Id, t.ApplicationSettingsId, t.AsycudaDocumentSetId});        
               this.ToTable("TODO-DocumentsToDelete");
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.Reference).HasColumnName("Reference").HasMaxLength(30);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

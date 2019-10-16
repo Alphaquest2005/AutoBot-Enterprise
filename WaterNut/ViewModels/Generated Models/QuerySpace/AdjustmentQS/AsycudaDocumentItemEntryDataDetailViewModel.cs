@@ -357,6 +357,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Boolean? _importCompleteFilter;
+        public Boolean? ImportCompleteFilter
+        {
+            get
+            {
+                return _importCompleteFilter;
+            }
+            set
+            {
+                _importCompleteFilter = value;
+				NotifyPropertyChanged(x => ImportCompleteFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -400,7 +418,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
 
 					if(QuantityFilter.HasValue)
-						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
+
+									if(ImportCompleteFilter.HasValue)
+						res.Append(" && " + string.Format("ImportComplete == {0}",  ImportCompleteFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -432,7 +454,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     DocumentType = x.DocumentType ,
                     
  
-                    Quantity = x.Quantity 
+                    Quantity = x.Quantity ,
+                    
+ 
+                    ImportComplete = x.ImportComplete 
                     
                 }).ToList()
             };
@@ -455,6 +480,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<double> Quantity { get; set; } 
+                    
+ 
+                    public bool ImportComplete { get; set; } 
                     
         }
 

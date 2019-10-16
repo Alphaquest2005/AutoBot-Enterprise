@@ -42,6 +42,11 @@
               this.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(4);
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
+              this.Property(t => t.Subject).HasColumnName("Subject").IsRequired();
+              this.Property(t => t.EmailDate).HasColumnName("EmailDate");
               this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<AdjustmentDetail>) t.AdjustmentDetails).HasForeignKey(d => d.EntryDataId);
               this.HasOptional(t => t.AdjustmentShorts).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
               this.HasOptional(t => t.AdjustmentOvers).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);

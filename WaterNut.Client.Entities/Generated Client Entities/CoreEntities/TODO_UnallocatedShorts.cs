@@ -166,6 +166,40 @@ public Nullable<System.DateTime> EffectiveDate
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.todo_unallocatedshorts.Type; }
+			set
+			{
+			    if (value == this.todo_unallocatedshorts.Type) return;
+				this.todo_unallocatedshorts.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Status has a max length of 50 letters ")]
+public string Status
+		{ 
+		    get { return this.todo_unallocatedshorts.Status; }
+			set
+			{
+			    if (value == this.todo_unallocatedshorts.Status) return;
+				this.todo_unallocatedshorts.Status = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Status");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_UnallocatedShorts> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_UnallocatedShorts> ChangeTracker

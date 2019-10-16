@@ -133,6 +133,9 @@ namespace AutoBot
                 {"SubmitPDFs", SubmitPDFs },
                 {"RecreateEx9",() => CreateEx9(true) },
                 {"ReDownloadSalesFiles",ReDownloadSalesFiles },
+                {"CleanupDiscpancies", CleanupDiscpancies },
+                {"SubmitDiscrepanciesPreAssessmentReportToCustoms", SubmitDiscrepanciesPreAssessmentReportToCustoms },
+                {"ClearAllDiscpancyEntries", ClearAllDiscpancyEntries },
 
             };
 
@@ -734,6 +737,125 @@ namespace AutoBot
             }
         }
 
+        private static void SubmitDiscrepanciesPreAssessmentReportToCustoms()
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Discrepancies PreAssessment Report to Customs");
+
+                
+                var info = CurrentSalesInfo();
+                var directory = info.Item4;
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var contacts = ctx.Contacts.Where(x => x.Role == "Customs" || x.Role == "Clerk").Select(x => x.EmailAddress).ToArray();
+                    var totaladjustments = ctx.TODO_TotalAdjustmentsToProcess.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                    .ApplicationSettingsId && x.Type == "DIS").ToList();
+                    var errors = ctx.TODO_SubmitDiscrepanciesErrorReport.Where(x =>
+                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                            .ApplicationSettingsId)
+                        .Select(x => new SubmitDiscrepanciesErrorReport()
+                        {
+                            Type = x.Type,
+                            InvoiceDate = x.InvoiceDate,
+                            EffectiveDate = x.EffectiveDate,
+                            InvoiceNo = x.InvoiceNo,
+                            LineNumber = x.LineNumber,
+                            ItemNumber = x.ItemNumber,
+                            ItemDescription = x.ItemDescription,
+                            InvoiceQty = x.InvoiceQty,
+                            ReceivedQty = x.ReceivedQty,
+                            Cost = x.Cost,
+                            PreviousCNumber = x.PreviousCNumber,
+                            PreviousInvoiceNumber = x.PreviousInvoiceNumber,
+                            comment = x.comment,
+                            Status = x.Status,
+                            DutyFreePaid = x.DutyFreePaid,
+                            subject = x.subject,
+                            emailDate = x.emailDate
+
+                        })
+                        .ToList();
+
+                    var goodadj = ctx.TODO_DiscrepancyPreExecutionReport.Where(x =>
+                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                            .ApplicationSettingsId)
+                        .Select(x => new DiscrepancyPreExecutionReport()
+                        {
+                            Type = x.Type,
+                            InvoiceDate = x.InvoiceDate,
+                            EffectiveDate = x.EffectiveDate,
+                            InvoiceNo = x.EntryDataId,
+                            LineNumber = x.LineNumber,
+                            ItemNumber = x.ItemNumber,
+                            ItemDescription = x.ItemDescription,
+                            InvoiceQty = x.InvoiceQty,
+                            ReceivedQty = x.ReceivedQty,
+                            Cost = x.Cost,
+                            PreviousCNumber = x.PreviousCNumber,
+                            PreviousInvoiceNumber = x.PreviousInvoiceNumber,
+                            comment = x.Comment,
+                            Status = x.Status,
+                            DutyFreePaid = x.DutyFreePaid,
+                            subject = x.Subject,
+                            emailDate = x.EmailDate,
+                            Reference = x.Reference,
+                            DocumentType = x.DocumentType,
+
+                        })
+                        .ToList();
+
+                    var errBreakdown = errors.GroupBy(x => x.Status);
+                    //foreach (var emailIds in lst)
+                    //{
+
+
+
+                    var body = $"For the Effective Period From: {totaladjustments.Min(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")} To: {totaladjustments.Max(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")}. \r\n" +
+                               $"\r\n" +
+                               $"\t{"Reason".FormatedSpace(40)}{"Count".FormatedSpace(20)}{"Percentage".FormatedSpace(20)}\r\n" +
+                               $"{errBreakdown.Select(current => $"\t{current.Key.FormatedSpace(40)}{current.Count().ToString().FormatedSpace(20)}{(Math.Round((double)(((double)current.Count()/ (double)totaladjustments.Count())*100),0)).ToString().FormatedSpace(20)}% \r\n").Aggregate((old, current) => old + current)}" +
+                               $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(20)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n" +
+                               $"\r\n" +
+                               $"Please see attached for list of Errors and Executions details.\r\n" +
+                               $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                               $"\r\n" +
+                               $"Regards,\r\n" +
+                               $"AutoBot";
+
+                    var errorfile = Path.Combine(directory, "DiscrepancyExecutionErrors.csv");
+
+                    var errRes = new ExportToCSV<SubmitDiscrepanciesErrorReport, List<SubmitDiscrepanciesErrorReport>>();
+                    errRes.dataToPrint = errors;
+                    using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                    {
+                        Task.Factory.StartNew(() => errRes.SaveReport(errorfile), CancellationToken.None, TaskCreationOptions.None, sta);
+                    }
+
+                    var goodfile = Path.Combine(directory, "DiscrepancyExecutions.csv");
+
+                    var goodRes = new ExportToCSV<DiscrepancyPreExecutionReport, List<DiscrepancyPreExecutionReport>>();
+                    goodRes.dataToPrint = goodadj;
+                    using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                    {
+                        Task.Factory.StartNew(() => goodRes.SaveReport(goodfile), CancellationToken.None, TaskCreationOptions.None, sta);
+                    }
+
+                    if ((errors.Any() && File.Exists(errorfile)) && (goodadj.Any() && File.Exists(goodfile)))
+                        EmailDownloader.EmailDownloader.SendEmail(Client, directory, $"Discrepancy Pre-Assessment Report for  {totaladjustments.Min(x => x.EffectiveDate)} To: {totaladjustments.Max(x => x.EffectiveDate)}", contacts.ToArray(), body, new string[] { errorfile, goodfile });
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
         private static void SubmitIncompleteEntryData()
         {
             try
@@ -1027,10 +1149,23 @@ namespace AutoBot
                 var lst = ctx.TODO_DocumentsToDelete
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Select(x => x.ASYCUDA_Id).ToList();
+                    .Select(x => new {x.ASYCUDA_Id, x.AsycudaDocumentSetId}).ToList();
                 foreach (var itm in lst)
                 {
-                    BaseDataModel.Instance.DeleteAsycudaDocument(itm).Wait();
+                    using (var dtx = new DocumentDSContext())
+                    {
+                        var docEds = dtx.AsycudaDocumentEntryDatas.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).ToList();
+                        foreach (var ed in docEds)
+                        {
+                            var docsetEd = dtx.AsycudaDocumentSetEntryDatas.First(x =>
+                                x.AsycudaDocumentSetId == itm.AsycudaDocumentSetId && x.EntryDataId == ed.EntryDataId);
+                            dtx.AsycudaDocumentSetEntryDatas.Remove(docsetEd);
+                        }
+
+                        dtx.SaveChanges();
+                    }
+                        
+                    BaseDataModel.Instance.DeleteAsycudaDocument(itm.ASYCUDA_Id).Wait();
                 }
 
                 var doclst = ctx.TODO_DeleteDocumentSet.Where(x =>
@@ -1044,10 +1179,12 @@ namespace AutoBot
                     BaseDataModel.Instance.DeleteAsycudaDocumentSet(itm).Wait();
                 }
 
-                ctx.Database.ExecuteSqlCommand(@"delete from xcuda_ASYCUDA where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where AsycudaDocumentSetId is null)
+                // this wont work because i am saving entrydata in system documentsets
 
-                                                delete from EntryData where EntryDataId not in (SELECT EntryDataId
-                                                FROM    AsycudaDocumentSetEntryData)");
+                //ctx.Database.ExecuteSqlCommand(@"delete from xcuda_ASYCUDA where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where AsycudaDocumentSetId is null)
+
+                //                                delete from EntryData where EntryDataId not in (SELECT EntryDataId
+                //                                FROM    AsycudaDocumentSetEntryData)");
 
             }
         }
@@ -1933,6 +2070,82 @@ namespace AutoBot
             AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, false, docset).Wait();
         }
 
+
+        public static void CleanupDiscpancies()
+        {
+            try
+            {
+                Console.WriteLine("Clean up Discrepancies");
+                
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var lst = ctx.TODO_DiscrepanciesAlreadyXMLed.Where(x =>
+                                x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                    .ApplicationSettingsId
+                            //    && x.AsycudaDocumentSetId == 1462
+                            //     && x.InvoiceNo == "53371108"
+                            //&& x.InvoiceDate >= saleInfo.Item1
+                            //    &&  x.InvoiceDate <= saleInfo.Item2
+                        )
+                        .GroupBy(x => new {x.AsycudaDocumentSetId, x.InvoiceNo}).ToList();
+
+                    using (var dtx = new DocumentDSContext())
+                    {
+                        foreach (var doc in lst)
+                        {
+                            var res = dtx.AsycudaDocumentSetEntryDatas.First(x =>
+                                x.AsycudaDocumentSetId == doc.Key.AsycudaDocumentSetId
+                                && x.EntryDataId == doc.Key.InvoiceNo);
+                            dtx.AsycudaDocumentSetEntryDatas.Remove(res);
+
+                        }
+
+                        
+
+                        dtx.SaveChanges();
+                    }
+
+                    var docsToDelete = ctx.TODO_DeleteDocumentSet.ToList();
+                    foreach (var doc in docsToDelete)
+                    {
+                        BaseDataModel.Instance.DeleteAsycudaDocumentSet(doc.AsycudaDocumentSetId).Wait();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+        }
+
+        public static void ClearAllDiscpancyEntries()
+        {
+            Console.WriteLine("Clear DIS Entries");
+
+            // var saleInfo = CurrentSalesInfo();
+
+
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.TODO_TotalAdjustmentsToProcess.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                        && x.Type == "DIS")
+                    .GroupBy(x => x.AsycudaDocumentSetId)
+                    //.Where(x => x.Key != null)
+                    .Select(x => x.Key)
+                    .Distinct()
+                    .ToList();
+               
+                    foreach (var doc in lst)
+                    {
+                        BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                        BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                    }
+              
+            }
+        }
+
         public static void CreateDiscpancyEntries(bool overwrite)
         {
             Console.WriteLine("Create DIS Short Entries");
@@ -1943,27 +2156,36 @@ namespace AutoBot
             using (var ctx = new CoreEntitiesContext())
             {
                 var lst = ctx.TODO_AdjustmentsToXML.Where(x =>
-                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                    && x.AdjustmentType == "DIS"
-                        //    && x.InvoiceNo == "2123008908"
-                        //&& x.InvoiceDate >= saleInfo.Item1
-                        //    &&  x.InvoiceDate <= saleInfo.Item2
-                        )
-                    .GroupBy(x => new { x.AsycudaDocumentSetId, x.InvoiceNo }).ToList();
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                        && x.AdjustmentType == "DIS"
+                    //   && x.AsycudaDocumentSetId == 1462
+                    //     && x.InvoiceNo == "53371108"
+                    //&& x.ItemNumber == "TOH/99998PBA2M"
+                //&& x.InvoiceDate >= saleInfo.Item1
+                //    &&  x.InvoiceDate <= saleInfo.Item2
+                ).ToList();
+                    // group bugging and leaving out invoice nos
+                    //.GroupBy(x => new { x.AsycudaDocumentSetId, x.InvoiceNo }).ToList();
+                if (overwrite)
+                {
+                    foreach (var doc in lst.Select(x => x.AsycudaDocumentSetId).Distinct())
+                    {
+                        BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                        BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                    }
+                }
+
                 foreach (var doc in lst)
                 {
                     var filterExpression =
                         $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
                         //$"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
                         //$" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
-                        $" && EntryDataId == \"{doc.Key.InvoiceNo}\"";
-                    if (overwrite)
-                    {
-                        BaseDataModel.Instance.ClearAsycudaDocumentSet(doc.Key.AsycudaDocumentSetId).Wait();
-                        BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc.Key.AsycudaDocumentSetId, 0);
-                    }
-                    new AdjustmentShortService().CreateIM9(filterExpression, true, false, doc.Key.AsycudaDocumentSetId, "IM4-801", "Duty Free").Wait();
-                    new AdjustmentOverService().CreateOPS(filterExpression, true, doc.Key.AsycudaDocumentSetId).Wait();
+                        $" && EntryDataId == \"{doc.InvoiceNo}\"";
+                    
+                    new AdjustmentShortService().CreateIM9(filterExpression, true, false, doc.AsycudaDocumentSetId, "IM4-801", "Duty Free").Wait();
+                    new AdjustmentOverService().CreateOPS(filterExpression, true, doc.AsycudaDocumentSetId).Wait();
 
                 }
 
@@ -2957,7 +3179,7 @@ namespace AutoBot
                 {"ABS-Added", (dt) => Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
                 {"ABS-Removed", (dt) => Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
                 {"ADJ-Quantity", (dt) => Convert.ToString(Math.Abs((Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))) - Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))))), CultureInfo.CurrentCulture) },
-                {"Cost2USD", (dt) => dt.ContainsKey("{XCDCost}") ? (Convert.ToDouble(dt["{XCDCost}"].Replace("\"",""))/2.7169).ToString(CultureInfo.CurrentCulture) : "{NULL}" },
+                {"Cost2USD", (dt) => dt.ContainsKey("{XCDCost}") && Convert.ToDouble(dt["{XCDCost}"].Replace("\"","")) > 0 ? (Convert.ToDouble(dt["{XCDCost}"].Replace("\"",""))/2.7169).ToString(CultureInfo.CurrentCulture) : "{NULL}" },
             };
 
             foreach (var file in files)
@@ -3052,6 +3274,12 @@ namespace AutoBot
                 {
                     header[i] = header[i].ToString().ToUpper();
                 }
+
+                //if (fileType.FileTypeMappings.Where(x => x.Required)
+                //    .Any(item => !header.ItemArray.Contains(item.OriginalName.ToUpper())))
+                //    return; // not right file type
+
+
                 while (row_no < dRows.Count)
                 {
                     var row = new Dictionary<string, string>();
@@ -3064,6 +3292,15 @@ namespace AutoBot
                             if (!header.ItemArray.Contains(map.ToUpper()) &&
                                 !dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
                             {
+                                if (mapping.Required)
+                                {
+                                    EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                        new[] {"Josephbartholomew@outlook.com"},
+                                        $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
+                                        Array.Empty<string>());
+                                    return;
+                                }
+
                                 //TODO: log error
                                 continue;
                             }
@@ -3107,6 +3344,9 @@ namespace AutoBot
                                 }
                                 else
                                 {
+                                    //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                    //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                    
                                     break;
                                 }
 
@@ -3117,7 +3357,8 @@ namespace AutoBot
                                 if (string.IsNullOrEmpty(val)) val = "0";
                                 if (val.ToCharArray().All(x => !char.IsDigit(x)))
                                 {
-                                    //Log Error
+                                    //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                    //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                                     break;
                                     //val = "";
                                 }
@@ -3126,7 +3367,8 @@ namespace AutoBot
                             {
                                 if (DateTime.TryParse(val, out var tmp) == false)
                                 {
-                                    //Log Error
+                                    //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                    //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                                     break;
                                     //  val = "";
                                 }
@@ -3157,7 +3399,13 @@ namespace AutoBot
                 StreamWriter csv = new StreamWriter(output, false);
                 csv.Write(table);
                 csv.Close();
-
+                if (fileType.ChildFileTypes.Any())
+                {
+                    var fileTypes = fileType.ChildFileTypes.First();
+                    fileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
+                    SaveCsv(new FileInfo[]{new FileInfo(output)}, fileTypes);
+                }
+                 
             }
             catch (Exception e)
             {
@@ -3223,5 +3471,82 @@ namespace AutoBot
         public string SupplierName { get; set; }
         public string SupplierAddress { get; set; }
         public string CountryCode { get; set; }
+    }
+
+    public partial class SubmitDiscrepanciesErrorReport
+    {
+
+        public string Type { get; set; }
+
+        public System.DateTime InvoiceDate { get; set; }
+
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+
+        public string InvoiceNo { get; set; }
+
+        public Nullable<int> LineNumber { get; set; }
+
+        public string ItemNumber { get; set; }
+
+        public string ItemDescription { get; set; }
+
+        public Nullable<double> InvoiceQty { get; set; }
+
+        public Nullable<double> ReceivedQty { get; set; }
+
+        public double Cost { get; set; }
+
+        public string PreviousCNumber { get; set; }
+
+        public string PreviousInvoiceNumber { get; set; }
+
+        public string comment { get; set; }
+
+        public string Status { get; set; }
+
+        public string DutyFreePaid { get; set; }
+        public string subject { get; set; }
+
+        public System.DateTime emailDate { get; set; }
+
+
+    }
+
+    public class DiscrepancyPreExecutionReport
+    {
+        public string Type { get; set; }
+
+        public System.DateTime InvoiceDate { get; set; }
+
+        public Nullable<System.DateTime> EffectiveDate { get; set; }
+
+        public string InvoiceNo { get; set; }
+
+        public Nullable<int> LineNumber { get; set; }
+
+        public string ItemNumber { get; set; }
+
+        public string ItemDescription { get; set; }
+
+        public Nullable<double> InvoiceQty { get; set; }
+
+        public Nullable<double> ReceivedQty { get; set; }
+
+        public double Cost { get; set; }
+
+        public string PreviousCNumber { get; set; }
+
+        public string PreviousInvoiceNumber { get; set; }
+
+        public string comment { get; set; }
+
+        public string Status { get; set; }
+
+        public string DutyFreePaid { get; set; }
+        public string subject { get; set; }
+
+        public System.DateTime emailDate { get; set; }
+        public string DocumentType { get; set; }
+        public string Reference { get; set; }
     }
 }

@@ -803,6 +803,124 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+		private DateTime? _startInvoiceDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartInvoiceDateFilter
+        {
+            get
+            {
+                return _startInvoiceDateFilter;
+            }
+            set
+            {
+                _startInvoiceDateFilter = value;
+				NotifyPropertyChanged(x => StartInvoiceDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endInvoiceDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndInvoiceDateFilter
+        {
+            get
+            {
+                return _endInvoiceDateFilter;
+            }
+            set
+            {
+                _endInvoiceDateFilter = value;
+				NotifyPropertyChanged(x => EndInvoiceDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _invoiceDateFilter;
+        public DateTime? InvoiceDateFilter
+        {
+            get
+            {
+                return _invoiceDateFilter;
+            }
+            set
+            {
+                _invoiceDateFilter = value;
+				NotifyPropertyChanged(x => InvoiceDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _subjectFilter;
+        public string SubjectFilter
+        {
+            get
+            {
+                return _subjectFilter;
+            }
+            set
+            {
+                _subjectFilter = value;
+				NotifyPropertyChanged(x => SubjectFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startEmailDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartEmailDateFilter
+        {
+            get
+            {
+                return _startEmailDateFilter;
+            }
+            set
+            {
+                _startEmailDateFilter = value;
+				NotifyPropertyChanged(x => StartEmailDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endEmailDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndEmailDateFilter
+        {
+            get
+            {
+                return _endEmailDateFilter;
+            }
+            set
+            {
+                _endEmailDateFilter = value;
+				NotifyPropertyChanged(x => EndEmailDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _emailDateFilter;
+        public DateTime? EmailDateFilter
+        {
+            get
+            {
+                return _emailDateFilter;
+            }
+            set
+            {
+                _emailDateFilter = value;
+				NotifyPropertyChanged(x => EmailDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -951,7 +1069,69 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(IsReconciledFilter.HasValue)
 						res.Append(" && " + string.Format("IsReconciled == {0}",  IsReconciledFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartInvoiceDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndInvoiceDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartInvoiceDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartInvoiceDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndInvoiceDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("InvoiceDate >= \"{0}\"",  Convert.ToDateTime(StartInvoiceDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndInvoiceDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndInvoiceDateFilter.HasValue)
+								res.Append(" && " + string.Format("InvoiceDate <= \"{0}\"",  Convert.ToDateTime(EndInvoiceDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartInvoiceDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndInvoiceDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_invoiceDateFilter).Date != DateTime.MinValue)
+						{
+							if(InvoiceDateFilter.HasValue)
+								res.Append(" && " + string.Format("InvoiceDate == \"{0}\"",  Convert.ToDateTime(InvoiceDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
+
+									if(string.IsNullOrEmpty(SubjectFilter) == false)
+						res.Append(" && " + string.Format("Subject.Contains(\"{0}\")",  SubjectFilter));						
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartEmailDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartEmailDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartEmailDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("EmailDate >= \"{0}\"",  Convert.ToDateTime(StartEmailDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndEmailDateFilter.HasValue)
+								res.Append(" && " + string.Format("EmailDate <= \"{0}\"",  Convert.ToDateTime(EndEmailDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartEmailDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_emailDateFilter).Date != DateTime.MinValue)
+						{
+							if(EmailDateFilter.HasValue)
+								res.Append(" && " + string.Format("EmailDate == \"{0}\"",  Convert.ToDateTime(EmailDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1049,7 +1229,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Currency = x.Currency ,
                     
  
-                    IsReconciled = x.IsReconciled 
+                    IsReconciled = x.IsReconciled ,
+                    
+ 
+                    InvoiceDate = x.InvoiceDate ,
+                    
+ 
+                    Subject = x.Subject ,
+                    
+ 
+                    EmailDate = x.EmailDate 
                     
                 }).ToList()
             };
@@ -1138,6 +1327,15 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<bool> IsReconciled { get; set; } 
+                    
+ 
+                    public System.DateTime InvoiceDate { get; set; } 
+                    
+ 
+                    public string Subject { get; set; } 
+                    
+ 
+                    public System.DateTime EmailDate { get; set; } 
                     
         }
 

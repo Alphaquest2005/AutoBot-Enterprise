@@ -106,6 +106,21 @@ public int ApplicationSettingsId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.todo_documentstodelete.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.todo_documentstodelete.AsycudaDocumentSetId) return;
+				this.todo_documentstodelete.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_DocumentsToDelete> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_DocumentsToDelete> ChangeTracker

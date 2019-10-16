@@ -127,6 +127,16 @@ namespace AdjustmentQS.Client.Services
             return  await Channel.GetAdjustmentOverByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<AdjustmentOver>> GetAdjustmentOverByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAdjustmentOverByEmailId(EmailId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<AdjustmentOver>> GetAdjustmentOverByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAdjustmentOverByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

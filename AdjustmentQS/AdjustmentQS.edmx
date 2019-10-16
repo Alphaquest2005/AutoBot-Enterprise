@@ -5,6 +5,15 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AdjustmentOversAllocations">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="PreviousItem_Id" Type="int" />
+          <Property Name="Asycuda_Id" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="AsycudaDocumentEntryData">
           <Key>
             <PropertyRef Name="Id" />
@@ -106,6 +115,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
             
             
             
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -136,6 +148,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EmailDate" Type="datetime" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -171,6 +188,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
             
             
             
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -179,7 +201,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
           <Property Name="Quantity" Type="float" Nullable="false" />
           <Property Name="Units" Type="nvarchar" MaxLength="15" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
-          <Property Name="Cost" Type="float" />
+          <Property Name="Cost" Type="float" Nullable="false" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="UnitWeight" Type="float" Nullable="false" />
           <Property Name="DoNotAllocate" Type="bit" />
@@ -196,6 +218,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EmailDate" Type="datetime" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -231,6 +260,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="SalesQuantity" Type="float" Nullable="false" />
           <Property Name="SalesQtyAllocated" Type="float" Nullable="false" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesLineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -286,6 +316,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
             
             
             
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -309,11 +343,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
           <Property Name="CLineNumber" Type="int" />
           <Property Name="Downloaded" Type="bit" />
           <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
-          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" />
+          <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="Currency" Type="nvarchar" MaxLength="4" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="EmailDate" Type="datetime" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -322,6 +362,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="Item_Id" />
             
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
@@ -329,6 +370,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="key" Type="nvarchar" MaxLength="101" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="Quantity" Type="float" />
+          <Property Name="ImportComplete" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemLastItemCost' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -376,6 +418,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="SuppQty" Type="float" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_AdjustmentOversAllocations_EntryDataDetails">
+          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AdjustmentOversAllocations" Type="Self.AdjustmentOversAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetails">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocations">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdjustmentOversAllocations_xcuda_Item">
+          <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="0..1" />
+          <End Role="AdjustmentOversAllocations" Type="Self.AdjustmentOversAllocations" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Item">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocations">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="0..1">
             <OnDelete Action="Cascade" />
@@ -403,6 +471,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="AdjustmentOversAllocations" EntityType="Self.AdjustmentOversAllocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaSalesAllocations" EntityType="Self.AsycudaSalesAllocations" Schema="dbo" store:Type="Tables" />
@@ -438,7 +507,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
 [AdjustmentDetails].[EffectiveDate] AS [EffectiveDate], 
 [AdjustmentDetails].[Currency] AS [Currency], 
 [AdjustmentDetails].[IsReconciled] AS [IsReconciled], 
-[AdjustmentDetails].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[AdjustmentDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentDetails].[EmailId] AS [EmailId], 
+[AdjustmentDetails].[FileTypeId] AS [FileTypeId], 
+[AdjustmentDetails].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentDetails].[Subject] AS [Subject], 
+[AdjustmentDetails].[EmailDate] AS [EmailDate]
 FROM [dbo].[AdjustmentDetails] AS [AdjustmentDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AdjustmentEx" EntityType="Self.AdjustmentEx" store:Type="Views" store:Schema="dbo">
@@ -482,7 +556,14 @@ FROM [dbo].[AdjustmentEx] AS [AdjustmentEx]</DefiningQuery>
 [AdjustmentOvers].[Status] AS [Status], 
 [AdjustmentOvers].[EffectiveDate] AS [EffectiveDate], 
 [AdjustmentOvers].[Currency] AS [Currency], 
-[AdjustmentOvers].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[AdjustmentOvers].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentOvers].[Type] AS [Type], 
+[AdjustmentOvers].[DutyFreePaid] AS [DutyFreePaid], 
+[AdjustmentOvers].[EmailId] AS [EmailId], 
+[AdjustmentOvers].[FileTypeId] AS [FileTypeId], 
+[AdjustmentOvers].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentOvers].[Subject] AS [Subject], 
+[AdjustmentOvers].[EmailDate] AS [EmailDate]
 FROM [dbo].[AdjustmentOvers] AS [AdjustmentOvers]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AdjustmentShortAllocations" EntityType="Self.AdjustmentShortAllocations" store:Type="Views" store:Schema="dbo">
@@ -498,6 +579,7 @@ FROM [dbo].[AdjustmentOvers] AS [AdjustmentOvers]</DefiningQuery>
 [AdjustmentShortAllocations].[SalesQuantity] AS [SalesQuantity], 
 [AdjustmentShortAllocations].[SalesQtyAllocated] AS [SalesQtyAllocated], 
 [AdjustmentShortAllocations].[InvoiceNo] AS [InvoiceNo], 
+[AdjustmentShortAllocations].[SalesLineNumber] AS [SalesLineNumber], 
 [AdjustmentShortAllocations].[ItemNumber] AS [ItemNumber], 
 [AdjustmentShortAllocations].[ItemDescription] AS [ItemDescription], 
 [AdjustmentShortAllocations].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -569,7 +651,13 @@ FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</Definin
 [AdjustmentShorts].[Comment] AS [Comment], 
 [AdjustmentShorts].[EffectiveDate] AS [EffectiveDate], 
 [AdjustmentShorts].[Currency] AS [Currency], 
-[AdjustmentShorts].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[AdjustmentShorts].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AdjustmentShorts].[Type] AS [Type], 
+[AdjustmentShorts].[EmailId] AS [EmailId], 
+[AdjustmentShorts].[FileTypeId] AS [FileTypeId], 
+[AdjustmentShorts].[InvoiceDate] AS [InvoiceDate], 
+[AdjustmentShorts].[Subject] AS [Subject], 
+[AdjustmentShorts].[EmailDate] AS [EmailDate]
 FROM [dbo].[AdjustmentShorts] AS [AdjustmentShorts]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
@@ -579,7 +667,8 @@ FROM [dbo].[AdjustmentShorts] AS [AdjustmentShorts]</DefiningQuery>
 [AsycudaDocumentItemEntryDataDetails].[ItemNumber] AS [ItemNumber], 
 [AsycudaDocumentItemEntryDataDetails].[key] AS [key], 
 [AsycudaDocumentItemEntryDataDetails].[DocumentType] AS [DocumentType], 
-[AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity]
+[AsycudaDocumentItemEntryDataDetails].[Quantity] AS [Quantity], 
+[AsycudaDocumentItemEntryDataDetails].[ImportComplete] AS [ImportComplete]
 FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemLastItemCost" EntityType="Self.AsycudaDocumentItemLastItemCost" store:Type="Views" store:Schema="dbo">
@@ -611,6 +700,14 @@ FROM [dbo].[InventoryItemAliasEx] AS [InventoryItemAliasEx]</DefiningQuery>
 [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
 FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK_AdjustmentOversAllocations_EntryDataDetails" Association="Self.FK_AdjustmentOversAllocations_EntryDataDetails">
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+            <End Role="AdjustmentOversAllocations" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdjustmentOversAllocations_xcuda_Item" Association="Self.FK_AdjustmentOversAllocations_xcuda_Item">
+            <End Role="xcuda_Item" EntitySet="xcuda_Item" />
+            <End Role="AdjustmentOversAllocations" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
           <AssociationSet Name="FK_AsycudaSalesAllocations_EntryDataDetails" Association="Self.FK_AsycudaSalesAllocations_EntryDataDetails">
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
             <End Role="AsycudaSalesAllocations" EntitySet="AsycudaSalesAllocations" />
@@ -707,6 +804,15 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="InventoryItemsEx" EntitySet="InventoryItemsExes" />
             <End Role="AdjustmentOver" EntitySet="AdjustmentOvers" />
           </AssociationSet>
+          <EntitySet Name="AdjustmentOversAllocations" EntityType="Model.AdjustmentOversAllocation" />
+          <AssociationSet Name="FK_AdjustmentOversAllocations_EntryDataDetails" Association="Model.FK_AdjustmentOversAllocations_EntryDataDetails">
+            <End Role="EntryDataDetail" EntitySet="EntryDataDetails" />
+            <End Role="AdjustmentOversAllocation" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AdjustmentOversAllocations_xcuda_Item" Association="Model.FK_AdjustmentOversAllocations_xcuda_Item">
+            <End Role="xcuda_Item" EntitySet="xcuda_Item" />
+            <End Role="AdjustmentOversAllocation" EntitySet="AdjustmentOversAllocations" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocation">
           <Key>
@@ -800,7 +906,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="Quantity" Type="Double" Nullable="false" />
           <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
           <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Cost" Type="Double" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
           <Property Name="UnitWeight" Type="Double" Nullable="false" />
           <Property Name="DoNotAllocate" Type="Boolean" />
@@ -821,6 +927,13 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAdjustmentOver" FromRole="AdjustmentOver" ToRole="AdjustmentDetail" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExAdjustmentOver" FromRole="AdjustmentOver" ToRole="InventoryItemsEx" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="AdjustmentShort">
           <Key>
@@ -855,6 +968,13 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAdjustmentShort" FromRole="AdjustmentShort" ToRole="AdjustmentDetail" />
           <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentShortAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentShort" ToRole="AsycudaDocumentItemEntryDataDetail" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <Association Name="AdjustmentExAdjustmentOver">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -910,6 +1030,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="TaxAmount" Type="Double" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExEntryDataDetail" FromRole="EntryDataDetail" ToRole="InventoryItemsEx" />
           <Property Name="LastCost" Type="Double" />
+          <NavigationProperty Name="AdjustmentOversAllocations" Relationship="Model.FK_AdjustmentOversAllocations_EntryDataDetails" FromRole="EntryDataDetail" ToRole="AdjustmentOversAllocation" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="0..1">
@@ -983,6 +1104,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EmailId" Type="Int32" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesLineNumber" Type="Int32" />
         </EntityType>
         <Association Name="AdjustmentShortAdjustmentShortAllocation">
           <End Type="Model.AdjustmentShort" Role="AdjustmentShort" Multiplicity="1" />
@@ -1023,6 +1145,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdjustmentOversAllocations" Relationship="Model.FK_AdjustmentOversAllocations_xcuda_Item" FromRole="xcuda_Item" ToRole="AdjustmentOversAllocation" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_xcuda_Item">
           <End Type="Model.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1" />
@@ -1074,6 +1197,11 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="AsycudaDocumentItemEntryDataDetails" Relationship="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" FromRole="AdjustmentDetail" ToRole="AsycudaDocumentItemEntryDataDetail" />
           <NavigationProperty Name="ShortAllocations" Relationship="Model.AdjustmentDetailShortAllocation" FromRole="AdjustmentDetail" ToRole="ShortAllocation" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <Association Name="AdjustmentExAdjustmentDetail">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -1101,6 +1229,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="DocumentType" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" />
           <NavigationProperty Name="AdjustmentDetail" Relationship="Model.AdjustmentDetailAsycudaDocumentItemEntryDataDetail" FromRole="AsycudaDocumentItemEntryDataDetail" ToRole="AdjustmentDetail" />
+          <Property Name="ImportComplete" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="AdjustmentOverAsycudaDocumentItemEntryDataDetail">
           <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="1" />
@@ -1255,6 +1384,45 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="AdjustmentOversAllocation">
+          <Key>
+            <PropertyRef Name="AllocationId" />
+          </Key>
+          <Property Name="AllocationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
+          <Property Name="PreviousItem_Id" Type="Int32" />
+          <NavigationProperty Name="EntryDataDetail" Relationship="Model.FK_AdjustmentOversAllocations_EntryDataDetails" FromRole="AdjustmentOversAllocation" ToRole="EntryDataDetail" />
+          <NavigationProperty Name="xcuda_Item" Relationship="Model.FK_AdjustmentOversAllocations_xcuda_Item" FromRole="AdjustmentOversAllocation" ToRole="xcuda_Item" />
+          <Property Name="Asycuda_Id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AdjustmentOversAllocations_EntryDataDetails">
+          <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.AdjustmentOversAllocation" Role="AdjustmentOversAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryDataDetail">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocation">
+              <PropertyRef Name="EntryDataDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AdjustmentOversAllocations_xcuda_Item">
+          <End Type="Model.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.AdjustmentOversAllocation" Role="AdjustmentOversAllocation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_Item">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="AdjustmentOversAllocation">
+              <PropertyRef Name="PreviousItem_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1316,6 +1484,13 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AdjustmentOvers">
             <EntityTypeMapping TypeName="Model.AdjustmentOver">
               <MappingFragment StoreEntitySet="AdjustmentOvers">
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
@@ -1346,6 +1521,13 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AdjustmentShorts">
             <EntityTypeMapping TypeName="Model.AdjustmentShort">
               <MappingFragment StoreEntitySet="AdjustmentShorts">
+                <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />
@@ -1407,6 +1589,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="ShortAllocations">
             <EntityTypeMapping TypeName="Model.ShortAllocation">
               <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
@@ -1493,6 +1676,11 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AdjustmentDetails">
             <EntityTypeMapping TypeName="Model.AdjustmentDetail">
               <MappingFragment StoreEntitySet="AdjustmentDetails">
+                <ScalarProperty Name="EmailDate" ColumnName="EmailDate" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
@@ -1528,6 +1716,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="Model.AsycudaDocumentItemEntryDataDetail">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="ImportComplete" ColumnName="ImportComplete" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
                 <ScalarProperty Name="key" ColumnName="key" />
@@ -1569,6 +1758,16 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdjustmentOversAllocations">
+            <EntityTypeMapping TypeName="Model.AdjustmentOversAllocation">
+              <MappingFragment StoreEntitySet="AdjustmentOversAllocations">
+                <ScalarProperty Name="Asycuda_Id" ColumnName="Asycuda_Id" />
+                <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
+                <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
+                <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

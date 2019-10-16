@@ -203,7 +203,8 @@ namespace AdjustmentQS.Client.Repositories
                             return new EntryDataDetail(res)
                     {
                      // AsycudaSalesAllocations = new System.Collections.ObjectModel.ObservableCollection<AsycudaSalesAllocation>(res.AsycudaSalesAllocations.Select(y => new AsycudaSalesAllocation(y))),    
-                  // InventoryItemsEx = (res.InventoryItemsEx != null?new InventoryItemsEx(res.InventoryItemsEx): null)    
+                  // InventoryItemsEx = (res.InventoryItemsEx != null?new InventoryItemsEx(res.InventoryItemsEx): null),    
+                     // AdjustmentOversAllocations = new System.Collections.ObjectModel.ObservableCollection<AdjustmentOversAllocation>(res.AdjustmentOversAllocations.Select(y => new AdjustmentOversAllocation(y)))    
                   };
                     }
                     else

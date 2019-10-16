@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
+using CoreEntities.Business.Entities;
 using MailKit;
 using MailKit.Net.Imap;
 using MailKit.Net.Smtp;
@@ -79,7 +80,7 @@ namespace EmailDownloader
 
 
         public static Dictionary<Tuple<string, Email>, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
-            List<string> emailMappings, Client client, List<string> patterns)
+            List<EmailMapping> emailMappings, Client client, List<string> patterns)
         {
             try
             {
@@ -91,7 +92,7 @@ namespace EmailDownloader
                     var lst = new List<string>();
                     var msg = imapClient.Inbox.GetMessage(uid);
 
-                    if (!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x, RegexOptions.IgnoreCase)))
+                    if (!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase)))
                     {
                         imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                         var errTxt = "Hey,\r\n\r\n The System is not configured for this message.\r\n" +
@@ -102,7 +103,7 @@ namespace EmailDownloader
                         continue;
                     }
 
-                    var subject = GetSubject(msg, uid);
+                    var subject = GetSubject(msg, uid, emailMappings);
 
                     if (string.IsNullOrEmpty(subject?.Item1))
                     {
@@ -157,22 +158,22 @@ namespace EmailDownloader
             }
         }
 
-        private static Tuple<string, Email> GetSubject(MimeMessage msg, UniqueId uid)
+        private static Tuple<string, Email> GetSubject(MimeMessage msg, UniqueId uid, List<EmailMapping> emailMappings)
         {
-            var patterns = new string[]
-            {
-                @"(\b\d{1,2}\D{0,3})?\b(?<Month>Jan(?:uary)? |Feb(?:ruary)? |Mar(?:ch)? |Apr(?:il)? |May |Jun(?:e)? |Jul(?:y)? |Aug(?:ust)? |Sep(?:tember)? |Oct(?:ober)? |(Nov |Dec)(?:ember)? )[a-zA-Z\s]*(?<Year>(19[7-9]\d|20\d{2})|\d{2})?(?<![Discrepancy])",
-                @"Shipment:\s(?<Subject>.+)",
-                @"Fw: (?<Subject>[A-Z][a-z]+).*(?<=Discrepancy)|Fw: (?<Subject>[A-Z][A-Z]+).*(?<=Discrepancy)|(?![Fw: ])(?<Subject>^[A-Z][a-z]+).*(?<=Discrepancy)|.*(?<=Warranty).*\-\s(?<Subject>[A-Z][A-Z]+)|.*(?<Subject>[0-9][A-Z]+).*(?<=Discrepancy)",
-                @".*(?<Subject>[0-9][A-Z]+).*(?<=Discrepancy)",
-                @".*Error:\s?(?<Subject>.+)",
+            //var patterns = new string[]
+            //{
+            //    @"(\b\d{1,2}\D{0,3})?\b(?<Month>Jan(?:uary)? |Feb(?:ruary)? |Mar(?:ch)? |Apr(?:il)? |May |Jun(?:e)? |Jul(?:y)? |Aug(?:ust)? |Sep(?:tember)? |Oct(?:ober)? |(Nov |Dec)(?:ember)? )[a-zA-Z\s]*(?<Year>(19[7-9]\d|20\d{2})|\d{2})?(?<![Discrepancy])",
+            //    @"Shipment:\s(?<Subject>.+)",
+            //    @"Fw: (?<Subject>[A-Z][a-z]+).*(?<=Discrepancy)|Fw: (?<Subject>[A-Z][A-Z]+).*(?<=Discrepancy)|(?![Fw: ])(?<Subject>^[A-Z][a-z]+).*(?<=Discrepancy)|.*(?<=Warranty).*\-\s(?<Subject>[A-Z][A-Z]+)|.*(?<Subject>[0-9][A-Z]+).*(?<=Discrepancy)",
+            //    @".*(?<Subject>[0-9][A-Z]+).*(?<=Discrepancy)",
+            //    @".*Error:\s?(?<Subject>.+)",
 
-            };
+            //};
 
-            foreach (var pattern in patterns)
+            foreach (var emailMapping in emailMappings)
             {
                 var mat = Regex.Match(msg.Subject,
-                    pattern,
+                    emailMapping.Pattern,
                     RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                 if (!mat.Success) continue;
                 var subject = "";
@@ -185,7 +186,7 @@ namespace EmailDownloader
                 }
 
                  
-                return new Tuple<string, Email>(subject.Trim(), new Email(EmailId: Convert.ToInt32(uid.ToString()), Subject: msg.Subject, EmailDate: msg.Date.DateTime));
+                return new Tuple<string, Email>(subject.Trim(), new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping));
 
             }
 

@@ -21,6 +21,8 @@
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
               this.Property(t => t.Cost).HasColumnName("Cost");
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
+              this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

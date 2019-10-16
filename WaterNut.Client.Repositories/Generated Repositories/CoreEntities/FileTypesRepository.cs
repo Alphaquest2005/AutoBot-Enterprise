@@ -208,7 +208,10 @@ namespace CoreEntities.Client.Repositories
                      // FileTypeActions = new System.Collections.ObjectModel.ObservableCollection<FileTypeActions>(res.FileTypeActions.Select(y => new FileTypeActions(y))),    
                      // FileTypeContacts = new System.Collections.ObjectModel.ObservableCollection<FileTypeContacts>(res.FileTypeContacts.Select(y => new FileTypeContacts(y))),    
                      // AsycudaDocumentSet_Attachments = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentSet_Attachments>(res.AsycudaDocumentSet_Attachments.Select(y => new AsycudaDocumentSet_Attachments(y))),    
-                  // FileGroups = (res.FileGroups != null?new FileGroups(res.FileGroups): null)    
+                  // FileGroups = (res.FileGroups != null?new FileGroups(res.FileGroups): null),    
+                     // ChildFileTypes = new System.Collections.ObjectModel.ObservableCollection<FileTypes>(res.ChildFileTypes.Select(y => new FileTypes(y))),    
+                  // ParentFileTypes = (res.ParentFileTypes != null?new FileTypes(res.ParentFileTypes): null),    
+                     // EmailFileTypes = new System.Collections.ObjectModel.ObservableCollection<EmailFileTypes>(res.EmailFileTypes.Select(y => new EmailFileTypes(y)))    
                   };
                     }
                     else
@@ -434,6 +437,34 @@ namespace CoreEntities.Client.Repositories
                  using (FileTypesClient t = new FileTypesClient())
                     {
                         var res = await t.GetFileTypesByFileGroupId(FileGroupId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new FileTypes(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<FileTypes>> GetFileTypesByParentFileTypeId(string ParentFileTypeId, List<string> includesLst = null)
+        {
+             if (ParentFileTypeId == "0") return null;
+            try
+            {
+                 using (FileTypesClient t = new FileTypesClient())
+                    {
+                        var res = await t.GetFileTypesByParentFileTypeId(ParentFileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new FileTypes(x)).AsEnumerable();

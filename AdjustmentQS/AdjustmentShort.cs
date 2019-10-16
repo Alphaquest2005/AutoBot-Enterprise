@@ -45,6 +45,13 @@ namespace AdjustmentQS
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public string Currency { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public string Type { get; set; }
+        public Nullable<int> EmailId { get; set; }
+        public Nullable<int> FileTypeId { get; set; }
+        public string DutyFreePaid { get; set; }
+        public System.DateTime InvoiceDate { get; set; }
+        public string Subject { get; set; }
+        public System.DateTime EmailDate { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual ICollection<ShortAllocation> ShortAllocations { get; set; }

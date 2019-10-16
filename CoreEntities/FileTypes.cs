@@ -21,6 +21,8 @@ namespace CoreEntities
             this.FileTypeActions = new HashSet<FileTypeActions>();
             this.FileTypeContacts = new HashSet<FileTypeContacts>();
             this.AsycudaDocumentSet_Attachments = new HashSet<AsycudaDocumentSet_Attachments>();
+            this.ChildFileTypes = new HashSet<FileTypes>();
+            this.EmailFileTypes = new HashSet<EmailFileTypes>();
         }
     
         public int Id { get; set; }
@@ -35,6 +37,7 @@ namespace CoreEntities
         public Nullable<int> FileGroupId { get; set; }
         public bool MergeEmails { get; set; }
         public bool CopyEntryData { get; set; }
+        public Nullable<int> ParentFileTypeId { get; set; }
     
         public virtual ApplicationSettings ApplicationSettings { get; set; }
         public virtual AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
@@ -47,5 +50,10 @@ namespace CoreEntities
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         public virtual FileGroups FileGroups { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<FileTypes> ChildFileTypes { get; set; }
+        public virtual FileTypes ParentFileTypes { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<EmailFileTypes> EmailFileTypes { get; set; }
     }
 }

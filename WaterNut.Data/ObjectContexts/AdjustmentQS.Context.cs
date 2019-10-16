@@ -75,6 +75,8 @@ namespace AdjustmentQS.Business.Entities
      
         public DbSet<InventoryItemsEx> InventoryItemsExes { get; set; }
      
+        public DbSet<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -106,6 +108,8 @@ namespace AdjustmentQS.Business.Entities
             modelBuilder.Configurations.Add(new InventoryItemAliasExMap());
          
             modelBuilder.Configurations.Add(new InventoryItemsExMap());
+         
+            modelBuilder.Configurations.Add(new AdjustmentOversAllocationMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

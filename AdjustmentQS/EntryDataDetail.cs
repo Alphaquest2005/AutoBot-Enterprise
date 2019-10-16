@@ -17,6 +17,7 @@ namespace AdjustmentQS
         public EntryDataDetail()
         {
             this.AsycudaSalesAllocations = new HashSet<AsycudaSalesAllocation>();
+            this.AdjustmentOversAllocations = new HashSet<AdjustmentOversAllocation>();
         }
     
         public int EntryDataDetailsId { get; set; }
@@ -46,5 +47,6 @@ namespace AdjustmentQS
     
         public virtual ICollection<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         public virtual InventoryItemsEx InventoryItemsEx { get; set; }
+        public virtual ICollection<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }
     }
 }

@@ -86,6 +86,9 @@
     <Compile Include="AdjustmentOver.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>
+    <Compile Include="AdjustmentOversAllocation.cs">
+      <DependentUpon>OversShortQS.tt</DependentUpon>
+    </Compile>
     <Compile Include="AdjustmentQS.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

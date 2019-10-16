@@ -177,6 +177,19 @@ namespace CoreEntities.Client.DTO
 		}
         private bool _CopyEntryData;
 
+        [DataMember]
+        public Nullable<int> ParentFileTypeId
+		{ 
+		    get { return _ParentFileTypeId; }
+			set
+			{
+			    if (value == _ParentFileTypeId) return;
+				_ParentFileTypeId = value;
+				NotifyPropertyChanged();//m => this.ParentFileTypeId
+			}
+		}
+        private Nullable<int> _ParentFileTypeId;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings
@@ -277,6 +290,48 @@ namespace CoreEntities.Client.DTO
 		}
         private FileGroups _FileGroups;
         private ChangeTrackingCollection<FileGroups> FileGroupsChangeTracker { get; set; }
+
+        [DataMember]
+        public ChangeTrackingCollection<FileTypes> ChildFileTypes
+		{
+		    get { return _ChildFileTypes; }
+			set
+			{
+			    if (Equals(value, _ChildFileTypes)) return;
+				_ChildFileTypes = value;
+				NotifyPropertyChanged();//m => this.ChildFileTypes
+			}
+		}
+        private ChangeTrackingCollection<FileTypes> _ChildFileTypes = new ChangeTrackingCollection<FileTypes>();
+
+        [DataMember]
+        public FileTypes ParentFileTypes
+		{
+		    get { return _ParentFileTypes; }
+			set
+			{
+			    if (value == _ParentFileTypes) return;
+				_ParentFileTypes = value;
+                ParentFileTypesChangeTracker = _ParentFileTypes == null ? null
+                    : new ChangeTrackingCollection<FileTypes> { _ParentFileTypes };
+				NotifyPropertyChanged();//m => this.ParentFileTypes
+			}
+		}
+        private FileTypes _ParentFileTypes;
+        private ChangeTrackingCollection<FileTypes> ParentFileTypesChangeTracker { get; set; }
+
+        [DataMember]
+        public ChangeTrackingCollection<EmailFileTypes> EmailFileTypes
+		{
+		    get { return _EmailFileTypes; }
+			set
+			{
+			    if (Equals(value, _EmailFileTypes)) return;
+				_EmailFileTypes = value;
+				NotifyPropertyChanged();//m => this.EmailFileTypes
+			}
+		}
+        private ChangeTrackingCollection<EmailFileTypes> _EmailFileTypes = new ChangeTrackingCollection<EmailFileTypes>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

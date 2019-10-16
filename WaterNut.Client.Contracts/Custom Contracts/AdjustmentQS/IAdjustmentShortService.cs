@@ -13,6 +13,10 @@ namespace AdjustmentQS.Client.Contracts
     {
         [OperationContract]
         Task AutoMatch(int applicationSettingsId);
+
+        [OperationContract]
+        Task MatchToAsycudaItem(int entryDataDetailId, int itemId);
+
         [OperationContract]
         Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId,string ex9Type, string dutyFreePaid);
     }

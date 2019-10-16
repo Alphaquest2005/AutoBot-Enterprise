@@ -56,6 +56,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAdjustmentDetailIDChanged, OnCurrentAdjustmentDetailIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAdjustmentExIDChanged, OnCurrentAdjustmentExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAdjustmentOverIDChanged, OnCurrentAdjustmentOverIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAdjustmentOversAllocationIDChanged, OnCurrentAdjustmentOversAllocationIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAdjustmentShortIDChanged, OnCurrentAdjustmentShortIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentEntryDataIDChanged, OnCurrentAsycudaDocumentEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailIDChanged);
@@ -73,6 +74,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<AdjustmentDetail>(MessageToken.CurrentAdjustmentDetailChanged, OnCurrentAdjustmentDetailChanged);
                         RegisterToReceiveMessages<AdjustmentEx>(MessageToken.CurrentAdjustmentExChanged, OnCurrentAdjustmentExChanged);
                         RegisterToReceiveMessages<AdjustmentOver>(MessageToken.CurrentAdjustmentOverChanged, OnCurrentAdjustmentOverChanged);
+                        RegisterToReceiveMessages<AdjustmentOversAllocation>(MessageToken.CurrentAdjustmentOversAllocationChanged, OnCurrentAdjustmentOversAllocationChanged);
                         RegisterToReceiveMessages<AdjustmentShort>(MessageToken.CurrentAdjustmentShortChanged, OnCurrentAdjustmentShortChanged);
                         RegisterToReceiveMessages<AsycudaDocumentEntryData>(MessageToken.CurrentAsycudaDocumentEntryDataChanged, OnCurrentAsycudaDocumentEntryDataChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetail>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailChanged, OnCurrentAsycudaDocumentItemEntryDataDetailChanged);
@@ -181,6 +183,33 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAdjustmentOverID)) BeginSendMessage(MessageToken.CurrentAdjustmentOverIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAdjustmentOverIDChanged, _currentAdjustmentOverID));
                                     NotifyPropertyChanged(x => this.CurrentAdjustmentOverID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAdjustmentOversAllocationIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AdjustmentOversAllocationRepository ctx = new AdjustmentOversAllocationRepository())
+                            {
+                                CurrentAdjustmentOversAllocation = await ctx.GetAdjustmentOversAllocation(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAdjustmentOversAllocation);
+                        }
+
+                        private  string _currentAdjustmentOversAllocationID = "";
+                        public string CurrentAdjustmentOversAllocationID
+                        {
+                            get
+                            {
+                                return _currentAdjustmentOversAllocationID;
+                            }
+                            set
+                            {
+                                if (_currentAdjustmentOversAllocationID != value)
+                                {
+                                    _currentAdjustmentOversAllocationID = value;
+                                    if (!string.IsNullOrEmpty(_currentAdjustmentOversAllocationID)) BeginSendMessage(MessageToken.CurrentAdjustmentOversAllocationIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAdjustmentOversAllocationIDChanged, _currentAdjustmentOversAllocationID));
+                                    NotifyPropertyChanged(x => this.CurrentAdjustmentOversAllocationID);  
                                 }
                             }
                         }
@@ -649,6 +678,56 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                      
        
 
+        internal void OnCurrentAdjustmentOversAllocationChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentOversAllocation> e)
+        {
+            //CurrentAdjustmentOversAllocation = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAdjustmentOversAllocation);
+        }
+
+        private  AdjustmentOversAllocation _currentAdjustmentOversAllocation;
+        public AdjustmentOversAllocation CurrentAdjustmentOversAllocation
+        {
+            get
+            {
+                return _currentAdjustmentOversAllocation;
+            }
+            set
+            {
+                if (_currentAdjustmentOversAllocation != value)
+                {
+                    _currentAdjustmentOversAllocation = value;
+                    BeginSendMessage(MessageToken.CurrentAdjustmentOversAllocationChanged,
+                                                     new NotificationEventArgs<AdjustmentOversAllocation>(MessageToken.CurrentAdjustmentOversAllocationChanged, _currentAdjustmentOversAllocation)); 
+                    NotifyPropertyChanged(x => this.CurrentAdjustmentOversAllocation);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AdjustmentOversAllocation> _vcurrentAdjustmentOversAllocation;
+        public VirtualListItem<AdjustmentOversAllocation> VCurrentAdjustmentOversAllocation
+        {
+            get
+            {
+                return _vcurrentAdjustmentOversAllocation;
+            }
+            set
+            {
+                if (_vcurrentAdjustmentOversAllocation != value)
+                {
+                    _vcurrentAdjustmentOversAllocation = value;
+					if(_vcurrentAdjustmentOversAllocation != null) CurrentAdjustmentOversAllocation = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAdjustmentOversAllocation);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentAdjustmentShortChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentShort> e)
         {
             //CurrentAdjustmentShort = e.Data;
@@ -975,6 +1054,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     NotifyPropertyChanged(x => this.CurrentEntryDataDetail);    
                     // all current navigation properties = null
                  CurrentAsycudaSalesAllocation = null;
+                 CurrentAdjustmentOversAllocation = null;
    
                 }
             }
@@ -1179,6 +1259,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     NotifyPropertyChanged(x => this.Currentxcuda_Item);    
                     // all current navigation properties = null
                  CurrentAsycudaSalesAllocation = null;
+                 CurrentAdjustmentOversAllocation = null;
    
                 }
             }

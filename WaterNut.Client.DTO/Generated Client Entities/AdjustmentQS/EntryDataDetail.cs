@@ -363,6 +363,19 @@ namespace AdjustmentQS.Client.DTO
         private InventoryItemsEx _InventoryItemsEx;
         private ChangeTrackingCollection<InventoryItemsEx> InventoryItemsExChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<AdjustmentOversAllocation> AdjustmentOversAllocations
+		{
+		    get { return _AdjustmentOversAllocations; }
+			set
+			{
+			    if (Equals(value, _AdjustmentOversAllocations)) return;
+				_AdjustmentOversAllocations = value;
+				NotifyPropertyChanged();//m => this.AdjustmentOversAllocations
+			}
+		}
+        private ChangeTrackingCollection<AdjustmentOversAllocation> _AdjustmentOversAllocations = new ChangeTrackingCollection<AdjustmentOversAllocation>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

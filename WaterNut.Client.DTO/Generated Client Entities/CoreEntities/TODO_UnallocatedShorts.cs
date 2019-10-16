@@ -125,6 +125,32 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<System.DateTime> _EffectiveDate;
 
+        [DataMember]
+        public string Type
+		{ 
+		    get { return _Type; }
+			set
+			{
+			    if (value == _Type) return;
+				_Type = value;
+				NotifyPropertyChanged();//m => this.Type
+			}
+		}
+        private string _Type;
+
+        [DataMember]
+        public string Status
+		{ 
+		    get { return _Status; }
+			set
+			{
+			    if (value == _Status) return;
+				_Status = value;
+				NotifyPropertyChanged();//m => this.Status
+			}
+		}
+        private string _Status;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

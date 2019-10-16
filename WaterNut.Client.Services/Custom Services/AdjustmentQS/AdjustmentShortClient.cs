@@ -18,6 +18,11 @@ namespace AdjustmentQS.Client.Services
             await Channel.AutoMatch(applicationSettingsId).ConfigureAwait(false);
         }
 
+        public async Task MatchToAsycudaItem(int entryDataDetailId, int itemId)
+        {
+            await Channel.MatchToAsycudaItem(entryDataDetailId, itemId).ConfigureAwait(false);
+        }
+
         public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)
         {
             await Channel.CreateIM9(filterExpression, perInvoice, process7100, asycudaDocumentSetId, ex9Type, dutyFreePaid).ConfigureAwait(false);

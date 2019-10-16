@@ -800,6 +800,21 @@ namespace AdjustmentQS.Business.Entities
         }
         string _type;
         [DataMember]
+        public Nullable<int> SalesLineNumber 
+        {
+            get
+            {
+                return _saleslinenumber;
+            }
+            set
+            {
+                _saleslinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _saleslinenumber;
+        [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }
         [DataMember]
         public AdjustmentDetail AdjustmentDetail { get; set; }
