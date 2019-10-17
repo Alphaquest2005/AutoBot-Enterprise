@@ -73,7 +73,7 @@ namespace pdf_ocr
                 var ghostscriptRasterizer = new GhostscriptRasterizer();
                 ghostscriptRasterizer.Open(pdfPath);
 
-                for (int i = 0; i < ghostscriptRasterizer.PageCount; i++)
+                for (int i = 1; i <= ghostscriptRasterizer.PageCount; i++)
                 {
                     var outputFilePath = GetTempFile(".png");
                     using (var img = ghostscriptRasterizer.GetPage(pdfToImageDPI, pdfToImageDPI, i))
