@@ -66,8 +66,8 @@
     <Reference Include="IKVM.Runtime">
       <HintPath>..\..\..\Users\Alphaquest\Downloads\Pdf2Text.Full.20141127\Pdf2Text\lib\copy\IKVM.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="pdfbox-1.8.7">
       <HintPath>..\..\..\Users\Alphaquest\Downloads\Pdf2Text.Full.20141127\Pdf2Text\lib\references\pdfbox-1.8.7.dll</HintPath>

@@ -45,11 +45,30 @@ namespace AutoBot
                         .Include("FileTypes.FileTypeMappings").ToList())
                     {
                         appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
+                        if(appSetting.TestMode == null) continue;
                         // set BaseDataModel CurrentAppSettings
                         BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
                         //check emails
 
-                       //
+                        if (appSetting.TestMode == true)
+                        {
+                            var lastAction = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
+                                .OrderByDescending(p => p.Id)
+                                .FirstOrDefault(x => x.ApplicationSettingId == appSetting.ApplicationSettingsId);
+
+                            if (lastAction != null)
+                            {
+                                lastAction.Sessions.SessionActions
+                                    .Where(x => lastAction.ActionId == null || x.ActionId == lastAction.ActionId)
+                                    .Select(x => Utils.SessionActions[x.Actions.Name])
+                                    .ForEach(x => x.Invoke());
+                               
+                                continue;
+                            }
+
+                        }
+
+                        //
                         Utils.Client = new EmailDownloader.Client
                         {
                             CompanyName = appSetting.CompanyName,
@@ -213,23 +232,25 @@ namespace AutoBot
                                 x.Invoke());
 
 
-
-
                         var sLst = ctx.SessionSchedule.Include("Sessions.SessionActions.Actions")
                             .Where(x => x.RunDateTime >= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes * -1,
                                             DateTime.Now)
                                         && x.RunDateTime <= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes,
-                                            DateTime.Now)).ToList();
+                                            DateTime.Now))
+                            .Where(x =>
+                                x.ApplicationSettingId == null || x.ApplicationSettingId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                            .ToList();
+
+
                         if (sLst.Any())
                         {
-                            foreach (var item in sLst.Where(x =>
-                                x.ApplicationSettingId == null || x.ApplicationSettingId ==
-                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                            foreach (var item in sLst)
                             {
                                 item.Sessions.SessionActions
                                     .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
-                                    .ForEach(x => x.Invoke());
+                                    .ForEach(x =>  x.Invoke());
                             }
 
                         }

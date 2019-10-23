@@ -646,6 +646,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _assessex;
         [DataMember]
+        public Nullable<bool> TestMode 
+        {
+            get
+            {
+                return _testmode;
+            }
+            set
+            {
+                _testmode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _testmode;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

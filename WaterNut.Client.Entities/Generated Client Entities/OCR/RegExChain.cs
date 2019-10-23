@@ -75,127 +75,59 @@ public int RegExId
 		}
      
 
-       
-       
-public Nullable<int> PreviousRegExId
-		{ 
-		    get { return this.regexchain.PreviousRegExId; }
-			set
-			{
-			    if (value == this.regexchain.PreviousRegExId) return;
-				this.regexchain.PreviousRegExId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("PreviousRegExId");
-			}
-		}
-     
-
-        ObservableCollection<RegExChain> _RegExChain1 = null;
-        public  ObservableCollection<RegExChain> RegExChain1
+        ObservableCollection<End> _End = null;
+        public  ObservableCollection<End> End
 		{
             
 		    get 
 				{ 
-					if(_RegExChain1 != null) return _RegExChain1;
-					//if (this.regexchain.RegExChain1 == null) Debugger.Break();
-					if(this.regexchain.RegExChain1 != null)
+					if(_End != null) return _End;
+					//if (this.regexchain.End == null) Debugger.Break();
+					if(this.regexchain.End != null)
 					{
-						_RegExChain1 = new ObservableCollection<RegExChain>(this.regexchain.RegExChain1.Select(x => new RegExChain(x)));
+						_End = new ObservableCollection<End>(this.regexchain.End.Select(x => new End(x)));
 					}
 					
-						_RegExChain1.CollectionChanged += RegExChain1_CollectionChanged; 
+						_End.CollectionChanged += End_CollectionChanged; 
 					
-					return _RegExChain1; 
+					return _End; 
 				}
 			set
 			{
-			    if (Equals(value, _RegExChain1)) return;
+			    if (Equals(value, _End)) return;
 				if (value != null)
-					this.regexchain.RegExChain1 = new ChangeTrackingCollection<DTO.RegExChain>(value.Select(x => x.DTO).ToList());
-                _RegExChain1 = value;
+					this.regexchain.End = new ChangeTrackingCollection<DTO.End>(value.Select(x => x.DTO).ToList());
+                _End = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_RegExChain1 != null)
-				_RegExChain1.CollectionChanged += RegExChain1_CollectionChanged;               
-				NotifyPropertyChanged("RegExChain1");
+				if (_End != null)
+				_End.CollectionChanged += End_CollectionChanged;               
+				NotifyPropertyChanged("End");
 			}
 		}
         
-        void RegExChain1_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void End_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (RegExChain itm in e.NewItems)
+                    foreach (End itm in e.NewItems)
                     {
                         if (itm != null)
-                        regexchain.RegExChain1.Add(itm.DTO);
+                        regexchain.End.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (RegExChain itm in e.OldItems)
+                    foreach (End itm in e.OldItems)
                     {
                         if (itm != null)
-                        regexchain.RegExChain1.Remove(itm.DTO);
+                        regexchain.End.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 
             }
         }
-
-       private RegExChain _RegExChain2;
-        public  RegExChain RegExChain2
-		{
-		    get
-               { 
-                  if (this.regexchain != null)
-                   {
-                       if (_RegExChain2 != null)
-                       {
-                           if (this.regexchain.RegExChain2 !=
-                               _RegExChain2.DTO)
-                           {
-                                if (this.regexchain.RegExChain2  != null)
-                               _RegExChain2 = new RegExChain(this.regexchain.RegExChain2);
-                           }
-                       }
-                       else
-                       {
-                             if (this.regexchain.RegExChain2  != null)
-                           _RegExChain2 = new RegExChain(this.regexchain.RegExChain2);
-                       }
-                   }
-
-
-             //       if (_RegExChain2 != null) return _RegExChain2;
-                       
-             //       var i = new RegExChain(){TrackingState = TrackingState.Added};
-			//		//if (this.regexchain.RegExChain2 == null) Debugger.Break();
-			//		if (this.regexchain.RegExChain2 != null)
-            //        {
-            //           i. = this.regexchain.RegExChain2;
-            //        }
-            //        else
-            //        {
-            //            this.regexchain.RegExChain2 = i.;
-             //       }
-                           
-            //        _RegExChain2 = i;
-                     
-                    return _RegExChain2;
-               }
-			set
-			{
-			    if (value == _RegExChain2) return;
-                _RegExChain2 = value;
-                if(value != null)
-                     this.regexchain.RegExChain2 = value.DTO;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("RegExChain2");
-			}
-		}
-        
 
        private RegularExpressions _RegularExpressions;
         public  RegularExpressions RegularExpressions
@@ -250,53 +182,53 @@ public Nullable<int> PreviousRegExId
 		}
         
 
-        ObservableCollection<TemplateLinesRegularExpressions> _TemplateLinesRegularExpressions = null;
-        public  ObservableCollection<TemplateLinesRegularExpressions> TemplateLinesRegularExpressions
+        ObservableCollection<Start> _Start = null;
+        public  ObservableCollection<Start> Start
 		{
             
 		    get 
 				{ 
-					if(_TemplateLinesRegularExpressions != null) return _TemplateLinesRegularExpressions;
-					//if (this.regexchain.TemplateLinesRegularExpressions == null) Debugger.Break();
-					if(this.regexchain.TemplateLinesRegularExpressions != null)
+					if(_Start != null) return _Start;
+					//if (this.regexchain.Start == null) Debugger.Break();
+					if(this.regexchain.Start != null)
 					{
-						_TemplateLinesRegularExpressions = new ObservableCollection<TemplateLinesRegularExpressions>(this.regexchain.TemplateLinesRegularExpressions.Select(x => new TemplateLinesRegularExpressions(x)));
+						_Start = new ObservableCollection<Start>(this.regexchain.Start.Select(x => new Start(x)));
 					}
 					
-						_TemplateLinesRegularExpressions.CollectionChanged += TemplateLinesRegularExpressions_CollectionChanged; 
+						_Start.CollectionChanged += Start_CollectionChanged; 
 					
-					return _TemplateLinesRegularExpressions; 
+					return _Start; 
 				}
 			set
 			{
-			    if (Equals(value, _TemplateLinesRegularExpressions)) return;
+			    if (Equals(value, _Start)) return;
 				if (value != null)
-					this.regexchain.TemplateLinesRegularExpressions = new ChangeTrackingCollection<DTO.TemplateLinesRegularExpressions>(value.Select(x => x.DTO).ToList());
-                _TemplateLinesRegularExpressions = value;
+					this.regexchain.Start = new ChangeTrackingCollection<DTO.Start>(value.Select(x => x.DTO).ToList());
+                _Start = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_TemplateLinesRegularExpressions != null)
-				_TemplateLinesRegularExpressions.CollectionChanged += TemplateLinesRegularExpressions_CollectionChanged;               
-				NotifyPropertyChanged("TemplateLinesRegularExpressions");
+				if (_Start != null)
+				_Start.CollectionChanged += Start_CollectionChanged;               
+				NotifyPropertyChanged("Start");
 			}
 		}
         
-        void TemplateLinesRegularExpressions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Start_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (TemplateLinesRegularExpressions itm in e.NewItems)
+                    foreach (Start itm in e.NewItems)
                     {
                         if (itm != null)
-                        regexchain.TemplateLinesRegularExpressions.Add(itm.DTO);
+                        regexchain.Start.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (TemplateLinesRegularExpressions itm in e.OldItems)
+                    foreach (Start itm in e.OldItems)
                     {
                         if (itm != null)
-                        regexchain.TemplateLinesRegularExpressions.Remove(itm.DTO);
+                        regexchain.Start.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
@@ -304,53 +236,160 @@ public Nullable<int> PreviousRegExId
             }
         }
 
-        ObservableCollection<TemplateRegularExpressions> _TemplateRegularExpressions = null;
-        public  ObservableCollection<TemplateRegularExpressions> TemplateRegularExpressions
+        ObservableCollection<Lines> _Lines = null;
+        public  ObservableCollection<Lines> Lines
 		{
             
 		    get 
 				{ 
-					if(_TemplateRegularExpressions != null) return _TemplateRegularExpressions;
-					//if (this.regexchain.TemplateRegularExpressions == null) Debugger.Break();
-					if(this.regexchain.TemplateRegularExpressions != null)
+					if(_Lines != null) return _Lines;
+					//if (this.regexchain.Lines == null) Debugger.Break();
+					if(this.regexchain.Lines != null)
 					{
-						_TemplateRegularExpressions = new ObservableCollection<TemplateRegularExpressions>(this.regexchain.TemplateRegularExpressions.Select(x => new TemplateRegularExpressions(x)));
+						_Lines = new ObservableCollection<Lines>(this.regexchain.Lines.Select(x => new Lines(x)));
 					}
 					
-						_TemplateRegularExpressions.CollectionChanged += TemplateRegularExpressions_CollectionChanged; 
+						_Lines.CollectionChanged += Lines_CollectionChanged; 
 					
-					return _TemplateRegularExpressions; 
+					return _Lines; 
 				}
 			set
 			{
-			    if (Equals(value, _TemplateRegularExpressions)) return;
+			    if (Equals(value, _Lines)) return;
 				if (value != null)
-					this.regexchain.TemplateRegularExpressions = new ChangeTrackingCollection<DTO.TemplateRegularExpressions>(value.Select(x => x.DTO).ToList());
-                _TemplateRegularExpressions = value;
+					this.regexchain.Lines = new ChangeTrackingCollection<DTO.Lines>(value.Select(x => x.DTO).ToList());
+                _Lines = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_TemplateRegularExpressions != null)
-				_TemplateRegularExpressions.CollectionChanged += TemplateRegularExpressions_CollectionChanged;               
-				NotifyPropertyChanged("TemplateRegularExpressions");
+				if (_Lines != null)
+				_Lines.CollectionChanged += Lines_CollectionChanged;               
+				NotifyPropertyChanged("Lines");
 			}
 		}
         
-        void TemplateRegularExpressions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void Lines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (TemplateRegularExpressions itm in e.NewItems)
+                    foreach (Lines itm in e.NewItems)
                     {
                         if (itm != null)
-                        regexchain.TemplateRegularExpressions.Add(itm.DTO);
+                        regexchain.Lines.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (TemplateRegularExpressions itm in e.OldItems)
+                    foreach (Lines itm in e.OldItems)
                     {
                         if (itm != null)
-                        regexchain.TemplateRegularExpressions.Remove(itm.DTO);
+                        regexchain.Lines.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+       private RegExParent _RegExParent;
+        public  RegExParent RegExParent
+		{
+		    get
+               { 
+                  if (this.regexchain != null)
+                   {
+                       if (_RegExParent != null)
+                       {
+                           if (this.regexchain.RegExParent !=
+                               _RegExParent.DTO)
+                           {
+                                if (this.regexchain.RegExParent  != null)
+                               _RegExParent = new RegExParent(this.regexchain.RegExParent);
+                           }
+                       }
+                       else
+                       {
+                             if (this.regexchain.RegExParent  != null)
+                           _RegExParent = new RegExParent(this.regexchain.RegExParent);
+                       }
+                   }
+
+
+             //       if (_RegExParent != null) return _RegExParent;
+                       
+             //       var i = new RegExParent(){TrackingState = TrackingState.Added};
+			//		//if (this.regexchain.RegExParent == null) Debugger.Break();
+			//		if (this.regexchain.RegExParent != null)
+            //        {
+            //           i. = this.regexchain.RegExParent;
+            //        }
+            //        else
+            //        {
+            //            this.regexchain.RegExParent = i.;
+             //       }
+                           
+            //        _RegExParent = i;
+                     
+                    return _RegExParent;
+               }
+			set
+			{
+			    if (value == _RegExParent) return;
+                _RegExParent = value;
+                if(value != null)
+                     this.regexchain.RegExParent = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("RegExParent");
+			}
+		}
+        
+
+        ObservableCollection<RegExParent> _PreviousRegExParent = null;
+        public  ObservableCollection<RegExParent> PreviousRegExParent
+		{
+            
+		    get 
+				{ 
+					if(_PreviousRegExParent != null) return _PreviousRegExParent;
+					//if (this.regexchain.PreviousRegExParent == null) Debugger.Break();
+					if(this.regexchain.PreviousRegExParent != null)
+					{
+						_PreviousRegExParent = new ObservableCollection<RegExParent>(this.regexchain.PreviousRegExParent.Select(x => new RegExParent(x)));
+					}
+					
+						_PreviousRegExParent.CollectionChanged += PreviousRegExParent_CollectionChanged; 
+					
+					return _PreviousRegExParent; 
+				}
+			set
+			{
+			    if (Equals(value, _PreviousRegExParent)) return;
+				if (value != null)
+					this.regexchain.PreviousRegExParent = new ChangeTrackingCollection<DTO.RegExParent>(value.Select(x => x.DTO).ToList());
+                _PreviousRegExParent = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_PreviousRegExParent != null)
+				_PreviousRegExParent.CollectionChanged += PreviousRegExParent_CollectionChanged;               
+				NotifyPropertyChanged("PreviousRegExParent");
+			}
+		}
+        
+        void PreviousRegExParent_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (RegExParent itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regexchain.PreviousRegExParent.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (RegExParent itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regexchain.PreviousRegExParent.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

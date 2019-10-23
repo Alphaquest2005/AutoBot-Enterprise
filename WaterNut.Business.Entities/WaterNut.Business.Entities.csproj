@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,6 +23,8 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,30 +61,46 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Omu.ValueInjecter, Version=3.1.3.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
-      <HintPath>..\packages\ValueInjecter.3.1.3\lib\net45\Omu.ValueInjecter.dll</HintPath>
+    <Reference Include="Omu.ValueInjecter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
+      <HintPath>..\packages\ValueInjecter.3.2.0\lib\net45\Omu.ValueInjecter.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="TrackableEntities.Client, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\WaterNut - Enterprise\WaterNut\bin\Debug\TrackableEntities.Client.dll</HintPath>
+    <Reference Include="TrackableEntities.Client">
+      <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
     </Reference>
-    <Reference Include="TrackableEntities.Common, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\WaterNut - Enterprise\WaterNut\bin\Debug\TrackableEntities.Common.dll</HintPath>
+    <Reference Include="TrackableEntities.Common">
+      <HintPath>..\WaterNut\TrackableEntities.Common.dll</HintPath>
     </Reference>
     <Reference Include="TrackableEntities.EF.6">
       <HintPath>..\..\..\..\WaterNut - Enterprise\WaterNut\bin\Debug\TrackableEntities.EF.6.dll</HintPath>
@@ -378,14 +397,18 @@
     <Compile Include="Generated Business Entities\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated Business Entities\LicenseDS\xLIC_License.cs" />
     <Compile Include="Generated Business Entities\LicenseDS\xLIC_Lic_item_segment.cs" />
-    <Compile Include="Generated Business Entities\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated Business Entities\OCR\LineTypes.cs" />
+    <Compile Include="Generated Business Entities\OCR\End.cs" />
+    <Compile Include="Generated Business Entities\OCR\Fields.cs" />
+    <Compile Include="Generated Business Entities\OCR\Invoices.cs" />
+    <Compile Include="Generated Business Entities\OCR\Lines.cs" />
+    <Compile Include="Generated Business Entities\OCR\ParentParts.cs" />
+    <Compile Include="Generated Business Entities\OCR\Parts.cs" />
+    <Compile Include="Generated Business Entities\OCR\PartTypes.cs" />
+    <Compile Include="Generated Business Entities\OCR\RecuringPart.cs" />
     <Compile Include="Generated Business Entities\OCR\RegExChain.cs" />
+    <Compile Include="Generated Business Entities\OCR\RegExParent.cs" />
     <Compile Include="Generated Business Entities\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated Business Entities\OCR\TemplateLines.cs" />
-    <Compile Include="Generated Business Entities\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated Business Entities\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated Business Entities\OCR\Templates.cs" />
+    <Compile Include="Generated Business Entities\OCR\Start.cs" />
     <Compile Include="Generated Business Entities\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated Business Entities\PreviousDocumentDS\EntryPreviousItems.cs" />
     <Compile Include="Generated Business Entities\PreviousDocumentDS\PreviousEntry.cs" />
@@ -673,14 +696,18 @@
     <Compile Include="Generated ChangeTracking Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated ChangeTracking Models\LicenseDS\xLIC_License.cs" />
     <Compile Include="Generated ChangeTracking Models\LicenseDS\xLIC_Lic_item_segment.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\LineTypes.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\End.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\Fields.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\Invoices.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\Lines.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\ParentParts.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\Parts.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\RegExChain.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\RegExParent.cs" />
     <Compile Include="Generated ChangeTracking Models\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\TemplateLines.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated ChangeTracking Models\OCR\Templates.cs" />
+    <Compile Include="Generated ChangeTracking Models\OCR\Start.cs" />
     <Compile Include="Generated ChangeTracking Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\PreviousDocumentDS\EntryPreviousItems.cs" />
     <Compile Include="Generated ChangeTracking Models\PreviousDocumentDS\PreviousEntry.cs" />
@@ -968,14 +995,18 @@
     <Compile Include="Generated Constructors Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated Constructors Models\LicenseDS\xLIC_License.cs" />
     <Compile Include="Generated Constructors Models\LicenseDS\xLIC_Lic_item_segment.cs" />
-    <Compile Include="Generated Constructors Models\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated Constructors Models\OCR\LineTypes.cs" />
+    <Compile Include="Generated Constructors Models\OCR\End.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Fields.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Invoices.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Lines.cs" />
+    <Compile Include="Generated Constructors Models\OCR\ParentParts.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Parts.cs" />
+    <Compile Include="Generated Constructors Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated Constructors Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated Constructors Models\OCR\RegExChain.cs" />
+    <Compile Include="Generated Constructors Models\OCR\RegExParent.cs" />
     <Compile Include="Generated Constructors Models\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated Constructors Models\OCR\TemplateLines.cs" />
-    <Compile Include="Generated Constructors Models\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated Constructors Models\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated Constructors Models\OCR\Templates.cs" />
+    <Compile Include="Generated Constructors Models\OCR\Start.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentDS\EntryPreviousItems.cs" />
     <Compile Include="Generated Constructors Models\PreviousDocumentDS\PreviousEntry.cs" />
@@ -1263,14 +1294,18 @@
     <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\xLIC_License.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\xLIC_Lic_item_segment.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\LineTypes.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\End.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\Fields.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\Invoices.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\Lines.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\ParentParts.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\Parts.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\RegExChain.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\RegExParent.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\TemplateLines.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\OCR\Templates.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\OCR\Start.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\PreviousDocumentDS\EntryPreviousItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\PreviousDocumentDS\PreviousEntry.cs" />
@@ -1558,14 +1593,18 @@
     <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\xLIC_License.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\xLIC_Lic_item_segment.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\LineTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\End.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Fields.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\ParentParts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegExChain.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegExParent.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateLines.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Templates.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Start.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentDS\EntryDataDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentDS\EntryPreviousItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentDS\PreviousEntry.cs" />
@@ -1863,14 +1902,18 @@
     <Compile Include="Generated Mappings\LicenseDS\xLIC_General_segment.map.cs" />
     <Compile Include="Generated Mappings\LicenseDS\xLIC_License.map.cs" />
     <Compile Include="Generated Mappings\LicenseDS\xLIC_Lic_item_segment.map.cs" />
-    <Compile Include="Generated Mappings\OCR\LineTypeFieldMappings.map.cs" />
-    <Compile Include="Generated Mappings\OCR\LineTypes.map.cs" />
+    <Compile Include="Generated Mappings\OCR\End.map.cs" />
+    <Compile Include="Generated Mappings\OCR\Fields.map.cs" />
+    <Compile Include="Generated Mappings\OCR\Invoices.map.cs" />
+    <Compile Include="Generated Mappings\OCR\Lines.map.cs" />
+    <Compile Include="Generated Mappings\OCR\ParentParts.map.cs" />
+    <Compile Include="Generated Mappings\OCR\Parts.map.cs" />
+    <Compile Include="Generated Mappings\OCR\PartTypes.map.cs" />
+    <Compile Include="Generated Mappings\OCR\RecuringPart.map.cs" />
     <Compile Include="Generated Mappings\OCR\RegExChain.map.cs" />
+    <Compile Include="Generated Mappings\OCR\RegExParent.map.cs" />
     <Compile Include="Generated Mappings\OCR\RegularExpressions.map.cs" />
-    <Compile Include="Generated Mappings\OCR\TemplateLines.map.cs" />
-    <Compile Include="Generated Mappings\OCR\TemplateLinesRegularExpressions.map.cs" />
-    <Compile Include="Generated Mappings\OCR\TemplateRegularExpressions.map.cs" />
-    <Compile Include="Generated Mappings\OCR\Templates.map.cs" />
+    <Compile Include="Generated Mappings\OCR\Start.map.cs" />
     <Compile Include="Generated Mappings\PreviousDocumentDS\EntryDataDetails.map.cs" />
     <Compile Include="Generated Mappings\PreviousDocumentDS\EntryPreviousItems.map.cs" />
     <Compile Include="Generated Mappings\PreviousDocumentDS\PreviousEntry.map.cs" />
@@ -1920,7 +1963,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
   </Target>
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

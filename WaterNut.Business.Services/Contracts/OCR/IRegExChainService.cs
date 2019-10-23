@@ -108,9 +108,6 @@ namespace OCR.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<RegExChain>> GetRegExChainByRegExId(string RegExId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<RegExChain>> GetRegExChainByPreviousRegExId(string PreviousRegExId, List<string> includesLst = null);
   
 
 

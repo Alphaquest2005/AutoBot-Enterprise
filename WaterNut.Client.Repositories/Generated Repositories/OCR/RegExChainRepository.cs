@@ -202,11 +202,12 @@ namespace OCR.Client.Repositories
                         {
                             return new RegExChain(res)
                     {
-                     // RegExChain1 = new System.Collections.ObjectModel.ObservableCollection<RegExChain>(res.RegExChain1.Select(y => new RegExChain(y))),    
-                  // RegExChain2 = (res.RegExChain2 != null?new RegExChain(res.RegExChain2): null),    
+                     // End = new System.Collections.ObjectModel.ObservableCollection<End>(res.End.Select(y => new End(y))),    
                   // RegularExpressions = (res.RegularExpressions != null?new RegularExpressions(res.RegularExpressions): null),    
-                     // TemplateLinesRegularExpressions = new System.Collections.ObjectModel.ObservableCollection<TemplateLinesRegularExpressions>(res.TemplateLinesRegularExpressions.Select(y => new TemplateLinesRegularExpressions(y))),    
-                     // TemplateRegularExpressions = new System.Collections.ObjectModel.ObservableCollection<TemplateRegularExpressions>(res.TemplateRegularExpressions.Select(y => new TemplateRegularExpressions(y)))    
+                     // Start = new System.Collections.ObjectModel.ObservableCollection<Start>(res.Start.Select(y => new Start(y))),    
+                     // Lines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.Lines.Select(y => new Lines(y))),    
+                  // RegExParent = (res.RegExParent != null?new RegExParent(res.RegExParent): null),    
+                     // PreviousRegExParent = new System.Collections.ObjectModel.ObservableCollection<RegExParent>(res.PreviousRegExParent.Select(y => new RegExParent(y)))    
                   };
                     }
                     else
@@ -376,34 +377,6 @@ namespace OCR.Client.Repositories
                  using (RegExChainClient t = new RegExChainClient())
                     {
                         var res = await t.GetRegExChainByRegExId(RegExId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
-                         if(res != null)
-                        {
-                            return res.Select(x => new RegExChain(x)).AsEnumerable();
-					    }                
-					    else
-					    {
-						    return null;
-					    }                    
-                    }
-            }
-            catch (FaultException<ValidationFault> e)
-            {
-                throw new Exception(e.Detail.Message, e.InnerException);
-            }
-            catch (Exception)
-            {
-                Debugger.Break();
-                throw;
-            }
-        } 
- 	 public async Task<IEnumerable<RegExChain>> GetRegExChainByPreviousRegExId(string PreviousRegExId, List<string> includesLst = null)
-        {
-             if (PreviousRegExId == "0") return null;
-            try
-            {
-                 using (RegExChainClient t = new RegExChainClient())
-                    {
-                        var res = await t.GetRegExChainByPreviousRegExId(PreviousRegExId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new RegExChain(x)).AsEnumerable();

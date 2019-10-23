@@ -47,41 +47,57 @@ namespace OCR.Business.Entities
             if (StartTracking == true) ((dynamic)e.Entity).StartTracking();
         }
 
-        public DbSet<LineTypeFieldMappings> LineTypeFieldMappings { get; set; }
+        public DbSet<End> End { get; set; }
      
-        public DbSet<LineTypes> LineTypes { get; set; }
+        public DbSet<Fields> Fields { get; set; }
+     
+        public DbSet<Invoices> Invoices { get; set; }
+     
+        public DbSet<Parts> Parts { get; set; }
+     
+        public DbSet<PartTypes> PartTypes { get; set; }
      
         public DbSet<RegExChain> RegExChain { get; set; }
      
         public DbSet<RegularExpressions> RegularExpressions { get; set; }
      
-        public DbSet<TemplateLines> TemplateLines { get; set; }
+        public DbSet<Start> Start { get; set; }
      
-        public DbSet<TemplateLinesRegularExpressions> TemplateLinesRegularExpressions { get; set; }
+        public DbSet<Lines> Lines { get; set; }
      
-        public DbSet<TemplateRegularExpressions> TemplateRegularExpressions { get; set; }
+        public DbSet<RecuringPart> RecuringPart { get; set; }
      
-        public DbSet<Templates> Templates { get; set; }
+        public DbSet<RegExParent> RegExParent { get; set; }
+     
+        public DbSet<ParentParts> ParentParts { get; set; }
      
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Configurations.Add(new LineTypeFieldMappingsMap());
+            modelBuilder.Configurations.Add(new EndMap());
          
-            modelBuilder.Configurations.Add(new LineTypesMap());
+            modelBuilder.Configurations.Add(new FieldsMap());
+         
+            modelBuilder.Configurations.Add(new InvoicesMap());
+         
+            modelBuilder.Configurations.Add(new PartsMap());
+         
+            modelBuilder.Configurations.Add(new PartTypesMap());
          
             modelBuilder.Configurations.Add(new RegExChainMap());
          
             modelBuilder.Configurations.Add(new RegularExpressionsMap());
          
-            modelBuilder.Configurations.Add(new TemplateLinesMap());
+            modelBuilder.Configurations.Add(new StartMap());
          
-            modelBuilder.Configurations.Add(new TemplateLinesRegularExpressionsMap());
+            modelBuilder.Configurations.Add(new LinesMap());
          
-            modelBuilder.Configurations.Add(new TemplateRegularExpressionsMap());
+            modelBuilder.Configurations.Add(new RecuringPartMap());
          
-            modelBuilder.Configurations.Add(new TemplatesMap());
+            modelBuilder.Configurations.Add(new RegExParentMap());
+         
+            modelBuilder.Configurations.Add(new ParentPartsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

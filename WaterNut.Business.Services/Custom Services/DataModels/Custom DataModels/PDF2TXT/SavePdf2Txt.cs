@@ -32,7 +32,8 @@ namespace WaterNut.DataSpace
         {
 
             //get the text
-            var wStr = Core.Common.PDF2TXT.Pdf2Txt.Instance.ExtractTextFromPdf(fileName);
+            //var wStr = Core.Common.PDF2TXT.Pdf2Txt.Instance.ExtractTextFromPdf(fileName);
+            var wStr = "";
 
             var elst = await GetEntryData(wStr).ConfigureAwait(false);
 

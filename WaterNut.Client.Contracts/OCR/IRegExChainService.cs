@@ -82,9 +82,6 @@ namespace OCR.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<RegExChain>> GetRegExChainByRegExId(string RegExId, List<string> includesLst = null);
         
-  		[OperationContract]
-		Task<IEnumerable<RegExChain>> GetRegExChainByPreviousRegExId(string PreviousRegExId, List<string> includesLst = null);
-        
   		
     }
 }

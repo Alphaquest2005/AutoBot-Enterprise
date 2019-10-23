@@ -5,23 +5,69 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="WaterNutDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="OCR-LineTypeFieldMappings">
+        <EntityType Name="OCR-End">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="LineTypeId" Type="int" Nullable="false" />
-          <Property Name="Key" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PartId" Type="int" Nullable="false" />
+          <Property Name="RegExChainId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-Fields">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LineId" Type="int" Nullable="false" />
+          <Property Name="Key" Type="nvarchar" MaxLength="50" />
           <Property Name="Field" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EntityType" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IsRequired" Type="bit" Nullable="false" />
+          <Property Name="DataType" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <EntityType Name="OCR-LineTypes">
+        <EntityType Name="OCR-Invoices">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-Lines">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PartId" Type="int" Nullable="false" />
+          <Property Name="RegExChainId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="OCR-ParentPart">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="ParentPartId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-Parts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TemplateId" Type="int" Nullable="false" />
+          <Property Name="PartTypeId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-PartTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OCR-RecuringPart">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR-RegExChain">
           <Key>
@@ -29,7 +75,13 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RegExId" Type="int" Nullable="false" />
-          <Property Name="PreviousRegExId" Type="int" />
+        </EntityType>
+        <EntityType Name="OCR-RegExParent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="PreviousRegExId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR-RegularExpressions">
           <Key>
@@ -38,60 +90,145 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RegEx" Type="nvarchar(max)" Nullable="false" />
         </EntityType>
-        <EntityType Name="OCR-TemplateLines">
+        <EntityType Name="OCR-Start">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TemplateId" Type="int" Nullable="false" />
-          <Property Name="TypeId" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="OCR-TemplateLinesRegularExpressions">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TemplateLineId" Type="int" Nullable="false" />
+          <Property Name="PartId" Type="int" Nullable="false" />
           <Property Name="RegExChainId" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="OCR-TemplateRegularExpressions">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="TemplateId" Type="int" Nullable="false" />
-          <Property Name="RegExChainId" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="OCR-Templates">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
-        </EntityType>
-        <Association Name="FK_OCR-LineTypeFieldMappings_OCR-LineTypes">
-          <End Role="OCR-LineTypes" Type="Self.OCR-LineTypes" Multiplicity="1">
+        <Association Name="FK_OCR-End_OCR-Parts">
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="OCR-LineTypeFieldMappings" Type="Self.OCR-LineTypeFieldMappings" Multiplicity="*" />
+          <End Role="OCR-End" Type="Self.OCR-End" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR-LineTypes">
+            <Principal Role="OCR-Parts">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-LineTypeFieldMappings">
-              <PropertyRef Name="LineTypeId" />
+            <Dependent Role="OCR-End">
+              <PropertyRef Name="PartId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-RegExChain_OCR-RegExChain">
-          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="0..1" />
-          <End Role="OCR-RegExChain1" Type="Self.OCR-RegExChain" Multiplicity="*" />
+        <Association Name="FK_OCR-End_OCR-RegExChain">
+          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-End" Type="Self.OCR-End" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR-RegExChain">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-RegExChain1">
-              <PropertyRef Name="PreviousRegExId" />
+            <Dependent Role="OCR-End">
+              <PropertyRef Name="RegExChainId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-Fields_OCR-Lines">
+          <End Role="OCR-Lines" Type="Self.OCR-Lines" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-Fields" Type="Self.OCR-Fields" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Lines">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Fields">
+              <PropertyRef Name="LineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-Lines_OCR-Parts">
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1" />
+          <End Role="OCR-Lines" Type="Self.OCR-Lines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Lines">
+              <PropertyRef Name="PartId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-Lines_OCR-RegExChain">
+          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="1" />
+          <End Role="OCR-Lines" Type="Self.OCR-Lines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-RegExChain">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Lines">
+              <PropertyRef Name="RegExChainId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-ParentPart_OCR-Parts">
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-ParentPart" Type="Self.OCR-ParentPart" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-ParentPart">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-ParentPart_OCR-Parts1">
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1" />
+          <End Role="OCR-ParentPart" Type="Self.OCR-ParentPart" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-ParentPart">
+              <PropertyRef Name="ParentPartId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-Parts_OCR-Invoices">
+          <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Parts">
+              <PropertyRef Name="TemplateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-Parts_OCR-PartTypes">
+          <End Role="OCR-PartTypes" Type="Self.OCR-PartTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-PartTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Parts">
+              <PropertyRef Name="PartTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-RecuringPart_OCR-Parts">
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-RecuringPart" Type="Self.OCR-RecuringPart" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-RecuringPart">
+              <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -109,132 +246,128 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-TemplateLines_OCR-LineTypes">
-          <End Role="OCR-LineTypes" Type="Self.OCR-LineTypes" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="OCR-TemplateLines" Type="Self.OCR-TemplateLines" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="OCR-LineTypes">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OCR-TemplateLines">
-              <PropertyRef Name="TypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_OCR-TemplateLines_OCR-Templates">
-          <End Role="OCR-Templates" Type="Self.OCR-Templates" Multiplicity="1" />
-          <End Role="OCR-TemplateLines" Type="Self.OCR-TemplateLines" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="OCR-Templates">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OCR-TemplateLines">
-              <PropertyRef Name="TemplateId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_OCR-TemplateLinesRegularExpressions_OCR-RegExChain">
-          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="OCR-TemplateLinesRegularExpressions" Type="Self.OCR-TemplateLinesRegularExpressions" Multiplicity="*" />
+        <Association Name="FK_OCR-RegExParent_OCR-RegExChain">
+          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="1" />
+          <End Role="OCR-RegExParent" Type="Self.OCR-RegExParent" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="OCR-RegExChain">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-TemplateLinesRegularExpressions">
-              <PropertyRef Name="RegExChainId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_OCR-TemplateLinesRegularExpressions_OCR-TemplateLines">
-          <End Role="OCR-TemplateLines" Type="Self.OCR-TemplateLines" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="OCR-TemplateLinesRegularExpressions" Type="Self.OCR-TemplateLinesRegularExpressions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="OCR-TemplateLines">
+            <Dependent Role="OCR-RegExParent">
               <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OCR-TemplateLinesRegularExpressions">
-              <PropertyRef Name="TemplateLineId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-TemplateRegularExpressions_OCR-RegExChain">
-          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="OCR-TemplateRegularExpressions" Type="Self.OCR-TemplateRegularExpressions" Multiplicity="*" />
+        <Association Name="FK_OCR-RegExParent_OCR-RegExChain1">
+          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="1" />
+          <End Role="OCR-RegExParent" Type="Self.OCR-RegExParent" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR-RegExChain">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-TemplateRegularExpressions">
-              <PropertyRef Name="RegExChainId" />
+            <Dependent Role="OCR-RegExParent">
+              <PropertyRef Name="PreviousRegExId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR-TemplateRegularExpressions_OCR-Templates">
-          <End Role="OCR-Templates" Type="Self.OCR-Templates" Multiplicity="1">
+        <Association Name="FK_OCR-Start_OCR-Parts">
+          <End Role="OCR-Parts" Type="Self.OCR-Parts" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="OCR-TemplateRegularExpressions" Type="Self.OCR-TemplateRegularExpressions" Multiplicity="*" />
+          <End Role="OCR-Start" Type="Self.OCR-Start" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR-Templates">
+            <Principal Role="OCR-Parts">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR-TemplateRegularExpressions">
-              <PropertyRef Name="TemplateId" />
+            <Dependent Role="OCR-Start">
+              <PropertyRef Name="PartId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-Start_OCR-RegExChain">
+          <End Role="OCR-RegExChain" Type="Self.OCR-RegExChain" Multiplicity="1" />
+          <End Role="OCR-Start" Type="Self.OCR-Start" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-RegExChain">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-Start">
+              <PropertyRef Name="RegExChainId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
-          <EntitySet Name="OCR-LineTypeFieldMappings" EntityType="Self.OCR-LineTypeFieldMappings" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-LineTypes" EntityType="Self.OCR-LineTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-End" EntityType="Self.OCR-End" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-Fields" EntityType="Self.OCR-Fields" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-Invoices" EntityType="Self.OCR-Invoices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-Lines" EntityType="Self.OCR-Lines" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-ParentPart" EntityType="Self.OCR-ParentPart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-Parts" EntityType="Self.OCR-Parts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-PartTypes" EntityType="Self.OCR-PartTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-RecuringPart" EntityType="Self.OCR-RecuringPart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-RegExChain" EntityType="Self.OCR-RegExChain" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-RegExParent" EntityType="Self.OCR-RegExParent" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-RegularExpressions" EntityType="Self.OCR-RegularExpressions" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-TemplateLines" EntityType="Self.OCR-TemplateLines" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-TemplateLinesRegularExpressions" EntityType="Self.OCR-TemplateLinesRegularExpressions" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-TemplateRegularExpressions" EntityType="Self.OCR-TemplateRegularExpressions" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OCR-Templates" EntityType="Self.OCR-Templates" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_OCR-LineTypeFieldMappings_OCR-LineTypes" Association="Self.FK_OCR-LineTypeFieldMappings_OCR-LineTypes">
-            <End Role="OCR-LineTypes" EntitySet="OCR-LineTypes" />
-            <End Role="OCR-LineTypeFieldMappings" EntitySet="OCR-LineTypeFieldMappings" />
+          <EntitySet Name="OCR-Start" EntityType="Self.OCR-Start" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_OCR-End_OCR-Parts" Association="Self.FK_OCR-End_OCR-Parts">
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+            <End Role="OCR-End" EntitySet="OCR-End" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-RegExChain_OCR-RegExChain" Association="Self.FK_OCR-RegExChain_OCR-RegExChain">
+          <AssociationSet Name="FK_OCR-End_OCR-RegExChain" Association="Self.FK_OCR-End_OCR-RegExChain">
             <End Role="OCR-RegExChain" EntitySet="OCR-RegExChain" />
-            <End Role="OCR-RegExChain1" EntitySet="OCR-RegExChain" />
+            <End Role="OCR-End" EntitySet="OCR-End" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-Fields_OCR-Lines" Association="Self.FK_OCR-Fields_OCR-Lines">
+            <End Role="OCR-Lines" EntitySet="OCR-Lines" />
+            <End Role="OCR-Fields" EntitySet="OCR-Fields" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-Lines_OCR-Parts" Association="Self.FK_OCR-Lines_OCR-Parts">
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+            <End Role="OCR-Lines" EntitySet="OCR-Lines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-Lines_OCR-RegExChain" Association="Self.FK_OCR-Lines_OCR-RegExChain">
+            <End Role="OCR-RegExChain" EntitySet="OCR-RegExChain" />
+            <End Role="OCR-Lines" EntitySet="OCR-Lines" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-ParentPart_OCR-Parts" Association="Self.FK_OCR-ParentPart_OCR-Parts">
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+            <End Role="OCR-ParentPart" EntitySet="OCR-ParentPart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-ParentPart_OCR-Parts1" Association="Self.FK_OCR-ParentPart_OCR-Parts1">
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+            <End Role="OCR-ParentPart" EntitySet="OCR-ParentPart" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-Parts_OCR-Invoices" Association="Self.FK_OCR-Parts_OCR-Invoices">
+            <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-Parts_OCR-PartTypes" Association="Self.FK_OCR-Parts_OCR-PartTypes">
+            <End Role="OCR-PartTypes" EntitySet="OCR-PartTypes" />
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-RecuringPart_OCR-Parts" Association="Self.FK_OCR-RecuringPart_OCR-Parts">
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+            <End Role="OCR-RecuringPart" EntitySet="OCR-RecuringPart" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-RegExChain_OCR-RegularExpressions" Association="Self.FK_OCR-RegExChain_OCR-RegularExpressions">
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
             <End Role="OCR-RegExChain" EntitySet="OCR-RegExChain" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateLines_OCR-LineTypes" Association="Self.FK_OCR-TemplateLines_OCR-LineTypes">
-            <End Role="OCR-LineTypes" EntitySet="OCR-LineTypes" />
-            <End Role="OCR-TemplateLines" EntitySet="OCR-TemplateLines" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateLines_OCR-Templates" Association="Self.FK_OCR-TemplateLines_OCR-Templates">
-            <End Role="OCR-Templates" EntitySet="OCR-Templates" />
-            <End Role="OCR-TemplateLines" EntitySet="OCR-TemplateLines" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateLinesRegularExpressions_OCR-RegExChain" Association="Self.FK_OCR-TemplateLinesRegularExpressions_OCR-RegExChain">
+          <AssociationSet Name="FK_OCR-RegExParent_OCR-RegExChain" Association="Self.FK_OCR-RegExParent_OCR-RegExChain">
             <End Role="OCR-RegExChain" EntitySet="OCR-RegExChain" />
-            <End Role="OCR-TemplateLinesRegularExpressions" EntitySet="OCR-TemplateLinesRegularExpressions" />
+            <End Role="OCR-RegExParent" EntitySet="OCR-RegExParent" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateLinesRegularExpressions_OCR-TemplateLines" Association="Self.FK_OCR-TemplateLinesRegularExpressions_OCR-TemplateLines">
-            <End Role="OCR-TemplateLines" EntitySet="OCR-TemplateLines" />
-            <End Role="OCR-TemplateLinesRegularExpressions" EntitySet="OCR-TemplateLinesRegularExpressions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateRegularExpressions_OCR-RegExChain" Association="Self.FK_OCR-TemplateRegularExpressions_OCR-RegExChain">
+          <AssociationSet Name="FK_OCR-RegExParent_OCR-RegExChain1" Association="Self.FK_OCR-RegExParent_OCR-RegExChain1">
             <End Role="OCR-RegExChain" EntitySet="OCR-RegExChain" />
-            <End Role="OCR-TemplateRegularExpressions" EntitySet="OCR-TemplateRegularExpressions" />
+            <End Role="OCR-RegExParent" EntitySet="OCR-RegExParent" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR-TemplateRegularExpressions_OCR-Templates" Association="Self.FK_OCR-TemplateRegularExpressions_OCR-Templates">
-            <End Role="OCR-Templates" EntitySet="OCR-Templates" />
-            <End Role="OCR-TemplateRegularExpressions" EntitySet="OCR-TemplateRegularExpressions" />
+          <AssociationSet Name="FK_OCR-Start_OCR-Parts" Association="Self.FK_OCR-Start_OCR-Parts">
+            <End Role="OCR-Parts" EntitySet="OCR-Parts" />
+            <End Role="OCR-Start" EntitySet="OCR-Start" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-Start_OCR-RegExChain" Association="Self.FK_OCR-Start_OCR-RegExChain">
+            <End Role="OCR-RegExChain" EntitySet="OCR-RegExChain" />
+            <End Role="OCR-Start" EntitySet="OCR-Start" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -242,71 +375,133 @@
     <edmx:ConceptualModels>
       <Schema Namespace="WaterNutDBModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="OCR" p1:LazyLoadingEnabled="true">
-          <EntitySet Name="LineTypeFieldMappings" EntityType="WaterNutDBModel.LineTypeFieldMappings" />
-          <EntitySet Name="LineTypes" EntityType="WaterNutDBModel.LineTypes" />
+          <EntitySet Name="End" EntityType="WaterNutDBModel.End" />
+          <EntitySet Name="Fields" EntityType="WaterNutDBModel.Fields" />
+          <EntitySet Name="Invoices" EntityType="WaterNutDBModel.Invoices" />
+          <EntitySet Name="Parts" EntityType="WaterNutDBModel.Parts" />
+          <EntitySet Name="PartTypes" EntityType="WaterNutDBModel.PartTypes" />
           <EntitySet Name="RegExChain" EntityType="WaterNutDBModel.RegExChain" />
           <EntitySet Name="RegularExpressions" EntityType="WaterNutDBModel.RegularExpressions" />
-          <EntitySet Name="TemplateLines" EntityType="WaterNutDBModel.TemplateLines" />
-          <EntitySet Name="TemplateLinesRegularExpressions" EntityType="WaterNutDBModel.TemplateLinesRegularExpressions" />
-          <EntitySet Name="TemplateRegularExpressions" EntityType="WaterNutDBModel.TemplateRegularExpressions" />
-          <EntitySet Name="Templates" EntityType="WaterNutDBModel.Templates" />
-          <AssociationSet Name="FK_OCR_LineTypeFieldMappings_OCR_LineTypes" Association="WaterNutDBModel.FK_OCR_LineTypeFieldMappings_OCR_LineTypes">
-            <End Role="OCR_LineTypes" EntitySet="LineTypes" />
-            <End Role="OCR_LineTypeFieldMappings" EntitySet="LineTypeFieldMappings" />
+          <EntitySet Name="Start" EntityType="WaterNutDBModel.Start" />
+          <AssociationSet Name="FK_OCR_End_OCR_Parts" Association="WaterNutDBModel.FK_OCR_End_OCR_Parts">
+            <End Role="OCR_Parts" EntitySet="Parts" />
+            <End Role="OCR_End" EntitySet="End" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_TemplateLines_OCR_LineTypes" Association="WaterNutDBModel.FK_OCR_TemplateLines_OCR_LineTypes">
-            <End Role="OCR_LineTypes" EntitySet="LineTypes" />
-            <End Role="OCR_TemplateLines" EntitySet="TemplateLines" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OCR_RegExChain_OCR_RegExChain" Association="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegExChain">
+          <AssociationSet Name="FK_OCR_End_OCR_RegExChain" Association="WaterNutDBModel.FK_OCR_End_OCR_RegExChain">
             <End Role="OCR_RegExChain" EntitySet="RegExChain" />
-            <End Role="OCR_RegExChain1" EntitySet="RegExChain" />
+            <End Role="OCR_End" EntitySet="End" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_Parts_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices">
+            <End Role="OCR_Invoices" EntitySet="Invoices" />
+            <End Role="OCR_Parts" EntitySet="Parts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_Parts_OCR_PartTypes" Association="WaterNutDBModel.FK_OCR_Parts_OCR_PartTypes">
+            <End Role="OCR_PartTypes" EntitySet="PartTypes" />
+            <End Role="OCR_Parts" EntitySet="Parts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_Start_OCR_Parts" Association="WaterNutDBModel.FK_OCR_Start_OCR_Parts">
+            <End Role="OCR_Parts" EntitySet="Parts" />
+            <End Role="OCR_Start" EntitySet="Start" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR_RegExChain_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegularExpressions">
             <End Role="OCR_RegularExpressions" EntitySet="RegularExpressions" />
             <End Role="OCR_RegExChain" EntitySet="RegExChain" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_TemplateLinesRegularExpressions_OCR_RegExChain" Association="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_RegExChain">
+          <AssociationSet Name="FK_OCR_Start_OCR_RegExChain" Association="WaterNutDBModel.FK_OCR_Start_OCR_RegExChain">
             <End Role="OCR_RegExChain" EntitySet="RegExChain" />
-            <End Role="OCR_TemplateLinesRegularExpressions" EntitySet="TemplateLinesRegularExpressions" />
+            <End Role="OCR_Start" EntitySet="Start" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_TemplateRegularExpressions_OCR_RegExChain" Association="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_RegExChain">
-            <End Role="OCR_RegExChain" EntitySet="RegExChain" />
-            <End Role="OCR_TemplateRegularExpressions" EntitySet="TemplateRegularExpressions" />
+          <EntitySet Name="Lines" EntityType="WaterNutDBModel.Lines" />
+          <AssociationSet Name="FK_OCR_Fields_OCR_Lines" Association="WaterNutDBModel.FK_OCR_Fields_OCR_Lines">
+            <End Role="OCR_Lines" EntitySet="Lines" />
+            <End Role="Fields" EntitySet="Fields" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_TemplateLines_OCR_Templates" Association="WaterNutDBModel.FK_OCR_TemplateLines_OCR_Templates">
-            <End Role="OCR_Templates" EntitySet="Templates" />
-            <End Role="OCR_TemplateLines" EntitySet="TemplateLines" />
+          <AssociationSet Name="FK_OCR_Lines_OCR_Parts" Association="WaterNutDBModel.FK_OCR_Lines_OCR_Parts">
+            <End Role="Parts" EntitySet="Parts" />
+            <End Role="OCR_Lines" EntitySet="Lines" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_TemplateLinesRegularExpressions_OCR_TemplateLines" Association="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_TemplateLines">
-            <End Role="OCR_TemplateLines" EntitySet="TemplateLines" />
-            <End Role="OCR_TemplateLinesRegularExpressions" EntitySet="TemplateLinesRegularExpressions" />
+          <AssociationSet Name="FK_OCR_Lines_OCR_RegExChain" Association="WaterNutDBModel.FK_OCR_Lines_OCR_RegExChain">
+            <End Role="RegExChain" EntitySet="RegExChain" />
+            <End Role="OCR_Lines" EntitySet="Lines" />
           </AssociationSet>
-          <AssociationSet Name="FK_OCR_TemplateRegularExpressions_OCR_Templates" Association="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_Templates">
-            <End Role="OCR_Templates" EntitySet="Templates" />
-            <End Role="OCR_TemplateRegularExpressions" EntitySet="TemplateRegularExpressions" />
+          <EntitySet Name="RecuringPart" EntityType="WaterNutDBModel.RecuringPart" />
+          <AssociationSet Name="FK_OCR_RecuringPart_OCR_Parts" Association="WaterNutDBModel.FK_OCR_RecuringPart_OCR_Parts">
+            <End Role="Parts" EntitySet="Parts" />
+            <End Role="OCR_RecuringPart" EntitySet="RecuringPart" />
           </AssociationSet>
-        </EntityContainer>
-        <EntityType Name="LineTypeFieldMappings">
+          <EntitySet Name="RegExParent" EntityType="WaterNutDBModel.RegExParent" />
+          <AssociationSet Name="RegExChainRegExParent" Association="WaterNutDBModel.RegExChainRegExParent">
+            <End Role="RegExChain" EntitySet="RegExChain" />
+            <End Role="RegExParent" EntitySet="RegExParent" />
+          </AssociationSet>
+          <AssociationSet Name="RegExChainRegExParent1" Association="WaterNutDBModel.RegExChainRegExParent1">
+            <End Role="RegExChain" EntitySet="RegExChain" />
+            <End Role="RegExParent" EntitySet="RegExParent" />
+          </AssociationSet>
+          <EntitySet Name="ParentParts" EntityType="WaterNutDBModel.ParentParts" />
+          <AssociationSet Name="PartsChildParts" Association="WaterNutDBModel.PartsChildParts">
+            <End Role="Parts" EntitySet="Parts" />
+            <End Role="ChildParts" EntitySet="ParentParts" />
+          </AssociationSet>
+          <AssociationSet Name="PartsParentParts" Association="WaterNutDBModel.PartsParentParts">
+            <End Role="Parts" EntitySet="Parts" />
+            <End Role="ParentParts" EntitySet="ParentParts" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="End">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PartId" Type="Int32" Nullable="false" />
+          <Property Name="RegExChainId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_End_OCR_Parts" FromRole="OCR_End" ToRole="OCR_Parts" />
+          <NavigationProperty Name="RegExChain" Relationship="WaterNutDBModel.FK_OCR_End_OCR_RegExChain" FromRole="OCR_End" ToRole="OCR_RegExChain" />
+        </EntityType>
+        <EntityType Name="Fields">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="LineTypeId" Type="Int32" Nullable="false" />
-          <Property Name="Key" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Field" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntityType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IsRequired" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="LineTypes" Relationship="WaterNutDBModel.FK_OCR_LineTypeFieldMappings_OCR_LineTypes" FromRole="OCR_LineTypeFieldMappings" ToRole="OCR_LineTypes" />
+          <Property Name="DataType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" FromRole="Fields" ToRole="OCR_Lines" />
+          <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="LineTypes">
+        <EntityType Name="Invoices">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="LineTypeFieldMappings" Relationship="WaterNutDBModel.FK_OCR_LineTypeFieldMappings_OCR_LineTypes" FromRole="OCR_LineTypes" ToRole="OCR_LineTypeFieldMappings" />
-          <NavigationProperty Name="TemplateLines" Relationship="WaterNutDBModel.FK_OCR_TemplateLines_OCR_LineTypes" FromRole="OCR_LineTypes" ToRole="OCR_TemplateLines" />
+          <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" FromRole="OCR_Invoices" ToRole="OCR_Parts" />
+        </EntityType>
+        <EntityType Name="Parts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TemplateId" Type="Int32" Nullable="false" />
+          <Property Name="PartTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="End" Relationship="WaterNutDBModel.FK_OCR_End_OCR_Parts" FromRole="OCR_Parts" ToRole="OCR_End" />
+          <NavigationProperty Name="Invoices" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" FromRole="OCR_Parts" ToRole="OCR_Invoices" />
+          <NavigationProperty Name="PartTypes" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_PartTypes" FromRole="OCR_Parts" ToRole="OCR_PartTypes" />
+          <NavigationProperty Name="Start" Relationship="WaterNutDBModel.FK_OCR_Start_OCR_Parts" FromRole="OCR_Parts" ToRole="OCR_Start" />
+          <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Parts" FromRole="Parts" ToRole="OCR_Lines" />
+          <NavigationProperty Name="RecuringPart" Relationship="WaterNutDBModel.FK_OCR_RecuringPart_OCR_Parts" FromRole="Parts" ToRole="OCR_RecuringPart" />
+          <NavigationProperty Name="ParentPart" Relationship="WaterNutDBModel.PartsChildParts" FromRole="Parts" ToRole="ChildParts" />
+          <NavigationProperty Name="ChildParts" Relationship="WaterNutDBModel.PartsParentParts" FromRole="Parts" ToRole="ParentParts" />
+          </EntityType>
+        <EntityType Name="PartTypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_PartTypes" FromRole="OCR_PartTypes" ToRole="OCR_Parts" />
         </EntityType>
         <EntityType Name="RegExChain">
           <Key>
@@ -314,13 +509,13 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RegExId" Type="Int32" Nullable="false" />
-          <Property Name="PreviousRegExId" Type="Int32" />
-          <NavigationProperty Name="RegExChain1" Relationship="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegExChain" FromRole="OCR_RegExChain" ToRole="OCR_RegExChain1" />
-          <NavigationProperty Name="RegExChain2" Relationship="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegExChain" FromRole="OCR_RegExChain1" ToRole="OCR_RegExChain" />
+          <NavigationProperty Name="End" Relationship="WaterNutDBModel.FK_OCR_End_OCR_RegExChain" FromRole="OCR_RegExChain" ToRole="OCR_End" />
           <NavigationProperty Name="RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegularExpressions" FromRole="OCR_RegExChain" ToRole="OCR_RegularExpressions" />
-          <NavigationProperty Name="TemplateLinesRegularExpressions" Relationship="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_RegExChain" FromRole="OCR_RegExChain" ToRole="OCR_TemplateLinesRegularExpressions" />
-          <NavigationProperty Name="TemplateRegularExpressions" Relationship="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_RegExChain" FromRole="OCR_RegExChain" ToRole="OCR_TemplateRegularExpressions" />
-        </EntityType>
+          <NavigationProperty Name="Start" Relationship="WaterNutDBModel.FK_OCR_Start_OCR_RegExChain" FromRole="OCR_RegExChain" ToRole="OCR_Start" />
+          <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_RegExChain" FromRole="RegExChain" ToRole="OCR_Lines" />
+          <NavigationProperty Name="RegExParent" Relationship="WaterNutDBModel.RegExChainRegExParent" FromRole="RegExChain" ToRole="RegExParent" />
+          <NavigationProperty Name="PreviousRegExParent" Relationship="WaterNutDBModel.RegExChainRegExParent1" FromRole="RegExChain" ToRole="RegExParent" />
+          </EntityType>
         <EntityType Name="RegularExpressions">
           <Key>
             <PropertyRef Name="Id" />
@@ -329,83 +524,83 @@
           <Property Name="RegEx" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="RegExChain" Relationship="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegularExpressions" FromRole="OCR_RegularExpressions" ToRole="OCR_RegExChain" />
         </EntityType>
-        <EntityType Name="TemplateLines">
+        <EntityType Name="Start">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TemplateId" Type="Int32" Nullable="false" />
-          <Property Name="TypeId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="LineTypes" Relationship="WaterNutDBModel.FK_OCR_TemplateLines_OCR_LineTypes" FromRole="OCR_TemplateLines" ToRole="OCR_LineTypes" />
-          <NavigationProperty Name="Templates" Relationship="WaterNutDBModel.FK_OCR_TemplateLines_OCR_Templates" FromRole="OCR_TemplateLines" ToRole="OCR_Templates" />
-          <NavigationProperty Name="TemplateLinesRegularExpressions" Relationship="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_TemplateLines" FromRole="OCR_TemplateLines" ToRole="OCR_TemplateLinesRegularExpressions" />
-        </EntityType>
-        <EntityType Name="TemplateLinesRegularExpressions">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TemplateLineId" Type="Int32" Nullable="false" />
+          <Property Name="PartId" Type="Int32" Nullable="false" />
           <Property Name="RegExChainId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="RegExChain" Relationship="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_RegExChain" FromRole="OCR_TemplateLinesRegularExpressions" ToRole="OCR_RegExChain" />
-          <NavigationProperty Name="TemplateLines" Relationship="WaterNutDBModel.FK_OCR_TemplateLinesRegularExpressions_OCR_TemplateLines" FromRole="OCR_TemplateLinesRegularExpressions" ToRole="OCR_TemplateLines" />
+          <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_Start_OCR_Parts" FromRole="OCR_Start" ToRole="OCR_Parts" />
+          <NavigationProperty Name="RegExChain" Relationship="WaterNutDBModel.FK_OCR_Start_OCR_RegExChain" FromRole="OCR_Start" ToRole="OCR_RegExChain" />
         </EntityType>
-        <EntityType Name="TemplateRegularExpressions">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TemplateId" Type="Int32" Nullable="false" />
-          <Property Name="RegExChainId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="RegExChain" Relationship="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_RegExChain" FromRole="OCR_TemplateRegularExpressions" ToRole="OCR_RegExChain" />
-          <NavigationProperty Name="Templates" Relationship="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_Templates" FromRole="OCR_TemplateRegularExpressions" ToRole="OCR_Templates" />
-        </EntityType>
-        <EntityType Name="Templates">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="TemplateLines" Relationship="WaterNutDBModel.FK_OCR_TemplateLines_OCR_Templates" FromRole="OCR_Templates" ToRole="OCR_TemplateLines" />
-          <NavigationProperty Name="TemplateRegularExpressions" Relationship="WaterNutDBModel.FK_OCR_TemplateRegularExpressions_OCR_Templates" FromRole="OCR_Templates" ToRole="OCR_TemplateRegularExpressions" />
-        </EntityType>
-        <Association Name="FK_OCR_LineTypeFieldMappings_OCR_LineTypes">
-          <End Type="WaterNutDBModel.LineTypes" Role="OCR_LineTypes" Multiplicity="1">
+        <Association Name="FK_OCR_End_OCR_Parts">
+          <End Type="WaterNutDBModel.Parts" Role="OCR_Parts" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.LineTypeFieldMappings" Role="OCR_LineTypeFieldMappings" Multiplicity="*" />
+          <End Type="WaterNutDBModel.End" Role="OCR_End" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR_LineTypes">
+            <Principal Role="OCR_Parts">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_LineTypeFieldMappings">
-              <PropertyRef Name="LineTypeId" />
+            <Dependent Role="OCR_End">
+              <PropertyRef Name="PartId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_TemplateLines_OCR_LineTypes">
-          <End Type="WaterNutDBModel.LineTypes" Role="OCR_LineTypes" Multiplicity="1">
+        <Association Name="FK_OCR_End_OCR_RegExChain">
+          <End Type="WaterNutDBModel.RegExChain" Role="OCR_RegExChain" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.TemplateLines" Role="OCR_TemplateLines" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="OCR_LineTypes">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OCR_TemplateLines">
-              <PropertyRef Name="TypeId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_OCR_RegExChain_OCR_RegExChain">
-          <End Type="WaterNutDBModel.RegExChain" Role="OCR_RegExChain" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.RegExChain" Role="OCR_RegExChain1" Multiplicity="*" />
+          <End Type="WaterNutDBModel.End" Role="OCR_End" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR_RegExChain">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_RegExChain1">
-              <PropertyRef Name="PreviousRegExId" />
+            <Dependent Role="OCR_End">
+              <PropertyRef Name="RegExChainId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_Parts_OCR_Invoices">
+          <End Type="WaterNutDBModel.Invoices" Role="OCR_Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.Parts" Role="OCR_Parts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_Parts">
+              <PropertyRef Name="TemplateId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_Parts_OCR_PartTypes">
+          <End Type="WaterNutDBModel.PartTypes" Role="OCR_PartTypes" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.Parts" Role="OCR_Parts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_PartTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_Parts">
+              <PropertyRef Name="PartTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_Start_OCR_Parts">
+          <End Type="WaterNutDBModel.Parts" Role="OCR_Parts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.Start" Role="OCR_Start" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR_Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_Start">
+              <PropertyRef Name="PartId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -423,71 +618,152 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_TemplateLinesRegularExpressions_OCR_RegExChain">
-          <End Type="WaterNutDBModel.RegExChain" Role="OCR_RegExChain" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.TemplateLinesRegularExpressions" Role="OCR_TemplateLinesRegularExpressions" Multiplicity="*" />
+        <Association Name="FK_OCR_Start_OCR_RegExChain">
+          <End Type="WaterNutDBModel.RegExChain" Role="OCR_RegExChain" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Start" Role="OCR_Start" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="OCR_RegExChain">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_TemplateLinesRegularExpressions">
+            <Dependent Role="OCR_Start">
               <PropertyRef Name="RegExChainId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_TemplateRegularExpressions_OCR_RegExChain">
-          <End Type="WaterNutDBModel.RegExChain" Role="OCR_RegExChain" Multiplicity="1">
+        <EntityType Name="Lines">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PartId" Type="Int32" Nullable="false" />
+          <Property Name="RegExChainId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Fields" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" FromRole="OCR_Lines" ToRole="Fields" />
+          <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Parts" FromRole="OCR_Lines" ToRole="Parts" />
+          <NavigationProperty Name="RegExChain" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_RegExChain" FromRole="OCR_Lines" ToRole="RegExChain" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_OCR_Fields_OCR_Lines">
+          <End Type="WaterNutDBModel.Lines" Role="OCR_Lines" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="WaterNutDBModel.TemplateRegularExpressions" Role="OCR_TemplateRegularExpressions" Multiplicity="*" />
+          <End Type="WaterNutDBModel.Fields" Role="Fields" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR_RegExChain">
+            <Principal Role="OCR_Lines">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_TemplateRegularExpressions">
+            <Dependent Role="Fields">
+              <PropertyRef Name="LineId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_Lines_OCR_Parts">
+          <End Type="WaterNutDBModel.Parts" Role="Parts" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Lines" Role="OCR_Lines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_Lines">
+              <PropertyRef Name="PartId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_Lines_OCR_RegExChain">
+          <End Type="WaterNutDBModel.RegExChain" Role="RegExChain" Multiplicity="1" />
+          <End Type="WaterNutDBModel.Lines" Role="OCR_Lines" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegExChain">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_Lines">
               <PropertyRef Name="RegExChainId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_TemplateLines_OCR_Templates">
-          <End Type="WaterNutDBModel.Templates" Role="OCR_Templates" Multiplicity="1" />
-          <End Type="WaterNutDBModel.TemplateLines" Role="OCR_TemplateLines" Multiplicity="*" />
+        <EntityType Name="RecuringPart">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_RecuringPart_OCR_Parts" FromRole="OCR_RecuringPart" ToRole="Parts" />
+        </EntityType>
+        <Association Name="FK_OCR_RecuringPart_OCR_Parts">
+          <End Type="WaterNutDBModel.Parts" Role="Parts" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.RecuringPart" Role="OCR_RecuringPart" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="OCR_Templates">
+            <Principal Role="Parts">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_TemplateLines">
-              <PropertyRef Name="TemplateId" />
+            <Dependent Role="OCR_RecuringPart">
+              <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_TemplateLinesRegularExpressions_OCR_TemplateLines">
-          <End Type="WaterNutDBModel.TemplateLines" Role="OCR_TemplateLines" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.TemplateLinesRegularExpressions" Role="OCR_TemplateLinesRegularExpressions" Multiplicity="*" />
+        <EntityType Name="RegExParent">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PreviousRegExId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="RegExChain" Relationship="WaterNutDBModel.RegExChainRegExParent" FromRole="RegExParent" ToRole="RegExChain" />
+          <NavigationProperty Name="PreviousRegExParent" Relationship="WaterNutDBModel.RegExChainRegExParent1" FromRole="RegExParent" ToRole="RegExChain" />
+        </EntityType>
+        <Association Name="RegExChainRegExParent">
+          <End Type="WaterNutDBModel.RegExChain" Role="RegExChain" Multiplicity="1" />
+          <End Type="WaterNutDBModel.RegExParent" Role="RegExParent" Multiplicity="0..1" />
           <ReferentialConstraint>
-            <Principal Role="OCR_TemplateLines">
+            <Principal Role="RegExChain">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_TemplateLinesRegularExpressions">
-              <PropertyRef Name="TemplateLineId" />
+            <Dependent Role="RegExParent">
+              <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OCR_TemplateRegularExpressions_OCR_Templates">
-          <End Type="WaterNutDBModel.Templates" Role="OCR_Templates" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDBModel.TemplateRegularExpressions" Role="OCR_TemplateRegularExpressions" Multiplicity="*" />
+        <Association Name="RegExChainRegExParent1">
+          <End Type="WaterNutDBModel.RegExChain" Role="RegExChain" Multiplicity="1" />
+          <End Type="WaterNutDBModel.RegExParent" Role="RegExParent" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OCR_Templates">
+            <Principal Role="RegExChain">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="OCR_TemplateRegularExpressions">
-              <PropertyRef Name="TemplateId" />
+            <Dependent Role="RegExParent">
+              <PropertyRef Name="PreviousRegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ParentParts">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ParentPartId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Part" Relationship="WaterNutDBModel.PartsChildParts" FromRole="ChildParts" ToRole="Parts" />
+          <NavigationProperty Name="ParentPart" Relationship="WaterNutDBModel.PartsParentParts" FromRole="ParentParts" ToRole="Parts" />
+        </EntityType>
+        <Association Name="PartsChildParts">
+          <End Type="WaterNutDBModel.Parts" Role="Parts" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ParentParts" Role="ChildParts" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ChildParts">
+              <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PartsParentParts">
+          <End Type="WaterNutDBModel.Parts" Role="Parts" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ParentParts" Role="ParentParts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parts">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ParentParts">
+              <PropertyRef Name="ParentPartId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -497,21 +773,48 @@
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="WaterNutDBModelStoreContainer" CdmEntityContainer="OCR">
-          <EntitySetMapping Name="LineTypeFieldMappings">
-            <EntityTypeMapping TypeName="WaterNutDBModel.LineTypeFieldMappings">
-              <MappingFragment StoreEntitySet="OCR-LineTypeFieldMappings">
-                <ScalarProperty Name="IsRequired" ColumnName="IsRequired" />
-                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
-                <ScalarProperty Name="Field" ColumnName="Field" />
-                <ScalarProperty Name="Key" ColumnName="Key" />
-                <ScalarProperty Name="LineTypeId" ColumnName="LineTypeId" />
+          <EntitySetMapping Name="End">
+            <EntityTypeMapping TypeName="WaterNutDBModel.End">
+              <MappingFragment StoreEntitySet="OCR-End">
+                <ScalarProperty Name="RegExChainId" ColumnName="RegExChainId" />
+                <ScalarProperty Name="PartId" ColumnName="PartId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="LineTypes">
-            <EntityTypeMapping TypeName="WaterNutDBModel.LineTypes">
-              <MappingFragment StoreEntitySet="OCR-LineTypes">
+          <EntitySetMapping Name="Fields">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Fields">
+              <MappingFragment StoreEntitySet="OCR-Fields">
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="LineId" ColumnName="LineId" />
+                <ScalarProperty Name="DataType" ColumnName="DataType" />
+                <ScalarProperty Name="IsRequired" ColumnName="IsRequired" />
+                <ScalarProperty Name="EntityType" ColumnName="EntityType" />
+                <ScalarProperty Name="Field" ColumnName="Field" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invoices">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Invoices">
+              <MappingFragment StoreEntitySet="OCR-Invoices">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parts">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Parts">
+              <MappingFragment StoreEntitySet="OCR-Parts">
+                <ScalarProperty Name="PartTypeId" ColumnName="PartTypeId" />
+                <ScalarProperty Name="TemplateId" ColumnName="TemplateId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PartTypes">
+            <EntityTypeMapping TypeName="WaterNutDBModel.PartTypes">
+              <MappingFragment StoreEntitySet="OCR-PartTypes">
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -520,7 +823,6 @@
           <EntitySetMapping Name="RegExChain">
             <EntityTypeMapping TypeName="WaterNutDBModel.RegExChain">
               <MappingFragment StoreEntitySet="OCR-RegExChain">
-                <ScalarProperty Name="PreviousRegExId" ColumnName="PreviousRegExId" />
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -534,42 +836,49 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TemplateLines">
-            <EntityTypeMapping TypeName="WaterNutDBModel.TemplateLines">
-              <MappingFragment StoreEntitySet="OCR-TemplateLines">
-                <ScalarProperty Name="TypeId" ColumnName="TypeId" />
-                <ScalarProperty Name="TemplateId" ColumnName="TemplateId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TemplateLinesRegularExpressions">
-            <EntityTypeMapping TypeName="WaterNutDBModel.TemplateLinesRegularExpressions">
-              <MappingFragment StoreEntitySet="OCR-TemplateLinesRegularExpressions">
+          <EntitySetMapping Name="Start">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Start">
+              <MappingFragment StoreEntitySet="OCR-Start">
                 <ScalarProperty Name="RegExChainId" ColumnName="RegExChainId" />
-                <ScalarProperty Name="TemplateLineId" ColumnName="TemplateLineId" />
+                <ScalarProperty Name="PartId" ColumnName="PartId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="TemplateRegularExpressions">
-            <EntityTypeMapping TypeName="WaterNutDBModel.TemplateRegularExpressions">
-              <MappingFragment StoreEntitySet="OCR-TemplateRegularExpressions">
-                <ScalarProperty Name="RegExChainId" ColumnName="RegExChainId" />
-                <ScalarProperty Name="TemplateId" ColumnName="TemplateId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Templates">
-            <EntityTypeMapping TypeName="WaterNutDBModel.Templates">
-              <MappingFragment StoreEntitySet="OCR-Templates">
+          <EntitySetMapping Name="Lines">
+            <EntityTypeMapping TypeName="WaterNutDBModel.Lines">
+              <MappingFragment StoreEntitySet="OCR-Lines">
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="RegExChainId" ColumnName="RegExChainId" />
+                <ScalarProperty Name="PartId" ColumnName="PartId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-        </EntityContainerMapping>
+          <EntitySetMapping Name="RecuringPart">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.RecuringPart)">
+              <MappingFragment StoreEntitySet="OCR-RecuringPart">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegExParent">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.RegExParent)">
+              <MappingFragment StoreEntitySet="OCR-RegExParent">
+                <ScalarProperty Name="PreviousRegExId" ColumnName="PreviousRegExId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ParentParts">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.ParentParts)">
+              <MappingFragment StoreEntitySet="OCR-ParentPart">
+                <ScalarProperty Name="ParentPartId" ColumnName="ParentPartId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

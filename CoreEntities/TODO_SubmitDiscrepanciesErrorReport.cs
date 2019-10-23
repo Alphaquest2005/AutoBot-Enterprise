@@ -33,5 +33,6 @@ namespace CoreEntities
         public System.DateTime emailDate { get; set; }
         public Nullable<int> emailId { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public double Quantity { get; set; }
     }
 }

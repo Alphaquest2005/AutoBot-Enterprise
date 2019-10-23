@@ -571,6 +571,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _quantityFilter;
+        public Double? QuantityFilter
+        {
+            get
+            {
+                return _quantityFilter;
+            }
+            set
+            {
+                _quantityFilter = value;
+				NotifyPropertyChanged(x => QuantityFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -738,7 +756,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 							if(emailDateFilter.HasValue)
 								res.Append(" && " + string.Format("emailDate == \"{0}\"",  Convert.ToDateTime(emailDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+					if(QuantityFilter.HasValue)
+						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -809,7 +830,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     subject = x.subject ,
                     
  
-                    emailDate = x.emailDate 
+                    emailDate = x.emailDate ,
+                    
+ 
+                    Quantity = x.Quantity 
                     
                 }).ToList()
             };
@@ -871,6 +895,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public System.DateTime emailDate { get; set; } 
+                    
+ 
+                    public double Quantity { get; set; } 
                     
         }
 

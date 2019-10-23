@@ -58,9 +58,27 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -188,14 +206,18 @@
     <Compile Include="Generated Client Entities\InventoryQS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated Client Entities\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated Client Entities\InventoryQS\TariffSupUnitLkps.cs" />
-    <Compile Include="Generated Client Entities\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated Client Entities\OCR\LineTypes.cs" />
+    <Compile Include="Generated Client Entities\OCR\End.cs" />
+    <Compile Include="Generated Client Entities\OCR\Fields.cs" />
+    <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
+    <Compile Include="Generated Client Entities\OCR\Lines.cs" />
+    <Compile Include="Generated Client Entities\OCR\ParentParts.cs" />
+    <Compile Include="Generated Client Entities\OCR\Parts.cs" />
+    <Compile Include="Generated Client Entities\OCR\PartTypes.cs" />
+    <Compile Include="Generated Client Entities\OCR\RecuringPart.cs" />
     <Compile Include="Generated Client Entities\OCR\RegExChain.cs" />
+    <Compile Include="Generated Client Entities\OCR\RegExParent.cs" />
     <Compile Include="Generated Client Entities\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated Client Entities\OCR\TemplateLines.cs" />
-    <Compile Include="Generated Client Entities\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated Client Entities\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated Client Entities\OCR\Templates.cs" />
+    <Compile Include="Generated Client Entities\OCR\Start.cs" />
     <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousDocument.cs" />
     <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousDocumentItem.cs" />
     <Compile Include="Generated Client Entities\PreviousDocumentQS\PreviousItemsEx.cs" />
@@ -312,14 +334,18 @@
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffSupUnitLkps.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\LineTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\End.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Fields.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\ParentParts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegExChain.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegExParent.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateLines.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Templates.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\Start.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocument.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\PreviousDocumentQS\PreviousItemsEx.cs" />
@@ -436,14 +462,18 @@
     <Compile Include="Generated MyNavProp Models\InventoryQS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated MyNavProp Models\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated MyNavProp Models\InventoryQS\TariffSupUnitLkps.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\LineTypeFieldMappings.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\LineTypes.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\End.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Fields.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\ParentParts.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Parts.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\PartTypes.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\RecuringPart.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\RegExChain.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\RegExParent.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\RegularExpressions.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\TemplateLines.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\TemplateLinesRegularExpressions.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\TemplateRegularExpressions.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\Templates.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\Start.cs" />
     <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousDocument.cs" />
     <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousDocumentItem.cs" />
     <Compile Include="Generated MyNavProp Models\PreviousDocumentQS\PreviousItemsEx.cs" />

@@ -47,48 +47,19 @@ namespace OCR.Client.DTO
 		}
         private int _RegExId;
 
-        [DataMember]
-        public Nullable<int> PreviousRegExId
-		{ 
-		    get { return _PreviousRegExId; }
-			set
-			{
-			    if (value == _PreviousRegExId) return;
-				_PreviousRegExId = value;
-				NotifyPropertyChanged();//m => this.PreviousRegExId
-			}
-		}
-        private Nullable<int> _PreviousRegExId;
-
        
         [DataMember]
-        public ChangeTrackingCollection<RegExChain> RegExChain1
+        public ChangeTrackingCollection<End> End
 		{
-		    get { return _RegExChain1; }
+		    get { return _End; }
 			set
 			{
-			    if (Equals(value, _RegExChain1)) return;
-				_RegExChain1 = value;
-				NotifyPropertyChanged();//m => this.RegExChain1
+			    if (Equals(value, _End)) return;
+				_End = value;
+				NotifyPropertyChanged();//m => this.End
 			}
 		}
-        private ChangeTrackingCollection<RegExChain> _RegExChain1 = new ChangeTrackingCollection<RegExChain>();
-
-        [DataMember]
-        public RegExChain RegExChain2
-		{
-		    get { return _RegExChain2; }
-			set
-			{
-			    if (value == _RegExChain2) return;
-				_RegExChain2 = value;
-                RegExChain2ChangeTracker = _RegExChain2 == null ? null
-                    : new ChangeTrackingCollection<RegExChain> { _RegExChain2 };
-				NotifyPropertyChanged();//m => this.RegExChain2
-			}
-		}
-        private RegExChain _RegExChain2;
-        private ChangeTrackingCollection<RegExChain> RegExChain2ChangeTracker { get; set; }
+        private ChangeTrackingCollection<End> _End = new ChangeTrackingCollection<End>();
 
         [DataMember]
         public RegularExpressions RegularExpressions
@@ -107,30 +78,59 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<RegularExpressions> RegularExpressionsChangeTracker { get; set; }
 
         [DataMember]
-        public ChangeTrackingCollection<TemplateLinesRegularExpressions> TemplateLinesRegularExpressions
+        public ChangeTrackingCollection<Start> Start
 		{
-		    get { return _TemplateLinesRegularExpressions; }
+		    get { return _Start; }
 			set
 			{
-			    if (Equals(value, _TemplateLinesRegularExpressions)) return;
-				_TemplateLinesRegularExpressions = value;
-				NotifyPropertyChanged();//m => this.TemplateLinesRegularExpressions
+			    if (Equals(value, _Start)) return;
+				_Start = value;
+				NotifyPropertyChanged();//m => this.Start
 			}
 		}
-        private ChangeTrackingCollection<TemplateLinesRegularExpressions> _TemplateLinesRegularExpressions = new ChangeTrackingCollection<TemplateLinesRegularExpressions>();
+        private ChangeTrackingCollection<Start> _Start = new ChangeTrackingCollection<Start>();
 
         [DataMember]
-        public ChangeTrackingCollection<TemplateRegularExpressions> TemplateRegularExpressions
+        public ChangeTrackingCollection<Lines> Lines
 		{
-		    get { return _TemplateRegularExpressions; }
+		    get { return _Lines; }
 			set
 			{
-			    if (Equals(value, _TemplateRegularExpressions)) return;
-				_TemplateRegularExpressions = value;
-				NotifyPropertyChanged();//m => this.TemplateRegularExpressions
+			    if (Equals(value, _Lines)) return;
+				_Lines = value;
+				NotifyPropertyChanged();//m => this.Lines
 			}
 		}
-        private ChangeTrackingCollection<TemplateRegularExpressions> _TemplateRegularExpressions = new ChangeTrackingCollection<TemplateRegularExpressions>();
+        private ChangeTrackingCollection<Lines> _Lines = new ChangeTrackingCollection<Lines>();
+
+        [DataMember]
+        public RegExParent RegExParent
+		{
+		    get { return _RegExParent; }
+			set
+			{
+			    if (value == _RegExParent) return;
+				_RegExParent = value;
+                RegExParentChangeTracker = _RegExParent == null ? null
+                    : new ChangeTrackingCollection<RegExParent> { _RegExParent };
+				NotifyPropertyChanged();//m => this.RegExParent
+			}
+		}
+        private RegExParent _RegExParent;
+        private ChangeTrackingCollection<RegExParent> RegExParentChangeTracker { get; set; }
+
+        [DataMember]
+        public ChangeTrackingCollection<RegExParent> PreviousRegExParent
+		{
+		    get { return _PreviousRegExParent; }
+			set
+			{
+			    if (Equals(value, _PreviousRegExParent)) return;
+				_PreviousRegExParent = value;
+				NotifyPropertyChanged();//m => this.PreviousRegExParent
+			}
+		}
+        private ChangeTrackingCollection<RegExParent> _PreviousRegExParent = new ChangeTrackingCollection<RegExParent>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

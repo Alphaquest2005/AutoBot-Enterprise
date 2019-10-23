@@ -55,6 +55,8 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 			RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentRegularExpressionsChanged);
+ 
+			RegisterToReceiveMessages<RegExParent>(MessageToken.CurrentRegExParentChanged, OnCurrentRegExParentChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -137,13 +139,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
             void CurrentRegExChain__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
-                    //if (e.PropertyName == "AddRegExChain2")
-                   // {
-                   //    if(RegExChain.Contains(CurrentRegExChain.RegExChain2) == false) RegExChain.Add(CurrentRegExChain.RegExChain2);
-                    //}
                     //if (e.PropertyName == "AddRegularExpressions")
                    // {
                    //    if(RegularExpressions.Contains(CurrentRegExChain.RegularExpressions) == false) RegularExpressions.Add(CurrentRegExChain.RegularExpressions);
+                    //}
+                    //if (e.PropertyName == "AddRegExParent")
+                   // {
+                   //    if(RegExParent.Contains(CurrentRegExChain.RegExParent) == false) RegExParent.Add(CurrentRegExChain.RegExParent);
                     //}
                  } 
         internal virtual void OnRegExChainChanged(object sender, NotificationEventArgs e)
@@ -170,6 +172,22 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 				NotifyPropertyChanged(x => this.RegExChain);
                 // SendMessage(MessageToken.RegExChainChanged, new NotificationEventArgs(MessageToken.RegExChainChanged));
                 			}
+	
+		 internal virtual void OnCurrentRegExParentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegExParent> e)
+			{
+			if(ViewCurrentRegExParent == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+                }
+
+				RegExChain.Refresh();
+				NotifyPropertyChanged(x => this.RegExChain);
+                // SendMessage(MessageToken.RegExChainChanged, new NotificationEventArgs(MessageToken.RegExChainChanged));
+                			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -187,6 +205,21 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
              {
                  _viewCurrentRegularExpressions = value;
                  NotifyPropertyChanged(x => x.ViewCurrentRegularExpressions);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentRegExParent = false;
+         public bool ViewCurrentRegExParent
+         {
+             get
+             {
+                 return _viewCurrentRegExParent;
+             }
+             set
+             {
+                 _viewCurrentRegExParent = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentRegExParent);
                 FilterData();
              }
          }

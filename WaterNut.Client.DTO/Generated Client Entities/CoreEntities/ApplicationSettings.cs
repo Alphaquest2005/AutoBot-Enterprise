@@ -554,6 +554,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _AssessEX;
 
+        [DataMember]
+        public Nullable<bool> TestMode
+		{ 
+		    get { return _TestMode; }
+			set
+			{
+			    if (value == _TestMode) return;
+				_TestMode = value;
+				NotifyPropertyChanged();//m => this.TestMode
+			}
+		}
+        private Nullable<bool> _TestMode;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

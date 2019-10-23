@@ -347,6 +347,21 @@ public int ApplicationSettingsId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Quantity is required")]
+       [NumberValidationAttribute]
+public double Quantity
+		{ 
+		    get { return this.todo_submitdiscrepancieserrorreport.Quantity; }
+			set
+			{
+			    if (value == this.todo_submitdiscrepancieserrorreport.Quantity) return;
+				this.todo_submitdiscrepancieserrorreport.Quantity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Quantity");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_SubmitDiscrepanciesErrorReport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_SubmitDiscrepanciesErrorReport> ChangeTracker

@@ -304,6 +304,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         int _applicationsettingsid;
+        [DataMember]
+        public double Quantity 
+        {
+            get
+            {
+                return _quantity;
+            }
+            set
+            {
+                _quantity = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _quantity;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

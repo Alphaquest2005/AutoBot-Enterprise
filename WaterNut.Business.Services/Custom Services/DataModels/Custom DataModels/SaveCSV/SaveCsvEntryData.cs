@@ -77,8 +77,9 @@ namespace WaterNut.DataSpace
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                throw;
+                var nex = new ApplicationException($"Error Importing File: {droppedFilePath}",e);
+                Console.WriteLine(nex);
+                throw nex;
             }
         }
 

@@ -768,6 +768,7 @@ namespace AutoBot
                             ItemDescription = x.ItemDescription,
                             InvoiceQty = x.InvoiceQty,
                             ReceivedQty = x.ReceivedQty,
+                            Quantity = x.Quantity,
                             Cost = x.Cost,
                             PreviousCNumber = x.PreviousCNumber,
                             PreviousInvoiceNumber = x.PreviousInvoiceNumber,
@@ -794,6 +795,7 @@ namespace AutoBot
                             ItemDescription = x.ItemDescription,
                             InvoiceQty = x.InvoiceQty,
                             ReceivedQty = x.ReceivedQty,
+                            Quantity = x.Quantity,
                             Cost = x.Cost,
                             PreviousCNumber = x.PreviousCNumber,
                             PreviousInvoiceNumber = x.PreviousInvoiceNumber,
@@ -3508,8 +3510,7 @@ namespace AutoBot
         public string subject { get; set; }
 
         public System.DateTime emailDate { get; set; }
-
-
+        public double Quantity { get; set; }
     }
 
     public class DiscrepancyPreExecutionReport
@@ -3548,5 +3549,6 @@ namespace AutoBot
         public System.DateTime emailDate { get; set; }
         public string DocumentType { get; set; }
         public string Reference { get; set; }
+        public double Quantity { get; set; }
     }
 }

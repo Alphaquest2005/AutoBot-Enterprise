@@ -117,11 +117,6 @@ namespace OCR.Client.Services
             return  await Channel.GetRegExChainByRegExId(RegExId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<RegExChain>> GetRegExChainByPreviousRegExId(string PreviousRegExId, List<string> includesLst = null)
-        {
-            return  await Channel.GetRegExChainByPreviousRegExId(PreviousRegExId, includesLst).ConfigureAwait(false);
-        }
-			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,6 +23,8 @@
     <SccProvider>
     </SccProvider>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,32 +61,50 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Interactions">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MoreLinq, Version=3.0.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
-      <HintPath>..\packages\morelinq.3.0.0\lib\net451\MoreLinq.dll</HintPath>
+    <Reference Include="MoreLinq, Version=3.2.0.0, Culture=neutral, PublicKeyToken=384d532d7e88985d, processorArchitecture=MSIL">
+      <HintPath>..\packages\morelinq.3.2.0\lib\net451\MoreLinq.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Omu.ValueInjecter, Version=3.1.3.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
-      <HintPath>..\packages\ValueInjecter.3.1.3\lib\net45\Omu.ValueInjecter.dll</HintPath>
+    <Reference Include="Omu.ValueInjecter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
+      <HintPath>..\packages\ValueInjecter.3.2.0\lib\net45\Omu.ValueInjecter.dll</HintPath>
     </Reference>
     <Reference Include="ParallelExtensionsExtras">
       <HintPath>..\packages\MSFT.ParallelExtensionsExtras.1.2.0\lib\ParallelExtensionsExtras.dll</HintPath>
     </Reference>
-    <Reference Include="Serialize.Linq, Version=1.7.1.0, Culture=neutral, PublicKeyToken=25bcc11ba213b377, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serialize.Linq.1.7.1\lib\net45\Serialize.Linq.dll</HintPath>
+    <Reference Include="Serialize.Linq, Version=1.8.1.0, Culture=neutral, PublicKeyToken=25bcc11ba213b377, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serialize.Linq.1.8.1\lib\net45\Serialize.Linq.dll</HintPath>
     </Reference>
     <Reference Include="SimpleMvvmToolkit-Common">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
@@ -110,17 +131,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="TrackableEntities.Client, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\WaterNut - Enterprise\WaterNut\bin\Debug\TrackableEntities.Client.dll</HintPath>
+    <Reference Include="TrackableEntities.Client">
+      <HintPath>..\WaterNut\TrackableEntities.Client.dll</HintPath>
     </Reference>
     <Reference Include="TrackableEntities.Common, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\WaterNut - Enterprise\WaterNut\bin\Debug\TrackableEntities.Common.dll</HintPath>
+      <HintPath>..\packages\TrackableEntities.Common.2.5.7\lib\portable40-net40+sl5+win8+wp8+wpa81\TrackableEntities.Common.dll</HintPath>
     </Reference>
     <Reference Include="TrackableEntities.EF.6, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\WaterNut - Enterprise\WaterNut\bin\Debug\TrackableEntities.EF.6.dll</HintPath>
+      <HintPath>..\packages\TrackableEntities.EF.6.2.5.7\lib\net45\TrackableEntities.EF.6.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -390,14 +408,18 @@
     <Compile Include="Contracts\LicenseDS\IxLIC_General_segmentService.cs" />
     <Compile Include="Contracts\LicenseDS\IxLIC_LicenseService.cs" />
     <Compile Include="Contracts\LicenseDS\IxLIC_Lic_item_segmentService.cs" />
-    <Compile Include="Contracts\OCR\ILineTypeFieldMappingsService.cs" />
-    <Compile Include="Contracts\OCR\ILineTypesService.cs" />
+    <Compile Include="Contracts\OCR\IEndService.cs" />
+    <Compile Include="Contracts\OCR\IFieldsService.cs" />
+    <Compile Include="Contracts\OCR\IInvoicesService.cs" />
+    <Compile Include="Contracts\OCR\ILinesService.cs" />
+    <Compile Include="Contracts\OCR\IParentPartsService.cs" />
+    <Compile Include="Contracts\OCR\IPartsService.cs" />
+    <Compile Include="Contracts\OCR\IPartTypesService.cs" />
+    <Compile Include="Contracts\OCR\IRecuringPartService.cs" />
     <Compile Include="Contracts\OCR\IRegExChainService.cs" />
+    <Compile Include="Contracts\OCR\IRegExParentService.cs" />
     <Compile Include="Contracts\OCR\IRegularExpressionsService.cs" />
-    <Compile Include="Contracts\OCR\ITemplateLinesRegularExpressionsService.cs" />
-    <Compile Include="Contracts\OCR\ITemplateLinesService.cs" />
-    <Compile Include="Contracts\OCR\ITemplateRegularExpressionsService.cs" />
-    <Compile Include="Contracts\OCR\ITemplatesService.cs" />
+    <Compile Include="Contracts\OCR\IStartService.cs" />
     <Compile Include="Contracts\PreviousDocumentDS\IEntryDataDetailsService.cs" />
     <Compile Include="Contracts\PreviousDocumentDS\IEntryPreviousItemsService.cs" />
     <Compile Include="Contracts\PreviousDocumentDS\IPreviousEntryService.cs" />
@@ -897,14 +919,18 @@
     <Compile Include="Services\LicenseDS\xLIC_General_segmentService.cs" />
     <Compile Include="Services\LicenseDS\xLIC_LicenseService.cs" />
     <Compile Include="Services\LicenseDS\xLIC_Lic_item_segmentService.cs" />
-    <Compile Include="Services\OCR\LineTypeFieldMappingsService.cs" />
-    <Compile Include="Services\OCR\LineTypesService.cs" />
+    <Compile Include="Services\OCR\EndService.cs" />
+    <Compile Include="Services\OCR\FieldsService.cs" />
+    <Compile Include="Services\OCR\InvoicesService.cs" />
+    <Compile Include="Services\OCR\LinesService.cs" />
+    <Compile Include="Services\OCR\ParentPartsService.cs" />
+    <Compile Include="Services\OCR\PartsService.cs" />
+    <Compile Include="Services\OCR\PartTypesService.cs" />
+    <Compile Include="Services\OCR\RecuringPartService.cs" />
     <Compile Include="Services\OCR\RegExChainService.cs" />
+    <Compile Include="Services\OCR\RegExParentService.cs" />
     <Compile Include="Services\OCR\RegularExpressionsService.cs" />
-    <Compile Include="Services\OCR\TemplateLinesRegularExpressionsService.cs" />
-    <Compile Include="Services\OCR\TemplateLinesService.cs" />
-    <Compile Include="Services\OCR\TemplateRegularExpressionsService.cs" />
-    <Compile Include="Services\OCR\TemplatesService.cs" />
+    <Compile Include="Services\OCR\StartService.cs" />
     <Compile Include="Services\PreviousDocumentDS\EntryDataDetailsService.cs" />
     <Compile Include="Services\PreviousDocumentDS\EntryPreviousItemsService.cs" />
     <Compile Include="Services\PreviousDocumentDS\PreviousEntryService.cs" />
@@ -942,10 +968,6 @@
     <ProjectReference Include="..\AsycudaWorld421\AsycudaWorld421.csproj">
       <Project>{0426f0e8-f84c-46d2-aa56-759eba752269}</Project>
       <Name>AsycudaWorld421</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Core.Common.PDF2TXT\Core.Common.PDF2TXT.csproj">
-      <Project>{917d4053-ae15-44b2-a434-4411af44b9a6}</Project>
-      <Name>Core.Common.PDF2TXT</Name>
     </ProjectReference>
     <ProjectReference Include="..\Core.Common\Core.Common.Contracts\Core.Common.Contracts.csproj">
       <Project>{0dd350c7-3cbe-4791-a9b5-332bf3f1b756}</Project>
@@ -998,7 +1020,10 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.3.0\build\EntityFramework.targets'))" />
   </Target>
+  <Import Project="..\packages\EntityFramework.6.3.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.3.0\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

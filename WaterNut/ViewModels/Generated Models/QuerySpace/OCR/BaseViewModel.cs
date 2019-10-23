@@ -53,25 +53,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                  if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
  
 
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentLineTypeFieldMappingsIDChanged, OnCurrentLineTypeFieldMappingsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentLineTypesIDChanged, OnCurrentLineTypesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentEndIDChanged, OnCurrentEndIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFieldsIDChanged, OnCurrentFieldsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentInvoicesIDChanged, OnCurrentInvoicesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentLinesIDChanged, OnCurrentLinesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentParentPartsIDChanged, OnCurrentParentPartsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentRecuringPartIDChanged, OnCurrentRecuringPartIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRegExChainIDChanged, OnCurrentRegExChainIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentRegExParentIDChanged, OnCurrentRegExParentIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRegularExpressionsIDChanged, OnCurrentRegularExpressionsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentTemplateLinesIDChanged, OnCurrentTemplateLinesIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentTemplateLinesRegularExpressionsIDChanged, OnCurrentTemplateLinesRegularExpressionsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentTemplateRegularExpressionsIDChanged, OnCurrentTemplateRegularExpressionsIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentTemplatesIDChanged, OnCurrentTemplatesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentStartIDChanged, OnCurrentStartIDChanged);
        
 
 			// Recieve messages for Current Object Changed
-                        RegisterToReceiveMessages<LineTypeFieldMappings>(MessageToken.CurrentLineTypeFieldMappingsChanged, OnCurrentLineTypeFieldMappingsChanged);
-                        RegisterToReceiveMessages<LineTypes>(MessageToken.CurrentLineTypesChanged, OnCurrentLineTypesChanged);
+                        RegisterToReceiveMessages<End>(MessageToken.CurrentEndChanged, OnCurrentEndChanged);
+                        RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnCurrentFieldsChanged);
+                        RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentInvoicesChanged);
+                        RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
+                        RegisterToReceiveMessages<ParentParts>(MessageToken.CurrentParentPartsChanged, OnCurrentParentPartsChanged);
+                        RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
+                        RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
+                        RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
                         RegisterToReceiveMessages<RegExChain>(MessageToken.CurrentRegExChainChanged, OnCurrentRegExChainChanged);
+                        RegisterToReceiveMessages<RegExParent>(MessageToken.CurrentRegExParentChanged, OnCurrentRegExParentChanged);
                         RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentRegularExpressionsChanged);
-                        RegisterToReceiveMessages<TemplateLines>(MessageToken.CurrentTemplateLinesChanged, OnCurrentTemplateLinesChanged);
-                        RegisterToReceiveMessages<TemplateLinesRegularExpressions>(MessageToken.CurrentTemplateLinesRegularExpressionsChanged, OnCurrentTemplateLinesRegularExpressionsChanged);
-                        RegisterToReceiveMessages<TemplateRegularExpressions>(MessageToken.CurrentTemplateRegularExpressionsChanged, OnCurrentTemplateRegularExpressionsChanged);
-                        RegisterToReceiveMessages<Templates>(MessageToken.CurrentTemplatesChanged, OnCurrentTemplatesChanged);
+                        RegisterToReceiveMessages<Start>(MessageToken.CurrentStartChanged, OnCurrentStartChanged);
     
                 // Receive messages for cached collections for purpose of refreshing cache
              
@@ -91,57 +99,219 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 
 
-                        internal async void OnCurrentLineTypeFieldMappingsIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentEndIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (LineTypeFieldMappingsRepository ctx = new LineTypeFieldMappingsRepository())
+                            using (EndRepository ctx = new EndRepository())
                             {
-                                CurrentLineTypeFieldMappings = await ctx.GetLineTypeFieldMappings(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentEnd = await ctx.GetEnd(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentLineTypeFieldMappings);
+                            NotifyPropertyChanged(m => CurrentEnd);
                         }
 
-                        private  string _currentLineTypeFieldMappingsID = "";
-                        public string CurrentLineTypeFieldMappingsID
+                        private  string _currentEndID = "";
+                        public string CurrentEndID
                         {
                             get
                             {
-                                return _currentLineTypeFieldMappingsID;
+                                return _currentEndID;
                             }
                             set
                             {
-                                if (_currentLineTypeFieldMappingsID != value)
+                                if (_currentEndID != value)
                                 {
-                                    _currentLineTypeFieldMappingsID = value;
-                                    if (!string.IsNullOrEmpty(_currentLineTypeFieldMappingsID)) BeginSendMessage(MessageToken.CurrentLineTypeFieldMappingsIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentLineTypeFieldMappingsIDChanged, _currentLineTypeFieldMappingsID));
-                                    NotifyPropertyChanged(x => this.CurrentLineTypeFieldMappingsID);  
+                                    _currentEndID = value;
+                                    if (!string.IsNullOrEmpty(_currentEndID)) BeginSendMessage(MessageToken.CurrentEndIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentEndIDChanged, _currentEndID));
+                                    NotifyPropertyChanged(x => this.CurrentEndID);  
                                 }
                             }
                         }
-                        internal async void OnCurrentLineTypesIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentFieldsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (LineTypesRepository ctx = new LineTypesRepository())
+                            using (FieldsRepository ctx = new FieldsRepository())
                             {
-                                CurrentLineTypes = await ctx.GetLineTypes(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentFields = await ctx.GetFields(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentLineTypes);
+                            NotifyPropertyChanged(m => CurrentFields);
                         }
 
-                        private  string _currentLineTypesID = "";
-                        public string CurrentLineTypesID
+                        private  string _currentFieldsID = "";
+                        public string CurrentFieldsID
                         {
                             get
                             {
-                                return _currentLineTypesID;
+                                return _currentFieldsID;
                             }
                             set
                             {
-                                if (_currentLineTypesID != value)
+                                if (_currentFieldsID != value)
                                 {
-                                    _currentLineTypesID = value;
-                                    if (!string.IsNullOrEmpty(_currentLineTypesID)) BeginSendMessage(MessageToken.CurrentLineTypesIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentLineTypesIDChanged, _currentLineTypesID));
-                                    NotifyPropertyChanged(x => this.CurrentLineTypesID);  
+                                    _currentFieldsID = value;
+                                    if (!string.IsNullOrEmpty(_currentFieldsID)) BeginSendMessage(MessageToken.CurrentFieldsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFieldsIDChanged, _currentFieldsID));
+                                    NotifyPropertyChanged(x => this.CurrentFieldsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentInvoicesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (InvoicesRepository ctx = new InvoicesRepository())
+                            {
+                                CurrentInvoices = await ctx.GetInvoices(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentInvoices);
+                        }
+
+                        private  string _currentInvoicesID = "";
+                        public string CurrentInvoicesID
+                        {
+                            get
+                            {
+                                return _currentInvoicesID;
+                            }
+                            set
+                            {
+                                if (_currentInvoicesID != value)
+                                {
+                                    _currentInvoicesID = value;
+                                    if (!string.IsNullOrEmpty(_currentInvoicesID)) BeginSendMessage(MessageToken.CurrentInvoicesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentInvoicesIDChanged, _currentInvoicesID));
+                                    NotifyPropertyChanged(x => this.CurrentInvoicesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentLinesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (LinesRepository ctx = new LinesRepository())
+                            {
+                                CurrentLines = await ctx.GetLines(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentLines);
+                        }
+
+                        private  string _currentLinesID = "";
+                        public string CurrentLinesID
+                        {
+                            get
+                            {
+                                return _currentLinesID;
+                            }
+                            set
+                            {
+                                if (_currentLinesID != value)
+                                {
+                                    _currentLinesID = value;
+                                    if (!string.IsNullOrEmpty(_currentLinesID)) BeginSendMessage(MessageToken.CurrentLinesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentLinesIDChanged, _currentLinesID));
+                                    NotifyPropertyChanged(x => this.CurrentLinesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentParentPartsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ParentPartsRepository ctx = new ParentPartsRepository())
+                            {
+                                CurrentParentParts = await ctx.GetParentParts(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentParentParts);
+                        }
+
+                        private  string _currentParentPartsID = "";
+                        public string CurrentParentPartsID
+                        {
+                            get
+                            {
+                                return _currentParentPartsID;
+                            }
+                            set
+                            {
+                                if (_currentParentPartsID != value)
+                                {
+                                    _currentParentPartsID = value;
+                                    if (!string.IsNullOrEmpty(_currentParentPartsID)) BeginSendMessage(MessageToken.CurrentParentPartsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentParentPartsIDChanged, _currentParentPartsID));
+                                    NotifyPropertyChanged(x => this.CurrentParentPartsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentPartsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (PartsRepository ctx = new PartsRepository())
+                            {
+                                CurrentParts = await ctx.GetParts(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentParts);
+                        }
+
+                        private  string _currentPartsID = "";
+                        public string CurrentPartsID
+                        {
+                            get
+                            {
+                                return _currentPartsID;
+                            }
+                            set
+                            {
+                                if (_currentPartsID != value)
+                                {
+                                    _currentPartsID = value;
+                                    if (!string.IsNullOrEmpty(_currentPartsID)) BeginSendMessage(MessageToken.CurrentPartsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentPartsIDChanged, _currentPartsID));
+                                    NotifyPropertyChanged(x => this.CurrentPartsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentPartTypesIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (PartTypesRepository ctx = new PartTypesRepository())
+                            {
+                                CurrentPartTypes = await ctx.GetPartTypes(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentPartTypes);
+                        }
+
+                        private  string _currentPartTypesID = "";
+                        public string CurrentPartTypesID
+                        {
+                            get
+                            {
+                                return _currentPartTypesID;
+                            }
+                            set
+                            {
+                                if (_currentPartTypesID != value)
+                                {
+                                    _currentPartTypesID = value;
+                                    if (!string.IsNullOrEmpty(_currentPartTypesID)) BeginSendMessage(MessageToken.CurrentPartTypesIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentPartTypesIDChanged, _currentPartTypesID));
+                                    NotifyPropertyChanged(x => this.CurrentPartTypesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentRecuringPartIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (RecuringPartRepository ctx = new RecuringPartRepository())
+                            {
+                                CurrentRecuringPart = await ctx.GetRecuringPart(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentRecuringPart);
+                        }
+
+                        private  string _currentRecuringPartID = "";
+                        public string CurrentRecuringPartID
+                        {
+                            get
+                            {
+                                return _currentRecuringPartID;
+                            }
+                            set
+                            {
+                                if (_currentRecuringPartID != value)
+                                {
+                                    _currentRecuringPartID = value;
+                                    if (!string.IsNullOrEmpty(_currentRecuringPartID)) BeginSendMessage(MessageToken.CurrentRecuringPartIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentRecuringPartIDChanged, _currentRecuringPartID));
+                                    NotifyPropertyChanged(x => this.CurrentRecuringPartID);  
                                 }
                             }
                         }
@@ -172,6 +342,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentRegExParentIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (RegExParentRepository ctx = new RegExParentRepository())
+                            {
+                                CurrentRegExParent = await ctx.GetRegExParent(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentRegExParent);
+                        }
+
+                        private  string _currentRegExParentID = "";
+                        public string CurrentRegExParentID
+                        {
+                            get
+                            {
+                                return _currentRegExParentID;
+                            }
+                            set
+                            {
+                                if (_currentRegExParentID != value)
+                                {
+                                    _currentRegExParentID = value;
+                                    if (!string.IsNullOrEmpty(_currentRegExParentID)) BeginSendMessage(MessageToken.CurrentRegExParentIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentRegExParentIDChanged, _currentRegExParentID));
+                                    NotifyPropertyChanged(x => this.CurrentRegExParentID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentRegularExpressionsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (RegularExpressionsRepository ctx = new RegularExpressionsRepository())
@@ -199,111 +396,30 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentTemplateLinesIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentStartIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (TemplateLinesRepository ctx = new TemplateLinesRepository())
+                            using (StartRepository ctx = new StartRepository())
                             {
-                                CurrentTemplateLines = await ctx.GetTemplateLines(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentStart = await ctx.GetStart(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentTemplateLines);
+                            NotifyPropertyChanged(m => CurrentStart);
                         }
 
-                        private  string _currentTemplateLinesID = "";
-                        public string CurrentTemplateLinesID
+                        private  string _currentStartID = "";
+                        public string CurrentStartID
                         {
                             get
                             {
-                                return _currentTemplateLinesID;
+                                return _currentStartID;
                             }
                             set
                             {
-                                if (_currentTemplateLinesID != value)
+                                if (_currentStartID != value)
                                 {
-                                    _currentTemplateLinesID = value;
-                                    if (!string.IsNullOrEmpty(_currentTemplateLinesID)) BeginSendMessage(MessageToken.CurrentTemplateLinesIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentTemplateLinesIDChanged, _currentTemplateLinesID));
-                                    NotifyPropertyChanged(x => this.CurrentTemplateLinesID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentTemplateLinesRegularExpressionsIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (TemplateLinesRegularExpressionsRepository ctx = new TemplateLinesRegularExpressionsRepository())
-                            {
-                                CurrentTemplateLinesRegularExpressions = await ctx.GetTemplateLinesRegularExpressions(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentTemplateLinesRegularExpressions);
-                        }
-
-                        private  string _currentTemplateLinesRegularExpressionsID = "";
-                        public string CurrentTemplateLinesRegularExpressionsID
-                        {
-                            get
-                            {
-                                return _currentTemplateLinesRegularExpressionsID;
-                            }
-                            set
-                            {
-                                if (_currentTemplateLinesRegularExpressionsID != value)
-                                {
-                                    _currentTemplateLinesRegularExpressionsID = value;
-                                    if (!string.IsNullOrEmpty(_currentTemplateLinesRegularExpressionsID)) BeginSendMessage(MessageToken.CurrentTemplateLinesRegularExpressionsIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentTemplateLinesRegularExpressionsIDChanged, _currentTemplateLinesRegularExpressionsID));
-                                    NotifyPropertyChanged(x => this.CurrentTemplateLinesRegularExpressionsID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentTemplateRegularExpressionsIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (TemplateRegularExpressionsRepository ctx = new TemplateRegularExpressionsRepository())
-                            {
-                                CurrentTemplateRegularExpressions = await ctx.GetTemplateRegularExpressions(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentTemplateRegularExpressions);
-                        }
-
-                        private  string _currentTemplateRegularExpressionsID = "";
-                        public string CurrentTemplateRegularExpressionsID
-                        {
-                            get
-                            {
-                                return _currentTemplateRegularExpressionsID;
-                            }
-                            set
-                            {
-                                if (_currentTemplateRegularExpressionsID != value)
-                                {
-                                    _currentTemplateRegularExpressionsID = value;
-                                    if (!string.IsNullOrEmpty(_currentTemplateRegularExpressionsID)) BeginSendMessage(MessageToken.CurrentTemplateRegularExpressionsIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentTemplateRegularExpressionsIDChanged, _currentTemplateRegularExpressionsID));
-                                    NotifyPropertyChanged(x => this.CurrentTemplateRegularExpressionsID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentTemplatesIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (TemplatesRepository ctx = new TemplatesRepository())
-                            {
-                                CurrentTemplates = await ctx.GetTemplates(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentTemplates);
-                        }
-
-                        private  string _currentTemplatesID = "";
-                        public string CurrentTemplatesID
-                        {
-                            get
-                            {
-                                return _currentTemplatesID;
-                            }
-                            set
-                            {
-                                if (_currentTemplatesID != value)
-                                {
-                                    _currentTemplatesID = value;
-                                    if (!string.IsNullOrEmpty(_currentTemplatesID)) BeginSendMessage(MessageToken.CurrentTemplatesIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentTemplatesIDChanged, _currentTemplatesID));
-                                    NotifyPropertyChanged(x => this.CurrentTemplatesID);  
+                                    _currentStartID = value;
+                                    if (!string.IsNullOrEmpty(_currentStartID)) BeginSendMessage(MessageToken.CurrentStartIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentStartIDChanged, _currentStartID));
+                                    NotifyPropertyChanged(x => this.CurrentStartID);  
                                 }
                             }
                         }
@@ -314,47 +430,47 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
-        internal void OnCurrentLineTypeFieldMappingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<LineTypeFieldMappings> e)
+        internal void OnCurrentEndChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<End> e)
         {
-            //CurrentLineTypeFieldMappings = e.Data;
-            NotifyPropertyChanged(m => this.CurrentLineTypeFieldMappings);
+            //CurrentEnd = e.Data;
+            NotifyPropertyChanged(m => this.CurrentEnd);
         }
 
-        private  LineTypeFieldMappings _currentLineTypeFieldMappings;
-        public LineTypeFieldMappings CurrentLineTypeFieldMappings
+        private  End _currentEnd;
+        public End CurrentEnd
         {
             get
             {
-                return _currentLineTypeFieldMappings;
+                return _currentEnd;
             }
             set
             {
-                if (_currentLineTypeFieldMappings != value)
+                if (_currentEnd != value)
                 {
-                    _currentLineTypeFieldMappings = value;
-                    BeginSendMessage(MessageToken.CurrentLineTypeFieldMappingsChanged,
-                                                     new NotificationEventArgs<LineTypeFieldMappings>(MessageToken.CurrentLineTypeFieldMappingsChanged, _currentLineTypeFieldMappings)); 
-                    NotifyPropertyChanged(x => this.CurrentLineTypeFieldMappings);    
+                    _currentEnd = value;
+                    BeginSendMessage(MessageToken.CurrentEndChanged,
+                                                     new NotificationEventArgs<End>(MessageToken.CurrentEndChanged, _currentEnd)); 
+                    NotifyPropertyChanged(x => this.CurrentEnd);    
                     // all current navigation properties = null
    
                 }
             }
         }
 
-		VirtualListItem<LineTypeFieldMappings> _vcurrentLineTypeFieldMappings;
-        public VirtualListItem<LineTypeFieldMappings> VCurrentLineTypeFieldMappings
+		VirtualListItem<End> _vcurrentEnd;
+        public VirtualListItem<End> VCurrentEnd
         {
             get
             {
-                return _vcurrentLineTypeFieldMappings;
+                return _vcurrentEnd;
             }
             set
             {
-                if (_vcurrentLineTypeFieldMappings != value)
+                if (_vcurrentEnd != value)
                 {
-                    _vcurrentLineTypeFieldMappings = value;
-					if(_vcurrentLineTypeFieldMappings != null) CurrentLineTypeFieldMappings = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentLineTypeFieldMappings);                    
+                    _vcurrentEnd = value;
+					if(_vcurrentEnd != null) CurrentEnd = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentEnd);                    
                 }
             }
         }
@@ -364,49 +480,357 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
-        internal void OnCurrentLineTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<LineTypes> e)
+        internal void OnCurrentFieldsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Fields> e)
         {
-            //CurrentLineTypes = e.Data;
-            NotifyPropertyChanged(m => this.CurrentLineTypes);
+            //CurrentFields = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFields);
         }
 
-        private  LineTypes _currentLineTypes;
-        public LineTypes CurrentLineTypes
+        private  Fields _currentFields;
+        public Fields CurrentFields
         {
             get
             {
-                return _currentLineTypes;
+                return _currentFields;
             }
             set
             {
-                if (_currentLineTypes != value)
+                if (_currentFields != value)
                 {
-                    _currentLineTypes = value;
-                    BeginSendMessage(MessageToken.CurrentLineTypesChanged,
-                                                     new NotificationEventArgs<LineTypes>(MessageToken.CurrentLineTypesChanged, _currentLineTypes)); 
-                    NotifyPropertyChanged(x => this.CurrentLineTypes);    
+                    _currentFields = value;
+                    BeginSendMessage(MessageToken.CurrentFieldsChanged,
+                                                     new NotificationEventArgs<Fields>(MessageToken.CurrentFieldsChanged, _currentFields)); 
+                    NotifyPropertyChanged(x => this.CurrentFields);    
                     // all current navigation properties = null
-                 CurrentLineTypeFieldMappings = null;
-                 CurrentTemplateLines = null;
    
                 }
             }
         }
 
-		VirtualListItem<LineTypes> _vcurrentLineTypes;
-        public VirtualListItem<LineTypes> VCurrentLineTypes
+		VirtualListItem<Fields> _vcurrentFields;
+        public VirtualListItem<Fields> VCurrentFields
         {
             get
             {
-                return _vcurrentLineTypes;
+                return _vcurrentFields;
             }
             set
             {
-                if (_vcurrentLineTypes != value)
+                if (_vcurrentFields != value)
                 {
-                    _vcurrentLineTypes = value;
-					if(_vcurrentLineTypes != null) CurrentLineTypes = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentLineTypes);                    
+                    _vcurrentFields = value;
+					if(_vcurrentFields != null) CurrentFields = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFields);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentInvoicesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Invoices> e)
+        {
+            //CurrentInvoices = e.Data;
+            NotifyPropertyChanged(m => this.CurrentInvoices);
+        }
+
+        private  Invoices _currentInvoices;
+        public Invoices CurrentInvoices
+        {
+            get
+            {
+                return _currentInvoices;
+            }
+            set
+            {
+                if (_currentInvoices != value)
+                {
+                    _currentInvoices = value;
+                    BeginSendMessage(MessageToken.CurrentInvoicesChanged,
+                                                     new NotificationEventArgs<Invoices>(MessageToken.CurrentInvoicesChanged, _currentInvoices)); 
+                    NotifyPropertyChanged(x => this.CurrentInvoices);    
+                    // all current navigation properties = null
+                 CurrentParts = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<Invoices> _vcurrentInvoices;
+        public VirtualListItem<Invoices> VCurrentInvoices
+        {
+            get
+            {
+                return _vcurrentInvoices;
+            }
+            set
+            {
+                if (_vcurrentInvoices != value)
+                {
+                    _vcurrentInvoices = value;
+					if(_vcurrentInvoices != null) CurrentInvoices = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentInvoices);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentLinesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Lines> e)
+        {
+            //CurrentLines = e.Data;
+            NotifyPropertyChanged(m => this.CurrentLines);
+        }
+
+        private  Lines _currentLines;
+        public Lines CurrentLines
+        {
+            get
+            {
+                return _currentLines;
+            }
+            set
+            {
+                if (_currentLines != value)
+                {
+                    _currentLines = value;
+                    BeginSendMessage(MessageToken.CurrentLinesChanged,
+                                                     new NotificationEventArgs<Lines>(MessageToken.CurrentLinesChanged, _currentLines)); 
+                    NotifyPropertyChanged(x => this.CurrentLines);    
+                    // all current navigation properties = null
+                 CurrentFields = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<Lines> _vcurrentLines;
+        public VirtualListItem<Lines> VCurrentLines
+        {
+            get
+            {
+                return _vcurrentLines;
+            }
+            set
+            {
+                if (_vcurrentLines != value)
+                {
+                    _vcurrentLines = value;
+					if(_vcurrentLines != null) CurrentLines = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentLines);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentParentPartsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ParentParts> e)
+        {
+            //CurrentParentParts = e.Data;
+            NotifyPropertyChanged(m => this.CurrentParentParts);
+        }
+
+        private  ParentParts _currentParentParts;
+        public ParentParts CurrentParentParts
+        {
+            get
+            {
+                return _currentParentParts;
+            }
+            set
+            {
+                if (_currentParentParts != value)
+                {
+                    _currentParentParts = value;
+                    BeginSendMessage(MessageToken.CurrentParentPartsChanged,
+                                                     new NotificationEventArgs<ParentParts>(MessageToken.CurrentParentPartsChanged, _currentParentParts)); 
+                    NotifyPropertyChanged(x => this.CurrentParentParts);    
+                    // all current navigation properties = null
+                 CurrentParts = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<ParentParts> _vcurrentParentParts;
+        public VirtualListItem<ParentParts> VCurrentParentParts
+        {
+            get
+            {
+                return _vcurrentParentParts;
+            }
+            set
+            {
+                if (_vcurrentParentParts != value)
+                {
+                    _vcurrentParentParts = value;
+					if(_vcurrentParentParts != null) CurrentParentParts = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentParentParts);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentPartsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Parts> e)
+        {
+            //CurrentParts = e.Data;
+            NotifyPropertyChanged(m => this.CurrentParts);
+        }
+
+        private  Parts _currentParts;
+        public Parts CurrentParts
+        {
+            get
+            {
+                return _currentParts;
+            }
+            set
+            {
+                if (_currentParts != value)
+                {
+                    _currentParts = value;
+                    BeginSendMessage(MessageToken.CurrentPartsChanged,
+                                                     new NotificationEventArgs<Parts>(MessageToken.CurrentPartsChanged, _currentParts)); 
+                    NotifyPropertyChanged(x => this.CurrentParts);    
+                    // all current navigation properties = null
+                 CurrentEnd = null;
+                 CurrentStart = null;
+                 CurrentLines = null;
+                 CurrentRecuringPart = null;
+                 CurrentParentParts = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<Parts> _vcurrentParts;
+        public VirtualListItem<Parts> VCurrentParts
+        {
+            get
+            {
+                return _vcurrentParts;
+            }
+            set
+            {
+                if (_vcurrentParts != value)
+                {
+                    _vcurrentParts = value;
+					if(_vcurrentParts != null) CurrentParts = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentParts);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentPartTypesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<PartTypes> e)
+        {
+            //CurrentPartTypes = e.Data;
+            NotifyPropertyChanged(m => this.CurrentPartTypes);
+        }
+
+        private  PartTypes _currentPartTypes;
+        public PartTypes CurrentPartTypes
+        {
+            get
+            {
+                return _currentPartTypes;
+            }
+            set
+            {
+                if (_currentPartTypes != value)
+                {
+                    _currentPartTypes = value;
+                    BeginSendMessage(MessageToken.CurrentPartTypesChanged,
+                                                     new NotificationEventArgs<PartTypes>(MessageToken.CurrentPartTypesChanged, _currentPartTypes)); 
+                    NotifyPropertyChanged(x => this.CurrentPartTypes);    
+                    // all current navigation properties = null
+                 CurrentParts = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<PartTypes> _vcurrentPartTypes;
+        public VirtualListItem<PartTypes> VCurrentPartTypes
+        {
+            get
+            {
+                return _vcurrentPartTypes;
+            }
+            set
+            {
+                if (_vcurrentPartTypes != value)
+                {
+                    _vcurrentPartTypes = value;
+					if(_vcurrentPartTypes != null) CurrentPartTypes = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentPartTypes);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentRecuringPartChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RecuringPart> e)
+        {
+            //CurrentRecuringPart = e.Data;
+            NotifyPropertyChanged(m => this.CurrentRecuringPart);
+        }
+
+        private  RecuringPart _currentRecuringPart;
+        public RecuringPart CurrentRecuringPart
+        {
+            get
+            {
+                return _currentRecuringPart;
+            }
+            set
+            {
+                if (_currentRecuringPart != value)
+                {
+                    _currentRecuringPart = value;
+                    BeginSendMessage(MessageToken.CurrentRecuringPartChanged,
+                                                     new NotificationEventArgs<RecuringPart>(MessageToken.CurrentRecuringPartChanged, _currentRecuringPart)); 
+                    NotifyPropertyChanged(x => this.CurrentRecuringPart);    
+                    // all current navigation properties = null
+                 CurrentParts = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<RecuringPart> _vcurrentRecuringPart;
+        public VirtualListItem<RecuringPart> VCurrentRecuringPart
+        {
+            get
+            {
+                return _vcurrentRecuringPart;
+            }
+            set
+            {
+                if (_vcurrentRecuringPart != value)
+                {
+                    _vcurrentRecuringPart = value;
+					if(_vcurrentRecuringPart != null) CurrentRecuringPart = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentRecuringPart);                    
                 }
             }
         }
@@ -438,8 +862,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                                      new NotificationEventArgs<RegExChain>(MessageToken.CurrentRegExChainChanged, _currentRegExChain)); 
                     NotifyPropertyChanged(x => this.CurrentRegExChain);    
                     // all current navigation properties = null
-                 CurrentTemplateLinesRegularExpressions = null;
-                 CurrentTemplateRegularExpressions = null;
+                 CurrentEnd = null;
+                 CurrentStart = null;
+                 CurrentLines = null;
+                 CurrentRegExParent = null;
    
                 }
             }
@@ -459,6 +885,57 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentRegExChain = value;
 					if(_vcurrentRegExChain != null) CurrentRegExChain = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentRegExChain);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentRegExParentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegExParent> e)
+        {
+            //CurrentRegExParent = e.Data;
+            NotifyPropertyChanged(m => this.CurrentRegExParent);
+        }
+
+        private  RegExParent _currentRegExParent;
+        public RegExParent CurrentRegExParent
+        {
+            get
+            {
+                return _currentRegExParent;
+            }
+            set
+            {
+                if (_currentRegExParent != value)
+                {
+                    _currentRegExParent = value;
+                    BeginSendMessage(MessageToken.CurrentRegExParentChanged,
+                                                     new NotificationEventArgs<RegExParent>(MessageToken.CurrentRegExParentChanged, _currentRegExParent)); 
+                    NotifyPropertyChanged(x => this.CurrentRegExParent);    
+                    // all current navigation properties = null
+                 CurrentRegExChain = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<RegExParent> _vcurrentRegExParent;
+        public VirtualListItem<RegExParent> VCurrentRegExParent
+        {
+            get
+            {
+                return _vcurrentRegExParent;
+            }
+            set
+            {
+                if (_vcurrentRegExParent != value)
+                {
+                    _vcurrentRegExParent = value;
+					if(_vcurrentRegExParent != null) CurrentRegExParent = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentRegExParent);                    
                 }
             }
         }
@@ -519,200 +996,47 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
-        internal void OnCurrentTemplateLinesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TemplateLines> e)
+        internal void OnCurrentStartChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Start> e)
         {
-            //CurrentTemplateLines = e.Data;
-            NotifyPropertyChanged(m => this.CurrentTemplateLines);
+            //CurrentStart = e.Data;
+            NotifyPropertyChanged(m => this.CurrentStart);
         }
 
-        private  TemplateLines _currentTemplateLines;
-        public TemplateLines CurrentTemplateLines
+        private  Start _currentStart;
+        public Start CurrentStart
         {
             get
             {
-                return _currentTemplateLines;
+                return _currentStart;
             }
             set
             {
-                if (_currentTemplateLines != value)
+                if (_currentStart != value)
                 {
-                    _currentTemplateLines = value;
-                    BeginSendMessage(MessageToken.CurrentTemplateLinesChanged,
-                                                     new NotificationEventArgs<TemplateLines>(MessageToken.CurrentTemplateLinesChanged, _currentTemplateLines)); 
-                    NotifyPropertyChanged(x => this.CurrentTemplateLines);    
-                    // all current navigation properties = null
-                 CurrentTemplateLinesRegularExpressions = null;
-   
-                }
-            }
-        }
-
-		VirtualListItem<TemplateLines> _vcurrentTemplateLines;
-        public VirtualListItem<TemplateLines> VCurrentTemplateLines
-        {
-            get
-            {
-                return _vcurrentTemplateLines;
-            }
-            set
-            {
-                if (_vcurrentTemplateLines != value)
-                {
-                    _vcurrentTemplateLines = value;
-					if(_vcurrentTemplateLines != null) CurrentTemplateLines = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentTemplateLines);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentTemplateLinesRegularExpressionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TemplateLinesRegularExpressions> e)
-        {
-            //CurrentTemplateLinesRegularExpressions = e.Data;
-            NotifyPropertyChanged(m => this.CurrentTemplateLinesRegularExpressions);
-        }
-
-        private  TemplateLinesRegularExpressions _currentTemplateLinesRegularExpressions;
-        public TemplateLinesRegularExpressions CurrentTemplateLinesRegularExpressions
-        {
-            get
-            {
-                return _currentTemplateLinesRegularExpressions;
-            }
-            set
-            {
-                if (_currentTemplateLinesRegularExpressions != value)
-                {
-                    _currentTemplateLinesRegularExpressions = value;
-                    BeginSendMessage(MessageToken.CurrentTemplateLinesRegularExpressionsChanged,
-                                                     new NotificationEventArgs<TemplateLinesRegularExpressions>(MessageToken.CurrentTemplateLinesRegularExpressionsChanged, _currentTemplateLinesRegularExpressions)); 
-                    NotifyPropertyChanged(x => this.CurrentTemplateLinesRegularExpressions);    
+                    _currentStart = value;
+                    BeginSendMessage(MessageToken.CurrentStartChanged,
+                                                     new NotificationEventArgs<Start>(MessageToken.CurrentStartChanged, _currentStart)); 
+                    NotifyPropertyChanged(x => this.CurrentStart);    
                     // all current navigation properties = null
    
                 }
             }
         }
 
-		VirtualListItem<TemplateLinesRegularExpressions> _vcurrentTemplateLinesRegularExpressions;
-        public VirtualListItem<TemplateLinesRegularExpressions> VCurrentTemplateLinesRegularExpressions
+		VirtualListItem<Start> _vcurrentStart;
+        public VirtualListItem<Start> VCurrentStart
         {
             get
             {
-                return _vcurrentTemplateLinesRegularExpressions;
+                return _vcurrentStart;
             }
             set
             {
-                if (_vcurrentTemplateLinesRegularExpressions != value)
+                if (_vcurrentStart != value)
                 {
-                    _vcurrentTemplateLinesRegularExpressions = value;
-					if(_vcurrentTemplateLinesRegularExpressions != null) CurrentTemplateLinesRegularExpressions = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentTemplateLinesRegularExpressions);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentTemplateRegularExpressionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TemplateRegularExpressions> e)
-        {
-            //CurrentTemplateRegularExpressions = e.Data;
-            NotifyPropertyChanged(m => this.CurrentTemplateRegularExpressions);
-        }
-
-        private  TemplateRegularExpressions _currentTemplateRegularExpressions;
-        public TemplateRegularExpressions CurrentTemplateRegularExpressions
-        {
-            get
-            {
-                return _currentTemplateRegularExpressions;
-            }
-            set
-            {
-                if (_currentTemplateRegularExpressions != value)
-                {
-                    _currentTemplateRegularExpressions = value;
-                    BeginSendMessage(MessageToken.CurrentTemplateRegularExpressionsChanged,
-                                                     new NotificationEventArgs<TemplateRegularExpressions>(MessageToken.CurrentTemplateRegularExpressionsChanged, _currentTemplateRegularExpressions)); 
-                    NotifyPropertyChanged(x => this.CurrentTemplateRegularExpressions);    
-                    // all current navigation properties = null
-   
-                }
-            }
-        }
-
-		VirtualListItem<TemplateRegularExpressions> _vcurrentTemplateRegularExpressions;
-        public VirtualListItem<TemplateRegularExpressions> VCurrentTemplateRegularExpressions
-        {
-            get
-            {
-                return _vcurrentTemplateRegularExpressions;
-            }
-            set
-            {
-                if (_vcurrentTemplateRegularExpressions != value)
-                {
-                    _vcurrentTemplateRegularExpressions = value;
-					if(_vcurrentTemplateRegularExpressions != null) CurrentTemplateRegularExpressions = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentTemplateRegularExpressions);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentTemplatesChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Templates> e)
-        {
-            //CurrentTemplates = e.Data;
-            NotifyPropertyChanged(m => this.CurrentTemplates);
-        }
-
-        private  Templates _currentTemplates;
-        public Templates CurrentTemplates
-        {
-            get
-            {
-                return _currentTemplates;
-            }
-            set
-            {
-                if (_currentTemplates != value)
-                {
-                    _currentTemplates = value;
-                    BeginSendMessage(MessageToken.CurrentTemplatesChanged,
-                                                     new NotificationEventArgs<Templates>(MessageToken.CurrentTemplatesChanged, _currentTemplates)); 
-                    NotifyPropertyChanged(x => this.CurrentTemplates);    
-                    // all current navigation properties = null
-                 CurrentTemplateLines = null;
-                 CurrentTemplateRegularExpressions = null;
-   
-                }
-            }
-        }
-
-		VirtualListItem<Templates> _vcurrentTemplates;
-        public VirtualListItem<Templates> VCurrentTemplates
-        {
-            get
-            {
-                return _vcurrentTemplates;
-            }
-            set
-            {
-                if (_vcurrentTemplates != value)
-                {
-                    _vcurrentTemplates = value;
-					if(_vcurrentTemplates != null) CurrentTemplates = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentTemplates);                    
+                    _vcurrentStart = value;
+					if(_vcurrentStart != null) CurrentStart = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentStart);                    
                 }
             }
         }

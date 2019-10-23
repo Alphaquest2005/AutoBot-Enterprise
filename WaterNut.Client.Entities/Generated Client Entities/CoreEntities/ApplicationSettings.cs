@@ -722,6 +722,21 @@ public Nullable<bool> AssessEX
 		}
      
 
+       
+       
+public Nullable<bool> TestMode
+		{ 
+		    get { return this.applicationsettings.TestMode; }
+			set
+			{
+			    if (value == this.applicationsettings.TestMode) return;
+				this.applicationsettings.TestMode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TestMode");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

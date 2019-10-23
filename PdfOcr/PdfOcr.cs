@@ -1,7 +1,10 @@
 ﻿using Ghostscript.NET.Rasterizer;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
+using Ghostscript.NET;
+using iTextSharp.text.pdf;
 using Tesseract;
 
 /**
@@ -45,10 +48,12 @@ namespace pdf_ocr
         {
             try
             {
+                if(Directory.Exists(TempDir)) Directory.Delete(TempDir, true);
                 Directory.CreateDirectory(TempDir);
                 GetImageFromPdf(inputPdfFile);
                 //Recognizing text from the generated image
                 var recognizedText = GetTextFromImage();
+                File.WriteAllText(inputPdfFile+ ".txt", recognizedText);
                 Directory.Delete(TempDir, true);
                 return recognizedText;
             }
@@ -70,20 +75,32 @@ namespace pdf_ocr
 
             try
             {
-                var ghostscriptRasterizer = new GhostscriptRasterizer();
-                ghostscriptRasterizer.Open(pdfPath);
-
-                for (int i = 1; i <= ghostscriptRasterizer.PageCount; i++)
+                int pageCount;
+                using (var reader = new PdfReader(pdfPath))
                 {
-                    var outputFilePath = GetTempFile(".png");
-                    using (var img = ghostscriptRasterizer.GetPage(pdfToImageDPI, pdfToImageDPI, i))
-                    {
-                        img.Save(outputFilePath, System.Drawing.Imaging.ImageFormat.Png);
-                        img.Dispose();
-                    }
+                    //  as a matter of fact we need iTextSharp PdfReader (and all of iTextSharp) only to get the page count of PDF document;
+                    //  unfortunately GhostScript itself doesn't know how to do it
+                    pageCount = reader.NumberOfPages;
                 }
 
-                ghostscriptRasterizer.Close();
+                //var ghostscriptRasterizer = new GhostscriptRasterizer();
+                //ghostscriptRasterizer.Open(pdfPath);
+
+                for (int i = 1; i <= pageCount; i++)
+                {
+                    var outputFilePath = GetTempFile(".png");
+                    //using (var img = ghostscriptRasterizer.GetPage(pdfToImageDPI, pdfToImageDPI, i))
+                    //{
+                    //    img.Save(outputFilePath, System.Drawing.Imaging.ImageFormat.Png);
+                    //    img.Dispose();
+                    //}
+
+                    PdfToPngWithGhostscriptPngDevice(pdfPath, i, pdfToImageDPI, pdfToImageDPI, outputFilePath);
+
+
+                }
+
+                //ghostscriptRasterizer.Close();
             }
             catch (Exception e)
             {
@@ -93,6 +110,20 @@ namespace pdf_ocr
 
         }
 
+
+        private static void PdfToPngWithGhostscriptPngDevice(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile)
+        {
+            GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray);
+            dev.GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
+            dev.TextAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
+            dev.ResolutionXY = new GhostscriptImageDeviceResolution(dpiX, dpiY);
+            dev.InputFiles.Add(srcFile);
+            dev.Pdf.FirstPage = pageNo;
+            dev.Pdf.LastPage = pageNo;
+            dev.CustomSwitches.Add("-dDOINTERPOLATE");
+            dev.OutputPath = tgtFile;
+            dev.Process();
+        }
         /// <summary>
         /// Get text from the specified image file.
         /// </summary>
@@ -101,11 +132,11 @@ namespace pdf_ocr
         private static string GetTextFromImage()
         {
             var result = new StringBuilder();
-            foreach (var file in Directory.GetFiles(TempDir))
+            foreach (var file in new DirectoryInfo(TempDir).GetFiles().OrderBy(x => x.LastWriteTime))
             {
 
 
-                using (var img = Pix.LoadFromFile(file))
+                using (var img = Pix.LoadFromFile(file.FullName))
                 {
                     using (var tesseractEngine = new TesseractEngine("tessdata", ocrLanguage, EngineMode.Default))
                     {

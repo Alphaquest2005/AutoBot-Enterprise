@@ -28,44 +28,6 @@ namespace OCR.Client.Entities
                 this.Id = Convert.ToInt32(value);
             }
         }
-        public string RegExChain2EntityName
-        {
-            get
-            {
-                return this.RegExChain2 == null ? "" : this.RegExChain2.EntityName;
-            }
-            set
-            {
-                                if (string.IsNullOrEmpty(value)) return;
-                string[] vals = value.Split(',');
-               
-                    using (RegExChainClient ctx = new RegExChainClient())
-                    {
-                        var dto = ctx.GetRegExChain().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
-                        
-
-                        if ( dto == null)
-                        {
-                            this.RegExChain2 = (RegExChain)new RegExChain().CreateEntityFromString(value);
-							
-							this.Id = Convert.ToInt32(this.RegExChain2.Id);
-                            this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddRegExChain2");
-                        }
-                        else
-                        {
-                            var obj = new RegExChain(dto);
-                           if (this.RegExChain2 == null || this.RegExChain2.EntityId != obj.EntityId) this.RegExChain2 = obj;
-                           
-                        }
-                         
-
-
-                    }
-            
-            }
-
-      }
         public string RegularExpressionsEntityName
         {
             get
@@ -94,6 +56,44 @@ namespace OCR.Client.Entities
                         {
                             var obj = new RegularExpressions(dto);
                            if (this.RegularExpressions == null || this.RegularExpressions.EntityId != obj.EntityId) this.RegularExpressions = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string RegExParentEntityName
+        {
+            get
+            {
+                return this.RegExParent == null ? "" : this.RegExParent.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (RegExParentClient ctx = new RegExParentClient())
+                    {
+                        var dto = ctx.GetRegExParent().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.RegExParent = (RegExParent)new RegExParent().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.RegExParent.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddRegExParent");
+                        }
+                        else
+                        {
+                            var obj = new RegExParent(dto);
+                           if (this.RegExParent == null || this.RegExParent.EntityId != obj.EntityId) this.RegExParent = obj;
                            
                         }
                          

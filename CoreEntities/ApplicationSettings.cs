@@ -67,6 +67,7 @@ namespace CoreEntities
         public string AsycudaPassword { get; set; }
         public Nullable<bool> AssessIM7 { get; set; }
         public Nullable<bool> AssessEX { get; set; }
+        public Nullable<bool> TestMode { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }

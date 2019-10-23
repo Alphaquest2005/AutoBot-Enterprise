@@ -268,6 +268,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _ApplicationSettingsId;
 
+        [DataMember]
+        public double Quantity
+		{ 
+		    get { return _Quantity; }
+			set
+			{
+			    if (value == _Quantity) return;
+				_Quantity = value;
+				NotifyPropertyChanged();//m => this.Quantity
+			}
+		}
+        private double _Quantity;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -10,100 +10,144 @@ namespace WaterNut.QuerySpace.OCR
     public partial class MessageToken
     {
 
-			public const string LineTypeFieldMappingsFilterExpressionChanged = "LineTypeFieldMappingsFilterExpressionChanged";
-			public const string SelectedLineTypeFieldMappingsChanged = "SelectedLineTypeFieldMappingsChanged";
-            public const string LineTypeFieldMappingsChanged = "LineTypeFieldMappingsChanged";
-			public const string LineTypeFieldMappingsDeleted = "LineTypeFieldMappingsDeleted";
-			public const string LineTypeFieldMappingsCreated = "LineTypeFieldMappingsCreated";
-			public const string LineTypeFieldMappingsUpdated = "LineTypeFieldMappingsUpdated";
-			public const string LineTypesFilterExpressionChanged = "LineTypesFilterExpressionChanged";
-			public const string SelectedLineTypesChanged = "SelectedLineTypesChanged";
-            public const string LineTypesChanged = "LineTypesChanged";
-			public const string LineTypesDeleted = "LineTypesDeleted";
-			public const string LineTypesCreated = "LineTypesCreated";
-			public const string LineTypesUpdated = "LineTypesUpdated";
+			public const string EndFilterExpressionChanged = "EndFilterExpressionChanged";
+			public const string SelectedEndChanged = "SelectedEndChanged";
+            public const string EndChanged = "EndChanged";
+			public const string EndDeleted = "EndDeleted";
+			public const string EndCreated = "EndCreated";
+			public const string EndUpdated = "EndUpdated";
+			public const string FieldsFilterExpressionChanged = "FieldsFilterExpressionChanged";
+			public const string SelectedFieldsChanged = "SelectedFieldsChanged";
+            public const string FieldsChanged = "FieldsChanged";
+			public const string FieldsDeleted = "FieldsDeleted";
+			public const string FieldsCreated = "FieldsCreated";
+			public const string FieldsUpdated = "FieldsUpdated";
+			public const string InvoicesFilterExpressionChanged = "InvoicesFilterExpressionChanged";
+			public const string SelectedInvoicesChanged = "SelectedInvoicesChanged";
+            public const string InvoicesChanged = "InvoicesChanged";
+			public const string InvoicesDeleted = "InvoicesDeleted";
+			public const string InvoicesCreated = "InvoicesCreated";
+			public const string InvoicesUpdated = "InvoicesUpdated";
+			public const string LinesFilterExpressionChanged = "LinesFilterExpressionChanged";
+			public const string SelectedLinesChanged = "SelectedLinesChanged";
+            public const string LinesChanged = "LinesChanged";
+			public const string LinesDeleted = "LinesDeleted";
+			public const string LinesCreated = "LinesCreated";
+			public const string LinesUpdated = "LinesUpdated";
+			public const string ParentPartsFilterExpressionChanged = "ParentPartsFilterExpressionChanged";
+			public const string SelectedParentPartsChanged = "SelectedParentPartsChanged";
+            public const string ParentPartsChanged = "ParentPartsChanged";
+			public const string ParentPartsDeleted = "ParentPartsDeleted";
+			public const string ParentPartsCreated = "ParentPartsCreated";
+			public const string ParentPartsUpdated = "ParentPartsUpdated";
+			public const string PartsFilterExpressionChanged = "PartsFilterExpressionChanged";
+			public const string SelectedPartsChanged = "SelectedPartsChanged";
+            public const string PartsChanged = "PartsChanged";
+			public const string PartsDeleted = "PartsDeleted";
+			public const string PartsCreated = "PartsCreated";
+			public const string PartsUpdated = "PartsUpdated";
+			public const string PartTypesFilterExpressionChanged = "PartTypesFilterExpressionChanged";
+			public const string SelectedPartTypesChanged = "SelectedPartTypesChanged";
+            public const string PartTypesChanged = "PartTypesChanged";
+			public const string PartTypesDeleted = "PartTypesDeleted";
+			public const string PartTypesCreated = "PartTypesCreated";
+			public const string PartTypesUpdated = "PartTypesUpdated";
+			public const string RecuringPartFilterExpressionChanged = "RecuringPartFilterExpressionChanged";
+			public const string SelectedRecuringPartChanged = "SelectedRecuringPartChanged";
+            public const string RecuringPartChanged = "RecuringPartChanged";
+			public const string RecuringPartDeleted = "RecuringPartDeleted";
+			public const string RecuringPartCreated = "RecuringPartCreated";
+			public const string RecuringPartUpdated = "RecuringPartUpdated";
 			public const string RegExChainFilterExpressionChanged = "RegExChainFilterExpressionChanged";
 			public const string SelectedRegExChainChanged = "SelectedRegExChainChanged";
             public const string RegExChainChanged = "RegExChainChanged";
 			public const string RegExChainDeleted = "RegExChainDeleted";
 			public const string RegExChainCreated = "RegExChainCreated";
 			public const string RegExChainUpdated = "RegExChainUpdated";
+			public const string RegExParentFilterExpressionChanged = "RegExParentFilterExpressionChanged";
+			public const string SelectedRegExParentChanged = "SelectedRegExParentChanged";
+            public const string RegExParentChanged = "RegExParentChanged";
+			public const string RegExParentDeleted = "RegExParentDeleted";
+			public const string RegExParentCreated = "RegExParentCreated";
+			public const string RegExParentUpdated = "RegExParentUpdated";
 			public const string RegularExpressionsFilterExpressionChanged = "RegularExpressionsFilterExpressionChanged";
 			public const string SelectedRegularExpressionsChanged = "SelectedRegularExpressionsChanged";
             public const string RegularExpressionsChanged = "RegularExpressionsChanged";
 			public const string RegularExpressionsDeleted = "RegularExpressionsDeleted";
 			public const string RegularExpressionsCreated = "RegularExpressionsCreated";
 			public const string RegularExpressionsUpdated = "RegularExpressionsUpdated";
-			public const string TemplateLinesFilterExpressionChanged = "TemplateLinesFilterExpressionChanged";
-			public const string SelectedTemplateLinesChanged = "SelectedTemplateLinesChanged";
-            public const string TemplateLinesChanged = "TemplateLinesChanged";
-			public const string TemplateLinesDeleted = "TemplateLinesDeleted";
-			public const string TemplateLinesCreated = "TemplateLinesCreated";
-			public const string TemplateLinesUpdated = "TemplateLinesUpdated";
-			public const string TemplateLinesRegularExpressionsFilterExpressionChanged = "TemplateLinesRegularExpressionsFilterExpressionChanged";
-			public const string SelectedTemplateLinesRegularExpressionsChanged = "SelectedTemplateLinesRegularExpressionsChanged";
-            public const string TemplateLinesRegularExpressionsChanged = "TemplateLinesRegularExpressionsChanged";
-			public const string TemplateLinesRegularExpressionsDeleted = "TemplateLinesRegularExpressionsDeleted";
-			public const string TemplateLinesRegularExpressionsCreated = "TemplateLinesRegularExpressionsCreated";
-			public const string TemplateLinesRegularExpressionsUpdated = "TemplateLinesRegularExpressionsUpdated";
-			public const string TemplateRegularExpressionsFilterExpressionChanged = "TemplateRegularExpressionsFilterExpressionChanged";
-			public const string SelectedTemplateRegularExpressionsChanged = "SelectedTemplateRegularExpressionsChanged";
-            public const string TemplateRegularExpressionsChanged = "TemplateRegularExpressionsChanged";
-			public const string TemplateRegularExpressionsDeleted = "TemplateRegularExpressionsDeleted";
-			public const string TemplateRegularExpressionsCreated = "TemplateRegularExpressionsCreated";
-			public const string TemplateRegularExpressionsUpdated = "TemplateRegularExpressionsUpdated";
-			public const string TemplatesFilterExpressionChanged = "TemplatesFilterExpressionChanged";
-			public const string SelectedTemplatesChanged = "SelectedTemplatesChanged";
-            public const string TemplatesChanged = "TemplatesChanged";
-			public const string TemplatesDeleted = "TemplatesDeleted";
-			public const string TemplatesCreated = "TemplatesCreated";
-			public const string TemplatesUpdated = "TemplatesUpdated";
+			public const string StartFilterExpressionChanged = "StartFilterExpressionChanged";
+			public const string SelectedStartChanged = "SelectedStartChanged";
+            public const string StartChanged = "StartChanged";
+			public const string StartDeleted = "StartDeleted";
+			public const string StartCreated = "StartCreated";
+			public const string StartUpdated = "StartUpdated";
   
 
-          // public const string LineTypeFieldMappingsChanged = "LineTypeFieldMappingsChanged";
-          // public const string LineTypesChanged = "LineTypesChanged";
+          // public const string EndChanged = "EndChanged";
+          // public const string FieldsChanged = "FieldsChanged";
+          // public const string InvoicesChanged = "InvoicesChanged";
+          // public const string LinesChanged = "LinesChanged";
+          // public const string ParentPartsChanged = "ParentPartsChanged";
+          // public const string PartsChanged = "PartsChanged";
+          // public const string PartTypesChanged = "PartTypesChanged";
+          // public const string RecuringPartChanged = "RecuringPartChanged";
           // public const string RegExChainChanged = "RegExChainChanged";
+          // public const string RegExParentChanged = "RegExParentChanged";
           // public const string RegularExpressionsChanged = "RegularExpressionsChanged";
-          // public const string TemplateLinesChanged = "TemplateLinesChanged";
-          // public const string TemplateLinesRegularExpressionsChanged = "TemplateLinesRegularExpressionsChanged";
-          // public const string TemplateRegularExpressionsChanged = "TemplateRegularExpressionsChanged";
-          // public const string TemplatesChanged = "TemplatesChanged";
+          // public const string StartChanged = "StartChanged";
  
 
    
-           public const string CurrentLineTypeFieldMappingsChanged = "CurrentLineTypeFieldMappingsChanged";
+           public const string CurrentEndChanged = "CurrentEndChanged";
    
-           public const string CurrentLineTypesChanged = "CurrentLineTypesChanged";
+           public const string CurrentFieldsChanged = "CurrentFieldsChanged";
+   
+           public const string CurrentInvoicesChanged = "CurrentInvoicesChanged";
+   
+           public const string CurrentLinesChanged = "CurrentLinesChanged";
+   
+           public const string CurrentParentPartsChanged = "CurrentParentPartsChanged";
+   
+           public const string CurrentPartsChanged = "CurrentPartsChanged";
+   
+           public const string CurrentPartTypesChanged = "CurrentPartTypesChanged";
+   
+           public const string CurrentRecuringPartChanged = "CurrentRecuringPartChanged";
    
            public const string CurrentRegExChainChanged = "CurrentRegExChainChanged";
    
+           public const string CurrentRegExParentChanged = "CurrentRegExParentChanged";
+   
            public const string CurrentRegularExpressionsChanged = "CurrentRegularExpressionsChanged";
    
-           public const string CurrentTemplateLinesChanged = "CurrentTemplateLinesChanged";
-   
-           public const string CurrentTemplateLinesRegularExpressionsChanged = "CurrentTemplateLinesRegularExpressionsChanged";
-   
-           public const string CurrentTemplateRegularExpressionsChanged = "CurrentTemplateRegularExpressionsChanged";
-   
-           public const string CurrentTemplatesChanged = "CurrentTemplatesChanged";
+           public const string CurrentStartChanged = "CurrentStartChanged";
     
 
    
-           public const string CurrentLineTypeFieldMappingsIDChanged = "OnCurrentLineTypeFieldMappingsIDChanged";
+           public const string CurrentEndIDChanged = "OnCurrentEndIDChanged";
    
-           public const string CurrentLineTypesIDChanged = "OnCurrentLineTypesIDChanged";
+           public const string CurrentFieldsIDChanged = "OnCurrentFieldsIDChanged";
+   
+           public const string CurrentInvoicesIDChanged = "OnCurrentInvoicesIDChanged";
+   
+           public const string CurrentLinesIDChanged = "OnCurrentLinesIDChanged";
+   
+           public const string CurrentParentPartsIDChanged = "OnCurrentParentPartsIDChanged";
+   
+           public const string CurrentPartsIDChanged = "OnCurrentPartsIDChanged";
+   
+           public const string CurrentPartTypesIDChanged = "OnCurrentPartTypesIDChanged";
+   
+           public const string CurrentRecuringPartIDChanged = "OnCurrentRecuringPartIDChanged";
    
            public const string CurrentRegExChainIDChanged = "OnCurrentRegExChainIDChanged";
    
+           public const string CurrentRegExParentIDChanged = "OnCurrentRegExParentIDChanged";
+   
            public const string CurrentRegularExpressionsIDChanged = "OnCurrentRegularExpressionsIDChanged";
    
-           public const string CurrentTemplateLinesIDChanged = "OnCurrentTemplateLinesIDChanged";
-   
-           public const string CurrentTemplateLinesRegularExpressionsIDChanged = "OnCurrentTemplateLinesRegularExpressionsIDChanged";
-   
-           public const string CurrentTemplateRegularExpressionsIDChanged = "OnCurrentTemplateRegularExpressionsIDChanged";
-   
-           public const string CurrentTemplatesIDChanged = "OnCurrentTemplatesIDChanged";
+           public const string CurrentStartIDChanged = "OnCurrentStartIDChanged";
       
     }
 }		

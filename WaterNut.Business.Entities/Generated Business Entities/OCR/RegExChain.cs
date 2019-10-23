@@ -21,9 +21,10 @@ namespace OCR.Business.Entities
     {
         partial void AutoGenStartUp() //RegExChain()
         {
-            this.RegExChain1 = new List<RegExChain>();
-            this.TemplateLinesRegularExpressions = new List<TemplateLinesRegularExpressions>();
-            this.TemplateRegularExpressions = new List<TemplateRegularExpressions>();
+            this.End = new List<End>();
+            this.Start = new List<Start>();
+            this.Lines = new List<Lines>();
+            this.PreviousRegExParent = new List<RegExParent>();
         }
 
         [DataMember]
@@ -57,30 +58,17 @@ namespace OCR.Business.Entities
         }
         int _regexid;
         [DataMember]
-        public Nullable<int> PreviousRegExId 
-        {
-            get
-            {
-                return _previousregexid;
-            }
-            set
-            {
-                _previousregexid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _previousregexid;
-        [DataMember]
-        public List<RegExChain> RegExChain1 { get; set; }
-        [DataMember]
-        public RegExChain RegExChain2 { get; set; }
+        public List<End> End { get; set; }
         [DataMember]
         public RegularExpressions RegularExpressions { get; set; }
         [DataMember]
-        public List<TemplateLinesRegularExpressions> TemplateLinesRegularExpressions { get; set; }
+        public List<Start> Start { get; set; }
         [DataMember]
-        public List<TemplateRegularExpressions> TemplateRegularExpressions { get; set; }
+        public List<Lines> Lines { get; set; }
+        [DataMember]
+        public RegExParent RegExParent { get; set; }
+        [DataMember]
+        public List<RegExParent> PreviousRegExParent { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

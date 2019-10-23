@@ -57,6 +57,7 @@
           <Property Name="AsycudaPassword" Type="nvarchar" MaxLength="50" />
           <Property Name="AssessIM7" Type="bit" />
           <Property Name="AssessEX" Type="bit" />
+          <Property Name="TestMode" Type="bit" />
         </EntityType>
         <EntityType Name="AsycudaDocument_Attachments">
           <Key>
@@ -1006,6 +1007,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesE
             <PropertyRef Name="InvoiceNo" />
             <PropertyRef Name="ItemNumber" />
             <PropertyRef Name="ItemDescription" />
+            <PropertyRef Name="Quantity" />
             <PropertyRef Name="Cost" />
             
             <PropertyRef Name="subject" />
@@ -1021,6 +1023,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesE
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
           <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
@@ -2098,6 +2101,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
     [TODO-SubmitDiscrepanciesErrorReport].[ItemDescription] AS [ItemDescription], 
     [TODO-SubmitDiscrepanciesErrorReport].[InvoiceQty] AS [InvoiceQty], 
     [TODO-SubmitDiscrepanciesErrorReport].[ReceivedQty] AS [ReceivedQty], 
+    [TODO-SubmitDiscrepanciesErrorReport].[Quantity] AS [Quantity], 
     [TODO-SubmitDiscrepanciesErrorReport].[Cost] AS [Cost], 
     [TODO-SubmitDiscrepanciesErrorReport].[PreviousCNumber] AS [PreviousCNumber], 
     [TODO-SubmitDiscrepanciesErrorReport].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
@@ -2614,7 +2618,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <NavigationProperty Name="InfoMapping" Relationship="WaterNutDBModel.FK_InfoMapping_ApplicationSettings" FromRole="ApplicationSettings" ToRole="InfoMapping" />
           <NavigationProperty Name="EmailMapping" Relationship="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" FromRole="ApplicationSettings" ToRole="EmailMapping" />
           <Property Name="AssessIM7" Type="Boolean" />
-          <Property Name="AssessEX" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="AssessEX" Type="Boolean" />
+          <Property Name="TestMode" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -4084,6 +4089,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             <PropertyRef Name="Cost" />
             <PropertyRef Name="subject" />
             <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="Quantity" />
           </Key>
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
@@ -4104,6 +4110,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <Property Name="emailDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="emailId" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_TotalAdjustmentsToProcess">
           <Key>
@@ -4235,6 +4242,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="TestMode" ColumnName="TestMode" />
                 <ScalarProperty Name="AssessEX" ColumnName="AssessEX" />
                 <ScalarProperty Name="AssessIM7" ColumnName="AssessIM7" />
                 <ScalarProperty Name="AsycudaPassword" ColumnName="AsycudaPassword" />
@@ -5236,6 +5244,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySetMapping Name="TODO_SubmitDiscrepanciesErrorReport">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitDiscrepanciesErrorReport">
               <MappingFragment StoreEntitySet="TODO-SubmitDiscrepanciesErrorReport">
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="emailId" ColumnName="emailId" />
                 <ScalarProperty Name="emailDate" ColumnName="emailDate" />

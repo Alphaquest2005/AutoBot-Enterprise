@@ -11,7 +11,7 @@
     {
         public TODO_SubmitDiscrepanciesErrorReportMap()
         {                        
-              this.HasKey(t => new {t.InvoiceNo, t.ItemNumber, t.ItemDescription, t.Cost, t.subject, t.ApplicationSettingsId});        
+              this.HasKey(t => new {t.InvoiceNo, t.ItemNumber, t.ItemDescription, t.Cost, t.subject, t.ApplicationSettingsId, t.Quantity});        
               this.ToTable("TODO-SubmitDiscrepanciesErrorReport");
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
@@ -32,6 +32,7 @@
               this.Property(t => t.emailDate).HasColumnName("emailDate");
               this.Property(t => t.emailId).HasColumnName("emailId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.Quantity).HasColumnName("Quantity");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

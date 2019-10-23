@@ -922,6 +922,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _testModeFilter;
+        public Boolean? TestModeFilter
+        {
+            get
+            {
+                return _testModeFilter;
+            }
+            set
+            {
+                _testModeFilter = value;
+				NotifyPropertyChanged(x => TestModeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1133,6 +1151,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(AssessEXFilter.HasValue)
 						res.Append(" && " + string.Format("AssessEX == {0}",  AssessEXFilter));						
+ 
+
+									if(TestModeFilter.HasValue)
+						res.Append(" && " + string.Format("TestMode == {0}",  TestModeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1273,7 +1295,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AssessIM7 = x.AssessIM7 ,
                     
  
-                    AssessEX = x.AssessEX 
+                    AssessEX = x.AssessEX ,
+                    
+ 
+                    TestMode = x.TestMode 
                     
                 }).ToList()
             };
@@ -1404,6 +1429,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> AssessEX { get; set; } 
+                    
+ 
+                    public Nullable<bool> TestMode { get; set; } 
                     
         }
 

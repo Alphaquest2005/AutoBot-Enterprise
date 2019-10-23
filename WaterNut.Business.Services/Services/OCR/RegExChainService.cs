@@ -233,16 +233,10 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain1":
+                            case "End":
                                 return
                                     await
-                                        GetWhere<RegExChain>(dbContext, exp, itm.Value, "RegExChain1", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "RegExChain2":
-                                return
-                                    await
-                                        GetWhere<RegExChain>(dbContext, exp, itm.Value, "RegExChain1", "SelectMany", includesLst)
+                                        GetWhere<End>(dbContext, exp, itm.Value, "RegExChain", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "RegularExpressions":
@@ -251,16 +245,28 @@ namespace OCR.Business.Services
                                         GetWhere<RegularExpressions>(dbContext, exp, itm.Value, "RegExChain", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "TemplateLinesRegularExpressions":
+                            case "Start":
                                 return
                                     await
-                                        GetWhere<TemplateLinesRegularExpressions>(dbContext, exp, itm.Value, "RegExChain", "Select", includesLst)
+                                        GetWhere<Start>(dbContext, exp, itm.Value, "RegExChain", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "TemplateRegularExpressions":
+                            case "Lines":
                                 return
                                     await
-                                        GetWhere<TemplateRegularExpressions>(dbContext, exp, itm.Value, "RegExChain", "Select", includesLst)
+                                        GetWhere<Lines>(dbContext, exp, itm.Value, "RegExChain", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "RegExParent":
+                                return
+                                    await
+                                        GetWhere<RegExParent>(dbContext, exp, itm.Value, "RegExChain", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "PreviousRegExParent":
+                                return
+                                    await
+                                        GetWhere<RegExParent>(dbContext, exp, itm.Value, "RegExChain", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -757,20 +763,23 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain1":
-                                return await CountWhere<RegExChain>(dbContext, exp, itm.Value, "RegExChain1", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "RegExChain2":
-                                return await CountWhere<RegExChain>(dbContext, exp, itm.Value, "RegExChain1", "SelectMany")
+                            case "End":
+                                return await CountWhere<End>(dbContext, exp, itm.Value, "RegExChain", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "RegularExpressions":
                                 return await CountWhere<RegularExpressions>(dbContext, exp, itm.Value, "RegExChain", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TemplateLinesRegularExpressions":
-                                return await CountWhere<TemplateLinesRegularExpressions>(dbContext, exp, itm.Value, "RegExChain", "Select")
+                            case "Start":
+                                return await CountWhere<Start>(dbContext, exp, itm.Value, "RegExChain", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TemplateRegularExpressions":
-                                return await CountWhere<TemplateRegularExpressions>(dbContext, exp, itm.Value, "RegExChain", "Select")
+                            case "Lines":
+                                return await CountWhere<Lines>(dbContext, exp, itm.Value, "RegExChain", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "RegExParent":
+                                return await CountWhere<RegExParent>(dbContext, exp, itm.Value, "RegExChain", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "PreviousRegExParent":
+                                return await CountWhere<RegExParent>(dbContext, exp, itm.Value, "RegExChain", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -877,16 +886,10 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain1":
+                            case "End":
                                 return
                                     await
-                                        LoadRangeWhere<RegExChain>(startIndex, count, dbContext, exp, itm.Value, "RegExChain1", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "RegExChain2":
-                                return
-                                    await
-                                        LoadRangeWhere<RegExChain>(startIndex, count, dbContext, exp, itm.Value, "RegExChain1", "SelectMany")
+                                        LoadRangeWhere<End>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "RegularExpressions":
@@ -895,16 +898,28 @@ namespace OCR.Business.Services
                                         LoadRangeWhere<RegularExpressions>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "TemplateLinesRegularExpressions":
+                            case "Start":
                                 return
                                     await
-                                        LoadRangeWhere<TemplateLinesRegularExpressions>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "Select")
+                                        LoadRangeWhere<Start>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "TemplateRegularExpressions":
+                            case "Lines":
                                 return
                                     await
-                                        LoadRangeWhere<TemplateRegularExpressions>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "Select")
+                                        LoadRangeWhere<Lines>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "RegExParent":
+                                return
+                                    await
+                                        LoadRangeWhere<RegExParent>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "PreviousRegExParent":
+                                return
+                                    await
+                                        LoadRangeWhere<RegExParent>(startIndex, count, dbContext, exp, itm.Value, "RegExChain", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1120,43 +1135,12 @@ namespace OCR.Business.Services
                 var i = Convert.ToInt32(RegExId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<RegExChain> entities = await set//dbContext.RegExChain
-                                                    // .Include(x => x.RegExChain1)									  
-                                                    // .Include(x => x.TemplateLinesRegularExpressions)									  
-                                                    // .Include(x => x.TemplateRegularExpressions)									  
+                                                    // .Include(x => x.End)									  
+                                                    // .Include(x => x.Start)									  
+                                                    // .Include(x => x.Lines)									  
+                                                    // .Include(x => x.PreviousRegExParent)									  
                                       .AsNoTracking()
                                         .Where(x => x.RegExId.ToString() == RegExId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<RegExChain>> GetRegExChainByPreviousRegExId(string PreviousRegExId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(PreviousRegExId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<RegExChain> entities = await set//dbContext.RegExChain
-                                                    // .Include(x => x.RegExChain1)									  
-                                                    // .Include(x => x.TemplateLinesRegularExpressions)									  
-                                                    // .Include(x => x.TemplateRegularExpressions)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.PreviousRegExId.ToString() == PreviousRegExId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1228,20 +1212,23 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain1":
-                                return await SumWhere<RegExChain>(dbContext, exp, itm.Value, "RegExChain1", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "RegExChain2":
-                                return await SumWhere<RegExChain>(dbContext, exp, itm.Value, "RegExChain1", field, "SelectMany")
+                            case "End":
+                                return await SumWhere<End>(dbContext, exp, itm.Value, "RegExChain", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "RegularExpressions":
                                 return await SumWhere<RegularExpressions>(dbContext, exp, itm.Value, "RegExChain", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TemplateLinesRegularExpressions":
-                                return await SumWhere<TemplateLinesRegularExpressions>(dbContext, exp, itm.Value, "RegExChain", field, "Select")
+                            case "Start":
+                                return await SumWhere<Start>(dbContext, exp, itm.Value, "RegExChain", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TemplateRegularExpressions":
-                                return await SumWhere<TemplateRegularExpressions>(dbContext, exp, itm.Value, "RegExChain", field, "Select")
+                            case "Lines":
+                                return await SumWhere<Lines>(dbContext, exp, itm.Value, "RegExChain", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "RegExParent":
+                                return await SumWhere<RegExParent>(dbContext, exp, itm.Value, "RegExChain", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "PreviousRegExParent":
+                                return await SumWhere<RegExParent>(dbContext, exp, itm.Value, "RegExChain", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
