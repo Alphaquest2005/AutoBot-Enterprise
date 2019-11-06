@@ -203,7 +203,7 @@ namespace OCR.Client.Repositories
                             return new Start(res)
                     {
                   // Parts = (res.Parts != null?new Parts(res.Parts): null),    
-                  // RegExChain = (res.RegExChain != null?new RegExChain(res.RegExChain): null)    
+                  // RegularExpressions = (res.RegularExpressions != null?new RegularExpressions(res.RegularExpressions): null)    
                   };
                     }
                     else
@@ -393,14 +393,14 @@ namespace OCR.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<Start>> GetStartByRegExChainId(string RegExChainId, List<string> includesLst = null)
+ 	 public async Task<IEnumerable<Start>> GetStartByRegExId(string RegExId, List<string> includesLst = null)
         {
-             if (RegExChainId == "0") return null;
+             if (RegExId == "0") return null;
             try
             {
                  using (StartClient t = new StartClient())
                     {
-                        var res = await t.GetStartByRegExChainId(RegExChainId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetStartByRegExId(RegExId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new Start(x)).AsEnumerable();

@@ -56,6 +56,13 @@
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="EntryData_Invoices">
+          <Key>
+            <PropertyRef Name="EntryDataId" />
+          </Key>
+          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PONumber" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="EntryData_OpeningStock">
           <Key>
             <PropertyRef Name="EntryDataId" />
@@ -91,6 +98,7 @@
           <Property Name="Units" Type="nvarchar" MaxLength="15" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="TotalCost" Type="float" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="UnitWeight" Type="float" Nullable="false" />
           <Property Name="DoNotAllocate" Type="bit" />
@@ -107,6 +115,7 @@
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="TaxAmount" Type="float" />
           <Property Name="LastCost" Type="float" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="FileTypes">
           <Key>
@@ -124,6 +133,7 @@
           <Property Name="FileGroupId" Type="int" />
           <Property Name="MergeEmails" Type="bit" Nullable="false" />
           <Property Name="CopyEntryData" Type="bit" Nullable="false" />
+          <Property Name="ParentFileTypeId" Type="int" />
         </EntityType>
         <EntityType Name="InventoryItems">
           <Key>
@@ -142,6 +152,21 @@
             <PropertyRef Name="InventoryItemId" />
           </Key>
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InventoryItemSource">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InventoryId" Type="int" Nullable="false" />
+          <Property Name="InventorySourceId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InventorySources">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -346,6 +371,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EntryData_Invoices_EntryData">
+          <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EntryData_Invoices" Type="Self.EntryData_Invoices" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData">
+              <PropertyRef Name="EntryDataId" />
+            </Principal>
+            <Dependent Role="EntryData_Invoices">
+              <PropertyRef Name="EntryDataId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_EntryData_OpeningStock_EntryData">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -400,6 +439,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_EntryDataDetails_InventoryItems">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EntryDataDetails">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_FileTypes_FileTypes">
+          <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="0..1" />
+          <End Role="FileTypes1" Type="Self.FileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes1">
+              <PropertyRef Name="ParentFileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InventoryItems-NonStock_InventoryItems">
           <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -411,6 +476,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Principal>
             <Dependent Role="InventoryItems-NonStock">
               <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemSource_InventoryItems">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InventoryItemSource" Type="Self.InventoryItemSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource">
+              <PropertyRef Name="InventoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemSource_InventorySources">
+          <End Role="InventorySources" Type="Self.InventorySources" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InventoryItemSource" Type="Self.InventoryItemSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySources">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource">
+              <PropertyRef Name="InventorySourceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -434,6 +527,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="EntryData" EntityType="Self.EntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_Adjustments" EntityType="Self.EntryData_Adjustments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_DocumentType" EntityType="Self.EntryData_DocumentType" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EntryData_Invoices" EntityType="Self.EntryData_Invoices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_OpeningStock" EntityType="Self.EntryData_OpeningStock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_PurchaseOrders" EntityType="Self.EntryData_PurchaseOrders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryData_Sales" EntityType="Self.EntryData_Sales" Schema="dbo" store:Type="Tables" />
@@ -441,90 +535,92 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItems-NonStock" EntityType="Self.InventoryItems-NonStock" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItemSource" EntityType="Self.InventoryItemSource" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventorySources" EntityType="Self.InventorySources" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-[EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
-[EntryDataDetailsEx].[EntryDataId] AS [EntryDataId], 
-[EntryDataDetailsEx].[LineNumber] AS [LineNumber], 
-[EntryDataDetailsEx].[ItemNumber] AS [ItemNumber], 
-[EntryDataDetailsEx].[Quantity] AS [Quantity], 
-[EntryDataDetailsEx].[Units] AS [Units], 
-[EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
-[EntryDataDetailsEx].[Cost] AS [Cost], 
-[EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
-[EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
-[EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
-[EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
-[EntryDataDetailsEx].[CNumber] AS [CNumber], 
-[EntryDataDetailsEx].[CLineNumber] AS [CLineNumber], 
-[EntryDataDetailsEx].[Downloaded] AS [Downloaded], 
-[EntryDataDetailsEx].[DutyFreePaid] AS [DutyFreePaid], 
-[EntryDataDetailsEx].[Total] AS [Total], 
-[EntryDataDetailsEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-[EntryDataDetailsEx].[InvoiceQty] AS [InvoiceQty], 
-[EntryDataDetailsEx].[ReceivedQty] AS [ReceivedQty], 
-[EntryDataDetailsEx].[Status] AS [Status], 
-[EntryDataDetailsEx].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
-[EntryDataDetailsEx].[PreviousCNumber] AS [PreviousCNumber], 
-[EntryDataDetailsEx].[Comment] AS [Comment], 
-[EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
-[EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
-[EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-[EntryDataDetailsEx].[LastCost] AS [LastCost], 
-[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
-[EntryDataDetailsEx].[EmailId] AS [EmailId], 
-[EntryDataDetailsEx].[FileTypeId] AS [FileTypeId]
-FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
+    [EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+    [EntryDataDetailsEx].[EntryDataId] AS [EntryDataId], 
+    [EntryDataDetailsEx].[LineNumber] AS [LineNumber], 
+    [EntryDataDetailsEx].[ItemNumber] AS [ItemNumber], 
+    [EntryDataDetailsEx].[Quantity] AS [Quantity], 
+    [EntryDataDetailsEx].[Units] AS [Units], 
+    [EntryDataDetailsEx].[ItemDescription] AS [ItemDescription], 
+    [EntryDataDetailsEx].[Cost] AS [Cost], 
+    [EntryDataDetailsEx].[QtyAllocated] AS [QtyAllocated], 
+    [EntryDataDetailsEx].[UnitWeight] AS [UnitWeight], 
+    [EntryDataDetailsEx].[DoNotAllocate] AS [DoNotAllocate], 
+    [EntryDataDetailsEx].[TariffCode] AS [TariffCode], 
+    [EntryDataDetailsEx].[CNumber] AS [CNumber], 
+    [EntryDataDetailsEx].[CLineNumber] AS [CLineNumber], 
+    [EntryDataDetailsEx].[Downloaded] AS [Downloaded], 
+    [EntryDataDetailsEx].[DutyFreePaid] AS [DutyFreePaid], 
+    [EntryDataDetailsEx].[Total] AS [Total], 
+    [EntryDataDetailsEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+    [EntryDataDetailsEx].[InvoiceQty] AS [InvoiceQty], 
+    [EntryDataDetailsEx].[ReceivedQty] AS [ReceivedQty], 
+    [EntryDataDetailsEx].[Status] AS [Status], 
+    [EntryDataDetailsEx].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+    [EntryDataDetailsEx].[PreviousCNumber] AS [PreviousCNumber], 
+    [EntryDataDetailsEx].[Comment] AS [Comment], 
+    [EntryDataDetailsEx].[EffectiveDate] AS [EffectiveDate], 
+    [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
+    [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+    [EntryDataDetailsEx].[LastCost] AS [LastCost], 
+    [EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
+    [EntryDataDetailsEx].[EmailId] AS [EmailId], 
+    [EntryDataDetailsEx].[FileTypeId] AS [FileTypeId]
+    FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataEx" EntityType="Self.EntryDataEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-[EntryDataEx].[InvoiceDate] AS [InvoiceDate], 
-[EntryDataEx].[Type] AS [Type], 
-[EntryDataEx].[ImportedTotal] AS [ImportedTotal], 
-[EntryDataEx].[InvoiceNo] AS [InvoiceNo], 
-[EntryDataEx].[InvoiceTotal] AS [InvoiceTotal], 
-[EntryDataEx].[ImportedLines] AS [ImportedLines], 
-[EntryDataEx].[TotalLines] AS [TotalLines], 
-[EntryDataEx].[Currency] AS [Currency], 
-[EntryDataEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
-[EntryDataEx].[DutyFreePaid] AS [DutyFreePaid], 
-[EntryDataEx].[EmailId] AS [EmailId], 
-[EntryDataEx].[FileTypeId] AS [FileTypeId], 
-[EntryDataEx].[SupplierCode] AS [SupplierCode], 
-[EntryDataEx].[ExpectedTotal] AS [ExpectedTotal], 
-[EntryDataEx].[ClassifiedLines] AS [ClassifiedLines], 
-[EntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
-[EntryDataEx].[TotalInternalFreight] AS [TotalInternalFreight], 
-[EntryDataEx].[TotalInternalInsurance] AS [TotalInternalInsurance], 
-[EntryDataEx].[TotalOtherCost] AS [TotalOtherCost], 
-[EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
-[EntryDataEx].[TotalFreight] AS [TotalFreight]
-FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
+    [EntryDataEx].[InvoiceDate] AS [InvoiceDate], 
+    [EntryDataEx].[Type] AS [Type], 
+    [EntryDataEx].[ImportedTotal] AS [ImportedTotal], 
+    [EntryDataEx].[InvoiceNo] AS [InvoiceNo], 
+    [EntryDataEx].[InvoiceTotal] AS [InvoiceTotal], 
+    [EntryDataEx].[ImportedLines] AS [ImportedLines], 
+    [EntryDataEx].[TotalLines] AS [TotalLines], 
+    [EntryDataEx].[Currency] AS [Currency], 
+    [EntryDataEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+    [EntryDataEx].[DutyFreePaid] AS [DutyFreePaid], 
+    [EntryDataEx].[EmailId] AS [EmailId], 
+    [EntryDataEx].[FileTypeId] AS [FileTypeId], 
+    [EntryDataEx].[SupplierCode] AS [SupplierCode], 
+    [EntryDataEx].[ExpectedTotal] AS [ExpectedTotal], 
+    [EntryDataEx].[ClassifiedLines] AS [ClassifiedLines], 
+    [EntryDataEx].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+    [EntryDataEx].[TotalInternalFreight] AS [TotalInternalFreight], 
+    [EntryDataEx].[TotalInternalInsurance] AS [TotalInternalInsurance], 
+    [EntryDataEx].[TotalOtherCost] AS [TotalOtherCost], 
+    [EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
+    [EntryDataEx].[TotalFreight] AS [TotalFreight]
+    FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataExTotals" EntityType="Self.EntryDataExTotals" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-[EntryDataExTotals].[EntryDataId] AS [EntryDataId], 
-[EntryDataExTotals].[Total] AS [Total], 
-[EntryDataExTotals].[AllocatedTotal] AS [AllocatedTotal], 
-[EntryDataExTotals].[TotalLines] AS [TotalLines], 
-[EntryDataExTotals].[Tax] AS [Tax], 
-[EntryDataExTotals].[ClassifiedLines] AS [ClassifiedLines], 
-[EntryDataExTotals].[LicenseLines] AS [LicenseLines]
-FROM [dbo].[EntryDataExTotals] AS [EntryDataExTotals]</DefiningQuery>
+    [EntryDataExTotals].[EntryDataId] AS [EntryDataId], 
+    [EntryDataExTotals].[Total] AS [Total], 
+    [EntryDataExTotals].[AllocatedTotal] AS [AllocatedTotal], 
+    [EntryDataExTotals].[TotalLines] AS [TotalLines], 
+    [EntryDataExTotals].[Tax] AS [Tax], 
+    [EntryDataExTotals].[ClassifiedLines] AS [ClassifiedLines], 
+    [EntryDataExTotals].[LicenseLines] AS [LicenseLines]
+    FROM [dbo].[EntryDataExTotals] AS [EntryDataExTotals]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-[InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
-[InventoryItemsEx].[Description] AS [Description], 
-[InventoryItemsEx].[Category] AS [Category], 
-[InventoryItemsEx].[TariffCode] AS [TariffCode], 
-[InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
-[InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
-[InventoryItemsEx].[SuppQty] AS [SuppQty], 
-[InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
-FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
+    [InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
+    [InventoryItemsEx].[Description] AS [Description], 
+    [InventoryItemsEx].[Category] AS [Category], 
+    [InventoryItemsEx].[TariffCode] AS [TariffCode], 
+    [InventoryItemsEx].[EntryTimeStamp] AS [EntryTimeStamp], 
+    [InventoryItemsEx].[SuppUnitCode2] AS [SuppUnitCode2], 
+    [InventoryItemsEx].[SuppQty] AS [SuppQty], 
+    [InventoryItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+    FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData" Association="Self.FK_AsycudaDocumentEntryData_EntryData">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -546,6 +642,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="EntryData" EntitySet="EntryData" />
           </AssociationSet>
+          <AssociationSet Name="FK_EntryData_Invoices_EntryData" Association="Self.FK_EntryData_Invoices_EntryData">
+            <End Role="EntryData" EntitySet="EntryData" />
+            <End Role="EntryData_Invoices" EntitySet="EntryData_Invoices" />
+          </AssociationSet>
           <AssociationSet Name="FK_EntryData_OpeningStock_EntryData" Association="Self.FK_EntryData_OpeningStock_EntryData">
             <End Role="EntryData" EntitySet="EntryData" />
             <End Role="EntryData_OpeningStock" EntitySet="EntryData_OpeningStock" />
@@ -562,9 +662,25 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="Suppliers" EntitySet="Suppliers" />
             <End Role="EntryData" EntitySet="EntryData" />
           </AssociationSet>
+          <AssociationSet Name="FK_EntryDataDetails_InventoryItems" Association="Self.FK_EntryDataDetails_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_FileTypes_FileTypes" Association="Self.FK_FileTypes_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypes1" EntitySet="FileTypes" />
+          </AssociationSet>
           <AssociationSet Name="FK_InventoryItems-NonStock_InventoryItems" Association="Self.FK_InventoryItems-NonStock_InventoryItems">
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItems-NonStock" EntitySet="InventoryItems-NonStock" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemSource_InventoryItems" Association="Self.FK_InventoryItemSource_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemSource" EntitySet="InventoryItemSource" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemSource_InventorySources" Association="Self.FK_InventoryItemSource_InventorySources">
+            <End Role="InventorySources" EntitySet="InventorySources" />
+            <End Role="InventoryItemSource" EntitySet="InventoryItemSource" />
           </AssociationSet>
           <AssociationSet Name="FK_PurchaseOrderDetails_PurchaseOrders" Association="Self.FK_PurchaseOrderDetails_PurchaseOrders">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -637,6 +753,24 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="EntryData" EntitySet="EntryData" />
             <End Role="EntryData_DocumentType" EntitySet="EDDocumentType" />
           </AssociationSet>
+          <AssociationSet Name="FK_FileTypes_FileTypes" Association="WaterNutDBModel.FK_FileTypes_FileTypes">
+            <End Role="FileTypes" EntitySet="FileTypes" />
+            <End Role="FileTypes1" EntitySet="FileTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntryDataDetails_InventoryItems" Association="WaterNutDBModel.FK_EntryDataDetails_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
+          </AssociationSet>
+          <EntitySet Name="InventorySources" EntityType="WaterNutDBModel.InventorySources" />
+          <EntitySet Name="InventoryItemSourceSet" EntityType="WaterNutDBModel.InventoryItemSource" />
+          <AssociationSet Name="InventorySourcesInventoryItemSource1" Association="WaterNutDBModel.InventorySourcesInventoryItemSource1">
+            <End Role="InventorySources" EntitySet="InventorySources" />
+            <End Role="InventoryItemSource1" EntitySet="InventoryItemSourceSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemSource_InventoryItems" Association="WaterNutDBModel.FK_InventoryItemSource_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemSource" EntitySet="InventoryItemSourceSet" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -695,7 +829,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="UnitWeight" Type="Double" Nullable="false" />
           <Property Name="DoNotAllocate" Type="Boolean"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IEntryDataDetail.DoNotAllocate</a:ImplementsProperty></Property>
           <NavigationProperty Name="EntryData" Relationship="WaterNutDBModel.FK_PurchaseOrderDetails_PurchaseOrders" FromRole="EntryDataDetails" ToRole="EntryData"><a:ImplementsNavigationProperty xmlns:a="http://schemas.tempuri.com/ImplementsNavigationProperty">True</a:ImplementsNavigationProperty></NavigationProperty>
-          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetails" FromRole="EntryDataDetails" ToRole="InventoryItemsEx" />
+          <NavigationProperty Name="InventoryItemEx" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetails" FromRole="EntryDataDetails" ToRole="InventoryItemsEx" />
           <NavigationProperty Name="EntryDataDetailsEx" Relationship="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" FromRole="EntryDataDetails" ToRole="EntryDataDetailsEx" />
           <Property Name="Freight" Type="Double" />
           <Property Name="Weight" Type="Double" />
@@ -709,7 +843,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="TaxAmount" Type="Double" />
-          <Property Name="LastCost" Type="Double" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
+          <Property Name="LastCost" Type="Double" />
+          <Property Name="TotalCost" Type="Double" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_EntryDataDetails_InventoryItems" FromRole="EntryDataDetails" ToRole="InventoryItems" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1">
@@ -887,6 +1024,9 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="MergeEmails" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="EntryData" Relationship="WaterNutDBModel.FK_EntryData_FileTypes" FromRole="FileTypes" ToRole="EntryData" />
           <Property Name="CopyEntryData" Type="Boolean" Nullable="false" />
+          <Property Name="ParentFileTypeId" Type="Int32" />
+          <NavigationProperty Name="FileTypes1" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes" FromRole="FileTypes" ToRole="FileTypes1" />
+          <NavigationProperty Name="FileTypes2" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes" FromRole="FileTypes1" ToRole="FileTypes" />
         </EntityType>
         <Association Name="FK_EntryData_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
@@ -919,6 +1059,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="InventoryItems_NonStock" Relationship="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItems_NonStock" />
+          <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_InventoryItems" FromRole="InventoryItems" ToRole="EntryDataDetails" />
+          <NavigationProperty Name="InventoryItemSource" Relationship="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemSource" />
         </EntityType>
         <Association Name="FK_InventoryItems_NonStock_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
@@ -1034,6 +1176,79 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FileTypes_FileTypes">
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.FileTypes" Role="FileTypes1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypes">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypes1">
+              <PropertyRef Name="ParentFileTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Invoices" BaseType="WaterNutDBModel.EntryData">
+          <Property Name="PONumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_EntryDataDetails_InventoryItems">
+          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="EntryDataDetails">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InventorySources">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryItemSource" Relationship="WaterNutDBModel.InventorySourcesInventoryItemSource1" FromRole="InventorySources" ToRole="InventoryItemSource1" />
+        </EntityType>
+        <EntityType Name="InventoryItemSource">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InventorySourceId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventorySources" Relationship="WaterNutDBModel.InventorySourcesInventoryItemSource1" FromRole="InventoryItemSource1" ToRole="InventorySources" />
+          <Property Name="InventoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItemSource" ToRole="InventoryItems" />
+        </EntityType>
+        <Association Name="InventorySourcesInventoryItemSource1">
+          <End Type="WaterNutDBModel.InventorySources" Role="InventorySources" Multiplicity="1" />
+          <End Type="WaterNutDBModel.InventoryItemSource" Role="InventoryItemSource1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySources">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource1">
+              <PropertyRef Name="InventorySourceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemSource_InventoryItems">
+          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InventoryItemSource" Role="InventoryItemSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource">
+              <PropertyRef Name="InventoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1087,10 +1302,18 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
               </MappingFragment>
             </EntityTypeMapping>
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Invoices)">
+              <MappingFragment StoreEntitySet="EntryData_Invoices">
+                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="PONumber" ColumnName="PONumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
                 <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
@@ -1211,6 +1434,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="ParentFileTypeId" ColumnName="ParentFileTypeId" />
                 <ScalarProperty Name="CopyEntryData" ColumnName="CopyEntryData" />
                 <ScalarProperty Name="MergeEmails" ColumnName="MergeEmails" />
                 <ScalarProperty Name="FileGroupId" ColumnName="FileGroupId" />
@@ -1294,6 +1518,23 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="InventorySources">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InventorySources">
+              <MappingFragment StoreEntitySet="InventorySources">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemSourceSet">
+            <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.InventoryItemSource)">
+              <MappingFragment StoreEntitySet="InventoryItemSource">
+                <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />
+                <ScalarProperty Name="InventorySourceId" ColumnName="InventorySourceId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
@@ -1311,7 +1552,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
         <DesignerProperty Name="EnablePluralization" Value="False" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
-        <DesignerProperty Name="UseLegacyProvider" Value="True" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
       </DesignerInfoPropertySet>
     </Options>
     <!-- Diagram content (shape and connector positions) -->

@@ -15,10 +15,17 @@ using TrackableEntities;
 
 namespace EntryDataDS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class InventoryItems : BaseEntity<InventoryItems>, ITrackable 
     {
+        partial void AutoGenStartUp() //InventoryItems()
+        {
+            this.EntryDataDetails = new List<EntryDataDetails>();
+            this.InventoryItemSource = new List<InventoryItemSource>();
+        }
+
         [DataMember]
         public string ItemNumber 
         {
@@ -126,6 +133,10 @@ namespace EntryDataDS.Business.Entities
         int _id;
         [DataMember]
         public InventoryItems_NonStock InventoryItems_NonStock { get; set; }
+        [DataMember]
+        public List<EntryDataDetails> EntryDataDetails { get; set; }
+        [DataMember]
+        public List<InventoryItemSource> InventoryItemSource { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

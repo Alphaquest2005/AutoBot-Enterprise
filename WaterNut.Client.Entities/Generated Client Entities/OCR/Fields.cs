@@ -208,6 +208,59 @@ public string Key
 		}
         
 
+       private OCR_FieldValue _FieldValue;
+        public  OCR_FieldValue FieldValue
+		{
+		    get
+               { 
+                  if (this.fields != null)
+                   {
+                       if (_FieldValue != null)
+                       {
+                           if (this.fields.FieldValue !=
+                               _FieldValue.DTO)
+                           {
+                                if (this.fields.FieldValue  != null)
+                               _FieldValue = new OCR_FieldValue(this.fields.FieldValue);
+                           }
+                       }
+                       else
+                       {
+                             if (this.fields.FieldValue  != null)
+                           _FieldValue = new OCR_FieldValue(this.fields.FieldValue);
+                       }
+                   }
+
+
+             //       if (_FieldValue != null) return _FieldValue;
+                       
+             //       var i = new OCR_FieldValue(){TrackingState = TrackingState.Added};
+			//		//if (this.fields.FieldValue == null) Debugger.Break();
+			//		if (this.fields.FieldValue != null)
+            //        {
+            //           i. = this.fields.FieldValue;
+            //        }
+            //        else
+            //        {
+            //            this.fields.FieldValue = i.;
+             //       }
+                           
+            //        _FieldValue = i;
+                     
+                    return _FieldValue;
+               }
+			set
+			{
+			    if (value == _FieldValue) return;
+                _FieldValue = value;
+                if(value != null)
+                     this.fields.FieldValue = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("FieldValue");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.Fields> _changeTracker;    
         public ChangeTrackingCollection<DTO.Fields> ChangeTracker

@@ -208,8 +208,8 @@ namespace OCR.Client.Repositories
                      // Start = new System.Collections.ObjectModel.ObservableCollection<Start>(res.Start.Select(y => new Start(y))),    
                      // Lines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.Lines.Select(y => new Lines(y))),    
                   // RecuringPart = (res.RecuringPart != null?new RecuringPart(res.RecuringPart): null),    
-                  // ParentPart = (res.ParentPart != null?new ParentParts(res.ParentPart): null),    
-                     // ChildParts = new System.Collections.ObjectModel.ObservableCollection<ParentParts>(res.ChildParts.Select(y => new ParentParts(y)))    
+                     // ChildParts = new System.Collections.ObjectModel.ObservableCollection<ChildParts>(res.ChildParts.Select(y => new ChildParts(y))),    
+                     // ParentParts = new System.Collections.ObjectModel.ObservableCollection<ChildParts>(res.ParentParts.Select(y => new ChildParts(y)))    
                   };
                     }
                     else

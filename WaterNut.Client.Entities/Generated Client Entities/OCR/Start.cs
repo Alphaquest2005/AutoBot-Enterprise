@@ -72,17 +72,17 @@ public int PartId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "RegExChain is required")]
+       [RequiredValidationAttribute(ErrorMessage= "RegEx is required")]
        
-public int RegExChainId
+public int RegExId
 		{ 
-		    get { return this.start.RegExChainId; }
+		    get { return this.start.RegExId; }
 			set
 			{
-			    if (value == this.start.RegExChainId) return;
-				this.start.RegExChainId = value;
+			    if (value == this.start.RegExId) return;
+				this.start.RegExId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("RegExChainId");
+				NotifyPropertyChanged("RegExId");
 			}
 		}
      
@@ -140,55 +140,55 @@ public int RegExChainId
 		}
         
 
-       private RegExChain _RegExChain;
-        public  RegExChain RegExChain
+       private RegularExpressions _RegularExpressions;
+        public  RegularExpressions RegularExpressions
 		{
 		    get
                { 
                   if (this.start != null)
                    {
-                       if (_RegExChain != null)
+                       if (_RegularExpressions != null)
                        {
-                           if (this.start.RegExChain !=
-                               _RegExChain.DTO)
+                           if (this.start.RegularExpressions !=
+                               _RegularExpressions.DTO)
                            {
-                                if (this.start.RegExChain  != null)
-                               _RegExChain = new RegExChain(this.start.RegExChain);
+                                if (this.start.RegularExpressions  != null)
+                               _RegularExpressions = new RegularExpressions(this.start.RegularExpressions);
                            }
                        }
                        else
                        {
-                             if (this.start.RegExChain  != null)
-                           _RegExChain = new RegExChain(this.start.RegExChain);
+                             if (this.start.RegularExpressions  != null)
+                           _RegularExpressions = new RegularExpressions(this.start.RegularExpressions);
                        }
                    }
 
 
-             //       if (_RegExChain != null) return _RegExChain;
+             //       if (_RegularExpressions != null) return _RegularExpressions;
                        
-             //       var i = new RegExChain(){TrackingState = TrackingState.Added};
-			//		//if (this.start.RegExChain == null) Debugger.Break();
-			//		if (this.start.RegExChain != null)
+             //       var i = new RegularExpressions(){TrackingState = TrackingState.Added};
+			//		//if (this.start.RegularExpressions == null) Debugger.Break();
+			//		if (this.start.RegularExpressions != null)
             //        {
-            //           i. = this.start.RegExChain;
+            //           i. = this.start.RegularExpressions;
             //        }
             //        else
             //        {
-            //            this.start.RegExChain = i.;
+            //            this.start.RegularExpressions = i.;
              //       }
                            
-            //        _RegExChain = i;
+            //        _RegularExpressions = i;
                      
-                    return _RegExChain;
+                    return _RegularExpressions;
                }
 			set
 			{
-			    if (value == _RegExChain) return;
-                _RegExChain = value;
+			    if (value == _RegularExpressions) return;
+                _RegularExpressions = value;
                 if(value != null)
-                     this.start.RegExChain = value.DTO;
+                     this.start.RegularExpressions = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("RegExChain");
+                NotifyPropertyChanged("RegularExpressions");
 			}
 		}
         

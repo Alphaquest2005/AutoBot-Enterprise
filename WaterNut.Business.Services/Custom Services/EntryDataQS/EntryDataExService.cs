@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using TrackableEntities.Client;
+using WaterNut.DataSpace;
 
 namespace EntryDataQS.Business.Services
 {
@@ -40,17 +41,31 @@ namespace EntryDataQS.Business.Services
 
         public async Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite)
         {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
-            await WaterNut.DataSpace.SavePDFModel.Instance.ProcessDroppedFile(droppedFilePath, fileType, docSet,
-                overwrite).ConfigureAwait(false);
+            
+            int? emailId = 0;
+            int? fileTypeId = 0;
+            using (var ctx = new CoreEntitiesContext())
+            {
+
+                var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == droppedFilePath)
+                    .Select(x => new { x.EmailUniqueId, x.FileTypeId }).FirstOrDefault();
+                emailId = res?.EmailUniqueId;
+                fileTypeId = res?.FileTypeId;
+
+                var dfileType = ctx.FileTypes.ToList().FirstOrDefault(x =>
+                    Regex.IsMatch(droppedFilePath, x.FilePattern, RegexOptions.IgnoreCase) && x.Type == fileType);
+                if (dfileType == null) // for filenames not in database
+                {
+                    dfileType = ctx.FileTypes.First(x => x.Type == fileType);
+                }
+
+                dfileType.AsycudaDocumentSetId = docSetId;
+               InvoiceReader.Import(droppedFilePath, fileTypeId, emailId, overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType.Type);
+            }
+            
         }
 
-        public async Task SaveTXT(string droppedFilePath, string fileType, int docSetId, bool overwrite)
-        {
-            var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).ConfigureAwait(false);
-            await WaterNut.DataSpace.SaveTXT.Instance.ProcessDroppedFile(droppedFilePath, fileType, docSet,
-                overwrite).ConfigureAwait(false);
-        }
+
     }
 }
 

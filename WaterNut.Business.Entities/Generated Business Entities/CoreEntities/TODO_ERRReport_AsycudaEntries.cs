@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace CoreEntities.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class TODO_ERRReport_AsycudaEntries : BaseEntity<TODO_ERRReport_AsycudaEntries>, ITrackable 

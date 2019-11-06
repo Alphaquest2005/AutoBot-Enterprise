@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace ValuationDS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class xC71_Item : BaseEntity<xC71_Item>, ITrackable 

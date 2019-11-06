@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace EntryDataQS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class EmptyFullCode : BaseEntity<EmptyFullCode>, ITrackable 

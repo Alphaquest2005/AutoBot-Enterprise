@@ -245,6 +245,12 @@ namespace InventoryDS.Business.Services
                                         GetWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "InventoryItemSources":
+                                return
+                                    await
+                                        GetWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItem", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -745,6 +751,9 @@ namespace InventoryDS.Business.Services
                             case "InventoryItemAlias":
                                 return await CountWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemSources":
+                                return await CountWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItem", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.InventoryItems.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -860,6 +869,12 @@ namespace InventoryDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<InventoryItemAlia>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItemSources":
+                                return
+                                    await
+                                        LoadRangeWhere<InventoryItemSource>(startIndex, count, dbContext, exp, itm.Value, "InventoryItem", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1076,6 +1091,7 @@ namespace InventoryDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<InventoryItem> entities = await set//dbContext.InventoryItems
                                                     // .Include(x => x.InventoryItemAlias)									  
+                                                    // .Include(x => x.InventoryItemSources)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1154,6 +1170,9 @@ namespace InventoryDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InventoryItemAlias":
                                 return await SumWhere<InventoryItemAlia>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItemSources":
+                                return await SumWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItem", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

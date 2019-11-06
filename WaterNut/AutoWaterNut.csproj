@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AutoWaterNut</RootNamespace>
     <AssemblyName>AutoWaterNut</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -329,17 +329,16 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\TariffCodesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\InventoryQS\TariffSupUnitLkpsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\BaseViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\ChildPartsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\EndViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\FieldsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\InvoicesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\LinesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\MessageToken.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\ParentPartsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\OCR_FieldValueViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\PartsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\PartTypesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RecuringPartViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RegExChainViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RegExParentViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\RegularExpressionsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\StartViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\OCR\SummaryListViewModel.cs" />
@@ -465,16 +464,15 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCategoryTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffCodesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\InventoryQS\TariffSupUnitLkpsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\ChildPartsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\EndTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\FieldsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\InvoicesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\LinesTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\ParentPartsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\OCR_FieldValueTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\PartsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\PartTypesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RecuringPartTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RegExChainTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RegExParentTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\RegularExpressionsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\OCR\StartTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\PreviousDocumentQS\PreviousDocumentItemTotals.cs" />
@@ -589,16 +587,15 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCategoryVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffCodesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\InventoryQS\TariffSupUnitLkpsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ChildPartsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\EndVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\FieldsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\InvoicesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\LinesVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\ParentPartsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\OCR_FieldValueVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\PartTypesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RecuringPartVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegExChainVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegExParentVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\RegularExpressionsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\OCR\StartVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\PreviousDocumentQS\PreviousDocumentItemVirturalListLoader.cs" />

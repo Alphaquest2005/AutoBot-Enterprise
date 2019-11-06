@@ -15,13 +15,16 @@ using TrackableEntities;
 
 namespace OCR.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class RegularExpressions : BaseEntity<RegularExpressions>, ITrackable 
     {
         partial void AutoGenStartUp() //RegularExpressions()
         {
-            this.RegExChain = new List<RegExChain>();
+            this.End = new List<End>();
+            this.Lines = new List<Lines>();
+            this.Start = new List<Start>();
         }
 
         [DataMember]
@@ -55,7 +58,11 @@ namespace OCR.Business.Entities
         }
         string _regex;
         [DataMember]
-        public List<RegExChain> RegExChain { get; set; }
+        public List<End> End { get; set; }
+        [DataMember]
+        public List<Lines> Lines { get; set; }
+        [DataMember]
+        public List<Start> Start { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

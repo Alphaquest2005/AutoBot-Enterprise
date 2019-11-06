@@ -239,6 +239,12 @@ namespace OCR.Business.Services
                                         GetWhere<Lines>(dbContext, exp, itm.Value, "Fields", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FieldValue":
+                                return
+                                    await
+                                        GetWhere<OCR_FieldValue>(dbContext, exp, itm.Value, "Field", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace OCR.Business.Services
                             case "Lines":
                                 return await CountWhere<Lines>(dbContext, exp, itm.Value, "Fields", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FieldValue":
+                                return await CountWhere<OCR_FieldValue>(dbContext, exp, itm.Value, "Field", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Fields.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -845,6 +854,12 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Lines>(startIndex, count, dbContext, exp, itm.Value, "Fields", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FieldValue":
+                                return
+                                    await
+                                        LoadRangeWhere<OCR_FieldValue>(startIndex, count, dbContext, exp, itm.Value, "Field", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1135,6 +1150,9 @@ namespace OCR.Business.Services
                         {
                             case "Lines":
                                 return await SumWhere<Lines>(dbContext, exp, itm.Value, "Fields", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FieldValue":
+                                return await SumWhere<OCR_FieldValue>(dbContext, exp, itm.Value, "Field", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

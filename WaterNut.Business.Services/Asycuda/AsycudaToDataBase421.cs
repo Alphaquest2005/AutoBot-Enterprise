@@ -796,6 +796,10 @@ namespace WaterNut.DataSpace.Asycuda
                             ApplicationSettingsId = da.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId,
                             Description = ai.Goods_description.Commercial_Description.Text.FirstOrDefault()??"",
                             TariffCode = ai.Tarification.HScode.Commodity_code.Text.FirstOrDefault(),
+                            InventoryItemSources = new List<InventoryItemSource>() {new InventoryItemSource(true)
+                            {
+                                InventorySourceId = ctx.InventorySources.First(x => x.Name == "Asycuda").Id,
+                            }},
                             TrackingState = TrackingState.Added
                         };
                         

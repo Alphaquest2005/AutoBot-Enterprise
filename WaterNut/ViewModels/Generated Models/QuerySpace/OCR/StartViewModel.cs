@@ -56,7 +56,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
  
 			RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
  
-			RegisterToReceiveMessages<RegExChain>(MessageToken.CurrentRegExChainChanged, OnCurrentRegExChainChanged);
+			RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentRegularExpressionsChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -143,9 +143,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                    // {
                    //    if(Parts.Contains(CurrentStart.Parts) == false) Parts.Add(CurrentStart.Parts);
                     //}
-                    //if (e.PropertyName == "AddRegExChain")
+                    //if (e.PropertyName == "AddRegularExpressions")
                    // {
-                   //    if(RegExChain.Contains(CurrentStart.RegExChain) == false) RegExChain.Add(CurrentStart.RegExChain);
+                   //    if(RegularExpressions.Contains(CurrentStart.RegularExpressions) == false) RegularExpressions.Add(CurrentStart.RegularExpressions);
                     //}
                  } 
         internal virtual void OnStartChanged(object sender, NotificationEventArgs e)
@@ -173,16 +173,16 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                 // SendMessage(MessageToken.StartChanged, new NotificationEventArgs(MessageToken.StartChanged));
                 			}
 	
-		 internal virtual void OnCurrentRegExChainChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegExChain> e)
+		 internal virtual void OnCurrentRegularExpressionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegularExpressions> e)
 			{
-			if(ViewCurrentRegExChain == false) return;
+			if(ViewCurrentRegularExpressions == false) return;
 			if (e.Data == null || e.Data.Id == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				vloader.FilterExpression = string.Format("RegExChainId == {0}", e.Data.Id.ToString());
+				vloader.FilterExpression = string.Format("RegExId == {0}", e.Data.Id.ToString());
                  }
 
 				Start.Refresh();
@@ -210,17 +210,17 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
              }
          }
  	
-		 bool _viewCurrentRegExChain = false;
-         public bool ViewCurrentRegExChain
+		 bool _viewCurrentRegularExpressions = false;
+         public bool ViewCurrentRegularExpressions
          {
              get
              {
-                 return _viewCurrentRegExChain;
+                 return _viewCurrentRegularExpressions;
              }
              set
              {
-                 _viewCurrentRegExChain = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentRegExChain);
+                 _viewCurrentRegularExpressions = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentRegularExpressions);
                 FilterData();
              }
          }

@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace OCR.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class RecuringPart : BaseEntity<RecuringPart>, ITrackable 

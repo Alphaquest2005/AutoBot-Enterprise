@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace DocumentItemDS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class xcuda_Attached_documents : BaseEntity<xcuda_Attached_documents>, ITrackable 

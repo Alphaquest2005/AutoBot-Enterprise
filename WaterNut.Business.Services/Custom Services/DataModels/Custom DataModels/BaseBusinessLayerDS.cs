@@ -766,7 +766,7 @@ namespace WaterNut.DataSpace
                                 //BaseDataModel.Instance.CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Add(cdoc.xcuda_ASYCUDA_ExtendedProperties);
                                 var cp = currentAsycudaDocumentSet.Customs_Procedure;
                                 IntCdoc(cdoc, currentAsycudaDocumentSet);
-                                if (pod.EntryData.DocumentType.DocumentType != null)
+                                if (pod.EntryData.DocumentType?.DocumentType != null)
                                     cp = AttachEntryDataDocumentType(cdoc, pod.EntryData.DocumentType);
                                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
                                 if (autoAssess)
@@ -1036,7 +1036,7 @@ namespace WaterNut.DataSpace
         private IEnumerable<BaseDataModel.EntryLineData> CreateEntryLineData(IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = from s in slstSource.AsEnumerable() //.Where(p => p.Downloaded == false)
-                group s by new {s.ItemNumber, s.ItemDescription, s.TariffCode, s.Cost, s.EntryData, s.InventoryItems}
+                group s by new {s.ItemNumber, s.ItemDescription, s.TariffCode, s.Cost, s.EntryData, s.InventoryItemEx}
                 into g
                 select new BaseDataModel.EntryLineData
                 {
@@ -1060,17 +1060,17 @@ namespace WaterNut.DataSpace
                     Freight = Convert.ToDouble(g.Sum(x => x.Freight)),
                     Weight = Convert.ToDouble(g.Sum(x => x.Weight)),
                     InternalFreight = Convert.ToDouble(g.Sum(x => x.InternalFreight)),
-                    TariffSupUnitLkps = g.Key.InventoryItems.SuppUnitCode2 != null
+                    TariffSupUnitLkps = g.Key.InventoryItemEx.SuppUnitCode2 != null
                         ? new List<ITariffSupUnitLkp>()
                         {
                             new TariffSupUnitLkps()
                             {
-                                SuppUnitCode2 = g.Key.InventoryItems.SuppUnitCode2,
-                                SuppQty = g.Key.InventoryItems.SuppQty.GetValueOrDefault()
+                                SuppUnitCode2 = g.Key.InventoryItemEx.SuppUnitCode2,
+                                SuppQty = g.Key.InventoryItemEx.SuppQty.GetValueOrDefault()
                             }
                         }
                         : null,
-                    InventoryItemEx = g.Key.InventoryItems,
+                    InventoryItemEx = g.Key.InventoryItemEx,
 
                 };
             return slst;
@@ -3068,7 +3068,7 @@ namespace WaterNut.DataSpace
                 var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1"
                                                               && x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId);
                 var pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        (x.FileTypes.Type == "PDF")&& x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                        x.Attachments.FilePath.EndsWith("pdf") && x.AsycudaDocumentSetId == asycudaDocumentSetId)
                     .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
 
                 

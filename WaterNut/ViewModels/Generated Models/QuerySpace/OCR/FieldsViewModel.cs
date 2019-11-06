@@ -55,6 +55,8 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
  
 			RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
+ 
+			RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentFieldValueChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -141,6 +143,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                    // {
                    //    if(Lines.Contains(CurrentFields.Lines) == false) Lines.Add(CurrentFields.Lines);
                     //}
+                    //if (e.PropertyName == "AddFieldValue")
+                   // {
+                   //    if(OCR_FieldValue.Contains(CurrentFields.FieldValue) == false) OCR_FieldValue.Add(CurrentFields.FieldValue);
+                    //}
                  } 
         internal virtual void OnFieldsChanged(object sender, NotificationEventArgs e)
         {
@@ -166,6 +172,22 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 				NotifyPropertyChanged(x => this.Fields);
                 // SendMessage(MessageToken.FieldsChanged, new NotificationEventArgs(MessageToken.FieldsChanged));
                 			}
+	
+		 internal virtual void OnCurrentFieldValueChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_FieldValue> e)
+			{
+			if(ViewCurrentFieldValue == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+                }
+
+				Fields.Refresh();
+				NotifyPropertyChanged(x => this.Fields);
+                // SendMessage(MessageToken.FieldsChanged, new NotificationEventArgs(MessageToken.FieldsChanged));
+                			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -183,6 +205,21 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
              {
                  _viewCurrentLines = value;
                  NotifyPropertyChanged(x => x.ViewCurrentLines);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentFieldValue = false;
+         public bool ViewCurrentFieldValue
+         {
+             get
+             {
+                 return _viewCurrentFieldValue;
+             }
+             set
+             {
+                 _viewCurrentFieldValue = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentFieldValue);
                 FilterData();
              }
          }

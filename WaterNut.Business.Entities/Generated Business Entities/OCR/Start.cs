@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace OCR.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Start : BaseEntity<Start>, ITrackable 
@@ -50,24 +51,24 @@ namespace OCR.Business.Entities
         }
         int _partid;
         [DataMember]
-        public int RegExChainId 
+        public int RegExId 
         {
             get
             {
-                return _regexchainid;
+                return _regexid;
             }
             set
             {
-                _regexchainid = value;
+                _regexid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _regexchainid;
+        int _regexid;
         [DataMember]
         public Parts Parts { get; set; }
         [DataMember]
-        public RegExChain RegExChain { get; set; }
+        public RegularExpressions RegularExpressions { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

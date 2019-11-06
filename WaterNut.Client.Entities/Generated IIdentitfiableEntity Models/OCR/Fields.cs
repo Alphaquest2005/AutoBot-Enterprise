@@ -66,6 +66,44 @@ namespace OCR.Client.Entities
             }
 
       }
+        public string FieldValueEntityName
+        {
+            get
+            {
+                return this.FieldValue == null ? "" : this.FieldValue.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (OCR_FieldValueClient ctx = new OCR_FieldValueClient())
+                    {
+                        var dto = ctx.GetOCR_FieldValue().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.FieldValue = (OCR_FieldValue)new OCR_FieldValue().CreateEntityFromString(value);
+							
+							this.Id = Convert.ToInt32(this.FieldValue.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddFieldValue");
+                        }
+                        else
+                        {
+                            var obj = new OCR_FieldValue(dto);
+                           if (this.FieldValue == null || this.FieldValue.EntityId != obj.EntityId) this.FieldValue = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

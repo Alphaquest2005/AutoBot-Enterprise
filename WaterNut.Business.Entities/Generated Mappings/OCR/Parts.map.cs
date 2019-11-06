@@ -22,8 +22,8 @@
               this.HasMany(t => t.Start).WithRequired(t => (Parts)t.Parts);
               this.HasMany(t => t.Lines).WithRequired(t => (Parts)t.Parts);
               this.HasOptional(t => t.RecuringPart).WithRequired(t => (Parts)t.Parts);
-              this.HasOptional(t => t.ParentPart).WithRequired(t => (Parts)t.Part);
-              this.HasMany(t => t.ChildParts).WithRequired(t => (Parts)t.ParentPart);
+              this.HasMany(t => t.ChildParts).WithRequired(t => (Parts)t.ChildPart);
+              this.HasMany(t => t.ParentParts).WithRequired(t => (Parts)t.ParentPart);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -22,6 +22,7 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.HasOptional(t => t.TariffCodes).WithMany(t =>(ICollection<InventoryItem>) t.InventoryItems).HasForeignKey(d => d.TariffCode);
               this.HasMany(t => t.InventoryItemAlias).WithRequired(t => (InventoryItem)t.InventoryItem);
+              this.HasMany(t => t.InventoryItemSources).WithRequired(t => (InventoryItem)t.InventoryItem);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

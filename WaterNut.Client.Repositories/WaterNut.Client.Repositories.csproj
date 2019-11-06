@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WaterNut.Client.Repositories</RootNamespace>
     <AssemblyName>WaterNut.Client.Repositories</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -245,16 +245,15 @@
     <Compile Include="Generated Repositories\InventoryQS\TariffCodesRepository.cs" />
     <Compile Include="Generated Repositories\InventoryQS\TariffSupUnitLkpsRepository.cs" />
     <Compile Include="Generated Repositories\OCRRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\ChildPartsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\EndRepository.cs" />
     <Compile Include="Generated Repositories\OCR\FieldsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\InvoicesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\LinesRepository.cs" />
-    <Compile Include="Generated Repositories\OCR\ParentPartsRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_FieldValueRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartTypesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\RecuringPartRepository.cs" />
-    <Compile Include="Generated Repositories\OCR\RegExChainRepository.cs" />
-    <Compile Include="Generated Repositories\OCR\RegExParentRepository.cs" />
     <Compile Include="Generated Repositories\OCR\RegularExpressionsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\StartRepository.cs" />
     <Compile Include="Generated Repositories\PreviousDocumentQSRepository.cs" />

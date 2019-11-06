@@ -110,7 +110,7 @@ namespace OCR.Business.Services
         Task<IEnumerable<End>> GetEndByPartId(string PartId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<End>> GetEndByRegExChainId(string RegExChainId, List<string> includesLst = null);
+        Task<IEnumerable<End>> GetEndByRegExId(string RegExId, List<string> includesLst = null);
   
 
 

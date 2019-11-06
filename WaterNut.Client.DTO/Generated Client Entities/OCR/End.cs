@@ -48,17 +48,17 @@ namespace OCR.Client.DTO
         private int _PartId;
 
         [DataMember]
-        public int RegExChainId
+        public int RegExId
 		{ 
-		    get { return _RegExChainId; }
+		    get { return _RegExId; }
 			set
 			{
-			    if (value == _RegExChainId) return;
-				_RegExChainId = value;
-				NotifyPropertyChanged();//m => this.RegExChainId
+			    if (value == _RegExId) return;
+				_RegExId = value;
+				NotifyPropertyChanged();//m => this.RegExId
 			}
 		}
-        private int _RegExChainId;
+        private int _RegExId;
 
        
         [DataMember]
@@ -78,20 +78,20 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<Parts> PartsChangeTracker { get; set; }
 
         [DataMember]
-        public RegExChain RegExChain
+        public RegularExpressions RegularExpressions
 		{
-		    get { return _RegExChain; }
+		    get { return _RegularExpressions; }
 			set
 			{
-			    if (value == _RegExChain) return;
-				_RegExChain = value;
-                RegExChainChangeTracker = _RegExChain == null ? null
-                    : new ChangeTrackingCollection<RegExChain> { _RegExChain };
-				NotifyPropertyChanged();//m => this.RegExChain
+			    if (value == _RegularExpressions) return;
+				_RegularExpressions = value;
+                RegularExpressionsChangeTracker = _RegularExpressions == null ? null
+                    : new ChangeTrackingCollection<RegularExpressions> { _RegularExpressions };
+				NotifyPropertyChanged();//m => this.RegularExpressions
 			}
 		}
-        private RegExChain _RegExChain;
-        private ChangeTrackingCollection<RegExChain> RegExChainChangeTracker { get; set; }
+        private RegularExpressions _RegularExpressions;
+        private ChangeTrackingCollection<RegularExpressions> RegularExpressionsChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

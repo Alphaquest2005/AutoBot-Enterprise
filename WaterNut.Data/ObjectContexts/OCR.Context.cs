@@ -57,8 +57,6 @@ namespace OCR.Business.Entities
      
         public DbSet<PartTypes> PartTypes { get; set; }
      
-        public DbSet<RegExChain> RegExChain { get; set; }
-     
         public DbSet<RegularExpressions> RegularExpressions { get; set; }
      
         public DbSet<Start> Start { get; set; }
@@ -67,9 +65,9 @@ namespace OCR.Business.Entities
      
         public DbSet<RecuringPart> RecuringPart { get; set; }
      
-        public DbSet<RegExParent> RegExParent { get; set; }
+        public DbSet<ChildParts> ChildParts { get; set; }
      
-        public DbSet<ParentParts> ParentParts { get; set; }
+        public DbSet<OCR_FieldValue> OCR_FieldValue { get; set; }
      
 
 
@@ -85,8 +83,6 @@ namespace OCR.Business.Entities
          
             modelBuilder.Configurations.Add(new PartTypesMap());
          
-            modelBuilder.Configurations.Add(new RegExChainMap());
-         
             modelBuilder.Configurations.Add(new RegularExpressionsMap());
          
             modelBuilder.Configurations.Add(new StartMap());
@@ -95,9 +91,9 @@ namespace OCR.Business.Entities
          
             modelBuilder.Configurations.Add(new RecuringPartMap());
          
-            modelBuilder.Configurations.Add(new RegExParentMap());
+            modelBuilder.Configurations.Add(new ChildPartsMap());
          
-            modelBuilder.Configurations.Add(new ParentPartsMap());
+            modelBuilder.Configurations.Add(new OCR_FieldValueMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

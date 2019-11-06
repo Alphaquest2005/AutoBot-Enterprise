@@ -25,6 +25,21 @@
           <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
+        <EntityType Name="InventoryItemSource">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InventoryId" Type="int" Nullable="false" />
+          <Property Name="InventorySourceId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="InventorySources">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
             <PropertyRef Name="TariffCategoryCode" />
@@ -59,6 +74,7 @@
           <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="LicenseRequired" Type="bit" />
           <Property Name="Invalid" Type="bit" />
+          <Property Name="LicenseDescription" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -92,6 +108,34 @@
             </Principal>
             <Dependent Role="InventoryItems">
               <PropertyRef Name="TariffCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemSource_InventoryItems">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InventoryItemSource" Type="Self.InventoryItemSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource">
+              <PropertyRef Name="InventoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemSource_InventorySources">
+          <End Role="InventorySources" Type="Self.InventorySources" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InventoryItemSource" Type="Self.InventoryItemSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySources">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource">
+              <PropertyRef Name="InventorySourceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -138,6 +182,8 @@
         <EntityContainer Name="ModelStoreContainer">
           <EntitySet Name="InventoryItemAlias" EntityType="Self.InventoryItemAlias" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItemSource" EntityType="Self.InventoryItemSource" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventorySources" EntityType="Self.InventorySources" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategory" EntityType="Self.TariffCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategoryCodeSuppUnit" EntityType="Self.TariffCategoryCodeSuppUnit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCodes" EntityType="Self.TariffCodes" Schema="dbo" store:Type="Tables" />
@@ -149,6 +195,14 @@
           <AssociationSet Name="FK_InventoryItems_TariffCodes" Association="Self.FK_InventoryItems_TariffCodes">
             <End Role="TariffCodes" EntitySet="TariffCodes" />
             <End Role="InventoryItems" EntitySet="InventoryItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemSource_InventoryItems" Association="Self.FK_InventoryItemSource_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemSource" EntitySet="InventoryItemSource" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemSource_InventorySources" Association="Self.FK_InventoryItemSource_InventorySources">
+            <End Role="InventorySources" EntitySet="InventorySources" />
+            <End Role="InventoryItemSource" EntitySet="InventoryItemSource" />
           </AssociationSet>
           <AssociationSet Name="FK_TariffCategoryCodeSuppUnit_TariffCategory" Association="Self.FK_TariffCategoryCodeSuppUnit_TariffCategory">
             <End Role="TariffCategory" EntitySet="TariffCategory" />
@@ -179,7 +233,8 @@
           <NavigationProperty Name="TariffCodes" Relationship="Self.FK_InventoryItems_TariffCodes" FromRole="InventoryItems" ToRole="TariffCodes"><a:ImplementsNavigationProperty xmlns:a="http://schemas.tempuri.com/ImplementsNavigationProperty"></a:ImplementsNavigationProperty></NavigationProperty>
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="InventoryItemAlias" Relationship="Model.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItem" ToRole="InventoryItemAlia" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
+          <NavigationProperty Name="InventoryItemAlias" Relationship="Model.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItem" ToRole="InventoryItemAlia" />
+          <NavigationProperty Name="InventoryItemSources" Relationship="Model.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItem" ToRole="InventoryItemSource" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
@@ -210,7 +265,8 @@
           <Property Name="LicenseRequired" Type="Boolean" />
           <NavigationProperty Name="InventoryItems" Relationship="Self.FK_InventoryItems_TariffCodes" FromRole="TariffCodes" ToRole="InventoryItems" />
           <NavigationProperty Name="TariffCategory" Relationship="Self.FK_TariffCodes_TariffCategory" FromRole="TariffCodes" ToRole="TariffCategory"><a:ImplementsNavigationProperty xmlns:a="http://schemas.tempuri.com/ImplementsNavigationProperty"></a:ImplementsNavigationProperty></NavigationProperty>
-          <Property Name="Invalid" Type="Boolean" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
+          <Property Name="Invalid" Type="Boolean" />
+          <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="TariffSupUnitLkp">
           <Key>
@@ -272,6 +328,16 @@
           <AssociationSet Name="FK_InventoryItemAlias_InventoryItems1" Association="Model.FK_InventoryItemAlias_InventoryItems1">
             <End Role="InventoryItem" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlia" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
+          <EntitySet Name="InventorySources" EntityType="Model.InventorySource" />
+          <EntitySet Name="InventoryItemSources" EntityType="Model.InventoryItemSource" />
+          <AssociationSet Name="InventorySourceInventoryItemSource1" Association="Model.InventorySourceInventoryItemSource1">
+            <End Role="InventorySource" EntitySet="InventorySources" />
+            <End Role="InventoryItemSource1" EntitySet="InventoryItemSources" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemSource_InventoryItems" Association="Model.FK_InventoryItemSource_InventoryItems">
+            <End Role="InventoryItem" EntitySet="InventoryItems" />
+            <End Role="InventoryItemSource" EntitySet="InventoryItemSources" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="InventoryItemAlia">
@@ -335,6 +401,50 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="InventorySource">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryItemSource" Relationship="Model.InventorySourceInventoryItemSource1" FromRole="InventorySource" ToRole="InventoryItemSource1" />
+        </EntityType>
+        <EntityType Name="InventoryItemSource">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InventorySourceId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventorySource" Relationship="Model.InventorySourceInventoryItemSource1" FromRole="InventoryItemSource1" ToRole="InventorySource" />
+          <Property Name="InventoryId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="InventoryItem" Relationship="Model.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItemSource" ToRole="InventoryItem" />
+        </EntityType>
+        <Association Name="InventorySourceInventoryItemSource1">
+          <End Type="Model.InventorySource" Role="InventorySource" Multiplicity="1" />
+          <End Type="Model.InventoryItemSource" Role="InventoryItemSource1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventorySource">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource1">
+              <PropertyRef Name="InventorySourceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItemSource_InventoryItems">
+          <End Type="Model.InventoryItem" Role="InventoryItem" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="Model.InventoryItemSource" Role="InventoryItemSource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItem">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemSource">
+              <PropertyRef Name="InventoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -367,6 +477,7 @@
           <EntitySetMapping Name="TariffCodes">
             <EntityTypeMapping TypeName="Model.TariffCode">
               <MappingFragment StoreEntitySet="TariffCodes">
+                <ScalarProperty Name="LicenseDescription" ColumnName="LicenseDescription" />
                 <ScalarProperty Name="Invalid" ColumnName="Invalid" />
                 <ScalarProperty Name="TariffCodeName" ColumnName="TariffCode" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
@@ -407,6 +518,23 @@
               <MappingFragment StoreEntitySet="TariffCategoryCodeSuppUnit">
                 <ScalarProperty Name="TariffSupUnitId" ColumnName="TariffSupUnitId" />
                 <ScalarProperty Name="TariffCategoryCode" ColumnName="TariffCategoryCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventorySources">
+            <EntityTypeMapping TypeName="Model.InventorySource">
+              <MappingFragment StoreEntitySet="InventorySources">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemSources">
+            <EntityTypeMapping TypeName="IsTypeOf(Model.InventoryItemSource)">
+              <MappingFragment StoreEntitySet="InventoryItemSource">
+                <ScalarProperty Name="InventoryId" ColumnName="InventoryId" />
+                <ScalarProperty Name="InventorySourceId" ColumnName="InventorySourceId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

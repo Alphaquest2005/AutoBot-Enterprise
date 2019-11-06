@@ -57,7 +57,7 @@ namespace AdjustmentQS.Business.Services
                                 EmailId = x.AdjustmentEx.EmailId,
                                 FileTypeId = x.AdjustmentEx.FileTypeId
                             },
-                            InventoryItems = new InventoryItemsEx()
+                            InventoryItemEx = new InventoryItemsEx()
                             {
                                 TariffCode = x.TariffCode,
                                 ItemNumber = x.ItemNumber,

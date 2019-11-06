@@ -49,17 +49,43 @@ namespace OCR.Client.DTO
 
        
         [DataMember]
-        public ChangeTrackingCollection<RegExChain> RegExChain
+        public ChangeTrackingCollection<End> End
 		{
-		    get { return _RegExChain; }
+		    get { return _End; }
 			set
 			{
-			    if (Equals(value, _RegExChain)) return;
-				_RegExChain = value;
-				NotifyPropertyChanged();//m => this.RegExChain
+			    if (Equals(value, _End)) return;
+				_End = value;
+				NotifyPropertyChanged();//m => this.End
 			}
 		}
-        private ChangeTrackingCollection<RegExChain> _RegExChain = new ChangeTrackingCollection<RegExChain>();
+        private ChangeTrackingCollection<End> _End = new ChangeTrackingCollection<End>();
+
+        [DataMember]
+        public ChangeTrackingCollection<Lines> Lines
+		{
+		    get { return _Lines; }
+			set
+			{
+			    if (Equals(value, _Lines)) return;
+				_Lines = value;
+				NotifyPropertyChanged();//m => this.Lines
+			}
+		}
+        private ChangeTrackingCollection<Lines> _Lines = new ChangeTrackingCollection<Lines>();
+
+        [DataMember]
+        public ChangeTrackingCollection<Start> Start
+		{
+		    get { return _Start; }
+			set
+			{
+			    if (Equals(value, _Start)) return;
+				_Start = value;
+				NotifyPropertyChanged();//m => this.Start
+			}
+		}
+        private ChangeTrackingCollection<Start> _Start = new ChangeTrackingCollection<Start>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

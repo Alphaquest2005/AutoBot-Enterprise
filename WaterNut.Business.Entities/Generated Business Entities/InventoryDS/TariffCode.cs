@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace InventoryDS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class TariffCode : BaseEntity<TariffCode>, ITrackable 
@@ -219,6 +220,21 @@ namespace InventoryDS.Business.Entities
             }
         }
         Nullable<bool> _invalid;
+        [DataMember]
+        public string LicenseDescription 
+        {
+            get
+            {
+                return _licensedescription;
+            }
+            set
+            {
+                _licensedescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _licensedescription;
         [DataMember]
         public List<InventoryItem> InventoryItems { get; set; }
         [DataMember]

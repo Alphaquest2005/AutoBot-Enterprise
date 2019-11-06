@@ -110,7 +110,7 @@ namespace OCR.Business.Services
         Task<IEnumerable<Start>> GetStartByPartId(string PartId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Start>> GetStartByRegExChainId(string RegExChainId, List<string> includesLst = null);
+        Task<IEnumerable<Start>> GetStartByRegExId(string RegExId, List<string> includesLst = null);
   
 
 

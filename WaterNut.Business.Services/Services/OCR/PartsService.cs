@@ -269,16 +269,16 @@ namespace OCR.Business.Services
                                         GetWhere<RecuringPart>(dbContext, exp, itm.Value, "Parts", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "ParentPart":
-                                return
-                                    await
-                                        GetWhere<ParentParts>(dbContext, exp, itm.Value, "Part", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "ChildParts":
                                 return
                                     await
-                                        GetWhere<ParentParts>(dbContext, exp, itm.Value, "Part", "Select", includesLst)
+                                        GetWhere<ChildParts>(dbContext, exp, itm.Value, "ChildPart", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ParentParts":
+                                return
+                                    await
+                                        GetWhere<ChildParts>(dbContext, exp, itm.Value, "ChildPart", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -793,11 +793,11 @@ namespace OCR.Business.Services
                             case "RecuringPart":
                                 return await CountWhere<RecuringPart>(dbContext, exp, itm.Value, "Parts", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ParentPart":
-                                return await CountWhere<ParentParts>(dbContext, exp, itm.Value, "Part", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ChildParts":
-                                return await CountWhere<ParentParts>(dbContext, exp, itm.Value, "Part", "Select")
+                                return await CountWhere<ChildParts>(dbContext, exp, itm.Value, "ChildPart", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ParentParts":
+                                return await CountWhere<ChildParts>(dbContext, exp, itm.Value, "ChildPart", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -940,16 +940,16 @@ namespace OCR.Business.Services
                                         LoadRangeWhere<RecuringPart>(startIndex, count, dbContext, exp, itm.Value, "Parts", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "ParentPart":
-                                return
-                                    await
-                                        LoadRangeWhere<ParentParts>(startIndex, count, dbContext, exp, itm.Value, "Part", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "ChildParts":
                                 return
                                     await
-                                        LoadRangeWhere<ParentParts>(startIndex, count, dbContext, exp, itm.Value, "Part", "Select")
+                                        LoadRangeWhere<ChildParts>(startIndex, count, dbContext, exp, itm.Value, "ChildPart", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ParentParts":
+                                return
+                                    await
+                                        LoadRangeWhere<ChildParts>(startIndex, count, dbContext, exp, itm.Value, "ChildPart", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1169,6 +1169,7 @@ namespace OCR.Business.Services
                                                     // .Include(x => x.Start)									  
                                                     // .Include(x => x.Lines)									  
                                                     // .Include(x => x.ChildParts)									  
+                                                    // .Include(x => x.ParentParts)									  
                                       .AsNoTracking()
                                         .Where(x => x.TemplateId.ToString() == TemplateId.ToString())
 										.ToListAsync()
@@ -1202,6 +1203,7 @@ namespace OCR.Business.Services
                                                     // .Include(x => x.Start)									  
                                                     // .Include(x => x.Lines)									  
                                                     // .Include(x => x.ChildParts)									  
+                                                    // .Include(x => x.ParentParts)									  
                                       .AsNoTracking()
                                         .Where(x => x.PartTypeId.ToString() == PartTypeId.ToString())
 										.ToListAsync()
@@ -1293,11 +1295,11 @@ namespace OCR.Business.Services
                             case "RecuringPart":
                                 return await SumWhere<RecuringPart>(dbContext, exp, itm.Value, "Parts", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ParentPart":
-                                return await SumWhere<ParentParts>(dbContext, exp, itm.Value, "Part", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ChildParts":
-                                return await SumWhere<ParentParts>(dbContext, exp, itm.Value, "Part", field, "Select")
+                                return await SumWhere<ChildParts>(dbContext, exp, itm.Value, "ChildPart", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ParentParts":
+                                return await SumWhere<ChildParts>(dbContext, exp, itm.Value, "ChildPart", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

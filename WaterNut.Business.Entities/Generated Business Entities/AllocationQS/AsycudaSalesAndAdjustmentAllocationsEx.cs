@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace AllocationQS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class AsycudaSalesAndAdjustmentAllocationsEx : BaseEntity<AsycudaSalesAndAdjustmentAllocationsEx>, ITrackable 

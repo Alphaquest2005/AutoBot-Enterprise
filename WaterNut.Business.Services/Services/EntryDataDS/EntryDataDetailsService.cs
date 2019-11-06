@@ -239,7 +239,7 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItems":
+                            case "InventoryItemEx":
                                 return
                                     await
                                         GetWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
@@ -249,6 +249,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         GetWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItems":
+                                return
+                                    await
+                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -748,11 +754,14 @@ namespace EntryDataDS.Business.Services
                             case "EntryData":
                                 return await CountWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItems":
+                            case "InventoryItemEx":
                                 return await CountWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataDetailsEx":
                                 return await CountWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItems":
+                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -865,7 +874,7 @@ namespace EntryDataDS.Business.Services
                                         LoadRangeWhere<EntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "InventoryItems":
+                            case "InventoryItemEx":
                                 return
                                     await
                                         LoadRangeWhere<InventoryItemsEx>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
@@ -875,6 +884,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EntryDataDetailsEx>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InventoryItems":
+                                return
+                                    await
+                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1111,6 +1126,36 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<EntryDataDetails>> GetEntryDataDetailsByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
+                                                    // .Include(x => x.EntryDataDetailsEx)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1167,11 +1212,14 @@ namespace EntryDataDS.Business.Services
                             case "EntryData":
                                 return await SumWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItems":
+                            case "InventoryItemEx":
                                 return await SumWhere<InventoryItemsEx>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataDetailsEx":
                                 return await SumWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InventoryItems":
+                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

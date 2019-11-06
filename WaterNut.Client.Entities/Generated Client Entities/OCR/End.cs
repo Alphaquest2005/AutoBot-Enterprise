@@ -72,17 +72,17 @@ public int PartId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "RegExChain is required")]
+       [RequiredValidationAttribute(ErrorMessage= "RegEx is required")]
        
-public int RegExChainId
+public int RegExId
 		{ 
-		    get { return this.end.RegExChainId; }
+		    get { return this.end.RegExId; }
 			set
 			{
-			    if (value == this.end.RegExChainId) return;
-				this.end.RegExChainId = value;
+			    if (value == this.end.RegExId) return;
+				this.end.RegExId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("RegExChainId");
+				NotifyPropertyChanged("RegExId");
 			}
 		}
      
@@ -140,55 +140,55 @@ public int RegExChainId
 		}
         
 
-       private RegExChain _RegExChain;
-        public  RegExChain RegExChain
+       private RegularExpressions _RegularExpressions;
+        public  RegularExpressions RegularExpressions
 		{
 		    get
                { 
                   if (this.end != null)
                    {
-                       if (_RegExChain != null)
+                       if (_RegularExpressions != null)
                        {
-                           if (this.end.RegExChain !=
-                               _RegExChain.DTO)
+                           if (this.end.RegularExpressions !=
+                               _RegularExpressions.DTO)
                            {
-                                if (this.end.RegExChain  != null)
-                               _RegExChain = new RegExChain(this.end.RegExChain);
+                                if (this.end.RegularExpressions  != null)
+                               _RegularExpressions = new RegularExpressions(this.end.RegularExpressions);
                            }
                        }
                        else
                        {
-                             if (this.end.RegExChain  != null)
-                           _RegExChain = new RegExChain(this.end.RegExChain);
+                             if (this.end.RegularExpressions  != null)
+                           _RegularExpressions = new RegularExpressions(this.end.RegularExpressions);
                        }
                    }
 
 
-             //       if (_RegExChain != null) return _RegExChain;
+             //       if (_RegularExpressions != null) return _RegularExpressions;
                        
-             //       var i = new RegExChain(){TrackingState = TrackingState.Added};
-			//		//if (this.end.RegExChain == null) Debugger.Break();
-			//		if (this.end.RegExChain != null)
+             //       var i = new RegularExpressions(){TrackingState = TrackingState.Added};
+			//		//if (this.end.RegularExpressions == null) Debugger.Break();
+			//		if (this.end.RegularExpressions != null)
             //        {
-            //           i. = this.end.RegExChain;
+            //           i. = this.end.RegularExpressions;
             //        }
             //        else
             //        {
-            //            this.end.RegExChain = i.;
+            //            this.end.RegularExpressions = i.;
              //       }
                            
-            //        _RegExChain = i;
+            //        _RegularExpressions = i;
                      
-                    return _RegExChain;
+                    return _RegularExpressions;
                }
 			set
 			{
-			    if (value == _RegExChain) return;
-                _RegExChain = value;
+			    if (value == _RegularExpressions) return;
+                _RegularExpressions = value;
                 if(value != null)
-                     this.end.RegExChain = value.DTO;
+                     this.end.RegularExpressions = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("RegExChain");
+                NotifyPropertyChanged("RegularExpressions");
 			}
 		}
         

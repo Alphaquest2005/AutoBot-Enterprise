@@ -15,13 +15,14 @@ using InventoryDS.Business.Services;
 using MoreLinq;
 using TrackableEntities;
 using AsycudaDocumentSetEntryData = EntryDataDS.Business.Entities.AsycudaDocumentSetEntryData;
-
+using InventoryItemSource = InventoryDS.Business.Entities.InventoryItemSource;
 
 namespace WaterNut.DataSpace
 {
     public class SaveCsvEntryData
     {
         private static readonly SaveCsvEntryData instance;
+
         static SaveCsvEntryData()
         {
             instance = new SaveCsvEntryData();
@@ -51,8 +52,8 @@ namespace WaterNut.DataSpace
 
                 if (fileType == "Sales" && !mapping.ContainsKey("Tax"))
                     throw new ApplicationException("Sales file dose not contain Tax");
-                
-                
+
+
                 var eslst = GetCSVDataSummayList(lines, mapping, headings);
 
                 if (eslst == null) return true;
@@ -66,23 +67,30 @@ namespace WaterNut.DataSpace
                     }
                 }
 
-                
 
-                await ImportInventory(eslst, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
-                await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
 
-                if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath)
-                    .ConfigureAwait(false)) return true;
-                return false;
+                return await ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, fileTypeId,
+                    droppedFilePath, eslst).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                var nex = new ApplicationException($"Error Importing File: {droppedFilePath}",e);
+                var nex = new ApplicationException($"Error Importing File: {droppedFilePath}", e);
                 Console.WriteLine(nex);
                 throw nex;
             }
         }
 
+        public async Task<bool> ProcessCsvSummaryData(string fileType, List<AsycudaDocumentSet> docSet,
+            bool overWriteExisting, int? emailId,
+            int? fileTypeId, string droppedFilePath, List<CSVDataSummary> eslst)
+        {
+            await ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+            await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+
+            if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath)
+                .ConfigureAwait(false)) return true;
+            return false;
+        }
 
 
         private async Task<bool> ImportEntryData(string fileType, List<CSVDataSummary> eslst,
@@ -92,83 +100,94 @@ namespace WaterNut.DataSpace
             try
             {
 
-           
-            var ed = (from es in eslst
-                     group es by new { es.EntryDataId, es.EntryDataDate, es.CustomerName, es.Currency }
-                         into g
-                         //let supplier = EntryDataDS.DataModels.BaseDataModel.Instance.SearchSuppliers(new List<string>()
-                         //{
-                         //    string.Format("SupplierCode == \"{0}\"",g.Key.SupplierCode)
-                         //})
 
-                         //where supplier != null
-                         select new
-                         {
-                             EntryData =
-                                 new
-                                 {
-                                     EntryDataId = g.Key.EntryDataId,
-                                     EntryDataDate = g.Key.EntryDataDate,
-                                     AsycudaDocumentSetId = docSet.First().AsycudaDocumentSetId,
-                                     ApplicationSettingsId = docSet.First().ApplicationSettingsId,
-                                     CustomerName = g.Key.CustomerName,
-                                     Tax = g.Sum(x => x.Tax),
-                                     Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))? null : g.Max(x => x.SupplierCode.ToUpper()),
-                                     Currency = g.Key.Currency,
-                                     EmailId = emailId,
-                                     FileTypeId = fileTypeId,
-                                     DocumentType = g.FirstOrDefault(x => x.DocumentType != "")?.DocumentType,
-                                     SupplierInvoiceNo = g.FirstOrDefault(x => x.SupplierInvoiceNo != "")?.SupplierInvoiceNo,
-                                     SourceFile = droppedFilePath
-                                 },
-                             EntryDataDetails = g.Select(x => new  EntryDataDetails()
-                             {
-                                 EntryDataId = x.EntryDataId,
-                                 ItemNumber = x.ItemNumber.ToUpper(),
-                                 ItemDescription = x.ItemDescription,
-                                 Cost = Convert.ToDouble(x.Cost),
-                                 Quantity = Convert.ToDouble(x.Quantity),
-                                 Units = x.Units,
-                                 Freight = x.Freight,
-                                 Weight = x.Weight,
-                                 InternalFreight = x.InternalFreight,
-                                 InvoiceQty = x.InvoiceQuantity,
-                                 ReceivedQty = x.ReceivedQuantity,
-                                 TaxAmount = x.Tax,
-                                 CNumber = x.CNumber,
-                                 PreviousInvoiceNumber = x.PreviousInvoiceNumber,
-                                 Comment = x.Comment,
-                                 EffectiveDate = x.EffectiveDate,
+                var ed = (from es in eslst
+                    group es by new {es.EntryDataId, es.EntryDataDate, es.CustomerName, es.Currency}
+                    into g
+                        //let supplier = EntryDataDS.DataModels.BaseDataModel.Instance.SearchSuppliers(new List<string>()
+                        //{
+                        //    string.Format("SupplierCode == \"{0}\"",g.Key.SupplierCode)
+                        //})
 
-                             }),
-                             f = g.Select(x => new
-                             {
-                                 TotalWeight = x.TotalWeight,
-                                 TotalFreight = x.TotalFreight,
-                                 TotalInternalFreight = x.TotalInternalFreight,
-                                 TotalOtherCost = x.TotalOtherCost,
-                                 TotalInsurance = x.TotalInsurance,
-                                 TotalDeductions = x.TotalDeductions,
-                                 InvoiceTotal = x.InvoiceTotal
+                        //where supplier != null
+                    select new
+                    {
+                        EntryData =
+                            new
+                            {
+                                EntryDataId = g.Key.EntryDataId,
+                                EntryDataDate = g.Key.EntryDataDate,
+                                AsycudaDocumentSetId = docSet.First().AsycudaDocumentSetId,
+                                ApplicationSettingsId = docSet.First().ApplicationSettingsId,
+                                CustomerName = g.Key.CustomerName,
+                                Tax = g.Sum(x => x.Tax),
+                                Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))
+                                    ? null
+                                    : g.Max(x => x.SupplierCode?.ToUpper()),
+                                Currency = g.Key.Currency,
+                                EmailId = emailId,
+                                FileTypeId = fileTypeId,
+                                DocumentType = g.FirstOrDefault(x => x.DocumentType != "")?.DocumentType,
+                                SupplierInvoiceNo = g.FirstOrDefault(x => x.SupplierInvoiceNo != "")?.SupplierInvoiceNo,
+                                PONumber = g.FirstOrDefault(x => x.PONumber != "")?.PONumber,
+                                SourceFile = droppedFilePath
+                            },
+                        EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemNumber)).Select(x =>
+                            new EntryDataDetails()
+                            {
+                                EntryDataId = x.EntryDataId,
+                                ItemNumber = x.ItemNumber.ToUpper(),
+                                ItemDescription = x.ItemDescription,
+                                Cost = Convert.ToDouble(x.Cost),
+                                TotalCost = Convert.ToDouble(x.TotalCost),
+                                Quantity = Convert.ToDouble(x.Quantity),
+                                LineNumber = x.LineNumber,
+                                Units = x.Units,
+                                Freight = x.Freight,
+                                Weight = x.Weight,
+                                InternalFreight = x.InternalFreight,
+                                InvoiceQty = x.InvoiceQuantity,
+                                ReceivedQty = x.ReceivedQuantity,
+                                TaxAmount = x.Tax,
+                                CNumber = x.CNumber,
+                                PreviousInvoiceNumber = x.PreviousInvoiceNumber,
+                                Comment = x.Comment,
+                                InventoryItemId = x.InventoryItemId,
+                                EffectiveDate = x.EffectiveDate,
 
-                                
-                             }),
-                             InventoryItems = g.DistinctBy(x => new {x.ItemNumber, x.ItemAlias}).Select(x => new {x.ItemNumber,x.ItemAlias})
-                         }).ToList();
+                            }),
+                        f = g.Select(x => new
+                        {
+                            TotalWeight = x.TotalWeight,
+                            TotalFreight = x.TotalFreight,
+                            TotalInternalFreight = x.TotalInternalFreight,
+                            TotalOtherCost = x.TotalOtherCost,
+                            TotalInsurance = x.TotalInsurance,
+                            TotalDeductions = x.TotalDeductions,
+                            InvoiceTotal = x.InvoiceTotal
 
-            if (ed == null) return true;
+
+                        }),
+                        InventoryItems = g.DistinctBy(x => new {x.ItemNumber, x.ItemAlias})
+                            .Select(x => new {x.ItemNumber, x.ItemAlias})
+                    }).ToList();
+
+                if (ed == null) return true;
 
 
-            List<EntryData> eLst = null;
+                List<EntryData> eLst = null;
 
                 foreach (var item in ed)
                 {
-                    if (!item.EntryDataDetails.Any()) throw new ApplicationException(item.EntryData.EntryDataId + " has no details");
+                    if (!item.EntryDataDetails.Any())
+                        throw new ApplicationException(item.EntryData.EntryDataId + " has no details");
 
                     List<EntryDataDetails> details = new List<EntryDataDetails>();
-                    
+
                     // check Existing items
-                    var olded = await GetEntryData(item.EntryData.EntryDataId, item.EntryData.EntryDataDate, item.EntryData.ApplicationSettingsId).ConfigureAwait(false);
+                    var olded = await GetEntryData(item.EntryData.EntryDataId,
+                            item.EntryData.EntryDataDate.GetValueOrDefault(), item.EntryData.ApplicationSettingsId)
+                        .ConfigureAwait(false);
 
                     if (olded != null)
                     {
@@ -194,9 +213,10 @@ namespace WaterNut.DataSpace
                                 if (Math.Abs(nEd.Quantity - oEd.Quantity) < .0001 &&
                                     Math.Abs(nEd.Cost - oEd.Cost) < .0001)
                                 {
-                                    
+
                                     continue;
                                 }
+
                                 details.Add(nEd);
                                 new EntryDataDetailsService().DeleteEntryDataDetails(oEd.EntryDataDetailsId.ToString())
                                     .Wait();
@@ -204,11 +224,12 @@ namespace WaterNut.DataSpace
                             }
                         }
                     }
+
                     if (olded == null) details = item.EntryDataDetails.ToList();
                     if (overWriteExisting || olded == null)
                     {
 
-                        
+
 
                         switch (fileType)
                         {
@@ -218,7 +239,7 @@ namespace WaterNut.DataSpace
                                 {
                                     ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
                                     EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = item.EntryData.EntryDataDate,
+                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                     INVNumber = item.EntryData.EntryDataId,
                                     CustomerName = item.EntryData.CustomerName,
                                     EmailId = item.EntryData.EmailId,
@@ -231,26 +252,70 @@ namespace WaterNut.DataSpace
                                     TrackingState = TrackingState.Added,
 
                                 };
-                                if(item.EntryData.DocumentType != "") EDsale.DocumentType = new EDDocumentTypes(true)
-                                {
-                                    DocumentType = item.EntryData.DocumentType,
-                                    TrackingState = TrackingState.Added
+                                if (item.EntryData.DocumentType != "")
+                                    EDsale.DocumentType = new EDDocumentTypes(true)
+                                    {
+                                        DocumentType = item.EntryData.DocumentType,
+                                        TrackingState = TrackingState.Added
 
-                                };
+                                    };
                                 AddToDocSet(docSet, EDsale);
-                                    
-                                
+
+
                                 await CreateSales(EDsale).ConfigureAwait(false);
                                 break;
+                            case "INV":
+                                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
+                                    Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
+                                    throw new ApplicationException(
+                                        $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
+                                var EDinv = new Invoices(true)
+                                {
+                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                    EntryDataId = item.EntryData.EntryDataId,
+                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                    SupplierCode = item.EntryData.Supplier,
+                                    TrackingState = TrackingState.Added,
+                                    TotalFreight = item.f.Sum(x => x.TotalFreight),
+                                    TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
+                                    TotalWeight = item.f.Sum(x => x.TotalWeight),
+                                    TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
+                                    TotalInsurance = item.f.Sum(x => x.TotalInsurance),
+                                    TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+
+                                    EmailId = item.EntryData.EmailId,
+                                    FileTypeId = item.EntryData.FileTypeId,
+                                    SourceFile = item.EntryData.SourceFile,
+                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                        ? null
+                                        : item.EntryData.Currency,
+                                    PONumber = string.IsNullOrEmpty(item.EntryData.PONumber)
+                                        ? null
+                                        : item.EntryData.PONumber,
+
+                                };
+                                if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
+                                    EDinv.DocumentType = new EDDocumentTypes(true)
+                                    {
+                                        DocumentType = item.EntryData.DocumentType,
+                                        TrackingState = TrackingState.Added
+
+                                    };
+                                AddToDocSet(docSet, EDinv);
+                                await CreateInvoice(EDinv).ConfigureAwait(false);
+
+                                break;
                             case "PO":
-                                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && Math.Abs(item.f.Sum(x => x.InvoiceTotal)) < .001)
+                                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
+                                    Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
                                     throw new ApplicationException(
                                         $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
                                 var EDpo = new PurchaseOrders(true)
                                 {
                                     ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
                                     EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = item.EntryData.EntryDataDate,
+                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                     PONumber = item.EntryData.EntryDataId,
                                     SupplierCode = item.EntryData.Supplier,
                                     TrackingState = TrackingState.Added,
@@ -273,12 +338,13 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.SupplierInvoiceNo,
 
                                 };
-                                if (item.EntryData.DocumentType != "") EDpo.DocumentType = new EDDocumentTypes(true)
-                                {
-                                    DocumentType = item.EntryData.DocumentType,
-                                    TrackingState = TrackingState.Added
+                                if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
+                                    EDpo.DocumentType = new EDDocumentTypes(true)
+                                    {
+                                        DocumentType = item.EntryData.DocumentType,
+                                        TrackingState = TrackingState.Added
 
-                                };
+                                    };
                                 AddToDocSet(docSet, EDpo);
                                 await CreatePurchaseOrders(EDpo).ConfigureAwait(false);
                                 break;
@@ -287,7 +353,7 @@ namespace WaterNut.DataSpace
                                 {
                                     ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
                                     EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = item.EntryData.EntryDataDate,
+                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                     OPSNumber = item.EntryData.EntryDataId,
                                     TrackingState = TrackingState.Added,
                                     TotalFreight = item.f.Sum(x => x.TotalFreight),
@@ -304,12 +370,13 @@ namespace WaterNut.DataSpace
                                         ? null
                                         : item.EntryData.Currency,
                                 };
-                                if (item.EntryData.DocumentType != "") EDops.DocumentType = new EDDocumentTypes(true)
-                                {
-                                    DocumentType = item.EntryData.DocumentType,
-                                    TrackingState = TrackingState.Added
+                                if (item.EntryData.DocumentType != "")
+                                    EDops.DocumentType = new EDDocumentTypes(true)
+                                    {
+                                        DocumentType = item.EntryData.DocumentType,
+                                        TrackingState = TrackingState.Added
 
-                                };
+                                    };
                                 AddToDocSet(docSet, EDops);
                                 await CreateOpeningStock(EDops).ConfigureAwait(false);
                                 break;
@@ -318,7 +385,7 @@ namespace WaterNut.DataSpace
                                 {
                                     ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
                                     EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = item.EntryData.EntryDataDate,
+                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                     TrackingState = TrackingState.Added,
                                     SupplierCode = item.EntryData.Supplier,
                                     TotalFreight = item.f.Sum(x => x.TotalFreight),
@@ -336,12 +403,13 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.Currency,
                                     Type = "ADJ"
                                 };
-                                if (item.EntryData.DocumentType != "") EDadj.DocumentType = new EDDocumentTypes(true)
-                                {
-                                    DocumentType = item.EntryData.DocumentType,
-                                    TrackingState = TrackingState.Added
+                                if (item.EntryData.DocumentType != "")
+                                    EDadj.DocumentType = new EDDocumentTypes(true)
+                                    {
+                                        DocumentType = item.EntryData.DocumentType,
+                                        TrackingState = TrackingState.Added
 
-                                };
+                                    };
                                 AddToDocSet(docSet, EDadj);
                                 await CreateAdjustments(EDadj).ConfigureAwait(false);
                                 break;
@@ -350,7 +418,7 @@ namespace WaterNut.DataSpace
                                 {
                                     ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
                                     EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = item.EntryData.EntryDataDate,
+                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                     SupplierCode = item.EntryData.Supplier,
                                     TrackingState = TrackingState.Added,
                                     TotalFreight = item.f.Sum(x => x.TotalFreight),
@@ -368,12 +436,13 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.Currency,
                                     Type = "DIS"
                                 };
-                                if (item.EntryData.DocumentType != "") EDdis.DocumentType = new EDDocumentTypes(true)
-                                {
-                                    DocumentType = item.EntryData.DocumentType,
-                                    TrackingState = TrackingState.Added
+                                if (item.EntryData.DocumentType != "")
+                                    EDdis.DocumentType = new EDDocumentTypes(true)
+                                    {
+                                        DocumentType = item.EntryData.DocumentType,
+                                        TrackingState = TrackingState.Added
 
-                                };
+                                    };
                                 AddToDocSet(docSet, EDdis);
                                 await CreateAdjustments(EDdis).ConfigureAwait(false);
                                 break;
@@ -382,7 +451,7 @@ namespace WaterNut.DataSpace
                                 {
                                     ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
                                     EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = item.EntryData.EntryDataDate,
+                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                     TrackingState = TrackingState.Added,
                                     TotalFreight = item.f.Sum(x => x.TotalFreight),
                                     TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
@@ -396,12 +465,13 @@ namespace WaterNut.DataSpace
                                         : item.EntryData.Currency,
                                     Type = "RCON"
                                 };
-                                if (item.EntryData.DocumentType != "") EDrcon.DocumentType = new EDDocumentTypes(true)
-                                {
-                                    DocumentType = item.EntryData.DocumentType,
-                                    TrackingState = TrackingState.Added
+                                if (item.EntryData.DocumentType != "")
+                                    EDrcon.DocumentType = new EDDocumentTypes(true)
+                                    {
+                                        DocumentType = item.EntryData.DocumentType,
+                                        TrackingState = TrackingState.Added
 
-                                };
+                                    };
                                 AddToDocSet(docSet, EDrcon);
                                 await CreateAdjustments(EDrcon).ConfigureAwait(false);
                                 break;
@@ -411,7 +481,7 @@ namespace WaterNut.DataSpace
                         }
                     }
 
-                    
+
 
                     using (var ctx = new EntryDataDetailsService())
                     {
@@ -423,9 +493,11 @@ namespace WaterNut.DataSpace
                             {
                                 EntryDataId = e.EntryDataId,
                                 ItemNumber = e.ItemNumber.Truncate(20),
+                                InventoryItemId = e.InventoryItemId,
                                 ItemDescription = e.ItemDescription,
                                 Quantity = e.Quantity,
                                 Cost = e.Cost,
+                                TotalCost = e.TotalCost,
                                 Units = e.Units,
                                 TrackingState = TrackingState.Added,
                                 Freight = e.Freight,
@@ -434,40 +506,43 @@ namespace WaterNut.DataSpace
                                 ReceivedQty = e.ReceivedQty,
                                 InvoiceQty = e.InvoiceQty,
                                 CNumber = string.IsNullOrEmpty(e.CNumber) ? null : e.CNumber,
-                                PreviousInvoiceNumber = string.IsNullOrEmpty(e.PreviousInvoiceNumber)? null : e.PreviousInvoiceNumber,
+                                PreviousInvoiceNumber = string.IsNullOrEmpty(e.PreviousInvoiceNumber)
+                                    ? null
+                                    : e.PreviousInvoiceNumber,
                                 Comment = string.IsNullOrEmpty(e.Comment) ? null : e.Comment,
-                                LineNumber = lineNumber,
+                                LineNumber = e.LineNumber ?? lineNumber,
                                 EffectiveDate = e.EffectiveDate,
                                 TaxAmount = e.TaxAmount,
                             }).ConfigureAwait(false);
                         }
                     }
 
-                    using (var ctx = new InventoryDSContext(){StartTracking = true})
+                    using (var ctx = new InventoryDSContext() {StartTracking = true})
                     {
-                        
-                       foreach (var e in item.InventoryItems.Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber).ToList())
-                       {
-                           var inventoryItem = ctx.InventoryItems
-                               .Include("InventoryItemAlias")
-                               .First(x => x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId &&
-                                           x.ItemNumber == e.ItemNumber);
-                           if (inventoryItem == null) continue;
-                           {
-                               if (inventoryItem.InventoryItemAlias.FirstOrDefault(x => x.AliasName == e.ItemAlias) ==
-                                   null)
-                               {
-                                   inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
-                                   {
-                                       InventoryItemId = inventoryItem.Id,
-                                       AliasName = e.ItemAlias.Truncate(20),
 
-                                   });
-                                    
-                               }
-                           }
+                        foreach (var e in item.InventoryItems
+                            .Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber).ToList())
+                        {
+                            var inventoryItem = ctx.InventoryItems
+                                .Include("InventoryItemAlias")
+                                .First(x => x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId &&
+                                            x.ItemNumber == e.ItemNumber);
+                            if (inventoryItem == null) continue;
+                            {
+                                if (inventoryItem.InventoryItemAlias.FirstOrDefault(x => x.AliasName == e.ItemAlias) ==
+                                    null)
+                                {
+                                    inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                                    {
+                                        InventoryItemId = inventoryItem.Id,
+                                        AliasName = e.ItemAlias.Truncate(20),
 
-                       }
+                                    });
+
+                                }
+                            }
+
+                        }
 
                         ctx.SaveChanges();
 
@@ -517,9 +592,10 @@ namespace WaterNut.DataSpace
                     (await ctx.GetEntryDataByExpressionLst(new List<string>()
                     {
                         $"EntryDataId == \"{entryDataId}\"",
-                       // $"EntryDataDate == \"{entryDateTime.ToString("yyyy-MMM-dd")}\"",
+                        // $"EntryDataDate == \"{entryDateTime.ToString("yyyy-MMM-dd")}\"",
                         $"ApplicationSettingsId == \"{applicationSettingsId}\"",
-                    }, new List<string>() {"AsycudaDocumentSets", "EntryDataDetails"}).ConfigureAwait(false)).FirstOrDefault();
+                    }, new List<string>() {"AsycudaDocumentSets", "EntryDataDetails"}).ConfigureAwait(false))
+                    .FirstOrDefault();
                 //eLst.FirstOrDefault(x => x.EntryDataId == item.e.EntryDataId && x.EntryDataDate != item.e.EntryDataDate);
             }
         }
@@ -551,7 +627,8 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("DESCRIPTION|MEMO|Item Description|ItemDescription|Description 1".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("DESCRIPTION|MEMO|Item Description|ItemDescription|Description 1".ToUpper().Split('|')
+                    .Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("ItemDescription", i);
                     continue;
@@ -563,7 +640,7 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("ItemAlias".ToUpper().Split('|').Any(x => x == h.ToUpper()))//Manufact. SKU|
+                if ("ItemAlias".ToUpper().Split('|').Any(x => x == h.ToUpper())) //Manufact. SKU|
                 {
                     mapping.Add("ItemAlias", i);
                     continue;
@@ -592,6 +669,7 @@ namespace WaterNut.DataSpace
                     mapping.Add("CustomerName", i);
                     continue;
                 }
+
                 if ("TAX1|Tax".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("Tax", i);
@@ -609,11 +687,13 @@ namespace WaterNut.DataSpace
                     mapping.Add("Freight", i);
                     continue;
                 }
+
                 if ("Weight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("Weight", i);
                     continue;
                 }
+
                 if ("InternalFreight|Internal Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("InternalFreight", i);
@@ -631,6 +711,7 @@ namespace WaterNut.DataSpace
                     mapping.Add("OtherCost", i);
                     continue;
                 }
+
                 if ("Deductions".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("Deductions", i);
@@ -642,11 +723,13 @@ namespace WaterNut.DataSpace
                     mapping.Add("TotalFreight", i);
                     continue;
                 }
+
                 if ("Total Weight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("TotalWeight", i);
                     continue;
                 }
+
                 if ("TotalInternalFreight|Total Internal Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("TotalInternalFreight", i);
@@ -664,6 +747,7 @@ namespace WaterNut.DataSpace
                     mapping.Add("TotalOtherCost", i);
                     continue;
                 }
+
                 if ("Total Deductions".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("TotalDeductions", i);
@@ -688,7 +772,7 @@ namespace WaterNut.DataSpace
                     mapping.Add("ReceivedQuantity", i);
                     continue;
                 }
-               
+
                 if ("Currency".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("Currency", i);
@@ -700,7 +784,7 @@ namespace WaterNut.DataSpace
                     mapping.Add("Comment", i);
                     continue;
                 }
-                
+
                 if ("PreviousInvoiceNumber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("PreviousInvoiceNumber", i);
@@ -724,16 +808,19 @@ namespace WaterNut.DataSpace
                     mapping.Add("SupplierName", i);
                     continue;
                 }
+
                 if ("SupplierAddress|Supplier Address".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("SupplierAddress", i);
                     continue;
                 }
+
                 if ("CountryCode(2)|Country Code|CountryCode".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("CountryCode", i);
                     continue;
                 }
+
                 if ("Invoice Total|InvoiceTotal".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("InvoiceTotal", i);
@@ -766,13 +853,14 @@ namespace WaterNut.DataSpace
 
                 for (i = 1; i < lines.Count(); i++)
                 {
-                    
+
                     var d = GetCSVDataFromLine(lines[i], mapping, headings);
                     if (d != null)
                     {
                         eslst.Add(d);
                     }
                 }
+
                 return eslst;
             }
             catch (Exception e)
@@ -787,51 +875,226 @@ namespace WaterNut.DataSpace
 
         private CSVDataSummary GetCSVDataFromLine(string line, Dictionary<string, int> map, string[] headings)
         {
-            var ImportChecks = new Dictionary<string, Func<CSVDataSummary, Dictionary<string, int>, string[], Tuple<bool,string>>>()
-            {
-                {"EntryDataId", (c,mapping,splits) => new Tuple<bool, string>(Regex.IsMatch(splits[mapping["EntryDataId"]],@"\d+E\+\d+"), "Invoice # contains Excel E+ Error") },
-                {"ItemNumber",(c,mapping,splits) => new Tuple<bool, string>(Regex.IsMatch(splits[mapping["ItemNumber"]],@"\d+E\+\d+"), "ItemNumber contains Excel E+ Error")},
-                
-            };
+            var ImportChecks =
+                new Dictionary<string, Func<CSVDataSummary, Dictionary<string, int>, string[], Tuple<bool, string>>>()
+                {
+                    {
+                        "EntryDataId",
+                        (c, mapping, splits) =>
+                            new Tuple<bool, string>(Regex.IsMatch(splits[mapping["EntryDataId"]], @"\d+E\+\d+"),
+                                "Invoice # contains Excel E+ Error")
+                    },
+                    {
+                        "ItemNumber",
+                        (c, mapping, splits) =>
+                            new Tuple<bool, string>(Regex.IsMatch(splits[mapping["ItemNumber"]], @"\d+E\+\d+"),
+                                "ItemNumber contains Excel E+ Error")
+                    },
 
-            var ImportActions = new Dictionary<string, Action<CSVDataSummary,Dictionary<string,int>,string[]>>()
+                };
+
+            var ImportActions = new Dictionary<string, Action<CSVDataSummary, Dictionary<string, int>, string[]>>()
             {
-                {"EntryDataId", (c,mapping,splits) => c.EntryDataId = splits[mapping["EntryDataId"]] },
-                {"EntryDataDate",(c,mapping,splits) => c.EntryDataDate = DateTime.Parse(string.IsNullOrEmpty(splits[mapping["EntryDataDate"]]) ? DateTime.MinValue.ToShortDateString() : splits[mapping["EntryDataDate"]].Replace("�", ""), CultureInfo.CurrentCulture)},
-                {"ItemNumber",(c,mapping,splits) => c.ItemNumber = splits[mapping["ItemNumber"]]},
-                {"ItemAlias",(c,mapping,splits) => c.ItemAlias = mapping.ContainsKey("ItemAlias") ? splits[mapping["ItemAlias"]] : ""},
-                {"ItemDescription",(c,mapping,splits) => c.ItemDescription = splits[mapping["ItemDescription"]]},
-                {"Cost", (c,mapping,splits) => c.Cost = !mapping.ContainsKey("Cost") ? 0 : Convert.ToSingle(string.IsNullOrEmpty(splits[mapping["Cost"]]) ? "0" : splits[mapping["Cost"]].Replace("$","").Replace("�", "").Trim())},
-                {"Quantity", (c,mapping,splits) => c.Quantity = Convert.ToSingle(splits[mapping["Quantity"]].Replace("�", ""))},
-                {"Units", (c,mapping,splits) => c.Units = mapping.ContainsKey("Units") ? splits[mapping["Units"]] : ""},
-                {"CustomerName", (c,mapping,splits) => c.CustomerName = mapping.ContainsKey("CustomerName") ? splits[mapping["CustomerName"]] : ""},
-                {"Tax", (c,mapping,splits) => c.Tax = Convert.ToSingle(mapping.ContainsKey("Tax") ? splits[mapping["Tax"]] : "0")},
-                {"TariffCode", (c,mapping,splits) => c.TariffCode = mapping.ContainsKey("TariffCode") ? splits[mapping["TariffCode"]] : ""},
-                {"SupplierCode", (c,mapping,splits) => c.SupplierCode = mapping.ContainsKey("SupplierCode") ? splits[mapping["SupplierCode"]] : ""},
-                {"Freight", (c,mapping,splits) => c.Freight = Convert.ToSingle(mapping.ContainsKey("Freight") && !string.IsNullOrEmpty(splits[mapping["Freight"]]) ? splits[mapping["Freight"]] : "0")},
-                {"Weight", (c,mapping,splits) => c.Weight = Convert.ToSingle(mapping.ContainsKey("Weight") && !string.IsNullOrEmpty(splits[mapping["Weight"]]) ? splits[mapping["Weight"]] : "0")},
-                {"InternalFreight", (c,mapping,splits) => c.InternalFreight = Convert.ToSingle(mapping.ContainsKey("InternalFreight") && !string.IsNullOrEmpty(splits[mapping["InternalFreight"]]) ? splits[mapping["InternalFreight"]] : "0")},
-                {"TotalFreight", (c,mapping,splits) => c.TotalFreight = Convert.ToSingle(mapping.ContainsKey("TotalFreight") && !string.IsNullOrEmpty(splits[mapping["TotalFreight"]]) ? splits[mapping["TotalFreight"]] : "0")},
-                {"TotalWeight", (c,mapping,splits) => c.TotalWeight = Convert.ToSingle(mapping.ContainsKey("TotalWeight") && !string.IsNullOrEmpty(splits[mapping["TotalWeight"]]) ? splits[mapping["TotalWeight"]] : "0")},
-                {"TotalInternalFreight", (c,mapping,splits) => c.TotalInternalFreight = Convert.ToSingle(mapping.ContainsKey("TotalInternalFreight") && !string.IsNullOrEmpty(splits[mapping["TotalInternalFreight"]]) ? splits[mapping["TotalInternalFreight"]] : "0")},
-                {"TotalOtherCost", (c,mapping,splits) => c.TotalOtherCost = Convert.ToSingle(mapping.ContainsKey("TotalOtherCost") && !string.IsNullOrEmpty(splits[mapping["TotalOtherCost"]]) ? splits[mapping["TotalOtherCost"]] : "0")},
-                {"TotalInsurance", (c,mapping,splits) => c.TotalInsurance = Convert.ToSingle(mapping.ContainsKey("TotalInsurance") && !string.IsNullOrEmpty(splits[mapping["TotalInsurance"]]) ? splits[mapping["TotalInsurance"]] : "0")},
-                {"TotalDeductions", (c,mapping,splits) => c.TotalDeductions = Convert.ToSingle(mapping.ContainsKey("TotalDeductions") && !string.IsNullOrEmpty(splits[mapping["TotalDeductions"]]) ? splits[mapping["TotalDeductions"]] : "0")},
-                {"CNumber", (c,mapping,splits) => c.CNumber = mapping.ContainsKey("CNumber") ? splits[mapping["CNumber"]] : ""},
-                {"InvoiceQuantity", (c,mapping,splits) => c.InvoiceQuantity = mapping.ContainsKey("InvoiceQuantity") ? Convert.ToSingle(splits[mapping["InvoiceQuantity"]]) : 0},
-                {"ReceivedQuantity", (c,mapping,splits) => c.ReceivedQuantity = mapping.ContainsKey("ReceivedQuantity") && splits.Length >= mapping["ReceivedQuantity"]? Convert.ToSingle(splits[mapping["ReceivedQuantity"]]) : 0},
-                {"Currency", (c,mapping,splits) => c.Currency = mapping.ContainsKey("Currency") ? splits[mapping["Currency"]] : ""},
-                {"Comment", (c,mapping,splits) => c.Comment = mapping.ContainsKey("Comment") ? splits[mapping["Comment"]] : ""},
-                {"PreviousInvoiceNumber", (c,mapping,splits) => c.PreviousInvoiceNumber = mapping.ContainsKey("PreviousInvoiceNumber") ? splits[mapping["PreviousInvoiceNumber"]] : ""},
-                {"EffectiveDate", (c,mapping,splits) => c.EffectiveDate = mapping.ContainsKey("EffectiveDate")  && !string.IsNullOrEmpty(splits[mapping["EffectiveDate"]]) ? DateTime.Parse(splits[mapping["EffectiveDate"]], CultureInfo.CurrentCulture)  : (DateTime?) null},
-                {"TotalCost", (c,mapping,splits) => c.Cost = !string.IsNullOrEmpty(splits[mapping["TotalCost"]]) ? Convert.ToSingle(splits[mapping["TotalCost"]].Replace("$", "")) /c.Quantity : c.Cost },
-                {"InvoiceTotal", (c,mapping,splits) => c.InvoiceTotal = Convert.ToSingle(mapping.ContainsKey("InvoiceTotal") && !string.IsNullOrEmpty(splits[mapping["InvoiceTotal"]]) ? splits[mapping["InvoiceTotal"]] : "0")},
-                {"SupplierName", (c,mapping,splits) => c.SupplierName = mapping.ContainsKey("SupplierName") ? splits[mapping["SupplierName"]] : ""},
-                {"SupplierAddress", (c,mapping,splits) => c.SupplierAddress = mapping.ContainsKey("SupplierAddress") ? splits[mapping["SupplierAddress"]] : ""},
-                {"CountryCode", (c,mapping,splits) => c.SupplierCountryCode = mapping.ContainsKey("CountryCode") ? splits[mapping["CountryCode"]] : ""},
-                {"DocumentType", (c,mapping,splits) => c.DocumentType = mapping.ContainsKey("DocumentType") ? splits[mapping["DocumentType"]] : ""},
-                {"SupplierInvoiceNo", (c,mapping,splits) => c.SupplierInvoiceNo = mapping.ContainsKey("SupplierInvoiceNo") ? splits[mapping["SupplierInvoiceNo"]] : ""},
-                
+                {"EntryDataId", (c, mapping, splits) => c.EntryDataId = splits[mapping["EntryDataId"]]},
+                {
+                    "EntryDataDate",
+                    (c, mapping, splits) => c.EntryDataDate = DateTime.Parse(
+                        string.IsNullOrEmpty(splits[mapping["EntryDataDate"]])
+                            ? DateTime.MinValue.ToShortDateString()
+                            : splits[mapping["EntryDataDate"]].Replace("�", ""), CultureInfo.CurrentCulture)
+                },
+                {"ItemNumber", (c, mapping, splits) => c.ItemNumber = splits[mapping["ItemNumber"]]},
+                {
+                    "ItemAlias",
+                    (c, mapping, splits) =>
+                        c.ItemAlias = mapping.ContainsKey("ItemAlias") ? splits[mapping["ItemAlias"]] : ""
+                },
+                {"ItemDescription", (c, mapping, splits) => c.ItemDescription = splits[mapping["ItemDescription"]]},
+                {
+                    "Cost",
+                    (c, mapping, splits) => c.Cost = !mapping.ContainsKey("Cost")
+                        ? 0
+                        : Convert.ToSingle(string.IsNullOrEmpty(splits[mapping["Cost"]])
+                            ? "0"
+                            : splits[mapping["Cost"]].Replace("$", "").Replace("�", "").Trim())
+                },
+                {
+                    "Quantity",
+                    (c, mapping, splits) => c.Quantity = Convert.ToSingle(splits[mapping["Quantity"]].Replace("�", ""))
+                },
+                {
+                    "Units",
+                    (c, mapping, splits) => c.Units = mapping.ContainsKey("Units") ? splits[mapping["Units"]] : ""
+                },
+                {
+                    "CustomerName",
+                    (c, mapping, splits) => c.CustomerName =
+                        mapping.ContainsKey("CustomerName") ? splits[mapping["CustomerName"]] : ""
+                },
+                {
+                    "Tax",
+                    (c, mapping, splits) =>
+                        c.Tax = Convert.ToSingle(mapping.ContainsKey("Tax") ? splits[mapping["Tax"]] : "0")
+                },
+                {
+                    "TariffCode",
+                    (c, mapping, splits) =>
+                        c.TariffCode = mapping.ContainsKey("TariffCode") ? splits[mapping["TariffCode"]] : ""
+                },
+                {
+                    "SupplierCode",
+                    (c, mapping, splits) => c.SupplierCode =
+                        mapping.ContainsKey("SupplierCode") ? splits[mapping["SupplierCode"]] : ""
+                },
+                {
+                    "Freight",
+                    (c, mapping, splits) =>
+                        c.Freight = Convert.ToSingle(
+                            mapping.ContainsKey("Freight") && !string.IsNullOrEmpty(splits[mapping["Freight"]])
+                                ? splits[mapping["Freight"]]
+                                : "0")
+                },
+                {
+                    "Weight",
+                    (c, mapping, splits) =>
+                        c.Weight = Convert.ToSingle(
+                            mapping.ContainsKey("Weight") && !string.IsNullOrEmpty(splits[mapping["Weight"]])
+                                ? splits[mapping["Weight"]]
+                                : "0")
+                },
+                {
+                    "InternalFreight",
+                    (c, mapping, splits) => c.InternalFreight = Convert.ToSingle(
+                        mapping.ContainsKey("InternalFreight") &&
+                        !string.IsNullOrEmpty(splits[mapping["InternalFreight"]])
+                            ? splits[mapping["InternalFreight"]]
+                            : "0")
+                },
+                {
+                    "TotalFreight",
+                    (c, mapping, splits) => c.TotalFreight = Convert.ToSingle(
+                        mapping.ContainsKey("TotalFreight") && !string.IsNullOrEmpty(splits[mapping["TotalFreight"]])
+                            ? splits[mapping["TotalFreight"]]
+                            : "0")
+                },
+                {
+                    "TotalWeight",
+                    (c, mapping, splits) => c.TotalWeight = Convert.ToSingle(
+                        mapping.ContainsKey("TotalWeight") && !string.IsNullOrEmpty(splits[mapping["TotalWeight"]])
+                            ? splits[mapping["TotalWeight"]]
+                            : "0")
+                },
+                {
+                    "TotalInternalFreight",
+                    (c, mapping, splits) => c.TotalInternalFreight = Convert.ToSingle(
+                        mapping.ContainsKey("TotalInternalFreight") &&
+                        !string.IsNullOrEmpty(splits[mapping["TotalInternalFreight"]])
+                            ? splits[mapping["TotalInternalFreight"]]
+                            : "0")
+                },
+                {
+                    "TotalOtherCost",
+                    (c, mapping, splits) => c.TotalOtherCost = Convert.ToSingle(
+                        mapping.ContainsKey("TotalOtherCost") &&
+                        !string.IsNullOrEmpty(splits[mapping["TotalOtherCost"]])
+                            ? splits[mapping["TotalOtherCost"]]
+                            : "0")
+                },
+                {
+                    "TotalInsurance",
+                    (c, mapping, splits) => c.TotalInsurance = Convert.ToSingle(
+                        mapping.ContainsKey("TotalInsurance") &&
+                        !string.IsNullOrEmpty(splits[mapping["TotalInsurance"]])
+                            ? splits[mapping["TotalInsurance"]]
+                            : "0")
+                },
+                {
+                    "TotalDeductions",
+                    (c, mapping, splits) => c.TotalDeductions = Convert.ToSingle(
+                        mapping.ContainsKey("TotalDeductions") &&
+                        !string.IsNullOrEmpty(splits[mapping["TotalDeductions"]])
+                            ? splits[mapping["TotalDeductions"]]
+                            : "0")
+                },
+                {
+                    "CNumber",
+                    (c, mapping, splits) => c.CNumber = mapping.ContainsKey("CNumber") ? splits[mapping["CNumber"]] : ""
+                },
+                {
+                    "InvoiceQuantity",
+                    (c, mapping, splits) => c.InvoiceQuantity = mapping.ContainsKey("InvoiceQuantity")
+                        ? Convert.ToSingle(splits[mapping["InvoiceQuantity"]])
+                        : 0
+                },
+                {
+                    "ReceivedQuantity",
+                    (c, mapping, splits) => c.ReceivedQuantity =
+                        mapping.ContainsKey("ReceivedQuantity") && splits.Length >= mapping["ReceivedQuantity"]
+                            ? Convert.ToSingle(splits[mapping["ReceivedQuantity"]])
+                            : 0
+                },
+                {
+                    "Currency",
+                    (c, mapping, splits) =>
+                        c.Currency = mapping.ContainsKey("Currency") ? splits[mapping["Currency"]] : ""
+                },
+                {
+                    "Comment",
+                    (c, mapping, splits) => c.Comment = mapping.ContainsKey("Comment") ? splits[mapping["Comment"]] : ""
+                },
+                {
+                    "PreviousInvoiceNumber",
+                    (c, mapping, splits) => c.PreviousInvoiceNumber = mapping.ContainsKey("PreviousInvoiceNumber")
+                        ? splits[mapping["PreviousInvoiceNumber"]]
+                        : ""
+                },
+                {
+                    "EffectiveDate",
+                    (c, mapping, splits) => c.EffectiveDate =
+                        mapping.ContainsKey("EffectiveDate") && !string.IsNullOrEmpty(splits[mapping["EffectiveDate"]])
+                            ? DateTime.Parse(splits[mapping["EffectiveDate"]], CultureInfo.CurrentCulture)
+                            : (DateTime?) null
+                },
+                {
+                    "TotalCost",
+                    (c, mapping, splits) => c.Cost = !string.IsNullOrEmpty(splits[mapping["TotalCost"]])
+                        ? Convert.ToSingle(splits[mapping["TotalCost"]].Replace("$", "")) / c.Quantity
+                        : c.Cost
+                },
+                {
+                    "InvoiceTotal",
+                    (c, mapping, splits) => c.InvoiceTotal = Convert.ToSingle(
+                        mapping.ContainsKey("InvoiceTotal") && !string.IsNullOrEmpty(splits[mapping["InvoiceTotal"]])
+                            ? splits[mapping["InvoiceTotal"]]
+                            : "0")
+                },
+                {
+                    "SupplierName",
+                    (c, mapping, splits) => c.SupplierName =
+                        mapping.ContainsKey("SupplierName") ? splits[mapping["SupplierName"]] : ""
+                },
+                {
+                    "SupplierAddress",
+                    (c, mapping, splits) => c.SupplierAddress =
+                        mapping.ContainsKey("SupplierAddress") ? splits[mapping["SupplierAddress"]] : ""
+                },
+                {
+                    "CountryCode",
+                    (c, mapping, splits) => c.SupplierCountryCode =
+                        mapping.ContainsKey("CountryCode") ? splits[mapping["CountryCode"]] : ""
+                },
+                {
+                    "DocumentType",
+                    (c, mapping, splits) => c.DocumentType =
+                        mapping.ContainsKey("DocumentType") ? splits[mapping["DocumentType"]] : ""
+                },
+                {
+                    "SupplierInvoiceNo",
+                    (c, mapping, splits) => c.SupplierInvoiceNo = mapping.ContainsKey("SupplierInvoiceNo")
+                        ? splits[mapping["SupplierInvoiceNo"]]
+                        : ""
+                },
+
             };
 
             try
@@ -843,7 +1106,7 @@ namespace WaterNut.DataSpace
                     throw new ApplicationException("Invoice# not Mapped");
                 if (!map.Keys.Contains("ItemNumber"))
                     throw new ApplicationException("ItemNumber not Mapped");
-                
+
                 if (splits[map["EntryDataId"]] != "" && splits[map["ItemNumber"]] != "")
                 {
                     var res = new CSVDataSummary();
@@ -854,15 +1117,16 @@ namespace WaterNut.DataSpace
                             if (ImportChecks.ContainsKey(key))
                             {
                                 var err = ImportChecks[key].Invoke(res, map, splits);
-                                if(err.Item1) throw new ApplicationException(err.Item2);
+                                if (err.Item1) throw new ApplicationException(err.Item2);
                             }
-                                
-                            
+
+
                             ImportActions[key].Invoke(res, map, splits);
                         }
                         catch (Exception e)
                         {
-                            var message = $"Could not Import '{headings[map[key]]}' from Line:'{line}'. Error:{e.Message}";
+                            var message =
+                                $"Could not Import '{headings[map[key]]}' from Line:'{line}'. Error:{e.Message}";
                             Console.WriteLine(e);
                             throw new ApplicationException(message);
                         }
@@ -876,22 +1140,24 @@ namespace WaterNut.DataSpace
             {
                 throw ex;
             }
+
             return null;
         }
 
-        class CSVDataSummary
+        public class CSVDataSummary
         {
-            
+            public string PONumber;
+
             public string EntryDataId { get; set; }
-            public DateTime EntryDataDate { get; set; }
+            public DateTime? EntryDataDate { get; set; }
             public string ItemNumber { get; set; }
             public string ItemAlias { get; set; }
             public string ItemDescription { get; set; }
-            public Single Quantity { get; set; }
-            public Single Cost { get; set; }
+            public double? Quantity { get; set; }
+            public double? Cost { get; set; }
             public string Units { get; set; }
             public string CustomerName { get; set; }
-            public Single Tax { get; set; }
+            public double? Tax { get; set; }
             public string TariffCode { get; set; }
 
             public string SupplierCode { get; set; }
@@ -913,8 +1179,8 @@ namespace WaterNut.DataSpace
 
             public double? TotalInternalFreight { get; set; }
             public string CNumber { get; set; }
-            public float InvoiceQuantity { get; set; }
-            public float ReceivedQuantity { get; set; }
+            public double? InvoiceQuantity { get; set; }
+            public double? ReceivedQuantity { get; set; }
             public string Currency { get; set; }
             public string Comment { get; set; }
 
@@ -924,87 +1190,170 @@ namespace WaterNut.DataSpace
             public string SupplierName { get; set; }
             public string SupplierAddress { get; set; }
             public string SupplierCountryCode { get; set; }
-            public float InvoiceTotal { get; set; }
+            public double? InvoiceTotal { get; set; }
             public string DocumentType { get; set; }
             public string SupplierInvoiceNo { get; set; }
+            public double? TotalCost { get; set; }
+            public int? LineNumber { get; set; }
+            public int InventoryItemId { get; set; }
         }
 
         private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)
         {
-            var itmlst = eslst.GroupBy(x => new {x.SupplierCode, x.SupplierName, x.SupplierAddress, x.SupplierCountryCode}).ToList();
-
-            if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType == "PO")
+            try
             {
-                if (itmlst.All(x => string.IsNullOrEmpty(x.Key?.SupplierCode)))
+
+
+                var itmlst = eslst
+                    .GroupBy(x => new {x.SupplierCode, x.SupplierName, x.SupplierAddress, x.SupplierCountryCode})
+                    .ToList();
+
+                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType == "PO")
                 {
-                    throw new ApplicationException($"Supplier Code Missing for :{itmlst.Where(x => string.IsNullOrEmpty(x.Key?.SupplierCode)).Select(x => x.FirstOrDefault()?.EntryDataId).Aggregate((current, next) => current + ", " + next)}");
+                    if (itmlst.All(x => string.IsNullOrEmpty(x.Key?.SupplierCode ?? x.Key?.SupplierName)))
+                    {
+                        throw new ApplicationException(
+                            $"Supplier Code/Name Missing for :{itmlst.Where(x => string.IsNullOrEmpty(x.Key?.SupplierCode ?? x.Key?.SupplierName)).Select(x => x.FirstOrDefault()?.EntryDataId).Aggregate((current, next) => current + ", " + next)}");
+                    }
+                }
+
+
+                using (var ctx = new SuppliersService() {StartTracking = true})
+                {
+                    foreach (var item in itmlst.Where(x =>
+                        !string.IsNullOrEmpty(x.Key?.SupplierCode) || !string.IsNullOrEmpty(x.Key?.SupplierAddress)))
+                    {
+
+                        var i = (await ctx.GetSuppliersByExpression(
+                            $"{(item.Key.SupplierCode == null ? "SupplierName == \"" + item.Key.SupplierName.ToUpper() + "\"" : "SupplierCode == \"" + item.Key.SupplierCode.ToUpper() + "\"")} && ApplicationSettingsId == \"{applicationSettingsId}\"",
+                            null, true).ConfigureAwait(false)).FirstOrDefault();
+                        if (i != null) continue;
+                        i = new Suppliers(true)
+                        {
+                            ApplicationSettingsId = applicationSettingsId,
+                            SupplierCode = item.Key.SupplierCode?.ToUpper() ?? item.Key.SupplierName.ToUpper(),
+                            SupplierName = item.Key.SupplierName,
+                            Street = item.Key.SupplierAddress,
+                            CountryCode = item.Key.SupplierCountryCode,
+
+                            TrackingState = TrackingState.Added
+                        };
+
+                        await ctx.CreateSuppliers(i).ConfigureAwait(false);
+
+                    }
                 }
             }
-
-            
-            using (var ctx = new SuppliersService() { StartTracking = true })
+            catch (Exception e)
             {
-                foreach (var item in itmlst.Where(x => !string.IsNullOrEmpty(x.Key?.SupplierCode)))
-                {
-                    
-                    var i = (await ctx.GetSuppliersByExpression($"SupplierCode == \"{item.Key.SupplierCode.ToUpper()}\" && ApplicationSettingsId == \"{applicationSettingsId}\"", null, true).ConfigureAwait(false)).FirstOrDefault();
-                    if (i != null) continue;
-                    i = new Suppliers(true)
-                    {
-                        ApplicationSettingsId = applicationSettingsId,
-                        SupplierCode = item.Key.SupplierCode.ToUpper(),
-                        SupplierName = item.Key.SupplierName,
-                        Street = item.Key.SupplierAddress,
-                        CountryCode =  item.Key.SupplierCountryCode,
-
-                        TrackingState = TrackingState.Added
-                    };
-                        
-                    await ctx.CreateSuppliers(i).ConfigureAwait(false);
-
-                }
+                Console.WriteLine(e);
+                throw;
             }
         }
 
-        private async Task ImportInventory(List<CSVDataSummary> eslst, int applicationSettingsId)
+        private async Task ImportInventory(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)
         {
-            var itmlst = from i in eslst
-                         group i by i.ItemNumber.ToUpper()
-                             into g
-                             select new { ItemNumber = g.Key, g.FirstOrDefault().ItemDescription, g.FirstOrDefault().TariffCode };
+            try
+            {
 
-            using (var ctx = new InventoryItemService(){StartTracking = true})
+
+                var itmlst = eslst.Where(x => x.ItemNumber != null)
+                            .GroupBy(g => new { ItemNumber = g.ItemNumber.ToUpper(), g.ItemDescription, g.TariffCode})
+                            .ToList();
+            InventorySource inventorySource;
+            using (var dctx = new InventoryDSContext())
+            {
+                switch (fileType)
+                {
+                    case "INV":
+
+                        inventorySource = dctx.InventorySources.First(x => x.Name == "Supplier");
+                        break;
+                    case "PO":
+                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                        break;
+                    case "ADJ":
+                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                        break;
+                    case "Sales":
+                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                        break;
+                    case "DIS":
+                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                        break;
+                    default:
+                        throw new ApplicationException("Unknown CSV FileType");
+
+                }
+            }
+
+            using (var ctx = new InventoryItemService() {StartTracking = true})
             {
                 foreach (var item in itmlst)
                 {
-                    var i = (await ctx.GetInventoryItemsByExpression($"ItemNumber == \"{item.ItemNumber}\" && ApplicationSettingsId == \"{applicationSettingsId}\"", null, true).ConfigureAwait(false)).FirstOrDefault();
-                    if (i == null)
+                    var res = await ctx
+                        .GetInventoryItemsByExpression(
+                            $"ItemNumber == \"{item.Key.ItemNumber}\" && ApplicationSettingsId == \"{applicationSettingsId}\"",
+                            new List<string>(){ "InventoryItemSources.InventorySource" }, true).ConfigureAwait(false);
+                    var inventoryItems = res.ToList();
+                    var i = inventoryItems.Any(x => x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
+                        ? inventoryItems.FirstOrDefault(x => x.InventoryItemSources.FirstOrDefault()?.InventorySource == inventorySource)
+                        : inventoryItems.FirstOrDefault();
+
+                    if (i == null || i.InventoryItemSources.FirstOrDefault()?.InventorySource != inventorySource)
                     {
                         i = new InventoryItem(true)
                         {
                             ApplicationSettingsId = applicationSettingsId,
-                            Description = item.ItemDescription,
-                            ItemNumber = item.ItemNumber.Truncate(20),
-                           TrackingState = TrackingState.Added
+                            Description = item.Key.ItemDescription,
+                            ItemNumber = item.Key.ItemNumber.Truncate(20),
+                            InventoryItemSources = new List<InventoryItemSource>(){ new InventoryItemSource(true)
+                            {
+                                InventorySourceId = inventorySource.Id,
+                                TrackingState = TrackingState.Added
+                            }},
+                            TrackingState = TrackingState.Added
                         };
-                        if (!string.IsNullOrEmpty(item.TariffCode)) i.TariffCode = item.TariffCode;
-                        await ctx.CreateInventoryItem(i).ConfigureAwait(false);
-                       
+                        if (!string.IsNullOrEmpty(item.Key.TariffCode)) i.TariffCode = item.Key.TariffCode;
+
+
+
+                        i = await ctx.CreateInventoryItem(i).ConfigureAwait(false);
+
                     }
                     else
                     {
-                        i.StartTracking();
-                        i.Description = item.ItemDescription;
-                        if (!string.IsNullOrEmpty(item.TariffCode)) i.TariffCode = item.TariffCode;
-                        await ctx.UpdateInventoryItem(i).ConfigureAwait(false);
-                       
+                        if (i.Description != item.Key.ItemDescription || i.TariffCode != item.Key.TariffCode)
+                        {
+                            i.StartTracking();
+                            i.Description = item.Key.ItemDescription;
+                            if (!string.IsNullOrEmpty(item.Key.TariffCode)) i.TariffCode = item.Key.TariffCode;
+                            await ctx.UpdateInventoryItem(i).ConfigureAwait(false);
+                        }
+
+                    }
+                    if(itmlst.Any())
+                    foreach (var g in itmlst)
+                    {
+                        foreach (var line in g)
+                        {
+                            line.InventoryItemId = i.Id;
+                        }
                     }
 
                 }
             }
-        }
 
-        private async Task<OpeningStock> CreateOpeningStock(OpeningStock EDops)
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+
+private async Task<OpeningStock> CreateOpeningStock(OpeningStock EDops)
         {
             using (var ctx = new OpeningStockService())
             {
@@ -1016,6 +1365,14 @@ namespace WaterNut.DataSpace
             using (var ctx = new PurchaseOrdersService())
             {
                 return await ctx.CreatePurchaseOrders(EDpo).ConfigureAwait(false);
+            }
+        }
+
+        private async Task<Invoices> CreateInvoice(Invoices EDinv)
+        {
+            using (var ctx = new InvoicesService())
+            {
+                return await ctx.CreateInvoices(EDinv).ConfigureAwait(false);
             }
         }
 

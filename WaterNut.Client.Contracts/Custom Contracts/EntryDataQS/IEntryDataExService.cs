@@ -23,8 +23,7 @@ namespace EntryDataQS.Client.Contracts
         [OperationContract]
         Task SavePDF(string droppedFilePath, string fileType, int docSetId, bool overwrite);
 
-        [OperationContract]
-        Task SaveTXT(string droppedFilePath, string fileType, int docSetId, bool overwrite);
+       
     }
 }
 

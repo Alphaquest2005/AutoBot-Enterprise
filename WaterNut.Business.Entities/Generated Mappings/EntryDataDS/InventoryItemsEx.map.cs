@@ -21,7 +21,7 @@
               this.Property(t => t.SuppQty).HasColumnName("SuppQty");
               this.Property(t => t.EntryTimeStamp).HasColumnName("EntryTimeStamp");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItemsEx)t.InventoryItems);
+              this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItemsEx)t.InventoryItemEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

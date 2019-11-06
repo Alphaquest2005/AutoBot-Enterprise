@@ -142,44 +142,6 @@ namespace OCR.Client.Entities
             }
 
       }
-        public string ParentPartEntityName
-        {
-            get
-            {
-                return this.ParentPart == null ? "" : this.ParentPart.EntityName;
-            }
-            set
-            {
-                                if (string.IsNullOrEmpty(value)) return;
-                string[] vals = value.Split(',');
-               
-                    using (ParentPartsClient ctx = new ParentPartsClient())
-                    {
-                        var dto = ctx.GetParentParts().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
-                        
-
-                        if ( dto == null)
-                        {
-                            this.ParentPart = (ParentParts)new ParentParts().CreateEntityFromString(value);
-							
-							this.Id = Convert.ToInt32(this.ParentPart.Id);
-                            this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddParentPart");
-                        }
-                        else
-                        {
-                            var obj = new ParentParts(dto);
-                           if (this.ParentPart == null || this.ParentPart.EntityId != obj.EntityId) this.ParentPart = obj;
-                           
-                        }
-                         
-
-
-                    }
-            
-            }
-
-      }
 
 
 

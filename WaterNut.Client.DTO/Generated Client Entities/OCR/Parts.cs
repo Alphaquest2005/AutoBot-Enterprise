@@ -149,23 +149,7 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<RecuringPart> RecuringPartChangeTracker { get; set; }
 
         [DataMember]
-        public ParentParts ParentPart
-		{
-		    get { return _ParentPart; }
-			set
-			{
-			    if (value == _ParentPart) return;
-				_ParentPart = value;
-                ParentPartChangeTracker = _ParentPart == null ? null
-                    : new ChangeTrackingCollection<ParentParts> { _ParentPart };
-				NotifyPropertyChanged();//m => this.ParentPart
-			}
-		}
-        private ParentParts _ParentPart;
-        private ChangeTrackingCollection<ParentParts> ParentPartChangeTracker { get; set; }
-
-        [DataMember]
-        public ChangeTrackingCollection<ParentParts> ChildParts
+        public ChangeTrackingCollection<ChildParts> ChildParts
 		{
 		    get { return _ChildParts; }
 			set
@@ -175,7 +159,20 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.ChildParts
 			}
 		}
-        private ChangeTrackingCollection<ParentParts> _ChildParts = new ChangeTrackingCollection<ParentParts>();
+        private ChangeTrackingCollection<ChildParts> _ChildParts = new ChangeTrackingCollection<ChildParts>();
+
+        [DataMember]
+        public ChangeTrackingCollection<ChildParts> ParentParts
+		{
+		    get { return _ParentParts; }
+			set
+			{
+			    if (Equals(value, _ParentParts)) return;
+				_ParentParts = value;
+				NotifyPropertyChanged();//m => this.ParentParts
+			}
+		}
+        private ChangeTrackingCollection<ChildParts> _ParentParts = new ChangeTrackingCollection<ChildParts>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

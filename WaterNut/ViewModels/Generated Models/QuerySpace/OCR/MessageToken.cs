@@ -10,6 +10,12 @@ namespace WaterNut.QuerySpace.OCR
     public partial class MessageToken
     {
 
+			public const string ChildPartsFilterExpressionChanged = "ChildPartsFilterExpressionChanged";
+			public const string SelectedChildPartsChanged = "SelectedChildPartsChanged";
+            public const string ChildPartsChanged = "ChildPartsChanged";
+			public const string ChildPartsDeleted = "ChildPartsDeleted";
+			public const string ChildPartsCreated = "ChildPartsCreated";
+			public const string ChildPartsUpdated = "ChildPartsUpdated";
 			public const string EndFilterExpressionChanged = "EndFilterExpressionChanged";
 			public const string SelectedEndChanged = "SelectedEndChanged";
             public const string EndChanged = "EndChanged";
@@ -34,12 +40,12 @@ namespace WaterNut.QuerySpace.OCR
 			public const string LinesDeleted = "LinesDeleted";
 			public const string LinesCreated = "LinesCreated";
 			public const string LinesUpdated = "LinesUpdated";
-			public const string ParentPartsFilterExpressionChanged = "ParentPartsFilterExpressionChanged";
-			public const string SelectedParentPartsChanged = "SelectedParentPartsChanged";
-            public const string ParentPartsChanged = "ParentPartsChanged";
-			public const string ParentPartsDeleted = "ParentPartsDeleted";
-			public const string ParentPartsCreated = "ParentPartsCreated";
-			public const string ParentPartsUpdated = "ParentPartsUpdated";
+			public const string OCR_FieldValueFilterExpressionChanged = "OCR_FieldValueFilterExpressionChanged";
+			public const string SelectedOCR_FieldValueChanged = "SelectedOCR_FieldValueChanged";
+            public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
+			public const string OCR_FieldValueDeleted = "OCR_FieldValueDeleted";
+			public const string OCR_FieldValueCreated = "OCR_FieldValueCreated";
+			public const string OCR_FieldValueUpdated = "OCR_FieldValueUpdated";
 			public const string PartsFilterExpressionChanged = "PartsFilterExpressionChanged";
 			public const string SelectedPartsChanged = "SelectedPartsChanged";
             public const string PartsChanged = "PartsChanged";
@@ -58,18 +64,6 @@ namespace WaterNut.QuerySpace.OCR
 			public const string RecuringPartDeleted = "RecuringPartDeleted";
 			public const string RecuringPartCreated = "RecuringPartCreated";
 			public const string RecuringPartUpdated = "RecuringPartUpdated";
-			public const string RegExChainFilterExpressionChanged = "RegExChainFilterExpressionChanged";
-			public const string SelectedRegExChainChanged = "SelectedRegExChainChanged";
-            public const string RegExChainChanged = "RegExChainChanged";
-			public const string RegExChainDeleted = "RegExChainDeleted";
-			public const string RegExChainCreated = "RegExChainCreated";
-			public const string RegExChainUpdated = "RegExChainUpdated";
-			public const string RegExParentFilterExpressionChanged = "RegExParentFilterExpressionChanged";
-			public const string SelectedRegExParentChanged = "SelectedRegExParentChanged";
-            public const string RegExParentChanged = "RegExParentChanged";
-			public const string RegExParentDeleted = "RegExParentDeleted";
-			public const string RegExParentCreated = "RegExParentCreated";
-			public const string RegExParentUpdated = "RegExParentUpdated";
 			public const string RegularExpressionsFilterExpressionChanged = "RegularExpressionsFilterExpressionChanged";
 			public const string SelectedRegularExpressionsChanged = "SelectedRegularExpressionsChanged";
             public const string RegularExpressionsChanged = "RegularExpressionsChanged";
@@ -84,20 +78,21 @@ namespace WaterNut.QuerySpace.OCR
 			public const string StartUpdated = "StartUpdated";
   
 
+          // public const string ChildPartsChanged = "ChildPartsChanged";
           // public const string EndChanged = "EndChanged";
           // public const string FieldsChanged = "FieldsChanged";
           // public const string InvoicesChanged = "InvoicesChanged";
           // public const string LinesChanged = "LinesChanged";
-          // public const string ParentPartsChanged = "ParentPartsChanged";
+          // public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
           // public const string PartsChanged = "PartsChanged";
           // public const string PartTypesChanged = "PartTypesChanged";
           // public const string RecuringPartChanged = "RecuringPartChanged";
-          // public const string RegExChainChanged = "RegExChainChanged";
-          // public const string RegExParentChanged = "RegExParentChanged";
           // public const string RegularExpressionsChanged = "RegularExpressionsChanged";
           // public const string StartChanged = "StartChanged";
  
 
+   
+           public const string CurrentChildPartsChanged = "CurrentChildPartsChanged";
    
            public const string CurrentEndChanged = "CurrentEndChanged";
    
@@ -107,7 +102,7 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentLinesChanged = "CurrentLinesChanged";
    
-           public const string CurrentParentPartsChanged = "CurrentParentPartsChanged";
+           public const string CurrentOCR_FieldValueChanged = "CurrentOCR_FieldValueChanged";
    
            public const string CurrentPartsChanged = "CurrentPartsChanged";
    
@@ -115,15 +110,13 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentRecuringPartChanged = "CurrentRecuringPartChanged";
    
-           public const string CurrentRegExChainChanged = "CurrentRegExChainChanged";
-   
-           public const string CurrentRegExParentChanged = "CurrentRegExParentChanged";
-   
            public const string CurrentRegularExpressionsChanged = "CurrentRegularExpressionsChanged";
    
            public const string CurrentStartChanged = "CurrentStartChanged";
     
 
+   
+           public const string CurrentChildPartsIDChanged = "OnCurrentChildPartsIDChanged";
    
            public const string CurrentEndIDChanged = "OnCurrentEndIDChanged";
    
@@ -133,17 +126,13 @@ namespace WaterNut.QuerySpace.OCR
    
            public const string CurrentLinesIDChanged = "OnCurrentLinesIDChanged";
    
-           public const string CurrentParentPartsIDChanged = "OnCurrentParentPartsIDChanged";
+           public const string CurrentOCR_FieldValueIDChanged = "OnCurrentOCR_FieldValueIDChanged";
    
            public const string CurrentPartsIDChanged = "OnCurrentPartsIDChanged";
    
            public const string CurrentPartTypesIDChanged = "OnCurrentPartTypesIDChanged";
    
            public const string CurrentRecuringPartIDChanged = "OnCurrentRecuringPartIDChanged";
-   
-           public const string CurrentRegExChainIDChanged = "OnCurrentRegExChainIDChanged";
-   
-           public const string CurrentRegExParentIDChanged = "OnCurrentRegExParentIDChanged";
    
            public const string CurrentRegularExpressionsIDChanged = "OnCurrentRegularExpressionsIDChanged";
    

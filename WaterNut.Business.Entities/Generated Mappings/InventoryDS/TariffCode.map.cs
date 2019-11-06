@@ -26,6 +26,7 @@
               this.Property(t => t.TariffCategoryCode).HasColumnName("TariffCategoryCode").HasMaxLength(50);
               this.Property(t => t.LicenseRequired).HasColumnName("LicenseRequired");
               this.Property(t => t.Invalid).HasColumnName("Invalid");
+              this.Property(t => t.LicenseDescription).HasColumnName("LicenseDescription").HasMaxLength(50);
               this.HasOptional(t => t.TariffCategory).WithMany(t =>(ICollection<TariffCode>) t.TariffCodes).HasForeignKey(d => d.TariffCategoryCode);
               this.HasMany(t => t.InventoryItems).WithOptional(t => t.TariffCodes).HasForeignKey(d => d.TariffCode);
              // Tracking Properties

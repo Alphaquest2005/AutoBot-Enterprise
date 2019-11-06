@@ -239,10 +239,10 @@ namespace OCR.Business.Services
                                         GetWhere<Parts>(dbContext, exp, itm.Value, "End", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "RegExChain":
+                            case "RegularExpressions":
                                 return
                                     await
-                                        GetWhere<RegExChain>(dbContext, exp, itm.Value, "End", "SelectMany", includesLst)
+                                        GetWhere<RegularExpressions>(dbContext, exp, itm.Value, "End", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -742,8 +742,8 @@ namespace OCR.Business.Services
                             case "Parts":
                                 return await CountWhere<Parts>(dbContext, exp, itm.Value, "End", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "RegExChain":
-                                return await CountWhere<RegExChain>(dbContext, exp, itm.Value, "End", "SelectMany")
+                            case "RegularExpressions":
+                                return await CountWhere<RegularExpressions>(dbContext, exp, itm.Value, "End", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -856,10 +856,10 @@ namespace OCR.Business.Services
                                         LoadRangeWhere<Parts>(startIndex, count, dbContext, exp, itm.Value, "End", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "RegExChain":
+                            case "RegularExpressions":
                                 return
                                     await
-                                        LoadRangeWhere<RegExChain>(startIndex, count, dbContext, exp, itm.Value, "End", "SelectMany")
+                                        LoadRangeWhere<RegularExpressions>(startIndex, count, dbContext, exp, itm.Value, "End", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1095,17 +1095,17 @@ namespace OCR.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<End>> GetEndByRegExChainId(string RegExChainId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<End>> GetEndByRegExId(string RegExId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(RegExChainId);
+                var i = Convert.ToInt32(RegExId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<End> entities = await set//dbContext.End
                                       .AsNoTracking()
-                                        .Where(x => x.RegExChainId.ToString() == RegExChainId.ToString())
+                                        .Where(x => x.RegExId.ToString() == RegExId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1180,8 +1180,8 @@ namespace OCR.Business.Services
                             case "Parts":
                                 return await SumWhere<Parts>(dbContext, exp, itm.Value, "End", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "RegExChain":
-                                return await SumWhere<RegExChain>(dbContext, exp, itm.Value, "End", field, "SelectMany")
+                            case "RegularExpressions":
+                                return await SumWhere<RegularExpressions>(dbContext, exp, itm.Value, "End", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

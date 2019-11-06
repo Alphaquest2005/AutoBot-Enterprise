@@ -129,6 +129,22 @@ namespace OCR.Client.DTO
         private Lines _Lines;
         private ChangeTrackingCollection<Lines> LinesChangeTracker { get; set; }
 
+        [DataMember]
+        public OCR_FieldValue FieldValue
+		{
+		    get { return _FieldValue; }
+			set
+			{
+			    if (value == _FieldValue) return;
+				_FieldValue = value;
+                FieldValueChangeTracker = _FieldValue == null ? null
+                    : new ChangeTrackingCollection<OCR_FieldValue> { _FieldValue };
+				NotifyPropertyChanged();//m => this.FieldValue
+			}
+		}
+        private OCR_FieldValue _FieldValue;
+        private ChangeTrackingCollection<OCR_FieldValue> FieldValueChangeTracker { get; set; }
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

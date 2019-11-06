@@ -1,6 +1,5 @@
 ﻿using AdjustmentQS.Business.Services;
 using AllocationQS.Business.Entities;
-using AutoBotUtilities;
 using Core.Common.Converters;
 using Core.Common.Data.Contracts;
 using Core.Common.Utils;
@@ -75,7 +74,8 @@ namespace AutoBot
                 {"CleanupEntries",(ft, fs) => CleanupEntries() },
                 {"SubmitToCustoms",(ft, fs) => SubmitSalesXMLToCustoms() },
                 {"MapUnClassifiedItems", (ft, fs) => MapUnClassifiedItems(ft,fs) },
-                {"UpdateSupplierInfo", (ft, fs) => UpdateSupplierInfo(ft,fs) }
+                {"UpdateSupplierInfo", (ft, fs) => UpdateSupplierInfo(ft,fs) },
+                {"ImportPDF", (ft, fs) => ImportPDF(fs,ft) },
                 //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
                 
 
@@ -127,7 +127,6 @@ namespace AutoBot
                 {"AttachToDocSetByRef", AttachToDocSetByRef },
                 {"CreatePOEntries",CreatePOEntries },
                 {"ExportPOEntries", ExportPOEntries },
-                {"ImportPDF", ImportPDF },
                 {"AssessPOEntries", AssessPOEntries },
                 {"DownloadPOFiles", DownloadPOFiles },
                 {"SubmitPDFs", SubmitPDFs },
@@ -136,6 +135,7 @@ namespace AutoBot
                 {"CleanupDiscpancies", CleanupDiscpancies },
                 {"SubmitDiscrepanciesPreAssessmentReportToCustoms", SubmitDiscrepanciesPreAssessmentReportToCustoms },
                 {"ClearAllDiscpancyEntries", ClearAllDiscpancyEntries },
+                {"ImportPDF", ImportPDF },
 
             };
 
@@ -205,9 +205,35 @@ namespace AutoBot
 
         private static void ImportPDF()
         {
-            foreach (var file in Directory.GetFiles(@"C:\Users\josep\OneDrive\Clients\Budget Marine\Emails\August2019","*.pdf").Where(x => x.EndsWith(".pdf")))
+            using (var ctx = new CoreEntitiesContext())
             {
-                InvoiceReader.Import(file);
+                var fileType = ctx.FileTypes
+                   
+                    .FirstOrDefault(x => x.Id == 17);
+                var files = new FileInfo[]
+                    {new FileInfo(@"C:\Users\josep\OneDrive\Clients\Budget Marine\Emails\30-15900\7006133.pdf")};
+                ImportPDF(files,fileType);
+            }
+        }
+
+
+        private static void ImportPDF(FileInfo[] csvFiles, FileTypes fileType)
+            //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
+        {
+            Console.WriteLine("Importing PDF " + fileType.Type);
+            foreach (var file in csvFiles)
+            {
+                int? emailId = 0;
+                int? fileTypeId = 0;
+                using (var ctx = new CoreEntitiesContext())
+                {
+
+                    var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath == file.FullName)
+                        .Select(x => new { x.EmailUniqueId, x.FileTypeId }).FirstOrDefault();
+                    emailId = res?.EmailUniqueId;
+                    fileTypeId = res?.FileTypeId;
+                }
+                InvoiceReader.Import(file.FullName, fileTypeId,emailId,true,SaveCSVModel.Instance.GetDocSets(fileType),fileType.Type);
             }
         }
 

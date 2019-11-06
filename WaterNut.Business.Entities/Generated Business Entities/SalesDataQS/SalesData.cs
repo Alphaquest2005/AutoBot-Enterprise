@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace SalesDataQS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class SalesData : BaseEntity<SalesData>, ITrackable 

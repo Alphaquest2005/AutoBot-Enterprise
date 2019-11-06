@@ -233,10 +233,22 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain":
+                            case "End":
                                 return
                                     await
-                                        GetWhere<RegExChain>(dbContext, exp, itm.Value, "RegularExpressions", "Select", includesLst)
+                                        GetWhere<End>(dbContext, exp, itm.Value, "RegularExpressions", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Lines":
+                                return
+                                    await
+                                        GetWhere<Lines>(dbContext, exp, itm.Value, "RegularExpressions", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Start":
+                                return
+                                    await
+                                        GetWhere<Start>(dbContext, exp, itm.Value, "RegularExpressions", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -733,8 +745,14 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain":
-                                return await CountWhere<RegExChain>(dbContext, exp, itm.Value, "RegularExpressions", "Select")
+                            case "End":
+                                return await CountWhere<End>(dbContext, exp, itm.Value, "RegularExpressions", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Lines":
+                                return await CountWhere<Lines>(dbContext, exp, itm.Value, "RegularExpressions", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Start":
+                                return await CountWhere<Start>(dbContext, exp, itm.Value, "RegularExpressions", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -841,10 +859,22 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain":
+                            case "End":
                                 return
                                     await
-                                        LoadRangeWhere<RegExChain>(startIndex, count, dbContext, exp, itm.Value, "RegularExpressions", "Select")
+                                        LoadRangeWhere<End>(startIndex, count, dbContext, exp, itm.Value, "RegularExpressions", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Lines":
+                                return
+                                    await
+                                        LoadRangeWhere<Lines>(startIndex, count, dbContext, exp, itm.Value, "RegularExpressions", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Start":
+                                return
+                                    await
+                                        LoadRangeWhere<Start>(startIndex, count, dbContext, exp, itm.Value, "RegularExpressions", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1104,8 +1134,14 @@ namespace OCR.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "RegExChain":
-                                return await SumWhere<RegExChain>(dbContext, exp, itm.Value, "RegularExpressions", field, "Select")
+                            case "End":
+                                return await SumWhere<End>(dbContext, exp, itm.Value, "RegularExpressions", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Lines":
+                                return await SumWhere<Lines>(dbContext, exp, itm.Value, "RegularExpressions", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Start":
+                                return await SumWhere<Start>(dbContext, exp, itm.Value, "RegularExpressions", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

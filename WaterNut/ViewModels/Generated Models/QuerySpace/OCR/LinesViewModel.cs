@@ -56,7 +56,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
  
 			RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
  
-			RegisterToReceiveMessages<RegExChain>(MessageToken.CurrentRegExChainChanged, OnCurrentRegExChainChanged);
+			RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentRegularExpressionsChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -143,9 +143,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                    // {
                    //    if(Parts.Contains(CurrentLines.Parts) == false) Parts.Add(CurrentLines.Parts);
                     //}
-                    //if (e.PropertyName == "AddRegExChain")
+                    //if (e.PropertyName == "AddRegularExpressions")
                    // {
-                   //    if(RegExChain.Contains(CurrentLines.RegExChain) == false) RegExChain.Add(CurrentLines.RegExChain);
+                   //    if(RegularExpressions.Contains(CurrentLines.RegularExpressions) == false) RegularExpressions.Add(CurrentLines.RegularExpressions);
                     //}
                  } 
         internal virtual void OnLinesChanged(object sender, NotificationEventArgs e)
@@ -173,16 +173,16 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                 // SendMessage(MessageToken.LinesChanged, new NotificationEventArgs(MessageToken.LinesChanged));
                 			}
 	
-		 internal virtual void OnCurrentRegExChainChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegExChain> e)
+		 internal virtual void OnCurrentRegularExpressionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegularExpressions> e)
 			{
-			if(ViewCurrentRegExChain == false) return;
+			if(ViewCurrentRegularExpressions == false) return;
 			if (e.Data == null || e.Data.Id == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				vloader.FilterExpression = string.Format("RegExChainId == {0}", e.Data.Id.ToString());
+				vloader.FilterExpression = string.Format("RegExId == {0}", e.Data.Id.ToString());
                  }
 
 				Lines.Refresh();
@@ -210,17 +210,17 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
              }
          }
  	
-		 bool _viewCurrentRegExChain = false;
-         public bool ViewCurrentRegExChain
+		 bool _viewCurrentRegularExpressions = false;
+         public bool ViewCurrentRegularExpressions
          {
              get
              {
-                 return _viewCurrentRegExChain;
+                 return _viewCurrentRegularExpressions;
              }
              set
              {
-                 _viewCurrentRegExChain = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentRegExChain);
+                 _viewCurrentRegularExpressions = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentRegularExpressions);
                 FilterData();
              }
          }
@@ -265,6 +265,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Boolean? _multiLineFilter;
+        public Boolean? MultiLineFilter
+        {
+            get
+            {
+                return _multiLineFilter;
+            }
+            set
+            {
+                _multiLineFilter = value;
+				NotifyPropertyChanged(x => MultiLineFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -297,6 +315,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
+ 
+
+									if(MultiLineFilter.HasValue)
+						res.Append(" && " + string.Format("MultiLine == {0}",  MultiLineFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -320,7 +342,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                 dataToPrint = lst.Select(x => new LinesExcelLine
                 {
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    MultiLine = x.MultiLine 
                     
                 }).ToList()
             };
@@ -334,6 +359,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         {
 		 
                     public string Name { get; set; } 
+                    
+ 
+                    public bool MultiLine { get; set; } 
                     
         }
 

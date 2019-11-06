@@ -37,8 +37,11 @@
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.Property(t => t.LastCost).HasColumnName("LastCost");
+              this.Property(t => t.TotalCost).HasColumnName("TotalCost");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryDataId);
-              this.HasRequired(t => t.InventoryItems).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.ItemNumber);
+              this.HasRequired(t => t.InventoryItemEx).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.ItemNumber);
+              this.HasRequired(t => t.InventoryItems).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
               this.HasMany(t => t.EntryDataDetailsEx).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

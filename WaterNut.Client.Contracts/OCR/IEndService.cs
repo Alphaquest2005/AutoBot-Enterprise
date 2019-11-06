@@ -83,7 +83,7 @@ namespace OCR.Client.Contracts
 		Task<IEnumerable<End>> GetEndByPartId(string PartId, List<string> includesLst = null);
         
   		[OperationContract]
-		Task<IEnumerable<End>> GetEndByRegExChainId(string RegExChainId, List<string> includesLst = null);
+		Task<IEnumerable<End>> GetEndByRegExId(string RegExId, List<string> includesLst = null);
         
   		
     }

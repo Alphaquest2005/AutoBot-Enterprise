@@ -13,8 +13,18 @@ namespace WaterNut.Data
     {
         public DBConfiguration()
         {
-           // SetTransactionHandler(SqlProviderServices.ProviderInvariantName, () => new CommitFailureHandler()); 
-            SetExecutionStrategy("System.Data.SqlClient", () => new DBExecutionStrategy(20, new TimeSpan(0,0,0,2)));
+            // SetTransactionHandler(SqlProviderServices.ProviderInvariantName, () => new CommitFailureHandler()); 
+            try
+            {
+                SetExecutionStrategy("System.Data.SqlClient",
+                    () => new DBExecutionStrategy(20, new TimeSpan(0, 0, 0, 2)));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 }

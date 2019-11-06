@@ -75,22 +75,7 @@ public int PartId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "RegExChain is required")]
-       
-public int RegExChainId
-		{ 
-		    get { return this.lines.RegExChainId; }
-			set
-			{
-			    if (value == this.lines.RegExChainId) return;
-				this.lines.RegExChainId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("RegExChainId");
-			}
-		}
-     
-
-       
+       [RequiredValidationAttribute(ErrorMessage= "Name is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "Name has a max length of 50 letters ")]
@@ -103,6 +88,36 @@ public string Name
 				this.lines.Name = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Name");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "MultiLine is required")]
+       
+public bool MultiLine
+		{ 
+		    get { return this.lines.MultiLine; }
+			set
+			{
+			    if (value == this.lines.MultiLine) return;
+				this.lines.MultiLine = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MultiLine");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "RegEx is required")]
+       
+public int RegExId
+		{ 
+		    get { return this.lines.RegExId; }
+			set
+			{
+			    if (value == this.lines.RegExId) return;
+				this.lines.RegExId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("RegExId");
 			}
 		}
      
@@ -214,55 +229,55 @@ public string Name
 		}
         
 
-       private RegExChain _RegExChain;
-        public  RegExChain RegExChain
+       private RegularExpressions _RegularExpressions;
+        public  RegularExpressions RegularExpressions
 		{
 		    get
                { 
                   if (this.lines != null)
                    {
-                       if (_RegExChain != null)
+                       if (_RegularExpressions != null)
                        {
-                           if (this.lines.RegExChain !=
-                               _RegExChain.DTO)
+                           if (this.lines.RegularExpressions !=
+                               _RegularExpressions.DTO)
                            {
-                                if (this.lines.RegExChain  != null)
-                               _RegExChain = new RegExChain(this.lines.RegExChain);
+                                if (this.lines.RegularExpressions  != null)
+                               _RegularExpressions = new RegularExpressions(this.lines.RegularExpressions);
                            }
                        }
                        else
                        {
-                             if (this.lines.RegExChain  != null)
-                           _RegExChain = new RegExChain(this.lines.RegExChain);
+                             if (this.lines.RegularExpressions  != null)
+                           _RegularExpressions = new RegularExpressions(this.lines.RegularExpressions);
                        }
                    }
 
 
-             //       if (_RegExChain != null) return _RegExChain;
+             //       if (_RegularExpressions != null) return _RegularExpressions;
                        
-             //       var i = new RegExChain(){TrackingState = TrackingState.Added};
-			//		//if (this.lines.RegExChain == null) Debugger.Break();
-			//		if (this.lines.RegExChain != null)
+             //       var i = new RegularExpressions(){TrackingState = TrackingState.Added};
+			//		//if (this.lines.RegularExpressions == null) Debugger.Break();
+			//		if (this.lines.RegularExpressions != null)
             //        {
-            //           i. = this.lines.RegExChain;
+            //           i. = this.lines.RegularExpressions;
             //        }
             //        else
             //        {
-            //            this.lines.RegExChain = i.;
+            //            this.lines.RegularExpressions = i.;
              //       }
                            
-            //        _RegExChain = i;
+            //        _RegularExpressions = i;
                      
-                    return _RegExChain;
+                    return _RegularExpressions;
                }
 			set
 			{
-			    if (value == _RegExChain) return;
-                _RegExChain = value;
+			    if (value == _RegularExpressions) return;
+                _RegularExpressions = value;
                 if(value != null)
-                     this.lines.RegExChain = value.DTO;
+                     this.lines.RegularExpressions = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("RegExChain");
+                NotifyPropertyChanged("RegularExpressions");
 			}
 		}
         

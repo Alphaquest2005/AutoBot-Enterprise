@@ -66,12 +66,7 @@ namespace WaterNut.QuerySpace
                             EntryDataExRepository.Instance.SavePDF(f, fileType, asycudaDocumentSetId, overwrite)
                                 .ConfigureAwait(false);
                     }
-                    if (f.EndsWith(".txt"))
-                    {
-                        await
-                            EntryDataExRepository.Instance.SaveTXT(f, fileType, asycudaDocumentSetId, overwrite)
-                                .ConfigureAwait(false);
-                    }
+                    
                 }
 
                 

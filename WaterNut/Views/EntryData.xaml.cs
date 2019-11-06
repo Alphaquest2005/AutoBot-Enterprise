@@ -83,6 +83,11 @@ namespace WaterNut.Views
             await im.SaveCSV("PO").ConfigureAwait(false);
         }
 
+	    private async void ImportInv(object sender, MouseButtonEventArgs e)
+	    {
+	        await im.SaveCSV("INV").ConfigureAwait(false);
+        }
+
         private async void ImportOPS(object sender, MouseButtonEventArgs e)
         {
             await im.SaveCSV("OPS").ConfigureAwait(false);
@@ -209,5 +214,7 @@ namespace WaterNut.Views
 	    {
 	        await AdjustmentExModel.Instance.Import("DIS").ConfigureAwait(false);
 	    }
-    }
+
+	    
+	}
 }

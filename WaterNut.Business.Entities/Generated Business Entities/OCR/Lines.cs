@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace OCR.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Lines : BaseEntity<Lines>, ITrackable 
@@ -55,21 +56,6 @@ namespace OCR.Business.Entities
         }
         int _partid;
         [DataMember]
-        public int RegExChainId 
-        {
-            get
-            {
-                return _regexchainid;
-            }
-            set
-            {
-                _regexchainid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _regexchainid;
-        [DataMember]
         public string Name 
         {
             get
@@ -85,11 +71,41 @@ namespace OCR.Business.Entities
         }
         string _name;
         [DataMember]
+        public bool MultiLine 
+        {
+            get
+            {
+                return _multiline;
+            }
+            set
+            {
+                _multiline = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _multiline;
+        [DataMember]
+        public int RegExId 
+        {
+            get
+            {
+                return _regexid;
+            }
+            set
+            {
+                _regexid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _regexid;
+        [DataMember]
         public List<Fields> Fields { get; set; }
         [DataMember]
         public Parts Parts { get; set; }
         [DataMember]
-        public RegExChain RegExChain { get; set; }
+        public RegularExpressions RegularExpressions { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

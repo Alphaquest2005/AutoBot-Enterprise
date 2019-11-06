@@ -117,9 +117,9 @@ namespace OCR.Client.Services
             return  await Channel.GetEndByPartId(PartId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<End>> GetEndByRegExChainId(string RegExChainId, List<string> includesLst = null)
+  		public async Task<IEnumerable<End>> GetEndByRegExId(string RegExId, List<string> includesLst = null)
         {
-            return  await Channel.GetEndByRegExChainId(RegExChainId, includesLst).ConfigureAwait(false);
+            return  await Channel.GetEndByRegExId(RegExId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

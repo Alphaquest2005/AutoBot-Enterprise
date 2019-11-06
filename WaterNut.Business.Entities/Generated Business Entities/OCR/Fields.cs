@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace OCR.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Fields : BaseEntity<Fields>, ITrackable 
@@ -126,6 +127,8 @@ namespace OCR.Business.Entities
         string _key;
         [DataMember]
         public Lines Lines { get; set; }
+        [DataMember]
+        public OCR_FieldValue FieldValue { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

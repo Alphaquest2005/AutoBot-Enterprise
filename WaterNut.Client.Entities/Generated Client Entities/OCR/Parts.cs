@@ -411,61 +411,8 @@ public int PartTypeId
 		}
         
 
-       private ParentParts _ParentPart;
-        public  ParentParts ParentPart
-		{
-		    get
-               { 
-                  if (this.parts != null)
-                   {
-                       if (_ParentPart != null)
-                       {
-                           if (this.parts.ParentPart !=
-                               _ParentPart.DTO)
-                           {
-                                if (this.parts.ParentPart  != null)
-                               _ParentPart = new ParentParts(this.parts.ParentPart);
-                           }
-                       }
-                       else
-                       {
-                             if (this.parts.ParentPart  != null)
-                           _ParentPart = new ParentParts(this.parts.ParentPart);
-                       }
-                   }
-
-
-             //       if (_ParentPart != null) return _ParentPart;
-                       
-             //       var i = new ParentParts(){TrackingState = TrackingState.Added};
-			//		//if (this.parts.ParentPart == null) Debugger.Break();
-			//		if (this.parts.ParentPart != null)
-            //        {
-            //           i. = this.parts.ParentPart;
-            //        }
-            //        else
-            //        {
-            //            this.parts.ParentPart = i.;
-             //       }
-                           
-            //        _ParentPart = i;
-                     
-                    return _ParentPart;
-               }
-			set
-			{
-			    if (value == _ParentPart) return;
-                _ParentPart = value;
-                if(value != null)
-                     this.parts.ParentPart = value.DTO;
-				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-                NotifyPropertyChanged("ParentPart");
-			}
-		}
-        
-
-        ObservableCollection<ParentParts> _ChildParts = null;
-        public  ObservableCollection<ParentParts> ChildParts
+        ObservableCollection<ChildParts> _ChildParts = null;
+        public  ObservableCollection<ChildParts> ChildParts
 		{
             
 		    get 
@@ -474,7 +421,7 @@ public int PartTypeId
 					//if (this.parts.ChildParts == null) Debugger.Break();
 					if(this.parts.ChildParts != null)
 					{
-						_ChildParts = new ObservableCollection<ParentParts>(this.parts.ChildParts.Select(x => new ParentParts(x)));
+						_ChildParts = new ObservableCollection<ChildParts>(this.parts.ChildParts.Select(x => new ChildParts(x)));
 					}
 					
 						_ChildParts.CollectionChanged += ChildParts_CollectionChanged; 
@@ -485,7 +432,7 @@ public int PartTypeId
 			{
 			    if (Equals(value, _ChildParts)) return;
 				if (value != null)
-					this.parts.ChildParts = new ChangeTrackingCollection<DTO.ParentParts>(value.Select(x => x.DTO).ToList());
+					this.parts.ChildParts = new ChangeTrackingCollection<DTO.ChildParts>(value.Select(x => x.DTO).ToList());
                 _ChildParts = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				if (_ChildParts != null)
@@ -499,7 +446,7 @@ public int PartTypeId
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (ParentParts itm in e.NewItems)
+                    foreach (ChildParts itm in e.NewItems)
                     {
                         if (itm != null)
                         parts.ChildParts.Add(itm.DTO);
@@ -507,10 +454,64 @@ public int PartTypeId
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (ParentParts itm in e.OldItems)
+                    foreach (ChildParts itm in e.OldItems)
                     {
                         if (itm != null)
                         parts.ChildParts.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<ChildParts> _ParentParts = null;
+        public  ObservableCollection<ChildParts> ParentParts
+		{
+            
+		    get 
+				{ 
+					if(_ParentParts != null) return _ParentParts;
+					//if (this.parts.ParentParts == null) Debugger.Break();
+					if(this.parts.ParentParts != null)
+					{
+						_ParentParts = new ObservableCollection<ChildParts>(this.parts.ParentParts.Select(x => new ChildParts(x)));
+					}
+					
+						_ParentParts.CollectionChanged += ParentParts_CollectionChanged; 
+					
+					return _ParentParts; 
+				}
+			set
+			{
+			    if (Equals(value, _ParentParts)) return;
+				if (value != null)
+					this.parts.ParentParts = new ChangeTrackingCollection<DTO.ChildParts>(value.Select(x => x.DTO).ToList());
+                _ParentParts = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_ParentParts != null)
+				_ParentParts.CollectionChanged += ParentParts_CollectionChanged;               
+				NotifyPropertyChanged("ParentParts");
+			}
+		}
+        
+        void ParentParts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ChildParts itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        parts.ParentParts.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ChildParts itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        parts.ParentParts.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

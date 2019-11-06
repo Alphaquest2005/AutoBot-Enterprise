@@ -53,31 +53,29 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                  if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
  
 
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentChildPartsIDChanged, OnCurrentChildPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEndIDChanged, OnCurrentEndIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFieldsIDChanged, OnCurrentFieldsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoicesIDChanged, OnCurrentInvoicesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLinesIDChanged, OnCurrentLinesIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentParentPartsIDChanged, OnCurrentParentPartsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRecuringPartIDChanged, OnCurrentRecuringPartIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentRegExChainIDChanged, OnCurrentRegExChainIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentRegExParentIDChanged, OnCurrentRegExParentIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRegularExpressionsIDChanged, OnCurrentRegularExpressionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentStartIDChanged, OnCurrentStartIDChanged);
        
 
 			// Recieve messages for Current Object Changed
+                        RegisterToReceiveMessages<ChildParts>(MessageToken.CurrentChildPartsChanged, OnCurrentChildPartsChanged);
                         RegisterToReceiveMessages<End>(MessageToken.CurrentEndChanged, OnCurrentEndChanged);
                         RegisterToReceiveMessages<Fields>(MessageToken.CurrentFieldsChanged, OnCurrentFieldsChanged);
                         RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentInvoicesChanged);
                         RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
-                        RegisterToReceiveMessages<ParentParts>(MessageToken.CurrentParentPartsChanged, OnCurrentParentPartsChanged);
+                        RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
                         RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
-                        RegisterToReceiveMessages<RegExChain>(MessageToken.CurrentRegExChainChanged, OnCurrentRegExChainChanged);
-                        RegisterToReceiveMessages<RegExParent>(MessageToken.CurrentRegExParentChanged, OnCurrentRegExParentChanged);
                         RegisterToReceiveMessages<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, OnCurrentRegularExpressionsChanged);
                         RegisterToReceiveMessages<Start>(MessageToken.CurrentStartChanged, OnCurrentStartChanged);
     
@@ -99,6 +97,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 
 
+                        internal async void OnCurrentChildPartsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ChildPartsRepository ctx = new ChildPartsRepository())
+                            {
+                                CurrentChildParts = await ctx.GetChildParts(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentChildParts);
+                        }
+
+                        private  string _currentChildPartsID = "";
+                        public string CurrentChildPartsID
+                        {
+                            get
+                            {
+                                return _currentChildPartsID;
+                            }
+                            set
+                            {
+                                if (_currentChildPartsID != value)
+                                {
+                                    _currentChildPartsID = value;
+                                    if (!string.IsNullOrEmpty(_currentChildPartsID)) BeginSendMessage(MessageToken.CurrentChildPartsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentChildPartsIDChanged, _currentChildPartsID));
+                                    NotifyPropertyChanged(x => this.CurrentChildPartsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentEndIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (EndRepository ctx = new EndRepository())
@@ -207,30 +232,30 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentParentPartsIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentOCR_FieldValueIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (ParentPartsRepository ctx = new ParentPartsRepository())
+                            using (OCR_FieldValueRepository ctx = new OCR_FieldValueRepository())
                             {
-                                CurrentParentParts = await ctx.GetParentParts(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentOCR_FieldValue = await ctx.GetOCR_FieldValue(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentParentParts);
+                            NotifyPropertyChanged(m => CurrentOCR_FieldValue);
                         }
 
-                        private  string _currentParentPartsID = "";
-                        public string CurrentParentPartsID
+                        private  string _currentOCR_FieldValueID = "";
+                        public string CurrentOCR_FieldValueID
                         {
                             get
                             {
-                                return _currentParentPartsID;
+                                return _currentOCR_FieldValueID;
                             }
                             set
                             {
-                                if (_currentParentPartsID != value)
+                                if (_currentOCR_FieldValueID != value)
                                 {
-                                    _currentParentPartsID = value;
-                                    if (!string.IsNullOrEmpty(_currentParentPartsID)) BeginSendMessage(MessageToken.CurrentParentPartsIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentParentPartsIDChanged, _currentParentPartsID));
-                                    NotifyPropertyChanged(x => this.CurrentParentPartsID);  
+                                    _currentOCR_FieldValueID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_FieldValueID)) BeginSendMessage(MessageToken.CurrentOCR_FieldValueIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_FieldValueIDChanged, _currentOCR_FieldValueID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_FieldValueID);  
                                 }
                             }
                         }
@@ -315,60 +340,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentRegExChainIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (RegExChainRepository ctx = new RegExChainRepository())
-                            {
-                                CurrentRegExChain = await ctx.GetRegExChain(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentRegExChain);
-                        }
-
-                        private  string _currentRegExChainID = "";
-                        public string CurrentRegExChainID
-                        {
-                            get
-                            {
-                                return _currentRegExChainID;
-                            }
-                            set
-                            {
-                                if (_currentRegExChainID != value)
-                                {
-                                    _currentRegExChainID = value;
-                                    if (!string.IsNullOrEmpty(_currentRegExChainID)) BeginSendMessage(MessageToken.CurrentRegExChainIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentRegExChainIDChanged, _currentRegExChainID));
-                                    NotifyPropertyChanged(x => this.CurrentRegExChainID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentRegExParentIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (RegExParentRepository ctx = new RegExParentRepository())
-                            {
-                                CurrentRegExParent = await ctx.GetRegExParent(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentRegExParent);
-                        }
-
-                        private  string _currentRegExParentID = "";
-                        public string CurrentRegExParentID
-                        {
-                            get
-                            {
-                                return _currentRegExParentID;
-                            }
-                            set
-                            {
-                                if (_currentRegExParentID != value)
-                                {
-                                    _currentRegExParentID = value;
-                                    if (!string.IsNullOrEmpty(_currentRegExParentID)) BeginSendMessage(MessageToken.CurrentRegExParentIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentRegExParentIDChanged, _currentRegExParentID));
-                                    NotifyPropertyChanged(x => this.CurrentRegExParentID);  
-                                }
-                            }
-                        }
                         internal async void OnCurrentRegularExpressionsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (RegularExpressionsRepository ctx = new RegularExpressionsRepository())
@@ -424,6 +395,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                             }
                         }
  
+
+
+
+                     
+       
+
+        internal void OnCurrentChildPartsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ChildParts> e)
+        {
+            //CurrentChildParts = e.Data;
+            NotifyPropertyChanged(m => this.CurrentChildParts);
+        }
+
+        private  ChildParts _currentChildParts;
+        public ChildParts CurrentChildParts
+        {
+            get
+            {
+                return _currentChildParts;
+            }
+            set
+            {
+                if (_currentChildParts != value)
+                {
+                    _currentChildParts = value;
+                    BeginSendMessage(MessageToken.CurrentChildPartsChanged,
+                                                     new NotificationEventArgs<ChildParts>(MessageToken.CurrentChildPartsChanged, _currentChildParts)); 
+                    NotifyPropertyChanged(x => this.CurrentChildParts);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<ChildParts> _vcurrentChildParts;
+        public VirtualListItem<ChildParts> VCurrentChildParts
+        {
+            get
+            {
+                return _vcurrentChildParts;
+            }
+            set
+            {
+                if (_vcurrentChildParts != value)
+                {
+                    _vcurrentChildParts = value;
+					if(_vcurrentChildParts != null) CurrentChildParts = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentChildParts);                    
+                }
+            }
+        }
 
 
 
@@ -502,6 +523,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                                      new NotificationEventArgs<Fields>(MessageToken.CurrentFieldsChanged, _currentFields)); 
                     NotifyPropertyChanged(x => this.CurrentFields);    
                     // all current navigation properties = null
+                 CurrentOCR_FieldValue = null;
    
                 }
             }
@@ -632,48 +654,48 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
-        internal void OnCurrentParentPartsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ParentParts> e)
+        internal void OnCurrentOCR_FieldValueChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_FieldValue> e)
         {
-            //CurrentParentParts = e.Data;
-            NotifyPropertyChanged(m => this.CurrentParentParts);
+            //CurrentOCR_FieldValue = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_FieldValue);
         }
 
-        private  ParentParts _currentParentParts;
-        public ParentParts CurrentParentParts
+        private  OCR_FieldValue _currentOCR_FieldValue;
+        public OCR_FieldValue CurrentOCR_FieldValue
         {
             get
             {
-                return _currentParentParts;
+                return _currentOCR_FieldValue;
             }
             set
             {
-                if (_currentParentParts != value)
+                if (_currentOCR_FieldValue != value)
                 {
-                    _currentParentParts = value;
-                    BeginSendMessage(MessageToken.CurrentParentPartsChanged,
-                                                     new NotificationEventArgs<ParentParts>(MessageToken.CurrentParentPartsChanged, _currentParentParts)); 
-                    NotifyPropertyChanged(x => this.CurrentParentParts);    
+                    _currentOCR_FieldValue = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_FieldValueChanged,
+                                                     new NotificationEventArgs<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, _currentOCR_FieldValue)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_FieldValue);    
                     // all current navigation properties = null
-                 CurrentParts = null;
+                 CurrentFields = null;
    
                 }
             }
         }
 
-		VirtualListItem<ParentParts> _vcurrentParentParts;
-        public VirtualListItem<ParentParts> VCurrentParentParts
+		VirtualListItem<OCR_FieldValue> _vcurrentOCR_FieldValue;
+        public VirtualListItem<OCR_FieldValue> VCurrentOCR_FieldValue
         {
             get
             {
-                return _vcurrentParentParts;
+                return _vcurrentOCR_FieldValue;
             }
             set
             {
-                if (_vcurrentParentParts != value)
+                if (_vcurrentOCR_FieldValue != value)
                 {
-                    _vcurrentParentParts = value;
-					if(_vcurrentParentParts != null) CurrentParentParts = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentParentParts);                    
+                    _vcurrentOCR_FieldValue = value;
+					if(_vcurrentOCR_FieldValue != null) CurrentOCR_FieldValue = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_FieldValue);                    
                 }
             }
         }
@@ -709,7 +731,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                  CurrentStart = null;
                  CurrentLines = null;
                  CurrentRecuringPart = null;
-                 CurrentParentParts = null;
+                 CurrentChildParts = null;
    
                 }
             }
@@ -840,111 +862,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                      
        
 
-        internal void OnCurrentRegExChainChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegExChain> e)
-        {
-            //CurrentRegExChain = e.Data;
-            NotifyPropertyChanged(m => this.CurrentRegExChain);
-        }
-
-        private  RegExChain _currentRegExChain;
-        public RegExChain CurrentRegExChain
-        {
-            get
-            {
-                return _currentRegExChain;
-            }
-            set
-            {
-                if (_currentRegExChain != value)
-                {
-                    _currentRegExChain = value;
-                    BeginSendMessage(MessageToken.CurrentRegExChainChanged,
-                                                     new NotificationEventArgs<RegExChain>(MessageToken.CurrentRegExChainChanged, _currentRegExChain)); 
-                    NotifyPropertyChanged(x => this.CurrentRegExChain);    
-                    // all current navigation properties = null
-                 CurrentEnd = null;
-                 CurrentStart = null;
-                 CurrentLines = null;
-                 CurrentRegExParent = null;
-   
-                }
-            }
-        }
-
-		VirtualListItem<RegExChain> _vcurrentRegExChain;
-        public VirtualListItem<RegExChain> VCurrentRegExChain
-        {
-            get
-            {
-                return _vcurrentRegExChain;
-            }
-            set
-            {
-                if (_vcurrentRegExChain != value)
-                {
-                    _vcurrentRegExChain = value;
-					if(_vcurrentRegExChain != null) CurrentRegExChain = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentRegExChain);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentRegExParentChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegExParent> e)
-        {
-            //CurrentRegExParent = e.Data;
-            NotifyPropertyChanged(m => this.CurrentRegExParent);
-        }
-
-        private  RegExParent _currentRegExParent;
-        public RegExParent CurrentRegExParent
-        {
-            get
-            {
-                return _currentRegExParent;
-            }
-            set
-            {
-                if (_currentRegExParent != value)
-                {
-                    _currentRegExParent = value;
-                    BeginSendMessage(MessageToken.CurrentRegExParentChanged,
-                                                     new NotificationEventArgs<RegExParent>(MessageToken.CurrentRegExParentChanged, _currentRegExParent)); 
-                    NotifyPropertyChanged(x => this.CurrentRegExParent);    
-                    // all current navigation properties = null
-                 CurrentRegExChain = null;
-   
-                }
-            }
-        }
-
-		VirtualListItem<RegExParent> _vcurrentRegExParent;
-        public VirtualListItem<RegExParent> VCurrentRegExParent
-        {
-            get
-            {
-                return _vcurrentRegExParent;
-            }
-            set
-            {
-                if (_vcurrentRegExParent != value)
-                {
-                    _vcurrentRegExParent = value;
-					if(_vcurrentRegExParent != null) CurrentRegExParent = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentRegExParent);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
         internal void OnCurrentRegularExpressionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RegularExpressions> e)
         {
             //CurrentRegularExpressions = e.Data;
@@ -967,7 +884,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                                      new NotificationEventArgs<RegularExpressions>(MessageToken.CurrentRegularExpressionsChanged, _currentRegularExpressions)); 
                     NotifyPropertyChanged(x => this.CurrentRegularExpressions);    
                     // all current navigation properties = null
-                 CurrentRegExChain = null;
+                 CurrentEnd = null;
+                 CurrentLines = null;
+                 CurrentStart = null;
    
                 }
             }

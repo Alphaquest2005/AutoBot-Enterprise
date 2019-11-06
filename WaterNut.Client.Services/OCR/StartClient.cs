@@ -117,9 +117,9 @@ namespace OCR.Client.Services
             return  await Channel.GetStartByPartId(PartId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<Start>> GetStartByRegExChainId(string RegExChainId, List<string> includesLst = null)
+  		public async Task<IEnumerable<Start>> GetStartByRegExId(string RegExId, List<string> includesLst = null)
         {
-            return  await Channel.GetStartByRegExChainId(RegExChainId, includesLst).ConfigureAwait(false);
+            return  await Channel.GetStartByRegExId(RegExId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

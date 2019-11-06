@@ -5,33 +5,30 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="74">
-        <EntityTypeShape EntityType="WaterNutDBModel.End" Width="1.5" PointX="10.5" PointY="3.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.End" Width="3.375" PointX="10.5" PointY="3.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Fields" Width="1.5" PointX="7.5" PointY="7.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Invoices" Width="1.5" PointX="0.75" PointY="9.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.Parts" Width="1.5" PointX="3" PointY="7.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.PartTypes" Width="1.5" PointX="0.75" PointY="7.125" />
-        <EntityTypeShape EntityType="WaterNutDBModel.RegExChain" Width="2.875" PointX="3" PointY="3.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.RegularExpressions" Width="1.5" PointX="0.75" PointY="4" />
         <EntityTypeShape EntityType="WaterNutDBModel.Start" Width="1.5" PointX="9.875" PointY="0.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_Parts" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_RegExChain" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Parts_OCR_PartTypes" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_Parts" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_RegExChain_OCR_RegularExpressions" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_RegExChain" />
         <EntityTypeShape EntityType="WaterNutDBModel.Lines" Width="1.5" PointX="6.625" PointY="4.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_Parts" />
-        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_RegExChain" />
         <EntityTypeShape EntityType="WaterNutDBModel.RecuringPart" Width="1.5" PointX="5.25" PointY="8.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_RecuringPart_OCR_Parts" />
-        <EntityTypeShape EntityType="WaterNutDBModel.RegExParent" Width="1.5" PointX="5" PointY="6.875" />
-        <AssociationConnector Association="WaterNutDBModel.RegExChainRegExParent" />
-        <AssociationConnector Association="WaterNutDBModel.RegExChainRegExParent1" />
-        <EntityTypeShape EntityType="WaterNutDBModel.ParentParts" Width="1.5" PointX="5.25" PointY="11" />
-        <AssociationConnector Association="WaterNutDBModel.PartsChildParts" />
-        <AssociationConnector Association="WaterNutDBModel.PartsParentParts" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ChildParts" Width="1.5" PointX="5.25" PointY="14.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_ChildPart_OCR_Parts" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_ChildPart_OCR_Parts1" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_FieldValue" Width="1.5" PointX="9.75" PointY="8.375" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_RegularExpressions" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

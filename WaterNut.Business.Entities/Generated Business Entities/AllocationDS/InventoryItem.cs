@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace AllocationDS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class InventoryItem : BaseEntity<InventoryItem>, ITrackable 

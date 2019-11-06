@@ -66,34 +66,34 @@ namespace OCR.Client.Entities
             }
 
       }
-        public string RegExChainEntityName
+        public string RegularExpressionsEntityName
         {
             get
             {
-                return this.RegExChain == null ? "" : this.RegExChain.EntityName;
+                return this.RegularExpressions == null ? "" : this.RegularExpressions.EntityName;
             }
             set
             {
                                 if (string.IsNullOrEmpty(value)) return;
                 string[] vals = value.Split(',');
                
-                    using (RegExChainClient ctx = new RegExChainClient())
+                    using (RegularExpressionsClient ctx = new RegularExpressionsClient())
                     {
-                        var dto = ctx.GetRegExChain().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        var dto = ctx.GetRegularExpressions().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
                         
 
                         if ( dto == null)
                         {
-                            this.RegExChain = (RegExChain)new RegExChain().CreateEntityFromString(value);
+                            this.RegularExpressions = (RegularExpressions)new RegularExpressions().CreateEntityFromString(value);
 							
-							this.Id = Convert.ToInt32(this.RegExChain.Id);
+							this.Id = Convert.ToInt32(this.RegularExpressions.Id);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
-                           NotifyPropertyChanged("AddRegExChain");
+                           NotifyPropertyChanged("AddRegularExpressions");
                         }
                         else
                         {
-                            var obj = new RegExChain(dto);
-                           if (this.RegExChain == null || this.RegExChain.EntityId != obj.EntityId) this.RegExChain = obj;
+                            var obj = new RegularExpressions(dto);
+                           if (this.RegularExpressions == null || this.RegularExpressions.EntityId != obj.EntityId) this.RegularExpressions = obj;
                            
                         }
                          

@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>WaterNut.Business.Services</RootNamespace>
     <AssemblyName>WaterNut.Business.Services</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -123,9 +123,6 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Interactivity">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -374,8 +371,11 @@
     <Compile Include="Contracts\EntryDataDS\IEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IFileTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItemsExService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventoryItemSourceService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItemsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItems_NonStockService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventorySourcesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInvoicesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IOpeningStockService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPackageTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IPurchaseOrdersService.cs" />
@@ -394,6 +394,8 @@
     <Compile Include="Contracts\EntryDataQS\IPackageTypeService.cs" />
     <Compile Include="Contracts\InventoryDS\IInventoryItemAliaService.cs" />
     <Compile Include="Contracts\InventoryDS\IInventoryItemService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventoryItemSourceService.cs" />
+    <Compile Include="Contracts\InventoryDS\IInventorySourceService.cs" />
     <Compile Include="Contracts\InventoryDS\ITariffCategoryCodeSuppUnitService.cs" />
     <Compile Include="Contracts\InventoryDS\ITariffCategoryService.cs" />
     <Compile Include="Contracts\InventoryDS\ITariffCodeService.cs" />
@@ -408,16 +410,15 @@
     <Compile Include="Contracts\LicenseDS\IxLIC_General_segmentService.cs" />
     <Compile Include="Contracts\LicenseDS\IxLIC_LicenseService.cs" />
     <Compile Include="Contracts\LicenseDS\IxLIC_Lic_item_segmentService.cs" />
+    <Compile Include="Contracts\OCR\IChildPartsService.cs" />
     <Compile Include="Contracts\OCR\IEndService.cs" />
     <Compile Include="Contracts\OCR\IFieldsService.cs" />
     <Compile Include="Contracts\OCR\IInvoicesService.cs" />
     <Compile Include="Contracts\OCR\ILinesService.cs" />
-    <Compile Include="Contracts\OCR\IParentPartsService.cs" />
+    <Compile Include="Contracts\OCR\IOCR_FieldValueService.cs" />
     <Compile Include="Contracts\OCR\IPartsService.cs" />
     <Compile Include="Contracts\OCR\IPartTypesService.cs" />
     <Compile Include="Contracts\OCR\IRecuringPartService.cs" />
-    <Compile Include="Contracts\OCR\IRegExChainService.cs" />
-    <Compile Include="Contracts\OCR\IRegExParentService.cs" />
     <Compile Include="Contracts\OCR\IRegularExpressionsService.cs" />
     <Compile Include="Contracts\OCR\IStartService.cs" />
     <Compile Include="Contracts\PreviousDocumentDS\IEntryDataDetailsService.cs" />
@@ -448,6 +449,7 @@
     <Compile Include="Custom Contracts\Custom Contracts\AdjustmentQS\IAdjustmentShortService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentOverService.cs" />
     <Compile Include="Custom Services\AdjustmentQS\AdjustmentShortService.cs" />
+    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\InvoiceReader.cs" />
     <Compile Include="ExpressionCSharp60.cs" />
     <Compile Include="Custom Contracts\Custom Contracts\EntryDataQS\IEntryDataDetailsExService.cs" />
     <Compile Include="Custom Contracts\AllocationQS\IAsycudaSalesAllocationsExService.cs" />
@@ -494,8 +496,6 @@
     <Compile Include="Custom Services\DataModels\Custom DataModels\LicenceSummaryModelDS.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\NullTarifInventoryItemsModelDS.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\OverShortModelDS.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\SavePdf2Txt.cs" />
-    <Compile Include="Custom Services\DataModels\Custom DataModels\PDF2TXT\SaveTXT.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\PreviousEntriesModelDS.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SalesReportModelDS.cs" />
     <Compile Include="Custom Services\DataModels\Custom DataModels\SaveCSV\SaveCSV.cs" />
@@ -885,8 +885,11 @@
     <Compile Include="Services\EntryDataDS\EntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\FileTypesService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItemsExService.cs" />
+    <Compile Include="Services\EntryDataDS\InventoryItemSourceService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItemsService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItems_NonStockService.cs" />
+    <Compile Include="Services\EntryDataDS\InventorySourcesService.cs" />
+    <Compile Include="Services\EntryDataDS\InvoicesService.cs" />
     <Compile Include="Services\EntryDataDS\OpeningStockService.cs" />
     <Compile Include="Services\EntryDataDS\PackageTypesService.cs" />
     <Compile Include="Services\EntryDataDS\PurchaseOrdersService.cs" />
@@ -905,6 +908,8 @@
     <Compile Include="Services\EntryDataQS\PackageTypeService.cs" />
     <Compile Include="Services\InventoryDS\InventoryItemAliaService.cs" />
     <Compile Include="Services\InventoryDS\InventoryItemService.cs" />
+    <Compile Include="Services\InventoryDS\InventoryItemSourceService.cs" />
+    <Compile Include="Services\InventoryDS\InventorySourceService.cs" />
     <Compile Include="Services\InventoryDS\TariffCategoryCodeSuppUnitService.cs" />
     <Compile Include="Services\InventoryDS\TariffCategoryService.cs" />
     <Compile Include="Services\InventoryDS\TariffCodeService.cs" />
@@ -919,16 +924,15 @@
     <Compile Include="Services\LicenseDS\xLIC_General_segmentService.cs" />
     <Compile Include="Services\LicenseDS\xLIC_LicenseService.cs" />
     <Compile Include="Services\LicenseDS\xLIC_Lic_item_segmentService.cs" />
+    <Compile Include="Services\OCR\ChildPartsService.cs" />
     <Compile Include="Services\OCR\EndService.cs" />
     <Compile Include="Services\OCR\FieldsService.cs" />
     <Compile Include="Services\OCR\InvoicesService.cs" />
     <Compile Include="Services\OCR\LinesService.cs" />
-    <Compile Include="Services\OCR\ParentPartsService.cs" />
+    <Compile Include="Services\OCR\OCR_FieldValueService.cs" />
     <Compile Include="Services\OCR\PartsService.cs" />
     <Compile Include="Services\OCR\PartTypesService.cs" />
     <Compile Include="Services\OCR\RecuringPartService.cs" />
-    <Compile Include="Services\OCR\RegExChainService.cs" />
-    <Compile Include="Services\OCR\RegExParentService.cs" />
     <Compile Include="Services\OCR\RegularExpressionsService.cs" />
     <Compile Include="Services\OCR\StartService.cs" />
     <Compile Include="Services\PreviousDocumentDS\EntryDataDetailsService.cs" />
@@ -992,6 +996,10 @@
     <ProjectReference Include="..\DomainInterfaces\InterfacesModel.csproj">
       <Project>{11235d24-1165-4dc4-b91b-0426ea669451}</Project>
       <Name>InterfacesModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PdfOcr\pdf-ocr.csproj">
+      <Project>{523FBF1E-BB4F-435A-9A9E-63DE49CD721D}</Project>
+      <Name>pdf-ocr</Name>
     </ProjectReference>
     <ProjectReference Include="..\System.Linq.Dynamic\System.Linq.Dynamic.csproj">
       <Project>{17c0d5de-c72d-4a06-a12c-445ebcf3b9ea}</Project>

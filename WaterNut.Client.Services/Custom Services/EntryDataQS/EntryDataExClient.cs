@@ -37,10 +37,7 @@ namespace EntryDataQS.Client.Services
             await Channel.SavePDF(droppedFilePath, fileType, docSetId, overwrite).ConfigureAwait(false);
         }
 
-        public async Task SaveTXT(string droppedFilePath, string fileType, int docSetId, bool overwrite)
-        {
-            await Channel.SaveTXT(droppedFilePath, fileType, docSetId, overwrite).ConfigureAwait(false);
-        }
+       
     }
 }
 

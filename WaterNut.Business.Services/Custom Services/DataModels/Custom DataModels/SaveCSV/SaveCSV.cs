@@ -61,21 +61,32 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                using (var ctx = new DocumentDSContext())
-                {
-                    var docSet = new List<AsycudaDocumentSet>() {
-                        ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)};
-                    var ddocset = ctx.FileTypes.First(x => x.Id == fileType.Id).AsycudaDocumentSetId;
-                    if (fileType.CopyEntryData) docSet.Add(ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
-                    if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
-                    await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
-                }
+                var docSet = GetDocSets(fileType);
+                await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
             }
             catch (Exception Ex)
             {
                 throw new ApplicationException($"Problem importing File '{droppedFilePath}'. - Error: {Ex.Message}");
             }
 
+        }
+
+        public List<AsycudaDocumentSet> GetDocSets(FileTypes fileType)
+        {
+            List<AsycudaDocumentSet> docSet;
+            using (var ctx = new DocumentDSContext())
+            {
+                docSet = new List<AsycudaDocumentSet>()
+                {
+                    ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
+                };
+                var ddocset = ctx.FileTypes.First(x => x.Id == fileType.Id).AsycudaDocumentSetId;
+                if (fileType.CopyEntryData)
+                    docSet.Add(ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
+                if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
+            }
+
+            return docSet;
         }
 
         private  async Task SaveCSV(string droppedFilePath, FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting)

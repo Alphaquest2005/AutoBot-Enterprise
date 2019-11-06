@@ -114,6 +114,9 @@ namespace EntryDataDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<FileTypes>> GetFileTypesByFileGroupId(string FileGroupId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<FileTypes>> GetFileTypesByParentFileTypeId(string ParentFileTypeId, List<string> includesLst = null);
   
 
 

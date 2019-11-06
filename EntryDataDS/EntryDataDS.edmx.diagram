@@ -10,7 +10,7 @@
         <InheritanceConnector EntityType="WaterNutDBModel.Sales" />
         <EntityTypeShape EntityType="WaterNutDBModel.OpeningStock" Width="1.5" PointX="12.625" PointY="2.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.PurchaseOrders" Width="1.5" PointX="13.125" PointY="3.5" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="1.5" PointX="8.375" PointY="6.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="1.5" PointX="8.375" PointY="6.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_PurchaseOrderDetails_PurchaseOrders" />
         <InheritanceConnector EntityType="WaterNutDBModel.OpeningStock" />
         <InheritanceConnector EntityType="WaterNutDBModel.PurchaseOrders" />
@@ -18,7 +18,7 @@
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExEntryDataDetails" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetailsEx" Width="2" PointX="12.125" PointY="5.625" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentEntryData" Width="2.625" PointX="3.75" PointY="0.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentEntryData" Width="2.625" PointX="2.625" PointY="0.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEntryData" Width="2.375" PointX="12.375" PointY="0.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentEntryData_EntryData" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSetEntryData_EntryData" />
@@ -28,8 +28,8 @@
         <InheritanceConnector EntityType="WaterNutDBModel.Adjustments" />
         <EntityTypeShape EntityType="WaterNutDBModel.FileTypes" Width="1.5" PointX="0.75" PointY="6" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_FileTypes" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems_NonStock" Width="1.5" PointX="3.375" PointY="9.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems" Width="1.5" PointX="1.125" PointY="10.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems_NonStock" Width="2.125" PointX="4" PointY="10.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems" Width="2.125" PointX="1.25" PointY="11.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Suppliers" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryDataExTotals" Width="1.5" PointX="2.875" PointY="5" />
@@ -38,6 +38,14 @@
         <AssociationConnector Association="WaterNutDBModel.EntryDataEntryDataEx" />
         <EntityTypeShape EntityType="WaterNutDBModel.EDDocumentTypes" Width="1.5" PointX="12.25" PointY="13.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_DocumentType_EntryData" />
+        <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Invoices" Width="1.5" PointX="5.5" PointY="1.125" />
+        <InheritanceConnector EntityType="WaterNutDBModel.Invoices" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EntryDataDetails_InventoryItems" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventorySources" Width="1.875" PointX="3" PointY="15.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemSource" Width="2.125" PointX="5.875" PointY="13" />
+        <AssociationConnector Association="WaterNutDBModel.InventorySourcesInventoryItemSource1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

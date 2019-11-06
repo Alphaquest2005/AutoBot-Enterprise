@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace EntryDataDS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class FileTypes : BaseEntity<FileTypes>, ITrackable 
@@ -22,6 +23,7 @@ namespace EntryDataDS.Business.Entities
         partial void AutoGenStartUp() //FileTypes()
         {
             this.EntryData = new List<EntryData>();
+            this.FileTypes1 = new List<FileTypes>();
         }
 
         [DataMember]
@@ -205,7 +207,26 @@ namespace EntryDataDS.Business.Entities
         }
         bool _copyentrydata;
         [DataMember]
+        public Nullable<int> ParentFileTypeId 
+        {
+            get
+            {
+                return _parentfiletypeid;
+            }
+            set
+            {
+                _parentfiletypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _parentfiletypeid;
+        [DataMember]
         public List<EntryData> EntryData { get; set; }
+        [DataMember]
+        public List<FileTypes> FileTypes1 { get; set; }
+        [DataMember]
+        public FileTypes FileTypes2 { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

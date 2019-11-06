@@ -15,9 +15,9 @@
               this.ToTable("OCR-End");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.PartId).HasColumnName("PartId");
-              this.Property(t => t.RegExChainId).HasColumnName("RegExChainId");
+              this.Property(t => t.RegExId).HasColumnName("RegExId");
               this.HasRequired(t => t.Parts).WithMany(t =>(ICollection<End>) t.End).HasForeignKey(d => d.PartId);
-              this.HasRequired(t => t.RegExChain).WithMany(t =>(ICollection<End>) t.End).HasForeignKey(d => d.RegExChainId);
+              this.HasRequired(t => t.RegularExpressions).WithMany(t =>(ICollection<End>) t.End).HasForeignKey(d => d.RegExId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

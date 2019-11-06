@@ -59,8 +59,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 			RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
  
 			RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
- 
-			RegisterToReceiveMessages<ParentParts>(MessageToken.CurrentParentPartsChanged, OnCurrentParentPartChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -155,10 +153,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                    // {
                    //    if(RecuringPart.Contains(CurrentParts.RecuringPart) == false) RecuringPart.Add(CurrentParts.RecuringPart);
                     //}
-                    //if (e.PropertyName == "AddParentPart")
-                   // {
-                   //    if(ParentParts.Contains(CurrentParts.ParentPart) == false) ParentParts.Add(CurrentParts.ParentPart);
-                    //}
                  } 
         internal virtual void OnPartsChanged(object sender, NotificationEventArgs e)
         {
@@ -205,22 +199,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 		 internal virtual void OnCurrentRecuringPartChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<RecuringPart> e)
 			{
 			if(ViewCurrentRecuringPart == false) return;
-			if (e.Data == null || e.Data.Id == null)
-                {
-                    vloader.FilterExpression = "None";
-                }
-                else
-                {
-                }
-
-				Parts.Refresh();
-				NotifyPropertyChanged(x => this.Parts);
-                // SendMessage(MessageToken.PartsChanged, new NotificationEventArgs(MessageToken.PartsChanged));
-                			}
-	
-		 internal virtual void OnCurrentParentPartChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ParentParts> e)
-			{
-			if(ViewCurrentParentPart == false) return;
 			if (e.Data == null || e.Data.Id == null)
                 {
                     vloader.FilterExpression = "None";
@@ -280,21 +258,6 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
              {
                  _viewCurrentRecuringPart = value;
                  NotifyPropertyChanged(x => x.ViewCurrentRecuringPart);
-                FilterData();
-             }
-         }
- 	
-		 bool _viewCurrentParentPart = false;
-         public bool ViewCurrentParentPart
-         {
-             get
-             {
-                 return _viewCurrentParentPart;
-             }
-             set
-             {
-                 _viewCurrentParentPart = value;
-                 NotifyPropertyChanged(x => x.ViewCurrentParentPart);
                 FilterData();
              }
          }

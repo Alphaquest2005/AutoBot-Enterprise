@@ -5,7 +5,7 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="2cf4500a5be448b996c9fe91f489ff20" Name="Diagram1">
-        <EntityTypeShape EntityType="Model.InventoryItem" Width="1.5" PointX="6" PointY="1.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.InventoryItem" Width="2" PointX="6" PointY="1.875" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.TariffCategory" Width="2.375" PointX="0.5" PointY="1.875" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.TariffCode" Width="1.5" PointX="3.875" PointY="1.25" IsExpanded="true" />
         <EntityTypeShape EntityType="Model.TariffSupUnitLkp" Width="2.125" PointX="2.125" PointY="5.75" IsExpanded="true" />
@@ -16,6 +16,10 @@
         <AssociationConnector Association="Model.FK_TariffCategoryCodeSuppUnit_TariffCategory" />
         <AssociationConnector Association="Model.FK_TariffCategoryCodeSuppUnit_TariffSupUnitLkps" />
         <AssociationConnector Association="Model.FK_InventoryItemAlias_InventoryItems1" />
+        <EntityTypeShape EntityType="Model.InventorySource" Width="2.125" PointX="8.625" PointY="6" />
+        <EntityTypeShape EntityType="Model.InventoryItemSource" Width="2.375" PointX="12" PointY="4.75" />
+        <AssociationConnector Association="Model.InventorySourceInventoryItemSource1" />
+        <AssociationConnector Association="Model.FK_InventoryItemSource_InventoryItems" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

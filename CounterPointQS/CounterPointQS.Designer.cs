@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Prism\GitRepositiory\WaterNut\WaterNut - Enterprise\CounterPointQS\CounterPointQS.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\josep\OneDrive\AutoBot-Enterprise\CounterPointQS\CounterPointQS.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

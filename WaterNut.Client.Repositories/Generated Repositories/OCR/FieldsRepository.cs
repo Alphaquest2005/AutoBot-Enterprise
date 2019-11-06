@@ -202,7 +202,8 @@ namespace OCR.Client.Repositories
                         {
                             return new Fields(res)
                     {
-                  // Lines = (res.Lines != null?new Lines(res.Lines): null)    
+                  // Lines = (res.Lines != null?new Lines(res.Lines): null),    
+                  // FieldValue = (res.FieldValue != null?new OCR_FieldValue(res.FieldValue): null)    
                   };
                     }
                     else

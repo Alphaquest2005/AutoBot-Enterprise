@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace OCR.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Parts : BaseEntity<Parts>, ITrackable 
@@ -24,7 +25,8 @@ namespace OCR.Business.Entities
             this.End = new List<End>();
             this.Start = new List<Start>();
             this.Lines = new List<Lines>();
-            this.ChildParts = new List<ParentParts>();
+            this.ChildParts = new List<ChildParts>();
+            this.ParentParts = new List<ChildParts>();
         }
 
         [DataMember]
@@ -85,9 +87,9 @@ namespace OCR.Business.Entities
         [DataMember]
         public RecuringPart RecuringPart { get; set; }
         [DataMember]
-        public ParentParts ParentPart { get; set; }
+        public List<ChildParts> ChildParts { get; set; }
         [DataMember]
-        public List<ParentParts> ChildParts { get; set; }
+        public List<ChildParts> ParentParts { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

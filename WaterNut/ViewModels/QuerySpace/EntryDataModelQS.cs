@@ -122,6 +122,8 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             
         }
 
+	    
+
         internal async Task RemoveSelectedEntryData(
             System.Collections.Generic.List<global::EntryDataQS.Client.Entities.EntryDataEx> list)
         {
@@ -153,5 +155,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                 //EntryDataEx.Refresh();
             }
         }
+
+
 	}
 }

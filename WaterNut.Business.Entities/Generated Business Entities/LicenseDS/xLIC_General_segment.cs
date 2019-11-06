@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace LicenseDS.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class xLIC_General_segment : BaseEntity<xLIC_General_segment>, ITrackable 

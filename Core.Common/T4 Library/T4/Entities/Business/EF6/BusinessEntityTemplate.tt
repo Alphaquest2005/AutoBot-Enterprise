@@ -49,6 +49,7 @@ using TrackableEntities;
 
 namespace <#= container.Name #>.Business.Entities
 {
+
 <#+ 
     //[JsonObject(IsReference = true)]
     //[DataContract(IsReference = true)]#>

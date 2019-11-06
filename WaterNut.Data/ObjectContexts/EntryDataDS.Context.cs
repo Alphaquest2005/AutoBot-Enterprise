@@ -75,6 +75,10 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<EDDocumentTypes> EDDocumentType { get; set; }
      
+        public DbSet<InventorySources> InventorySources { get; set; }
+     
+        public DbSet<InventoryItemSource> InventoryItemSourceSet { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -107,7 +111,13 @@ namespace EntryDataDS.Business.Entities
          
             modelBuilder.Configurations.Add(new EDDocumentTypesMap());
          
+            modelBuilder.Configurations.Add(new InventorySourcesMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemSourceMap());
+         
             modelBuilder.Configurations.Add(new AdjustmentsMap());
+      
+            modelBuilder.Configurations.Add(new InvoicesMap());
       
             modelBuilder.Configurations.Add(new OpeningStockMap());
       
@@ -116,6 +126,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new SalesMap());
       
             modelBuilder.Entity<Adjustments>().ToTable("EntryData_Adjustments");
+      
+            modelBuilder.Entity<Invoices>().ToTable("EntryData_Invoices");
       
             modelBuilder.Entity<OpeningStock>().ToTable("EntryData_OpeningStock");
       

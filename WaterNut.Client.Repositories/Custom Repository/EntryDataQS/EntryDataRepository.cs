@@ -51,13 +51,7 @@ namespace EntryDataQS.Client.Repositories
             }
         }
 
-        public async Task SaveTXT(string droppedFilePath, string fileType, int docSetId, bool overwrite)
-        {
-            using (var ctx = new EntryDataExClient())
-            {
-                await ctx.SaveTXT(droppedFilePath, fileType, docSetId, overwrite).ConfigureAwait(false);
-            }
-        }
+
     }
 }
 

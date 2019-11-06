@@ -202,7 +202,9 @@ namespace OCR.Client.Repositories
                         {
                             return new RegularExpressions(res)
                     {
-                     // RegExChain = new System.Collections.ObjectModel.ObservableCollection<RegExChain>(res.RegExChain.Select(y => new RegExChain(y)))    
+                     // End = new System.Collections.ObjectModel.ObservableCollection<End>(res.End.Select(y => new End(y))),    
+                     // Lines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.Lines.Select(y => new Lines(y))),    
+                     // Start = new System.Collections.ObjectModel.ObservableCollection<Start>(res.Start.Select(y => new Start(y)))    
                   };
                     }
                     else

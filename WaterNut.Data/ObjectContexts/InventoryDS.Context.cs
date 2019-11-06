@@ -59,6 +59,10 @@ namespace InventoryDS.Business.Entities
      
         public DbSet<TariffCategoryCodeSuppUnit> TariffCategoryCodeSuppUnits { get; set; }
      
+        public DbSet<InventorySource> InventorySources { get; set; }
+     
+        public DbSet<InventoryItemSource> InventoryItemSources { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -74,6 +78,10 @@ namespace InventoryDS.Business.Entities
             modelBuilder.Configurations.Add(new InventoryItemAliaMap());
          
             modelBuilder.Configurations.Add(new TariffCategoryCodeSuppUnitMap());
+         
+            modelBuilder.Configurations.Add(new InventorySourceMap());
+         
+            modelBuilder.Configurations.Add(new InventoryItemSourceMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

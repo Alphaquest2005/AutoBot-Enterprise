@@ -77,53 +77,161 @@ public string RegEx
 		}
      
 
-        ObservableCollection<RegExChain> _RegExChain = null;
-        public  ObservableCollection<RegExChain> RegExChain
+        ObservableCollection<End> _End = null;
+        public  ObservableCollection<End> End
 		{
             
 		    get 
 				{ 
-					if(_RegExChain != null) return _RegExChain;
-					//if (this.regularexpressions.RegExChain == null) Debugger.Break();
-					if(this.regularexpressions.RegExChain != null)
+					if(_End != null) return _End;
+					//if (this.regularexpressions.End == null) Debugger.Break();
+					if(this.regularexpressions.End != null)
 					{
-						_RegExChain = new ObservableCollection<RegExChain>(this.regularexpressions.RegExChain.Select(x => new RegExChain(x)));
+						_End = new ObservableCollection<End>(this.regularexpressions.End.Select(x => new End(x)));
 					}
 					
-						_RegExChain.CollectionChanged += RegExChain_CollectionChanged; 
+						_End.CollectionChanged += End_CollectionChanged; 
 					
-					return _RegExChain; 
+					return _End; 
 				}
 			set
 			{
-			    if (Equals(value, _RegExChain)) return;
+			    if (Equals(value, _End)) return;
 				if (value != null)
-					this.regularexpressions.RegExChain = new ChangeTrackingCollection<DTO.RegExChain>(value.Select(x => x.DTO).ToList());
-                _RegExChain = value;
+					this.regularexpressions.End = new ChangeTrackingCollection<DTO.End>(value.Select(x => x.DTO).ToList());
+                _End = value;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				if (_RegExChain != null)
-				_RegExChain.CollectionChanged += RegExChain_CollectionChanged;               
-				NotifyPropertyChanged("RegExChain");
+				if (_End != null)
+				_End.CollectionChanged += End_CollectionChanged;               
+				NotifyPropertyChanged("End");
 			}
 		}
         
-        void RegExChain_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        void End_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    foreach (RegExChain itm in e.NewItems)
+                    foreach (End itm in e.NewItems)
                     {
                         if (itm != null)
-                        regularexpressions.RegExChain.Add(itm.DTO);
+                        regularexpressions.End.Add(itm.DTO);
                     }
                     if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    foreach (RegExChain itm in e.OldItems)
+                    foreach (End itm in e.OldItems)
                     {
                         if (itm != null)
-                        regularexpressions.RegExChain.Remove(itm.DTO);
+                        regularexpressions.End.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<Lines> _Lines = null;
+        public  ObservableCollection<Lines> Lines
+		{
+            
+		    get 
+				{ 
+					if(_Lines != null) return _Lines;
+					//if (this.regularexpressions.Lines == null) Debugger.Break();
+					if(this.regularexpressions.Lines != null)
+					{
+						_Lines = new ObservableCollection<Lines>(this.regularexpressions.Lines.Select(x => new Lines(x)));
+					}
+					
+						_Lines.CollectionChanged += Lines_CollectionChanged; 
+					
+					return _Lines; 
+				}
+			set
+			{
+			    if (Equals(value, _Lines)) return;
+				if (value != null)
+					this.regularexpressions.Lines = new ChangeTrackingCollection<DTO.Lines>(value.Select(x => x.DTO).ToList());
+                _Lines = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_Lines != null)
+				_Lines.CollectionChanged += Lines_CollectionChanged;               
+				NotifyPropertyChanged("Lines");
+			}
+		}
+        
+        void Lines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Lines itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.Lines.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Lines itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.Lines.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<Start> _Start = null;
+        public  ObservableCollection<Start> Start
+		{
+            
+		    get 
+				{ 
+					if(_Start != null) return _Start;
+					//if (this.regularexpressions.Start == null) Debugger.Break();
+					if(this.regularexpressions.Start != null)
+					{
+						_Start = new ObservableCollection<Start>(this.regularexpressions.Start.Select(x => new Start(x)));
+					}
+					
+						_Start.CollectionChanged += Start_CollectionChanged; 
+					
+					return _Start; 
+				}
+			set
+			{
+			    if (Equals(value, _Start)) return;
+				if (value != null)
+					this.regularexpressions.Start = new ChangeTrackingCollection<DTO.Start>(value.Select(x => x.DTO).ToList());
+                _Start = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_Start != null)
+				_Start.CollectionChanged += Start_CollectionChanged;               
+				NotifyPropertyChanged("Start");
+			}
+		}
+        
+        void Start_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Start itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.Start.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Start itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.Start.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

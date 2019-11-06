@@ -15,6 +15,7 @@ using TrackableEntities;
 
 namespace CoreEntities.Business.Entities
 {
+
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class TODO_C71ToXML : BaseEntity<TODO_C71ToXML>, ITrackable 
