@@ -49,7 +49,7 @@ namespace AdjustmentQS.Business.Services
                 var lst = ctx.AdjustmentDetails
                     .Include(x => x.AdjustmentEx)
                     .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                    //.Where(x => x.ItemNumber == "FAS/SSMD5X12")
+                    //.Where(x => x.ItemNumber == "WPA/30071")
                     //.Where(x => x.EntryDataId == "120902")
                     .Where(x => x.EffectiveDate == null ) // take out other check cuz of existing entries 
                     .OrderBy(x => x.EntryDataDetailsId)

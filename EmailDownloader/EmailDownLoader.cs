@@ -175,7 +175,7 @@ namespace EmailDownloader
                 var mat = Regex.Match(msg.Subject,
                     emailMapping.Pattern,
                     RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                if (!mat.Success) continue;
+                if (!mat.Success || mat.Groups.Count == 0) continue;
                 var subject = "";
                 for (int i = 1; i < mat.Groups.Count; i++)
                 {
