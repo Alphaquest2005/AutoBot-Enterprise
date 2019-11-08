@@ -1773,6 +1773,10 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                 var totalSalesHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated).DefaultIfEmpty(0).Sum();
                 var totalPiHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+                var totalSalesCurrent = salesPiCurrent.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();
+                var totalPiCurrent = salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+
+
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
@@ -1783,6 +1787,10 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     {
                         await Ex9Bucket(mypod, dfp, docPi,
                             salesPiHistoric //i assume once you not doing historic checks especially for adjustments just use the specific item history
+                        ).ConfigureAwait(false); //historic = 'HCLAMP/060'
+
+                        await Ex9Bucket(mypod, dfp, docPi,
+                            salesPiCurrent //i assume once you not doing historic checks especially for adjustments just use the specific item history
                         ).ConfigureAwait(false); //historic = 'HCLAMP/060'
                     }
 
@@ -1851,9 +1859,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 {
                     //////////////////////////////////////////////////////////////////////////
                     ///     Sales Cap/ Sales Bucket Current
-                    var totalSalesCurrent = salesPiCurrent.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();
-
-                    var totalPiCurrent = salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+                    
 
                     if (totalSalesCurrent == 0)
                     {
