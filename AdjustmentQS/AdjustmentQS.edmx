@@ -57,6 +57,7 @@
           <Property Name="Units" Type="nvarchar" MaxLength="15" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="TotalCost" Type="float" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="UnitWeight" Type="float" Nullable="false" />
           <Property Name="DoNotAllocate" Type="bit" />
@@ -73,6 +74,13 @@
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="TaxAmount" Type="float" />
           <Property Name="LastCost" Type="float" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SystemDocumentSets">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Item">
           <Key>
@@ -476,6 +484,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaSalesAllocations" EntityType="Self.AsycudaSalesAllocations" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SystemDocumentSets" EntityType="Self.SystemDocumentSets" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xcuda_Item" EntityType="Self.xcuda_Item" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AdjustmentDetails" EntityType="Self.AdjustmentDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -813,6 +822,11 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
             <End Role="AdjustmentOversAllocation" EntitySet="AdjustmentOversAllocations" />
           </AssociationSet>
+          <EntitySet Name="SystemDocumentSets" EntityType="Model.SystemDocumentSet" />
+          <AssociationSet Name="SystemDocumentSetAdjustmentDetail" Association="Model.SystemDocumentSetAdjustmentDetail">
+            <End Role="SystemDocumentSet" EntitySet="SystemDocumentSets" />
+            <End Role="AdjustmentDetail" EntitySet="AdjustmentDetails" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocation">
           <Key>
@@ -1031,6 +1045,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <NavigationProperty Name="InventoryItemsEx" Relationship="Model.InventoryItemsExEntryDataDetail" FromRole="EntryDataDetail" ToRole="InventoryItemsEx" />
           <Property Name="LastCost" Type="Double" />
           <NavigationProperty Name="AdjustmentOversAllocations" Relationship="Model.FK_AdjustmentOversAllocations_EntryDataDetails" FromRole="EntryDataDetail" ToRole="AdjustmentOversAllocation" />
+          <Property Name="TotalCost" Type="Double" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="0..1">
@@ -1202,6 +1218,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="SystemDocumentSet" Relationship="Model.SystemDocumentSetAdjustmentDetail" FromRole="AdjustmentDetail" ToRole="SystemDocumentSet" />
         </EntityType>
         <Association Name="AdjustmentExAdjustmentDetail">
           <End Type="Model.AdjustmentEx" Role="AdjustmentEx" Multiplicity="1" />
@@ -1423,6 +1440,25 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="SystemDocumentSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AdjustmentDetails" Relationship="Model.SystemDocumentSetAdjustmentDetail" FromRole="SystemDocumentSet" ToRole="AdjustmentDetail" />
+        </EntityType>
+        <Association Name="SystemDocumentSetAdjustmentDetail">
+          <End Type="Model.SystemDocumentSet" Role="SystemDocumentSet" Multiplicity="0..1" />
+          <End Type="Model.AdjustmentDetail" Role="AdjustmentDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemDocumentSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AdjustmentDetail">
+              <PropertyRef Name="AsycudaDocumentSetId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1559,6 +1595,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="Model.EntryDataDetail">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
                 <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
@@ -1768,6 +1806,13 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
                 <ScalarProperty Name="PreviousItem_Id" ColumnName="PreviousItem_Id" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
                 <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemDocumentSets">
+            <EntityTypeMapping TypeName="Model.SystemDocumentSet">
+              <MappingFragment StoreEntitySet="SystemDocumentSets">
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

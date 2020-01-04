@@ -187,6 +187,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _testModeFilter;
+        public Boolean? TestModeFilter
+        {
+            get
+            {
+                return _testModeFilter;
+            }
+            set
+            {
+                _testModeFilter = value;
+				NotifyPropertyChanged(x => TestModeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -219,6 +237,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
+ 
+
+									if(TestModeFilter.HasValue)
+						res.Append(" && " + string.Format("TestMode == {0}",  TestModeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -242,7 +264,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 dataToPrint = lst.Select(x => new ActionsExcelLine
                 {
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    TestMode = x.TestMode 
                     
                 }).ToList()
             };
@@ -256,6 +281,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
 		 
                     public string Name { get; set; } 
+                    
+ 
+                    public bool TestMode { get; set; } 
                     
         }
 

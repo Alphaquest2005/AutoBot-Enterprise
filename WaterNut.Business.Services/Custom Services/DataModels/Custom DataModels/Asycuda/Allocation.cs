@@ -109,16 +109,8 @@ namespace WaterNut.DataSpace
                 }
 
 
-                
-                    //     StatusModel.Timer("Allocating Sales");
-                    //if (itemDescriptionContainsAsycudaAttribute == true)
-                    //{
-                    //    await AllocateSalesWhereItemDescriptionContainsAsycudaAttribute().ConfigureAwait(false);
-                    //}
-                    //else
-                    //{
                     await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment).ConfigureAwait(false);
-                //}
+                
 
                 await MarkErrors(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
 
@@ -156,7 +148,7 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
             Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-                    .Where(x => x.Key.Contains("CRC/06037")) //.Where(x => x.Key.Contains("255100")) // 
+                   // .Where(x => x.Key.Contains("CRC/06037")) //.Where(x => x.Key.Contains("255100")) // 
                                                                           // .Where(x => "337493".Contains(x.Key))
                                                                           //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
                                      , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
@@ -195,167 +187,12 @@ namespace WaterNut.DataSpace
              });
 
 
-            // var subitms = itemSets.Values.Where(x => x != null && x.EntriesList != null).SelectMany(x => x.EntriesList).SelectMany(x => x.SubItems)
-            //         .Where(x => x != null && x.ChangeTracker != null)
-            //         .ToList();
-
-            // await SaveSubItems(subitms).ConfigureAwait(false);
-
-            // var alst =
-            //     itemSets.Values.Where(x => x != null && x.EntriesList != null).SelectMany(x => x.EntriesList)
-            //         .Where(x => x != null && x.ChangeTracker != null)
-            //         .ToList();
-
-            //await SaveAsycudaEntries(alst).ConfigureAwait(false);
-
-            //var slst =
-            //    itemSets.Values.Where(x => x != null && x.SalesList != null).SelectMany(x => x.SalesList)
-            //        .Where(x => x != null && x.ChangeTracker != null)
-            //        .ToList();
-
-            //await SaveEntryDataDetails(slst).ConfigureAwait(false);
-
-            //await MarkOverAllocatedEntries(alst).ConfigureAwait(false);
-
-            // await MarkNoAsycudaEntry(alst).ConfigureAwait(false);
-
 
 
             if (exceptions.Count > 0) throw new AggregateException(exceptions);
         }
 
 
-        //private async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnDescription()
-        //{
-        //    var itemSets = await MatchSalestoAsycudaEntriesOnDescription().ConfigureAwait(false);
-
-        //    StatusModel.StartStatusUpdate("Allocating Item Sales", itemSets.Count());
-        //    var t = 0;
-        //    var exceptions = new ConcurrentQueue<Exception>();
-        //    Parallel.ForEach(itemSets.Values
-        //        // .Where(x => "Paint-B Micron 66 Bl Ga".Contains(x.Key))
-        //        //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
-        //        , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
-        //        {
-        //            //     foreach (var itm in itemSets.Values)//.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))
-        //            //{
-        //            try
-        //            {
-        //                StatusModel.StatusUpdate();
-        //                AllocateSalestoAsycudaByKey(itm.SalesList,
-        //                    //.SalesList.Where(x => x.DoNotAllocate != true).ToList()
-        //                    itm.EntriesList).Wait();
-        //            }
-        //            catch (Exception ex)
-        //            {
-
-        //                exceptions.Enqueue(
-        //                    new ApplicationException(
-        //                        string.Format("Could not Allocate - '{0}. Error:{1} Stacktrace:{2}", itm.Key,
-        //                            ex.Message, ex.StackTrace)));
-        //            }
-
-        //            //   };
-
-
-        //        });
-
-
-        //    var subitms = itemSets.Values.Where(x => x != null && x.EntriesList != null).SelectMany(x => x.EntriesList).SelectMany(x => x.SubItems)
-        //        .Where(x => x != null && x.ChangeTracker != null)
-        //        .ToList();
-
-        //    await SaveSubItems(subitms).ConfigureAwait(false);
-
-        //    var alst =
-        //        itemSets.Values.Where(x => x != null && x.EntriesList != null).SelectMany(x => x.EntriesList)
-        //            .Where(x => x != null && x.ChangeTracker != null)
-        //            .ToList();
-
-        //    await SaveAsycudaEntries(alst).ConfigureAwait(false);
-
-        //    var slst =
-        //        itemSets.Values.Where(x => x != null && x.SalesList != null).SelectMany(x => x.SalesList)
-        //            .Where(x => x != null && x.ChangeTracker != null)
-        //            .ToList();
-
-        //    await SaveEntryDataDetails(slst).ConfigureAwait(false);
-
-        //    //await MarkOverAllocatedEntries(alst).ConfigureAwait(false);
-        //    //await MarkNoAsycudaEntry(alst).ConfigureAwait(false);
-
-        //    if (exceptions.Count > 0) throw new AggregateException(exceptions);
-        //}
-
-
-        //private async Task AllocateSalesWhereItemDescriptionContainsAsycudaAttribute()
-        //{
-
-
-        //    StatusModel.Timer("Loading Sales Data...");
-        //    var sales = (await GetSales().ConfigureAwait(false)).ToList();//.Where(x => x.ItemDescription.Contains("26196-0008"))
-
-        //    StatusModel.Timer("Loading Asycuda Data...");
-        //    var IMAsycudaEntries = (await GetAllAsycudaEntries().ConfigureAwait(false)).ToList();
-
-           
-        //    StatusModel.StartStatusUpdate("Allocating Sales", sales.Count());
-        //    var t = 0;
-
-        //    var exceptions = new ConcurrentQueue<Exception>();
-
-        //    for (int i = 0; i < sales.Count(); i++)
-        //    {
-        //        var g = sales.ElementAtOrDefault(i);
-
-               
-        //        //Parallel.ForEach(salesGrps,
-        //        //    new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount}, g =>
-        //        //    {
-        //        try
-        //        {
-        //            var salesDescrip = g.ItemNumber + "|" + g.ItemDescription;
-                    
-        //            var strs = salesDescrip.Split('|');
-  
-        //            //string attrib = strs.Length >= 4
-        //            //    ? strs[3].ToUpper().Replace(" ", "")
-        //            //    : null;
-
-        //            string attrib = strs.LastOrDefault();
-
-
-        //            StatusModel.StatusUpdate();
-        //            var alst = GetAsycudaEntriesWithItemNumber(IMAsycudaEntries, attrib, salesDescrip,
-        //                new List<string>(){g.ItemNumber}).ToList(); //
-
-        //            var slst = new List<EntryDataDetails>(){g};
-                    
-        //            if (slst.Any())
-        //                AllocateSalestoAsycudaByKey(slst.OrderByDescending(x => x.Quantity).ToList(), alst, i).Wait();
-
-
-        //            Debug.WriteLine(g.ItemDescription + " " + DateTime.Now.ToShortTimeString());
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //            exceptions.Enqueue(ex);
-        //        }
-        //    }
-        //    ///  });
-
-        //    //await MarkOverAllocatedEntries(IMAsycudaEntries).ConfigureAwait(false);
-        //    //await MarkNoAsycudaEntry(IMAsycudaEntries).ConfigureAwait(false);
-
-
-        //    await SaveAsycudaEntries(IMAsycudaEntries.Where(x => x.ChangeTracker != null)).ConfigureAwait(false);
-
-        //    await SaveEntryDataDetails(sales.Where(x => x.ChangeTracker != null)).ConfigureAwait(false);
-
-        //    if (exceptions.Count > 0) throw new AggregateException(exceptions);
-        //    //  );
-        //}
 
         private void MarkOverAllocatedEntries(int applicationSettingsId)
         {
@@ -641,228 +478,6 @@ namespace WaterNut.DataSpace
         }
 
 
-        private async Task SaveEntryDataDetails(IEnumerable<EntryDataDetails> sales)
-        {
-
-            //await Task.Run(() => sales.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(itm =>
-            //   {
-                   using (var ctx = new AllocationDSContext(){StartTracking = false})
-                   {
-                       foreach (var itm in sales)
-                       {
-                           ctx.ApplyChanges(itm);
-                           ctx.SaveChanges();
-                           
-                       }
-                       
-                   }
-               //})).ConfigureAwait(false);
-
-
-        }
-
-        private async Task SaveSubItems(IEnumerable<SubItems> itms)
-        {
-            await Task.Run(() => itms.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(itm =>
-            {
-                using (var ctx = new AllocationDSContext())
-                {
-                    ctx.ApplyChanges(itm);
-                    ctx.SaveChanges();
-                }
-            })).ConfigureAwait(false);
-        }
-
-        private async Task SaveAsycudaEntries(IEnumerable<xcuda_Item> IMAsycudaEntries)
-        {
-            await Task.Run(() =>
-            {
-                IMAsycudaEntries.Where(x => x.ChangeTracker != null).AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(itm =>
-                {
-                   // if(itm.DFQtyAllocated < 10000 && itm.DPQtyAllocated < 10000)
-                        using (var ctx = new AllocationDSContext())
-                    {
-                        ctx.ApplyChanges(itm);
-                        ctx.SaveChanges();
-                    }
-                });
-            }).ConfigureAwait(false);
-        }
-
-
-        public List<xcuda_Item> GetAsycudaEntriesWithItemNumber(IEnumerable<xcuda_Item> IMAsycudaEntries, string attrib,
-            string salesDescrip, List<string> itemNumber)
-        {
-            var alst = new List<xcuda_Item>();
-            var taskLst = new List<Task>();
-            if (attrib != null)
-            {
-                taskLst.Add(Task.Run(() =>
-                {
-                    alst.AddRange(IMAsycudaEntries.Where(x => //x.QtyAllocated != x.ItemQuantity &&
-                                                                     x.SubItems.Any() == false &&
-                                                                     (x.AttributeOnlyAllocation != null &&
-                                                                      x.AttributeOnlyAllocation == true)
-                                                                     && x.ItemNumber.ToLower().Replace(" ", "").Replace("-", "") == attrib.ToLower().Replace("-", "")));
-                }));
-            }
-            taskLst.Add(Task.Run(() =>
-            {
-                alst.AddRange(IMAsycudaEntries.Where(x => //x.QtyAllocated != x.ItemQuantity &&
-                                                                 x.SubItems.Any() == false &&
-                                                                 (x.AttributeOnlyAllocation == null ||
-                                                                  x.AttributeOnlyAllocation != true)
-                                                                 &&
-                                                                 salesDescrip.ToLower().Replace(" ", "").Replace("-", "")
-                                                                     .Contains(x.ItemNumber.ToLower().Replace(" ", "").Replace("-", ""))));
-            }));
-
-            //item alias
-            taskLst.Add(Task.Run(() =>
-            {
-                var aliasLst = InventoryAliasCache.Data.Where(x => salesDescrip.ToLower().Replace(" ", "").Replace("-", "")
-                    .Contains(x.AliasName.ToLower().Replace(" ", "").Replace("-", "")));
-                var alias = new StringBuilder();
-                foreach (var itm in aliasLst)
-                {
-                    alias.Append(itm.ItemNumber + ",");
-                }
-                alst.AddRange(IMAsycudaEntries.Where(x => //x.QtyAllocated != x.ItemQuantity &&
-                                                                 x.SubItems.Any() == false &&
-                                                                 (x.AttributeOnlyAllocation == null ||
-                                                                  x.AttributeOnlyAllocation != true)
-                                                                 && alias.ToString().Contains(x.ItemNumber)));
-            }));
-
-            taskLst.Add(Task.Run(() =>
-            {
-                var sublst = IMAsycudaEntries.Where(x => x.SubItems.Any() == true
-                                                         &&
-                                                         x.SubItems.Any(z => itemNumber.Contains(z.ItemNumber.ToLower()))).ToList();
-               if(sublst.Any()) alst.AddRange(sublst);//&& z.QtyAllocated != z.Quantity)
-            }));
-            Task.WhenAll(taskLst).Wait();
-            return alst.Distinct().OrderBy(x => x.AsycudaDocument.RegistrationDate).ToList();
-        }
-
-
-
-        private async Task<List<xcuda_Item>> GetAllAsycudaEntries()
-        {
-            var alst = new List<xcuda_Item>();
-            using (var ctx = new xcuda_ItemService())
-            {
-                alst.AddRange(ctx.Getxcuda_ItemByExpressionLst(
-                    new List<string>()
-                    {
-                        (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"AsycudaDocument.RegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\""
-                            : "AsycudaDocument.RegistrationDate >= \"1/1/2010\"") ,
-                        "DoNotAllocate == null || DoNotAllocate != true",
-                        "(AsycudaDocument.Extended_customs_procedure == \"7000\" || AsycudaDocument.Extended_customs_procedure == \"7400\" || AsycudaDocument.Extended_customs_procedure == \"7100\" || AsycudaDocument.Extended_customs_procedure == \"7500\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
-                       //"SubItems.Count > 0",
-                       // "AttributeOnlyAllocation == true"
-                        //string.Format("EX.Precision_4.ToUpper() == \"{0}\"", attrib)
-                    },
-                    new List<string>() { "SubItems",
-                        "AsycudaDocument",
-                        "xcuda_Tarification.xcuda_HScode",
-                        "xcuda_Tarification.xcuda_Supplementary_unit"    
-                    }).Result.Distinct());//, "EX"
-
-            }
-
-            return alst;
-        }
-
-        private static async Task<List<EntryDataDetails>> GetSales()
-        {
-            List<EntryDataDetails> sales = null;
-            using (var ctx = new EntryDataDetailsService())
-            {
-                sales = (await ctx.GetEntryDataDetailsByExpressionLst(new List<string>()
-                {
-                  // "EntryDataDetailsId == 85371",
-                  (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Sales.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\""
-                      : "Sales.EntryDataDate >= \"1/1/2010\""),
-                    "Sales.INVNumber != null",
-                    "QtyAllocated != Quantity",
-                    "DoNotAllocate != true"
-                },
-                    new List<string>() { "Sales", "AsycudaSalesAllocations" }).ConfigureAwait(false))
-                    //.Where(x => Convert.ToDouble(x.QtyAllocated) != Convert.ToDouble(x.Quantity) && x.DoNotAllocate != true)
-                    .OrderBy(x => x.Sales.EntryDataDate).ToList();//.Take(100)
-            }
-            return sales;
-        }
-
-        private static void GetSubItems(List<xcuda_Item> alst, EntryDataDetails salesDetails)
-        {
-            using (var ctx = new SubItemsService())
-            {
-                alst.AddRange(
-                    ctx.GetSubItemsByExpressionLst(
-                        new List<string>() {$"ItemNumber == \"{salesDetails.ItemNumber}\""}
-                        , new List<string>() { "xcuda_Item", "xcuda_Item.AsycudaDocument", "xcuda_Item.xcuda_Tarification.xcuda_HScode" }).Result//"xcuda_Item.EX",
-                        //.Where(y => y.ItemNumber == salesDetails.ItemNumber)
-                        .Select(x => x.xcuda_Item).ToList());
-            }
-        }
-
-        private static List<xcuda_Item> GetAsycudaEntriesWithItemNumber(string attrib, string salesDescrip)
-        {
-            var alst = new List<xcuda_Item>();
-
-
-            // alst.AddRange(db.xcuda_Item.Where(x => x.PreviousDocumentItem.SubItems.Any(y => y.ItemNumber == salesDetails.InventoryItems.ItemNumber)));
-            //match by attribute
-            //alst = db.xcuda_Item.AsEnumerable().Where(x => salesDetails.ItemDescription.ToUpper().Split('|')[2] == x.ItemNumber.ToUpper()).ToList();
-            using (var ctx = new xcuda_ItemService())
-            {
-                if (attrib != null)
-                {
-                    alst =
-                        (ctx.Getxcuda_ItemByExpressionLst(
-                            new List<string>()
-                            {
-                                "DoNotAllocate == null || DoNotAllocate != true",
-                                "(AsycudaDocument.Extended_customs_procedure == \"7000\" ||AsycudaDocument.Extended_customs_procedure == \"7400\" || AsycudaDocument.Extended_customs_procedure == \"7100\" || AsycudaDocument.Extended_customs_procedure == \"7500\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
-                                "SubItems.Count == 0",
-                                "AttributeOnlyAllocation == true",
-                                $"xcuda_Tarification.xcuda_HScode.Precision_4.ToUpper() == \"{attrib}\""
-                            },
-                            new List<string>() {"SubItems", "AsycudaDocument","xcuda_Tarification.xcuda_HScode" }).Result)//"EX"
-                            .ToList();
-                    //.Where(x => x.SubItems.Any() == false && (x.AttributeOnlyAllocation == true) && string.IsNullOrEmpty(salesDetails.ItemDescription.ToUpper().Split('|')[2]) == false && salesDetails.ItemDescription.ToUpper().Split('|')[2].ToUpper().Replace(" ", "") == x.ItemNumber.ToUpper().Replace(" ", "")).ToList();
-                }
-                alst.AddRange((ctx.Getxcuda_ItemByExpressionLst(new List<string>()
-                {
-                    "DoNotAllocate == null || DoNotAllocate != true",
-                    "(AsycudaDocument.Extended_customs_procedure == \"7000\" || AsycudaDocument.Extended_customs_procedure == \"7400\" ||AsycudaDocument.Extended_customs_procedure == \"7100\" ||AsycudaDocument.Extended_customs_procedure == \"7500\" || AsycudaDocument.Extended_customs_procedure == \"9000\")",
-                   "SubItems.Count == 0",
-                    "AttributeOnlyAllocation == null || AttributeOnlyAllocation != true",
-                    $"\"{salesDescrip}\".Contains(xcuda_Tarification.xcuda_HScode.Precision_4.ToUpper())"
-                },
-                    new List<string>() { "SubItems", "AsycudaDocument", "xcuda_Tarification.xcuda_HScode" })).Result);//"EX"
-                //.Where(x => x.SubItems.Any() == false 
-                //            && (x.AttributeOnlyAllocation == null || x.AttributeOnlyAllocation != true) 
-                //            && salesDetails.ItemDescription.ToUpper().Replace(" ", "").Contains(x.ItemNumber.ToUpper().Replace(" ", ""))));
-            }
-            return alst;
-        }
-
-        private async Task SaveItemLst(ItemSet itm)
-        {
-                foreach (var item in itm.SalesList)
-                {
-                    await SaveEntryDataDetails(item).ConfigureAwait(false);
-                }
-           
-           
-                foreach (var item in itm.EntriesList)
-                {
-                   await SaveXcuda_Item(item).ConfigureAwait(false);
-                }
-        }
 
         private async Task<ConcurrentDictionary<string, ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber(
             int applicationSettingsId)
@@ -888,20 +503,6 @@ namespace WaterNut.DataSpace
 
         }
 
-        //private async Task<ConcurrentDictionary<string, ItemSet>> MatchSalestoAsycudaEntriesOnDescription()
-        //{
-        //    List<ItemEntries> asycudaEntries = new List<ItemEntries>();
-        //    asycudaEntries.AddRange(await GetAsycudaEntriesWithDescription().ConfigureAwait(false));
-        //    asycudaEntries.AddRange(await GetAsycudaEntriesWithItemNumber().ConfigureAwait(false));
-
-        //    List<ItemSales> saleslst = new List<ItemSales>();
-        //    saleslst.AddRange(await GetSaleslstWithDescription().ConfigureAwait(false));
-        //    saleslst.AddRange(await GetSaleslstWithItemNumber().ConfigureAwait(false));
-
-        //    var itmLst = CreateItemSetsWithDescription(saleslst, asycudaEntries);
-
-        //    return itmLst; //.Where(x => x.ItemNumber == "OC1719907");
-        //}
 
         private static ConcurrentDictionary<string,ItemSet> CreateItemSetsWithItemNumbers(IEnumerable<ItemSales> saleslst, IEnumerable<ItemEntries> asycudaEntries)
         {
@@ -1427,11 +1028,13 @@ namespace WaterNut.DataSpace
         private  xcuda_Item GetAsycudaEntriesWithItemNumber(IList<xcuda_Item> asycudaEntries, int CurrentAsycudaItemIndex)
         {
             var cAsycudaItm = asycudaEntries.ElementAtOrDefault<xcuda_Item>(CurrentAsycudaItemIndex);
-            if (cAsycudaItm.QtyAllocated == 0)
-            {
-                cAsycudaItm.DFQtyAllocated = 0;
-                cAsycudaItm.DPQtyAllocated = 0;
-            }
+            ///////////////////// took this out because returns cross thread with duty free and duty paid -- 'CRC/06037' 'GB00050065'
+            //if (cAsycudaItm.QtyAllocated == 0 && (cAsycudaItm.DFQtyAllocated != 0 || cAsycudaItm.DPQtyAllocated != 0))
+            //{
+
+            //    cAsycudaItm.DFQtyAllocated = 0;
+            //    cAsycudaItm.DPQtyAllocated = 0;
+            //}
 
             return cAsycudaItm;
         }

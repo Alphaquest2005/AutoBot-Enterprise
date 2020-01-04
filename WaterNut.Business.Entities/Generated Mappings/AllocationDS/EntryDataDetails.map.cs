@@ -37,6 +37,8 @@
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.Property(t => t.LastCost).HasColumnName("LastCost");
+              this.Property(t => t.TotalCost).HasColumnName("TotalCost");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.HasRequired(t => t.Sales).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryDataId);
               this.HasRequired(t => t.Adjustments).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryDataId);
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.EntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);

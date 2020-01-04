@@ -94,6 +94,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS
 			public const string ShortAllocationsDeleted = "ShortAllocationsDeleted";
 			public const string ShortAllocationsCreated = "ShortAllocationsCreated";
 			public const string ShortAllocationsUpdated = "ShortAllocationsUpdated";
+			public const string SystemDocumentSetsFilterExpressionChanged = "SystemDocumentSetsFilterExpressionChanged";
+			public const string SelectedSystemDocumentSetsChanged = "SelectedSystemDocumentSetsChanged";
+            public const string SystemDocumentSetsChanged = "SystemDocumentSetsChanged";
+			public const string SystemDocumentSetsDeleted = "SystemDocumentSetsDeleted";
+			public const string SystemDocumentSetsCreated = "SystemDocumentSetsCreated";
+			public const string SystemDocumentSetsUpdated = "SystemDocumentSetsUpdated";
 			public const string xcuda_ItemFilterExpressionChanged = "xcuda_ItemFilterExpressionChanged";
 			public const string Selectedxcuda_ItemChanged = "Selectedxcuda_ItemChanged";
             public const string xcuda_ItemChanged = "xcuda_ItemChanged";
@@ -116,6 +122,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS
           // public const string InventoryItemAliasExChanged = "InventoryItemAliasExChanged";
           // public const string InventoryItemsExChanged = "InventoryItemsExChanged";
           // public const string ShortAllocationChanged = "ShortAllocationChanged";
+          // public const string SystemDocumentSetChanged = "SystemDocumentSetChanged";
           // public const string xcuda_ItemChanged = "xcuda_ItemChanged";
  
 
@@ -148,6 +155,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
    
            public const string CurrentShortAllocationChanged = "CurrentShortAllocationChanged";
    
+           public const string CurrentSystemDocumentSetChanged = "CurrentSystemDocumentSetChanged";
+   
            public const string Currentxcuda_ItemChanged = "Currentxcuda_ItemChanged";
     
 
@@ -179,6 +188,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentInventoryItemsExIDChanged = "OnCurrentInventoryItemsExIDChanged";
    
            public const string CurrentShortAllocationIDChanged = "OnCurrentShortAllocationIDChanged";
+   
+           public const string CurrentSystemDocumentSetIDChanged = "OnCurrentSystemDocumentSetIDChanged";
    
            public const string Currentxcuda_ItemIDChanged = "OnCurrentxcuda_ItemIDChanged";
       

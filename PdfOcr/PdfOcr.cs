@@ -50,6 +50,12 @@ namespace pdf_ocr
             {
                 if(Directory.Exists(TempDir)) Directory.Delete(TempDir, true);
                 Directory.CreateDirectory(TempDir);
+                var file = new FileInfo(inputPdfFile);
+                var newFile = new FileInfo(inputPdfFile + ".txt");
+                if (newFile.Exists && newFile.LastWriteTime > file.LastAccessTime.AddMinutes(5))
+                {
+                    return File.ReadAllText(inputPdfFile + ".txt");
+                }
                 GetImageFromPdf(inputPdfFile);
                 //Recognizing text from the generated image
                 var recognizedText = GetTextFromImage();

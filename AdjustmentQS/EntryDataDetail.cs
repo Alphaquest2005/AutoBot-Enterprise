@@ -44,6 +44,8 @@ namespace AdjustmentQS
         public Nullable<bool> IsReconciled { get; set; }
         public Nullable<double> TaxAmount { get; set; }
         public Nullable<double> LastCost { get; set; }
+        public Nullable<double> TotalCost { get; set; }
+        public int InventoryItemId { get; set; }
     
         public virtual ICollection<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         public virtual InventoryItemsEx InventoryItemsEx { get; set; }

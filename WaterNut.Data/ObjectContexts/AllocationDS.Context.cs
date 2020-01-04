@@ -117,6 +117,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<ItemSalesPiSummary> ItemSalesPiSummary { get; set; }
      
+        public DbSet<SystemDocumentSets> SystemDocumentSets { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -190,6 +192,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new AllocationErrorsMap());
          
             modelBuilder.Configurations.Add(new ItemSalesPiSummaryMap());
+         
+            modelBuilder.Configurations.Add(new SystemDocumentSetsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

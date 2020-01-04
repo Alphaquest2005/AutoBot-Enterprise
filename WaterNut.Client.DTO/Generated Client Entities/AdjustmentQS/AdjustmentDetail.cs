@@ -538,6 +538,22 @@ namespace AdjustmentQS.Client.DTO
 		}
         private ChangeTrackingCollection<ShortAllocation> _ShortAllocations = new ChangeTrackingCollection<ShortAllocation>();
 
+        [DataMember]
+        public SystemDocumentSet SystemDocumentSet
+		{
+		    get { return _SystemDocumentSet; }
+			set
+			{
+			    if (value == _SystemDocumentSet) return;
+				_SystemDocumentSet = value;
+                SystemDocumentSetChangeTracker = _SystemDocumentSet == null ? null
+                    : new ChangeTrackingCollection<SystemDocumentSet> { _SystemDocumentSet };
+				NotifyPropertyChanged();//m => this.SystemDocumentSet
+			}
+		}
+        private SystemDocumentSet _SystemDocumentSet;
+        private ChangeTrackingCollection<SystemDocumentSet> SystemDocumentSetChangeTracker { get; set; }
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

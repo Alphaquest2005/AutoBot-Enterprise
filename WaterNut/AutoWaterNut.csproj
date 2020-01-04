@@ -226,6 +226,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\MessageToken.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\ShortAllocationViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\SummaryListViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\SystemDocumentSetViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\xcuda_ItemViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AdjustmentShortAllocationViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AsycudaSalesAllocationsExViewModel.cs" />
@@ -371,6 +372,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemAliasExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemsExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\ShortAllocationTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\SystemDocumentSetTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\xcuda_ItemTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AsycudaSalesAllocationsExTotals.cs" />
@@ -498,6 +500,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemAliasExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemsExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\ShortAllocationVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\SystemDocumentSetVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\xcuda_ItemVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AsycudaSalesAllocationsExVirturalListLoader.cs" />

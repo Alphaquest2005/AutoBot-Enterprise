@@ -421,6 +421,36 @@ public Nullable<double> LastCost
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalCost
+		{ 
+		    get { return this.entrydatadetail.TotalCost; }
+			set
+			{
+			    if (value == this.entrydatadetail.TotalCost) return;
+				this.entrydatadetail.TotalCost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalCost");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "InventoryItem is required")]
+       
+public int InventoryItemId
+		{ 
+		    get { return this.entrydatadetail.InventoryItemId; }
+			set
+			{
+			    if (value == this.entrydatadetail.InventoryItemId) return;
+				this.entrydatadetail.InventoryItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InventoryItemId");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

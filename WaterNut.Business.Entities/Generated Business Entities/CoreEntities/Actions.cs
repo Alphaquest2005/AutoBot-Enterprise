@@ -57,6 +57,21 @@ namespace CoreEntities.Business.Entities
         }
         string _name;
         [DataMember]
+        public bool TestMode 
+        {
+            get
+            {
+                return _testmode;
+            }
+            set
+            {
+                _testmode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _testmode;
+        [DataMember]
         public List<FileTypeActions> FileTypeActions { get; set; }
         [DataMember]
         public List<SessionActions> SessionActions { get; set; }

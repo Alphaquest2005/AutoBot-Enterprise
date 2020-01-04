@@ -546,6 +546,8 @@ namespace AdjustmentQS.Business.Entities
         public List<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
         [DataMember]
         public List<ShortAllocation> ShortAllocations { get; set; }
+        [DataMember]
+        public SystemDocumentSet SystemDocumentSet { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -173,6 +173,8 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<PackageType> PackageTypes { get; set; }
      
+        public DbSet<SystemDocumentSet> SystemDocumentSets { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -302,6 +304,8 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new ContainerMap());
          
             modelBuilder.Configurations.Add(new PackageTypeMap());
+         
+            modelBuilder.Configurations.Add(new SystemDocumentSetMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

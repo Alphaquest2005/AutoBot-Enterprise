@@ -1,5 +1,7 @@
+select id from SystemDocumentSets
+
 delete from AsycudaDocumentSet 
-where asycudadocumentsetid > 167
+where asycudadocumentsetid > 213
 
 delete from xcuda_ASYCUDA where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where AsycudaDocumentSetId is null)
 

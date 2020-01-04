@@ -79,6 +79,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<InventoryItemSource> InventoryItemSourceSet { get; set; }
      
+        public DbSet<EntryDataFiles> EntryDataFiles { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -114,6 +116,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new InventorySourcesMap());
          
             modelBuilder.Configurations.Add(new InventoryItemSourceMap());
+         
+            modelBuilder.Configurations.Add(new EntryDataFilesMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

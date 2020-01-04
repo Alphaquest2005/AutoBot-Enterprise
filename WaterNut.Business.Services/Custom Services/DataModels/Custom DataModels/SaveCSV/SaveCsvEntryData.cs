@@ -86,12 +86,49 @@ namespace WaterNut.DataSpace
         {
             await ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
             await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
-
+            await ImportEntryDataFile(fileType, eslst.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(), emailId, fileTypeId, droppedFilePath, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
             if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath)
                 .ConfigureAwait(false)) return true;
             return false;
         }
 
+        private async Task ImportEntryDataFile(string fileType, List<CSVDataSummary> eslst, int? emailId,
+            int? fileTypeId, string droppedFilePath, int applicationSettingsId)
+        {
+            using (var ctx = new EntryDataDSContext())
+            {
+
+                ctx.Database.ExecuteSqlCommand($@"delete from EntryDataFiles where SourceFile = '{droppedFilePath}'");
+                foreach (var line in eslst)
+                {
+                    var drow = new EntryDataFiles(true)
+                    {
+                        TrackingState = TrackingState.Added,
+                        SourceFile = droppedFilePath,
+                        ApplicationSettingsId = applicationSettingsId,
+                        SourceRow = line.SourceRow,
+                        FileType = fileType,
+                        EmailId = emailId,
+                        FileTypeId = fileTypeId,
+                        EntryDataId = line.EntryDataId,
+                        EntryDataDate = line.EntryDataDate,
+                        Cost = line.Cost,
+                        InvoiceQty = line.InvoiceQuantity,
+                        ItemDescription = line.ItemDescription,
+                        ItemNumber = line.ItemNumber,
+                        LineNumber = line.LineNumber,
+                        Quantity = line.Quantity,
+                        ReceivedQty = line.ReceivedQuantity,
+                        TaxAmount = line.Tax,
+                        TotalCost = line.TotalCost,
+                        Units = line.Units
+                    };
+                    ctx.EntryDataFiles.Add(drow);
+                }
+
+                ctx.SaveChanges();
+            }
+        }
 
         private async Task<bool> ImportEntryData(string fileType, List<CSVDataSummary> eslst,
             List<AsycudaDocumentSet> docSet,
@@ -99,17 +136,12 @@ namespace WaterNut.DataSpace
         {
             try
             {
-
+                var ndocSet = new List<AsycudaDocumentSet>();
+                if (overWriteExisting == true) ndocSet = docSet;
 
                 var ed = (from es in eslst
                     group es by new {es.EntryDataId, es.EntryDataDate, es.CustomerName, es.Currency}
                     into g
-                        //let supplier = EntryDataDS.DataModels.BaseDataModel.Instance.SearchSuppliers(new List<string>()
-                        //{
-                        //    string.Format("SupplierCode == \"{0}\"",g.Key.SupplierCode)
-                        //})
-
-                        //where supplier != null
                     select new
                     {
                         EntryData =
@@ -117,8 +149,8 @@ namespace WaterNut.DataSpace
                             {
                                 EntryDataId = g.Key.EntryDataId,
                                 EntryDataDate = g.Key.EntryDataDate,
-                                AsycudaDocumentSetId = docSet.First().AsycudaDocumentSetId,
-                                ApplicationSettingsId = docSet.First().ApplicationSettingsId,
+                                AsycudaDocumentSetId = docSet.First(x => x.SystemDocumentSet == null).AsycudaDocumentSetId,
+                                ApplicationSettingsId = docSet.First(x => x.SystemDocumentSet == null).ApplicationSettingsId,
                                 CustomerName = g.Key.CustomerName,
                                 Tax = g.Sum(x => x.Tax),
                                 Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))
@@ -200,32 +232,43 @@ namespace WaterNut.DataSpace
                         else
                         {
 
-
-                            var l = 0;
-                            foreach (var nEd in item.EntryDataDetails.ToList())
+                            foreach (var doc in docSet)
                             {
-                                l += 1;
 
-                                var oEd = olded.EntryDataDetails.FirstOrDefault(x =>
-                                    x.LineNumber == l && x.ItemNumber == nEd.ItemNumber);
-
-                                if (oEd == null) continue;
-                                if (Math.Abs(nEd.Quantity - oEd.Quantity) < .0001 &&
-                                    Math.Abs(nEd.Cost - oEd.Cost) < .0001)
+                                var l = 0;
+                                foreach (var nEd in item.EntryDataDetails.ToList())
                                 {
+                                    l += 1;
 
-                                    continue;
+                                    var oEd = olded.EntryDataDetails.FirstOrDefault(x =>
+                                        x.LineNumber == l && x.ItemNumber == nEd.ItemNumber && x.EntryData.AsycudaDocumentSets.Any(z => z.AsycudaDocumentSetId == doc.AsycudaDocumentSetId));
+
+                                    //if (l != item.EntryDataDetails.Count()) continue;
+                                    if (oEd != null && (Math.Abs(nEd.Quantity - oEd.Quantity) < .0001 &&
+                                                        Math.Abs(nEd.Cost - oEd.Cost) < .0001))
+                                    {
+
+                                        continue;
+                                    }
+                                    if(ndocSet.FirstOrDefault(x => x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId) == null) ndocSet.Add(doc);
+                                    if(details.FirstOrDefault(x => x.ItemNumber == nEd.ItemNumber && x.LineNumber == nEd.LineNumber) == null) details.Add(nEd);
+                                    if (oEd != null)
+                                        new EntryDataDetailsService()
+                                            .DeleteEntryDataDetails(oEd.EntryDataDetailsId.ToString()).Wait();
+
                                 }
 
-                                details.Add(nEd);
-                                new EntryDataDetailsService().DeleteEntryDataDetails(oEd.EntryDataDetailsId.ToString())
-                                    .Wait();
-
                             }
+
+                            
                         }
                     }
 
-                    if (olded == null) details = item.EntryDataDetails.ToList();
+                    if (olded == null)
+                    {
+                        details = item.EntryDataDetails.ToList();
+                        ndocSet = docSet;
+                    }
                     if (overWriteExisting || olded == null)
                     {
 
@@ -259,7 +302,7 @@ namespace WaterNut.DataSpace
                                         TrackingState = TrackingState.Added
 
                                     };
-                                AddToDocSet(docSet, EDsale);
+                                AddToDocSet(ndocSet, EDsale);
 
 
                                 await CreateSales(EDsale).ConfigureAwait(false);
@@ -302,7 +345,7 @@ namespace WaterNut.DataSpace
                                         TrackingState = TrackingState.Added
 
                                     };
-                                AddToDocSet(docSet, EDinv);
+                                AddToDocSet(ndocSet, EDinv);
                                 await CreateInvoice(EDinv).ConfigureAwait(false);
 
                                 break;
@@ -345,7 +388,7 @@ namespace WaterNut.DataSpace
                                         TrackingState = TrackingState.Added
 
                                     };
-                                AddToDocSet(docSet, EDpo);
+                                AddToDocSet(ndocSet, EDpo);
                                 await CreatePurchaseOrders(EDpo).ConfigureAwait(false);
                                 break;
                             case "OPS":
@@ -377,7 +420,7 @@ namespace WaterNut.DataSpace
                                         TrackingState = TrackingState.Added
 
                                     };
-                                AddToDocSet(docSet, EDops);
+                                AddToDocSet(ndocSet, EDops);
                                 await CreateOpeningStock(EDops).ConfigureAwait(false);
                                 break;
                             case "ADJ":
@@ -410,7 +453,7 @@ namespace WaterNut.DataSpace
                                         TrackingState = TrackingState.Added
 
                                     };
-                                AddToDocSet(docSet, EDadj);
+                                AddToDocSet(ndocSet, EDadj);
                                 await CreateAdjustments(EDadj).ConfigureAwait(false);
                                 break;
                             case "DIS":
@@ -443,7 +486,7 @@ namespace WaterNut.DataSpace
                                         TrackingState = TrackingState.Added
 
                                     };
-                                AddToDocSet(docSet, EDdis);
+                                AddToDocSet(ndocSet, EDdis);
                                 await CreateAdjustments(EDdis).ConfigureAwait(false);
                                 break;
                             case "RCON":
@@ -472,7 +515,7 @@ namespace WaterNut.DataSpace
                                         TrackingState = TrackingState.Added
 
                                     };
-                                AddToDocSet(docSet, EDrcon);
+                                AddToDocSet(ndocSet, EDrcon);
                                 await CreateAdjustments(EDrcon).ConfigureAwait(false);
                                 break;
                             default:
@@ -486,7 +529,7 @@ namespace WaterNut.DataSpace
                     using (var ctx = new EntryDataDetailsService())
                     {
                         var lineNumber = 0;
-                        foreach (var e in details)
+                        foreach (var e in overWriteExisting || olded == null?details:details.Where(x => olded.EntryDataDetails.FirstOrDefault(z => z.ItemNumber == x.ItemNumber && z.LineNumber == x.LineNumber) == null))
                         {
                             lineNumber += 1;
                             await ctx.CreateEntryDataDetails(new EntryDataDetails(true)
@@ -515,6 +558,14 @@ namespace WaterNut.DataSpace
                                 TaxAmount = e.TaxAmount,
                             }).ConfigureAwait(false);
                         }
+
+                        if (!overWriteExisting && olded != null)
+                        {
+                            AddToDocSet(ndocSet, olded);
+                            await UpdateEntryData(olded).ConfigureAwait(false);
+
+                        }
+                        
                     }
 
                     using (var ctx = new InventoryDSContext() {StartTracking = true})
@@ -566,6 +617,10 @@ namespace WaterNut.DataSpace
         {
             foreach (var doc in docSet.DistinctBy(x => x.AsycudaDocumentSetId))
             {
+                if ((new EntryDataDSContext()).AsycudaDocumentSetEntryData.FirstOrDefault(
+                        x => x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId && x.EntryDataId == entryData.EntryDataId) != null) continue;
+                if (entryData.AsycudaDocumentSets.FirstOrDefault(
+                        x => x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId) != null) continue;
                 entryData.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
                 {
                     AsycudaDocumentSetId = doc.AsycudaDocumentSetId,
@@ -857,6 +912,7 @@ namespace WaterNut.DataSpace
                     var d = GetCSVDataFromLine(lines[i], mapping, headings);
                     if (d != null)
                     {
+                        d.LineNumber = i;
                         eslst.Add(d);
                     }
                 }
@@ -1110,6 +1166,7 @@ namespace WaterNut.DataSpace
                 if (splits[map["EntryDataId"]] != "" && splits[map["ItemNumber"]] != "")
                 {
                     var res = new CSVDataSummary();
+                    res.SourceRow = line;
                     foreach (var key in map.Keys)
                     {
                         try
@@ -1196,6 +1253,7 @@ namespace WaterNut.DataSpace
             public double? TotalCost { get; set; }
             public int? LineNumber { get; set; }
             public int InventoryItemId { get; set; }
+            public string SourceRow { get; set; }
         }
 
         private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)
@@ -1332,16 +1390,12 @@ namespace WaterNut.DataSpace
                         }
 
                     }
-                    if(itmlst.Any())
-                    foreach (var g in itmlst)
-                    {
-                        foreach (var line in g)
+
+                        foreach (var line in item)
                         {
                             line.InventoryItemId = i.Id;
                         }
                     }
-
-                }
             }
 
         }
@@ -1389,6 +1443,14 @@ private async Task<OpeningStock> CreateOpeningStock(OpeningStock EDops)
             using (var ctx = new EntryDataService())
             {
                 await ctx.DeleteEntryData(olded.EntryDataId).ConfigureAwait(false);
+            }
+        }
+
+        private async Task UpdateEntryData(EntryData olded)
+        {
+            using (var ctx = new EntryDataService())
+            {
+                await ctx.UpdateEntryData(olded).ConfigureAwait(false);
             }
         }
 

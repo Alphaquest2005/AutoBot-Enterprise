@@ -77,6 +77,21 @@ public string Name
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "TestMode is required")]
+       
+public bool TestMode
+		{ 
+		    get { return this.actions.TestMode; }
+			set
+			{
+			    if (value == this.actions.TestMode) return;
+				this.actions.TestMode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TestMode");
+			}
+		}
+     
+
         ObservableCollection<FileTypeActions> _FileTypeActions = null;
         public  ObservableCollection<FileTypeActions> FileTypeActions
 		{

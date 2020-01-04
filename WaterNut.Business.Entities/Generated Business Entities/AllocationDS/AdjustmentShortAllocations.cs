@@ -801,6 +801,21 @@ namespace AllocationDS.Business.Entities
         }
         string _type;
         [DataMember]
+        public Nullable<int> SalesLineNumber 
+        {
+            get
+            {
+                return _saleslinenumber;
+            }
+            set
+            {
+                _saleslinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _saleslinenumber;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }

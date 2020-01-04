@@ -239,6 +239,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocument", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "SystemDocumentSets":
+                                return
+                                    await
+                                        GetWhere<SystemDocumentSets>(dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace AllocationDS.Business.Services
                             case "xcuda_Item":
                                 return await CountWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocument", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SystemDocumentSets":
+                                return await CountWhere<SystemDocumentSets>(dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocument.Where(exp == "All" || exp == null ? "ASYCUDA_Id != null" : exp)
@@ -845,6 +854,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<xcuda_Item>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocument", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "SystemDocumentSets":
+                                return
+                                    await
+                                        LoadRangeWhere<SystemDocumentSets>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocument", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1226,6 +1241,9 @@ namespace AllocationDS.Business.Services
                         {
                             case "xcuda_Item":
                                 return await SumWhere<xcuda_Item>(dbContext, exp, itm.Value, "AsycudaDocument", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "SystemDocumentSets":
+                                return await SumWhere<SystemDocumentSets>(dbContext, exp, itm.Value, "AsycudaDocument", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

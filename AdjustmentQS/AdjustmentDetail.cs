@@ -60,5 +60,6 @@ namespace AdjustmentQS
         public virtual AdjustmentOver AdjustmentOvers { get; set; }
         public virtual ICollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }
         public virtual ICollection<ShortAllocation> ShortAllocations { get; set; }
+        public virtual SystemDocumentSet SystemDocumentSet { get; set; }
     }
 }

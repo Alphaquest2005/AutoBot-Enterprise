@@ -31,37 +31,41 @@ namespace AdjustmentQS.Business.Services
 
                 using (var ctx = new AdjustmentQSContext())
                 {
+                   
 
                     var olst = ctx.AdjustmentOvers
+                        .Include("AdjustmentEx.AsycudaDocumentSets.SystemDocumentSet")
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
                         .Where(x => !x.AsycudaDocumentItemEntryDataDetails.Any())
                         .Where(x => (double)x.Cost > 0)
                         .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
                         .OrderBy(x => x.EffectiveDate)
+                        .GroupJoin(ctx.SystemDocumentSets, a => a.AsycudaDocumentSetId, s => s.Id, (x, y) => new { adjustment = x, sys = y.FirstOrDefault() })
+                        .Where(x => x.sys == null)
                         .Select(x => new EntryDataDetails()
                         {
-                            EntryDataDetailsId = x.EntryDataDetailsId,
-                            EntryDataId = x.EntryDataId,
-                            ItemNumber = x.ItemNumber,
-                            ItemDescription = x.ItemDescription,
-                            Cost = (double)x.Cost,
-                            Quantity = (double) x.ReceivedQty - (double) x.InvoiceQty,
-                            EffectiveDate = x.EffectiveDate ?? x.AdjustmentEx.InvoiceDate,
-                            LineNumber = x.LineNumber,
+                            EntryDataDetailsId = x.adjustment.EntryDataDetailsId,
+                            EntryDataId = x.adjustment.EntryDataId,
+                            ItemNumber = x.adjustment.ItemNumber,
+                            ItemDescription = x.adjustment.ItemDescription,
+                            Cost = (double)x.adjustment.Cost,
+                            Quantity = (double)x.adjustment.ReceivedQty - (double)x.adjustment.InvoiceQty,
+                            EffectiveDate = x.adjustment.EffectiveDate ?? x.adjustment.AdjustmentEx.InvoiceDate,
+                            LineNumber = x.adjustment.LineNumber,
                             EntryData = new EntryData()
                             {
-                                EntryDataId = x.EntryDataId,
-                                Currency = x.AdjustmentEx.Currency,
-                                EntryDataDate = x.AdjustmentEx.InvoiceDate,
-                                EmailId = x.AdjustmentEx.EmailId,
-                                FileTypeId = x.AdjustmentEx.FileTypeId
+                                EntryDataId = x.adjustment.EntryDataId,
+                                Currency = x.adjustment.AdjustmentEx.Currency,
+                                EntryDataDate = x.adjustment.AdjustmentEx.InvoiceDate,
+                                EmailId = x.adjustment.AdjustmentEx.EmailId,
+                                FileTypeId = x.adjustment.AdjustmentEx.FileTypeId
                             },
                             InventoryItemEx = new InventoryItemsEx()
                             {
-                                TariffCode = x.TariffCode,
-                                ItemNumber = x.ItemNumber,
-                                Description = x.ItemDescription,
+                                TariffCode = x.adjustment.TariffCode,
+                                ItemNumber = x.adjustment.ItemNumber,
+                                Description = x.adjustment.ItemDescription,
                             }
 
 

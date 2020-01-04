@@ -215,6 +215,51 @@ namespace AllocationDS.Business.Entities
             }
         }
         int _applicationsettingsid;
+        [DataMember]
+        public string pCNumber 
+        {
+            get
+            {
+                return _pcnumber;
+            }
+            set
+            {
+                _pcnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _pcnumber;
+        [DataMember]
+        public int pLineNumber 
+        {
+            get
+            {
+                return _plinenumber;
+            }
+            set
+            {
+                _plinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _plinenumber;
+        [DataMember]
+        public string pReference 
+        {
+            get
+            {
+                return _preference;
+            }
+            set
+            {
+                _preference = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _preference;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Common.CSV;
@@ -78,11 +79,11 @@ namespace WaterNut.DataSpace
             {
                 docSet = new List<AsycudaDocumentSet>()
                 {
-                    ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
+                    ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId)
                 };
                 var ddocset = ctx.FileTypes.First(x => x.Id == fileType.Id).AsycudaDocumentSetId;
                 if (fileType.CopyEntryData)
-                    docSet.Add(ctx.AsycudaDocumentSets.FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
+                    docSet.Add(ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
                 if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
             }
 

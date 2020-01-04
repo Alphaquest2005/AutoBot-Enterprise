@@ -206,7 +206,8 @@ namespace AdjustmentQS.Client.Repositories
                   // AdjustmentShorts = (res.AdjustmentShorts != null?new AdjustmentShort(res.AdjustmentShorts): null),    
                   // AdjustmentOvers = (res.AdjustmentOvers != null?new AdjustmentOver(res.AdjustmentOvers): null),    
                      // AsycudaDocumentItemEntryDataDetails = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItemEntryDataDetail>(res.AsycudaDocumentItemEntryDataDetails.Select(y => new AsycudaDocumentItemEntryDataDetail(y))),    
-                     // ShortAllocations = new System.Collections.ObjectModel.ObservableCollection<ShortAllocation>(res.ShortAllocations.Select(y => new ShortAllocation(y)))    
+                     // ShortAllocations = new System.Collections.ObjectModel.ObservableCollection<ShortAllocation>(res.ShortAllocations.Select(y => new ShortAllocation(y))),    
+                  // SystemDocumentSet = (res.SystemDocumentSet != null?new SystemDocumentSet(res.SystemDocumentSet): null)    
                   };
                     }
                     else

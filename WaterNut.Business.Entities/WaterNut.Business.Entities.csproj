@@ -148,6 +148,7 @@
     <Compile Include="Generated Business Entities\AdjustmentQS\InventoryItemAliasEx.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated Business Entities\AdjustmentQS\SystemDocumentSet.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Sales.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\SubItems.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\SystemDocumentSets.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\TariffCategory.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\TariffCodes.cs" />
@@ -273,6 +275,7 @@
     <Compile Include="Generated Business Entities\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\FileType.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated Business Entities\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\xcuda_Assessment_notice.cs" />
     <Compile Include="Generated Business Entities\DocumentDS\xcuda_ASYCUDA.cs" />
@@ -361,6 +364,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EntryDataEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\EntryDataExTotals.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\FileTypes.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InventoryItemsEx.cs" />
@@ -451,6 +455,7 @@
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\InventoryItemAliasEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated ChangeTracking Models\AdjustmentQS\SystemDocumentSet.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -472,6 +477,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Sales.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\SubItems.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\SystemDocumentSets.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\TariffCategory.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\TariffCodes.cs" />
@@ -576,6 +582,7 @@
     <Compile Include="Generated ChangeTracking Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\FileType.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated ChangeTracking Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\xcuda_Assessment_notice.cs" />
     <Compile Include="Generated ChangeTracking Models\DocumentDS\xcuda_ASYCUDA.cs" />
@@ -664,6 +671,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataExTotals.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\FileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItemsEx.cs" />
@@ -754,6 +762,7 @@
     <Compile Include="Generated Constructors Models\AdjustmentQS\InventoryItemAliasEx.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\SystemDocumentSet.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -775,6 +784,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\Sales.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\SubItems.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\SystemDocumentSets.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\TariffCategory.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\TariffCodes.cs" />
@@ -879,6 +889,7 @@
     <Compile Include="Generated Constructors Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\FileType.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated Constructors Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\xcuda_Assessment_notice.cs" />
     <Compile Include="Generated Constructors Models\DocumentDS\xcuda_ASYCUDA.cs" />
@@ -967,6 +978,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataExTotals.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\FileTypes.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItemsEx.cs" />
@@ -1057,6 +1069,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\InventoryItemAliasEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\SystemDocumentSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -1078,6 +1091,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Sales.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\SubItems.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\SystemDocumentSets.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\TariffCategory.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\TariffCodes.cs" />
@@ -1182,6 +1196,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\FileType.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\xcuda_Assessment_notice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\DocumentDS\xcuda_ASYCUDA.cs" />
@@ -1270,6 +1285,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataExTotals.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\FileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItemsEx.cs" />
@@ -1360,6 +1376,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\InventoryItemAliasEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\ShortAllocation.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\SystemDocumentSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -1381,6 +1398,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Sales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\SubItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\SystemDocumentSets.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\TariffCategory.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\TariffCategoryCodeSuppUnit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\TariffCodes.cs" />
@@ -1485,6 +1503,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\ExportTemplate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\FileType.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\PackageType.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\SystemDocumentSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\xcuda_Assessment.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\xcuda_Assessment_notice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\DocumentDS\xcuda_ASYCUDA.cs" />
@@ -1573,6 +1592,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataDetailsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataExTotals.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\FileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItemsEx.cs" />
@@ -1673,6 +1693,7 @@
     <Compile Include="Generated Mappings\AdjustmentQS\InventoryItemAliasEx.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\InventoryItemsEx.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\ShortAllocation.map.cs" />
+    <Compile Include="Generated Mappings\AdjustmentQS\SystemDocumentSet.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\xcuda_Item.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\Adjustments.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs" />
@@ -1694,6 +1715,7 @@
     <Compile Include="Generated Mappings\AllocationDS\PreviousItemsEx.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\Sales.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\SubItems.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\SystemDocumentSets.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\TariffCategory.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\TariffCategoryCodeSuppUnit.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\TariffCodes.map.cs" />
@@ -1798,6 +1820,7 @@
     <Compile Include="Generated Mappings\DocumentDS\ExportTemplate.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\FileType.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\PackageType.map.cs" />
+    <Compile Include="Generated Mappings\DocumentDS\SystemDocumentSet.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\xcuda_Assessment.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\xcuda_Assessment_notice.map.cs" />
     <Compile Include="Generated Mappings\DocumentDS\xcuda_ASYCUDA.map.cs" />
@@ -1886,6 +1909,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataDetailsEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataExTotals.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\EntryDataFiles.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\FileTypes.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InventoryItems.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InventoryItemsEx.map.cs" />

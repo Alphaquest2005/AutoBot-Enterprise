@@ -136,8 +136,23 @@ namespace AutoBot
                 {"SubmitDiscrepanciesPreAssessmentReportToCustoms", SubmitDiscrepanciesPreAssessmentReportToCustoms },
                 {"ClearAllDiscpancyEntries", ClearAllDiscpancyEntries },
                 {"ImportPDF", ImportPDF },
+                {"CreateInstructions", CreateInstructions },
 
             };
+
+        private static void CreateInstructions()
+        {
+            var dir = new DirectoryInfo(@"C:\Users\josep\OneDrive\Clients\Rouge\2019\October");
+            var files = dir.GetFiles().Where(x => Regex.IsMatch(x.Name, @".*(P|F)\d+.xml"));
+            if (File.Exists(Path.Combine(dir.FullName, "Instructions.txt"))) File.Delete(Path.Combine(dir.FullName, "Instructions.txt"));
+            foreach (var file in files)
+            {
+                File.AppendAllText(Path.Combine(dir.FullName, "Instructions.txt"), $"File\t{file.FullName}\r\n");
+                if(File.Exists(file.FullName.Replace("xml","csv")) && !File.Exists(file.FullName.Replace("xml", "csv.pdf")))
+                    File.Copy(file.FullName.Replace("xml", "csv"), file.FullName.Replace("xml", "csv.pdf"));
+                File.AppendAllText(Path.Combine(dir.FullName, "Instructions.txt"), $"Attachment\t{file.FullName.Replace("xml", "csv.pdf")}\r\n");
+            }
+        }
 
         private static void SubmitPDFs()
         {
@@ -211,7 +226,7 @@ namespace AutoBot
                    
                     .FirstOrDefault(x => x.Id == 17);
                 var files = new FileInfo[]
-                    {new FileInfo(@"C:\Users\josep\OneDrive\Clients\Budget Marine\Emails\30-15900\7006133.pdf")};
+                    {new FileInfo(@"C:\Users\josep\OneDrive\Clients\Budget Marine\Emails\30-16170\7006359.pdf")};
                 ImportPDF(files,fileType);
             }
         }
@@ -362,9 +377,13 @@ namespace AutoBot
                     {
                         if(string.IsNullOrEmpty(row["TariffCode"].ToString())) continue;
                         var itmNumber = row["ItemNumber"].ToString();
-                        var itm = ctx.InventoryItems.First(x => x.ItemNumber == itmNumber && x.ApplicationSettingsId ==
-                                   BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                        itm.TariffCode = row["TariffCode"].ToString();
+                        var itms = ctx.InventoryItems.Where(x => x.ItemNumber == itmNumber && x.ApplicationSettingsId ==
+                                   BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                        foreach (var itm in itms)
+                        {
+                            itm.TariffCode = row["TariffCode"].ToString();
+                        }
+                        
                         ctx.SaveChanges();
                     }
                     
@@ -1017,8 +1036,8 @@ namespace AutoBot
             {
 
                 var emails = ctx.TODO_SubmitUnclassifiedItems
-                    .Where(x => x.ApplicationSettingsId ==
-                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                           && x.EmailId != null)
                     .GroupBy(x => x.EmailId).ToList();
                 foreach (var email in emails)
                 {
@@ -2207,10 +2226,13 @@ namespace AutoBot
                 foreach (var doc in lst)
                 {
                     var filterExpression =
-                        $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
+                        $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" 
+                        
                         //$"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
                         //$" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
-                        $" && EntryDataId == \"{doc.InvoiceNo}\"";
+                        //+ $" && EntryDataId == \"{doc.InvoiceNo}\""
+                        + $" && \"{lst.Select(x => x.InvoiceNo).Aggregate((old, current) => old + "," + current)}\".Contains(EntryDataId)"
+                        ;
                     
                     new AdjustmentShortService().CreateIM9(filterExpression, true, false, doc.AsycudaDocumentSetId, "IM4-801", "Duty Free").Wait();
                     new AdjustmentOverService().CreateOPS(filterExpression, true, doc.AsycudaDocumentSetId).Wait();
@@ -3058,7 +3080,7 @@ namespace AutoBot
                 startInfo.WindowStyle = ProcessWindowStyle.Hidden;
                 startInfo.FileName = "java.exe";
                 startInfo.Arguments =
-                    $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix.jar -r C:\Users\{
+                    $@"-jar C:\Users\{Environment.UserName}\OneDrive\Clients\AutoBot\sikulix-2.0.0.jar -r C:\Users\{
                             Environment.UserName
                         }\OneDrive\Clients\AutoBot\Scripts\{scriptName}.sikuli --args {
                             BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin
@@ -3071,6 +3093,7 @@ namespace AutoBot
                 var timeoutCycles = 0;
                 while (!process.HasExited && process.Responding)
                 {
+                    //if(File.Exists(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, $"{docRef}/I")))
                     if (timeoutCycles > 12) break;
                     Console.WriteLine($"Waiting {timeoutCycles} Minutes");
                     Thread.Sleep(1000 * 60);
@@ -3102,7 +3125,7 @@ namespace AutoBot
 
                 try
                 {
-                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType,  true)
+                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType,  false)//set to false to merge
                         .Wait();
                     
                     
@@ -3213,7 +3236,7 @@ namespace AutoBot
             foreach (var file in files)
             {
                 var dfile = new FileInfo($@"{file.DirectoryName}\{file.Name.Replace(file.Extension, ".csv")}");
-                if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime) return;
+                if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime.AddMinutes(5)) return;
                 // Reading from a binary Excel file (format; *.xlsx)
                 FileStream stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read);
                 var excelReader = ExcelReaderFactory.CreateReader(stream);
@@ -3282,6 +3305,9 @@ namespace AutoBot
                     if (dt.Rows[row_no].ItemArray.Count(x => !string.IsNullOrEmpty(x.ToString())) >=
                         fileType.FileTypeMappings.Count(x => x.Required))
                         dRows.Add(dt.Rows[row_no]);
+                    //else
+                    //    throw new ApplicationException(
+                    //        $"Missing Required Field on Line {row_no + 1} in File:'{file.FullName}'");
 
                     row_no++;
 
@@ -3363,7 +3389,7 @@ namespace AutoBot
                         if (val == "" && row_no > 0 && (!header.ItemArray.Contains(mapping.OriginalName.ToUpper()) &&
                                                         !dic.ContainsKey(mapping.OriginalName.Replace("{", "").Replace("}", "")))) continue;
                         if (row_no > 0)
-                            if (string.IsNullOrEmpty(val) && mapping.Required == true)
+                            if (string.IsNullOrEmpty(val) && (mapping.Required == true || mapping.DestinationName == "Invoice #"))// took out because it will replace invoice no regardless
                             {
                                 if (mapping.DestinationName == "Invoice #")
                                 {
@@ -3374,7 +3400,7 @@ namespace AutoBot
                                 {
                                     //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
                                     //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                                    
+
                                     break;
                                 }
 
@@ -3438,7 +3464,7 @@ namespace AutoBot
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                throw e;
             }
 
 

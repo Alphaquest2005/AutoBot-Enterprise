@@ -156,6 +156,7 @@
     <Compile Include="Contracts\AdjustmentQS\IInventoryItemAliasExService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IInventoryItemsExService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IShortAllocationService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\ISystemDocumentSetService.cs" />
     <Compile Include="Contracts\AdjustmentQS\Ixcuda_ItemService.cs" />
     <Compile Include="Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs" />
     <Compile Include="Contracts\AllocationDS\IAdjustmentsService.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="Contracts\AllocationDS\IPreviousItemsExService.cs" />
     <Compile Include="Contracts\AllocationDS\ISalesService.cs" />
     <Compile Include="Contracts\AllocationDS\ISubItemsService.cs" />
+    <Compile Include="Contracts\AllocationDS\ISystemDocumentSetsService.cs" />
     <Compile Include="Contracts\AllocationDS\ITariffCategoryCodeSuppUnitService.cs" />
     <Compile Include="Contracts\AllocationDS\ITariffCategoryService.cs" />
     <Compile Include="Contracts\AllocationDS\ITariffCodesService.cs" />
@@ -281,6 +283,7 @@
     <Compile Include="Contracts\DocumentDS\IExportTemplateService.cs" />
     <Compile Include="Contracts\DocumentDS\IFileTypeService.cs" />
     <Compile Include="Contracts\DocumentDS\IPackageTypeService.cs" />
+    <Compile Include="Contracts\DocumentDS\ISystemDocumentSetService.cs" />
     <Compile Include="Contracts\DocumentDS\Ixcuda_AssessmentService.cs" />
     <Compile Include="Contracts\DocumentDS\Ixcuda_Assessment_noticeService.cs" />
     <Compile Include="Contracts\DocumentDS\Ixcuda_ASYCUDAExService.cs" />
@@ -368,6 +371,7 @@
     <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataExService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataExTotalsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IEntryDataFilesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IFileTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItemsExService.cs" />
@@ -670,6 +674,7 @@
     <Compile Include="Services\AdjustmentQS\InventoryItemAliasExService.cs" />
     <Compile Include="Services\AdjustmentQS\InventoryItemsExService.cs" />
     <Compile Include="Services\AdjustmentQS\ShortAllocationService.cs" />
+    <Compile Include="Services\AdjustmentQS\SystemDocumentSetService.cs" />
     <Compile Include="Services\AdjustmentQS\xcuda_ItemService.cs" />
     <Compile Include="Services\AllocationDS\AdjustmentShortAllocationsService.cs" />
     <Compile Include="Services\AllocationDS\AdjustmentsService.cs" />
@@ -691,6 +696,7 @@
     <Compile Include="Services\AllocationDS\PreviousItemsExService.cs" />
     <Compile Include="Services\AllocationDS\SalesService.cs" />
     <Compile Include="Services\AllocationDS\SubItemsService.cs" />
+    <Compile Include="Services\AllocationDS\SystemDocumentSetsService.cs" />
     <Compile Include="Services\AllocationDS\TariffCategoryCodeSuppUnitService.cs" />
     <Compile Include="Services\AllocationDS\TariffCategoryService.cs" />
     <Compile Include="Services\AllocationDS\TariffCodesService.cs" />
@@ -795,6 +801,7 @@
     <Compile Include="Services\DocumentDS\ExportTemplateService.cs" />
     <Compile Include="Services\DocumentDS\FileTypeService.cs" />
     <Compile Include="Services\DocumentDS\PackageTypeService.cs" />
+    <Compile Include="Services\DocumentDS\SystemDocumentSetService.cs" />
     <Compile Include="Services\DocumentDS\xcuda_AssessmentService.cs" />
     <Compile Include="Services\DocumentDS\xcuda_Assessment_noticeService.cs" />
     <Compile Include="Services\DocumentDS\xcuda_ASYCUDAExService.cs" />
@@ -882,6 +889,7 @@
     <Compile Include="Services\EntryDataDS\EntryDataDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataExService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataExTotalsService.cs" />
+    <Compile Include="Services\EntryDataDS\EntryDataFilesService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\FileTypesService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItemsExService.cs" />

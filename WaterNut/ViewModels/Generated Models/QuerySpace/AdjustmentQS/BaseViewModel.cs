@@ -67,6 +67,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliasExIDChanged, OnCurrentInventoryItemAliasExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemsExIDChanged, OnCurrentInventoryItemsExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentShortAllocationIDChanged, OnCurrentShortAllocationIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentSystemDocumentSetIDChanged, OnCurrentSystemDocumentSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.Currentxcuda_ItemIDChanged, OnCurrentxcuda_ItemIDChanged);
        
 
@@ -85,6 +86,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<InventoryItemAliasEx>(MessageToken.CurrentInventoryItemAliasExChanged, OnCurrentInventoryItemAliasExChanged);
                         RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
                         RegisterToReceiveMessages<ShortAllocation>(MessageToken.CurrentShortAllocationChanged, OnCurrentShortAllocationChanged);
+                        RegisterToReceiveMessages<SystemDocumentSet>(MessageToken.CurrentSystemDocumentSetChanged, OnCurrentSystemDocumentSetChanged);
                         RegisterToReceiveMessages<xcuda_Item>(MessageToken.Currentxcuda_ItemChanged, OnCurrentxcuda_ItemChanged);
     
                 // Receive messages for cached collections for purpose of refreshing cache
@@ -480,6 +482,33 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                                     if (!string.IsNullOrEmpty(_currentShortAllocationID)) BeginSendMessage(MessageToken.CurrentShortAllocationIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentShortAllocationIDChanged, _currentShortAllocationID));
                                     NotifyPropertyChanged(x => this.CurrentShortAllocationID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentSystemDocumentSetIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (SystemDocumentSetRepository ctx = new SystemDocumentSetRepository())
+                            {
+                                CurrentSystemDocumentSet = await ctx.GetSystemDocumentSet(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentSystemDocumentSet);
+                        }
+
+                        private  string _currentSystemDocumentSetID = "";
+                        public string CurrentSystemDocumentSetID
+                        {
+                            get
+                            {
+                                return _currentSystemDocumentSetID;
+                            }
+                            set
+                            {
+                                if (_currentSystemDocumentSetID != value)
+                                {
+                                    _currentSystemDocumentSetID = value;
+                                    if (!string.IsNullOrEmpty(_currentSystemDocumentSetID)) BeginSendMessage(MessageToken.CurrentSystemDocumentSetIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentSystemDocumentSetIDChanged, _currentSystemDocumentSetID));
+                                    NotifyPropertyChanged(x => this.CurrentSystemDocumentSetID);  
                                 }
                             }
                         }
@@ -1227,6 +1256,57 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     _vcurrentShortAllocation = value;
 					if(_vcurrentShortAllocation != null) CurrentShortAllocation = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentShortAllocation);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentSystemDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<SystemDocumentSet> e)
+        {
+            //CurrentSystemDocumentSet = e.Data;
+            NotifyPropertyChanged(m => this.CurrentSystemDocumentSet);
+        }
+
+        private  SystemDocumentSet _currentSystemDocumentSet;
+        public SystemDocumentSet CurrentSystemDocumentSet
+        {
+            get
+            {
+                return _currentSystemDocumentSet;
+            }
+            set
+            {
+                if (_currentSystemDocumentSet != value)
+                {
+                    _currentSystemDocumentSet = value;
+                    BeginSendMessage(MessageToken.CurrentSystemDocumentSetChanged,
+                                                     new NotificationEventArgs<SystemDocumentSet>(MessageToken.CurrentSystemDocumentSetChanged, _currentSystemDocumentSet)); 
+                    NotifyPropertyChanged(x => this.CurrentSystemDocumentSet);    
+                    // all current navigation properties = null
+                 CurrentAdjustmentDetail = null;
+   
+                }
+            }
+        }
+
+		VirtualListItem<SystemDocumentSet> _vcurrentSystemDocumentSet;
+        public VirtualListItem<SystemDocumentSet> VCurrentSystemDocumentSet
+        {
+            get
+            {
+                return _vcurrentSystemDocumentSet;
+            }
+            set
+            {
+                if (_vcurrentSystemDocumentSet != value)
+                {
+                    _vcurrentSystemDocumentSet = value;
+					if(_vcurrentSystemDocumentSet != null) CurrentSystemDocumentSet = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentSystemDocumentSet);                    
                 }
             }
         }

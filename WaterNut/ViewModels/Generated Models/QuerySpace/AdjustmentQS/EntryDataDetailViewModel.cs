@@ -656,6 +656,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Double? _totalCostFilter;
+        public Double? TotalCostFilter
+        {
+            get
+            {
+                return _totalCostFilter;
+            }
+            set
+            {
+                _totalCostFilter = value;
+				NotifyPropertyChanged(x => TotalCostFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -789,7 +807,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
 
 					if(LastCostFilter.HasValue)
-						res.Append(" && " + string.Format("LastCost == {0}",  LastCostFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("LastCost == {0}",  LastCostFilter.ToString()));				 
+
+					if(TotalCostFilter.HasValue)
+						res.Append(" && " + string.Format("TotalCost == {0}",  TotalCostFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -878,7 +899,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     TaxAmount = x.TaxAmount ,
                     
  
-                    LastCost = x.LastCost 
+                    LastCost = x.LastCost ,
+                    
+ 
+                    TotalCost = x.TotalCost 
                     
                 }).ToList()
             };
@@ -958,6 +982,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<double> LastCost { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalCost { get; set; } 
                     
         }
 

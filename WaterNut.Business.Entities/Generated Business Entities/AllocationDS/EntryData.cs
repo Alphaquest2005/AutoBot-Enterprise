@@ -245,6 +245,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         Nullable<double> _totaldeduction;
+        [DataMember]
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

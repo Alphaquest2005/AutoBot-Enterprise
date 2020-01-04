@@ -47,6 +47,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Name;
 
+        [DataMember]
+        public bool TestMode
+		{ 
+		    get { return _TestMode; }
+			set
+			{
+			    if (value == _TestMode) return;
+				_TestMode = value;
+				NotifyPropertyChanged();//m => this.TestMode
+			}
+		}
+        private bool _TestMode;
+
        
         [DataMember]
         public ChangeTrackingCollection<FileTypeActions> FileTypeActions

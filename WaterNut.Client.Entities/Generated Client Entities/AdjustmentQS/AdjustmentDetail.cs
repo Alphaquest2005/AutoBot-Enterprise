@@ -850,6 +850,59 @@ public System.DateTime EmailDate
             }
         }
 
+       private SystemDocumentSet _SystemDocumentSet;
+        public  SystemDocumentSet SystemDocumentSet
+		{
+		    get
+               { 
+                  if (this.adjustmentdetail != null)
+                   {
+                       if (_SystemDocumentSet != null)
+                       {
+                           if (this.adjustmentdetail.SystemDocumentSet !=
+                               _SystemDocumentSet.DTO)
+                           {
+                                if (this.adjustmentdetail.SystemDocumentSet  != null)
+                               _SystemDocumentSet = new SystemDocumentSet(this.adjustmentdetail.SystemDocumentSet);
+                           }
+                       }
+                       else
+                       {
+                             if (this.adjustmentdetail.SystemDocumentSet  != null)
+                           _SystemDocumentSet = new SystemDocumentSet(this.adjustmentdetail.SystemDocumentSet);
+                       }
+                   }
+
+
+             //       if (_SystemDocumentSet != null) return _SystemDocumentSet;
+                       
+             //       var i = new SystemDocumentSet(){TrackingState = TrackingState.Added};
+			//		//if (this.adjustmentdetail.SystemDocumentSet == null) Debugger.Break();
+			//		if (this.adjustmentdetail.SystemDocumentSet != null)
+            //        {
+            //           i. = this.adjustmentdetail.SystemDocumentSet;
+            //        }
+            //        else
+            //        {
+            //            this.adjustmentdetail.SystemDocumentSet = i.;
+             //       }
+                           
+            //        _SystemDocumentSet = i;
+                     
+                    return _SystemDocumentSet;
+               }
+			set
+			{
+			    if (value == _SystemDocumentSet) return;
+                _SystemDocumentSet = value;
+                if(value != null)
+                     this.adjustmentdetail.SystemDocumentSet = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("SystemDocumentSet");
+			}
+		}
+        
+
 
         ChangeTrackingCollection<DTO.AdjustmentDetail> _changeTracker;    
         public ChangeTrackingCollection<DTO.AdjustmentDetail> ChangeTracker

@@ -23,35 +23,49 @@ namespace WaterNut.DataSpace
             List<AsycudaDocumentSet> docSet, string fileType)
         {
             //Get Text
+
             var pdftxt = PdfOcr.Ocr(file);
 
             //Get Template
             using (var ctx = new OCRContext())
             {
                 var templates = ctx.Invoices
-                                .Include(x => x.Parts)
-                                .Include("Parts.RecuringPart")
-                                .Include("Parts.Start.RegularExpressions")
-                                .Include("Parts.End.RegularExpressions")
-                                .Include("Parts.PartTypes")
-                                .Include("Parts.ChildParts.ParentPart.Start.RegularExpressions")
-                                .Include("Parts.ParentParts.ChildPart.Start.RegularExpressions")
-                                .Include("Parts.Lines.RegularExpressions")
-                                .Include("Parts.Lines.Fields.FieldValue")
-                                .ToList()
-                                .Select(x => new Invoice(x));
-                                
+                    .Include(x => x.Parts)
+                    .Include("Parts.RecuringPart")
+                    .Include("Parts.Start.RegularExpressions")
+                    .Include("Parts.End.RegularExpressions")
+                    .Include("Parts.PartTypes")
+                    .Include("Parts.ChildParts.ParentPart.Start.RegularExpressions")
+                    .Include("Parts.ParentParts.ChildPart.Start.RegularExpressions")
+                    .Include("Parts.Lines.RegularExpressions")
+                    .Include("Parts.Lines.Fields.FieldValue")
+                    .Where(x => BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true || x.Id == 4)
+                    .ToList()
+                    .Select(x => new Invoice(x));
+
                 foreach (var tmp in templates)
                 {
-                   var csvLines = tmp.Read(pdftxt.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList());
-                   if(csvLines.Count <= 1) continue;
-                   SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, fileTypeId, file, csvLines).Wait();
-                    break;
+                    try
+                    {
+                        var csvLines = tmp.Read(pdftxt.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)
+                            .ToList());
+                        if (csvLines.Count <= 1) continue;
+                        SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId,
+                            fileTypeId, file, csvLines).Wait();
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        var ex = new ApplicationException($"Problem importing file:{file} --- {e.Message}", e);
+                        Console.WriteLine(ex);
+                        throw ex;
+                    }
+
                 }
             }
         }
 
-        
+
     }
 
     public class Invoice
@@ -110,6 +124,7 @@ namespace WaterNut.DataSpace
                     SupplierName = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.SupplierName)),
                     Units = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.Units)),
                     ItemNumber = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.ItemNumber)),
+                    
                     //Weight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
 
                     //OtherCost = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
@@ -135,7 +150,9 @@ namespace WaterNut.DataSpace
                 {
                     EntryDataId = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.EntryDataId))?? headerRow.EntryDataId,
                     TotalCost = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalCost)),
-                    Cost = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Cost)),
+                    Cost = /*GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalCost)) < Convert.ToDouble(GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Cost))) ? */
+                          /*Math.Round(*/Convert.ToDouble(GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalCost))) / Convert.ToDouble(GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Quantity)))/*,2) */
+                          /*: GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Cost))*/,
                     Quantity = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Quantity)),
                     ItemDescription = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.ItemDescription)),
                     TotalDeductions = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalDeductions)),
@@ -188,8 +205,18 @@ namespace WaterNut.DataSpace
 
         private dynamic GetValue(KeyValuePair<int, Dictionary<Fields, string>> z, string field)
         {
-            var f = z.Value.FirstOrDefault(q => q.Key.Field == field);
-            return f.Key == null ? null : GetValue(f);
+            try
+            {
+                var f = z.Value.FirstOrDefault(q => q.Key.Field == field);
+                            return f.Key == null ? null : GetValue(f);
+            }
+            catch (Exception e)
+            {
+                var ex = new ApplicationException($"Error Importing Line:{z.Key} --- {e.Message}", e);
+                Console.WriteLine(ex);
+                throw ex;
+            }
+            
         }
 
         private dynamic GetValue(string field)
@@ -206,9 +233,17 @@ namespace WaterNut.DataSpace
                 case "String":
                     return f.Value;
                 case "Numeric":
-                    return Convert.ToDouble(f.Value.Replace("$", ""));
+                    var val = f.Value.Replace("$", "");
+                    if(double.TryParse(val, out double num))
+                        return num;
+                    else
+                        throw new ApplicationException($"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                    
                 case "Date":
-                    return DateTime.Parse(f.Value);
+                    if (DateTime.TryParse(f.Value, out DateTime date))
+                        return date;
+                    else
+                        throw new ApplicationException($"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                 default:
                     return f.Value;
             }
@@ -260,7 +295,8 @@ namespace WaterNut.DataSpace
 
         public void Read(InvoiceLine line)
         {
-            if (_endlines.Count == EndCount)
+            if ((_endlines.Count == EndCount && EndCount > 0) 
+                || (EndCount == 0 && _startlines.Count == StartCount && StartCount > 0))//attempting to do start to start
             {
                 if (OCR_Part.RecuringPart != null)
                 {
@@ -275,13 +311,21 @@ namespace WaterNut.DataSpace
 
 
             }
-            if (_startlines.Count() < StartCount && OCR_Part.Start.Any(z => Regex.Match(line.Line,
+            if (OCR_Part.Start.Any(z => Regex.Match(line.Line,
                     z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
             {
-                _startlines.Add(line);
+                if(_startlines.Count() < StartCount)
+                    _startlines.Add(line);
+                else if (_startlines.Count() == StartCount) // treat as start tot start
+                {
+                    _startlines.Clear();
+                    _endlines.Clear();
+                    _bodylines.Clear();
+                    _startlines.Add(line);
+                }
             }
 
-            if (_startlines.Count() == StartCount && _endlines.Count < EndCount)
+            if (_startlines.Count() == StartCount && ((_endlines.Count < EndCount && EndCount > 0)  || EndCount == 0))
             {
                 _bodylines.Add(line);
                 ChildParts.ForEach(x => x.Read(line));
@@ -289,7 +333,9 @@ namespace WaterNut.DataSpace
 
             }
 
-            if (_startlines.Count() == StartCount && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex.Match(line.Line,
+            if (_startlines.Count() == StartCount 
+                && _startlines.All(x => x.LineNumber != line.LineNumber)
+                && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex.Match(line.Line,
                     z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
             {
                 _endlines.Add(line);
@@ -320,7 +366,7 @@ namespace WaterNut.DataSpace
             
             foreach (var field in OCR_Lines.Fields)
             {
-                values.Add(field, field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim());
+                values.Add(field, field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim());//$"\"{}\""
             }
 
             Values[lines.First().LineNumber] = values;

@@ -2695,10 +2695,10 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var item in elst.Where(x => x != null))
                     {
-
-                        res.AddRange(ctx.EntryDataDetails
+                        var entryDataDetailses = ctx.EntryDataDetails
                             .Include(x => x.EntryDataDetailsEx)
                             .Include(x => x.InventoryItems)
+                            .Include(x => x.InventoryItemEx)
                             .Include(x => x.EntryData.EntryDataTotals)
                             .Include(x => x.EntryData.EntryDataEx)
                             .Include(x => x.EntryData.DocumentType)
@@ -2706,10 +2706,19 @@ namespace WaterNut.DataSpace
                             .Where(x => x.EntryDataId == item &&
                                         x.EntryDataDetailsEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId)
                                         && x.EntryData.EntryDataEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId))
-                            .Where(x => BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true
-                                        ? Math.Abs((double) (x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal))) < 0.01
-                                          : true)//Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
-                            .ToList());
+                            .ToList();
+
+                        var res1 = entryDataDetailses.Where(x =>
+                            BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true
+                                ? Math.Abs((double)(x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal -
+                                                    (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx
+                                                         .FirstOrDefault().ExpectedTotal))) < 0.01
+                                : true); //Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
+
+
+                        res.AddRange(res1);
+
+                       
                     }
                 }
             }

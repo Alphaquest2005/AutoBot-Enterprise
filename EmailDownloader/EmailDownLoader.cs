@@ -114,7 +114,7 @@ namespace EmailDownloader
                         continue;
                     }
                         
-                    var desFolder = Path.Combine(dataFolder, subject.Item1);
+                    var desFolder = Path.Combine(dataFolder, subject.Item1, uid.ToString());
                     Directory.CreateDirectory(desFolder);
                     foreach (var a in msg.Attachments)
                     {
@@ -186,7 +186,7 @@ namespace EmailDownloader
                 }
 
                  
-                return new Tuple<string, Email>(subject.Trim(), new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping));
+                return new Tuple<string, Email>($"{subject.Trim()}", new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping));
 
             }
 

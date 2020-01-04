@@ -11,7 +11,7 @@
     {
         public EntryDataExMap()
         {                        
-              this.HasKey(t => new {t.InvoiceNo, t.AsycudaDocumentSetId, t.TotalFreight});        
+              this.HasKey(t => new {t.InvoiceNo, t.AsycudaDocumentSetId, t.TotalFreight, t.Totals});        
               this.ToTable("EntryDataEx");
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
@@ -34,6 +34,7 @@
               this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
               this.Property(t => t.TotalDeductions).HasColumnName("TotalDeductions");
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
+              this.Property(t => t.Totals).HasColumnName("Totals");
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataEx>) t.EntryDataEx).HasForeignKey(d => d.InvoiceNo);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

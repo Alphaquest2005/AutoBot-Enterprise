@@ -486,9 +486,26 @@ namespace AllocationDS.Business.Entities
         }
         Nullable<int> _filetypeid;
         [DataMember]
+        public string Name 
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _name;
+        [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
         [DataMember]
         public InventoryItem InventoryItemsEx { get; set; }
+        [DataMember]
+        public SystemDocumentSets SystemDocumentSets { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

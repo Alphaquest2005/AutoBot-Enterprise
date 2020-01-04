@@ -46,6 +46,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemSource" Width="2.125" PointX="5.875" PointY="13" />
         <AssociationConnector Association="WaterNutDBModel.InventorySourcesInventoryItemSource1" />
         <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataFiles" Width="1.5" PointX="14.375" PointY="14.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

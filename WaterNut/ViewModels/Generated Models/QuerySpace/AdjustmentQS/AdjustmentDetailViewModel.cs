@@ -59,6 +59,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 			RegisterToReceiveMessages<AdjustmentShort>(MessageToken.CurrentAdjustmentShortChanged, OnCurrentAdjustmentShortsChanged);
  
 			RegisterToReceiveMessages<AdjustmentOver>(MessageToken.CurrentAdjustmentOverChanged, OnCurrentAdjustmentOversChanged);
+ 
+			RegisterToReceiveMessages<SystemDocumentSet>(MessageToken.CurrentSystemDocumentSetChanged, OnCurrentSystemDocumentSetChanged);
 
  			// Recieve messages for Core Current Entities Changed
                         RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
@@ -154,6 +156,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(AdjustmentOvers.Contains(CurrentAdjustmentDetail.AdjustmentOvers) == false) AdjustmentOvers.Add(CurrentAdjustmentDetail.AdjustmentOvers);
                     //}
+                    //if (e.PropertyName == "AddSystemDocumentSet")
+                   // {
+                   //    if(SystemDocumentSets.Contains(CurrentAdjustmentDetail.SystemDocumentSet) == false) SystemDocumentSets.Add(CurrentAdjustmentDetail.SystemDocumentSet);
+                    //}
                     //if (e.PropertyName == "AddApplicationSettings")
                    // {
                    //    if(ApplicationSettings.Contains(CurrentAdjustmentDetail.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAdjustmentDetail.ApplicationSettings);
@@ -211,6 +217,23 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                 else
                 {
                 }
+
+				AdjustmentDetails.Refresh();
+				NotifyPropertyChanged(x => this.AdjustmentDetails);
+                // SendMessage(MessageToken.AdjustmentDetailsChanged, new NotificationEventArgs(MessageToken.AdjustmentDetailsChanged));
+                			}
+	
+		 internal virtual void OnCurrentSystemDocumentSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<SystemDocumentSet> e)
+			{
+			if(ViewCurrentSystemDocumentSet == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("AsycudaDocumentSetId == {0}", e.Data.Id.ToString());
+                 }
 
 				AdjustmentDetails.Refresh();
 				NotifyPropertyChanged(x => this.AdjustmentDetails);
@@ -277,6 +300,21 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
              {
                  _viewCurrentAdjustmentOvers = value;
                  NotifyPropertyChanged(x => x.ViewCurrentAdjustmentOvers);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentSystemDocumentSet = false;
+         public bool ViewCurrentSystemDocumentSet
+         {
+             get
+             {
+                 return _viewCurrentSystemDocumentSet;
+             }
+             set
+             {
+                 _viewCurrentSystemDocumentSet = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentSystemDocumentSet);
                 FilterData();
              }
          }

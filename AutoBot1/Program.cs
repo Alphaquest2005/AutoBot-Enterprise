@@ -84,7 +84,7 @@ namespace AutoBot
                         Console.WriteLine($"{msgLst.Count} Emails Processed");
                         foreach (var msg in msgLst)
                         {
-                            var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1);
+                            var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1, msg.Key.Item2.EmailId.ToString());
                             foreach (var fileType in msg.Key.Item2.EmailMapping.EmailFileTypes.Select(x => x.FileTypes).ToList())
                             {
                                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
@@ -146,7 +146,8 @@ namespace AutoBot
                                 {
                                     fileType.FileTypeActions.OrderBy(x => x.Id)
                                         .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                                    (appSetting.AssessIM7 == x.AssessIM7 && appSetting.AssessEX == x.AssessEX))
+                                                    (appSetting.AssessIM7 == x.AssessIM7 || appSetting.AssessEX == x.AssessEX))
+                                        .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))
                                         .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
                                         .ForEach(x => { x.Invoke(fileType, csvFiles); });
                                 }
@@ -162,66 +163,7 @@ namespace AutoBot
                             }
                         }
 
-                        //var docLst = new List<AsycudaDocumentSetEx>()
-                        //{
-                        //    Utils.CurrentSalesInfo().Item3,
-                        //};
-                        //docLst.Remove(null);
-                        //foreach (var i in Utils.CurrentPOInfo().Select(x => x.Item1))
-                        //{
-                        //    if (docLst.FirstOrDefault(x =>
-                        //            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                        //                .ApplicationSettingsId
-                        //            && x.AsycudaDocumentSetId == i.AsycudaDocumentSetId) == null)
-                        //        docLst.AddRange(Utils.CurrentPOInfo().Select(x => x.Item1));
-                        //}
-
-                        //var fdate = DateTime.Now.Date;
-                        //docLst.AddRange(ctx.AsycudaDocumentSetExs.Where(x =>
-                        //    x.ApplicationSettingsId == appSetting.ApplicationSettingsId &&
-                        //    x.AsycudaDocumentSet_Attachments.Any(z => z.FileDate == fdate)));
-
-
-
-                        //foreach (var dSet in docLst.Where(x => x != null).DistinctBy(x => x.AsycudaDocumentSetId))
-                        //{
-                        //    foreach (var fileType in appSetting.FileTypes
-                        //    ) //.Where(x => x.Type != "Sales" && x.Type != "PO")
-                        //    {
-                        //        try
-                        //        {
-                        //            var desFolder = Path.Combine(appSetting.DataFolder,
-                        //                dSet.Declarant_Reference_Number);
-                        //            fileType.AsycudaDocumentSetId = fileType.CreateDocumentSet
-                        //                ? dSet.AsycudaDocumentSetId
-                        //                : fileType.AsycudaDocumentSetId;
-                        //            fileType.DocReference = fileType.CreateDocumentSet
-                        //                ? dSet.Declarant_Reference_Number
-                        //                : fileType.AsycudaDocumentSetEx.Declarant_Reference_Number;
-                        //            if (!Directory.Exists(desFolder)) continue;
-                        //            var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                        //                .Where(x =>
-                        //                    Regex.IsMatch(x.Name, fileType.FilePattern, RegexOptions.IgnoreCase) &&
-                        //                    x.LastWriteTime >= beforeImport)
-                        //                .ToArray(); // set to 10 mins so it works within the email import time
-                        //            if (!csvFiles.Any()) continue;
-
-                        //            fileType.FileTypeActions.OrderBy(x => x.Id)
-                        //                .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                        //                            (appSetting.AssessIM7 == x.AssessIM7 &&
-                        //                             appSetting.AssessEX == x.AssessEX))
-                        //                .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                        //                .ForEach(x => { x.Invoke(fileType, csvFiles); });
-                        //        }
-                        //        catch (Exception e)
-                        //        {
-                        //            EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                        //                new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
-                        //        }
-
-
-                        //    }
-                        //}
+                      
 
 
                         ctx.SessionActions.OrderBy(x => x.Id)
@@ -238,8 +180,8 @@ namespace AutoBot
                                         && x.RunDateTime <= SqlFunctions.DateAdd("MINUTE", x.Sessions.WindowInMinutes,
                                             DateTime.Now))
                             .Where(x =>
-                                x.ApplicationSettingId == null || x.ApplicationSettingId ==
-                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                (x.ApplicationSettingId == null || x.ApplicationSettingId ==
+                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
                             .ToList();
 
 
@@ -249,6 +191,7 @@ namespace AutoBot
                             {
                                 item.Sessions.SessionActions
                                     .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
+                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>  x.Invoke());
                             }
@@ -260,6 +203,7 @@ namespace AutoBot
                                 ctx.SessionActions.OrderBy(x => x.Id)
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessIM7").ToList()
+                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                          x.Invoke());
@@ -268,6 +212,7 @@ namespace AutoBot
                                 ctx.SessionActions.OrderBy(x => x.Id)
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessEX").ToList()
+                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                         x.Invoke());

@@ -486,6 +486,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _filetypeid;
         [DataMember]
+        public string Name 
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _name;
+        [DataMember]
         public EntryDataDetails EntryDataDetails { get; set; }
 
  //       [DataMember]

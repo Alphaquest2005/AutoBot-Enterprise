@@ -46,6 +46,7 @@
               this.Property(t => t.ExpiryDate).HasColumnName("ExpiryDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.SourceFileName).HasColumnName("SourceFileName");
+              this.HasOptional(t => t.SystemDocumentSets).WithMany(t =>(ICollection<AsycudaDocument>) t.AsycudaDocument).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.xcuda_Item).WithRequired(t => (AsycudaDocument)t.AsycudaDocument);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

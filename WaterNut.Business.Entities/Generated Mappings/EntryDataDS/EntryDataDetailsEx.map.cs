@@ -44,6 +44,7 @@
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.Name).HasColumnName("Name").HasMaxLength(50);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsEx).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

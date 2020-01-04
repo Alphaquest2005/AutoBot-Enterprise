@@ -23,6 +23,7 @@ namespace DocumentDS.Business.Entities
         partial void AutoGenStartUp() //FileType()
         {
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
+            this.FileTypes1 = new List<FileType>();
         }
 
         [DataMember]
@@ -206,9 +207,28 @@ namespace DocumentDS.Business.Entities
         }
         bool _copyentrydata;
         [DataMember]
+        public Nullable<int> ParentFileTypeId 
+        {
+            get
+            {
+                return _parentfiletypeid;
+            }
+            set
+            {
+                _parentfiletypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _parentfiletypeid;
+        [DataMember]
         public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        [DataMember]
+        public List<FileType> FileTypes1 { get; set; }
+        [DataMember]
+        public FileType FileType1 { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

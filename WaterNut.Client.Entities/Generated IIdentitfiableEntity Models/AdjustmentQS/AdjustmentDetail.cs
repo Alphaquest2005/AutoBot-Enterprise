@@ -142,6 +142,44 @@ namespace AdjustmentQS.Client.Entities
             }
 
       }
+        public string SystemDocumentSetEntityName
+        {
+            get
+            {
+                return this.SystemDocumentSet == null ? "" : this.SystemDocumentSet.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (SystemDocumentSetClient ctx = new SystemDocumentSetClient())
+                    {
+                        var dto = ctx.GetSystemDocumentSets().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.SystemDocumentSet = (SystemDocumentSet)new SystemDocumentSet().CreateEntityFromString(value);
+							
+							this.EntryDataDetailsId = Convert.ToInt32(this.SystemDocumentSet.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddSystemDocumentSet");
+                        }
+                        else
+                        {
+                            var obj = new SystemDocumentSet(dto);
+                           if (this.SystemDocumentSet == null || this.SystemDocumentSet.EntityId != obj.EntityId) this.SystemDocumentSet = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
         public string ApplicationSettingsEntityName
         {
             get

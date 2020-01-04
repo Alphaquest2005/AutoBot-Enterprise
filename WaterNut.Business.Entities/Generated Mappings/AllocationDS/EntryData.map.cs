@@ -28,6 +28,7 @@
               this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
               this.Property(t => t.TotalInsurance).HasColumnName("TotalInsurance");
               this.Property(t => t.TotalDeduction).HasColumnName("TotalDeduction");
+              this.Property(t => t.SourceFile).HasColumnName("SourceFile");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

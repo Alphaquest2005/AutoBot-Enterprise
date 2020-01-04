@@ -144,6 +144,9 @@
     <Compile Include="ShortAllocation.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>
+    <Compile Include="SystemDocumentSet.cs">
+      <DependentUpon>OversShortQS.tt</DependentUpon>
+    </Compile>
     <Compile Include="xcuda_Item.cs">
       <DependentUpon>OversShortQS.tt</DependentUpon>
     </Compile>

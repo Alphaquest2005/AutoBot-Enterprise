@@ -333,6 +333,32 @@ namespace AdjustmentQS.Client.DTO
 		}
         private Nullable<double> _LastCost;
 
+        [DataMember]
+        public Nullable<double> TotalCost
+		{ 
+		    get { return _TotalCost; }
+			set
+			{
+			    if (value == _TotalCost) return;
+				_TotalCost = value;
+				NotifyPropertyChanged();//m => this.TotalCost
+			}
+		}
+        private Nullable<double> _TotalCost;
+
+        [DataMember]
+        public int InventoryItemId
+		{ 
+		    get { return _InventoryItemId; }
+			set
+			{
+			    if (value == _InventoryItemId) return;
+				_InventoryItemId = value;
+				NotifyPropertyChanged();//m => this.InventoryItemId
+			}
+		}
+        private int _InventoryItemId;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
