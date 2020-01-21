@@ -171,6 +171,21 @@ namespace AdjustmentQS.Business.Entities
         }
         string _xstatus;
         [DataMember]
+        public string Comments 
+        {
+            get
+            {
+                return _comments;
+            }
+            set
+            {
+                _comments = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _comments;
+        [DataMember]
         public EntryDataDetail EntryDataDetail { get; set; }
         [DataMember]
         public xcuda_Item xcuda_Item { get; set; }

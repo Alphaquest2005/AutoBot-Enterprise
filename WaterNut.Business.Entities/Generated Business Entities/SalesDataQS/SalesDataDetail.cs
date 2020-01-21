@@ -311,6 +311,21 @@ namespace SalesDataQS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
         public SalesData SalesData { get; set; }
         [DataMember]
         public List<AsycudaDocumentSetEntryDataDetails> AsycudaDocumentSets { get; set; }

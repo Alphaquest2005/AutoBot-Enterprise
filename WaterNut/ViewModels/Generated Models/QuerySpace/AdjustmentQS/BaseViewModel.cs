@@ -68,6 +68,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemsExIDChanged, OnCurrentInventoryItemsExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentShortAllocationIDChanged, OnCurrentShortAllocationIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSystemDocumentSetIDChanged, OnCurrentSystemDocumentSetIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PreDiscrepancyErrorsIDChanged, OnCurrentTODO_PreDiscrepancyErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.Currentxcuda_ItemIDChanged, OnCurrentxcuda_ItemIDChanged);
        
 
@@ -87,6 +88,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
                         RegisterToReceiveMessages<ShortAllocation>(MessageToken.CurrentShortAllocationChanged, OnCurrentShortAllocationChanged);
                         RegisterToReceiveMessages<SystemDocumentSet>(MessageToken.CurrentSystemDocumentSetChanged, OnCurrentSystemDocumentSetChanged);
+                        RegisterToReceiveMessages<TODO_PreDiscrepancyErrors>(MessageToken.CurrentTODO_PreDiscrepancyErrorsChanged, OnCurrentTODO_PreDiscrepancyErrorsChanged);
                         RegisterToReceiveMessages<xcuda_Item>(MessageToken.Currentxcuda_ItemChanged, OnCurrentxcuda_ItemChanged);
     
                 // Receive messages for cached collections for purpose of refreshing cache
@@ -509,6 +511,33 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                                     if (!string.IsNullOrEmpty(_currentSystemDocumentSetID)) BeginSendMessage(MessageToken.CurrentSystemDocumentSetIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentSystemDocumentSetIDChanged, _currentSystemDocumentSetID));
                                     NotifyPropertyChanged(x => this.CurrentSystemDocumentSetID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_PreDiscrepancyErrorsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_PreDiscrepancyErrorsRepository ctx = new TODO_PreDiscrepancyErrorsRepository())
+                            {
+                                CurrentTODO_PreDiscrepancyErrors = await ctx.GetTODO_PreDiscrepancyErrors(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_PreDiscrepancyErrors);
+                        }
+
+                        private  string _currentTODO_PreDiscrepancyErrorsID = "";
+                        public string CurrentTODO_PreDiscrepancyErrorsID
+                        {
+                            get
+                            {
+                                return _currentTODO_PreDiscrepancyErrorsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_PreDiscrepancyErrorsID != value)
+                                {
+                                    _currentTODO_PreDiscrepancyErrorsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_PreDiscrepancyErrorsID)) BeginSendMessage(MessageToken.CurrentTODO_PreDiscrepancyErrorsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_PreDiscrepancyErrorsIDChanged, _currentTODO_PreDiscrepancyErrorsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_PreDiscrepancyErrorsID);  
                                 }
                             }
                         }
@@ -1307,6 +1336,56 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     _vcurrentSystemDocumentSet = value;
 					if(_vcurrentSystemDocumentSet != null) CurrentSystemDocumentSet = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentSystemDocumentSet);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_PreDiscrepancyErrorsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PreDiscrepancyErrors> e)
+        {
+            //CurrentTODO_PreDiscrepancyErrors = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_PreDiscrepancyErrors);
+        }
+
+        private  TODO_PreDiscrepancyErrors _currentTODO_PreDiscrepancyErrors;
+        public TODO_PreDiscrepancyErrors CurrentTODO_PreDiscrepancyErrors
+        {
+            get
+            {
+                return _currentTODO_PreDiscrepancyErrors;
+            }
+            set
+            {
+                if (_currentTODO_PreDiscrepancyErrors != value)
+                {
+                    _currentTODO_PreDiscrepancyErrors = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_PreDiscrepancyErrorsChanged,
+                                                     new NotificationEventArgs<TODO_PreDiscrepancyErrors>(MessageToken.CurrentTODO_PreDiscrepancyErrorsChanged, _currentTODO_PreDiscrepancyErrors)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_PreDiscrepancyErrors);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_PreDiscrepancyErrors> _vcurrentTODO_PreDiscrepancyErrors;
+        public VirtualListItem<TODO_PreDiscrepancyErrors> VCurrentTODO_PreDiscrepancyErrors
+        {
+            get
+            {
+                return _vcurrentTODO_PreDiscrepancyErrors;
+            }
+            set
+            {
+                if (_vcurrentTODO_PreDiscrepancyErrors != value)
+                {
+                    _vcurrentTODO_PreDiscrepancyErrors = value;
+					if(_vcurrentTODO_PreDiscrepancyErrors != null) CurrentTODO_PreDiscrepancyErrors = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_PreDiscrepancyErrors);                    
                 }
             }
         }

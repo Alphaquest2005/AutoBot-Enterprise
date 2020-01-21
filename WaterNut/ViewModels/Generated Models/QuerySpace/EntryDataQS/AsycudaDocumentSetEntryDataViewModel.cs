@@ -159,15 +159,14 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 		 internal virtual void OnCurrentEntryDataExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryDataEx> e)
 			{
 			if(ViewCurrentEntryDataEx == false) return;
-			if (e.Data == null || e.Data.InvoiceNo == null)
+			if (e.Data == null || e.Data.EntryData_Id == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("EntryDataId == \"{0}\"", e.Data.InvoiceNo.ToString());
-                }
+				vloader.FilterExpression = string.Format("EntryData_Id == {0}", e.Data.EntryData_Id.ToString());
+                 }
 
 				AsycudaDocumentSetEntryDatas.Refresh();
 				NotifyPropertyChanged(x => this.AsycudaDocumentSetEntryDatas);
@@ -177,15 +176,14 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 		 internal virtual void OnCurrentEntryDataChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<EntryData> e)
 			{
 			if(ViewCurrentEntryData == false) return;
-			if (e.Data == null || e.Data.EntryDataId == null)
+			if (e.Data == null || e.Data.EntryData_Id == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("EntryDataId == \"{0}\"", e.Data.EntryDataId.ToString());
-                }
+				vloader.FilterExpression = string.Format("EntryData_Id == {0}", e.Data.EntryData_Id.ToString());
+                 }
 
 				AsycudaDocumentSetEntryDatas.Refresh();
 				NotifyPropertyChanged(x => this.AsycudaDocumentSetEntryDatas);
@@ -249,24 +247,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }
 
  
-
-		private string _entryDataIdFilter;
-        public string EntryDataIdFilter
-        {
-            get
-            {
-                return _entryDataIdFilter;
-            }
-            set
-            {
-                _entryDataIdFilter = value;
-				NotifyPropertyChanged(x => EntryDataIdFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -295,10 +275,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 		internal virtual StringBuilder GetAutoPropertyFilterString()
 		{
 		var res = new StringBuilder();
- 
-
-									if(string.IsNullOrEmpty(EntryDataIdFilter) == false)
-						res.Append(" && " + string.Format("EntryDataId.Contains(\"{0}\")",  EntryDataIdFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -321,9 +297,6 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             {
                 dataToPrint = lst.Select(x => new AsycudaDocumentSetEntryDataExcelLine
                 {
- 
-                    EntryDataId = x.EntryDataId 
-                    
                 }).ToList()
             };
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -334,10 +307,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
         public class AsycudaDocumentSetEntryDataExcelLine
         {
-		 
-                    public string EntryDataId { get; set; } 
-                    
-        }
+		        }
 
 		
     }

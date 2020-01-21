@@ -112,7 +112,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_ASYCUDAEx" Width="2.875" PointX="5.625" PointY="55.625" />
         <AssociationConnector Association="WaterNutDBModel.xcuda_ASYCUDAxcuda_ASYCUDAEx" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentEntryData" Width="1.5" PointX="3.125" PointY="6.375" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEntryData" Width="1.5" PointX="3.375" PointY="64.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEntryData" Width="1.5" PointX="4.625" PointY="64.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentEntryData_xcuda_ASYCUDA" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSetEntryData_AsycudaDocumentSet" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_ASYCUDA_ExtendedProperties" Width="3.5" PointX="10.25" PointY="57.5" />

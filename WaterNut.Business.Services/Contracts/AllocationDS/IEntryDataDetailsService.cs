@@ -111,6 +111,9 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryDataDetails>> GetEntryDataDetailsByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataDetails>> GetEntryDataDetailsByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

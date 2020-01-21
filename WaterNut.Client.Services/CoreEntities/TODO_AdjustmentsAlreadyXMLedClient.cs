@@ -112,7 +112,17 @@ namespace CoreEntities.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-        public decimal SumField(string whereExp, string sumExp)
+		public async Task<IEnumerable<TODO_AdjustmentsAlreadyXMLed>> GetTODO_AdjustmentsAlreadyXMLedByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_AdjustmentsAlreadyXMLedByEmailId(EmailId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_AdjustmentsAlreadyXMLed>> GetTODO_AdjustmentsAlreadyXMLedByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_AdjustmentsAlreadyXMLedByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+          public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
 		}

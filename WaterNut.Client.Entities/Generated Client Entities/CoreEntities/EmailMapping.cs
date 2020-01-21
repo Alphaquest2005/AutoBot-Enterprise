@@ -78,7 +78,7 @@ public int ApplicationSettingsId
        [RequiredValidationAttribute(ErrorMessage= "Pattern is required")]
        
                 
-                [MaxLength(255, ErrorMessage = "Pattern has a max length of 255 letters ")]
+                
 public string Pattern
 		{ 
 		    get { return this.emailmapping.Pattern; }

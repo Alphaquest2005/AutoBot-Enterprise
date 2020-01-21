@@ -153,6 +153,21 @@ public bool ImportComplete
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.EntryData_Id; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.EntryData_Id) return;
+				this.asycudadocumentitementrydatadetails.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
        private AsycudaDocumentItem _AsycudaDocumentItem;
         public  AsycudaDocumentItem AsycudaDocumentItem
 		{

@@ -105,6 +105,7 @@
     <Compile Include="AdjustmentQS\IInventoryItemsExService.cs" />
     <Compile Include="AdjustmentQS\IShortAllocationService.cs" />
     <Compile Include="AdjustmentQS\ISystemDocumentSetService.cs" />
+    <Compile Include="AdjustmentQS\ITODO_PreDiscrepancyErrorsService.cs" />
     <Compile Include="AdjustmentQS\Ixcuda_ItemService.cs" />
     <Compile Include="AllocationQS\IAdjustmentShortAllocationService.cs" />
     <Compile Include="AllocationQS\IAsycudaSalesAllocationsExService.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="CoreEntities\IFileTypeContactsService.cs" />
     <Compile Include="CoreEntities\IFileTypeMappingsService.cs" />
     <Compile Include="CoreEntities\IFileTypesService.cs" />
+    <Compile Include="CoreEntities\IInfoMappingRegExService.cs" />
     <Compile Include="CoreEntities\IInfoMappingService.cs" />
     <Compile Include="CoreEntities\IInventoryItemAliasXService.cs" />
     <Compile Include="CoreEntities\IInventoryItemXService.cs" />

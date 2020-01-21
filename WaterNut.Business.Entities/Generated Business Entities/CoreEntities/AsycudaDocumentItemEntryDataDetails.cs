@@ -126,6 +126,21 @@ namespace CoreEntities.Business.Entities
         }
         bool _importcomplete;
         [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem { get; set; }
 
  //       [DataMember]

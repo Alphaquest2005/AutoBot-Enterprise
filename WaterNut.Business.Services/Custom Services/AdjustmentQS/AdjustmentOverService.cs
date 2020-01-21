@@ -37,7 +37,7 @@ namespace AdjustmentQS.Business.Services
                         .Include("AdjustmentEx.AsycudaDocumentSets.SystemDocumentSet")
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
-                        .Where(x => !x.AsycudaDocumentItemEntryDataDetails.Any())
+                        .Where(x => x.AsycudaDocumentItemEntryDataDetails.All(z => "IM7,EX9".Contains(z.DocumentType)))
                         .Where(x => (double)x.Cost > 0)
                         .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
                         .OrderBy(x => x.EffectiveDate)
@@ -47,6 +47,7 @@ namespace AdjustmentQS.Business.Services
                         {
                             EntryDataDetailsId = x.adjustment.EntryDataDetailsId,
                             EntryDataId = x.adjustment.EntryDataId,
+                            EntryData_Id = x.adjustment.EntryData_Id,
                             ItemNumber = x.adjustment.ItemNumber,
                             ItemDescription = x.adjustment.ItemDescription,
                             Cost = (double)x.adjustment.Cost,
@@ -56,6 +57,7 @@ namespace AdjustmentQS.Business.Services
                             EntryData = new EntryData()
                             {
                                 EntryDataId = x.adjustment.EntryDataId,
+                                EntryData_Id = x.adjustment.EntryData_Id,
                                 Currency = x.adjustment.AdjustmentEx.Currency,
                                 EntryDataDate = x.adjustment.AdjustmentEx.InvoiceDate,
                                 EmailId = x.adjustment.AdjustmentEx.EmailId,

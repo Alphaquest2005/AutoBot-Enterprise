@@ -114,6 +114,9 @@ namespace SalesDataQS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<SalesDataDetail>> GetSalesDataDetailByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<SalesDataDetail>> GetSalesDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

@@ -36,6 +36,10 @@
               this.Property(t => t.EffectiveDate).HasColumnName("EffectiveDate");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.Property(t => t.TaxAmount).HasColumnName("TaxAmount");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.Property(t => t.TotalCost).HasColumnName("TotalCost");
+              this.Property(t => t.LastCost).HasColumnName("LastCost");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

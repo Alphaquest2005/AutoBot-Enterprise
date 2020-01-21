@@ -11,9 +11,9 @@
     {
         public InvoicesMap()
         {                        
-              this.HasKey(t => t.EntryDataId);        
+              this.HasKey(t => t.EntryData_Id);        
               this.ToTable("EntryData_Invoices");
-              this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.PONumber).HasColumnName("PONumber").HasMaxLength(50);
              // Nav Property Names
                   

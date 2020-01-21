@@ -47,9 +47,10 @@
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
               this.Property(t => t.Subject).HasColumnName("Subject").IsRequired();
               this.Property(t => t.EmailDate).HasColumnName("EmailDate");
-              this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<AdjustmentDetail>) t.AdjustmentDetails).HasForeignKey(d => d.EntryDataId);
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<AdjustmentDetail>) t.AdjustmentDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasOptional(t => t.SystemDocumentSet).WithMany(t =>(ICollection<AdjustmentDetail>) t.AdjustmentDetails).HasForeignKey(d => d.AsycudaDocumentSetId);
-              this.HasOptional(t => t.AdjustmentShorts).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
+              this.HasOptional(t => t.AdjustmentShorts).WithRequired(t => (AdjustmentDetail) t.AdjustmentDetail);
               this.HasOptional(t => t.AdjustmentOvers).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
               this.HasMany(t => t.AsycudaDocumentItemEntryDataDetails).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);
               this.HasMany(t => t.ShortAllocations).WithRequired(t => (AdjustmentDetail)t.AdjustmentDetail);

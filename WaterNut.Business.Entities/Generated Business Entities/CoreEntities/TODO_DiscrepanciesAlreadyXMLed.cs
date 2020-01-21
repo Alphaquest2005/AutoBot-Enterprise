@@ -186,21 +186,6 @@ namespace CoreEntities.Business.Entities
         }
         string _status;
         [DataMember]
-        public string CNumber 
-        {
-            get
-            {
-                return _cnumber;
-            }
-            set
-            {
-                _cnumber = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _cnumber;
-        [DataMember]
         public string Declarant_Reference_Number 
         {
             get
@@ -260,6 +245,246 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _referencenumber;
+        [DataMember]
+        public string PreviousCNumber 
+        {
+            get
+            {
+                return _previouscnumber;
+            }
+            set
+            {
+                _previouscnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _previouscnumber;
+        [DataMember]
+        public string DocumentType 
+        {
+            get
+            {
+                return _documenttype;
+            }
+            set
+            {
+                _documenttype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documenttype;
+        [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
+        [DataMember]
+        public Nullable<System.DateTime> EffectiveDate 
+        {
+            get
+            {
+                return _effectivedate;
+            }
+            set
+            {
+                _effectivedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _effectivedate;
+        [DataMember]
+        public string ItemDescription 
+        {
+            get
+            {
+                return _itemdescription;
+            }
+            set
+            {
+                _itemdescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _itemdescription;
+        [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
+        [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
+        public double Quantity 
+        {
+            get
+            {
+                return _quantity;
+            }
+            set
+            {
+                _quantity = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _quantity;
+        [DataMember]
+        public double Cost 
+        {
+            get
+            {
+                return _cost;
+            }
+            set
+            {
+                _cost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _cost;
+        [DataMember]
+        public string Subject 
+        {
+            get
+            {
+                return _subject;
+            }
+            set
+            {
+                _subject = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _subject;
+        [DataMember]
+        public System.DateTime EmailDate 
+        {
+            get
+            {
+                return _emaildate;
+            }
+            set
+            {
+                _emaildate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        System.DateTime _emaildate;
+        [DataMember]
+        public Nullable<int> LineNumber 
+        {
+            get
+            {
+                return _linenumber;
+            }
+            set
+            {
+                _linenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _linenumber;
+        [DataMember]
+        public string PreviousInvoiceNumber 
+        {
+            get
+            {
+                return _previousinvoicenumber;
+            }
+            set
+            {
+                _previousinvoicenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _previousinvoicenumber;
+        [DataMember]
+        public string Comment 
+        {
+            get
+            {
+                return _comment;
+            }
+            set
+            {
+                _comment = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _comment;
+        [DataMember]
+        public string DutyFreePaid 
+        {
+            get
+            {
+                return _dutyfreepaid;
+            }
+            set
+            {
+                _dutyfreepaid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _dutyfreepaid;
+        [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

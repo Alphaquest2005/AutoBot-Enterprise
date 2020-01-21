@@ -510,6 +510,42 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Double? _totalFreightFilter;
+        public Double? TotalFreightFilter
+        {
+            get
+            {
+                return _totalFreightFilter;
+            }
+            set
+            {
+                _totalFreightFilter = value;
+				NotifyPropertyChanged(x => TotalFreightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalsFilter;
+        public Double? TotalsFilter
+        {
+            get
+            {
+                return _totalsFilter;
+            }
+            set
+            {
+                _totalsFilter = value;
+				NotifyPropertyChanged(x => TotalsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -617,7 +653,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("TotalOtherCost == {0}",  TotalOtherCostFilter.ToString()));				 
 
 					if(TotalDeductionsFilter.HasValue)
-						res.Append(" && " + string.Format("TotalDeductions == {0}",  TotalDeductionsFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalDeductions == {0}",  TotalDeductionsFilter.ToString()));				 
+
+					if(TotalFreightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalFreight == {0}",  TotalFreightFilter.ToString()));				 
+
+					if(TotalsFilter.HasValue)
+						res.Append(" && " + string.Format("Totals == {0}",  TotalsFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -685,7 +727,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TotalOtherCost = x.TotalOtherCost ,
                     
  
-                    TotalDeductions = x.TotalDeductions 
+                    TotalDeductions = x.TotalDeductions ,
+                    
+ 
+                    TotalFreight = x.TotalFreight ,
+                    
+ 
+                    Totals = x.Totals 
                     
                 }).ToList()
             };
@@ -744,6 +792,12 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public double TotalDeductions { get; set; } 
+                    
+ 
+                    public double TotalFreight { get; set; } 
+                    
+ 
+                    public double Totals { get; set; } 
                     
         }
 

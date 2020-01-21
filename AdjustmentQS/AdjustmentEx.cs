@@ -35,6 +35,7 @@ namespace AdjustmentQS
         public Nullable<int> FileTypeId { get; set; }
         public Nullable<double> InvoiceTotal { get; set; }
         public Nullable<double> ImportedTotal { get; set; }
+        public int EntryData_Id { get; set; }
     
         public virtual ICollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         public virtual ICollection<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }

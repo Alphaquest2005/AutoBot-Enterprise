@@ -419,6 +419,21 @@ namespace AllocationDS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
         public List<AsycudaSalesAllocations> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public EntryDataDetailsEx EntryDataDetailsEx { get; set; }
@@ -432,6 +447,8 @@ namespace AllocationDS.Business.Entities
         public List<AsycudaDocumentItemEntryDataDetails> AsycudaDocumentItemEntryDataDetails { get; set; }
         [DataMember]
         public List<EX9AsycudaSalesAllocations> EX9AsycudaSalesAllocations { get; set; }
+        [DataMember]
+        public EntryData EntryData { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

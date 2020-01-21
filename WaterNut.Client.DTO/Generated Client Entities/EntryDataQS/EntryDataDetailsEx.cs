@@ -424,6 +424,32 @@ namespace EntryDataQS.Client.DTO
 		}
         private Nullable<int> _FileTypeId;
 
+        [DataMember]
+        public string Name
+		{ 
+		    get { return _Name; }
+			set
+			{
+			    if (value == _Name) return;
+				_Name = value;
+				NotifyPropertyChanged();//m => this.Name
+			}
+		}
+        private string _Name;
+
+        [DataMember]
+        public int EntryData_Id
+		{ 
+		    get { return _EntryData_Id; }
+			set
+			{
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
+			}
+		}
+        private int _EntryData_Id;
+
        
         [DataMember]
         public InventoryItemsEx InventoryItemsEx

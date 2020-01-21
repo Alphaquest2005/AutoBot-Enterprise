@@ -24,6 +24,7 @@ namespace AdjustmentQS
         public int SANumber { get; set; }
         public Nullable<int> xEntryItem_Id { get; set; }
         public string xStatus { get; set; }
+        public string Comments { get; set; }
     
         public virtual EntryDataDetail EntryDataDetail { get; set; }
         public virtual xcuda_Item xcuda_Item { get; set; }

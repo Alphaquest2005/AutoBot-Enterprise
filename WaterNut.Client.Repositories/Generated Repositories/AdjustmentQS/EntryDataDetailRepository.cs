@@ -422,6 +422,34 @@ namespace AdjustmentQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<EntryDataDetail>> GetEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+             if (EntryData_Id == "0") return null;
+            try
+            {
+                 using (EntryDataDetailClient t = new EntryDataDetailClient())
+                    {
+                        var res = await t.GetEntryDataDetailByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EntryDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

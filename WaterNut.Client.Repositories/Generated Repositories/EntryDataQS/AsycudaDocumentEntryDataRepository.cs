@@ -393,14 +393,14 @@ namespace EntryDataQS.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+ 	 public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
-             if (EntryDataId == "0") return null;
+             if (EntryData_Id == "0") return null;
             try
             {
                  using (AsycudaDocumentEntryDataClient t = new AsycudaDocumentEntryDataClient())
                     {
-                        var res = await t.GetAsycudaDocumentEntryDataByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetAsycudaDocumentEntryDataByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new AsycudaDocumentEntryData(x)).AsEnumerable();

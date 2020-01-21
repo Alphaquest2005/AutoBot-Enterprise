@@ -98,16 +98,16 @@ namespace DocumentItemDS.Business.Services
         }
 
 
-        public async Task<xcuda_Inventory_Item> Getxcuda_Inventory_ItemByKey(string ItemNumber, List<string> includesLst = null, bool tracking = true)
+        public async Task<xcuda_Inventory_Item> Getxcuda_Inventory_ItemByKey(string Item_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(ItemNumber))return null; 
+			   if(string.IsNullOrEmpty(Item_Id))return null; 
               using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(Item_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                xcuda_Inventory_Item entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.ItemNumber == i).ConfigureAwait(continueOnCapturedContext: false);
+                xcuda_Inventory_Item entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Item_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -298,11 +298,11 @@ namespace DocumentItemDS.Business.Services
                                 IQueryable<xcuda_Inventory_Item> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.Item_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber).Where(exp);
+                                    dset = set.OrderBy(x => x.Item_Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -372,12 +372,12 @@ namespace DocumentItemDS.Business.Services
                                 IQueryable<xcuda_Inventory_Item> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.Item_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.Item_Id);
                                 }
 
                                 var lst = dset
@@ -523,15 +523,15 @@ namespace DocumentItemDS.Business.Services
             }
         }
 
-        public async Task<bool> Deletexcuda_Inventory_Item(string ItemNumber)
+        public async Task<bool> Deletexcuda_Inventory_Item(string Item_Id)
         {
             try
             {
               using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(Item_Id);
                 xcuda_Inventory_Item entity = await dbContext.xcuda_Inventory_Item
-													.SingleOrDefaultAsync(x => x.ItemNumber == i)
+													.SingleOrDefaultAsync(x => x.Item_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -681,7 +681,7 @@ namespace DocumentItemDS.Business.Services
                     {
                         return await dbContext.xcuda_Inventory_Item
 										.AsNoTracking()
-                                        .OrderBy(y => y.ItemNumber)
+                                        .OrderBy(y => y.Item_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -693,7 +693,7 @@ namespace DocumentItemDS.Business.Services
                         return await dbContext.xcuda_Inventory_Item
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.ItemNumber)
+										.OrderBy(y => y.Item_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -738,7 +738,7 @@ namespace DocumentItemDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.xcuda_Inventory_Item.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return await dbContext.xcuda_Inventory_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -781,9 +781,9 @@ namespace DocumentItemDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_Inventory_Item>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Item_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -802,9 +802,9 @@ namespace DocumentItemDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_Inventory_Item>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Item_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -830,7 +830,7 @@ namespace DocumentItemDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.ItemNumber)
+                                    .OrderBy(y => y.Item_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -855,8 +855,8 @@ namespace DocumentItemDS.Business.Services
                     }
                     return await set//dbContext.xcuda_Inventory_Item
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
-								.OrderBy(y => y.ItemNumber)
+                                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
+								.OrderBy(y => y.Item_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -908,9 +908,9 @@ namespace DocumentItemDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.Item_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -937,9 +937,9 @@ namespace DocumentItemDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.Item_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -989,7 +989,7 @@ namespace DocumentItemDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<xcuda_Inventory_Item>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -999,7 +999,7 @@ namespace DocumentItemDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_Inventory_Item>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"Item_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1026,7 +1026,7 @@ namespace DocumentItemDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<xcuda_Inventory_Item>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"Item_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1036,7 +1036,7 @@ namespace DocumentItemDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_Inventory_Item>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"Item_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1051,7 +1051,36 @@ namespace DocumentItemDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<xcuda_Inventory_Item> entities = await set//dbContext.xcuda_Inventory_Item
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1109,7 +1138,7 @@ namespace DocumentItemDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.xcuda_Inventory_Item.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return Convert.ToDecimal(dbContext.xcuda_Inventory_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1150,9 +1179,9 @@ namespace DocumentItemDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<xcuda_Inventory_Item>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Item_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1170,9 +1199,9 @@ namespace DocumentItemDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<xcuda_Inventory_Item>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("Item_Id")
                 .Sum(field));
 			}
 			catch (Exception)

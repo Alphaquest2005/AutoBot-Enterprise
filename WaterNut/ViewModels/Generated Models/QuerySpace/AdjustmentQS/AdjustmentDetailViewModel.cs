@@ -176,15 +176,14 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 		 internal virtual void OnCurrentAdjustmentExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentEx> e)
 			{
 			if(ViewCurrentAdjustmentEx == false) return;
-			if (e.Data == null || e.Data.InvoiceNo == null)
+			if (e.Data == null || e.Data.EntryData_Id == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("EntryDataId == \"{0}\"", e.Data.InvoiceNo.ToString());
-                }
+				vloader.FilterExpression = string.Format("EntryData_Id == {0}", e.Data.EntryData_Id.ToString());
+                 }
 
 				AdjustmentDetails.Refresh();
 				NotifyPropertyChanged(x => this.AdjustmentDetails);

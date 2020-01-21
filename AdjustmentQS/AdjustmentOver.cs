@@ -50,6 +50,7 @@ namespace AdjustmentQS
         public System.DateTime InvoiceDate { get; set; }
         public string Subject { get; set; }
         public System.DateTime EmailDate { get; set; }
+        public int EntryData_Id { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual ICollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }

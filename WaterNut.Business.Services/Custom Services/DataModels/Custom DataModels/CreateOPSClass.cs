@@ -68,6 +68,7 @@ namespace WaterNut.DataSpace
                         {
                             EntryDataDetailsId = g.First().EntryDataDetailsId,
                             EntryDataId = g.First().EntryDataId,
+                            EntryData_Id = g.First().EntryData_Id,
                             QtyAllocated = g.First().QtyAllocated
                         }}
                     }

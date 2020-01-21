@@ -583,6 +583,21 @@ public System.DateTime EmailDate
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.adjustmentdetail.EntryData_Id; }
+			set
+			{
+			    if (value == this.adjustmentdetail.EntryData_Id) return;
+				this.adjustmentdetail.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
        private AdjustmentEx _AdjustmentEx;
         public  AdjustmentEx AdjustmentEx
 		{

@@ -589,6 +589,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _entrydatadetailsidFilter;
+        public Int32? EntrydatadetailsidFilter
+        {
+            get
+            {
+                return _entrydatadetailsidFilter;
+            }
+            set
+            {
+                _entrydatadetailsidFilter = value;
+				NotifyPropertyChanged(x => EntrydatadetailsidFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -759,7 +777,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 				 
 
 					if(QuantityFilter.HasValue)
-						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
+
+					if(EntrydatadetailsidFilter.HasValue)
+						res.Append(" && " + string.Format("Entrydatadetailsid == {0}",  EntrydatadetailsidFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -833,7 +854,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     emailDate = x.emailDate ,
                     
  
-                    Quantity = x.Quantity 
+                    Quantity = x.Quantity ,
+                    
+ 
+                    Entrydatadetailsid = x.Entrydatadetailsid 
                     
                 }).ToList()
             };
@@ -898,6 +922,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public double Quantity { get; set; } 
+                    
+ 
+                    public int Entrydatadetailsid { get; set; } 
                     
         }
 

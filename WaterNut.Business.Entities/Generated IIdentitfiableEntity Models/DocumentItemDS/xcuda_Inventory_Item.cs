@@ -18,11 +18,11 @@ namespace DocumentItemDS.Business.Entities
         {
             get
             {
-                return this.ItemNumber.ToString();  // this.ItemNumber == null?"0":
+                return this.Item_Id.ToString();  // this.Item_Id == null?"0":
             }
             set
             {
-                this.ItemNumber = Convert.ToString(value);
+                this.Item_Id = Convert.ToInt32(value);
             }
         }
 

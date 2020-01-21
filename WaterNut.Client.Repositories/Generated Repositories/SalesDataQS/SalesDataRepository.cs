@@ -367,7 +367,35 @@ namespace SalesDataQS.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<SalesData>> GetSalesDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+	 public async Task<IEnumerable<SalesData>> GetSalesDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+             if (EntryDataId == "0") return null;
+            try
+            {
+                 using (SalesDataClient t = new SalesDataClient())
+                    {
+                        var res = await t.GetSalesDataByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new SalesData(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<SalesData>> GetSalesDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
              if (AsycudaDocumentSetId == "0") return null;
             try

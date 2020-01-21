@@ -80,6 +80,9 @@ namespace SalesDataQS.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
+		Task<IEnumerable<SalesData>> GetSalesDataByEntryDataId(string EntryDataId, List<string> includesLst = null);
+        
+  		[OperationContract]
 		Task<IEnumerable<SalesData>> GetSalesDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
   		[OperationContract]

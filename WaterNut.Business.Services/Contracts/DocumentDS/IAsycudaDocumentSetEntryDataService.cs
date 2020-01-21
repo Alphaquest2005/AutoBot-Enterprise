@@ -110,7 +110,7 @@ namespace DocumentDS.Business.Services
         Task<IEnumerable<AsycudaDocumentSetEntryData>> GetAsycudaDocumentSetEntryDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentSetEntryData>> GetAsycudaDocumentSetEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null);
+        Task<IEnumerable<AsycudaDocumentSetEntryData>> GetAsycudaDocumentSetEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

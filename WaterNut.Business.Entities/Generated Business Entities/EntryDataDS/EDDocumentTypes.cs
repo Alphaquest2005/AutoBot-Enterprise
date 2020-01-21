@@ -21,21 +21,6 @@ namespace EntryDataDS.Business.Entities
     public partial class EDDocumentTypes : BaseEntity<EDDocumentTypes>, ITrackable 
     {
         [DataMember]
-        public string EntryDataId 
-        {
-            get
-            {
-                return _entrydataid;
-            }
-            set
-            {
-                _entrydataid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _entrydataid;
-        [DataMember]
         public string DocumentType 
         {
             get
@@ -50,6 +35,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _documenttype;
+        [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
         [DataMember]
         public EntryData EntryData { get; set; }
 

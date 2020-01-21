@@ -658,6 +658,19 @@ namespace AllocationQS.Client.DTO
 		}
         private string _xStatus;
 
+        [DataMember]
+        public Nullable<int> SalesLineNumber
+		{ 
+		    get { return _SalesLineNumber; }
+			set
+			{
+			    if (value == _SalesLineNumber) return;
+				_SalesLineNumber = value;
+				NotifyPropertyChanged();//m => this.SalesLineNumber
+			}
+		}
+        private Nullable<int> _SalesLineNumber;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

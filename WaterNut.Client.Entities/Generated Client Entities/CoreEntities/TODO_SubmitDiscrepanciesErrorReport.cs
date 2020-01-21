@@ -254,7 +254,7 @@ public string comment
        
        
                 
-                [MaxLength(255, ErrorMessage = "Status has a max length of 255 letters ")]
+                [MaxLength(50, ErrorMessage = "Status has a max length of 50 letters ")]
 public string Status
 		{ 
 		    get { return this.todo_submitdiscrepancieserrorreport.Status; }
@@ -358,6 +358,21 @@ public double Quantity
 				this.todo_submitdiscrepancieserrorreport.Quantity = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Quantity");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Entrydatadetailsid is required")]
+       [NumberValidationAttribute]
+public int Entrydatadetailsid
+		{ 
+		    get { return this.todo_submitdiscrepancieserrorreport.Entrydatadetailsid; }
+			set
+			{
+			    if (value == this.todo_submitdiscrepancieserrorreport.Entrydatadetailsid) return;
+				this.todo_submitdiscrepancieserrorreport.Entrydatadetailsid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Entrydatadetailsid");
 			}
 		}
      

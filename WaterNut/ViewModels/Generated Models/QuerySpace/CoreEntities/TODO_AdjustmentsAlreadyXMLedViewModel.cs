@@ -346,24 +346,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _cNumberFilter;
-        public string CNumberFilter
-        {
-            get
-            {
-                return _cNumberFilter;
-            }
-            set
-            {
-                _cNumberFilter = value;
-				NotifyPropertyChanged(x => CNumberFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _declarant_Reference_NumberFilter;
         public string Declarant_Reference_NumberFilter
         {
@@ -467,6 +449,304 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _documentTypeFilter;
+        public string DocumentTypeFilter
+        {
+            get
+            {
+                return _documentTypeFilter;
+            }
+            set
+            {
+                _documentTypeFilter = value;
+				NotifyPropertyChanged(x => DocumentTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _previousCNumberFilter;
+        public string PreviousCNumberFilter
+        {
+            get
+            {
+                return _previousCNumberFilter;
+            }
+            set
+            {
+                _previousCNumberFilter = value;
+				NotifyPropertyChanged(x => PreviousCNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _typeFilter;
+        public string TypeFilter
+        {
+            get
+            {
+                return _typeFilter;
+            }
+            set
+            {
+                _typeFilter = value;
+				NotifyPropertyChanged(x => TypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startEffectiveDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartEffectiveDateFilter
+        {
+            get
+            {
+                return _startEffectiveDateFilter;
+            }
+            set
+            {
+                _startEffectiveDateFilter = value;
+				NotifyPropertyChanged(x => StartEffectiveDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endEffectiveDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndEffectiveDateFilter
+        {
+            get
+            {
+                return _endEffectiveDateFilter;
+            }
+            set
+            {
+                _endEffectiveDateFilter = value;
+				NotifyPropertyChanged(x => EndEffectiveDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _effectiveDateFilter;
+        public DateTime? EffectiveDateFilter
+        {
+            get
+            {
+                return _effectiveDateFilter;
+            }
+            set
+            {
+                _effectiveDateFilter = value;
+				NotifyPropertyChanged(x => EffectiveDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _itemDescriptionFilter;
+        public string ItemDescriptionFilter
+        {
+            get
+            {
+                return _itemDescriptionFilter;
+            }
+            set
+            {
+                _itemDescriptionFilter = value;
+				NotifyPropertyChanged(x => ItemDescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _quantityFilter;
+        public Double? QuantityFilter
+        {
+            get
+            {
+                return _quantityFilter;
+            }
+            set
+            {
+                _quantityFilter = value;
+				NotifyPropertyChanged(x => QuantityFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _costFilter;
+        public Double? CostFilter
+        {
+            get
+            {
+                return _costFilter;
+            }
+            set
+            {
+                _costFilter = value;
+				NotifyPropertyChanged(x => CostFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _subjectFilter;
+        public string SubjectFilter
+        {
+            get
+            {
+                return _subjectFilter;
+            }
+            set
+            {
+                _subjectFilter = value;
+				NotifyPropertyChanged(x => SubjectFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+		private DateTime? _startEmailDateFilter = DateTime.Parse(string.Format("{0}/1/{1}", DateTime.Now.Month ,DateTime.Now.Year));
+        public DateTime? StartEmailDateFilter
+        {
+            get
+            {
+                return _startEmailDateFilter;
+            }
+            set
+            {
+                _startEmailDateFilter = value;
+				NotifyPropertyChanged(x => StartEmailDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+		private DateTime? _endEmailDateFilter = DateTime.Parse(string.Format("{1}/{0}/{2}", DateTime.DaysInMonth( DateTime.Now.Year,DateTime.Now.Month), DateTime.Now.Month, DateTime.Now.Year));
+        public DateTime? EndEmailDateFilter
+        {
+            get
+            {
+                return _endEmailDateFilter;
+            }
+            set
+            {
+                _endEmailDateFilter = value;
+				NotifyPropertyChanged(x => EndEmailDateFilter);
+                FilterData();
+                
+            }
+        }
+ 
+
+		private DateTime? _emailDateFilter;
+        public DateTime? EmailDateFilter
+        {
+            get
+            {
+                return _emailDateFilter;
+            }
+            set
+            {
+                _emailDateFilter = value;
+				NotifyPropertyChanged(x => EmailDateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _lineNumberFilter;
+        public Int32? LineNumberFilter
+        {
+            get
+            {
+                return _lineNumberFilter;
+            }
+            set
+            {
+                _lineNumberFilter = value;
+				NotifyPropertyChanged(x => LineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _previousInvoiceNumberFilter;
+        public string PreviousInvoiceNumberFilter
+        {
+            get
+            {
+                return _previousInvoiceNumberFilter;
+            }
+            set
+            {
+                _previousInvoiceNumberFilter = value;
+				NotifyPropertyChanged(x => PreviousInvoiceNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _commentFilter;
+        public string CommentFilter
+        {
+            get
+            {
+                return _commentFilter;
+            }
+            set
+            {
+                _commentFilter = value;
+				NotifyPropertyChanged(x => CommentFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _dutyFreePaidFilter;
+        public string DutyFreePaidFilter
+        {
+            get
+            {
+                return _dutyFreePaidFilter;
+            }
+            set
+            {
+                _dutyFreePaidFilter = value;
+				NotifyPropertyChanged(x => DutyFreePaidFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -552,10 +832,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
  
 
-									if(string.IsNullOrEmpty(CNumberFilter) == false)
-						res.Append(" && " + string.Format("CNumber.Contains(\"{0}\")",  CNumberFilter));						
- 
-
 									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
  
@@ -595,6 +871,105 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(ReferenceNumberFilter) == false)
 						res.Append(" && " + string.Format("ReferenceNumber.Contains(\"{0}\")",  ReferenceNumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(DocumentTypeFilter) == false)
+						res.Append(" && " + string.Format("DocumentType.Contains(\"{0}\")",  DocumentTypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(PreviousCNumberFilter) == false)
+						res.Append(" && " + string.Format("PreviousCNumber.Contains(\"{0}\")",  PreviousCNumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TypeFilter) == false)
+						res.Append(" && " + string.Format("Type.Contains(\"{0}\")",  TypeFilter));						
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartEffectiveDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("EffectiveDate >= \"{0}\"",  Convert.ToDateTime(StartEffectiveDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndEffectiveDateFilter.HasValue)
+								res.Append(" && " + string.Format("EffectiveDate <= \"{0}\"",  Convert.ToDateTime(EndEffectiveDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartEffectiveDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEffectiveDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_effectiveDateFilter).Date != DateTime.MinValue)
+						{
+							if(EffectiveDateFilter.HasValue)
+								res.Append(" && " + string.Format("EffectiveDate == \"{0}\"",  Convert.ToDateTime(EffectiveDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
+
+									if(string.IsNullOrEmpty(ItemDescriptionFilter) == false)
+						res.Append(" && " + string.Format("ItemDescription.Contains(\"{0}\")",  ItemDescriptionFilter));						
+ 
+
+					if(QuantityFilter.HasValue)
+						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
+
+					if(CostFilter.HasValue)
+						res.Append(" && " + string.Format("Cost == {0}",  CostFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(SubjectFilter) == false)
+						res.Append(" && " + string.Format("Subject.Contains(\"{0}\")",  SubjectFilter));						
+ 
+
+ 
+
+				if (Convert.ToDateTime(StartEmailDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue) res.Append(" && (");
+
+					if (Convert.ToDateTime(StartEmailDateFilter).Date != DateTime.MinValue)
+						{
+							if(StartEmailDateFilter.HasValue)
+								res.Append(
+                                            (Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue?"":" && ") +
+                                            string.Format("EmailDate >= \"{0}\"",  Convert.ToDateTime(StartEmailDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+
+					if (Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue)
+						{
+							if(EndEmailDateFilter.HasValue)
+								res.Append(" && " + string.Format("EmailDate <= \"{0}\"",  Convert.ToDateTime(EndEmailDateFilter).Date.AddHours(23).ToString("MM/dd/yyyy HH:mm:ss")));
+						}
+
+				if (Convert.ToDateTime(StartEmailDateFilter).Date != DateTime.MinValue &&
+		        Convert.ToDateTime(EndEmailDateFilter).Date != DateTime.MinValue) res.Append(" )");
+
+					if (Convert.ToDateTime(_emailDateFilter).Date != DateTime.MinValue)
+						{
+							if(EmailDateFilter.HasValue)
+								res.Append(" && " + string.Format("EmailDate == \"{0}\"",  Convert.ToDateTime(EmailDateFilter).Date.ToString("MM/dd/yyyy")));
+						}
+				 
+
+					if(LineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(PreviousInvoiceNumberFilter) == false)
+						res.Append(" && " + string.Format("PreviousInvoiceNumber.Contains(\"{0}\")",  PreviousInvoiceNumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CommentFilter) == false)
+						res.Append(" && " + string.Format("Comment.Contains(\"{0}\")",  CommentFilter));						
+ 
+
+									if(string.IsNullOrEmpty(DutyFreePaidFilter) == false)
+						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -642,9 +1017,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Status = x.Status ,
                     
  
-                    CNumber = x.CNumber ,
-                    
- 
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
                     
  
@@ -654,7 +1026,46 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     RegistrationDate = x.RegistrationDate ,
                     
  
-                    ReferenceNumber = x.ReferenceNumber 
+                    ReferenceNumber = x.ReferenceNumber ,
+                    
+ 
+                    DocumentType = x.DocumentType ,
+                    
+ 
+                    PreviousCNumber = x.PreviousCNumber ,
+                    
+ 
+                    Type = x.Type ,
+                    
+ 
+                    EffectiveDate = x.EffectiveDate ,
+                    
+ 
+                    ItemDescription = x.ItemDescription ,
+                    
+ 
+                    Quantity = x.Quantity ,
+                    
+ 
+                    Cost = x.Cost ,
+                    
+ 
+                    Subject = x.Subject ,
+                    
+ 
+                    EmailDate = x.EmailDate ,
+                    
+ 
+                    LineNumber = x.LineNumber ,
+                    
+ 
+                    PreviousInvoiceNumber = x.PreviousInvoiceNumber ,
+                    
+ 
+                    Comment = x.Comment ,
+                    
+ 
+                    DutyFreePaid = x.DutyFreePaid 
                     
                 }).ToList()
             };
@@ -691,9 +1102,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string Status { get; set; } 
                     
  
-                    public string CNumber { get; set; } 
-                    
- 
                     public string Declarant_Reference_Number { get; set; } 
                     
  
@@ -704,6 +1112,45 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string ReferenceNumber { get; set; } 
+                    
+ 
+                    public string DocumentType { get; set; } 
+                    
+ 
+                    public string PreviousCNumber { get; set; } 
+                    
+ 
+                    public string Type { get; set; } 
+                    
+ 
+                    public Nullable<System.DateTime> EffectiveDate { get; set; } 
+                    
+ 
+                    public string ItemDescription { get; set; } 
+                    
+ 
+                    public double Quantity { get; set; } 
+                    
+ 
+                    public double Cost { get; set; } 
+                    
+ 
+                    public string Subject { get; set; } 
+                    
+ 
+                    public System.DateTime EmailDate { get; set; } 
+                    
+ 
+                    public Nullable<int> LineNumber { get; set; } 
+                    
+ 
+                    public string PreviousInvoiceNumber { get; set; } 
+                    
+ 
+                    public string Comment { get; set; } 
+                    
+ 
+                    public string DutyFreePaid { get; set; } 
                     
         }
 

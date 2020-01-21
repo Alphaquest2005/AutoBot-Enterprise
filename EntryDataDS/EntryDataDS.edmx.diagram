@@ -4,13 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="830e4acdfbed420fa8c846dbc7f9f89f" Name="Diagram1">
+      <Diagram DiagramId="830e4acdfbed420fa8c846dbc7f9f89f" Name="Diagram1" ZoomLevel="87">
         <EntityTypeShape EntityType="WaterNutDBModel.Sales" Width="1.5" PointX="5.625" PointY="3.25" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryData" Width="3.625" PointX="7.875" PointY="0.75" />
         <InheritanceConnector EntityType="WaterNutDBModel.Sales" />
         <EntityTypeShape EntityType="WaterNutDBModel.OpeningStock" Width="1.5" PointX="12.625" PointY="2.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.PurchaseOrders" Width="1.5" PointX="13.125" PointY="3.5" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="1.5" PointX="8.375" PointY="6.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.PurchaseOrders" Width="1.5" PointX="13" PointY="4.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="1.5" PointX="8.25" PointY="8.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_PurchaseOrderDetails_PurchaseOrders" />
         <InheritanceConnector EntityType="WaterNutDBModel.OpeningStock" />
         <InheritanceConnector EntityType="WaterNutDBModel.PurchaseOrders" />
@@ -32,7 +32,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.InventoryItems" Width="2.125" PointX="1.25" PointY="11.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Suppliers" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataExTotals" Width="1.5" PointX="2.875" PointY="5" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataExTotals" Width="1.5" PointX="2.875" PointY="5.375" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataEntryDataExTotals" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryDataEx" Width="1.5" PointX="15" PointY="0.75" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataEntryDataEx" />

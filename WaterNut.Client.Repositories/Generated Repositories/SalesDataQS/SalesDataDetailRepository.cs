@@ -449,6 +449,34 @@ namespace SalesDataQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<SalesDataDetail>> GetSalesDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+             if (EntryData_Id == "0") return null;
+            try
+            {
+                 using (SalesDataDetailClient t = new SalesDataDetailClient())
+                    {
+                        var res = await t.GetSalesDataDetailByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new SalesDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

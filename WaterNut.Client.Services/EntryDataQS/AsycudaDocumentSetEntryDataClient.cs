@@ -117,9 +117,9 @@ namespace EntryDataQS.Client.Services
             return  await Channel.GetAsycudaDocumentSetEntryDataByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<AsycudaDocumentSetEntryData>> GetAsycudaDocumentSetEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+  		public async Task<IEnumerable<AsycudaDocumentSetEntryData>> GetAsycudaDocumentSetEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
-            return  await Channel.GetAsycudaDocumentSetEntryDataByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
+            return  await Channel.GetAsycudaDocumentSetEntryDataByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

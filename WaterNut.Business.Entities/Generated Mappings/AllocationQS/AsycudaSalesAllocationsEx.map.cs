@@ -61,6 +61,7 @@
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
+              this.Property(t => t.SalesLineNumber).HasColumnName("SalesLineNumber");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

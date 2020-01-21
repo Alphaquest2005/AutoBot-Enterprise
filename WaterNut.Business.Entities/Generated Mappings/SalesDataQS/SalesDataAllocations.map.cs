@@ -11,11 +11,11 @@
     {
         public SalesDataAllocationsMap()
         {                        
-              this.HasKey(t => new {t.AllocationId, t.EntryDataId});        
+              this.HasKey(t => new {t.AllocationId, t.EntryData_Id});        
               this.ToTable("SalesDataAllocations");
               this.Property(t => t.AllocationId).HasColumnName("AllocationId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
-              this.HasRequired(t => t.SalesData).WithMany(t =>(ICollection<SalesDataAllocations>) t.SalesDataAllocations).HasForeignKey(d => d.EntryDataId);
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.HasRequired(t => t.SalesData).WithMany(t =>(ICollection<SalesDataAllocations>) t.SalesDataAllocations).HasForeignKey(d => d.EntryData_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -79,7 +79,13 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<TODO_DiscrepanciesAlreadyXMLed>> GetTODO_DiscrepanciesAlreadyXMLedByEmailId(string EmailId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<TODO_DiscrepanciesAlreadyXMLed>> GetTODO_DiscrepanciesAlreadyXMLedByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
+  		
     }
 }
 

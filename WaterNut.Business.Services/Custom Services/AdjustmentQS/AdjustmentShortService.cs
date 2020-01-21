@@ -42,9 +42,10 @@ namespace AdjustmentQS.Business.Services
                     .Include(x => x.AdjustmentEx)
                     .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                     .Where(x => x.SystemDocumentSet != null)
-                    //.Where(x => x.ItemNumber == "CRC/06037")
+                   // .Where(x => x.ItemNumber == "HEL/003361001")
                     //.Where(x => x.EntryDataId == "120902")
                     //.Where( x => x.EntryDataDetailsId == 545303)
+                    .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
                     .Where(x => x.EffectiveDate == null ) // take out other check cuz of existing entries 
                     .OrderBy(x => x.EntryDataDetailsId)
                     .DistinctBy(x => x.EntryDataDetailsId)
@@ -248,6 +249,7 @@ namespace AdjustmentQS.Business.Services
         {
             try
             {
+                CreateEx9Class.DocSetPi.Clear();
                 var docSet =
                     await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                         .ConfigureAwait(false);
@@ -275,7 +277,7 @@ namespace AdjustmentQS.Business.Services
 
                         await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                             new List<AllocationDataBlock>() {dbBlock}, docSet, "7400", false, itemPiSummarylst, false,
-                            false, ex9Type, true, "Current", true, false, true).ConfigureAwait(false);
+                            false, ex9Type, true, "Current", false, false, true).ConfigureAwait(false);// historic checks false cuz its supposed to be specific and executed
                     }
 
                 }
@@ -451,6 +453,7 @@ namespace AdjustmentQS.Business.Services
                         .Select(c => new EX9SalesAllocations
                         {
                             AllocationId = c.x.AllocationId,
+                            EntryData_Id = c.x.EntryDataDetails.EntryData_Id,
                             Commercial_Description =
                                 c.x.PreviousDocumentItem == null
                                     ? null
@@ -490,10 +493,12 @@ namespace AdjustmentQS.Business.Services
                             Total_CIF_itm = c.x.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm,
                             Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm,
                             // Net_weight_itm = c.x.PreviousDocumentItem != null ? ctx.xcuda_Weight_itm.FirstOrDefault(q => q.Valuation_item_Id == x.PreviousItem_Id).Net_weight_itm: 0,
-                            previousItems = c.x.PreviousDocumentItem.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
+                            previousItems = c.x.PreviousDocumentItem.EntryPreviousItems
+                                    .Select(y => y.xcuda_PreviousItem)
                                     .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) && y.xcuda_Item.AsycudaDocument.Cancelled != true)
                                     .Select(z => new previousItems()
                                     {
+                                        PreviousItem_Id = z.PreviousItem_Id,
                                         DutyFreePaid =
                                             z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4074" || z.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070"
                                                 ? "Duty Paid"
@@ -780,6 +785,39 @@ namespace AdjustmentQS.Business.Services
                 }
             
 
+        }
+
+        public async Task ProcessDISErrorsForAllocation(int applicationSettingsId)
+        {
+            // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
+            using (var ctx = new AdjustmentQSContext() {StartTracking = true})
+            {
+                ctx.Database.CommandTimeout = 0;
+
+
+
+                var lst = ctx.TODO_PreDiscrepancyErrors
+                    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                    //.Where(x => x.ItemNumber == "HEL/003361001")
+                    .OrderBy(x => x.EntryDataDetailsId)
+                    .DistinctBy(x => x.EntryDataDetailsId)
+                    .ToList();
+                // looking for 'INT/YBA473/3GL'
+
+                StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
+                foreach (var s in lst)
+                {
+                    var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
+                    ed.EffectiveDate = BaseDataModel.CurrentSalesInfo().Item2;
+                    ed.QtyAllocated = 0;
+                    ed.Comment = $@"DISERROR:{s.Status}";
+                    ed.Status = null;
+                    ctx.Database.ExecuteSqlCommand(
+                        $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}");
+                }
+
+                ctx.SaveChanges();
+            }
         }
     }
 }

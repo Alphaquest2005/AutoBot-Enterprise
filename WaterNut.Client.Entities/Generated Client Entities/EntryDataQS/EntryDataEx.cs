@@ -355,6 +355,51 @@ public double TotalDeductions
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.entrydataex.EntryData_Id; }
+			set
+			{
+			    if (value == this.entrydataex.EntryData_Id) return;
+				this.entrydataex.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "TotalFreight is required")]
+       [NumberValidationAttribute]
+public double TotalFreight
+		{ 
+		    get { return this.entrydataex.TotalFreight; }
+			set
+			{
+			    if (value == this.entrydataex.TotalFreight) return;
+				this.entrydataex.TotalFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalFreight");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Totals is required")]
+       [NumberValidationAttribute]
+public double Totals
+		{ 
+		    get { return this.entrydataex.Totals; }
+			set
+			{
+			    if (value == this.entrydataex.Totals) return;
+				this.entrydataex.Totals = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Totals");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEntryData> _AsycudaDocumentSets = null;
         public  ObservableCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets
 		{

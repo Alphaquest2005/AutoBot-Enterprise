@@ -153,6 +153,32 @@ namespace WaterNut.DataSpace
             get { return BaseDataModel._document_TypeCache; }
         }
 
+        public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
+        {
+            DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23);
+            var docRef = startDate.ToString("MMMM") + " " + startDate.Year.ToString();
+            var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
+                x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+            if (docSet == null)
+            {
+                using (var ctx = new DocumentDSContext())
+                {
+                    var doctype = ctx.Document_Type.Include(x => x.Customs_Procedure).First(x =>
+                        x.Type_of_declaration == "IM" && x.Declaration_gen_procedure_code == "7");
+                    ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
+                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
+                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{doctype.Document_TypeId},{
+                            doctype.Customs_Procedure.First(z => z.IsDefault == true).Customs_ProcedureId
+                        },0)");
+
+                }
+            }
+            var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef));
+            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+            return new Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string>(startDate, endDate, docSet, dirPath);
+        }
+
 
         public bool ValidateInstallation()
         {
@@ -1048,6 +1074,7 @@ namespace WaterNut.DataSpace
                     EntryDataDetails = g.Select(x => new EntryDataDetailSummary()
                     {
                         EntryDataDetailsId = x.EntryDataDetailsId,
+                        EntryData_Id = x.EntryData_Id,
                         EntryDataId = x.EntryDataId,
                         EffectiveDate = x.EffectiveDate.GetValueOrDefault(),
                         EntryDataDate = x.EntryData.EntryDataDate,
@@ -1506,12 +1533,12 @@ namespace WaterNut.DataSpace
                             TrackingState = TrackingState.Added
                         });
 
-                    if (cdoc.Document.AsycudaDocumentEntryDatas.All(x => x.EntryDataId != ed.EntryDataId))
+                    if (cdoc.Document.AsycudaDocumentEntryDatas.All(x => x.EntryData_Id != ed.EntryData_Id))
                     {
                         cdoc.Document.AsycudaDocumentEntryDatas.Add(new AsycudaDocumentEntryData(true)
                         {
                             AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
-                            EntryDataId = ed.EntryDataId,
+                            EntryData_Id = ed.EntryData_Id,
                             TrackingState = TrackingState.Added
                         });
                     }
@@ -1520,6 +1547,7 @@ namespace WaterNut.DataSpace
                     {
                         EntryDataDetailsId = ed.EntryDataDetailsId,
                         EntryDataId = ed.EntryDataId,
+                        EntryData_Id = ed.EntryData_Id,
                         EffectiveDate = ed.EffectiveDate == DateTime.MinValue ? ed.EntryDataDate : ed.EffectiveDate
                     });
 
@@ -2672,8 +2700,8 @@ namespace WaterNut.DataSpace
                             .Include(x => x.EntryData.Suppliers)
                             .Where(x => x.EntryDataDetailsId == item &&
                                         x.EntryDataDetailsEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId)
-                                        && x.EntryData.EntryDataEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId))
-                            .Where(x => Math.Abs((double)(x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal))) < 0.01)//Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
+                                        && x.EntryData.EntryDataEx != null)
+                            .Where(x => Math.Abs((double)(x.EntryData.EntryDataEx.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx.ExpectedTotal))) < 0.01)//Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
                             .ToList());
                     }
                 }
@@ -2705,14 +2733,14 @@ namespace WaterNut.DataSpace
                             .Include(x => x.EntryData.Suppliers)
                             .Where(x => x.EntryDataId == item &&
                                         x.EntryDataDetailsEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId)
-                                        && x.EntryData.EntryDataEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId))
+                                        && x.EntryData.EntryDataEx != null)
                             .ToList();
 
                         var res1 = entryDataDetailses.Where(x =>
                             BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true
-                                ? Math.Abs((double)(x.EntryData.EntryDataEx.FirstOrDefault().ExpectedTotal -
+                                ? Math.Abs((double)(x.EntryData.EntryDataEx.ExpectedTotal -
                                                     (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx
-                                                         .FirstOrDefault().ExpectedTotal))) < 0.01
+                                                         .ExpectedTotal))) < 0.01
                                 : true); //Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
 
 
@@ -3241,6 +3269,7 @@ namespace WaterNut.DataSpace
 
     public class EntryDataDetailSummary
     {
+        public int EntryData_Id { get; set; }
         public string EntryDataId { get; set; }
         public int EntryDataDetailsId { get; set; }
         public DateTime EntryDataDate { get; set; }

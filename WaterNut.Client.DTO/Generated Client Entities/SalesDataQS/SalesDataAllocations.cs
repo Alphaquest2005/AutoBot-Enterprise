@@ -35,17 +35,17 @@ namespace SalesDataQS.Client.DTO
         private int _AllocationId;
 
         [DataMember]
-        public string EntryDataId
+        public int EntryData_Id
 		{ 
-		    get { return _EntryDataId; }
+		    get { return _EntryData_Id; }
 			set
 			{
-			    if (value == _EntryDataId) return;
-				_EntryDataId = value;
-				NotifyPropertyChanged();//m => this.EntryDataId
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
 			}
 		}
-        private string _EntryDataId;
+        private int _EntryData_Id;
 
        
         [DataMember]

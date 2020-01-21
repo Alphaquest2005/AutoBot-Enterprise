@@ -263,6 +263,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _isImportExportFilter;
+        public Boolean? IsImportExportFilter
+        {
+            get
+            {
+                return _isImportExportFilter;
+            }
+            set
+            {
+                _isImportExportFilter = value;
+				NotifyPropertyChanged(x => IsImportExportFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -303,6 +321,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(IsDefaultFilter.HasValue)
 						res.Append(" && " + string.Format("IsDefault == {0}",  IsDefaultFilter));						
+ 
+
+									if(IsImportExportFilter.HasValue)
+						res.Append(" && " + string.Format("IsImportExport == {0}",  IsImportExportFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -332,7 +354,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     National_customs_procedure = x.National_customs_procedure ,
                     
  
-                    IsDefault = x.IsDefault 
+                    IsDefault = x.IsDefault ,
+                    
+ 
+                    IsImportExport = x.IsImportExport 
                     
                 }).ToList()
             };
@@ -352,6 +377,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> IsDefault { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsImportExport { get; set; } 
                     
         }
 

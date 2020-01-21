@@ -221,6 +221,21 @@ namespace InventoryQS.Business.Entities
         }
         Nullable<bool> _invalid;
         [DataMember]
+        public string LicenseDescription 
+        {
+            get
+            {
+                return _licensedescription;
+            }
+            set
+            {
+                _licensedescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _licensedescription;
+        [DataMember]
         public TariffCategory TariffCategory { get; set; }
         [DataMember]
         public List<InventoryItemsEx> InventoryItemsEx { get; set; }

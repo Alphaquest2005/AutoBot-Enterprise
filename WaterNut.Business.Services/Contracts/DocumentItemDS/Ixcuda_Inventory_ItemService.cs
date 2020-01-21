@@ -105,7 +105,10 @@ namespace DocumentItemDS.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<xcuda_Inventory_Item>> Getxcuda_Inventory_ItemByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+  
 
 
 

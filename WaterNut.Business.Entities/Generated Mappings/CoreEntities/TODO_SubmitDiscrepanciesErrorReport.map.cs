@@ -11,7 +11,7 @@
     {
         public TODO_SubmitDiscrepanciesErrorReportMap()
         {                        
-              this.HasKey(t => new {t.InvoiceNo, t.ItemNumber, t.ItemDescription, t.Cost, t.subject, t.ApplicationSettingsId, t.Quantity});        
+              this.HasKey(t => new {t.InvoiceNo, t.ItemNumber, t.ItemDescription, t.Cost, t.subject, t.ApplicationSettingsId, t.Quantity, t.Entrydatadetailsid});        
               this.ToTable("TODO-SubmitDiscrepanciesErrorReport");
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
@@ -26,13 +26,14 @@
               this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(50);
               this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
               this.Property(t => t.comment).HasColumnName("comment").HasMaxLength(255);
-              this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(255);
+              this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.subject).HasColumnName("subject").IsRequired();
               this.Property(t => t.emailDate).HasColumnName("emailDate");
               this.Property(t => t.emailId).HasColumnName("emailId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Quantity).HasColumnName("Quantity");
+              this.Property(t => t.Entrydatadetailsid).HasColumnName("Entrydatadetailsid").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

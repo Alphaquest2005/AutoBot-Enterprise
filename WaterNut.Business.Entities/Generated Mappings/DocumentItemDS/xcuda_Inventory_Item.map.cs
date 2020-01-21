@@ -11,11 +11,11 @@
     {
         public xcuda_Inventory_ItemMap()
         {                        
-              this.HasKey(t => new {t.ItemNumber, t.Id});        
+              this.HasKey(t => t.Item_Id);        
               this.ToTable("xcuda_Inventory_Item");
-              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
-              this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.HasRequired(t => t.xcuda_HScode).WithMany(t =>(ICollection<xcuda_Inventory_Item>) t.xcuda_Inventory_Item).HasForeignKey(d => d.Id);
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
+              this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.HasRequired(t => t.xcuda_HScode).WithOptional(t => (xcuda_Inventory_Item)t.xcuda_Inventory_Item);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

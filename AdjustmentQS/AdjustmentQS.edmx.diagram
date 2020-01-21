@@ -6,12 +6,12 @@
     <edmx:Diagrams>
       <Diagram DiagramId="81c2b187c5544c9b8ea94befa189f87d" Name="Diagram1" ZoomLevel="64">
         <EntityTypeShape EntityType="Model.AsycudaSalesAllocation" Width="2.75" PointX="22.625" PointY="4.75" />
-        <EntityTypeShape EntityType="Model.AsycudaDocumentEntryData" Width="2.5" PointX="12.375" PointY="0.625" />
+        <EntityTypeShape EntityType="Model.AsycudaDocumentEntryData" Width="2.5" PointX="14.5" PointY="0.5" />
         <EntityTypeShape EntityType="Model.AsycudaDocumentSetEntryData" Width="2.5" PointX="6.25" PointY="0.75" />
         <EntityTypeShape EntityType="Model.AdjustmentEx" Width="2.25" PointX="0.75" PointY="0.75" />
         <AssociationConnector Association="Model.AdjustmentExAsycudaDocumentSetEntryData" />
         <AssociationConnector Association="Model.AdjustmentExAsycudaDocumentEntryData" />
-        <EntityTypeShape EntityType="Model.AdjustmentOver" Width="2" PointX="0.5" PointY="5.375" />
+        <EntityTypeShape EntityType="Model.AdjustmentOver" Width="2" PointX="0.75" PointY="6.25" />
         <EntityTypeShape EntityType="Model.AdjustmentShort" Width="2.625" PointX="3.625" PointY="5.375" />
         <AssociationConnector Association="Model.AdjustmentExAdjustmentOver" />
         <AssociationConnector Association="Model.AdjustmentExAdjustmentShort" />
@@ -42,6 +42,7 @@
         <AssociationConnector Association="Model.FK_AdjustmentOversAllocations_xcuda_Item" />
         <EntityTypeShape EntityType="Model.SystemDocumentSet" Width="1.5" PointX="9.875" PointY="1" />
         <AssociationConnector Association="Model.SystemDocumentSetAdjustmentDetail" />
+        <EntityTypeShape EntityType="Model.TODO_PreDiscrepancyErrors" Width="1.5" PointX="0.75" PointY="15.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

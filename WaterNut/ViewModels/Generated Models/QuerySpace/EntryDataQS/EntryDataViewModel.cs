@@ -438,6 +438,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private string _sourceFileFilter;
+        public string SourceFileFilter
+        {
+            get
+            {
+                return _sourceFileFilter;
+            }
+            set
+            {
+                _sourceFileFilter = value;
+				NotifyPropertyChanged(x => SourceFileFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -531,7 +549,11 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("TotalInsurance == {0}",  TotalInsuranceFilter.ToString()));				 
 
 					if(TotalDeductionFilter.HasValue)
-						res.Append(" && " + string.Format("TotalDeduction == {0}",  TotalDeductionFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalDeduction == {0}",  TotalDeductionFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(SourceFileFilter) == false)
+						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -587,7 +609,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TotalInsurance = x.TotalInsurance ,
                     
  
-                    TotalDeduction = x.TotalDeduction 
+                    TotalDeduction = x.TotalDeduction ,
+                    
+ 
+                    SourceFile = x.SourceFile 
                     
                 }).ToList()
             };
@@ -634,6 +659,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public Nullable<double> TotalDeduction { get; set; } 
+                    
+ 
+                    public string SourceFile { get; set; } 
                     
         }
 

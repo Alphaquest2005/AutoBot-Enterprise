@@ -216,6 +216,32 @@ namespace EntryDataQS.Client.DTO
 		}
         private Nullable<double> _TotalDeduction;
 
+        [DataMember]
+        public string SourceFile
+		{ 
+		    get { return _SourceFile; }
+			set
+			{
+			    if (value == _SourceFile) return;
+				_SourceFile = value;
+				NotifyPropertyChanged();//m => this.SourceFile
+			}
+		}
+        private string _SourceFile;
+
+        [DataMember]
+        public int EntryData_Id
+		{ 
+		    get { return _EntryData_Id; }
+			set
+			{
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
+			}
+		}
+        private int _EntryData_Id;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas

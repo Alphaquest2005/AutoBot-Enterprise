@@ -48,7 +48,7 @@ namespace SalesDataQS.Client.Entities
                         {
                             this.SalesData = (SalesData)new SalesData().CreateEntityFromString(value);
 							
-							this.Id = Convert.ToInt32(this.SalesData.EntryDataId);
+							this.Id = Convert.ToInt32(this.SalesData.EntryData_Id);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddSalesData");
                         }

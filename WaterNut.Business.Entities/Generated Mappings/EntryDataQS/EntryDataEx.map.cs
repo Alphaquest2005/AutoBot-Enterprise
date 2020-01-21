@@ -11,7 +11,7 @@
     {
         public EntryDataExMap()
         {                        
-              this.HasKey(t => t.InvoiceNo);        
+              this.HasKey(t => t.EntryData_Id);        
               this.ToTable("EntryDataEx");
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
@@ -33,6 +33,9 @@
               this.Property(t => t.TotalInternalInsurance).HasColumnName("TotalInternalInsurance");
               this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
               this.Property(t => t.TotalDeductions).HasColumnName("TotalDeductions");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
+              this.Property(t => t.Totals).HasColumnName("Totals");
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.AsycudaDocuments).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.EntryDataDetailsExs).WithRequired(t => (EntryDataEx)t.EntryDataEx);

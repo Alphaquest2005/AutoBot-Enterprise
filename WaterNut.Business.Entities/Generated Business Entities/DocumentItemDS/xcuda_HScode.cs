@@ -20,11 +20,6 @@ namespace DocumentItemDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class xcuda_HScode : BaseEntity<xcuda_HScode>, ITrackable 
     {
-        partial void AutoGenStartUp() //xcuda_HScode()
-        {
-            this.xcuda_Inventory_Item = new List<xcuda_Inventory_Item>();
-        }
-
         [DataMember]
         public string Commodity_code 
         {
@@ -88,7 +83,7 @@ namespace DocumentItemDS.Business.Entities
         [DataMember]
         public xcuda_Tarification xcuda_Tarification { get; set; }
         [DataMember]
-        public List<xcuda_Inventory_Item> xcuda_Inventory_Item { get; set; }
+        public xcuda_Inventory_Item xcuda_Inventory_Item { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

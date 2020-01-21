@@ -11,7 +11,7 @@
     {
         public SalesDataMap()
         {                        
-              this.HasKey(t => t.EntryDataId);        
+              this.HasKey(t => t.EntryData_Id);        
               this.ToTable("SalesData");
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
@@ -23,6 +23,7 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.AsycudaDocumentId).HasColumnName("AsycudaDocumentId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasMany(t => t.SalesDataDetails).WithRequired(t => (SalesData)t.SalesData);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (SalesData)t.SalesData);
               this.HasMany(t => t.SalesDataAllocations).WithRequired(t => (SalesData)t.SalesData);

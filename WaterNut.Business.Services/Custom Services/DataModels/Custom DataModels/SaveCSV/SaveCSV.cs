@@ -50,7 +50,8 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
+                var ndocSet = GetDocSets(fileType);
+                await SaveCSV(droppedFilePath, fileType, ndocSet, overWriteExisting).ConfigureAwait(false);
             }
             catch (Exception Ex)
             {
@@ -84,6 +85,16 @@ namespace WaterNut.DataSpace
                 var ddocset = ctx.FileTypes.First(x => x.Id == fileType.Id).AsycudaDocumentSetId;
                 if (fileType.CopyEntryData)
                     docSet.Add(ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
+                else
+                {
+                    if (ctx.SystemDocumentSets.FirstOrDefault(x => x.Id == ddocset) != null)
+                    {
+                        docSet.Clear();
+                        docSet.Add(ctx.AsycudaDocumentSets.Include(x => x.SystemDocumentSet).FirstOrDefault(x => x.AsycudaDocumentSetId == ddocset));
+
+                    }
+                    
+                }
                 if (!docSet.Any()) throw new ApplicationException("Document Set with reference not found");
             }
 

@@ -18,6 +18,7 @@
               this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure");
               this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure");
               this.Property(t => t.IsDefault).HasColumnName("IsDefault");
+              this.Property(t => t.IsImportExport).HasColumnName("IsImportExport");
               this.HasRequired(t => t.Document_Type).WithMany(t =>(ICollection<Customs_Procedure>) t.Customs_Procedure).HasForeignKey(d => d.Document_TypeId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

@@ -117,6 +117,9 @@ namespace EntryDataDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryDataFiles>> GetEntryDataFilesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataFiles>> GetEntryDataFilesByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

@@ -387,6 +387,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _commentsFilter;
+        public string CommentsFilter
+        {
+            get
+            {
+                return _commentsFilter;
+            }
+            set
+            {
+                _commentsFilter = value;
+				NotifyPropertyChanged(x => CommentsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -461,6 +479,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(xStatusFilter) == false)
 						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CommentsFilter) == false)
+						res.Append(" && " + string.Format("Comments.Contains(\"{0}\")",  CommentsFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -499,7 +521,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     SANumber = x.SANumber ,
                     
  
-                    xStatus = x.xStatus 
+                    xStatus = x.xStatus ,
+                    
+ 
+                    Comments = x.Comments 
                     
                 }).ToList()
             };
@@ -528,6 +553,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string xStatus { get; set; } 
+                    
+ 
+                    public string Comments { get; set; } 
                     
         }
 

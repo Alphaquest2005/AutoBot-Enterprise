@@ -122,6 +122,11 @@ namespace AdjustmentQS.Client.Services
             return  await Channel.GetEntryDataDetailByInventoryItemId(InventoryItemId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<EntryDataDetail>> GetEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetEntryDataDetailByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

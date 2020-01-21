@@ -190,6 +190,19 @@ namespace InventoryQS.Client.DTO
 		}
         private Nullable<bool> _Invalid;
 
+        [DataMember]
+        public string LicenseDescription
+		{ 
+		    get { return _LicenseDescription; }
+			set
+			{
+			    if (value == _LicenseDescription) return;
+				_LicenseDescription = value;
+				NotifyPropertyChanged();//m => this.LicenseDescription
+			}
+		}
+        private string _LicenseDescription;
+
        
         [DataMember]
         public TariffCategory TariffCategory

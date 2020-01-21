@@ -491,6 +491,36 @@ namespace EntryDataQS.Business.Entities
         }
         Nullable<int> _filetypeid;
         [DataMember]
+        public string Name 
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _name;
+        [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
         [DataMember]
         public EntryDataEx EntryDataEx { get; set; }

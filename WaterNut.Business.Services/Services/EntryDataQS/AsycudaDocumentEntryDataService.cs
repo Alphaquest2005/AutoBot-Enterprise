@@ -1095,17 +1095,17 @@ namespace EntryDataQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(EntryData_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<AsycudaDocumentEntryData> entities = await set//dbContext.AsycudaDocumentEntryDatas
                                       .AsNoTracking()
-                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
+                                        .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;

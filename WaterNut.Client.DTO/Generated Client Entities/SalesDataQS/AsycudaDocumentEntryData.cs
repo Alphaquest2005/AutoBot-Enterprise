@@ -22,19 +22,6 @@ namespace SalesDataQS.Client.DTO
     public partial class AsycudaDocumentEntryData : BaseEntity<AsycudaDocumentEntryData>, ITrackable, IEquatable<AsycudaDocumentEntryData>
     {
         [DataMember]
-        public string EntryDataId
-		{ 
-		    get { return _EntryDataId; }
-			set
-			{
-			    if (value == _EntryDataId) return;
-				_EntryDataId = value;
-				NotifyPropertyChanged();//m => this.EntryDataId
-			}
-		}
-        private string _EntryDataId;
-
-        [DataMember]
         public int Id
 		{ 
 		    get { return _Id; }
@@ -59,6 +46,19 @@ namespace SalesDataQS.Client.DTO
 			}
 		}
         private int _AsycudaDocumentId;
+
+        [DataMember]
+        public int EntryData_Id
+		{ 
+		    get { return _EntryData_Id; }
+			set
+			{
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
+			}
+		}
+        private int _EntryData_Id;
 
        
         [DataMember]

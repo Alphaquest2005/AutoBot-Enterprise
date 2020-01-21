@@ -262,6 +262,23 @@ public Nullable<bool> Invalid
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "LicenseDescription has a max length of 50 letters ")]
+public string LicenseDescription
+		{ 
+		    get { return this.tariffcodes.LicenseDescription; }
+			set
+			{
+			    if (value == this.tariffcodes.LicenseDescription) return;
+				this.tariffcodes.LicenseDescription = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LicenseDescription");
+			}
+		}
+     
+
        private TariffCategory _TariffCategory;
         public  TariffCategory TariffCategory
 		{

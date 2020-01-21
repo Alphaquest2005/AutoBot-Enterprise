@@ -1129,7 +1129,13 @@ namespace WaterNut.DataSpace.Asycuda
          
 
             var i = await SaveInventoryItem(ai).ConfigureAwait(false);
-            
+            if(i != null)
+            h.xcuda_Inventory_Item = new xcuda_Inventory_Item(true)
+            {
+                TrackingState = TrackingState.Added,
+                InventoryItemId = i.Id
+
+            };
         }
 
         private async Task Save_Item_Packages(xcuda_Item di, ASYCUDAItem ai)

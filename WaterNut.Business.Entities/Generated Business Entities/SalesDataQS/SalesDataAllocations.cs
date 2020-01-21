@@ -36,20 +36,20 @@ namespace SalesDataQS.Business.Entities
         }
         int _allocationid;
         [DataMember]
-        public string EntryDataId 
+        public int EntryData_Id 
         {
             get
             {
-                return _entrydataid;
+                return _entrydata_id;
             }
             set
             {
-                _entrydataid = value;
+                _entrydata_id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _entrydataid;
+        int _entrydata_id;
         [DataMember]
         public SalesData SalesData { get; set; }
 

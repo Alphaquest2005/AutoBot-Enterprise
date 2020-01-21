@@ -107,7 +107,7 @@ namespace AllocationDS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ItemSalesPiSummary>> GetItemSalesPiSummaryByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null);
+        Task<IEnumerable<ItemSalesPiSummary>> GetItemSalesPiSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   
 
 

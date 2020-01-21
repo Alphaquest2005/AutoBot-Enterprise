@@ -276,6 +276,38 @@ public Nullable<double> TotalDeduction
 		}
      
 
+       
+       
+                
+                
+public string SourceFile
+		{ 
+		    get { return this.entrydata.SourceFile; }
+			set
+			{
+			    if (value == this.entrydata.SourceFile) return;
+				this.entrydata.SourceFile = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SourceFile");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.entrydata.EntryData_Id; }
+			set
+			{
+			    if (value == this.entrydata.EntryData_Id) return;
+				this.entrydata.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentEntryData> _AsycudaDocumentEntryDatas = null;
         public  ObservableCollection<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas
 		{

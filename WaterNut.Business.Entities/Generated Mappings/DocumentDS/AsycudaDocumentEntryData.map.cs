@@ -14,8 +14,8 @@
               this.HasKey(t => t.Id);        
               this.ToTable("AsycudaDocumentEntryData");
               this.Property(t => t.AsycudaDocumentId).HasColumnName("AsycudaDocumentId");
-              this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.HasRequired(t => t.xcuda_ASYCUDA).WithMany(t =>(ICollection<AsycudaDocumentEntryData>) t.AsycudaDocumentEntryDatas).HasForeignKey(d => d.AsycudaDocumentId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

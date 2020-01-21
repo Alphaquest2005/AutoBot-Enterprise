@@ -121,6 +121,21 @@ public Nullable<bool> IsDefault
 		}
      
 
+       
+       
+public Nullable<bool> IsImportExport
+		{ 
+		    get { return this.customs_procedure.IsImportExport; }
+			set
+			{
+			    if (value == this.customs_procedure.IsImportExport) return;
+				this.customs_procedure.IsImportExport = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsImportExport");
+			}
+		}
+     
+
        private Document_Type _Document_Type;
         public  Document_Type Document_Type
 		{

@@ -165,19 +165,6 @@ namespace CoreEntities.Client.DTO
         private string _Status;
 
         [DataMember]
-        public string CNumber
-		{ 
-		    get { return _CNumber; }
-			set
-			{
-			    if (value == _CNumber) return;
-				_CNumber = value;
-				NotifyPropertyChanged();//m => this.CNumber
-			}
-		}
-        private string _CNumber;
-
-        [DataMember]
         public string Declarant_Reference_Number
 		{ 
 		    get { return _Declarant_Reference_Number; }
@@ -228,6 +215,214 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private string _ReferenceNumber;
+
+        [DataMember]
+        public string PreviousCNumber
+		{ 
+		    get { return _PreviousCNumber; }
+			set
+			{
+			    if (value == _PreviousCNumber) return;
+				_PreviousCNumber = value;
+				NotifyPropertyChanged();//m => this.PreviousCNumber
+			}
+		}
+        private string _PreviousCNumber;
+
+        [DataMember]
+        public string DocumentType
+		{ 
+		    get { return _DocumentType; }
+			set
+			{
+			    if (value == _DocumentType) return;
+				_DocumentType = value;
+				NotifyPropertyChanged();//m => this.DocumentType
+			}
+		}
+        private string _DocumentType;
+
+        [DataMember]
+        public string Type
+		{ 
+		    get { return _Type; }
+			set
+			{
+			    if (value == _Type) return;
+				_Type = value;
+				NotifyPropertyChanged();//m => this.Type
+			}
+		}
+        private string _Type;
+
+        [DataMember]
+        public Nullable<System.DateTime> EffectiveDate
+		{ 
+		    get { return _EffectiveDate; }
+			set
+			{
+			    if (value == _EffectiveDate) return;
+				_EffectiveDate = value;
+				NotifyPropertyChanged();//m => this.EffectiveDate
+			}
+		}
+        private Nullable<System.DateTime> _EffectiveDate;
+
+        [DataMember]
+        public string ItemDescription
+		{ 
+		    get { return _ItemDescription; }
+			set
+			{
+			    if (value == _ItemDescription) return;
+				_ItemDescription = value;
+				NotifyPropertyChanged();//m => this.ItemDescription
+			}
+		}
+        private string _ItemDescription;
+
+        [DataMember]
+        public Nullable<int> EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private Nullable<int> _EmailId;
+
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public double Quantity
+		{ 
+		    get { return _Quantity; }
+			set
+			{
+			    if (value == _Quantity) return;
+				_Quantity = value;
+				NotifyPropertyChanged();//m => this.Quantity
+			}
+		}
+        private double _Quantity;
+
+        [DataMember]
+        public double Cost
+		{ 
+		    get { return _Cost; }
+			set
+			{
+			    if (value == _Cost) return;
+				_Cost = value;
+				NotifyPropertyChanged();//m => this.Cost
+			}
+		}
+        private double _Cost;
+
+        [DataMember]
+        public string Subject
+		{ 
+		    get { return _Subject; }
+			set
+			{
+			    if (value == _Subject) return;
+				_Subject = value;
+				NotifyPropertyChanged();//m => this.Subject
+			}
+		}
+        private string _Subject;
+
+        [DataMember]
+        public System.DateTime EmailDate
+		{ 
+		    get { return _EmailDate; }
+			set
+			{
+			    if (value == _EmailDate) return;
+				_EmailDate = value;
+				NotifyPropertyChanged();//m => this.EmailDate
+			}
+		}
+        private System.DateTime _EmailDate;
+
+        [DataMember]
+        public Nullable<int> LineNumber
+		{ 
+		    get { return _LineNumber; }
+			set
+			{
+			    if (value == _LineNumber) return;
+				_LineNumber = value;
+				NotifyPropertyChanged();//m => this.LineNumber
+			}
+		}
+        private Nullable<int> _LineNumber;
+
+        [DataMember]
+        public string PreviousInvoiceNumber
+		{ 
+		    get { return _PreviousInvoiceNumber; }
+			set
+			{
+			    if (value == _PreviousInvoiceNumber) return;
+				_PreviousInvoiceNumber = value;
+				NotifyPropertyChanged();//m => this.PreviousInvoiceNumber
+			}
+		}
+        private string _PreviousInvoiceNumber;
+
+        [DataMember]
+        public string Comment
+		{ 
+		    get { return _Comment; }
+			set
+			{
+			    if (value == _Comment) return;
+				_Comment = value;
+				NotifyPropertyChanged();//m => this.Comment
+			}
+		}
+        private string _Comment;
+
+        [DataMember]
+        public string DutyFreePaid
+		{ 
+		    get { return _DutyFreePaid; }
+			set
+			{
+			    if (value == _DutyFreePaid) return;
+				_DutyFreePaid = value;
+				NotifyPropertyChanged();//m => this.DutyFreePaid
+			}
+		}
+        private string _DutyFreePaid;
+
+        [DataMember]
+        public int EntryData_Id
+		{ 
+		    get { return _EntryData_Id; }
+			set
+			{
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
+			}
+		}
+        private int _EntryData_Id;
 
        
    //     [DataMember]

@@ -196,6 +196,23 @@ public string xStatus
 		}
      
 
+       
+       
+                
+                
+public string Comments
+		{ 
+		    get { return this.asycudasalesallocation.Comments; }
+			set
+			{
+			    if (value == this.asycudasalesallocation.Comments) return;
+				this.asycudasalesallocation.Comments = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Comments");
+			}
+		}
+     
+
        private EntryDataDetail _EntryDataDetail;
         public  EntryDataDetail EntryDataDetail
 		{

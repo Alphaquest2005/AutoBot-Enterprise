@@ -127,6 +127,11 @@ namespace SalesDataQS.Client.Services
             return  await Channel.GetSalesDataDetailByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<SalesDataDetail>> GetSalesDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetSalesDataDetailByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

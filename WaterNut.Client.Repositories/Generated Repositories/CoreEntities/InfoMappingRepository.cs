@@ -202,7 +202,8 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new InfoMapping(res)
                     {
-                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null)    
+                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
+                     // InfoMappingRegEx = new System.Collections.ObjectModel.ObservableCollection<InfoMappingRegEx>(res.InfoMappingRegEx.Select(y => new InfoMappingRegEx(y)))    
                   };
                     }
                     else

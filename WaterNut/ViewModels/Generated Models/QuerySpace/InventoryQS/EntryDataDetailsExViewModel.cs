@@ -712,6 +712,24 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
         }	
 
  
+
+		private string _nameFilter;
+        public string NameFilter
+        {
+            get
+            {
+                return _nameFilter;
+            }
+            set
+            {
+                _nameFilter = value;
+				NotifyPropertyChanged(x => NameFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -858,7 +876,11 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 						res.Append(" && " + string.Format("LastCost == {0}",  LastCostFilter.ToString()));				 
 
 					if(TaxAmountFilter.HasValue)
-						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TaxAmount == {0}",  TaxAmountFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(NameFilter) == false)
+						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -956,7 +978,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     LastCost = x.LastCost ,
                     
  
-                    TaxAmount = x.TaxAmount 
+                    TaxAmount = x.TaxAmount ,
+                    
+ 
+                    Name = x.Name 
                     
                 }).ToList()
             };
@@ -1045,6 +1070,9 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     
  
                     public Nullable<double> TaxAmount { get; set; } 
+                    
+ 
+                    public string Name { get; set; } 
                     
         }
 

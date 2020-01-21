@@ -320,6 +320,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         double _quantity;
+        [DataMember]
+        public int Entrydatadetailsid 
+        {
+            get
+            {
+                return _entrydatadetailsid;
+            }
+            set
+            {
+                _entrydatadetailsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydatadetailsid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

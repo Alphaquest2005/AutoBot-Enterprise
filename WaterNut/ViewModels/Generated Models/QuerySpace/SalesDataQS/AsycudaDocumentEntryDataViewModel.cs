@@ -297,7 +297,7 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
                 dataToPrint = lst.Select(x => new AsycudaDocumentEntryDataExcelLine
                 {
  
-                    EntryDataId = x.EntryDataId 
+                    EntryData_Id = x.EntryData_Id 
                     
                 }).ToList()
             };
@@ -310,7 +310,7 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
         public class AsycudaDocumentEntryDataExcelLine
         {
 		 
-                    public string EntryDataId { get; set; } 
+                    public int EntryData_Id { get; set; } 
                     
         }
 

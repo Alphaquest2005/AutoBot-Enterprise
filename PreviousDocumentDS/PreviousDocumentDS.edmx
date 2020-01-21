@@ -10,6 +10,7 @@
             <PropertyRef Name="EntryDataDetailsId" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
@@ -17,6 +18,7 @@
           <Property Name="Units" Type="nvarchar" MaxLength="15" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="TotalCost" Type="float" />
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="UnitWeight" Type="float" Nullable="false" />
           <Property Name="DoNotAllocate" Type="bit" />
@@ -32,6 +34,8 @@
           <Property Name="EffectiveDate" Type="datetime2" Precision="7" />
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="LastCost" Type="float" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -433,6 +437,10 @@
           <Property Name="EffectiveDate" Type="DateTime" Precision="7" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="TaxAmount" Type="Double" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="TotalCost" Type="Double" />
+          <Property Name="LastCost" Type="Double" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -555,6 +563,10 @@
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="LastCost" ColumnName="LastCost" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="IsReconciled" ColumnName="IsReconciled" />
                 <ScalarProperty Name="EffectiveDate" ColumnName="EffectiveDate" />

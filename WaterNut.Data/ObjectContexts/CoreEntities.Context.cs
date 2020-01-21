@@ -183,6 +183,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<EmailFileTypes> EmailFileTypes { get; set; }
      
+        public DbSet<InfoMappingRegEx> InfoMappingRegEx { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -322,6 +324,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_DiscrepanciesAlreadyXMLedMap());
          
             modelBuilder.Configurations.Add(new EmailFileTypesMap());
+         
+            modelBuilder.Configurations.Add(new InfoMappingRegExMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

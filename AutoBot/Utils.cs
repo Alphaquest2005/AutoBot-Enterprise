@@ -631,7 +631,7 @@ namespace AutoBot
                 Console.WriteLine("Submit XML To Customs");
 
                 // var saleInfo = CurrentSalesInfo();
-                var salesinfo = CurrentSalesInfo();
+                var salesinfo = BaseDataModel.CurrentSalesInfo();
 
                 using (var ctx = new CoreEntitiesContext())
                 {
@@ -791,7 +791,7 @@ namespace AutoBot
                 Console.WriteLine("Submit Discrepancies PreAssessment Report to Customs");
 
                 
-                var info = CurrentSalesInfo();
+                var info = BaseDataModel.CurrentSalesInfo();
                 var directory = info.Item4;
 
                 using (var ctx = new CoreEntitiesContext())
@@ -1026,7 +1026,7 @@ namespace AutoBot
 
 
 
-            var info = CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo();
             var directory = info.Item4;
             
 
@@ -1082,7 +1082,7 @@ namespace AutoBot
 
 
 
-            var info = CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo();
             var directory = info.Item4;
 
 
@@ -1205,7 +1205,7 @@ namespace AutoBot
                         foreach (var ed in docEds)
                         {
                             var docsetEd = dtx.AsycudaDocumentSetEntryDatas.First(x =>
-                                x.AsycudaDocumentSetId == itm.AsycudaDocumentSetId && x.EntryDataId == ed.EntryDataId);
+                                x.AsycudaDocumentSetId == itm.AsycudaDocumentSetId && x.EntryData_Id == ed.EntryData_Id);
                             dtx.AsycudaDocumentSetEntryDatas.Remove(docsetEd);
                         }
 
@@ -1239,7 +1239,7 @@ namespace AutoBot
         public static void EmailEntriesExpiringNextMonth()
         {
 
-            var info = CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo();
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "EntriesExpiringNextMonth.csv");
 
@@ -1276,7 +1276,7 @@ namespace AutoBot
         public static void EmailWarehouseErrors()
         {
 
-            var info = CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo();
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "WarehouseErrors.csv");
             if (File.Exists(errorfile)) return;
@@ -1336,7 +1336,7 @@ namespace AutoBot
         public static void EmailSalesErrors()
         {
 
-            var info = CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo();
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "SalesErrors.csv");
 
@@ -1367,7 +1367,7 @@ namespace AutoBot
         public static void EmailAdjustmentErrors()
         {
 
-            var info = CurrentSalesInfo();
+            var info = BaseDataModel.CurrentSalesInfo();
             var directory = info.Item4;
             var errorfile = Path.Combine(directory, "AdjustmentErrors.csv");
 
@@ -1608,12 +1608,12 @@ namespace AutoBot
             try
 
             {
-                var directoryName = CurrentSalesInfo().Item4;
+                var directoryName = BaseDataModel.CurrentSalesInfo().Item4;//$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\";
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
                 while (ImportComplete(directoryName,redownload, out lcont) == false)
                 {
-                    RunSiKuLi(CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+                    RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
                 }
             }
             catch (Exception e)
@@ -1628,14 +1628,15 @@ namespace AutoBot
             try
 
             {
-                var directoryName = CurrentSalesInfo().Item4;
+                var directoryName =
+                    BaseDataModel.CurrentSalesInfo().Item4;//$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\";
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
-                
+                 
                 for (int i = 0; i < trytimes; i++)
                 {
-                    ImportComplete(directoryName,false, out lcont);
-                    RunSiKuLi(CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+                    if (ImportComplete(directoryName, false, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
+                    RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
                     if (ImportComplete(directoryName, false ,out lcont)) break;
                 }
                 
@@ -1650,7 +1651,7 @@ namespace AutoBot
         public static void AssessEx9Entries()
         {
             Console.WriteLine("Assessing Ex9 Entries");
-            var saleinfo = CurrentSalesInfo();
+            var saleinfo = BaseDataModel.CurrentSalesInfo();
             AssessSalesEntry(saleinfo.Item3.Declarant_Reference_Number, saleinfo.Item3.AsycudaDocumentSetId);
         }
 
@@ -1808,7 +1809,7 @@ namespace AutoBot
         {
             lcont = 0;
 
-            var desFolder = directoryName + "\\";
+            var desFolder = directoryName + (directoryName.EndsWith(@"\")?"":"\\");
             var overviewFile = Path.Combine(desFolder, "OverView.txt");
             if (File.Exists(overviewFile))
             {
@@ -1978,7 +1979,7 @@ namespace AutoBot
             Console.WriteLine("Import Entries");
             using (var ctx = new CoreEntitiesContext())
             {
-                var docSetId = CurrentSalesInfo().Item3.AsycudaDocumentSetId;
+                var docSetId = BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
                 var ft = ctx.FileTypes.FirstOrDefault(x => x.Type == "XML" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (ft == null) return;
                 var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -2062,22 +2063,26 @@ namespace AutoBot
 
         public static void CreateEx9(bool overwrite)
         {
-            Console.WriteLine("Create Ex9");
-           
-            var saleInfo = CurrentSalesInfo();
-            if (saleInfo.Item3.AsycudaDocumentSetId == 0) return;
-            
-            var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
-            if (overwrite)
+            try
             {
-                BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
-                //BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0); don't overwrite previous entries
-            }
 
-            using (var ctx = new CoreEntitiesContext())
-            {
-                var res = ctx.Database.SqlQuery<string>(
-                    $@"SELECT EX9AsycudaSalesAllocations.ItemNumber
+
+                Console.WriteLine("Create Ex9");
+
+                var saleInfo = BaseDataModel.CurrentSalesInfo();
+                if (saleInfo.Item3.AsycudaDocumentSetId == 0) return;
+
+                var docset = BaseDataModel.Instance.GetAsycudaDocumentSet(saleInfo.Item3.AsycudaDocumentSetId).Result;
+                if (overwrite)
+                {
+                    BaseDataModel.Instance.ClearAsycudaDocumentSet(docset.AsycudaDocumentSetId).Wait();
+                    //BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docset.AsycudaDocumentSetId, 0); don't overwrite previous entries
+                }
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 0;
+                    var str = $@"SELECT EX9AsycudaSalesAllocations.ItemNumber
                     FROM    EX9AsycudaSalesAllocations INNER JOIN
                                      ApplicationSettings ON EX9AsycudaSalesAllocations.ApplicationSettingsId = ApplicationSettings.ApplicationSettingsId AND 
                                      EX9AsycudaSalesAllocations.pRegistrationDate >= ApplicationSettings.OpeningStockDate LEFT OUTER JOIN
@@ -2086,35 +2091,49 @@ namespace AutoBot
                                      (EX9AsycudaSalesAllocations.EntryDataDetailsId IS NOT NULL) AND (EX9AsycudaSalesAllocations.Status IS NULL OR
                                      EX9AsycudaSalesAllocations.Status = '') AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocateSales, 0) <> 1) AND (ISNULL(EX9AsycudaSalesAllocations.DoNotAllocatePreviousEntry, 0) <> 1) AND 
                                      (ISNULL(EX9AsycudaSalesAllocations.DoNotEX, 0) <> 1) AND (EX9AsycudaSalesAllocations.WarehouseError IS NULL) AND (EX9AsycudaSalesAllocations.DocumentType = 'IM7' OR
-                                     EX9AsycudaSalesAllocations.DocumentType = 'OS7') AND (AllocationErrors.ItemNumber IS NULL) AND (ApplicationSettings.ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}) AND (EX9AsycudaSalesAllocations.InvoiceDate >= '{saleInfo.Item1.ToShortDateString()}') AND 
+                                     EX9AsycudaSalesAllocations.DocumentType = 'OS7') AND (AllocationErrors.ItemNumber IS NULL) AND (ApplicationSettings.ApplicationSettingsId = {
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                        }) AND (EX9AsycudaSalesAllocations.InvoiceDate >= '{
+                            saleInfo.Item1.ToShortDateString()
+                        }') AND 
                                      (EX9AsycudaSalesAllocations.InvoiceDate <= '{saleInfo.Item2.ToShortDateString()}')
                     GROUP BY EX9AsycudaSalesAllocations.ItemNumber, ApplicationSettings.ApplicationSettingsId--, EX9AsycudaSalesAllocations.pQuantity, EX9AsycudaSalesAllocations.PreviousItem_Id
-                    HAVING (SUM(EX9AsycudaSalesAllocations.PiQuantity) < SUM(EX9AsycudaSalesAllocations.pQtyAllocated)) AND (SUM(EX9AsycudaSalesAllocations.QtyAllocated) > 0) AND (MAX(EX9AsycudaSalesAllocations.xStatus) IS NULL)");
-                if (!res.Any()) return;
+                    HAVING (SUM(EX9AsycudaSalesAllocations.PiQuantity) < SUM(EX9AsycudaSalesAllocations.pQtyAllocated)) AND (SUM(EX9AsycudaSalesAllocations.QtyAllocated) > 0) AND (MAX(EX9AsycudaSalesAllocations.xStatus) IS NULL)";
+
+                    var res = ctx.Database.SqlQuery<string>(str);
+                    if (!res.Any()) return;
+                }
+
+
+                var filterExpression =
+                    $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
+                    $"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
+                    $" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
+                    //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
+                    "&& (TaxAmount == 0 || TaxAmount != 0)" +
+                    "&& PreviousItem_Id != null" +
+                    "&& (xBond_Item_Id == 0)" +
+                    "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
+                    "&& (PiQuantity < pQtyAllocated)" +
+                    "&& (Status == null || Status == \"\")" +
+                    (BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
+                        ? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
+                        : "") +
+                    (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue
+                        ? $" && pRegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\""
+                        : "");
+
+
+
+                AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, false, docset)
+                    .Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
-
-            var filterExpression =
-                $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")" +
-                $"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
-                $" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
-                //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
-                "&& (TaxAmount == 0 || TaxAmount != 0)" +
-                "&& PreviousItem_Id != null" +
-                "&& (xBond_Item_Id == 0)" +
-                "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
-                "&& (PiQuantity < pQtyAllocated)" +
-                "&& (Status == null || Status == \"\")" +
-                (BaseDataModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
-                    ? $"&& (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
-                    : "") +
-                (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue
-                    ? $" && pRegistrationDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\""
-                    : "");
-
-            
-           
-            AllocationsModel.Instance.CreateEX9Class.CreateEx9(filterExpression, false, false, false, docset).Wait();
         }
 
 
@@ -2134,7 +2153,7 @@ namespace AutoBot
                             //&& x.InvoiceDate >= saleInfo.Item1
                             //    &&  x.InvoiceDate <= saleInfo.Item2
                         )
-                        .GroupBy(x => new {x.AsycudaDocumentSetId, x.InvoiceNo}).ToList();
+                        .GroupBy(x => new {x.AsycudaDocumentSetId, x.EntryData_Id }).ToList();
 
                     using (var dtx = new DocumentDSContext())
                     {
@@ -2142,7 +2161,7 @@ namespace AutoBot
                         {
                             var res = dtx.AsycudaDocumentSetEntryDatas.First(x =>
                                 x.AsycudaDocumentSetId == doc.Key.AsycudaDocumentSetId
-                                && x.EntryDataId == doc.Key.InvoiceNo);
+                                && x.EntryData_Id == doc.Key.EntryData_Id);
                             dtx.AsycudaDocumentSetEntryDatas.Remove(res);
 
                         }
@@ -2208,7 +2227,7 @@ namespace AutoBot
                         && x.AdjustmentType == "DIS"
                     //   && x.AsycudaDocumentSetId == 1462
                     //     && x.InvoiceNo == "53371108"
-                    //&& x.ItemNumber == "TOH/99998PBA2M"
+                  //  && x.ItemNumber == "HEL/003361001"
                 //&& x.InvoiceDate >= saleInfo.Item1
                 //    &&  x.InvoiceDate <= saleInfo.Item2
                 ).ToList();
@@ -2252,7 +2271,8 @@ namespace AutoBot
 
             using (var ctx = new CoreEntitiesContext())
             {
-                var lst = ctx.TODO_CreateDiscrepancyEntries.Where(x =>
+                ctx.Database.CommandTimeout = 0;
+                var lst = ctx.TODO_CreateDiscrepancyEntries.AsNoTracking().Where(x =>
                     x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                     && x.AdjustmentType == "DIS"
                         //&& x.InvoiceDate >= saleInfo.Item1
@@ -2384,31 +2404,7 @@ namespace AutoBot
             }
         }
 
-        public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
-        {
-            DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
-            DateTime endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23);
-            var docRef = startDate.ToString("MMMM") + " " + startDate.Year.ToString();
-            var docSet = new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                x.Declarant_Reference_Number == docRef && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-            if (docSet == null)
-            {
-                using (var ctx = new DocumentDSContext())
-                {
-                    var doctype = ctx.Document_Type.Include(x => x.Customs_Procedure).First(x =>
-                        x.Type_of_declaration == "IM" && x.Declaration_gen_procedure_code == "7");
-                    ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
-                                        (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{docRef}',{doctype.Document_TypeId},{
-                            doctype.Customs_Procedure.First(z => z.IsDefault == true).Customs_ProcedureId
-                        },0)");
-                    
-                }
-            }
-            var dirPath = StringExtensions.UpdateToCurrentUser( Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef));
-            if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-            return new Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string>(startDate, endDate, docSet, dirPath);
-        }
+ 
 
         public static List<Tuple<AsycudaDocumentSetEx, string>> CurrentPOInfo()
         {
@@ -2655,7 +2651,7 @@ namespace AutoBot
             Console.WriteLine("Export EX9 Entries");
             try
             {
-                var i = CurrentSalesInfo();
+                var i = BaseDataModel.CurrentSalesInfo();
                 BaseDataModel.Instance.ExportDocSet(i.Item3.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         i.Item3.Declarant_Reference_Number), false).Wait();
@@ -2849,7 +2845,7 @@ namespace AutoBot
                                 Line = Convert.ToInt32(s.xLineNumber),
                                 Date = Convert.ToDateTime(s.InvoiceDate),
                                 InvoiceNo = s.InvoiceNo,
-                                CustomerName = s.CustomerName,
+                                CustomerName = s.CustomerName.StartsWith("- ")? s.CustomerName.Substring("- ".Length) : s.CustomerName,
                                 ItemNumber = s.ItemNumber,
                                 ItemDescription = s.ItemDescription,
                                 TariffCode = s.TariffCode,
@@ -2868,7 +2864,8 @@ namespace AutoBot
                                     Convert.ToDouble(s.QtyAllocated),
                                 DutyLiablity =
                                     (Convert.ToDouble(s.DutyLiability) / Convert.ToDouble(s.pQuantity)) *
-                                    Convert.ToDouble(s.QtyAllocated)
+                                    Convert.ToDouble(s.QtyAllocated),
+                                //Comments = s.Comments
                             }).Distinct();
 
 
@@ -3005,20 +3002,35 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                var res = ctx.InfoMapping.Where(x => x.EntityType == "AsycudaDocumentSet")
+                var res = ctx.InfoMapping.Include(x => x.InfoMappingRegEx).Where(x => x.EntityType == "AsycudaDocumentSet")
                     .ToList();
                 string dbStatement = "";
                 foreach (var line in fileTxt)
                 {
-                    var match = Regex.Match(line,
-                        @"((?<Key>.[a-zA-Z\s\(\)]*):(?<Value>.[a-zA-Z0-9\- :$.,]*))", RegexOptions.IgnoreCase);
-                    if (match.Success)
-                        foreach (var infoMapping in res.Where(x =>
-                            x.Key.ToLower() == match.Groups["Key"].Value.Trim().ToLower()))
+                    
+                    var im = res.SelectMany(x => x.InfoMappingRegEx.Select(z => new
                         {
+                            Rx = z,
+                            Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase),
+                            Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase)
+                        }))
+                        .Where(z => z.Key.Success && z.Field.Success).ToList();
+
+                    //match = Regex.Match(line,
+                    //    @"[.]*((?<Key>[a-zA-Z\(\)]+)[:\s\#]+(?<Value>[a-zA-Z0-9\- :$,/\.]*))", RegexOptions.IgnoreCase);
+//res.Where(x =>
+//                            x.Key.ToLower() == match.Groups["Key"].Value.Trim().ToLower())
+
+                    if (im.Any())
+                        foreach (var infoMapping in im)
+                        {
+                            var val = infoMapping.Rx.FieldReplaceRx == null
+                                ? infoMapping.Field.Groups["Value"].Value.Trim()
+                                : Regex.Match(Regex.Replace(line, infoMapping.Rx.FieldRx, infoMapping.Rx.FieldReplaceRx,RegexOptions.IgnoreCase),infoMapping.Rx.FieldRx, RegexOptions.IgnoreCase).Value.Trim();
+
                             dbStatement +=
-                                $@" Update AsycudaDocumentSet Set {infoMapping.Field} = '{
-                                        ReplaceSpecialChar(match.Groups["Value"].Value.Trim(),
+                                $@" Update AsycudaDocumentSet Set {infoMapping.Rx.InfoMapping.Field} = '{
+                                        ReplaceSpecialChar(val,
                                             "")
                                     }' Where AsycudaDocumentSetId = '{oldDocSet}';";
                         }

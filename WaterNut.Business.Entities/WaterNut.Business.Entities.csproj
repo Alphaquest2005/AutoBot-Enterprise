@@ -149,6 +149,7 @@
     <Compile Include="Generated Business Entities\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Business Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -166,6 +167,7 @@
     <Compile Include="Generated Business Entities\AllocationDS\EX9AsycudaSalesAllocations.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated Business Entities\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Sales.cs" />
@@ -214,6 +216,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\LicenceSummary.cs" />
@@ -456,6 +459,7 @@
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated ChangeTracking Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -473,6 +477,7 @@
     <Compile Include="Generated ChangeTracking Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated ChangeTracking Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Sales.cs" />
@@ -521,6 +526,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\LicenceSummary.cs" />
@@ -763,6 +769,7 @@
     <Compile Include="Generated Constructors Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -780,6 +787,7 @@
     <Compile Include="Generated Constructors Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated Constructors Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\Sales.cs" />
@@ -828,6 +836,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\LicenceSummary.cs" />
@@ -1070,6 +1079,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -1087,6 +1097,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Sales.cs" />
@@ -1135,6 +1146,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\LicenceSummary.cs" />
@@ -1377,6 +1389,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\AdjustmentShortAllocations.cs" />
@@ -1394,6 +1407,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\EX9AsycudaSalesAllocations.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\InventoryItemAlias.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesAsycudaPiSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\ItemSalesPiSummary.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\PreviousItemsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Sales.cs" />
@@ -1442,6 +1456,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMappingRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemAliasX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InventoryItemX.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\LicenceSummary.cs" />
@@ -1694,6 +1709,7 @@
     <Compile Include="Generated Mappings\AdjustmentQS\InventoryItemsEx.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\ShortAllocation.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\SystemDocumentSet.map.cs" />
+    <Compile Include="Generated Mappings\AdjustmentQS\TODO_PreDiscrepancyErrors.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\xcuda_Item.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\Adjustments.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\AdjustmentShortAllocations.map.cs" />
@@ -1711,6 +1727,7 @@
     <Compile Include="Generated Mappings\AllocationDS\EX9AsycudaSalesAllocations.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItem.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\InventoryItemAlias.map.cs" />
+    <Compile Include="Generated Mappings\AllocationDS\ItemSalesAsycudaPiSummary.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\ItemSalesPiSummary.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\PreviousItemsEx.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\Sales.map.cs" />
@@ -1759,6 +1776,7 @@
     <Compile Include="Generated Mappings\CoreEntities\FileTypeMappings.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypes.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InfoMapping.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\InfoMappingRegEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InventoryItemAliasX.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\InventoryItemX.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\LicenceSummary.map.cs" />

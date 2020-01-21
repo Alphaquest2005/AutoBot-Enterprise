@@ -755,6 +755,21 @@ namespace AllocationQS.Business.Entities
             }
         }
         string _xstatus;
+        [DataMember]
+        public Nullable<int> SalesLineNumber 
+        {
+            get
+            {
+                return _saleslinenumber;
+            }
+            set
+            {
+                _saleslinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _saleslinenumber;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

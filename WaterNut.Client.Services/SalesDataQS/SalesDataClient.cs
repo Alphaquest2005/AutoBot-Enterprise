@@ -112,7 +112,12 @@ namespace SalesDataQS.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<SalesData>> GetSalesDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+		public async Task<IEnumerable<SalesData>> GetSalesDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            return  await Channel.GetSalesDataByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<SalesData>> GetSalesDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             return  await Channel.GetSalesDataByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }

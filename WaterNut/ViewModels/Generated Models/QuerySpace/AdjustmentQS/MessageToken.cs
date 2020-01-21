@@ -100,6 +100,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS
 			public const string SystemDocumentSetsDeleted = "SystemDocumentSetsDeleted";
 			public const string SystemDocumentSetsCreated = "SystemDocumentSetsCreated";
 			public const string SystemDocumentSetsUpdated = "SystemDocumentSetsUpdated";
+			public const string TODO_PreDiscrepancyErrorsFilterExpressionChanged = "TODO_PreDiscrepancyErrorsFilterExpressionChanged";
+			public const string SelectedTODO_PreDiscrepancyErrorsChanged = "SelectedTODO_PreDiscrepancyErrorsChanged";
+            public const string TODO_PreDiscrepancyErrorsChanged = "TODO_PreDiscrepancyErrorsChanged";
+			public const string TODO_PreDiscrepancyErrorsDeleted = "TODO_PreDiscrepancyErrorsDeleted";
+			public const string TODO_PreDiscrepancyErrorsCreated = "TODO_PreDiscrepancyErrorsCreated";
+			public const string TODO_PreDiscrepancyErrorsUpdated = "TODO_PreDiscrepancyErrorsUpdated";
 			public const string xcuda_ItemFilterExpressionChanged = "xcuda_ItemFilterExpressionChanged";
 			public const string Selectedxcuda_ItemChanged = "Selectedxcuda_ItemChanged";
             public const string xcuda_ItemChanged = "xcuda_ItemChanged";
@@ -123,6 +129,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS
           // public const string InventoryItemsExChanged = "InventoryItemsExChanged";
           // public const string ShortAllocationChanged = "ShortAllocationChanged";
           // public const string SystemDocumentSetChanged = "SystemDocumentSetChanged";
+          // public const string TODO_PreDiscrepancyErrorsChanged = "TODO_PreDiscrepancyErrorsChanged";
           // public const string xcuda_ItemChanged = "xcuda_ItemChanged";
  
 
@@ -157,6 +164,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
    
            public const string CurrentSystemDocumentSetChanged = "CurrentSystemDocumentSetChanged";
    
+           public const string CurrentTODO_PreDiscrepancyErrorsChanged = "CurrentTODO_PreDiscrepancyErrorsChanged";
+   
            public const string Currentxcuda_ItemChanged = "Currentxcuda_ItemChanged";
     
 
@@ -190,6 +199,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentShortAllocationIDChanged = "OnCurrentShortAllocationIDChanged";
    
            public const string CurrentSystemDocumentSetIDChanged = "OnCurrentSystemDocumentSetIDChanged";
+   
+           public const string CurrentTODO_PreDiscrepancyErrorsIDChanged = "OnCurrentTODO_PreDiscrepancyErrorsIDChanged";
    
            public const string Currentxcuda_ItemIDChanged = "OnCurrentxcuda_ItemIDChanged";
       

@@ -96,6 +96,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _isdefault;
         [DataMember]
+        public Nullable<bool> IsImportExport 
+        {
+            get
+            {
+                return _isimportexport;
+            }
+            set
+            {
+                _isimportexport = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isimportexport;
+        [DataMember]
         public Document_Type Document_Type { get; set; }
 
  //       [DataMember]

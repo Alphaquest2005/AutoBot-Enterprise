@@ -218,23 +218,6 @@ public string Status
        
        
                 
-                [MaxLength(50, ErrorMessage = "CNumber has a max length of 50 letters ")]
-public string CNumber
-		{ 
-		    get { return this.todo_discrepanciesalreadyxmled.CNumber; }
-			set
-			{
-			    if (value == this.todo_discrepanciesalreadyxmled.CNumber) return;
-				this.todo_discrepanciesalreadyxmled.CNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("CNumber");
-			}
-		}
-     
-
-       
-       
-                
                 [MaxLength(50, ErrorMessage = "Declarant_Reference_Number has a max length of 50 letters ")]
 public string Declarant_Reference_Number
 		{ 
@@ -294,6 +277,262 @@ public string ReferenceNumber
 				this.todo_discrepanciesalreadyxmled.ReferenceNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ReferenceNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "PreviousCNumber has a max length of 50 letters ")]
+public string PreviousCNumber
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.PreviousCNumber; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.PreviousCNumber) return;
+				this.todo_discrepanciesalreadyxmled.PreviousCNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousCNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(40, ErrorMessage = "DocumentType has a max length of 40 letters ")]
+public string DocumentType
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.DocumentType; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.DocumentType) return;
+				this.todo_discrepanciesalreadyxmled.DocumentType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DocumentType");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.Type; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.Type) return;
+				this.todo_discrepanciesalreadyxmled.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
+       
+       
+public Nullable<System.DateTime> EffectiveDate
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.EffectiveDate; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.EffectiveDate) return;
+				this.todo_discrepanciesalreadyxmled.EffectiveDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EffectiveDate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ItemDescription is required")]
+       
+                
+                [MaxLength(255, ErrorMessage = "ItemDescription has a max length of 255 letters ")]
+public string ItemDescription
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.ItemDescription; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.ItemDescription) return;
+				this.todo_discrepanciesalreadyxmled.ItemDescription = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ItemDescription");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.EmailId; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.EmailId) return;
+				this.todo_discrepanciesalreadyxmled.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.FileTypeId; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.FileTypeId) return;
+				this.todo_discrepanciesalreadyxmled.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Quantity is required")]
+       [NumberValidationAttribute]
+public double Quantity
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.Quantity; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.Quantity) return;
+				this.todo_discrepanciesalreadyxmled.Quantity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Quantity");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Cost is required")]
+       [NumberValidationAttribute]
+public double Cost
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.Cost; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.Cost) return;
+				this.todo_discrepanciesalreadyxmled.Cost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Cost");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
+                
+                
+public string Subject
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.Subject; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.Subject) return;
+				this.todo_discrepanciesalreadyxmled.Subject = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Subject");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
+       
+public System.DateTime EmailDate
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.EmailDate; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.EmailDate) return;
+				this.todo_discrepanciesalreadyxmled.EmailDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailDate");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> LineNumber
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.LineNumber; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.LineNumber) return;
+				this.todo_discrepanciesalreadyxmled.LineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
+public string PreviousInvoiceNumber
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.PreviousInvoiceNumber; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.PreviousInvoiceNumber) return;
+				this.todo_discrepanciesalreadyxmled.PreviousInvoiceNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousInvoiceNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Comment has a max length of 255 letters ")]
+public string Comment
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.Comment; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.Comment) return;
+				this.todo_discrepanciesalreadyxmled.Comment = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Comment");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
+       
+                
+                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+public string DutyFreePaid
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.DutyFreePaid; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.DutyFreePaid) return;
+				this.todo_discrepanciesalreadyxmled.DutyFreePaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DutyFreePaid");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.EntryData_Id; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.EntryData_Id) return;
+				this.todo_discrepanciesalreadyxmled.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
 			}
 		}
      

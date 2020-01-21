@@ -792,6 +792,21 @@ public string xStatus
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> SalesLineNumber
+		{ 
+		    get { return this.asycudasalesallocationsex.SalesLineNumber; }
+			set
+			{
+			    if (value == this.asycudasalesallocationsex.SalesLineNumber) return;
+				this.asycudasalesallocationsex.SalesLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SalesLineNumber");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaSalesAllocationsEx> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaSalesAllocationsEx> ChangeTracker

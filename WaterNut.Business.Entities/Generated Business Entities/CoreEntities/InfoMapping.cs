@@ -20,6 +20,11 @@ namespace CoreEntities.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class InfoMapping : BaseEntity<InfoMapping>, ITrackable 
     {
+        partial void AutoGenStartUp() //InfoMapping()
+        {
+            this.InfoMappingRegEx = new List<InfoMappingRegEx>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -97,6 +102,8 @@ namespace CoreEntities.Business.Entities
         int _applicationsettingsid;
         [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
+        [DataMember]
+        public List<InfoMappingRegEx> InfoMappingRegEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

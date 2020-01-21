@@ -239,6 +239,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<ApplicationSettings>(dbContext, exp, itm.Value, "InfoMapping", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "InfoMappingRegEx":
+                                return
+                                    await
+                                        GetWhere<InfoMappingRegEx>(dbContext, exp, itm.Value, "InfoMapping", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +742,9 @@ namespace CoreEntities.Business.Services
                             case "ApplicationSettings":
                                 return await CountWhere<ApplicationSettings>(dbContext, exp, itm.Value, "InfoMapping", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InfoMappingRegEx":
+                                return await CountWhere<InfoMappingRegEx>(dbContext, exp, itm.Value, "InfoMapping", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.InfoMapping.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -845,6 +854,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ApplicationSettings>(startIndex, count, dbContext, exp, itm.Value, "InfoMapping", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "InfoMappingRegEx":
+                                return
+                                    await
+                                        LoadRangeWhere<InfoMappingRegEx>(startIndex, count, dbContext, exp, itm.Value, "InfoMapping", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1060,6 +1075,7 @@ namespace CoreEntities.Business.Services
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<InfoMapping> entities = await set//dbContext.InfoMapping
+                                                    // .Include(x => x.InfoMappingRegEx)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1135,6 +1151,9 @@ namespace CoreEntities.Business.Services
                         {
                             case "ApplicationSettings":
                                 return await SumWhere<ApplicationSettings>(dbContext, exp, itm.Value, "InfoMapping", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "InfoMappingRegEx":
+                                return await SumWhere<InfoMappingRegEx>(dbContext, exp, itm.Value, "InfoMapping", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

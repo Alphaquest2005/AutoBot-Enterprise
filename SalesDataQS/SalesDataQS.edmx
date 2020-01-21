@@ -10,16 +10,16 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="AsycudaDocumentId" Type="int" Nullable="false" />
-          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSetEntryData">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
-          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -36,11 +36,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDa
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.SalesData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="SalesData">
           <Key>
-            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="EntryData_Id" />
+            
             
             
             
           </Key>
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="EntryDataDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Type" Type="varchar" MaxLength="5" Nullable="false" />
@@ -57,10 +59,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.SalesDataAllocations' doe
         <EntityType Name="SalesDataAllocations">
           <Key>
             <PropertyRef Name="AllocationId" />
-            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="EntryData_Id" />
           </Key>
           <Property Name="AllocationId" Type="int" Nullable="false" />
-          <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.SalesDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -77,8 +79,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.SalesDataDetails' does no
             
             
             
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
@@ -110,6 +114,7 @@ FROM [dbo].[AsycudaDocumentSetEntryDataDetails] AS [AsycudaDocumentSetEntryDataD
           </EntitySet>
           <EntitySet Name="SalesData" EntityType="Self.SalesData" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+[SalesData].[EntryData_Id] AS [EntryData_Id], 
 [SalesData].[EntryDataId] AS [EntryDataId], 
 [SalesData].[EntryDataDate] AS [EntryDataDate], 
 [SalesData].[Type] AS [Type], 
@@ -125,12 +130,13 @@ FROM [dbo].[SalesData] AS [SalesData]</DefiningQuery>
           <EntitySet Name="SalesDataAllocations" EntityType="Self.SalesDataAllocations" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [SalesDataAllocations].[AllocationId] AS [AllocationId], 
-[SalesDataAllocations].[EntryDataId] AS [EntryDataId]
+[SalesDataAllocations].[EntryData_Id] AS [EntryData_Id]
 FROM [dbo].[SalesDataAllocations] AS [SalesDataAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="SalesDataDetails" EntityType="Self.SalesDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [SalesDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[SalesDataDetails].[EntryData_Id] AS [EntryData_Id], 
 [SalesDataDetails].[EntryDataId] AS [EntryDataId], 
 [SalesDataDetails].[LineNumber] AS [LineNumber], 
 [SalesDataDetails].[ItemNumber] AS [ItemNumber], 
@@ -209,33 +215,34 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <Property Name="EntryDataDate" Type="DateTime" Nullable="false" Precision="7" />
           <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutDBModel.SalesDataDetailAsycudaDocumentSetEntryDataDetails" FromRole="SalesDataDetail" ToRole="AsycudaDocumentSetEntryDataDetails" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="AsycudaDocumentEntryData">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="SalesData" Relationship="WaterNutDBModel.SalesDataAsycudaDocumentEntryData" FromRole="AsycudaDocumentEntryData" ToRole="SalesData" />
           <Property Name="AsycudaDocumentId" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSetEntryData">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
-          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="SalesData" Relationship="WaterNutDBModel.SalesDataAsycudaDocumentSetEntryData" FromRole="AsycudaDocumentSetEntryData" ToRole="SalesData" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="SalesDataAllocations">
           <Key>
             <PropertyRef Name="AllocationId" />
-            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="EntryData_Id" />
           </Key>
           <Property Name="AllocationId" Type="Int32" Nullable="false" />
-          <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="SalesData" Relationship="WaterNutDBModel.SalesDataSalesDataAllocations" FromRole="SalesDataAllocations" ToRole="SalesData" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSetEntryDataDetails">
           <Key>
@@ -249,7 +256,7 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
         </EntityType>
         <EntityType Name="SalesData">
           <Key>
-            <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="EntryData_Id" />
           </Key>
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataDate" Type="DateTime" Nullable="false" Precision="7"><a:OrderByProperty xmlns:a="http://schemas.tempuri.com/OrderByProperty">Desc</a:OrderByProperty></Property>
@@ -265,16 +272,17 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocuments" Relationship="WaterNutDBModel.SalesDataAsycudaDocumentEntryData" FromRole="SalesData" ToRole="AsycudaDocumentEntryData" />
           <Property Name="AsycudaDocumentId" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="SalesDataSalesDataDetail">
           <End Type="WaterNutDBModel.SalesData" Role="SalesData" Multiplicity="1" />
           <End Type="WaterNutDBModel.SalesDataDetail" Role="SalesDataDetail" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SalesData">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Principal>
             <Dependent Role="SalesDataDetail">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -283,10 +291,10 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <End Type="WaterNutDBModel.AsycudaDocumentSetEntryData" Role="AsycudaDocumentSetEntryData" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SalesData">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Principal>
             <Dependent Role="AsycudaDocumentSetEntryData">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -295,10 +303,10 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <End Type="WaterNutDBModel.SalesDataAllocations" Role="SalesDataAllocations" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SalesData">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Principal>
             <Dependent Role="SalesDataAllocations">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -307,10 +315,10 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <End Type="WaterNutDBModel.AsycudaDocumentEntryData" Role="AsycudaDocumentEntryData" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SalesData">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Principal>
             <Dependent Role="AsycudaDocumentEntryData">
-              <PropertyRef Name="EntryDataId" />
+              <PropertyRef Name="EntryData_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -335,6 +343,7 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <EntitySetMapping Name="SalesDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.SalesDataDetail">
               <MappingFragment StoreEntitySet="SalesDataDetails">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryDataDate" ColumnName="EntryDataDate" />
                 <ScalarProperty Name="SalesValue" ColumnName="SalesValue" />
@@ -360,17 +369,17 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentEntryData">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentEntryData">
               <MappingFragment StoreEntitySet="AsycudaDocumentEntryData">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="AsycudaDocumentId" ColumnName="AsycudaDocumentId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AsycudaDocumentSetEntryData">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSetEntryData">
               <MappingFragment StoreEntitySet="AsycudaDocumentSetEntryData">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -378,7 +387,7 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <EntitySetMapping Name="SalesDataAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.SalesDataAllocations">
               <MappingFragment StoreEntitySet="SalesDataAllocations">
-                <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -395,6 +404,7 @@ FROM [dbo].[SalesDataDetails] AS [SalesDataDetails]</DefiningQuery>
           <EntitySetMapping Name="SalesDatas">
             <EntityTypeMapping TypeName="WaterNutDBModel.SalesData">
               <MappingFragment StoreEntitySet="SalesData">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentId" ColumnName="AsycudaDocumentId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />

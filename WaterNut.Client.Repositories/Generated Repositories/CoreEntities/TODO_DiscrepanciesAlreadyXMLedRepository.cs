@@ -361,7 +361,63 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<TODO_DiscrepanciesAlreadyXMLed>> GetTODO_DiscrepanciesAlreadyXMLedByEmailId(string EmailId, List<string> includesLst = null)
+        {
+             if (EmailId == "0") return null;
+            try
+            {
+                 using (TODO_DiscrepanciesAlreadyXMLedClient t = new TODO_DiscrepanciesAlreadyXMLedClient())
+                    {
+                        var res = await t.GetTODO_DiscrepanciesAlreadyXMLedByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_DiscrepanciesAlreadyXMLed(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_DiscrepanciesAlreadyXMLed>> GetTODO_DiscrepanciesAlreadyXMLedByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (TODO_DiscrepanciesAlreadyXMLedClient t = new TODO_DiscrepanciesAlreadyXMLedClient())
+                    {
+                        var res = await t.GetTODO_DiscrepanciesAlreadyXMLedByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_DiscrepanciesAlreadyXMLed(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

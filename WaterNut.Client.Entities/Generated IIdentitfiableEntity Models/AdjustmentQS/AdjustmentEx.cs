@@ -21,11 +21,11 @@ namespace AdjustmentQS.Client.Entities
         {
             get
             {
-                return this.InvoiceNo.ToString();//this.InvoiceNo == null?"0":			
+                return this.EntryData_Id.ToString();//this.EntryData_Id == null?"0":			
             }
             set
             {
-                this.InvoiceNo = Convert.ToString(value);
+                this.EntryData_Id = Convert.ToInt32(value);
             }
         }
         public string ApplicationSettingsEntityName

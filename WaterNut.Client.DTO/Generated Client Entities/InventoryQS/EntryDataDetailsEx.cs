@@ -398,6 +398,58 @@ namespace InventoryQS.Client.DTO
 		}
         private Nullable<double> _TaxAmount;
 
+        [DataMember]
+        public int EntryData_Id
+		{ 
+		    get { return _EntryData_Id; }
+			set
+			{
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
+			}
+		}
+        private int _EntryData_Id;
+
+        [DataMember]
+        public Nullable<int> EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private Nullable<int> _EmailId;
+
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
+        [DataMember]
+        public string Name
+		{ 
+		    get { return _Name; }
+			set
+			{
+			    if (value == _Name) return;
+				_Name = value;
+				NotifyPropertyChanged();//m => this.Name
+			}
+		}
+        private string _Name;
+
        
         [DataMember]
         public InventoryItemsEx InventoryItemsEx

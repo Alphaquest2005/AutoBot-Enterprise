@@ -11,7 +11,7 @@
     {
         public EntryDataMap()
         {                        
-              this.HasKey(t => t.EntryDataId);        
+              this.HasKey(t => t.EntryData_Id);        
               this.ToTable("EntryData");
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
@@ -28,6 +28,8 @@
               this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
               this.Property(t => t.TotalInsurance).HasColumnName("TotalInsurance");
               this.Property(t => t.TotalDeduction).HasColumnName("TotalDeduction");
+              this.Property(t => t.SourceFile).HasColumnName("SourceFile");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.HasMany(t => t.AsycudaDocumentEntryDatas).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocumentSetEntryDatas).WithRequired(t => (EntryData)t.EntryData);
              // Tracking Properties

@@ -39,6 +39,7 @@
           <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" />
           <Property Name="LicenseRequired" Type="bit" />
           <Property Name="Invalid" Type="bit" />
+          <Property Name="LicenseDescription" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -64,6 +65,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
             
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="LineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
@@ -92,6 +94,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LastCost" Type="float" />
           <Property Name="TaxAmount" Type="float" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -158,6 +163,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[EntryDataDetailsEx].[EntryData_Id] AS [EntryData_Id], 
 [EntryDataDetailsEx].[EntryDataId] AS [EntryDataId], 
 [EntryDataDetailsEx].[LineNumber] AS [LineNumber], 
 [EntryDataDetailsEx].[ItemNumber] AS [ItemNumber], 
@@ -185,7 +191,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
 [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [EntryDataDetailsEx].[LastCost] AS [LastCost], 
-[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount]
+[EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
+[EntryDataDetailsEx].[EmailId] AS [EmailId], 
+[EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
+[EntryDataDetailsEx].[Name] AS [Name]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -275,6 +284,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Type="Boolean" Name="LicenseRequired" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.TariffCodesInventoryItemsEx" FromRole="TariffCodes" ToRole="InventoryItemsEx" />
           <Property Name="Invalid" Type="Boolean" />
+          <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -361,6 +371,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="ApplicationSettingsId" Type="Int32" />
           <Property Name="LastCost" Type="Double" />
           <Property Name="TaxAmount" Type="Double" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="InventoryItemsExEntryDataDetailsEx">
           <End Type="WaterNutDBModel.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
@@ -433,6 +447,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="TariffCodes">
             <EntityTypeMapping TypeName="WaterNutDBModel.TariffCodes">
               <MappingFragment StoreEntitySet="TariffCodes">
+                <ScalarProperty Name="LicenseDescription" ColumnName="LicenseDescription" />
                 <ScalarProperty Name="Invalid" ColumnName="Invalid" />
                 <ScalarProperty Name="LicenseRequired" ColumnName="LicenseRequired" />
                 <ScalarProperty Name="TariffCategoryCode" ColumnName="TariffCategoryCode" />
@@ -476,6 +491,10 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="TaxAmount" ColumnName="TaxAmount" />
                 <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />

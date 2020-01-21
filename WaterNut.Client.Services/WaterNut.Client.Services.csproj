@@ -110,6 +110,7 @@
     <Compile Include="AdjustmentQS\InventoryItemsExClient.cs" />
     <Compile Include="AdjustmentQS\ShortAllocationClient.cs" />
     <Compile Include="AdjustmentQS\SystemDocumentSetClient.cs" />
+    <Compile Include="AdjustmentQS\TODO_PreDiscrepancyErrorsClient.cs" />
     <Compile Include="AdjustmentQS\xcuda_ItemClient.cs" />
     <Compile Include="AllocationQS\AdjustmentShortAllocationClient.cs" />
     <Compile Include="AllocationQS\AsycudaSalesAllocationsExClient.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="CoreEntities\FileTypeMappingsClient.cs" />
     <Compile Include="CoreEntities\FileTypesClient.cs" />
     <Compile Include="CoreEntities\InfoMappingClient.cs" />
+    <Compile Include="CoreEntities\InfoMappingRegExClient.cs" />
     <Compile Include="CoreEntities\InventoryItemAliasXClient.cs" />
     <Compile Include="CoreEntities\InventoryItemXClient.cs" />
     <Compile Include="CoreEntities\LicenceSummaryClient.cs" />

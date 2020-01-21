@@ -242,7 +242,7 @@ namespace DocumentItemDS.Business.Services
                             case "xcuda_Inventory_Item":
                                 return
                                     await
-                                        GetWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", "Select", includesLst)
+                                        GetWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -743,7 +743,7 @@ namespace DocumentItemDS.Business.Services
                                 return await CountWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_Inventory_Item":
-                                return await CountWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", "Select")
+                                return await CountWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -859,7 +859,7 @@ namespace DocumentItemDS.Business.Services
                             case "xcuda_Inventory_Item":
                                 return
                                     await
-                                        LoadRangeWhere<xcuda_Inventory_Item>(startIndex, count, dbContext, exp, itm.Value, "xcuda_HScode", "Select")
+                                        LoadRangeWhere<xcuda_Inventory_Item>(startIndex, count, dbContext, exp, itm.Value, "xcuda_HScode", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1123,7 +1123,7 @@ namespace DocumentItemDS.Business.Services
                                 return await SumWhere<xcuda_Tarification>(dbContext, exp, itm.Value, "xcuda_HScode", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "xcuda_Inventory_Item":
-                                return await SumWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", field, "Select")
+                                return await SumWhere<xcuda_Inventory_Item>(dbContext, exp, itm.Value, "xcuda_HScode", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -20,6 +20,7 @@
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.Property(t => t.ImportComplete).HasColumnName("ImportComplete");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.HasRequired(t => t.AdjustmentOver).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetail>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AdjustmentShort).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetail>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasRequired(t => t.AdjustmentDetail).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetail>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);

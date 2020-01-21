@@ -80,6 +80,9 @@ namespace EntryDataQS.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
+		Task<IEnumerable<EntryData>> GetEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null);
+        
+  		[OperationContract]
 		Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
   		[OperationContract]

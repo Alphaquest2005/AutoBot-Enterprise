@@ -15,7 +15,7 @@
               this.ToTable("EmailMapping");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.Pattern).HasColumnName("Pattern").IsRequired().HasMaxLength(255);
+              this.Property(t => t.Pattern).HasColumnName("Pattern").IsRequired();
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<EmailMapping>) t.EmailMapping).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.EmailFileTypes).WithRequired(t => (EmailMapping)t.EmailMapping);
              // Tracking Properties

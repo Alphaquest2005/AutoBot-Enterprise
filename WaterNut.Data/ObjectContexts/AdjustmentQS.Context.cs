@@ -79,6 +79,8 @@ namespace AdjustmentQS.Business.Entities
      
         public DbSet<SystemDocumentSet> SystemDocumentSets { get; set; }
      
+        public DbSet<TODO_PreDiscrepancyErrors> TODO_PreDiscrepancyErrors { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -114,6 +116,8 @@ namespace AdjustmentQS.Business.Entities
             modelBuilder.Configurations.Add(new AdjustmentOversAllocationMap());
          
             modelBuilder.Configurations.Add(new SystemDocumentSetMap());
+         
+            modelBuilder.Configurations.Add(new TODO_PreDiscrepancyErrorsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

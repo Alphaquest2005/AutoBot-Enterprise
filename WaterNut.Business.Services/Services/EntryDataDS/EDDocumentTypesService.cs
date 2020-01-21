@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<EDDocumentTypes> GetEDDocumentTypesByKey(string EntryDataId, List<string> includesLst = null, bool tracking = true)
+        public async Task<EDDocumentTypes> GetEDDocumentTypesByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataId))return null; 
+			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(EntryData_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                EDDocumentTypes entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryDataId == i).ConfigureAwait(continueOnCapturedContext: false);
+                EDDocumentTypes entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryData_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -298,11 +298,11 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<EDDocumentTypes> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId).Where(exp);
+                                    dset = set.OrderBy(x => x.EntryData_Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -372,12 +372,12 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<EDDocumentTypes> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
 
                                 var lst = dset
@@ -523,15 +523,15 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteEDDocumentTypes(string EntryDataId)
+        public async Task<bool> DeleteEDDocumentTypes(string EntryData_Id)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(EntryData_Id);
                 EDDocumentTypes entity = await dbContext.EDDocumentType
-													.SingleOrDefaultAsync(x => x.EntryDataId == i)
+													.SingleOrDefaultAsync(x => x.EntryData_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -681,7 +681,7 @@ namespace EntryDataDS.Business.Services
                     {
                         return await dbContext.EDDocumentType
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataId)
+                                        .OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -693,7 +693,7 @@ namespace EntryDataDS.Business.Services
                         return await dbContext.EDDocumentType
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryDataId)
+										.OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -738,7 +738,7 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.EDDocumentType.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return await dbContext.EDDocumentType.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -781,9 +781,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<EDDocumentTypes>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -802,9 +802,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<EDDocumentTypes>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -830,7 +830,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryDataId)
+                                    .OrderBy(y => y.EntryData_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -855,8 +855,8 @@ namespace EntryDataDS.Business.Services
                     }
                     return await set//dbContext.EDDocumentType
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
-								.OrderBy(y => y.EntryDataId)
+                                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+								.OrderBy(y => y.EntryData_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -908,9 +908,9 @@ namespace EntryDataDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataId)
+                .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -937,9 +937,9 @@ namespace EntryDataDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataId)
+                .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -989,7 +989,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<EDDocumentTypes>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -999,7 +999,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<EDDocumentTypes>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1026,7 +1026,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<EDDocumentTypes>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1036,7 +1036,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<EDDocumentTypes>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1109,7 +1109,7 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.EDDocumentType.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return Convert.ToDecimal(dbContext.EDDocumentType.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1150,9 +1150,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<EDDocumentTypes>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1170,9 +1170,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<EDDocumentTypes>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)

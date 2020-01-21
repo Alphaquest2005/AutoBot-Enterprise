@@ -21,6 +21,7 @@ namespace AdjustmentQS
         public string DocumentType { get; set; }
         public Nullable<double> Quantity { get; set; }
         public bool ImportComplete { get; set; }
+        public int EntryData_Id { get; set; }
     
         public virtual AdjustmentOver AdjustmentOver { get; set; }
         public virtual AdjustmentShort AdjustmentShort { get; set; }

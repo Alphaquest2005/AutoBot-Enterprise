@@ -218,23 +218,6 @@ public string Status
        
        
                 
-                [MaxLength(50, ErrorMessage = "CNumber has a max length of 50 letters ")]
-public string CNumber
-		{ 
-		    get { return this.todo_adjustmentsalreadyxmled.CNumber; }
-			set
-			{
-			    if (value == this.todo_adjustmentsalreadyxmled.CNumber) return;
-				this.todo_adjustmentsalreadyxmled.CNumber = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("CNumber");
-			}
-		}
-     
-
-       
-       
-                
                 [MaxLength(50, ErrorMessage = "Declarant_Reference_Number has a max length of 50 letters ")]
 public string Declarant_Reference_Number
 		{ 
@@ -294,6 +277,262 @@ public string ReferenceNumber
 				this.todo_adjustmentsalreadyxmled.ReferenceNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ReferenceNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(40, ErrorMessage = "DocumentType has a max length of 40 letters ")]
+public string DocumentType
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.DocumentType; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.DocumentType) return;
+				this.todo_adjustmentsalreadyxmled.DocumentType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DocumentType");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.EntryData_Id; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.EntryData_Id) return;
+				this.todo_adjustmentsalreadyxmled.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "PreviousCNumber has a max length of 50 letters ")]
+public string PreviousCNumber
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.PreviousCNumber; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.PreviousCNumber) return;
+				this.todo_adjustmentsalreadyxmled.PreviousCNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousCNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Type has a max length of 50 letters ")]
+public string Type
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.Type; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.Type) return;
+				this.todo_adjustmentsalreadyxmled.Type = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Type");
+			}
+		}
+     
+
+       
+       
+public Nullable<System.DateTime> EffectiveDate
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.EffectiveDate; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.EffectiveDate) return;
+				this.todo_adjustmentsalreadyxmled.EffectiveDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EffectiveDate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ItemDescription is required")]
+       
+                
+                [MaxLength(255, ErrorMessage = "ItemDescription has a max length of 255 letters ")]
+public string ItemDescription
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.ItemDescription; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.ItemDescription) return;
+				this.todo_adjustmentsalreadyxmled.ItemDescription = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ItemDescription");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.EmailId; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.EmailId) return;
+				this.todo_adjustmentsalreadyxmled.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.FileTypeId; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.FileTypeId) return;
+				this.todo_adjustmentsalreadyxmled.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Quantity is required")]
+       [NumberValidationAttribute]
+public double Quantity
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.Quantity; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.Quantity) return;
+				this.todo_adjustmentsalreadyxmled.Quantity = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Quantity");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Cost is required")]
+       [NumberValidationAttribute]
+public double Cost
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.Cost; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.Cost) return;
+				this.todo_adjustmentsalreadyxmled.Cost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Cost");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
+                
+                
+public string Subject
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.Subject; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.Subject) return;
+				this.todo_adjustmentsalreadyxmled.Subject = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Subject");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
+       
+public System.DateTime EmailDate
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.EmailDate; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.EmailDate) return;
+				this.todo_adjustmentsalreadyxmled.EmailDate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailDate");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> LineNumber
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.LineNumber; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.LineNumber) return;
+				this.todo_adjustmentsalreadyxmled.LineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "PreviousInvoiceNumber has a max length of 50 letters ")]
+public string PreviousInvoiceNumber
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.PreviousInvoiceNumber; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.PreviousInvoiceNumber) return;
+				this.todo_adjustmentsalreadyxmled.PreviousInvoiceNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PreviousInvoiceNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(255, ErrorMessage = "Comment has a max length of 255 letters ")]
+public string Comment
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.Comment; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.Comment) return;
+				this.todo_adjustmentsalreadyxmled.Comment = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Comment");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
+       
+                
+                [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
+public string DutyFreePaid
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.DutyFreePaid; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.DutyFreePaid) return;
+				this.todo_adjustmentsalreadyxmled.DutyFreePaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DutyFreePaid");
 			}
 		}
      

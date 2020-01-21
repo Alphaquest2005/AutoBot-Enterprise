@@ -14,6 +14,9 @@ namespace AdjustmentQS.Client.DTO
     {
        #region MyNavProp Entities
 
+       
+
+        
  
  #endregion
     }

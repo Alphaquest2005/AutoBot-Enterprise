@@ -48,7 +48,7 @@ namespace AdjustmentQS.Client.Entities
                         {
                             this.AdjustmentEx = (AdjustmentEx)new AdjustmentEx().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.AdjustmentEx.InvoiceNo);
+							this.EntryDataDetailsId = Convert.ToInt32(this.AdjustmentEx.EntryData_Id);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddAdjustmentEx");
                         }

@@ -137,6 +137,11 @@ namespace EntryDataQS.Client.Services
             return  await Channel.GetEntryDataDetailsExByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetEntryDataDetailsExByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

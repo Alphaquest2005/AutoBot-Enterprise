@@ -21,35 +21,35 @@ namespace DocumentItemDS.Business.Entities
     public partial class xcuda_Inventory_Item : BaseEntity<xcuda_Inventory_Item>, ITrackable 
     {
         [DataMember]
-        public string ItemNumber 
+        public int InventoryItemId 
         {
             get
             {
-                return _itemnumber;
+                return _inventoryitemid;
             }
             set
             {
-                _itemnumber = value;
+                _inventoryitemid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _itemnumber;
+        int _inventoryitemid;
         [DataMember]
-        public int Id 
+        public int Item_Id 
         {
             get
             {
-                return _id;
+                return _item_id;
             }
             set
             {
-                _id = value;
+                _item_id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _id;
+        int _item_id;
         [DataMember]
         public xcuda_HScode xcuda_HScode { get; set; }
 

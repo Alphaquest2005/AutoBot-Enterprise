@@ -105,7 +105,13 @@ namespace CoreEntities.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_AdjustmentsAlreadyXMLed>> GetTODO_AdjustmentsAlreadyXMLedByEmailId(string EmailId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_AdjustmentsAlreadyXMLed>> GetTODO_AdjustmentsAlreadyXMLedByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  
 
 
 

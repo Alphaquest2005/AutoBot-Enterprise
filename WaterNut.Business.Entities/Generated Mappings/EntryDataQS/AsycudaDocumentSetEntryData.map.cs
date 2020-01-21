@@ -14,10 +14,10 @@
               this.HasKey(t => t.Id);        
               this.ToTable("AsycudaDocumentSetEntryData");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
-              this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.HasRequired(t => t.EntryDataEx).WithMany(t =>(ICollection<AsycudaDocumentSetEntryData>) t.AsycudaDocumentSets).HasForeignKey(d => d.EntryDataId);
-              this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<AsycudaDocumentSetEntryData>) t.AsycudaDocumentSetEntryDatas).HasForeignKey(d => d.EntryDataId);
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.HasRequired(t => t.EntryDataEx).WithMany(t =>(ICollection<AsycudaDocumentSetEntryData>) t.AsycudaDocumentSets).HasForeignKey(d => d.EntryData_Id);
+              this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<AsycudaDocumentSetEntryData>) t.AsycudaDocumentSetEntryDatas).HasForeignKey(d => d.EntryData_Id);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

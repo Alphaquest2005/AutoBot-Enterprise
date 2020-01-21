@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<Adjustments> GetAdjustmentsByKey(string EntryDataId, List<string> includesLst = null, bool tracking = true)
+        public async Task<Adjustments> GetAdjustmentsByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataId))return null; 
+			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(EntryData_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                Adjustments entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryDataId == i).ConfigureAwait(continueOnCapturedContext: false);
+                Adjustments entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryData_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -272,7 +272,7 @@ namespace EntryDataDS.Business.Services
                             case "EntryDataEx":
                                 return
                                     await
-                                        GetWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
+                                        GetWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "DocumentType":
@@ -340,11 +340,11 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<Adjustments> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId).Where(exp);
+                                    dset = set.OrderBy(x => x.EntryData_Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -414,12 +414,12 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<Adjustments> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
 
                                 var lst = dset
@@ -565,15 +565,15 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAdjustments(string EntryDataId)
+        public async Task<bool> DeleteAdjustments(string EntryData_Id)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(EntryData_Id);
                 Adjustments entity = await dbContext.EntryData.OfType<Adjustments>()
-													.SingleOrDefaultAsync(x => x.EntryDataId == i)
+													.SingleOrDefaultAsync(x => x.EntryData_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -723,7 +723,7 @@ namespace EntryDataDS.Business.Services
                     {
                         return await dbContext.Set<Adjustments>()
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataId)
+                                        .OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -735,7 +735,7 @@ namespace EntryDataDS.Business.Services
                         return await dbContext.Set<Adjustments>()
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryDataId)
+										.OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -794,14 +794,14 @@ namespace EntryDataDS.Business.Services
                                 return await CountWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataEx":
-                                return await CountWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "Select")
+                                return await CountWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "DocumentType":
                                 return await CountWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.Set<Adjustments>().Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return await dbContext.Set<Adjustments>().Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -844,9 +844,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Adjustments>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -865,9 +865,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Adjustments>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -893,7 +893,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryDataId)
+                                    .OrderBy(y => y.EntryData_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -943,7 +943,7 @@ namespace EntryDataDS.Business.Services
                             case "EntryDataEx":
                                 return
                                     await
-                                        LoadRangeWhere<EntryDataEx>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
+                                        LoadRangeWhere<EntryDataEx>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "DocumentType":
@@ -960,8 +960,8 @@ namespace EntryDataDS.Business.Services
                     }
                     return await set//dbContext.Set<Adjustments>()
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
-								.OrderBy(y => y.EntryDataId)
+                                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+								.OrderBy(y => y.EntryData_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -1013,9 +1013,9 @@ namespace EntryDataDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataId)
+                .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1042,9 +1042,9 @@ namespace EntryDataDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataId)
+                .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1094,7 +1094,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<Adjustments>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1104,7 +1104,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Adjustments>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1131,7 +1131,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<Adjustments>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1141,7 +1141,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Adjustments>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1156,7 +1156,36 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<Adjustments>> GetAdjustmentsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<Adjustments>> GetAdjustmentsByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = EntryDataId;
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Adjustments> entities = await set//dbContext.EntryData.OfType<Adjustments>()
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<Adjustments>> GetAdjustmentsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1315,14 +1344,14 @@ namespace EntryDataDS.Business.Services
                                 return await SumWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataEx":
-                                return await SumWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", field, "Select")
+                                return await SumWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "DocumentType":
                                 return await SumWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.Set<Adjustments>().Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return Convert.ToDecimal(dbContext.Set<Adjustments>().Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1363,9 +1392,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<Adjustments>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1383,9 +1412,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<Adjustments>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)

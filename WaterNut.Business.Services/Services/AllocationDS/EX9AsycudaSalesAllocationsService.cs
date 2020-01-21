@@ -1299,6 +1299,35 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EntryData_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EX9AsycudaSalesAllocations> entities = await set//dbContext.EX9AsycudaSalesAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

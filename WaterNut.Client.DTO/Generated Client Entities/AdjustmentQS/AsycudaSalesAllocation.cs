@@ -151,6 +151,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _xStatus;
 
+        [DataMember]
+        public string Comments
+		{ 
+		    get { return _Comments; }
+			set
+			{
+			    if (value == _Comments) return;
+				_Comments = value;
+				NotifyPropertyChanged();//m => this.Comments
+			}
+		}
+        private string _Comments;
+
        
         [DataMember]
         public EntryDataDetail EntryDataDetail

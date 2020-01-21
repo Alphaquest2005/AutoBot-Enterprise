@@ -20,6 +20,11 @@ namespace AllocationDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class EntryData : BaseEntity<EntryData>, ITrackable 
     {
+        partial void AutoGenStartUp() //EntryData()
+        {
+            this.EntryDataDetails1 = new List<EntryDataDetails>();
+        }
+
         [DataMember]
         public string EntryDataId 
         {
@@ -260,6 +265,23 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _sourcefile;
+        [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
+        public List<EntryDataDetails> EntryDataDetails1 { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

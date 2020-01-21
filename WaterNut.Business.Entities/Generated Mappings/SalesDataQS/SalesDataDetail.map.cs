@@ -32,7 +32,8 @@
               this.Property(t => t.SalesValue).HasColumnName("SalesValue");
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.HasRequired(t => t.SalesData).WithMany(t =>(ICollection<SalesDataDetail>) t.SalesDataDetails).HasForeignKey(d => d.EntryDataId);
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.HasRequired(t => t.SalesData).WithMany(t =>(ICollection<SalesDataDetail>) t.SalesDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (SalesDataDetail)t.SalesDataDetail);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

@@ -105,6 +105,7 @@ namespace WaterNut.DataSpace
                             {
                                 EntryDataDetailsId = (int) x.EntryDataDetailsId,
                                 EntryDataId = x.EntryDataDetails.EntryDataId,
+                                EntryData_Id = x.EntryDataDetails.EntryData_Id,
                                 QtyAllocated = x.QtyAllocated
                             }).ToList()
                         };

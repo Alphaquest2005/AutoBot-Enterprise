@@ -112,7 +112,12 @@ namespace EntryDataQS.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+		public async Task<IEnumerable<EntryData>> GetEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            return  await Channel.GetEntryDataByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             return  await Channel.GetEntryDataByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }

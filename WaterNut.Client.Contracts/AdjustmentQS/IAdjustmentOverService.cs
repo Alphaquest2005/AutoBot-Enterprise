@@ -94,6 +94,9 @@ namespace AdjustmentQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AdjustmentOver>> GetAdjustmentOverByFileTypeId(string FileTypeId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentOver>> GetAdjustmentOverByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+        
   		
     }
 }

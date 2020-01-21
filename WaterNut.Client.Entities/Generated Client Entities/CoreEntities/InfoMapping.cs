@@ -42,6 +42,9 @@ namespace CoreEntities.Client.Entities
                 infomapping = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= " is required")]
        
 public int Id
@@ -175,6 +178,60 @@ public int ApplicationSettingsId
 			}
 		}
         
+
+        ObservableCollection<InfoMappingRegEx> _InfoMappingRegEx = null;
+        public  ObservableCollection<InfoMappingRegEx> InfoMappingRegEx
+		{
+            
+		    get 
+				{ 
+					if(_InfoMappingRegEx != null) return _InfoMappingRegEx;
+					//if (this.infomapping.InfoMappingRegEx == null) Debugger.Break();
+					if(this.infomapping.InfoMappingRegEx != null)
+					{
+						_InfoMappingRegEx = new ObservableCollection<InfoMappingRegEx>(this.infomapping.InfoMappingRegEx.Select(x => new InfoMappingRegEx(x)));
+					}
+					
+						_InfoMappingRegEx.CollectionChanged += InfoMappingRegEx_CollectionChanged; 
+					
+					return _InfoMappingRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _InfoMappingRegEx)) return;
+				if (value != null)
+					this.infomapping.InfoMappingRegEx = new ChangeTrackingCollection<DTO.InfoMappingRegEx>(value.Select(x => x.DTO).ToList());
+                _InfoMappingRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_InfoMappingRegEx != null)
+				_InfoMappingRegEx.CollectionChanged += InfoMappingRegEx_CollectionChanged;               
+				NotifyPropertyChanged("InfoMappingRegEx");
+			}
+		}
+        
+        void InfoMappingRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InfoMappingRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        infomapping.InfoMappingRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InfoMappingRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        infomapping.InfoMappingRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.InfoMapping> _changeTracker;    

@@ -98,16 +98,16 @@ namespace SalesDataQS.Business.Services
         }
 
 
-        public async Task<SalesData> GetSalesDataByKey(string EntryDataId, List<string> includesLst = null, bool tracking = true)
+        public async Task<SalesData> GetSalesDataByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataId))return null; 
+			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
               using ( var dbContext = new SalesDataQSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(EntryData_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                SalesData entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryDataId == i).ConfigureAwait(continueOnCapturedContext: false);
+                SalesData entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryData_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -316,11 +316,11 @@ namespace SalesDataQS.Business.Services
                                 IQueryable<SalesData> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId).Where(exp);
+                                    dset = set.OrderBy(x => x.EntryData_Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -390,12 +390,12 @@ namespace SalesDataQS.Business.Services
                                 IQueryable<SalesData> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
 
                                 var lst = dset
@@ -541,15 +541,15 @@ namespace SalesDataQS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteSalesData(string EntryDataId)
+        public async Task<bool> DeleteSalesData(string EntryData_Id)
         {
             try
             {
               using ( var dbContext = new SalesDataQSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(EntryData_Id);
                 SalesData entity = await dbContext.SalesDatas
-													.SingleOrDefaultAsync(x => x.EntryDataId == i)
+													.SingleOrDefaultAsync(x => x.EntryData_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -699,7 +699,7 @@ namespace SalesDataQS.Business.Services
                     {
                         return await dbContext.SalesDatas
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataId)
+                                        .OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -711,7 +711,7 @@ namespace SalesDataQS.Business.Services
                         return await dbContext.SalesDatas
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryDataId)
+										.OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -765,7 +765,7 @@ namespace SalesDataQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.SalesDatas.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return await dbContext.SalesDatas.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -808,9 +808,9 @@ namespace SalesDataQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<SalesData>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -829,9 +829,9 @@ namespace SalesDataQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<SalesData>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -901,7 +901,7 @@ namespace SalesDataQS.Business.Services
                     }
                     return await set//dbContext.SalesDatas
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 								  
 .OrderByDescending(y => y.EntryDataDate)
  
@@ -955,7 +955,7 @@ namespace SalesDataQS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                   
 .OrderByDescending(y => y.EntryDataDate)
@@ -985,7 +985,7 @@ namespace SalesDataQS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
                   
 .OrderByDescending(y => y.EntryDataDate)
@@ -1038,7 +1038,7 @@ namespace SalesDataQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<SalesData>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1048,7 +1048,7 @@ namespace SalesDataQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<SalesData>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1075,7 +1075,7 @@ namespace SalesDataQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<SalesData>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1085,7 +1085,7 @@ namespace SalesDataQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<SalesData>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1100,7 +1100,40 @@ namespace SalesDataQS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<SalesData>> GetSalesDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+			        public async Task<IEnumerable<SalesData>> GetSalesDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new SalesDataQSContext(){StartTracking = StartTracking})
+              {
+                var i = EntryDataId;
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<SalesData> entities = await set//dbContext.SalesDatas
+                                                    // .Include(x => x.SalesDataDetails)									  
+                                                    // .Include(x => x.AsycudaDocumentSets)									  
+                                                    // .Include(x => x.SalesDataAllocations)									  
+                                                    // .Include(x => x.AsycudaDocuments)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<SalesData>> GetSalesDataByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
@@ -1266,7 +1299,7 @@ namespace SalesDataQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.SalesDatas.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return Convert.ToDecimal(dbContext.SalesDatas.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1307,9 +1340,9 @@ namespace SalesDataQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<SalesData>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1327,9 +1360,9 @@ namespace SalesDataQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<SalesData>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)

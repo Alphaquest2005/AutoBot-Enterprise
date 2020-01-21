@@ -366,7 +366,35 @@ namespace AdjustmentQS.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+             if (EntryData_Id == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentItemEntryDataDetailClient t = new AsycudaDocumentItemEntryDataDetailClient())
+                    {
+                        var res = await t.GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentItemEntryDataDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

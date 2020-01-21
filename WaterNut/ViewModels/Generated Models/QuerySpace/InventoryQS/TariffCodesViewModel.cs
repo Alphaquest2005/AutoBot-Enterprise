@@ -446,6 +446,24 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
         }	
 
  
+
+		private string _licenseDescriptionFilter;
+        public string LicenseDescriptionFilter
+        {
+            get
+            {
+                return _licenseDescriptionFilter;
+            }
+            set
+            {
+                _licenseDescriptionFilter = value;
+				NotifyPropertyChanged(x => LicenseDescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -526,6 +544,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
 									if(InvalidFilter.HasValue)
 						res.Append(" && " + string.Format("Invalid == {0}",  InvalidFilter));						
+ 
+
+									if(string.IsNullOrEmpty(LicenseDescriptionFilter) == false)
+						res.Append(" && " + string.Format("LicenseDescription.Contains(\"{0}\")",  LicenseDescriptionFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -585,7 +607,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     LicenseRequired = x.LicenseRequired ,
                     
  
-                    Invalid = x.Invalid 
+                    Invalid = x.Invalid ,
+                    
+ 
+                    LicenseDescription = x.LicenseDescription 
                     
                 }).ToList()
             };
@@ -635,6 +660,9 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     
  
                     public Nullable<bool> Invalid { get; set; } 
+                    
+ 
+                    public string LicenseDescription { get; set; } 
                     
         }
 

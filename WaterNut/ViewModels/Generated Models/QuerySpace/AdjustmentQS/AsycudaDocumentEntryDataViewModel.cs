@@ -158,15 +158,14 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 		 internal virtual void OnCurrentAdjustmentExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AdjustmentEx> e)
 			{
 			if(ViewCurrentAdjustmentEx == false) return;
-			if (e.Data == null || e.Data.InvoiceNo == null)
+			if (e.Data == null || e.Data.EntryData_Id == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("EntryDataId == \"{0}\"", e.Data.InvoiceNo.ToString());
-                }
+				vloader.FilterExpression = string.Format("EntryData_Id == {0}", e.Data.EntryData_Id.ToString());
+                 }
 
 				AsycudaDocumentEntryDatas.Refresh();
 				NotifyPropertyChanged(x => this.AsycudaDocumentEntryDatas);
@@ -229,24 +228,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }
 
  
-
-		private string _entryDataIdFilter;
-        public string EntryDataIdFilter
-        {
-            get
-            {
-                return _entryDataIdFilter;
-            }
-            set
-            {
-                _entryDataIdFilter = value;
-				NotifyPropertyChanged(x => EntryDataIdFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -275,10 +256,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 		internal virtual StringBuilder GetAutoPropertyFilterString()
 		{
 		var res = new StringBuilder();
- 
-
-									if(string.IsNullOrEmpty(EntryDataIdFilter) == false)
-						res.Append(" && " + string.Format("EntryDataId.Contains(\"{0}\")",  EntryDataIdFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -301,9 +278,6 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             {
                 dataToPrint = lst.Select(x => new AsycudaDocumentEntryDataExcelLine
                 {
- 
-                    EntryDataId = x.EntryDataId 
-                    
                 }).ToList()
             };
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -314,10 +288,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
         public class AsycudaDocumentEntryDataExcelLine
         {
-		 
-                    public string EntryDataId { get; set; } 
-                    
-        }
+		        }
 
 		
     }

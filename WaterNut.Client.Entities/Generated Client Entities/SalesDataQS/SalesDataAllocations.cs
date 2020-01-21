@@ -57,19 +57,17 @@ public int AllocationId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "EntryData is required")]
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
        
-                
-                [MaxLength(50, ErrorMessage = "EntryDataId has a max length of 50 letters ")]
-public string EntryDataId
+public int EntryData_Id
 		{ 
-		    get { return this.salesdataallocations.EntryDataId; }
+		    get { return this.salesdataallocations.EntryData_Id; }
 			set
 			{
-			    if (value == this.salesdataallocations.EntryDataId) return;
-				this.salesdataallocations.EntryDataId = value;
+			    if (value == this.salesdataallocations.EntryData_Id) return;
+				this.salesdataallocations.EntryData_Id = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("EntryDataId");
+				NotifyPropertyChanged("EntryData_Id");
 			}
 		}
      

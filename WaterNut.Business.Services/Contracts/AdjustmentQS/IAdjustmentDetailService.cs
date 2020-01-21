@@ -120,6 +120,9 @@ namespace AdjustmentQS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

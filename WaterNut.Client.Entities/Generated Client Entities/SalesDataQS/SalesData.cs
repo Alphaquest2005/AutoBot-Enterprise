@@ -201,6 +201,21 @@ public int ApplicationSettingsId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.salesdata.EntryData_Id; }
+			set
+			{
+			    if (value == this.salesdata.EntryData_Id) return;
+				this.salesdata.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
         ObservableCollection<SalesDataDetail> _SalesDataDetails = null;
         public  ObservableCollection<SalesDataDetail> SalesDataDetails
 		{

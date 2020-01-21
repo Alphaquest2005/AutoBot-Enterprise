@@ -281,6 +281,19 @@ namespace CoreEntities.Client.DTO
 		}
         private double _Quantity;
 
+        [DataMember]
+        public int Entrydatadetailsid
+		{ 
+		    get { return _Entrydatadetailsid; }
+			set
+			{
+			    if (value == _Entrydatadetailsid) return;
+				_Entrydatadetailsid = value;
+				NotifyPropertyChanged();//m => this.Entrydatadetailsid
+			}
+		}
+        private int _Entrydatadetailsid;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -19,6 +19,7 @@
               this.Property(t => t.EntityType).HasColumnName("EntityType").IsRequired().HasMaxLength(255);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<InfoMapping>) t.InfoMapping).HasForeignKey(d => d.ApplicationSettingsId);
+              this.HasMany(t => t.InfoMappingRegEx).WithRequired(t => (InfoMapping)t.InfoMapping);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

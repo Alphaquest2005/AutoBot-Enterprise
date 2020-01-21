@@ -248,7 +248,7 @@ namespace AllocationDS.Business.Services
                             case "Sales":
                                 return
                                     await
-                                        GetWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
+                                        GetWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "AdjustmentShortAllocations":
@@ -260,7 +260,7 @@ namespace AllocationDS.Business.Services
                             case "Adjustments":
                                 return
                                     await
-                                        GetWhere<Adjustments>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
+                                        GetWhere<Adjustments>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "AsycudaDocumentItemEntryDataDetails":
@@ -273,6 +273,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         GetWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EntryData":
+                                return
+                                    await
+                                        GetWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -776,19 +782,22 @@ namespace AllocationDS.Business.Services
                                 return await CountWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Sales":
-                                return await CountWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+                                return await CountWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentShortAllocations":
                                 return await CountWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Adjustments":
-                                return await CountWhere<Adjustments>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+                                return await CountWhere<Adjustments>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return await CountWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EX9AsycudaSalesAllocations":
                                 return await CountWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryData":
+                                return await CountWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -910,7 +919,7 @@ namespace AllocationDS.Business.Services
                             case "Sales":
                                 return
                                     await
-                                        LoadRangeWhere<Sales>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+                                        LoadRangeWhere<Sales>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "AdjustmentShortAllocations":
@@ -922,7 +931,7 @@ namespace AllocationDS.Business.Services
                             case "Adjustments":
                                 return
                                     await
-                                        LoadRangeWhere<Adjustments>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+                                        LoadRangeWhere<Adjustments>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                             case "AsycudaDocumentItemEntryDataDetails":
@@ -935,6 +944,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EX9AsycudaSalesAllocations>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "EntryData":
+                                return
+                                    await
+                                        LoadRangeWhere<EntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1207,6 +1222,39 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<EntryDataDetails>> GetEntryDataDetailsByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EntryData_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
+                                                    // .Include(x => x.AsycudaSalesAllocations)									  
+                                                    // .Include(x => x.AdjustmentShortAllocations)									  
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
+                                                    // .Include(x => x.EX9AsycudaSalesAllocations)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1267,19 +1315,22 @@ namespace AllocationDS.Business.Services
                                 return await SumWhere<EntryDataDetailsEx>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Sales":
-                                return await SumWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
+                                return await SumWhere<Sales>(dbContext, exp, itm.Value, "EntryDataDetails1", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentShortAllocations":
                                 return await SumWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "Adjustments":
-                                return await SumWhere<Adjustments>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
+                                return await SumWhere<Adjustments>(dbContext, exp, itm.Value, "EntryDataDetails1", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentItemEntryDataDetails":
                                 return await SumWhere<AsycudaDocumentItemEntryDataDetails>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EX9AsycudaSalesAllocations":
                                 return await SumWhere<EX9AsycudaSalesAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "EntryData":
+                                return await SumWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails1", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -88,6 +88,9 @@ namespace SalesDataQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<SalesDataDetail>> GetSalesDataDetailByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<SalesDataDetail>> GetSalesDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+        
   		
     }
 }

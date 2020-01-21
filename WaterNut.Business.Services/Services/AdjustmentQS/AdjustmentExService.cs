@@ -98,16 +98,16 @@ namespace AdjustmentQS.Business.Services
         }
 
 
-        public async Task<AdjustmentEx> GetAdjustmentExByKey(string InvoiceNo, List<string> includesLst = null, bool tracking = true)
+        public async Task<AdjustmentEx> GetAdjustmentExByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(InvoiceNo))return null; 
+			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
               using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
-                var i = InvoiceNo;
+                var i = Convert.ToInt32(EntryData_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                AdjustmentEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.InvoiceNo == i).ConfigureAwait(continueOnCapturedContext: false);
+                AdjustmentEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryData_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -322,11 +322,11 @@ namespace AdjustmentQS.Business.Services
                                 IQueryable<AdjustmentEx> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.InvoiceNo);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.InvoiceNo).Where(exp);
+                                    dset = set.OrderBy(x => x.EntryData_Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -396,12 +396,12 @@ namespace AdjustmentQS.Business.Services
                                 IQueryable<AdjustmentEx> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.InvoiceNo);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.InvoiceNo);
+                                    dset = set.OrderBy(x => x.EntryData_Id);
                                 }
 
                                 var lst = dset
@@ -547,15 +547,15 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteAdjustmentEx(string InvoiceNo)
+        public async Task<bool> DeleteAdjustmentEx(string EntryData_Id)
         {
             try
             {
               using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
-                var i = InvoiceNo;
+                var i = Convert.ToInt32(EntryData_Id);
                 AdjustmentEx entity = await dbContext.AdjustmentExes
-													.SingleOrDefaultAsync(x => x.InvoiceNo == i)
+													.SingleOrDefaultAsync(x => x.EntryData_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -705,7 +705,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         return await dbContext.AdjustmentExes
 										.AsNoTracking()
-                                        .OrderBy(y => y.InvoiceNo)
+                                        .OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -717,7 +717,7 @@ namespace AdjustmentQS.Business.Services
                         return await dbContext.AdjustmentExes
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.InvoiceNo)
+										.OrderBy(y => y.EntryData_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -774,7 +774,7 @@ namespace AdjustmentQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.AdjustmentExes.Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                    return await dbContext.AdjustmentExes.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -817,9 +817,9 @@ namespace AdjustmentQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -838,9 +838,9 @@ namespace AdjustmentQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("EntryData_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -866,7 +866,7 @@ namespace AdjustmentQS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.InvoiceNo)
+                                    .OrderBy(y => y.EntryData_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -915,8 +915,8 @@ namespace AdjustmentQS.Business.Services
                     }
                     return await set//dbContext.AdjustmentExes
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
-								.OrderBy(y => y.InvoiceNo)
+                                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+								.OrderBy(y => y.EntryData_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -968,9 +968,9 @@ namespace AdjustmentQS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.InvoiceNo)
+                .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -997,9 +997,9 @@ namespace AdjustmentQS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.InvoiceNo)
+                .OrderBy(y => y.EntryData_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1049,7 +1049,7 @@ namespace AdjustmentQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<AdjustmentEx>()
-							.Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1059,7 +1059,7 @@ namespace AdjustmentQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1086,7 +1086,7 @@ namespace AdjustmentQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<AdjustmentEx>()
-							.Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1096,7 +1096,7 @@ namespace AdjustmentQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1283,7 +1283,7 @@ namespace AdjustmentQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.AdjustmentExes.Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                    return Convert.ToDecimal(dbContext.AdjustmentExes.Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1324,9 +1324,9 @@ namespace AdjustmentQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1344,9 +1344,9 @@ namespace AdjustmentQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<AdjustmentEx>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("EntryData_Id")
                 .Sum(field));
 			}
 			catch (Exception)

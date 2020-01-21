@@ -86,6 +86,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _IsDefault;
 
+        [DataMember]
+        public Nullable<bool> IsImportExport
+		{ 
+		    get { return _IsImportExport; }
+			set
+			{
+			    if (value == _IsImportExport) return;
+				_IsImportExport = value;
+				NotifyPropertyChanged();//m => this.IsImportExport
+			}
+		}
+        private Nullable<bool> _IsImportExport;
+
        
         [DataMember]
         public Document_Type Document_Type

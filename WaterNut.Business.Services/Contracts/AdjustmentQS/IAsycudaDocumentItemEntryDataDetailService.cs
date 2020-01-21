@@ -105,7 +105,10 @@ namespace AdjustmentQS.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AsycudaDocumentItemEntryDataDetail>> GetAsycudaDocumentItemEntryDataDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+  
 
 
 

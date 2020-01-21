@@ -76,6 +76,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingsIDChanged, OnCurrentFileTypeMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypesIDChanged, OnCurrentFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInfoMappingIDChanged, OnCurrentInfoMappingIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentInfoMappingRegExIDChanged, OnCurrentInfoMappingRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemAliasXIDChanged, OnCurrentInventoryItemAliasXIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemXIDChanged, OnCurrentInventoryItemXIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLicenceSummaryIDChanged, OnCurrentLicenceSummaryIDChanged);
@@ -147,6 +148,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, OnCurrentFileTypeMappingsChanged);
                         RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
                         RegisterToReceiveMessages<InfoMapping>(MessageToken.CurrentInfoMappingChanged, OnCurrentInfoMappingChanged);
+                        RegisterToReceiveMessages<InfoMappingRegEx>(MessageToken.CurrentInfoMappingRegExChanged, OnCurrentInfoMappingRegExChanged);
                         RegisterToReceiveMessages<InventoryItemAliasX>(MessageToken.CurrentInventoryItemAliasXChanged, OnCurrentInventoryItemAliasXChanged);
                         RegisterToReceiveMessages<InventoryItemX>(MessageToken.CurrentInventoryItemXChanged, OnCurrentInventoryItemXChanged);
                         RegisterToReceiveMessages<LicenceSummary>(MessageToken.CurrentLicenceSummaryChanged, OnCurrentLicenceSummaryChanged);
@@ -829,6 +831,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentInfoMappingID)) BeginSendMessage(MessageToken.CurrentInfoMappingIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentInfoMappingIDChanged, _currentInfoMappingID));
                                     NotifyPropertyChanged(x => this.CurrentInfoMappingID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentInfoMappingRegExIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (InfoMappingRegExRepository ctx = new InfoMappingRegExRepository())
+                            {
+                                CurrentInfoMappingRegEx = await ctx.GetInfoMappingRegEx(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentInfoMappingRegEx);
+                        }
+
+                        private  string _currentInfoMappingRegExID = "";
+                        public string CurrentInfoMappingRegExID
+                        {
+                            get
+                            {
+                                return _currentInfoMappingRegExID;
+                            }
+                            set
+                            {
+                                if (_currentInfoMappingRegExID != value)
+                                {
+                                    _currentInfoMappingRegExID = value;
+                                    if (!string.IsNullOrEmpty(_currentInfoMappingRegExID)) BeginSendMessage(MessageToken.CurrentInfoMappingRegExIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentInfoMappingRegExIDChanged, _currentInfoMappingRegExID));
+                                    NotifyPropertyChanged(x => this.CurrentInfoMappingRegExID);  
                                 }
                             }
                         }
@@ -3207,6 +3236,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                                      new NotificationEventArgs<InfoMapping>(MessageToken.CurrentInfoMappingChanged, _currentInfoMapping)); 
                     NotifyPropertyChanged(x => this.CurrentInfoMapping);    
                     // all current navigation properties = null
+                 CurrentInfoMappingRegEx = null;
    
                 }
             }
@@ -3226,6 +3256,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentInfoMapping = value;
 					if(_vcurrentInfoMapping != null) CurrentInfoMapping = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentInfoMapping);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentInfoMappingRegExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InfoMappingRegEx> e)
+        {
+            //CurrentInfoMappingRegEx = e.Data;
+            NotifyPropertyChanged(m => this.CurrentInfoMappingRegEx);
+        }
+
+        private  InfoMappingRegEx _currentInfoMappingRegEx;
+        public InfoMappingRegEx CurrentInfoMappingRegEx
+        {
+            get
+            {
+                return _currentInfoMappingRegEx;
+            }
+            set
+            {
+                if (_currentInfoMappingRegEx != value)
+                {
+                    _currentInfoMappingRegEx = value;
+                    BeginSendMessage(MessageToken.CurrentInfoMappingRegExChanged,
+                                                     new NotificationEventArgs<InfoMappingRegEx>(MessageToken.CurrentInfoMappingRegExChanged, _currentInfoMappingRegEx)); 
+                    NotifyPropertyChanged(x => this.CurrentInfoMappingRegEx);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<InfoMappingRegEx> _vcurrentInfoMappingRegEx;
+        public VirtualListItem<InfoMappingRegEx> VCurrentInfoMappingRegEx
+        {
+            get
+            {
+                return _vcurrentInfoMappingRegEx;
+            }
+            set
+            {
+                if (_vcurrentInfoMappingRegEx != value)
+                {
+                    _vcurrentInfoMappingRegEx = value;
+					if(_vcurrentInfoMappingRegEx != null) CurrentInfoMappingRegEx = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentInfoMappingRegEx);                    
                 }
             }
         }

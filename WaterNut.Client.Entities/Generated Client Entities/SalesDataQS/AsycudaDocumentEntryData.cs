@@ -42,23 +42,6 @@ namespace SalesDataQS.Client.Entities
                 asycudadocumententrydata = value;
             }
         }
-       [RequiredValidationAttribute(ErrorMessage= "EntryData is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "EntryDataId has a max length of 50 letters ")]
-public string EntryDataId
-		{ 
-		    get { return this.asycudadocumententrydata.EntryDataId; }
-			set
-			{
-			    if (value == this.asycudadocumententrydata.EntryDataId) return;
-				this.asycudadocumententrydata.EntryDataId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("EntryDataId");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= " is required")]
        
 public int Id
@@ -85,6 +68,21 @@ public int AsycudaDocumentId
 				this.asycudadocumententrydata.AsycudaDocumentId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("AsycudaDocumentId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.asycudadocumententrydata.EntryData_Id; }
+			set
+			{
+			    if (value == this.asycudadocumententrydata.EntryData_Id) return;
+				this.asycudadocumententrydata.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
 			}
 		}
      

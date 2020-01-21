@@ -416,6 +416,36 @@ namespace EntryDataDS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
+        public Nullable<int> FileLineNumber 
+        {
+            get
+            {
+                return _filelinenumber;
+            }
+            set
+            {
+                _filelinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filelinenumber;
+        [DataMember]
         public EntryData EntryData { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemEx { get; set; }

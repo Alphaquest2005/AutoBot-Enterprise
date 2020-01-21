@@ -107,10 +107,10 @@ namespace SalesDataQS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null);
+        Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByAsycudaDocumentId(string AsycudaDocumentId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByAsycudaDocumentId(string AsycudaDocumentId, List<string> includesLst = null);
+        Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

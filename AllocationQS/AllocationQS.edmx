@@ -39,6 +39,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShortAllocation
           <Property Name="SalesQuantity" Type="float" Nullable="false" />
           <Property Name="SalesQtyAllocated" Type="float" Nullable="false" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesLineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -109,6 +110,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAllocationsEx
           <Property Name="SalesQuantity" Type="float" />
           <Property Name="SalesQtyAllocated" Type="float" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesLineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -175,6 +177,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustment
           <Property Name="SalesQuantity" Type="float" />
           <Property Name="SalesQtyAllocated" Type="float" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SalesLineNumber" Type="int" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
@@ -226,6 +229,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaSalesAndAdjustment
 [AdjustmentShortAllocations].[SalesQuantity] AS [SalesQuantity], 
 [AdjustmentShortAllocations].[SalesQtyAllocated] AS [SalesQtyAllocated], 
 [AdjustmentShortAllocations].[InvoiceNo] AS [InvoiceNo], 
+[AdjustmentShortAllocations].[SalesLineNumber] AS [SalesLineNumber], 
 [AdjustmentShortAllocations].[ItemNumber] AS [ItemNumber], 
 [AdjustmentShortAllocations].[ItemDescription] AS [ItemDescription], 
 [AdjustmentShortAllocations].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -283,6 +287,7 @@ FROM [dbo].[AdjustmentShortAllocations] AS [AdjustmentShortAllocations]</Definin
 [AsycudaSalesAllocationsEx].[SalesQuantity] AS [SalesQuantity], 
 [AsycudaSalesAllocationsEx].[SalesQtyAllocated] AS [SalesQtyAllocated], 
 [AsycudaSalesAllocationsEx].[InvoiceNo] AS [InvoiceNo], 
+[AsycudaSalesAllocationsEx].[SalesLineNumber] AS [SalesLineNumber], 
 [AsycudaSalesAllocationsEx].[ItemNumber] AS [ItemNumber], 
 [AsycudaSalesAllocationsEx].[ItemDescription] AS [ItemDescription], 
 [AsycudaSalesAllocationsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -336,6 +341,7 @@ FROM [dbo].[AsycudaSalesAllocationsEx] AS [AsycudaSalesAllocationsEx]</DefiningQ
 [AsycudaSalesAndAdjustmentAllocationsEx].[SalesQuantity] AS [SalesQuantity], 
 [AsycudaSalesAndAdjustmentAllocationsEx].[SalesQtyAllocated] AS [SalesQtyAllocated], 
 [AsycudaSalesAndAdjustmentAllocationsEx].[InvoiceNo] AS [InvoiceNo], 
+[AsycudaSalesAndAdjustmentAllocationsEx].[SalesLineNumber] AS [SalesLineNumber], 
 [AsycudaSalesAndAdjustmentAllocationsEx].[ItemNumber] AS [ItemNumber], 
 [AsycudaSalesAndAdjustmentAllocationsEx].[ItemDescription] AS [ItemDescription], 
 [AsycudaSalesAndAdjustmentAllocationsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -436,6 +442,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SalesLineNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="AdjustmentShortAllocation">
           <Key>
@@ -494,6 +501,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="EmailId" Type="Int32" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SalesLineNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="AsycudaSalesAndAdjustmentAllocationsEx">
           <Key>
@@ -550,6 +558,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <Property Name="AssessmentDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SalesLineNumber" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -560,6 +569,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <EntitySetMapping Name="AsycudaSalesAllocationsExs">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaSalesAllocationsEx">
               <MappingFragment StoreEntitySet="AsycudaSalesAllocationsEx">
+                <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
@@ -614,6 +624,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <EntitySetMapping Name="AdjustmentShortAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.AdjustmentShortAllocation">
               <MappingFragment StoreEntitySet="AdjustmentShortAllocations">
+                <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />
@@ -672,6 +683,7 @@ FROM [dbo].[AsycudaSalesAndAdjustmentAllocationsEx] AS [AsycudaSalesAndAdjustmen
           <EntitySetMapping Name="AsycudaSalesAndAdjustmentAllocationsExes">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaSalesAndAdjustmentAllocationsEx">
               <MappingFragment StoreEntitySet="AsycudaSalesAndAdjustmentAllocationsEx">
+                <ScalarProperty Name="SalesLineNumber" ColumnName="SalesLineNumber" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />

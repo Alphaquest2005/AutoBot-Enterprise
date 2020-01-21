@@ -281,6 +281,45 @@ namespace EntryDataQS.Client.DTO
 		}
         private double _TotalDeductions;
 
+        [DataMember]
+        public int EntryData_Id
+		{ 
+		    get { return _EntryData_Id; }
+			set
+			{
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
+			}
+		}
+        private int _EntryData_Id;
+
+        [DataMember]
+        public double TotalFreight
+		{ 
+		    get { return _TotalFreight; }
+			set
+			{
+			    if (value == _TotalFreight) return;
+				_TotalFreight = value;
+				NotifyPropertyChanged();//m => this.TotalFreight
+			}
+		}
+        private double _TotalFreight;
+
+        [DataMember]
+        public double Totals
+		{ 
+		    get { return _Totals; }
+			set
+			{
+			    if (value == _Totals) return;
+				_Totals = value;
+				NotifyPropertyChanged();//m => this.Totals
+			}
+		}
+        private double _Totals;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets

@@ -11,7 +11,7 @@
     {
         public EntryDataExTotalsMap()
         {                        
-              this.HasKey(t => t.EntryDataId);        
+              this.HasKey(t => t.EntryData_Id);        
               this.ToTable("EntryDataExTotals");
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.Total).HasColumnName("Total");
@@ -20,6 +20,7 @@
               this.Property(t => t.Tax).HasColumnName("Tax");
               this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
               this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasRequired(t => t.EntryData).WithOptional(t => (EntryDataExTotals)t.EntryDataTotals);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

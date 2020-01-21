@@ -112,6 +112,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private bool _ImportComplete;
 
+        [DataMember]
+        public int EntryData_Id
+		{ 
+		    get { return _EntryData_Id; }
+			set
+			{
+			    if (value == _EntryData_Id) return;
+				_EntryData_Id = value;
+				NotifyPropertyChanged();//m => this.EntryData_Id
+			}
+		}
+        private int _EntryData_Id;
+
        
         [DataMember]
         public AdjustmentOver AdjustmentOver

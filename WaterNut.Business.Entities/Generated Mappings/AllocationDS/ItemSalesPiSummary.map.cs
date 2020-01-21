@@ -11,20 +11,22 @@
     {
         public ItemSalesPiSummaryMap()
         {                        
-              this.HasKey(t => new {t.DutyFreePaid, t.pLineNumber, t.pQtyAllocated, t.EntryDataDate, t.ApplicationSettingsId, t.ItemNumber, t.Type});        
+              this.HasKey(t => new {t.PreviousItem_Id, t.Type, t.EntryDataDate, t.AllocationId});        
               this.ToTable("ItemSalesPiSummary");
-              this.Property(t => t.PreviousItem_Id).HasColumnName("PreviousItem_Id");
+              this.Property(t => t.PreviousItem_Id).HasColumnName("PreviousItem_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
-              this.Property(t => t.pLineNumber).HasColumnName("pLineNumber").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
               this.Property(t => t.pQtyAllocated).HasColumnName("pQtyAllocated");
               this.Property(t => t.pCNumber).HasColumnName("pCNumber").HasMaxLength(20);
               this.Property(t => t.pRegistrationDate).HasColumnName("pRegistrationDate");
               this.Property(t => t.pAssessmentDate).HasColumnName("pAssessmentDate");
               this.Property(t => t.QtyAllocated).HasColumnName("QtyAllocated");
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
-              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.Type).HasColumnName("Type").IsRequired().IsUnicode(false).HasMaxLength(5);
+              this.Property(t => t.AllocationId).HasColumnName("AllocationId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(255);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

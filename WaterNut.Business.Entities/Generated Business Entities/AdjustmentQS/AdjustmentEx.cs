@@ -210,6 +210,21 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<double> _importedtotal;
         [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }

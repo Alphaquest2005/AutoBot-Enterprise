@@ -83,7 +83,7 @@ namespace AdjustmentQS.Client.Contracts
 		Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByAsycudaDocumentId(string AsycudaDocumentId, List<string> includesLst = null);
         
   		[OperationContract]
-		Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null);
+		Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
         
   		
     }

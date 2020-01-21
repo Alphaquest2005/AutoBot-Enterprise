@@ -278,7 +278,7 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
                 dataToPrint = lst.Select(x => new SalesDataAllocationsExcelLine
                 {
  
-                    EntryDataId = x.EntryDataId 
+                    EntryData_Id = x.EntryData_Id 
                     
                 }).ToList()
             };
@@ -291,7 +291,7 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
         public class SalesDataAllocationsExcelLine
         {
 		 
-                    public string EntryDataId { get; set; } 
+                    public int EntryData_Id { get; set; } 
                     
         }
 

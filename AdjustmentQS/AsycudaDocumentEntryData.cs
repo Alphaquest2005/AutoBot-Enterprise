@@ -15,8 +15,8 @@ namespace AdjustmentQS
     public partial class AsycudaDocumentEntryData
     {
         public int AsycudaDocumentId { get; set; }
-        public string EntryDataId { get; set; }
         public int Id { get; set; }
+        public int EntryData_Id { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
     }

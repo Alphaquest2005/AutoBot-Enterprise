@@ -25,7 +25,6 @@ namespace EntryDataDS.Business.Entities
             this.EntryDataDetails = new List<EntryDataDetails>();
             this.AsycudaDocuments = new List<AsycudaDocumentEntryData>();
             this.AsycudaDocumentSets = new List<AsycudaDocumentSetEntryData>();
-            this.EntryDataEx = new List<EntryDataEx>();
         }
 
         [DataMember]
@@ -269,6 +268,21 @@ namespace EntryDataDS.Business.Entities
         }
         string _sourcefile;
         [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }
@@ -281,7 +295,7 @@ namespace EntryDataDS.Business.Entities
         [DataMember]
         public EntryDataExTotals EntryDataTotals { get; set; }
         [DataMember]
-        public List<EntryDataEx> EntryDataEx { get; set; }
+        public EntryDataEx EntryDataEx { get; set; }
         [DataMember]
         public EDDocumentTypes DocumentType { get; set; }
 

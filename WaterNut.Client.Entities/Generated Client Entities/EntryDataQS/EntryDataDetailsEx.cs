@@ -532,6 +532,38 @@ public Nullable<int> FileTypeId
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "Name has a max length of 50 letters ")]
+public string Name
+		{ 
+		    get { return this.entrydatadetailsex.Name; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.Name) return;
+				this.entrydatadetailsex.Name = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Name");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.entrydatadetailsex.EntryData_Id; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.EntryData_Id) return;
+				this.entrydatadetailsex.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
        private InventoryItemsEx _InventoryItemsEx;
         public  InventoryItemsEx InventoryItemsEx
 		{

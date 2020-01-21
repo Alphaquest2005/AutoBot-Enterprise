@@ -117,9 +117,9 @@ namespace AdjustmentQS.Client.Services
             return  await Channel.GetAsycudaDocumentEntryDataByAsycudaDocumentId(AsycudaDocumentId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null)
+  		public async Task<IEnumerable<AsycudaDocumentEntryData>> GetAsycudaDocumentEntryDataByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
-            return  await Channel.GetAsycudaDocumentEntryDataByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
+            return  await Channel.GetAsycudaDocumentEntryDataByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

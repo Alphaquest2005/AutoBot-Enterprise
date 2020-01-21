@@ -23,6 +23,7 @@
               this.Property(t => t.SANumber).HasColumnName("SANumber");
               this.Property(t => t.xEntryItem_Id).HasColumnName("xEntryItem_Id");
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
+              this.Property(t => t.Comments).HasColumnName("Comments");
               this.HasOptional(t => t.EntryDataDetail).WithMany(t =>(ICollection<AsycudaSalesAllocation>) t.AsycudaSalesAllocations).HasForeignKey(d => d.EntryDataDetailsId);
               this.HasOptional(t => t.xcuda_Item).WithMany(t =>(ICollection<AsycudaSalesAllocation>) t.AsycudaSalesAllocations).HasForeignKey(d => d.PreviousItem_Id);
              // Tracking Properties

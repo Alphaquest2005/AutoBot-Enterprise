@@ -103,6 +103,19 @@ namespace CoreEntities.Client.DTO
         private ApplicationSettings _ApplicationSettings;
         private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<InfoMappingRegEx> InfoMappingRegEx
+		{
+		    get { return _InfoMappingRegEx; }
+			set
+			{
+			    if (Equals(value, _InfoMappingRegEx)) return;
+				_InfoMappingRegEx = value;
+				NotifyPropertyChanged();//m => this.InfoMappingRegEx
+			}
+		}
+        private ChangeTrackingCollection<InfoMappingRegEx> _InfoMappingRegEx = new ChangeTrackingCollection<InfoMappingRegEx>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

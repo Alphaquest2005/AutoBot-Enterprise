@@ -145,6 +145,7 @@
     <Compile Include="Generated Repositories\AdjustmentQS\InventoryItemsExRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\ShortAllocationRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\SystemDocumentSetRepository.cs" />
+    <Compile Include="Generated Repositories\AdjustmentQS\TODO_PreDiscrepancyErrorsRepository.cs" />
     <Compile Include="Generated Repositories\AdjustmentQS\xcuda_ItemRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQSRepository.cs" />
     <Compile Include="Generated Repositories\AllocationQS\AdjustmentShortAllocationRepository.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="Generated Repositories\CoreEntities\FileTypeContactsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\InfoMappingRegExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InfoMappingRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InventoryItemAliasXRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InventoryItemXRepository.cs" />

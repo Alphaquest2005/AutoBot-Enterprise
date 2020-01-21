@@ -84,12 +84,23 @@ namespace WaterNut.DataSpace
             bool overWriteExisting, int? emailId,
             int? fileTypeId, string droppedFilePath, List<CSVDataSummary> eslst)
         {
-            await ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
-            await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
-            await ImportEntryDataFile(fileType, eslst.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(), emailId, fileTypeId, droppedFilePath, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
-            if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath)
-                .ConfigureAwait(false)) return true;
-            return false;
+            try
+            {
+                await ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+                await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+                await ImportEntryDataFile(fileType, eslst.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(),
+                    emailId, fileTypeId, droppedFilePath, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
+                if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath)
+                    .ConfigureAwait(false)) return true;
+                return false;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         private async Task ImportEntryDataFile(string fileType, List<CSVDataSummary> eslst, int? emailId,
@@ -149,8 +160,8 @@ namespace WaterNut.DataSpace
                             {
                                 EntryDataId = g.Key.EntryDataId,
                                 EntryDataDate = g.Key.EntryDataDate,
-                                AsycudaDocumentSetId = docSet.First(x => x.SystemDocumentSet == null).AsycudaDocumentSetId,
-                                ApplicationSettingsId = docSet.First(x => x.SystemDocumentSet == null).ApplicationSettingsId,
+                                AsycudaDocumentSetId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ?? docSet.First().AsycudaDocumentSetId,
+                                ApplicationSettingsId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                                 CustomerName = g.Key.CustomerName,
                                 Tax = g.Sum(x => x.Tax),
                                 Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))
@@ -168,12 +179,13 @@ namespace WaterNut.DataSpace
                             new EntryDataDetails()
                             {
                                 EntryDataId = x.EntryDataId,
+                                //Can't set entrydata_id here cuz this is from data
                                 ItemNumber = x.ItemNumber.ToUpper(),
                                 ItemDescription = x.ItemDescription,
                                 Cost = Convert.ToDouble(x.Cost),
                                 TotalCost = Convert.ToDouble(x.TotalCost),
                                 Quantity = Convert.ToDouble(x.Quantity),
-                                LineNumber = x.LineNumber,
+                                FileLineNumber = x.LineNumber,
                                 Units = x.Units,
                                 Freight = x.Freight,
                                 Weight = x.Weight,
@@ -216,388 +228,422 @@ namespace WaterNut.DataSpace
 
                     List<EntryDataDetails> details = new List<EntryDataDetails>();
 
-                    // check Existing items
-                    var olded = await GetEntryData(item.EntryData.EntryDataId,
-                            item.EntryData.EntryDataDate.GetValueOrDefault(), item.EntryData.ApplicationSettingsId)
-                        .ConfigureAwait(false);
+                    
+                        // check Existing items
+                        var olded = await GetEntryData(item.EntryData.EntryDataId, docSet,
+                                item.EntryData.EntryDataDate.GetValueOrDefault(), item.EntryData.ApplicationSettingsId)
+                            .ConfigureAwait(false);
 
-                    if (olded != null)
-                    {
-                        if (overWriteExisting)
+                        if (olded != null)
                         {
-                            await ClearEntryDataDetails(olded).ConfigureAwait(false);
-                            await DeleteEntryData(olded).ConfigureAwait(false);
-                            details = item.EntryDataDetails.ToList();
-                        }
-                        else
-                        {
-
-                            foreach (var doc in docSet)
+                            if (overWriteExisting)
+                            {
+                                await ClearEntryDataDetails(olded).ConfigureAwait(false);
+                                await DeleteEntryData(olded).ConfigureAwait(false);
+                                details = item.EntryDataDetails.ToList();
+                            }
+                            else
                             {
 
-                                var l = 0;
-                                foreach (var nEd in item.EntryDataDetails.ToList())
+                                foreach (var doc in docSet)
                                 {
-                                    l += 1;
 
-                                    var oEd = olded.EntryDataDetails.FirstOrDefault(x =>
-                                        x.LineNumber == l && x.ItemNumber == nEd.ItemNumber && x.EntryData.AsycudaDocumentSets.Any(z => z.AsycudaDocumentSetId == doc.AsycudaDocumentSetId));
-
-                                    //if (l != item.EntryDataDetails.Count()) continue;
-                                    if (oEd != null && (Math.Abs(nEd.Quantity - oEd.Quantity) < .0001 &&
-                                                        Math.Abs(nEd.Cost - oEd.Cost) < .0001))
+                                    var l = 0;
+                                    foreach (var nEd in item.EntryDataDetails.ToList())
                                     {
+                                        l += 1;
 
-                                        continue;
+                                        var oEd = olded.EntryDataDetails.FirstOrDefault(x =>
+                                            x.LineNumber == l && x.ItemNumber == nEd.ItemNumber &&
+                                            x.EntryData.AsycudaDocumentSets.Any(z =>
+                                                z.AsycudaDocumentSetId == doc.AsycudaDocumentSetId));
+
+                                        //if (l != item.EntryDataDetails.Count()) continue;
+                                        if (oEd != null && (Math.Abs(nEd.Quantity - oEd.Quantity) < .0001 &&
+                                                            Math.Abs(nEd.Cost - oEd.Cost) < .0001))
+                                        {
+
+                                            continue;
+                                        }
+
+                                        if (ndocSet.FirstOrDefault(x =>
+                                                x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId) ==
+                                            null) ndocSet.Add(doc);
+                                        if (details.FirstOrDefault(x =>
+                                                x.ItemNumber == nEd.ItemNumber && x.LineNumber == nEd.LineNumber) ==
+                                            null) details.Add(nEd);
+                                        if (oEd != null)
+                                            new EntryDataDetailsService()
+                                                .DeleteEntryDataDetails(oEd.EntryDataDetailsId.ToString()).Wait();
+
                                     }
-                                    if(ndocSet.FirstOrDefault(x => x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId) == null) ndocSet.Add(doc);
-                                    if(details.FirstOrDefault(x => x.ItemNumber == nEd.ItemNumber && x.LineNumber == nEd.LineNumber) == null) details.Add(nEd);
-                                    if (oEd != null)
-                                        new EntryDataDetailsService()
-                                            .DeleteEntryDataDetails(oEd.EntryDataDetailsId.ToString()).Wait();
 
                                 }
+
 
                             }
-
-                            
                         }
-                    }
 
-                    if (olded == null)
-                    {
-                        details = item.EntryDataDetails.ToList();
-                        ndocSet = docSet;
-                    }
-                    if (overWriteExisting || olded == null)
-                    {
-
-
-
-                        switch (fileType)
+                        if (olded == null)
                         {
-                            case "Sales":
-
-                                var EDsale = new Sales(true)
-                                {
-                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                    INVNumber = item.EntryData.EntryDataId,
-                                    CustomerName = item.EntryData.CustomerName,
-                                    EmailId = item.EntryData.EmailId,
-                                    FileTypeId = item.EntryData.FileTypeId,
-                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
-                                        ? null
-                                        : item.EntryData.Currency,
-                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                    SourceFile = item.EntryData.SourceFile,
-                                    TrackingState = TrackingState.Added,
-
-                                };
-                                if (item.EntryData.DocumentType != "")
-                                    EDsale.DocumentType = new EDDocumentTypes(true)
-                                    {
-                                        DocumentType = item.EntryData.DocumentType,
-                                        TrackingState = TrackingState.Added
-
-                                    };
-                                AddToDocSet(ndocSet, EDsale);
-
-
-                                await CreateSales(EDsale).ConfigureAwait(false);
-                                break;
-                            case "INV":
-                                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
-                                    Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
-                                    throw new ApplicationException(
-                                        $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
-                                var EDinv = new Invoices(true)
-                                {
-                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                    SupplierCode = item.EntryData.Supplier,
-                                    TrackingState = TrackingState.Added,
-                                    TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                    TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                    TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                    TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                    TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                    TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-
-                                    EmailId = item.EntryData.EmailId,
-                                    FileTypeId = item.EntryData.FileTypeId,
-                                    SourceFile = item.EntryData.SourceFile,
-                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
-                                        ? null
-                                        : item.EntryData.Currency,
-                                    PONumber = string.IsNullOrEmpty(item.EntryData.PONumber)
-                                        ? null
-                                        : item.EntryData.PONumber,
-
-                                };
-                                if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
-                                    EDinv.DocumentType = new EDDocumentTypes(true)
-                                    {
-                                        DocumentType = item.EntryData.DocumentType,
-                                        TrackingState = TrackingState.Added
-
-                                    };
-                                AddToDocSet(ndocSet, EDinv);
-                                await CreateInvoice(EDinv).ConfigureAwait(false);
-
-                                break;
-                            case "PO":
-                                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
-                                    Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
-                                    throw new ApplicationException(
-                                        $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
-                                var EDpo = new PurchaseOrders(true)
-                                {
-                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                    PONumber = item.EntryData.EntryDataId,
-                                    SupplierCode = item.EntryData.Supplier,
-                                    TrackingState = TrackingState.Added,
-                                    TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                    TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                    TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                    TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                    TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                    TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-
-                                    EmailId = item.EntryData.EmailId,
-                                    FileTypeId = item.EntryData.FileTypeId,
-                                    SourceFile = item.EntryData.SourceFile,
-                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
-                                        ? null
-                                        : item.EntryData.Currency,
-                                    SupplierInvoiceNo = string.IsNullOrEmpty(item.EntryData.SupplierInvoiceNo)
-                                        ? null
-                                        : item.EntryData.SupplierInvoiceNo,
-
-                                };
-                                if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
-                                    EDpo.DocumentType = new EDDocumentTypes(true)
-                                    {
-                                        DocumentType = item.EntryData.DocumentType,
-                                        TrackingState = TrackingState.Added
-
-                                    };
-                                AddToDocSet(ndocSet, EDpo);
-                                await CreatePurchaseOrders(EDpo).ConfigureAwait(false);
-                                break;
-                            case "OPS":
-                                var EDops = new OpeningStock(true)
-                                {
-                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                    OPSNumber = item.EntryData.EntryDataId,
-                                    TrackingState = TrackingState.Added,
-                                    TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                    TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                    TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                    TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                    TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                    TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                    EmailId = item.EntryData.EmailId,
-                                    FileTypeId = item.EntryData.FileTypeId,
-                                    SourceFile = item.EntryData.SourceFile,
-                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
-                                        ? null
-                                        : item.EntryData.Currency,
-                                };
-                                if (item.EntryData.DocumentType != "")
-                                    EDops.DocumentType = new EDDocumentTypes(true)
-                                    {
-                                        DocumentType = item.EntryData.DocumentType,
-                                        TrackingState = TrackingState.Added
-
-                                    };
-                                AddToDocSet(ndocSet, EDops);
-                                await CreateOpeningStock(EDops).ConfigureAwait(false);
-                                break;
-                            case "ADJ":
-                                var EDadj = new Adjustments(true)
-                                {
-                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                    TrackingState = TrackingState.Added,
-                                    SupplierCode = item.EntryData.Supplier,
-                                    TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                    TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                    TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                    TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                    TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                    TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                    EmailId = item.EntryData.EmailId,
-                                    FileTypeId = item.EntryData.FileTypeId,
-                                    SourceFile = item.EntryData.SourceFile,
-                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
-                                        ? null
-                                        : item.EntryData.Currency,
-                                    Type = "ADJ"
-                                };
-                                if (item.EntryData.DocumentType != "")
-                                    EDadj.DocumentType = new EDDocumentTypes(true)
-                                    {
-                                        DocumentType = item.EntryData.DocumentType,
-                                        TrackingState = TrackingState.Added
-
-                                    };
-                                AddToDocSet(ndocSet, EDadj);
-                                await CreateAdjustments(EDadj).ConfigureAwait(false);
-                                break;
-                            case "DIS":
-                                var EDdis = new Adjustments(true)
-                                {
-                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                    SupplierCode = item.EntryData.Supplier,
-                                    TrackingState = TrackingState.Added,
-                                    TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                    TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                    TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                    TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                    TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                    TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                    EmailId = item.EntryData.EmailId,
-                                    FileTypeId = item.EntryData.FileTypeId,
-                                    SourceFile = item.EntryData.SourceFile,
-                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
-                                        ? null
-                                        : item.EntryData.Currency,
-                                    Type = "DIS"
-                                };
-                                if (item.EntryData.DocumentType != "")
-                                    EDdis.DocumentType = new EDDocumentTypes(true)
-                                    {
-                                        DocumentType = item.EntryData.DocumentType,
-                                        TrackingState = TrackingState.Added
-
-                                    };
-                                AddToDocSet(ndocSet, EDdis);
-                                await CreateAdjustments(EDdis).ConfigureAwait(false);
-                                break;
-                            case "RCON":
-                                var EDrcon = new Adjustments(true)
-                                {
-                                    ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                    EntryDataId = item.EntryData.EntryDataId,
-                                    EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                    TrackingState = TrackingState.Added,
-                                    TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                    TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                    TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                    InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                    EmailId = item.EntryData.EmailId,
-                                    FileTypeId = item.EntryData.FileTypeId,
-                                    SourceFile = item.EntryData.SourceFile,
-                                    Currency = string.IsNullOrEmpty(item.EntryData.Currency)
-                                        ? null
-                                        : item.EntryData.Currency,
-                                    Type = "RCON"
-                                };
-                                if (item.EntryData.DocumentType != "")
-                                    EDrcon.DocumentType = new EDDocumentTypes(true)
-                                    {
-                                        DocumentType = item.EntryData.DocumentType,
-                                        TrackingState = TrackingState.Added
-
-                                    };
-                                AddToDocSet(ndocSet, EDrcon);
-                                await CreateAdjustments(EDrcon).ConfigureAwait(false);
-                                break;
-                            default:
-                                throw new ApplicationException("Unknown FileType");
-
+                            details = item.EntryDataDetails.ToList();
+                            ndocSet = docSet;
                         }
-                    }
 
-
-
-                    using (var ctx = new EntryDataDetailsService())
-                    {
-                        var lineNumber = 0;
-                        foreach (var e in overWriteExisting || olded == null?details:details.Where(x => olded.EntryDataDetails.FirstOrDefault(z => z.ItemNumber == x.ItemNumber && z.LineNumber == x.LineNumber) == null))
+                        if (overWriteExisting || olded == null)
                         {
-                            lineNumber += 1;
-                            await ctx.CreateEntryDataDetails(new EntryDataDetails(true)
+
+
+
+                            switch (fileType)
                             {
-                                EntryDataId = e.EntryDataId,
-                                ItemNumber = e.ItemNumber.Truncate(20),
-                                InventoryItemId = e.InventoryItemId,
-                                ItemDescription = e.ItemDescription,
-                                Quantity = e.Quantity,
-                                Cost = e.Cost,
-                                TotalCost = e.TotalCost,
-                                Units = e.Units,
-                                TrackingState = TrackingState.Added,
-                                Freight = e.Freight,
-                                Weight = e.Weight,
-                                InternalFreight = e.InternalFreight,
-                                ReceivedQty = e.ReceivedQty,
-                                InvoiceQty = e.InvoiceQty,
-                                CNumber = string.IsNullOrEmpty(e.CNumber) ? null : e.CNumber,
-                                PreviousInvoiceNumber = string.IsNullOrEmpty(e.PreviousInvoiceNumber)
-                                    ? null
-                                    : e.PreviousInvoiceNumber,
-                                Comment = string.IsNullOrEmpty(e.Comment) ? null : e.Comment,
-                                LineNumber = e.LineNumber ?? lineNumber,
-                                EffectiveDate = e.EffectiveDate,
-                                TaxAmount = e.TaxAmount,
-                            }).ConfigureAwait(false);
-                        }
+                                case "Sales":
 
-                        if (!overWriteExisting && olded != null)
-                        {
-                            AddToDocSet(ndocSet, olded);
-                            await UpdateEntryData(olded).ConfigureAwait(false);
-
-                        }
-                        
-                    }
-
-                    using (var ctx = new InventoryDSContext() {StartTracking = true})
-                    {
-
-                        foreach (var e in item.InventoryItems
-                            .Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber).ToList())
-                        {
-                            var inventoryItem = ctx.InventoryItems
-                                .Include("InventoryItemAlias")
-                                .First(x => x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId &&
-                                            x.ItemNumber == e.ItemNumber);
-                            if (inventoryItem == null) continue;
-                            {
-                                if (inventoryItem.InventoryItemAlias.FirstOrDefault(x => x.AliasName == e.ItemAlias) ==
-                                    null)
-                                {
-                                    inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                                    var EDsale = new Sales(true)
                                     {
-                                        InventoryItemId = inventoryItem.Id,
-                                        AliasName = e.ItemAlias.Truncate(20),
+                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                        EntryDataId = item.EntryData.EntryDataId,
+                                        EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                        INVNumber = item.EntryData.EntryDataId,
+                                        CustomerName = item.EntryData.CustomerName,
+                                        EmailId = item.EntryData.EmailId,
+                                        FileTypeId = item.EntryData.FileTypeId,
+                                        Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                            ? null
+                                            : item.EntryData.Currency,
+                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        SourceFile = item.EntryData.SourceFile,
+                                        TrackingState = TrackingState.Added,
 
-                                    });
+                                    };
+                                    if (item.EntryData.DocumentType != "")
+                                        EDsale.DocumentType = new EDDocumentTypes(true)
+                                        {
+                                            DocumentType = item.EntryData.DocumentType,
+                                            TrackingState = TrackingState.Added
 
+                                        };
+                                    AddToDocSet(ndocSet, EDsale);
+
+
+                                    olded = await CreateSales(EDsale).ConfigureAwait(false);
+                                    break;
+                                case "INV":
+                                    if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
+                                        Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
+                                        throw new ApplicationException(
+                                            $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
+                                    var EDinv = new Invoices(true)
+                                    {
+                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                        EntryDataId = item.EntryData.EntryDataId,
+                                        EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                        SupplierCode = item.EntryData.Supplier,
+                                        TrackingState = TrackingState.Added,
+                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+
+                                        EmailId = item.EntryData.EmailId,
+                                        FileTypeId = item.EntryData.FileTypeId,
+                                        SourceFile = item.EntryData.SourceFile,
+                                        Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                            ? null
+                                            : item.EntryData.Currency,
+                                        PONumber = string.IsNullOrEmpty(item.EntryData.PONumber)
+                                            ? null
+                                            : item.EntryData.PONumber,
+
+                                    };
+                                    if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
+                                        EDinv.DocumentType = new EDDocumentTypes(true)
+                                        {
+                                            DocumentType = item.EntryData.DocumentType,
+                                            TrackingState = TrackingState.Added
+
+                                        };
+                                    AddToDocSet(ndocSet, EDinv);
+                                olded = await CreateInvoice(EDinv).ConfigureAwait(false);
+
+                                    break;
+                                case "PO":
+                                    if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
+                                        Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
+                                        throw new ApplicationException(
+                                            $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
+                                    var EDpo = new PurchaseOrders(true)
+                                    {
+                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                        EntryDataId = item.EntryData.EntryDataId,
+                                        EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                        PONumber = item.EntryData.EntryDataId,
+                                        SupplierCode = item.EntryData.Supplier,
+                                        TrackingState = TrackingState.Added,
+                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+
+                                        EmailId = item.EntryData.EmailId,
+                                        FileTypeId = item.EntryData.FileTypeId,
+                                        SourceFile = item.EntryData.SourceFile,
+                                        Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                            ? null
+                                            : item.EntryData.Currency,
+                                        SupplierInvoiceNo = string.IsNullOrEmpty(item.EntryData.SupplierInvoiceNo)
+                                            ? null
+                                            : item.EntryData.SupplierInvoiceNo,
+
+                                    };
+                                    if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
+                                        EDpo.DocumentType = new EDDocumentTypes(true)
+                                        {
+                                            DocumentType = item.EntryData.DocumentType,
+                                            TrackingState = TrackingState.Added
+
+                                        };
+                                    AddToDocSet(ndocSet, EDpo);
+                                    olded = await CreatePurchaseOrders(EDpo).ConfigureAwait(false);
+                                    break;
+                                case "OPS":
+                                    var EDops = new OpeningStock(true)
+                                    {
+                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                        EntryDataId = item.EntryData.EntryDataId,
+                                        EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                        OPSNumber = item.EntryData.EntryDataId,
+                                        TrackingState = TrackingState.Added,
+                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        EmailId = item.EntryData.EmailId,
+                                        FileTypeId = item.EntryData.FileTypeId,
+                                        SourceFile = item.EntryData.SourceFile,
+                                        Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                            ? null
+                                            : item.EntryData.Currency,
+                                    };
+                                    if (item.EntryData.DocumentType != "")
+                                        EDops.DocumentType = new EDDocumentTypes(true)
+                                        {
+                                            DocumentType = item.EntryData.DocumentType,
+                                            TrackingState = TrackingState.Added
+
+                                        };
+                                    AddToDocSet(ndocSet, EDops);
+                                    olded = await CreateOpeningStock(EDops).ConfigureAwait(false);
+                                    break;
+                                case "ADJ":
+                                    var EDadj = new Adjustments(true)
+                                    {
+                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                        EntryDataId = item.EntryData.EntryDataId,
+                                        EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                        TrackingState = TrackingState.Added,
+                                        SupplierCode = item.EntryData.Supplier,
+                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        EmailId = item.EntryData.EmailId,
+                                        FileTypeId = item.EntryData.FileTypeId,
+                                        SourceFile = item.EntryData.SourceFile,
+                                        Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                            ? null
+                                            : item.EntryData.Currency,
+                                        Type = "ADJ"
+                                    };
+                                    if (item.EntryData.DocumentType != "")
+                                        EDadj.DocumentType = new EDDocumentTypes(true)
+                                        {
+                                            DocumentType = item.EntryData.DocumentType,
+                                            TrackingState = TrackingState.Added
+
+                                        };
+                                    AddToDocSet(ndocSet, EDadj);
+                                    olded = await CreateAdjustments(EDadj).ConfigureAwait(false);
+                                    break;
+                                case "DIS":
+                                    var EDdis = new Adjustments(true)
+                                    {
+                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                        EntryDataId = item.EntryData.EntryDataId,
+                                        EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                        SupplierCode = item.EntryData.Supplier,
+                                        TrackingState = TrackingState.Added,
+                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        EmailId = item.EntryData.EmailId,
+                                        FileTypeId = item.EntryData.FileTypeId,
+                                        SourceFile = item.EntryData.SourceFile,
+                                        Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                            ? null
+                                            : item.EntryData.Currency,
+                                        Type = "DIS"
+                                    };
+                                    if (item.EntryData.DocumentType != "")
+                                        EDdis.DocumentType = new EDDocumentTypes(true)
+                                        {
+                                            DocumentType = item.EntryData.DocumentType,
+                                            TrackingState = TrackingState.Added
+
+                                        };
+                                    AddToDocSet(ndocSet, EDdis);
+                                    olded = await CreateAdjustments(EDdis).ConfigureAwait(false);
+                                    break;
+                                case "RCON":
+                                    var EDrcon = new Adjustments(true)
+                                    {
+                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
+                                        EntryDataId = item.EntryData.EntryDataId,
+                                        EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
+                                        TrackingState = TrackingState.Added,
+                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
+                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        EmailId = item.EntryData.EmailId,
+                                        FileTypeId = item.EntryData.FileTypeId,
+                                        SourceFile = item.EntryData.SourceFile,
+                                        Currency = string.IsNullOrEmpty(item.EntryData.Currency)
+                                            ? null
+                                            : item.EntryData.Currency,
+                                        Type = "RCON"
+                                    };
+                                    if (item.EntryData.DocumentType != "")
+                                        EDrcon.DocumentType = new EDDocumentTypes(true)
+                                        {
+                                            DocumentType = item.EntryData.DocumentType,
+                                            TrackingState = TrackingState.Added
+
+                                        };
+                                    AddToDocSet(ndocSet, EDrcon);
+                                    olded = await CreateAdjustments(EDrcon).ConfigureAwait(false);
+                                    break;
+                                default:
+                                    throw new ApplicationException("Unknown FileType");
+
+                            }
+                        }
+
+
+
+                        using (var ctx = new EntryDataDetailsService())
+                        {
+                            var lineNumber = 0;
+                            foreach (var e in overWriteExisting || olded == null
+                                ? details
+                                : details.Where(x =>
+                                    olded.EntryDataDetails.FirstOrDefault(z =>
+                                        z.ItemNumber == x.ItemNumber && z.LineNumber == x.LineNumber) == null))
+                            {
+                                lineNumber += 1;
+                                await ctx.CreateEntryDataDetails(new EntryDataDetails(true)
+                                {
+                                    EntryDataId = e.EntryDataId,
+                                    EntryData_Id = olded?.EntryData_Id ?? 0,
+                                    ItemNumber = e.ItemNumber.Truncate(20),
+                                    InventoryItemId = e.InventoryItemId,
+                                    ItemDescription = e.ItemDescription,
+                                    Quantity = e.Quantity,
+                                    Cost = e.Cost,
+                                    TotalCost = e.TotalCost,
+                                    Units = e.Units,
+                                    TrackingState = TrackingState.Added,
+                                    Freight = e.Freight,
+                                    Weight = e.Weight,
+                                    InternalFreight = e.InternalFreight,
+                                    ReceivedQty = e.ReceivedQty,
+                                    InvoiceQty = e.InvoiceQty,
+                                    CNumber = string.IsNullOrEmpty(e.CNumber) ? null : e.CNumber,
+                                    PreviousInvoiceNumber = string.IsNullOrEmpty(e.PreviousInvoiceNumber)
+                                        ? null
+                                        : e.PreviousInvoiceNumber,
+                                    Comment = string.IsNullOrEmpty(e.Comment) ? null : e.Comment,
+                                    FileLineNumber = e.FileLineNumber ?? lineNumber,
+                                    LineNumber = e.EntryDataDetailsId == 0 ? lineNumber : e.LineNumber,
+                                    EffectiveDate = e.EffectiveDate,
+                                    TaxAmount = e.TaxAmount,
+                                }).ConfigureAwait(false);
+                            }
+
+                            if (!overWriteExisting && olded != null)
+                            {
+
+                                //update entrydatadetails
+                                foreach (var itm in olded.EntryDataDetails)
+                                {
+                                    var d = details.FirstOrDefault(z =>
+                                        z.ItemNumber == itm.ItemNumber && z.LineNumber == itm.LineNumber &&
+                                        (Math.Abs(z.Cost - itm.Cost) > 0 || Math.Abs(z.Quantity - itm.Quantity) > 0 ||
+                                         Math.Abs(z.TaxAmount.GetValueOrDefault() - itm.TaxAmount.GetValueOrDefault()) >
+                                         0));
+                                    if (d == null || d.Quantity == 0) continue;
+
+                                    itm.Quantity = d.Quantity;
+                                    itm.Cost = d.Cost;
+                                    itm.TaxAmount = d.TaxAmount;
+                                    await ctx.UpdateEntryDataDetails(itm).ConfigureAwait(false);
                                 }
+
+                                AddToDocSet(ndocSet, olded);
+                                await UpdateEntryData(olded).ConfigureAwait(false);
+
                             }
 
                         }
 
-                        ctx.SaveChanges();
+                        using (var ctx = new InventoryDSContext() {StartTracking = true})
+                        {
 
-                    }
+                            foreach (var e in item.InventoryItems
+                                .Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber).ToList())
+                            {
+                                var inventoryItem = ctx.InventoryItems
+                                    .Include("InventoryItemAlias")
+                                    .First(x => x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId &&
+                                                x.ItemNumber == e.ItemNumber);
+                                if (inventoryItem == null) continue;
+                                {
+                                    if (inventoryItem.InventoryItemAlias.FirstOrDefault(x =>
+                                            x.AliasName == e.ItemAlias) ==
+                                        null)
+                                    {
+                                        inventoryItem.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                                        {
+                                            InventoryItemId = inventoryItem.Id,
+                                            AliasName = e.ItemAlias.Truncate(20),
+
+                                        });
+
+                                    }
+                                }
+
+                            }
+
+                            ctx.SaveChanges();
+
+                        }
+                    
 
                 }
 
@@ -618,13 +664,13 @@ namespace WaterNut.DataSpace
             foreach (var doc in docSet.DistinctBy(x => x.AsycudaDocumentSetId))
             {
                 if ((new EntryDataDSContext()).AsycudaDocumentSetEntryData.FirstOrDefault(
-                        x => x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId && x.EntryDataId == entryData.EntryDataId) != null) continue;
+                        x => x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId && x.EntryData_Id == entryData.EntryData_Id) != null) continue;
                 if (entryData.AsycudaDocumentSets.FirstOrDefault(
                         x => x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId) != null) continue;
                 entryData.AsycudaDocumentSets.Add(new AsycudaDocumentSetEntryData(true)
                 {
                     AsycudaDocumentSetId = doc.AsycudaDocumentSetId,
-                    EntryDataId = entryData.EntryDataId,
+                    EntryData_Id = entryData.EntryData_Id,
                     TrackingState = TrackingState.Added
                 });
             }
@@ -638,7 +684,8 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private async Task<EntryData> GetEntryData(string entryDataId, DateTime entryDateTime,
+        private async Task<EntryData> GetEntryData(string entryDataId, List<AsycudaDocumentSet> docSet,
+            DateTime entryDateTime,
             int applicationSettingsId)
         {
             using (var ctx = new EntryDataService())
@@ -650,7 +697,7 @@ namespace WaterNut.DataSpace
                         // $"EntryDataDate == \"{entryDateTime.ToString("yyyy-MMM-dd")}\"",
                         $"ApplicationSettingsId == \"{applicationSettingsId}\"",
                     }, new List<string>() {"AsycudaDocumentSets", "EntryDataDetails"}).ConfigureAwait(false))
-                    .FirstOrDefault();
+                    .FirstOrDefault(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any());
                 //eLst.FirstOrDefault(x => x.EntryDataId == item.e.EntryDataId && x.EntryDataDate != item.e.EntryDataDate);
             }
         }

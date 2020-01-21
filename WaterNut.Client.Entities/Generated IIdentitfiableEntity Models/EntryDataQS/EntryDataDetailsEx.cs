@@ -86,7 +86,7 @@ namespace EntryDataQS.Client.Entities
                         {
                             this.EntryDataEx = (EntryDataEx)new EntryDataEx().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.EntryDataEx.InvoiceNo);
+							this.EntryDataDetailsId = Convert.ToInt32(this.EntryDataEx.EntryData_Id);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddEntryDataEx");
                         }

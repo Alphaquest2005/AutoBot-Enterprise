@@ -107,6 +107,9 @@ namespace EntryDataQS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryData>> GetEntryDataByEntryDataId(string EntryDataId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryData>> GetEntryDataByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]

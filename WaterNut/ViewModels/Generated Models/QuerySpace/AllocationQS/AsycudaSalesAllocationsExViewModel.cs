@@ -1088,6 +1088,24 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
         }	
 
  
+
+		private Int32? _salesLineNumberFilter;
+        public Int32? SalesLineNumberFilter
+        {
+            get
+            {
+                return _salesLineNumberFilter;
+            }
+            set
+            {
+                _salesLineNumberFilter = value;
+				NotifyPropertyChanged(x => SalesLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1388,7 +1406,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 									if(string.IsNullOrEmpty(xStatusFilter) == false)
 						res.Append(" && " + string.Format("xStatus.Contains(\"{0}\")",  xStatusFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(SalesLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("SalesLineNumber == {0}",  SalesLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1531,7 +1552,10 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     AssessmentDate = x.AssessmentDate ,
                     
  
-                    xStatus = x.xStatus 
+                    xStatus = x.xStatus ,
+                    
+ 
+                    SalesLineNumber = x.SalesLineNumber 
                     
                 }).ToList()
             };
@@ -1665,6 +1689,9 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     
  
                     public string xStatus { get; set; } 
+                    
+ 
+                    public Nullable<int> SalesLineNumber { get; set; } 
                     
         }
 

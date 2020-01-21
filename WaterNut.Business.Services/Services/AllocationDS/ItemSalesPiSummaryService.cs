@@ -98,16 +98,16 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<ItemSalesPiSummary> GetItemSalesPiSummaryByKey(string DutyFreePaid, List<string> includesLst = null, bool tracking = true)
+        public async Task<ItemSalesPiSummary> GetItemSalesPiSummaryByKey(string PreviousItem_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(DutyFreePaid))return null; 
+			   if(string.IsNullOrEmpty(PreviousItem_Id))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = DutyFreePaid;
+                var i = Convert.ToInt32(PreviousItem_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                ItemSalesPiSummary entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.DutyFreePaid == i).ConfigureAwait(continueOnCapturedContext: false);
+                ItemSalesPiSummary entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.PreviousItem_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -285,11 +285,11 @@ namespace AllocationDS.Business.Services
                                 IQueryable<ItemSalesPiSummary> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.DutyFreePaid);
+                                    dset = set.OrderBy(x => x.PreviousItem_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.DutyFreePaid).Where(exp);
+                                    dset = set.OrderBy(x => x.PreviousItem_Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -359,12 +359,12 @@ namespace AllocationDS.Business.Services
                                 IQueryable<ItemSalesPiSummary> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.DutyFreePaid);
+                                    dset = set.OrderBy(x => x.PreviousItem_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.DutyFreePaid);
+                                    dset = set.OrderBy(x => x.PreviousItem_Id);
                                 }
 
                                 var lst = dset
@@ -510,15 +510,15 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteItemSalesPiSummary(string DutyFreePaid)
+        public async Task<bool> DeleteItemSalesPiSummary(string PreviousItem_Id)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = DutyFreePaid;
+                var i = Convert.ToInt32(PreviousItem_Id);
                 ItemSalesPiSummary entity = await dbContext.ItemSalesPiSummary
-													.SingleOrDefaultAsync(x => x.DutyFreePaid == i)
+													.SingleOrDefaultAsync(x => x.PreviousItem_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -668,7 +668,7 @@ namespace AllocationDS.Business.Services
                     {
                         return await dbContext.ItemSalesPiSummary
 										.AsNoTracking()
-                                        .OrderBy(y => y.DutyFreePaid)
+                                        .OrderBy(y => y.PreviousItem_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -680,7 +680,7 @@ namespace AllocationDS.Business.Services
                         return await dbContext.ItemSalesPiSummary
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.DutyFreePaid)
+										.OrderBy(y => y.PreviousItem_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -716,7 +716,7 @@ namespace AllocationDS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.ItemSalesPiSummary.Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                    return await dbContext.ItemSalesPiSummary.Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -759,9 +759,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemSalesPiSummary>()
-                .Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
-                .OrderBy("DutyFreePaid")
+                .OrderBy("PreviousItem_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -780,9 +780,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemSalesPiSummary>()
-                .Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
-                .OrderBy("DutyFreePaid")
+                .OrderBy("PreviousItem_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -808,7 +808,7 @@ namespace AllocationDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.DutyFreePaid)
+                                    .OrderBy(y => y.PreviousItem_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -817,8 +817,8 @@ namespace AllocationDS.Business.Services
                     }
                     return await set//dbContext.ItemSalesPiSummary
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
-								.OrderBy(y => y.DutyFreePaid)
+                                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+								.OrderBy(y => y.PreviousItem_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -870,9 +870,9 @@ namespace AllocationDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.DutyFreePaid)
+                .OrderBy(y => y.PreviousItem_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -899,9 +899,9 @@ namespace AllocationDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.DutyFreePaid)
+                .OrderBy(y => y.PreviousItem_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -951,7 +951,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<ItemSalesPiSummary>()
-							.Where(exp == "All" || exp == null?"DutyFreePaid != null":exp)
+							.Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -961,7 +961,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemSalesPiSummary>()
-                .Where(exp == "All" || exp == null?"DutyFreePaid != null":exp)
+                .Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -988,7 +988,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<ItemSalesPiSummary>()
-							.Where(exp == "All" || exp == null?"DutyFreePaid != null":exp)
+							.Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -998,7 +998,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemSalesPiSummary>()
-                .Where(exp == "All" || exp == null?"DutyFreePaid != null":exp)
+                .Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1013,17 +1013,17 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<ItemSalesPiSummary>> GetItemSalesPiSummaryByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<ItemSalesPiSummary>> GetItemSalesPiSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(PreviousItem_Id);
+                var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ItemSalesPiSummary> entities = await set//dbContext.ItemSalesPiSummary
                                       .AsNoTracking()
-                                        .Where(x => x.PreviousItem_Id.ToString() == PreviousItem_Id.ToString())
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1091,7 +1091,7 @@ namespace AllocationDS.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.ItemSalesPiSummary.Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                    return Convert.ToDecimal(dbContext.ItemSalesPiSummary.Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1132,9 +1132,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemSalesPiSummary>()
-                .Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
-                .OrderBy("DutyFreePaid")
+                .OrderBy("PreviousItem_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1152,9 +1152,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemSalesPiSummary>()
-                .Where(exp == "All" || exp == null ? "DutyFreePaid != null" : exp)
+                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
                 .Distinct()
-                .OrderBy("DutyFreePaid")
+                .OrderBy("PreviousItem_Id")
                 .Sum(field));
 			}
 			catch (Exception)

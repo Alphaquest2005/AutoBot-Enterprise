@@ -36,21 +36,6 @@ namespace SalesDataQS.Business.Entities
         }
         int _asycudadocumentsetid;
         [DataMember]
-        public string EntryDataId 
-        {
-            get
-            {
-                return _entrydataid;
-            }
-            set
-            {
-                _entrydataid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _entrydataid;
-        [DataMember]
         public int Id 
         {
             get
@@ -65,6 +50,21 @@ namespace SalesDataQS.Business.Entities
             }
         }
         int _id;
+        [DataMember]
+        public int EntryData_Id 
+        {
+            get
+            {
+                return _entrydata_id;
+            }
+            set
+            {
+                _entrydata_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _entrydata_id;
         [DataMember]
         public SalesData SalesData { get; set; }
 

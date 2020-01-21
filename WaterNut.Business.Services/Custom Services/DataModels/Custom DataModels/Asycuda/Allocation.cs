@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -86,6 +87,8 @@ namespace WaterNut.DataSpace
 
         public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
         {
+            var forceDiscrepancyExecution = true;
+
             try
             {
                 // update nonstock entrydetails status
@@ -99,6 +102,9 @@ namespace WaterNut.DataSpace
                                          InventoryItems ON [InventoryItems-NonStock].InventoryItemId = InventoryItems.Id ON EntryDataDetails.ItemNumber = InventoryItems.ItemNumber AND 
                                          EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
                         WHERE (EntryData.ApplicationSettingsId = {applicationSettings.ApplicationSettingsId}) AND (EntryDataDetails.Status IS NULL)");
+
+                    ctx.Database.ExecuteSqlCommand($@"EXEC [dbo].[GetMappingFromInventory] @appsettingId
+                                                     EXEC[dbo].[CreateInventoryAliasFromInventoryMapping]",new SqlParameter("@appsettingId", applicationSettings.ApplicationSettingsId));
                 }
 
 
@@ -106,6 +112,7 @@ namespace WaterNut.DataSpace
                 using (var ctx = new AdjustmentShortService())
                 {
                     await ctx.AutoMatch(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+                   if(forceDiscrepancyExecution) await ctx.ProcessDISErrorsForAllocation(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
                 }
 
 
@@ -148,7 +155,7 @@ namespace WaterNut.DataSpace
             var count = itemSetsValues.Count();
             Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-                   // .Where(x => x.Key.Contains("CRC/06037")) //.Where(x => x.Key.Contains("255100")) // 
+                    //.Where(x => x.Key.Contains("HEL/003361001")) //.Where(x => x.Key.Contains("255100")) // 
                                                                           // .Where(x => "337493".Contains(x.Key))
                                                                           //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
                                      , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
@@ -238,12 +245,15 @@ namespace WaterNut.DataSpace
                                 if (ctx.AsycudaSalesAllocations == null) return;
 
                                 var lst =
-                                    ctx.AsycudaSalesAllocations.Where(
-                                            x => x != null && x.PreviousItem_Id == i.Item_Id)
-                                        .OrderByDescending(x => x.AllocationId)
+                                    ctx.AsycudaSalesAllocations
                                         .Include(x => x.EntryDataDetails)
                                         .Include(x => x.EntryDataDetails.EntryDataDetailsEx)
-                                        .Include(x => x.PreviousDocumentItem).ToList();
+                                        .Include(x => x.PreviousDocumentItem)
+                                        .Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
+                                        .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
+                                        .OrderByDescending(x => x.AllocationId)
+                                        .DistinctBy(x => x.AllocationId)
+                                        .ToList();
 
                                 foreach (var allo in lst)
                                 {
@@ -380,12 +390,15 @@ namespace WaterNut.DataSpace
                                 if (ctx.AsycudaSalesAllocations == null) return;
 
                                 var lst =
-                                    ctx.AsycudaSalesAllocations.Where(
-                                            x => x != null && x.PreviousItem_Id == i.Item_Id)
-                                        .OrderBy(x => x.AllocationId)
+                                    ctx.AsycudaSalesAllocations
                                         .Include(x => x.EntryDataDetails)
                                         .Include(x => x.EntryDataDetails.EntryDataDetailsEx)
-                                        .Include(x => x.PreviousDocumentItem).ToList();
+                                        .Include(x => x.PreviousDocumentItem)
+                                        .Where(x => x != null && x.PreviousItem_Id == i.Item_Id)
+                                        .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
+                                        .OrderBy(x => x.AllocationId)
+                                        .DistinctBy(x => x.AllocationId)
+                                        .ToList();
                                 if(lst.Sum(x => x.QtyAllocated) < 0)
                                 foreach (var allo in lst)
                                 {
@@ -487,9 +500,13 @@ namespace WaterNut.DataSpace
                 var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId).ConfigureAwait(false);
 
                 var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+                var test = saleslst.Where(x => x.SalesList.Any(z => z.ItemNumber == "HS/EXW212")).ToList();
 
                 var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
                 saleslst.AddRange(adjlst);
+
+                var dislst = await GetDiscrepancieslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+                saleslst.AddRange(dislst);
 
                 var itmLst = CreateItemSetsWithItemNumbers(saleslst, asycudaEntries);
 
@@ -754,7 +771,71 @@ namespace WaterNut.DataSpace
             return adjlst;
         }
 
-       
+
+        private static async Task<List<ItemSales>> GetDiscrepancieslstWithItemNumber(int applicationSettingsId)
+        {
+            try
+            {
+
+           
+            StatusModel.Timer("Getting Data - Discrepancy Errors ...");
+
+            List<ItemSales> adjlst = null;
+            using (var ctx = new EntryDataDetailsService())
+            {
+                var salesData =
+
+                await
+                        ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"AAA/13576\" &&" +
+                                                                (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Adjustments.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
+                                                                    : "") +
+                                                               "QtyAllocated != Quantity && " +
+                                                                $"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
+                                                                $"Adjustments.Type == \"DIS\" && " + /// Only Discrepancies with Errors
+                                                                $"Comment.StartsWith(\"DISERROR:\") && " +
+                                                                "((CNumber == null && PreviousInvoiceNumber == null) ||" +
+                                                                " ((CNumber != null || PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments
+                                                                " && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"" : "") + ")" +
+                                                               //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
+                                                               "&& DoNotAllocate != true", new Dictionary<string, string>()
+                                                               {
+                                                                   { "Adjustments", "EntryDataId != null" }
+                                                               }, new List<string>() { "Adjustments", "AsycudaSalesAllocations" }, false)
+                            .ConfigureAwait(false);
+                adjlst = (from d in salesData
+                              //.Where(x => x.EntryData == "GB-0009053")                                       
+                              //.SelectMany(x => x.EntryDataDetails.Select(ed => ed))
+                              //.Where(x => x.QtyAllocated == null || x.QtyAllocated != ((Double) x.Quantity))
+                              //.Where(x => x.ItemNumber == itmnumber)
+                              // .AsEnumerable()
+                          group d by d.ItemNumber.ToUpper().Trim()
+                    into g
+                          select
+                              new ItemSales
+                              {
+                                  Key = g.Key,
+                                  SalesList = g.Where(xy => xy != null & xy.Adjustments != null).OrderBy(x => x.EffectiveDate).ThenBy(x => x.Adjustments.EntryDataDate).ThenBy(x => x.EntryDataId).ToList()
+                              }).ToList();
+            }
+            adjlst.SelectMany(x => x.SalesList).ForEach(x =>
+            {
+                x.Sales = new Sales()
+                {
+                    EntryDataId = x.Adjustments.EntryDataId,
+                    EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
+                    INVNumber = x.Adjustments.EntryDataId,
+                };
+                x.Comment = "Adjustment";
+            });
+            return adjlst;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
 
         private async Task AllocateSalestoAsycudaByKey(List<EntryDataDetails> saleslst, List<xcuda_Item> asycudaEntries,
             double currentSetNo, int setNo, bool allocateToLastAdjustment)
