@@ -139,19 +139,6 @@ namespace CoreEntities.Client.DTO
         private Nullable<int> _EmailId;
 
         [DataMember]
-        public string Extended_customs_procedure
-		{ 
-		    get { return _Extended_customs_procedure; }
-			set
-			{
-			    if (value == _Extended_customs_procedure) return;
-				_Extended_customs_procedure = value;
-				NotifyPropertyChanged();//m => this.Extended_customs_procedure
-			}
-		}
-        private string _Extended_customs_procedure;
-
-        [DataMember]
         public int ASYCUDA_Id
 		{ 
 		    get { return _ASYCUDA_Id; }
@@ -189,6 +176,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private string _Status;
+
+        [DataMember]
+        public string CustomsProcedure
+		{ 
+		    get { return _CustomsProcedure; }
+			set
+			{
+			    if (value == _CustomsProcedure) return;
+				_CustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.CustomsProcedure
+			}
+		}
+        private string _CustomsProcedure;
 
        
    //     [DataMember]

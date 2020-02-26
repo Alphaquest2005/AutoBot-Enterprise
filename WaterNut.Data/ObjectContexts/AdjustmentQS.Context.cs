@@ -81,6 +81,8 @@ namespace AdjustmentQS.Business.Entities
      
         public DbSet<TODO_PreDiscrepancyErrors> TODO_PreDiscrepancyErrors { get; set; }
      
+        public DbSet<TODO_AdjustmentOversToXML> TODO_AdjustmentOversToXML { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -118,6 +120,8 @@ namespace AdjustmentQS.Business.Entities
             modelBuilder.Configurations.Add(new SystemDocumentSetMap());
          
             modelBuilder.Configurations.Add(new TODO_PreDiscrepancyErrorsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_AdjustmentOversToXMLMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

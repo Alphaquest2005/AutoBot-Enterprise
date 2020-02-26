@@ -605,7 +605,7 @@ namespace WaterNut.DataSpace
 
 
         public async Task AddToEntry(IEnumerable<string> entryDatalst, AsycudaDocumentSet currentAsycudaDocumentSet,
-            bool perInvoice,bool combineEntryDataInSameFile)
+            bool perInvoice, bool combineEntryDataInSameFile, bool groupItems)
         {
             try
             {
@@ -618,7 +618,7 @@ namespace WaterNut.DataSpace
                 ;
                 if (!IsValidEntryData(slstSource)) return;
 
-                await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false, combineEntryDataInSameFile)
+                await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false, combineEntryDataInSameFile, groupItems)
                     .ConfigureAwait(false);
             }
             catch (Exception)
@@ -627,7 +627,8 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public async Task AddToEntry(IEnumerable<int> entryDatalst, int docSetId, bool perInvoice,bool combineEntryDataInSameFile)
+        public async Task AddToEntry(IEnumerable<int> entryDatalst, int docSetId, bool perInvoice,
+            bool combineEntryDataInSameFile, bool groupItems)
         {
             try
             {
@@ -652,7 +653,7 @@ namespace WaterNut.DataSpace
                 ;
                 if (!IsValidEntryData(slstSource)) return;
 
-                await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile).ConfigureAwait(false);
+                await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile, groupItems).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -722,10 +723,11 @@ namespace WaterNut.DataSpace
         }
 
         public async Task CreateEntryItems(List<EntryDataDetails> slstSource,
-            AsycudaDocumentSet currentAsycudaDocumentSet, bool perInvoice, bool autoUpdate, bool autoAssess,bool combineEntryDataInSameFile)
+            AsycudaDocumentSet currentAsycudaDocumentSet, bool perInvoice, bool autoUpdate, bool autoAssess,
+            bool combineEntryDataInSameFile, bool groupItems)
         {
             var itmcount = 0;
-            var slst = CreateEntryLineData(slstSource);
+            var slst = groupItems? CreateGroupEntryLineData(slstSource): CreateSingleEntryLineData(slstSource);
 
             var cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
 
@@ -1059,7 +1061,51 @@ namespace WaterNut.DataSpace
         }
 
 
-        private IEnumerable<BaseDataModel.EntryLineData> CreateEntryLineData(IEnumerable<EntryDataDetails> slstSource)
+        private IEnumerable<BaseDataModel.EntryLineData> CreateSingleEntryLineData(IEnumerable<EntryDataDetails> slstSource)
+        {
+            var slst = slstSource
+                       .Select(g => 
+                        new BaseDataModel.EntryLineData
+                       {
+                           ItemNumber = g.ItemNumber.Trim(),
+                           ItemDescription = g.ItemDescription.Trim(),
+                           TariffCode = g.TariffCode,
+                           Cost = g.Cost,
+                           Quantity = g.Quantity,
+                           EntryDataDetails = new List<EntryDataDetailSummary>() { new EntryDataDetailSummary()
+                           {
+                               EntryDataDetailsId = g.EntryDataDetailsId,
+                               EntryData_Id = g.EntryData_Id,
+                               EntryDataId = g.EntryDataId,
+                               EffectiveDate = g.EffectiveDate.GetValueOrDefault(),
+                               EntryDataDate = g.EntryData.EntryDataDate,
+                               QtyAllocated = g.QtyAllocated,
+                               Currency = g.EntryData.Currency,
+                               LineNumber = g.LineNumber,
+                           }},
+                           EntryData = g.EntryData,
+
+                           Freight = Convert.ToDouble(g.Freight),
+                           Weight = Convert.ToDouble(g.Weight),
+                           InternalFreight = Convert.ToDouble(g.InternalFreight),
+                           TariffSupUnitLkps = g.InventoryItemEx.SuppUnitCode2 != null
+                               ? new List<ITariffSupUnitLkp>()
+                               {
+                            new TariffSupUnitLkps()
+                            {
+                                SuppUnitCode2 = g.InventoryItemEx.SuppUnitCode2,
+                                SuppQty = g.InventoryItemEx.SuppQty.GetValueOrDefault()
+                            }
+                               }
+                               : null,
+                           InventoryItemEx = g.InventoryItemEx,
+
+                       });
+            return slst;
+        }
+
+
+        private IEnumerable<BaseDataModel.EntryLineData> CreateGroupEntryLineData(IEnumerable<EntryDataDetails> slstSource)
         {
             var slst = from s in slstSource.AsEnumerable() //.Where(p => p.Downloaded == false)
                 group s by new {s.ItemNumber, s.ItemDescription, s.TariffCode, s.Cost, s.EntryData, s.InventoryItemEx}
@@ -2699,7 +2745,7 @@ namespace WaterNut.DataSpace
                             .Include(x => x.EntryData.EntryDataEx)
                             .Include(x => x.EntryData.Suppliers)
                             .Where(x => x.EntryDataDetailsId == item &&
-                                        x.EntryDataDetailsEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId)
+                                        x.EntryDataDetailsEx.AsycudaDocumentSetId == asycudaDocumentSetId
                                         && x.EntryData.EntryDataEx != null)
                             .Where(x => Math.Abs((double)(x.EntryData.EntryDataEx.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx.ExpectedTotal))) < 0.01)//Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
                             .ToList());
@@ -2731,10 +2777,11 @@ namespace WaterNut.DataSpace
                             .Include(x => x.EntryData.EntryDataEx)
                             .Include(x => x.EntryData.DocumentType)
                             .Include(x => x.EntryData.Suppliers)
-                            .Where(x => x.EntryDataId == item &&
-                                        x.EntryDataDetailsEx.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId)
-                                        && x.EntryData.EntryDataEx != null)
-                            .ToList();
+                            .Where(x => x.EntryDataId == item 
+                                        && x.EntryDataDetailsEx.AsycudaDocumentSetId == asycudaDocumentSetId
+                                        && x.EntryData.EntryDataEx != null
+                                        )
+                            .ToList().DistinctBy(x => x.EntryDataDetailsId);
 
                         var res1 = entryDataDetailses.Where(x =>
                             BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true

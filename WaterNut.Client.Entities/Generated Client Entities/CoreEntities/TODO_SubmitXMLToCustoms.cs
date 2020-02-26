@@ -183,23 +183,6 @@ public Nullable<int> EmailId
 		}
      
 
-       
-       
-                
-                
-public string Extended_customs_procedure
-		{ 
-		    get { return this.todo_submitxmltocustoms.Extended_customs_procedure; }
-			set
-			{
-			    if (value == this.todo_submitxmltocustoms.Extended_customs_procedure) return;
-				this.todo_submitxmltocustoms.Extended_customs_procedure = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Extended_customs_procedure");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "ASYCUDA_ is required")]
        
 public int ASYCUDA_Id
@@ -245,6 +228,23 @@ public string Status
 				this.todo_submitxmltocustoms.Status = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Status");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.todo_submitxmltocustoms.CustomsProcedure; }
+			set
+			{
+			    if (value == this.todo_submitxmltocustoms.CustomsProcedure) return;
+				this.todo_submitxmltocustoms.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
 			}
 		}
      

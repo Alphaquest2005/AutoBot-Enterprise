@@ -75,7 +75,7 @@ public int Customs_ProcedureId
        
        
                 
-                
+                [MaxLength(5, ErrorMessage = "Extended_customs_procedure has a max length of 5 letters ")]
 public string Extended_customs_procedure
 		{ 
 		    get { return this.customs_procedure.Extended_customs_procedure; }
@@ -92,7 +92,7 @@ public string Extended_customs_procedure
        
        
                 
-                
+                [MaxLength(5, ErrorMessage = "National_customs_procedure has a max length of 5 letters ")]
 public string National_customs_procedure
 		{ 
 		    get { return this.customs_procedure.National_customs_procedure; }
@@ -132,6 +132,23 @@ public Nullable<bool> IsImportExport
 				this.customs_procedure.IsImportExport = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("IsImportExport");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.customs_procedure.CustomsProcedure; }
+			set
+			{
+			    if (value == this.customs_procedure.CustomsProcedure) return;
+				this.customs_procedure.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
 			}
 		}
      

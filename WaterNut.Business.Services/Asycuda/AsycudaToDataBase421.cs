@@ -1501,7 +1501,7 @@ namespace WaterNut.DataSpace.Asycuda
 
         private void SetEffectiveAssessmentDate(DocumentCT documentCt, string commentsFreeText)
         {
-            if (string.IsNullOrEmpty(commentsFreeText)) return;
+            if (string.IsNullOrEmpty(commentsFreeText) || !commentsFreeText.Contains("EffectiveAssessmentDate:")) return;
             documentCt.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = DateTime.ParseExact(commentsFreeText.Replace("EffectiveAssessmentDate:",""),"MMM-dd-yyyy",null);
         }
 

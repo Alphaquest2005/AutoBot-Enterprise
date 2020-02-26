@@ -17,10 +17,12 @@ namespace EntryDataDS.Business.Entities
                 {
                     return InventoryItems.TariffCode;
                 }
-                else
+                if (InventoryItemEx != null && InventoryItemEx.TariffCode != null)
                 {
-                    return "Null";
+                    return InventoryItemEx.TariffCode;
                 }
+
+                return "Null";
             }
         }
     }

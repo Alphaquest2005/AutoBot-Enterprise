@@ -244,6 +244,9 @@ namespace AdjustmentQS.Business.Services
 
         }
 
+        /// <summary>
+        /// /////////////////// Create one entry fro kim
+
         public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100,
             int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)
         {
@@ -261,25 +264,26 @@ namespace AdjustmentQS.Business.Services
                 var slst =
                     (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro).ConfigureAwait(false))
                     .Where(
-                        x => x.Allocations.Count > 0);
-                if (slst != null && slst.ToList().Any())
+                        x => x.Allocations.Count > 0).ToList();
+                if (slst.Any())
                 {
-
-                    foreach (var dbBlock in slst)
-                    {
-                        // must use the month cuz assessment date could be 1 or 30
-                        var startDate =
-                            new DateTime(dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Year,
-                                dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Month, 1);
-                        var endDate = startDate.AddMonths(1).AddDays(-1);
-                        var itemPiSummarylst = CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId,startDate, endDate, dutyFreePaid, "ADJ");
+                    // must use the month cuz assessment date could be 1 or 30
+                    var startDate =
+                        new DateTime(slst.SelectMany(x => x.Allocations).Min(x => x.EffectiveDate).GetValueOrDefault().Year,
+                            slst.SelectMany(x => x.Allocations).Min(x => x.EffectiveDate).GetValueOrDefault().Month, 1);
+                    var endDate = new DateTime(slst.SelectMany(x => x.Allocations).Max(x => x.EffectiveDate).GetValueOrDefault().Year,
+                        slst.SelectMany(x => x.Allocations).Max(x => x.EffectiveDate).GetValueOrDefault().Month, 1).AddMonths(1).AddDays(-1);
 
 
-                        await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
-                            new List<AllocationDataBlock>() {dbBlock}, docSet, "7400", false, itemPiSummarylst, false,
-                            false, ex9Type, true, "Current", false, false, true).ConfigureAwait(false);// historic checks false cuz its supposed to be specific and executed
-                    }
+                    var itemPiSummarylst =
+                        CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
+                            endDate, dutyFreePaid, "ADJ");
 
+                    await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+                                                   slst, docSet, "7400", false, itemPiSummarylst, false,
+                                                   false, ex9Type, true, "Current", false, false, true)
+                                               .ConfigureAwait(
+                                                   false);
                 }
             }
             catch (Exception e)
@@ -293,7 +297,57 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        
+
+        //public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100,
+        //    int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)
+        //{
+        //    try
+        //    {
+        //        CreateEx9Class.DocSetPi.Clear();
+        //        var docSet =
+        //            await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
+        //                .ConfigureAwait(false);
+
+        //        var exPro =
+        //            $"&& PreviousDocumentItem.AsycudaDocument.ApplicationSettingsId = {docSet.ApplicationSettingsId}" +
+        //            //"&& PreviousDocumentItem.AsycudaDocument.SystemDocumentSet == null" +
+        //            "&& (PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7000\" || PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7400\")";
+        //        var slst =
+        //            (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro).ConfigureAwait(false))
+        //            .Where(
+        //                x => x.Allocations.Count > 0);
+        //        if (slst != null && slst.ToList().Any())
+        //        {
+
+        //            foreach (var dbBlock in slst)
+        //            {
+        //                // must use the month cuz assessment date could be 1 or 30
+        //                var startDate =
+        //                    new DateTime(dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Year,
+        //                        dbBlock.Allocations.Min(x => x.EffectiveDate).GetValueOrDefault().Month, 1);
+        //                var endDate = startDate.AddMonths(1).AddDays(-1);
+        //                var itemPiSummarylst = CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate, endDate, dutyFreePaid, "ADJ");
+
+
+        //                await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+        //                    new List<AllocationDataBlock>() { dbBlock }, docSet, "7400", false, itemPiSummarylst, false,
+        //                    false, ex9Type, true, "Current", false, false, true).ConfigureAwait(false);// historic checks false cuz its supposed to be specific and executed
+        //            }
+
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+
+
+
+
+        //}
+
+
         private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(bool perInvoice,string filterExpression)
         {
             try

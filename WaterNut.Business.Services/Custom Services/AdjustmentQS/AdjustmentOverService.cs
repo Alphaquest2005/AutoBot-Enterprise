@@ -12,6 +12,9 @@ namespace AdjustmentQS.Business.Services
 {
     public partial class AdjustmentOverService
     {
+        /// <summary>
+        /// one entry for kim
+
         public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
         {
             try
@@ -31,53 +34,47 @@ namespace AdjustmentQS.Business.Services
 
                 using (var ctx = new AdjustmentQSContext())
                 {
-                   
 
-                    var olst = ctx.AdjustmentOvers
-                        .Include("AdjustmentEx.AsycudaDocumentSets.SystemDocumentSet")
+
+                    var olst = ctx.TODO_AdjustmentOversToXML
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
-                        .Where(x => x.AsycudaDocumentItemEntryDataDetails.All(z => "IM7,EX9".Contains(z.DocumentType)))
-                        .Where(x => (double)x.Cost > 0)
                         .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
                         .OrderBy(x => x.EffectiveDate)
-                        .GroupJoin(ctx.SystemDocumentSets, a => a.AsycudaDocumentSetId, s => s.Id, (x, y) => new { adjustment = x, sys = y.FirstOrDefault() })
-                        .Where(x => x.sys == null)
                         .Select(x => new EntryDataDetails()
                         {
-                            EntryDataDetailsId = x.adjustment.EntryDataDetailsId,
-                            EntryDataId = x.adjustment.EntryDataId,
-                            EntryData_Id = x.adjustment.EntryData_Id,
-                            ItemNumber = x.adjustment.ItemNumber,
-                            ItemDescription = x.adjustment.ItemDescription,
-                            Cost = (double)x.adjustment.Cost,
-                            Quantity = (double)x.adjustment.ReceivedQty - (double)x.adjustment.InvoiceQty,
-                            EffectiveDate = x.adjustment.EffectiveDate ?? x.adjustment.AdjustmentEx.InvoiceDate,
-                            LineNumber = x.adjustment.LineNumber,
+                            EntryDataDetailsId = x.EntryDataDetailsId,
+                            EntryDataId = x.EntryDataId,
+                            EntryData_Id = x.EntryData_Id,
+                            ItemNumber = x.ItemNumber,
+                            ItemDescription = x.ItemDescription,
+                            Cost = (double)x.Cost,
+                            Quantity = (double)x.ReceivedQty - (double)x.InvoiceQty,
+                            EffectiveDate = x.EffectiveDate ?? x.InvoiceDate,
+                            LineNumber = x.LineNumber,
                             EntryData = new EntryData()
                             {
-                                EntryDataId = x.adjustment.EntryDataId,
-                                EntryData_Id = x.adjustment.EntryData_Id,
-                                Currency = x.adjustment.AdjustmentEx.Currency,
-                                EntryDataDate = x.adjustment.AdjustmentEx.InvoiceDate,
-                                EmailId = x.adjustment.AdjustmentEx.EmailId,
-                                FileTypeId = x.adjustment.AdjustmentEx.FileTypeId
+                                EntryDataId = x.EntryDataId,
+                                EntryData_Id = x.EntryData_Id,
+                                Currency = x.Currency,
+                                EntryDataDate = x.InvoiceDate,
+                                EmailId = x.EmailId,
+                                FileTypeId = x.FileTypeId
                             },
                             InventoryItemEx = new InventoryItemsEx()
                             {
-                                TariffCode = x.adjustment.TariffCode,
-                                ItemNumber = x.adjustment.ItemNumber,
-                                Description = x.adjustment.ItemDescription,
+                                TariffCode = x.TariffCode,
+                                ItemNumber = x.ItemNumber,
+                                Description = x.ItemDescription,
                             }
 
 
-                        }).ToList().GroupBy(x => x.EffectiveDate.GetValueOrDefault().ToString("MM-yyyy"));
-                    foreach (var set in olst)
-                    {
-                        await BaseDataModel.Instance.CreateEntryItems(set.ToList(), docSet, perInvoice, false, true, false)
-                        .ConfigureAwait(false);
-                    }
-                    
+                        }).ToList();
+
+                    await BaseDataModel.Instance.CreateEntryItems(olst, docSet, perInvoice, false, true, false, false)
+                    .ConfigureAwait(false);
+
+
                 }
             }
             catch (Exception e)
@@ -86,5 +83,75 @@ namespace AdjustmentQS.Business.Services
                 throw;
             }
         }
+
+        //public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
+        //{
+        //    try
+        //    {
+
+
+        //        var docSet =
+        //            await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
+        //                .ConfigureAwait(false);
+
+        //        // inject custom procedure in docset
+        //        docSet.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures.First(x =>
+        //            x.DisplayName == BaseDataModel.Instance.ExportTemplates.First(z => z.Description == "OS7")
+        //                .Customs_Procedure);
+
+        //        docSet.Document_Type = docSet.Customs_Procedure.Document_Type;
+
+        //        using (var ctx = new AdjustmentQSContext())
+        //        {
+
+
+        //            var olst = ctx.TODO_AdjustmentOversToXML
+        //                .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
+        //                .Where(filterExpression)
+        //                .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
+        //                .OrderBy(x => x.EffectiveDate)
+        //                .Select(x => new EntryDataDetails()
+        //                {
+        //                    EntryDataDetailsId = x.EntryDataDetailsId,
+        //                    EntryDataId = x.EntryDataId,
+        //                    EntryData_Id = x.EntryData_Id,
+        //                    ItemNumber = x.ItemNumber,
+        //                    ItemDescription = x.ItemDescription,
+        //                    Cost = (double)x.Cost,
+        //                    Quantity = (double)x.ReceivedQty - (double)x.InvoiceQty,
+        //                    EffectiveDate = x.EffectiveDate ?? x.InvoiceDate,
+        //                    LineNumber = x.LineNumber,
+        //                    EntryData = new EntryData()
+        //                    {
+        //                        EntryDataId = x.EntryDataId,
+        //                        EntryData_Id = x.EntryData_Id,
+        //                        Currency = x.Currency,
+        //                        EntryDataDate = x.InvoiceDate,
+        //                        EmailId = x.EmailId,
+        //                        FileTypeId = x.FileTypeId
+        //                    },
+        //                    InventoryItemEx = new InventoryItemsEx()
+        //                    {
+        //                        TariffCode = x.TariffCode,
+        //                        ItemNumber = x.ItemNumber,
+        //                        Description = x.ItemDescription,
+        //                    }
+
+
+        //                }).ToList().GroupBy(x => x.EffectiveDate.GetValueOrDefault().ToString("MM-yyyy"));
+        //            foreach (var set in olst)
+        //            {
+        //                await BaseDataModel.Instance.CreateEntryItems(set.ToList(), docSet, perInvoice, false, true, false)
+        //                .ConfigureAwait(false);
+        //            }
+
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+        //}
     }
 }

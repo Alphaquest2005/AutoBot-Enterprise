@@ -450,6 +450,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private int _EntryData_Id;
 
+        [DataMember]
+        public Nullable<bool> IsReconciled
+		{ 
+		    get { return _IsReconciled; }
+			set
+			{
+			    if (value == _IsReconciled) return;
+				_IsReconciled = value;
+				NotifyPropertyChanged();//m => this.IsReconciled
+			}
+		}
+        private Nullable<bool> _IsReconciled;
+
        
         [DataMember]
         public AdjustmentEx AdjustmentEx

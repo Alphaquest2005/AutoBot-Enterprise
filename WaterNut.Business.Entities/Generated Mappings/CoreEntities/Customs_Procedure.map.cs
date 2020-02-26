@@ -15,10 +15,11 @@
               this.ToTable("Customs_Procedure");
               this.Property(t => t.Document_TypeId).HasColumnName("Document_TypeId");
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure");
-              this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure");
+              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").HasMaxLength(5);
+              this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure").HasMaxLength(5);
               this.Property(t => t.IsDefault).HasColumnName("IsDefault");
               this.Property(t => t.IsImportExport).HasColumnName("IsImportExport");
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(11);
               this.HasRequired(t => t.Document_Type).WithMany(t =>(ICollection<Customs_Procedure>) t.Customs_Procedure).HasForeignKey(d => d.Document_TypeId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

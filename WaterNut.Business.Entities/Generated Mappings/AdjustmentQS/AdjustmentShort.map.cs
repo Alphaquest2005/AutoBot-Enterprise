@@ -46,6 +46,7 @@
               this.Property(t => t.Subject).HasColumnName("Subject").IsRequired();
               this.Property(t => t.EmailDate).HasColumnName("EmailDate");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");
               this.HasRequired(t => t.AdjustmentEx).WithMany(t =>(ICollection<AdjustmentShort>) t.AdjustmentShorts).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.AdjustmentDetail).WithOptional(t => (AdjustmentShort)t.AdjustmentShorts);
               this.HasMany(t => t.ShortAllocations).WithRequired(t => (AdjustmentShort)t.AdjustmentShort);

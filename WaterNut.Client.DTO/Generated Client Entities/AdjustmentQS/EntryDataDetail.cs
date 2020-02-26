@@ -372,6 +372,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private int _EntryData_Id;
 
+        [DataMember]
+        public Nullable<int> FileLineNumber
+		{ 
+		    get { return _FileLineNumber; }
+			set
+			{
+			    if (value == _FileLineNumber) return;
+				_FileLineNumber = value;
+				NotifyPropertyChanged();//m => this.FileLineNumber
+			}
+		}
+        private Nullable<int> _FileLineNumber;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

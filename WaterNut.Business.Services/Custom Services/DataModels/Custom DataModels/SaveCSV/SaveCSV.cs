@@ -50,8 +50,8 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var ndocSet = GetDocSets(fileType);
-                await SaveCSV(droppedFilePath, fileType, ndocSet, overWriteExisting).ConfigureAwait(false);
+                
+                await SaveCSV(droppedFilePath, fileType, docSet, overWriteExisting).ConfigureAwait(false);
             }
             catch (Exception Ex)
             {

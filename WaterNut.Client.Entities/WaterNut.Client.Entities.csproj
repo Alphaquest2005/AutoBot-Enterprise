@@ -141,6 +141,7 @@
     <Compile Include="Generated Client Entities\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Client Entities\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated Client Entities\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Client Entities\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated Client Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Client Entities\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs" />
@@ -271,6 +272,7 @@
     <Compile Include="Generated Constructors Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
@@ -401,6 +403,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
@@ -535,6 +538,7 @@
     <Compile Include="Generated MyNavProp Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated MyNavProp Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated MyNavProp Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated MyNavProp Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated MyNavProp Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated MyNavProp Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs" />

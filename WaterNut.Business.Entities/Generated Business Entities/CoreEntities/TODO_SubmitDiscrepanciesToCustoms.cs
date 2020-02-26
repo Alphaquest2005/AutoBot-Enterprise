@@ -171,21 +171,6 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _emailid;
         [DataMember]
-        public string Extended_customs_procedure 
-        {
-            get
-            {
-                return _extended_customs_procedure;
-            }
-            set
-            {
-                _extended_customs_procedure = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _extended_customs_procedure;
-        [DataMember]
         public string FilePath 
         {
             get
@@ -215,6 +200,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _status;
+        [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

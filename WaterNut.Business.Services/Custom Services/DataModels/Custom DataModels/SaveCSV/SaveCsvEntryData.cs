@@ -1489,7 +1489,7 @@ private async Task<OpeningStock> CreateOpeningStock(OpeningStock EDops)
         {
             using (var ctx = new EntryDataService())
             {
-                await ctx.DeleteEntryData(olded.EntryDataId).ConfigureAwait(false);
+                await ctx.DeleteEntryData(olded.EntryData_Id.ToString()).ConfigureAwait(false);
             }
         }
 

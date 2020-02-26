@@ -25,6 +25,7 @@
           <Property Name="SANumber" Type="int" Nullable="false" />
           <Property Name="xEntryItem_Id" Type="int" />
           <Property Name="xStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comments" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="EntryData">
           <Key>
@@ -94,6 +95,7 @@
           <Property Name="TaxAmount" Type="float" />
           <Property Name="LastCost" Type="float" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="FileLineNumber" Type="int" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -447,10 +449,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
           <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="20" />
           <Property Name="Document_TypeId" Type="int" />
           <Property Name="Customs_ProcedureId" Type="int" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" />
           <Property Name="Country_first_destination" Type="nvarchar" MaxLength="255" />
           <Property Name="Currency_code" Type="nvarchar" MaxLength="50" />
           <Property Name="Currency_rate" Type="float" />
@@ -465,7 +468,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="TotalFreight" Type="float" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="int" />
-          <Property Name="SourceFileName" Type="nvarchar(max)" />
+          <Property Name="SourceFileName" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1214,6 +1217,7 @@ FROM [dbo].[AscyudaItemPiQuantity] AS [AscyudaItemPiQuantity]</DefiningQuery>
 [AsycudaDocument].[DocumentType] AS [DocumentType], 
 [AsycudaDocument].[Document_TypeId] AS [Document_TypeId], 
 [AsycudaDocument].[Customs_ProcedureId] AS [Customs_ProcedureId], 
+[AsycudaDocument].[CustomsProcedure] AS [CustomsProcedure], 
 [AsycudaDocument].[Country_first_destination] AS [Country_first_destination], 
 [AsycudaDocument].[Currency_code] AS [Currency_code], 
 [AsycudaDocument].[Currency_rate] AS [Currency_rate], 
@@ -1757,6 +1761,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="xBondAllocations" Relationship="WaterNutDBModel.FK_xBondAllocations_AsycudaSalesAllocations" FromRole="AsycudaSalesAllocations" ToRole="xBondAllocations" />
           <NavigationProperty Name="EX9AsycudaSalesAllocations" Relationship="WaterNutDBModel.AsycudaSalesAllocationsEX9AsycudaSalesAllocations" FromRole="AsycudaSalesAllocations" ToRole="EX9AsycudaSalesAllocations" />
           <Property Name="xStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -1797,6 +1802,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="EntryData" Relationship="WaterNutDBModel.FK_EntryDataDetails_EntryData" FromRole="EntryDataDetails" ToRole="EntryData" />
+          <Property Name="FileLineNumber" Type="Int32" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
           
         </EntityType>
@@ -2010,7 +2016,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Type="String" Name="Description" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Type_of_declaration" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Declaration_gen_procedure_code" MaxLength="10" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Extended_customs_procedure" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Extended_customs_procedure" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Customs_ProcedureId" />
           <Property Type="String" Name="Country_first_destination" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Currency_code" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2029,8 +2035,9 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="TotalFreight" Type="Double" />
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
-          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="SystemDocumentSets" Relationship="WaterNutDBModel.SystemDocumentSetsAsycudaDocument" FromRole="AsycudaDocument" ToRole="SystemDocumentSets" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="AsycudaDocumentxcuda_Item">
           <End Type="WaterNutDBModel.AsycudaDocument" Role="AsycudaDocument" Multiplicity="1" />
@@ -2999,6 +3006,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaSalesAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaSalesAllocations">
               <MappingFragment StoreEntitySet="AsycudaSalesAllocations">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="xStatus" ColumnName="xStatus" />
                 <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
                 <ScalarProperty Name="EntryDataDetailsId" ColumnName="EntryDataDetailsId" />
@@ -3015,6 +3023,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
@@ -3178,6 +3187,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocument">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocument">
               <MappingFragment StoreEntitySet="AsycudaDocument">
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="SourceFileName" ColumnName="SourceFileName" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />

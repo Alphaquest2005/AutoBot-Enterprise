@@ -27,7 +27,7 @@
               this.Property(t => t.Description).HasColumnName("Description").HasMaxLength(255);
               this.Property(t => t.Type_of_declaration).HasColumnName("Type_of_declaration").HasMaxLength(10);
               this.Property(t => t.Declaration_gen_procedure_code).HasColumnName("Declaration_gen_procedure_code").HasMaxLength(10);
-              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure");
+              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").HasMaxLength(5);
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
               this.Property(t => t.Country_first_destination).HasColumnName("Country_first_destination").HasMaxLength(255);
               this.Property(t => t.Currency_code).HasColumnName("Currency_code").HasMaxLength(50);
@@ -45,7 +45,8 @@
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.ExpiryDate).HasColumnName("ExpiryDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.SourceFileName).HasColumnName("SourceFileName");
+              this.Property(t => t.SourceFileName).HasColumnName("SourceFileName").HasMaxLength(500);
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
               this.HasOptional(t => t.SystemDocumentSets).WithMany(t =>(ICollection<AsycudaDocument>) t.AsycudaDocument).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.xcuda_Item).WithRequired(t => (AsycudaDocument)t.AsycudaDocument);
              // Tracking Properties

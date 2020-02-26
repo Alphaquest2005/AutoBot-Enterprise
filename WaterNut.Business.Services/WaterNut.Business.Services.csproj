@@ -157,6 +157,7 @@
     <Compile Include="Contracts\AdjustmentQS\IInventoryItemsExService.cs" />
     <Compile Include="Contracts\AdjustmentQS\IShortAllocationService.cs" />
     <Compile Include="Contracts\AdjustmentQS\ISystemDocumentSetService.cs" />
+    <Compile Include="Contracts\AdjustmentQS\ITODO_AdjustmentOversToXMLService.cs" />
     <Compile Include="Contracts\AdjustmentQS\ITODO_PreDiscrepancyErrorsService.cs" />
     <Compile Include="Contracts\AdjustmentQS\Ixcuda_ItemService.cs" />
     <Compile Include="Contracts\AllocationDS\IAdjustmentShortAllocationsService.cs" />
@@ -678,6 +679,7 @@
     <Compile Include="Services\AdjustmentQS\InventoryItemsExService.cs" />
     <Compile Include="Services\AdjustmentQS\ShortAllocationService.cs" />
     <Compile Include="Services\AdjustmentQS\SystemDocumentSetService.cs" />
+    <Compile Include="Services\AdjustmentQS\TODO_AdjustmentOversToXMLService.cs" />
     <Compile Include="Services\AdjustmentQS\TODO_PreDiscrepancyErrorsService.cs" />
     <Compile Include="Services\AdjustmentQS\xcuda_ItemService.cs" />
     <Compile Include="Services\AllocationDS\AdjustmentShortAllocationsService.cs" />

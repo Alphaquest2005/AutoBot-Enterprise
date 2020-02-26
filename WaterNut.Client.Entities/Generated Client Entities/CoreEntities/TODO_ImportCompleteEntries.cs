@@ -72,23 +72,6 @@ public int ApplicationSettingsId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "InvoiceNo is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "InvoiceNo has a max length of 50 letters ")]
-public string InvoiceNo
-		{ 
-		    get { return this.todo_importcompleteentries.InvoiceNo; }
-			set
-			{
-			    if (value == this.todo_importcompleteentries.InvoiceNo) return;
-				this.todo_importcompleteentries.InvoiceNo = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("InvoiceNo");
-			}
-		}
-     
-
        
        
 public Nullable<int> EmailId
@@ -134,19 +117,19 @@ public int ASYCUDA_Id
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "EntryData is required")]
        
                 
-                [MaxLength(50, ErrorMessage = "Declarant_Reference_Number has a max length of 50 letters ")]
-public string Declarant_Reference_Number
+                [MaxLength(50, ErrorMessage = "EntryDataId has a max length of 50 letters ")]
+public string EntryDataId
 		{ 
-		    get { return this.todo_importcompleteentries.Declarant_Reference_Number; }
+		    get { return this.todo_importcompleteentries.EntryDataId; }
 			set
 			{
-			    if (value == this.todo_importcompleteentries.Declarant_Reference_Number) return;
-				this.todo_importcompleteentries.Declarant_Reference_Number = value;
+			    if (value == this.todo_importcompleteentries.EntryDataId) return;
+				this.todo_importcompleteentries.EntryDataId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Declarant_Reference_Number");
+				NotifyPropertyChanged("EntryDataId");
 			}
 		}
      

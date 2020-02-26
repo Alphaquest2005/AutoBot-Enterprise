@@ -521,6 +521,21 @@ namespace CoreEntities.Business.Entities
         }
         string _sourcefilename;
         [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
+        [DataMember]
         public List<AsycudaDocumentItem> AsycudaDocumentItems { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

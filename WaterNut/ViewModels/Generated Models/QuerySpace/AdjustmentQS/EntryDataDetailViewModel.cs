@@ -674,6 +674,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Int32? _fileLineNumberFilter;
+        public Int32? FileLineNumberFilter
+        {
+            get
+            {
+                return _fileLineNumberFilter;
+            }
+            set
+            {
+                _fileLineNumberFilter = value;
+				NotifyPropertyChanged(x => FileLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -810,7 +828,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("LastCost == {0}",  LastCostFilter.ToString()));				 
 
 					if(TotalCostFilter.HasValue)
-						res.Append(" && " + string.Format("TotalCost == {0}",  TotalCostFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalCost == {0}",  TotalCostFilter.ToString()));				 
+
+					if(FileLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -902,7 +923,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     LastCost = x.LastCost ,
                     
  
-                    TotalCost = x.TotalCost 
+                    TotalCost = x.TotalCost ,
+                    
+ 
+                    FileLineNumber = x.FileLineNumber 
                     
                 }).ToList()
             };
@@ -985,6 +1009,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<double> TotalCost { get; set; } 
+                    
+ 
+                    public Nullable<int> FileLineNumber { get; set; } 
                     
         }
 

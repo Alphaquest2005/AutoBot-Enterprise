@@ -44,7 +44,7 @@
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.InventoryItemEx).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.ItemNumber);
               this.HasRequired(t => t.InventoryItems).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
-              this.HasMany(t => t.EntryDataDetailsEx).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
+              this.HasOptional(t => t.EntryDataDetailsEx).WithRequired(t => (EntryDataDetails) t.EntryDataDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

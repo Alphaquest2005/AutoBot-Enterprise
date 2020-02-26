@@ -220,8 +220,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
         <EntityType Name="EntryDataDetailsEx">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryData_Id" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
             
             
             
@@ -940,8 +938,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="EntryDataDetailsEx">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
-            <PropertyRef Name="EntryData_Id" />
           </Key>
           <Property Type="Int32" Name="EntryDataDetailsId" Nullable="false" />
           <Property Type="String" Name="EntryDataId" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -980,7 +976,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
-          <End Type="WaterNutDBModel.EntryDataDetailsEx" Role="EntryDataDetailsEx" Multiplicity="*" />
+          <End Type="WaterNutDBModel.EntryDataDetailsEx" Role="EntryDataDetailsEx" Multiplicity="1" />
           <ReferentialConstraint>
             <Principal Role="EntryDataDetails">
               <PropertyRef Name="EntryDataDetailsId" />

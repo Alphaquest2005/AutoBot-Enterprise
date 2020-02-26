@@ -51,21 +51,6 @@ namespace CoreEntities.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public string InvoiceNo 
-        {
-            get
-            {
-                return _invoiceno;
-            }
-            set
-            {
-                _invoiceno = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _invoiceno;
-        [DataMember]
         public Nullable<int> EmailId 
         {
             get
@@ -111,20 +96,20 @@ namespace CoreEntities.Business.Entities
         }
         int _asycuda_id;
         [DataMember]
-        public string Declarant_Reference_Number 
+        public string EntryDataId 
         {
             get
             {
-                return _declarant_reference_number;
+                return _entrydataid;
             }
             set
             {
-                _declarant_reference_number = value;
+                _entrydataid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _declarant_reference_number;
+        string _entrydataid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

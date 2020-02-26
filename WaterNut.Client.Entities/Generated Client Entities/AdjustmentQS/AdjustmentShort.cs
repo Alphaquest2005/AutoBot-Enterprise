@@ -568,6 +568,21 @@ public int EntryData_Id
 		}
      
 
+       
+       
+public Nullable<bool> IsReconciled
+		{ 
+		    get { return this.adjustmentshort.IsReconciled; }
+			set
+			{
+			    if (value == this.adjustmentshort.IsReconciled) return;
+				this.adjustmentshort.IsReconciled = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsReconciled");
+			}
+		}
+     
+
        private AdjustmentEx _AdjustmentEx;
         public  AdjustmentEx AdjustmentEx
 		{

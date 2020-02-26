@@ -917,6 +917,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1152,6 +1170,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(SourceFileNameFilter) == false)
 						res.Append(" && " + string.Format("SourceFileName.Contains(\"{0}\")",  SourceFileNameFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1256,7 +1278,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ExpiryDate = x.ExpiryDate ,
                     
  
-                    SourceFileName = x.SourceFileName 
+                    SourceFileName = x.SourceFileName ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure 
                     
                 }).ToList()
             };
@@ -1351,6 +1376,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string SourceFileName { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
                     
         }
 

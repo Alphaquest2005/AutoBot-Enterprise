@@ -227,6 +227,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\ShortAllocationViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\SummaryListViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\SystemDocumentSetViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_AdjustmentOversToXMLViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\TODO_PreDiscrepancyErrorsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AdjustmentQS\xcuda_ItemViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\AllocationQS\AdjustmentShortAllocationViewModel.cs" />
@@ -375,6 +376,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\InventoryItemsExTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\ShortAllocationTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\SystemDocumentSetTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_AdjustmentOversToXMLTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\TODO_PreDiscrepancyErrorsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AdjustmentQS\xcuda_ItemTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\AllocationQS\AdjustmentShortAllocationTotals.cs" />
@@ -505,6 +507,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\InventoryItemsExVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\ShortAllocationVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\SystemDocumentSetVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_AdjustmentOversToXMLVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\TODO_PreDiscrepancyErrorsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AdjustmentQS\xcuda_ItemVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\AllocationQS\AdjustmentShortAllocationVirturalListLoader.cs" />

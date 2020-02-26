@@ -40,6 +40,7 @@
               this.Property(t => t.TotalCost).HasColumnName("TotalCost");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.HasRequired(t => t.Sales).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.Adjustments).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails1).HasForeignKey(d => d.EntryData_Id);

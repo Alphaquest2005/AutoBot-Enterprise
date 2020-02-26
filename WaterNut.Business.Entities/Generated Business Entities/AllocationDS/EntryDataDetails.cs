@@ -434,6 +434,21 @@ namespace AllocationDS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
+        public Nullable<int> FileLineNumber 
+        {
+            get
+            {
+                return _filelinenumber;
+            }
+            set
+            {
+                _filelinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filelinenumber;
+        [DataMember]
         public List<AsycudaSalesAllocations> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public EntryDataDetailsEx EntryDataDetailsEx { get; set; }

@@ -201,23 +201,6 @@ public Nullable<int> EmailId
        
        
                 
-                
-public string Extended_customs_procedure
-		{ 
-		    get { return this.todo_submitdiscrepanciestocustoms.Extended_customs_procedure; }
-			set
-			{
-			    if (value == this.todo_submitdiscrepanciestocustoms.Extended_customs_procedure) return;
-				this.todo_submitdiscrepanciestocustoms.Extended_customs_procedure = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Extended_customs_procedure");
-			}
-		}
-     
-
-       
-       
-                
                 [MaxLength(500, ErrorMessage = "FilePath has a max length of 500 letters ")]
 public string FilePath
 		{ 
@@ -245,6 +228,23 @@ public string Status
 				this.todo_submitdiscrepanciestocustoms.Status = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Status");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.todo_submitdiscrepanciestocustoms.CustomsProcedure; }
+			set
+			{
+			    if (value == this.todo_submitdiscrepanciestocustoms.CustomsProcedure) return;
+				this.todo_submitdiscrepanciestocustoms.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
 			}
 		}
      

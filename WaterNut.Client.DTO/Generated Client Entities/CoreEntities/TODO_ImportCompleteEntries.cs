@@ -48,19 +48,6 @@ namespace CoreEntities.Client.DTO
         private int _ApplicationSettingsId;
 
         [DataMember]
-        public string InvoiceNo
-		{ 
-		    get { return _InvoiceNo; }
-			set
-			{
-			    if (value == _InvoiceNo) return;
-				_InvoiceNo = value;
-				NotifyPropertyChanged();//m => this.InvoiceNo
-			}
-		}
-        private string _InvoiceNo;
-
-        [DataMember]
         public Nullable<int> EmailId
 		{ 
 		    get { return _EmailId; }
@@ -100,17 +87,17 @@ namespace CoreEntities.Client.DTO
         private int _ASYCUDA_Id;
 
         [DataMember]
-        public string Declarant_Reference_Number
+        public string EntryDataId
 		{ 
-		    get { return _Declarant_Reference_Number; }
+		    get { return _EntryDataId; }
 			set
 			{
-			    if (value == _Declarant_Reference_Number) return;
-				_Declarant_Reference_Number = value;
-				NotifyPropertyChanged();//m => this.Declarant_Reference_Number
+			    if (value == _EntryDataId) return;
+				_EntryDataId = value;
+				NotifyPropertyChanged();//m => this.EntryDataId
 			}
 		}
-        private string _Declarant_Reference_Number;
+        private string _EntryDataId;
 
        
    //     [DataMember]

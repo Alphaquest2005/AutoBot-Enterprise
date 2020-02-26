@@ -466,6 +466,21 @@ public int EntryData_Id
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> FileLineNumber
+		{ 
+		    get { return this.entrydatadetail.FileLineNumber; }
+			set
+			{
+			    if (value == this.entrydatadetail.FileLineNumber) return;
+				this.entrydatadetail.FileLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileLineNumber");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

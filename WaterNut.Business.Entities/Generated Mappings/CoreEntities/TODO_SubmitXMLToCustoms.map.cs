@@ -22,10 +22,10 @@
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.EmailId).HasColumnName("EmailId");
-              this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure");
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.FilePath).HasColumnName("FilePath").HasMaxLength(500);
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

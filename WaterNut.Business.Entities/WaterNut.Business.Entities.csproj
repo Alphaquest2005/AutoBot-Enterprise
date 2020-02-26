@@ -149,6 +149,7 @@
     <Compile Include="Generated Business Entities\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Business Entities\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Business Entities\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Business Entities\AllocationDS\Adjustments.cs" />
@@ -459,6 +460,7 @@
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated ChangeTracking Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated ChangeTracking Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated ChangeTracking Models\AllocationDS\Adjustments.cs" />
@@ -769,6 +771,7 @@
     <Compile Include="Generated Constructors Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated Constructors Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated Constructors Models\AllocationDS\Adjustments.cs" />
@@ -1079,6 +1082,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\AllocationDS\Adjustments.cs" />
@@ -1389,6 +1393,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\InventoryItemsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\ShortAllocation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\SystemDocumentSet.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_AdjustmentOversToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\TODO_PreDiscrepancyErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AdjustmentQS\xcuda_Item.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationDS\Adjustments.cs" />
@@ -1709,6 +1714,7 @@
     <Compile Include="Generated Mappings\AdjustmentQS\InventoryItemsEx.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\ShortAllocation.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\SystemDocumentSet.map.cs" />
+    <Compile Include="Generated Mappings\AdjustmentQS\TODO_AdjustmentOversToXML.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\TODO_PreDiscrepancyErrors.map.cs" />
     <Compile Include="Generated Mappings\AdjustmentQS\xcuda_Item.map.cs" />
     <Compile Include="Generated Mappings\AllocationDS\Adjustments.map.cs" />

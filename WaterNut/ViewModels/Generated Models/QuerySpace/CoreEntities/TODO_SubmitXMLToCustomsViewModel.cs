@@ -342,24 +342,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _extended_customs_procedureFilter;
-        public string Extended_customs_procedureFilter
-        {
-            get
-            {
-                return _extended_customs_procedureFilter;
-            }
-            set
-            {
-                _extended_customs_procedureFilter = value;
-				NotifyPropertyChanged(x => Extended_customs_procedureFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _filePathFilter;
         public string FilePathFilter
         {
@@ -389,6 +371,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _statusFilter = value;
 				NotifyPropertyChanged(x => StatusFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
                 FilterData();
                 
             }
@@ -495,16 +495,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						}
 				 
 
-									if(string.IsNullOrEmpty(Extended_customs_procedureFilter) == false)
-						res.Append(" && " + string.Format("Extended_customs_procedure.Contains(\"{0}\")",  Extended_customs_procedureFilter));						
- 
-
 									if(string.IsNullOrEmpty(FilePathFilter) == false)
 						res.Append(" && " + string.Format("FilePath.Contains(\"{0}\")",  FilePathFilter));						
  
 
 									if(string.IsNullOrEmpty(StatusFilter) == false)
 						res.Append(" && " + string.Format("Status.Contains(\"{0}\")",  StatusFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -543,13 +543,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     AssessmentDate = x.AssessmentDate ,
                     
  
-                    Extended_customs_procedure = x.Extended_customs_procedure ,
-                    
- 
                     FilePath = x.FilePath ,
                     
  
-                    Status = x.Status 
+                    Status = x.Status ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure 
                     
                 }).ToList()
             };
@@ -577,13 +577,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<System.DateTime> AssessmentDate { get; set; } 
                     
  
-                    public string Extended_customs_procedure { get; set; } 
-                    
- 
                     public string FilePath { get; set; } 
                     
  
                     public string Status { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
                     
         }
 

@@ -522,6 +522,21 @@ namespace AdjustmentQS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
+        public Nullable<bool> IsReconciled 
+        {
+            get
+            {
+                return _isreconciled;
+            }
+            set
+            {
+                _isreconciled = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isreconciled;
+        [DataMember]
         public AdjustmentEx AdjustmentEx { get; set; }
         [DataMember]
         public List<ShortAllocation> ShortAllocations { get; set; }

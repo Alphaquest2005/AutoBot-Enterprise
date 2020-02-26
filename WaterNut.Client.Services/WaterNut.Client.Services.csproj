@@ -110,6 +110,7 @@
     <Compile Include="AdjustmentQS\InventoryItemsExClient.cs" />
     <Compile Include="AdjustmentQS\ShortAllocationClient.cs" />
     <Compile Include="AdjustmentQS\SystemDocumentSetClient.cs" />
+    <Compile Include="AdjustmentQS\TODO_AdjustmentOversToXMLClient.cs" />
     <Compile Include="AdjustmentQS\TODO_PreDiscrepancyErrorsClient.cs" />
     <Compile Include="AdjustmentQS\xcuda_ItemClient.cs" />
     <Compile Include="AllocationQS\AdjustmentShortAllocationClient.cs" />

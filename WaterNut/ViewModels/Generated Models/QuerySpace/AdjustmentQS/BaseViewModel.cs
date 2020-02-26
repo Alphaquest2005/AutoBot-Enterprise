@@ -68,6 +68,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInventoryItemsExIDChanged, OnCurrentInventoryItemsExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentShortAllocationIDChanged, OnCurrentShortAllocationIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSystemDocumentSetIDChanged, OnCurrentSystemDocumentSetIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_AdjustmentOversToXMLIDChanged, OnCurrentTODO_AdjustmentOversToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PreDiscrepancyErrorsIDChanged, OnCurrentTODO_PreDiscrepancyErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.Currentxcuda_ItemIDChanged, OnCurrentxcuda_ItemIDChanged);
        
@@ -88,6 +89,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                         RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
                         RegisterToReceiveMessages<ShortAllocation>(MessageToken.CurrentShortAllocationChanged, OnCurrentShortAllocationChanged);
                         RegisterToReceiveMessages<SystemDocumentSet>(MessageToken.CurrentSystemDocumentSetChanged, OnCurrentSystemDocumentSetChanged);
+                        RegisterToReceiveMessages<TODO_AdjustmentOversToXML>(MessageToken.CurrentTODO_AdjustmentOversToXMLChanged, OnCurrentTODO_AdjustmentOversToXMLChanged);
                         RegisterToReceiveMessages<TODO_PreDiscrepancyErrors>(MessageToken.CurrentTODO_PreDiscrepancyErrorsChanged, OnCurrentTODO_PreDiscrepancyErrorsChanged);
                         RegisterToReceiveMessages<xcuda_Item>(MessageToken.Currentxcuda_ItemChanged, OnCurrentxcuda_ItemChanged);
     
@@ -511,6 +513,33 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                                     if (!string.IsNullOrEmpty(_currentSystemDocumentSetID)) BeginSendMessage(MessageToken.CurrentSystemDocumentSetIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentSystemDocumentSetIDChanged, _currentSystemDocumentSetID));
                                     NotifyPropertyChanged(x => this.CurrentSystemDocumentSetID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_AdjustmentOversToXMLIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_AdjustmentOversToXMLRepository ctx = new TODO_AdjustmentOversToXMLRepository())
+                            {
+                                CurrentTODO_AdjustmentOversToXML = await ctx.GetTODO_AdjustmentOversToXML(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_AdjustmentOversToXML);
+                        }
+
+                        private  string _currentTODO_AdjustmentOversToXMLID = "";
+                        public string CurrentTODO_AdjustmentOversToXMLID
+                        {
+                            get
+                            {
+                                return _currentTODO_AdjustmentOversToXMLID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_AdjustmentOversToXMLID != value)
+                                {
+                                    _currentTODO_AdjustmentOversToXMLID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_AdjustmentOversToXMLID)) BeginSendMessage(MessageToken.CurrentTODO_AdjustmentOversToXMLIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_AdjustmentOversToXMLIDChanged, _currentTODO_AdjustmentOversToXMLID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_AdjustmentOversToXMLID);  
                                 }
                             }
                         }
@@ -1336,6 +1365,56 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     _vcurrentSystemDocumentSet = value;
 					if(_vcurrentSystemDocumentSet != null) CurrentSystemDocumentSet = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentSystemDocumentSet);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_AdjustmentOversToXMLChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_AdjustmentOversToXML> e)
+        {
+            //CurrentTODO_AdjustmentOversToXML = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_AdjustmentOversToXML);
+        }
+
+        private  TODO_AdjustmentOversToXML _currentTODO_AdjustmentOversToXML;
+        public TODO_AdjustmentOversToXML CurrentTODO_AdjustmentOversToXML
+        {
+            get
+            {
+                return _currentTODO_AdjustmentOversToXML;
+            }
+            set
+            {
+                if (_currentTODO_AdjustmentOversToXML != value)
+                {
+                    _currentTODO_AdjustmentOversToXML = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_AdjustmentOversToXMLChanged,
+                                                     new NotificationEventArgs<TODO_AdjustmentOversToXML>(MessageToken.CurrentTODO_AdjustmentOversToXMLChanged, _currentTODO_AdjustmentOversToXML)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_AdjustmentOversToXML);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_AdjustmentOversToXML> _vcurrentTODO_AdjustmentOversToXML;
+        public VirtualListItem<TODO_AdjustmentOversToXML> VCurrentTODO_AdjustmentOversToXML
+        {
+            get
+            {
+                return _vcurrentTODO_AdjustmentOversToXML;
+            }
+            set
+            {
+                if (_vcurrentTODO_AdjustmentOversToXML != value)
+                {
+                    _vcurrentTODO_AdjustmentOversToXML = value;
+					if(_vcurrentTODO_AdjustmentOversToXML != null) CurrentTODO_AdjustmentOversToXML = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_AdjustmentOversToXML);                    
                 }
             }
         }

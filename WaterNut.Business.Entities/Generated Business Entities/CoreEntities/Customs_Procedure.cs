@@ -111,6 +111,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _isimportexport;
         [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
+        [DataMember]
         public Document_Type Document_Type { get; set; }
 
  //       [DataMember]

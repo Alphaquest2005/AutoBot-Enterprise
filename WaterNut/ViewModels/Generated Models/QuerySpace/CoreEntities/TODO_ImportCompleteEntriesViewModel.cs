@@ -170,35 +170,17 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _invoiceNoFilter;
-        public string InvoiceNoFilter
+		private string _entryDataIdFilter;
+        public string EntryDataIdFilter
         {
             get
             {
-                return _invoiceNoFilter;
+                return _entryDataIdFilter;
             }
             set
             {
-                _invoiceNoFilter = value;
-				NotifyPropertyChanged(x => InvoiceNoFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _declarant_Reference_NumberFilter;
-        public string Declarant_Reference_NumberFilter
-        {
-            get
-            {
-                return _declarant_Reference_NumberFilter;
-            }
-            set
-            {
-                _declarant_Reference_NumberFilter = value;
-				NotifyPropertyChanged(x => Declarant_Reference_NumberFilter);
+                _entryDataIdFilter = value;
+				NotifyPropertyChanged(x => EntryDataIdFilter);
                 FilterData();
                 
             }
@@ -235,12 +217,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		var res = new StringBuilder();
  
 
-									if(string.IsNullOrEmpty(InvoiceNoFilter) == false)
-						res.Append(" && " + string.Format("InvoiceNo.Contains(\"{0}\")",  InvoiceNoFilter));						
- 
-
-									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
-						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
+									if(string.IsNullOrEmpty(EntryDataIdFilter) == false)
+						res.Append(" && " + string.Format("EntryDataId.Contains(\"{0}\")",  EntryDataIdFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -264,10 +242,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 dataToPrint = lst.Select(x => new TODO_ImportCompleteEntriesExcelLine
                 {
  
-                    InvoiceNo = x.InvoiceNo ,
-                    
- 
-                    Declarant_Reference_Number = x.Declarant_Reference_Number 
+                    EntryDataId = x.EntryDataId 
                     
                 }).ToList()
             };
@@ -280,10 +255,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         public class TODO_ImportCompleteEntriesExcelLine
         {
 		 
-                    public string InvoiceNo { get; set; } 
-                    
- 
-                    public string Declarant_Reference_Number { get; set; } 
+                    public string EntryDataId { get; set; } 
                     
         }
 

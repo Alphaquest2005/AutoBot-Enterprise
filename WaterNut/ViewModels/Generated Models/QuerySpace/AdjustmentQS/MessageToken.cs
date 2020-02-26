@@ -100,6 +100,12 @@ namespace WaterNut.QuerySpace.AdjustmentQS
 			public const string SystemDocumentSetsDeleted = "SystemDocumentSetsDeleted";
 			public const string SystemDocumentSetsCreated = "SystemDocumentSetsCreated";
 			public const string SystemDocumentSetsUpdated = "SystemDocumentSetsUpdated";
+			public const string TODO_AdjustmentOversToXMLFilterExpressionChanged = "TODO_AdjustmentOversToXMLFilterExpressionChanged";
+			public const string SelectedTODO_AdjustmentOversToXMLChanged = "SelectedTODO_AdjustmentOversToXMLChanged";
+            public const string TODO_AdjustmentOversToXMLChanged = "TODO_AdjustmentOversToXMLChanged";
+			public const string TODO_AdjustmentOversToXMLDeleted = "TODO_AdjustmentOversToXMLDeleted";
+			public const string TODO_AdjustmentOversToXMLCreated = "TODO_AdjustmentOversToXMLCreated";
+			public const string TODO_AdjustmentOversToXMLUpdated = "TODO_AdjustmentOversToXMLUpdated";
 			public const string TODO_PreDiscrepancyErrorsFilterExpressionChanged = "TODO_PreDiscrepancyErrorsFilterExpressionChanged";
 			public const string SelectedTODO_PreDiscrepancyErrorsChanged = "SelectedTODO_PreDiscrepancyErrorsChanged";
             public const string TODO_PreDiscrepancyErrorsChanged = "TODO_PreDiscrepancyErrorsChanged";
@@ -129,6 +135,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS
           // public const string InventoryItemsExChanged = "InventoryItemsExChanged";
           // public const string ShortAllocationChanged = "ShortAllocationChanged";
           // public const string SystemDocumentSetChanged = "SystemDocumentSetChanged";
+          // public const string TODO_AdjustmentOversToXMLChanged = "TODO_AdjustmentOversToXMLChanged";
           // public const string TODO_PreDiscrepancyErrorsChanged = "TODO_PreDiscrepancyErrorsChanged";
           // public const string xcuda_ItemChanged = "xcuda_ItemChanged";
  
@@ -163,6 +170,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentShortAllocationChanged = "CurrentShortAllocationChanged";
    
            public const string CurrentSystemDocumentSetChanged = "CurrentSystemDocumentSetChanged";
+   
+           public const string CurrentTODO_AdjustmentOversToXMLChanged = "CurrentTODO_AdjustmentOversToXMLChanged";
    
            public const string CurrentTODO_PreDiscrepancyErrorsChanged = "CurrentTODO_PreDiscrepancyErrorsChanged";
    
@@ -199,6 +208,8 @@ namespace WaterNut.QuerySpace.AdjustmentQS
            public const string CurrentShortAllocationIDChanged = "OnCurrentShortAllocationIDChanged";
    
            public const string CurrentSystemDocumentSetIDChanged = "OnCurrentSystemDocumentSetIDChanged";
+   
+           public const string CurrentTODO_AdjustmentOversToXMLIDChanged = "OnCurrentTODO_AdjustmentOversToXMLIDChanged";
    
            public const string CurrentTODO_PreDiscrepancyErrorsIDChanged = "OnCurrentTODO_PreDiscrepancyErrorsIDChanged";
    

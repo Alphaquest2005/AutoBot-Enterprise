@@ -97,9 +97,11 @@
           </Key>
           <Property Name="Document_TypeId" Type="int" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
-          <Property Name="National_customs_procedure" Type="nvarchar(max)" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
+          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" />
           <Property Name="IsDefault" Type="bit" />
+          <Property Name="IsImportExport" Type="bit" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -224,7 +226,7 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
           <Property Name="EffectiveExpiryDate" Type="datetime2" Precision="7" />
-          <Property Name="SourceFileName" Type="nvarchar(max)" />
+          <Property Name="SourceFileName" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="xcuda_Border_information">
           <Key>
@@ -2302,12 +2304,14 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           </Key>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <Property Name="IsDefault" Type="Boolean" />
           <NavigationProperty Name="AsycudaDocumentSets" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Document_Type" Relationship="WaterNutDBModel.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="Customs_Procedure" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
+          <Property Name="IsImportExport" Type="Boolean" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -3710,7 +3714,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="ExportTemplate" Relationship="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="ExportTemplate" />
           <NavigationProperty Name="xcuda_ASYCUDA" Relationship="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA_ExtendedProperties" ToRole="xcuda_ASYCUDA" />
           <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="7" />
-          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_xcuda_ASYCUDA_ExtendedProperties_AsycudaDocumentSet">
           <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -4020,6 +4024,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDBModel.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
+                <ScalarProperty Name="IsImportExport" ColumnName="IsImportExport" />
                 <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
                 <ScalarProperty Name="National_customs_procedure" ColumnName="National_customs_procedure" />
                 <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />

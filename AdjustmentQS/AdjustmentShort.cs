@@ -53,6 +53,7 @@ namespace AdjustmentQS
         public string Subject { get; set; }
         public System.DateTime EmailDate { get; set; }
         public int EntryData_Id { get; set; }
+        public Nullable<bool> IsReconciled { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual ICollection<ShortAllocation> ShortAllocations { get; set; }

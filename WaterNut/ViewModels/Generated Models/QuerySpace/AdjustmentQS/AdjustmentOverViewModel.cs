@@ -850,6 +850,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Boolean? _isReconciledFilter;
+        public Boolean? IsReconciledFilter
+        {
+            get
+            {
+                return _isReconciledFilter;
+            }
+            set
+            {
+                _isReconciledFilter = value;
+				NotifyPropertyChanged(x => IsReconciledFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1049,7 +1067,11 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 							if(EmailDateFilter.HasValue)
 								res.Append(" && " + string.Format("EmailDate == \"{0}\"",  Convert.ToDateTime(EmailDateFilter).Date.ToString("MM/dd/yyyy")));
 						}
-							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+				 
+
+									if(IsReconciledFilter.HasValue)
+						res.Append(" && " + string.Format("IsReconciled == {0}",  IsReconciledFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1147,7 +1169,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Subject = x.Subject ,
                     
  
-                    EmailDate = x.EmailDate 
+                    EmailDate = x.EmailDate ,
+                    
+ 
+                    IsReconciled = x.IsReconciled 
                     
                 }).ToList()
             };
@@ -1236,6 +1261,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public System.DateTime EmailDate { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsReconciled { get; set; } 
                     
         }
 

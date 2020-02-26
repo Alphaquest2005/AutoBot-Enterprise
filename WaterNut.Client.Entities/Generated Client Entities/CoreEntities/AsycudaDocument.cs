@@ -272,7 +272,7 @@ public string Declaration_gen_procedure_code
        
        
                 
-                
+                [MaxLength(5, ErrorMessage = "Extended_customs_procedure has a max length of 5 letters ")]
 public string Extended_customs_procedure
 		{ 
 		    get { return this.asycudadocument.Extended_customs_procedure; }
@@ -554,7 +554,7 @@ public Nullable<int> ApplicationSettingsId
        
        
                 
-                
+                [MaxLength(500, ErrorMessage = "SourceFileName has a max length of 500 letters ")]
 public string SourceFileName
 		{ 
 		    get { return this.asycudadocument.SourceFileName; }
@@ -564,6 +564,23 @@ public string SourceFileName
 				this.asycudadocument.SourceFileName = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("SourceFileName");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.asycudadocument.CustomsProcedure; }
+			set
+			{
+			    if (value == this.asycudadocument.CustomsProcedure) return;
+				this.asycudadocument.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
 			}
 		}
      

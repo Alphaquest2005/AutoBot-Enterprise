@@ -1090,6 +1090,11 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                 var cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
                 Ex9InitializeCdoc(dfp, cdoc, docSet, im7Type, ex9Type);
+                var effectiveAssessmentDate =
+                    slst.SelectMany(x =>x.Allocations).Select(x =>
+                                            x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
+                                                ? x.InvoiceDate
+                                                : x.EffectiveDate).Min();
                 foreach (var monthyear in slst) //.Where(x => x.DutyFreePaid == dfp)
                 {
 
@@ -1097,11 +1102,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     var prevIM7 = "";
                     var elst = PrepareAllocationsData(monthyear, isGrouped);
 
-                    var effectiveAssessmentDate =
-                        monthyear.Allocations.Select(x =>
-                            x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
-                                ? x.InvoiceDate
-                                : x.EffectiveDate).Min();
+                    
                     
                     foreach (var mypod in elst)
                     {
@@ -1128,6 +1129,12 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                     //else
                                     //{
                                     cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
+
+                                    effectiveAssessmentDate =
+                                        monthyear.Allocations.Select(x =>
+                                            x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
+                                                ? x.InvoiceDate
+                                                : x.EffectiveDate).Min();
                                 }
                             }
 

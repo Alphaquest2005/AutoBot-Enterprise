@@ -102,6 +102,36 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<bool> _isdefault;
         [DataMember]
+        public Nullable<bool> IsImportExport 
+        {
+            get
+            {
+                return _isimportexport;
+            }
+            set
+            {
+                _isimportexport = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isimportexport;
+        [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
+        [DataMember]
         public List<AsycudaDocumentSet> AsycudaDocumentSets { get; set; }
         [DataMember]
         public Document_Type Document_Type { get; set; }

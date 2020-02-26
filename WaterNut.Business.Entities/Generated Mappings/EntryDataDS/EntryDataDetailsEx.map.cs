@@ -11,7 +11,7 @@
     {
         public EntryDataDetailsExMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.AsycudaDocumentSetId, t.EntryData_Id});        
+              this.HasKey(t => t.EntryDataDetailsId);        
               this.ToTable("EntryDataDetailsEx");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
@@ -30,7 +30,7 @@
               this.Property(t => t.Downloaded).HasColumnName("Downloaded");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.Total).HasColumnName("Total");
-              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.InvoiceQty).HasColumnName("InvoiceQty");
               this.Property(t => t.ReceivedQty).HasColumnName("ReceivedQty");
               this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
@@ -45,8 +45,8 @@
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.Name).HasColumnName("Name").HasMaxLength(50);
-              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsEx).HasForeignKey(d => d.EntryDataDetailsId);
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

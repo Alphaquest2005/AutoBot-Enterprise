@@ -105,6 +105,7 @@
     <Compile Include="AdjustmentQS\IInventoryItemsExService.cs" />
     <Compile Include="AdjustmentQS\IShortAllocationService.cs" />
     <Compile Include="AdjustmentQS\ISystemDocumentSetService.cs" />
+    <Compile Include="AdjustmentQS\ITODO_AdjustmentOversToXMLService.cs" />
     <Compile Include="AdjustmentQS\ITODO_PreDiscrepancyErrorsService.cs" />
     <Compile Include="AdjustmentQS\Ixcuda_ItemService.cs" />
     <Compile Include="AllocationQS\IAdjustmentShortAllocationService.cs" />
