@@ -14,6 +14,21 @@ where number = '25008'
 and LineNumber =3)
 
 update xcuda_Item
+set WarehouseError = NULL, DoNotEX = NULL , DoNotAllocate = NULL
+where Item_id in 
+(
+SELECT xcuda_Item.Item_Id
+FROM   xcuda_Item INNER JOIN
+             xcuda_HScode ON xcuda_Item.Item_Id = xcuda_HScode.Item_Id INNER JOIN
+             xcuda_Registration ON xcuda_Item.ASYCUDA_Id = xcuda_Registration.ASYCUDA_Id
+where WarehouseError = 'Product Code Too Long')
+
+update AsycudaSalesAllocations 
+set status = null 
+where status = 'Product Code Too Long'
+
+
+update xcuda_Item
 set WarehouseError = 'Product Code Too Long', DoNotEX = 1 , DoNotAllocate = 1
 where Item_id in 
 (
@@ -21,7 +36,7 @@ SELECT xcuda_Item.Item_Id
 FROM   xcuda_Item INNER JOIN
              xcuda_HScode ON xcuda_Item.Item_Id = xcuda_HScode.Item_Id INNER JOIN
              xcuda_Registration ON xcuda_Item.ASYCUDA_Id = xcuda_Registration.ASYCUDA_Id
-where len(Precision_4) > 17)
+where len(Precision_4) > 20)
 
 update xcuda_Item
 set WarehouseError = null, DoNotEX = null

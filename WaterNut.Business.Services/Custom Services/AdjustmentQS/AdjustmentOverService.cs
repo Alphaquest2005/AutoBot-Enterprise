@@ -26,15 +26,14 @@ namespace AdjustmentQS.Business.Services
                         .ConfigureAwait(false);
 
                 // inject custom procedure in docset
-                docSet.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures.First(x =>
-                    x.DisplayName == BaseDataModel.Instance.ExportTemplates.First(z => z.Description == "OS7")
-                        .Customs_Procedure);
+                docSet.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures
+                                            .First(x => x.DisplayName == BaseDataModel.Instance.ExportTemplates.First(z => z.Description == "OS7").Customs_Procedure);
 
                 docSet.Document_Type = docSet.Customs_Procedure.Document_Type;
 
                 using (var ctx = new AdjustmentQSContext())
                 {
-
+                    ctx.Database.CommandTimeout = 0;
 
                     var olst = ctx.TODO_AdjustmentOversToXML
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
@@ -52,6 +51,7 @@ namespace AdjustmentQS.Business.Services
                             Quantity = (double)x.ReceivedQty - (double)x.InvoiceQty,
                             EffectiveDate = x.EffectiveDate ?? x.InvoiceDate,
                             LineNumber = x.LineNumber,
+                            Comment = x.Comment,
                             EntryData = new EntryData()
                             {
                                 EntryDataId = x.EntryDataId,

@@ -57,7 +57,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeContacts_Contacts" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypeContacts_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_UnallocatedShorts" Width="1.5" PointX="19.125" PointY="15.875" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_AdjustmentsToXML" Width="1.5" PointX="15.625" PointY="20.625" />
         <EntityTypeShape EntityType="WaterNutDBModel.SessionActions" Width="1.5" PointX="12.75" PointY="19.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.Sessions" Width="1.5" PointX="10.5" PointY="21.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_SessionActions_Actions" />
@@ -111,6 +110,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_EmailFileTypes_FileTypes" />
         <EntityTypeShape EntityType="WaterNutDBModel.InfoMappingRegEx" Width="1.5" PointX="3" PointY="29.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_InfoMappingRegEx_InfoMapping" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitUnknownDFPComments" Width="1.5" PointX="27.625" PointY="13.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

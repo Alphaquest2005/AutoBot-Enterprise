@@ -592,7 +592,7 @@ namespace Asycuda421
                 {
                     var fileinfo = new FileInfo(doc.xcuda_Attachments.FirstOrDefault().Attachments.FilePath);
                     if (item.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName != "IM7" && fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name)}\r\n");
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{fileinfo.FullName}\r\n");
                 }
                     
             }

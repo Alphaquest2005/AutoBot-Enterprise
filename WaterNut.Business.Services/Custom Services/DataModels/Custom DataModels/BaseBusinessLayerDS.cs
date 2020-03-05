@@ -855,7 +855,7 @@ namespace WaterNut.DataSpace
                                               z.AttachmentId == x.AttachmentId))*/)
                         .Select(x => x.Attachment);
                     AttachToDocument(alst, cdoc.Document, itm);
-
+                    SaveAttachments(currentAsycudaDocumentSet, cdoc);
                     cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Amount_foreign_currency +=
                         pod.EntryData.TotalInternalFreight.GetValueOrDefault();
                     cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Currency_code = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code;
@@ -888,7 +888,7 @@ namespace WaterNut.DataSpace
                         cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
                         var cp = currentAsycudaDocumentSet.Customs_Procedure;
                         IntCdoc(cdoc, currentAsycudaDocumentSet);
-                        if (pod.EntryData.DocumentType.DocumentType != null)
+                        if (pod.EntryData.DocumentType?.DocumentType != null)
                             cp = AttachEntryDataDocumentType(cdoc, pod.EntryData.DocumentType);
                         cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
                         if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
@@ -1082,6 +1082,7 @@ namespace WaterNut.DataSpace
                                QtyAllocated = g.QtyAllocated,
                                Currency = g.EntryData.Currency,
                                LineNumber = g.LineNumber,
+                               Comment = g.Comment
                            }},
                            EntryData = g.EntryData,
 
@@ -1563,8 +1564,18 @@ namespace WaterNut.DataSpace
                     var fr = pod.EntryDataDetails.FirstOrDefault();
                     if (fr != null)
                     {
-                        itm.Free_text_1 = $"{fr.EntryDataId}|{fr.LineNumber}";
-                        itm.Free_text_2 = pod.ItemNumber;
+                        if (fr.Comment == null)
+                        {
+                            itm.Free_text_1 = $"{fr.EntryDataId}|{fr.LineNumber}";
+                            itm.Free_text_2 =  pod.ItemNumber;
+                        }
+                        else
+                        {
+                            itm.Free_text_1 = $"{fr.EntryDataId}|{fr.LineNumber}|{pod.ItemNumber}";
+                            itm.Free_text_2 = fr.Comment ;
+                        }
+
+                        LimitFreeText(itm);
                     }
 
                 }
@@ -1621,6 +1632,24 @@ namespace WaterNut.DataSpace
 
             // }
             // return null;
+        }
+
+        public static void LimitFreeText(xcuda_Item itm)
+        {
+            if (itm.Free_text_1 != null && itm.Free_text_1.Length > 1)
+            {
+                itm.Free_text_1 = itm.Free_text_1.Length < 36
+                    ? itm.Free_text_1.Substring(0)
+                    : itm.Free_text_1.Substring(0, 35);
+            }
+
+
+            if (itm.Free_text_2 != null && itm.Free_text_2.Length > 1)
+            {
+                itm.Free_text_2 = itm.Free_text_2.Length < 21
+                    ? itm.Free_text_2.Substring(0)
+                    : itm.Free_text_2.Substring(0, 20);
+            }
         }
 
         private static void SetMinWeight(IEntryLineData pod, xcuda_Item itm)
@@ -2482,6 +2511,45 @@ namespace WaterNut.DataSpace
             }
         }
 
+
+        public static void SaveAttachments(AsycudaDocumentSet docSet, DocumentCT cdoc)
+        {
+            if (!cdoc.DocumentItems.Any()) return;
+            var alst = docSet.AsycudaDocumentSet_Attachments
+                .Where(x => x.DocumentSpecific == false
+                            && cdoc.EmailIds.Contains(x.EmailUniqueId)
+                            && cdoc.Document.AsycudaDocument_Attachments.All(z => z.AttachmentId != x.AttachmentId))
+                .Select(x => x.Attachment);
+            foreach (var att in alst)
+            {
+                cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
+                {
+                    AttachmentId = att.Id,
+                    AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
+                    //Attachment = att,
+                    //xcuda_ASYCUDA = cdoc.Document,
+                    TrackingState = TrackingState.Added
+                });
+
+                var f = new FileInfo(att.FilePath);
+                cdoc.DocumentItems.First().xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                {
+                    Attached_document_code = att.DocumentCode,
+                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                    Attached_document_reference = f.Name.Replace(f.Extension, ""), //pod.EntryData.EntryDataId,
+                    xcuda_Attachments = new List<xcuda_Attachments>()
+                    {
+                        new xcuda_Attachments(true)
+                        {
+                            AttachmentId = att.Id,
+                            TrackingState = TrackingState.Added
+                        }
+                    },
+                    TrackingState = TrackingState.Added
+                });
+            }
+        }
+
         internal void ExportDocSet(AsycudaDocumentSet docSet, string directoryName, bool overWrite)
         {
 
@@ -3327,5 +3395,6 @@ namespace WaterNut.DataSpace
 
         public string Currency { get; set; }
         public int? LineNumber { get; set; }
+        public string Comment { get; set; }
     }
 }

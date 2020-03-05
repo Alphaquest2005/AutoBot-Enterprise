@@ -27,7 +27,7 @@
               this.Property(t => t.AttributeOnlyAllocation).HasColumnName("AttributeOnlyAllocation");
               this.Property(t => t.DoNotAllocate).HasColumnName("DoNotAllocate");
               this.Property(t => t.DoNotEX).HasColumnName("DoNotEX");
-              this.Property(t => t.Free_text_1).HasColumnName("Free_text_1").HasMaxLength(30);
+              this.Property(t => t.Free_text_1).HasColumnName("Free_text_1").HasMaxLength(35);
               this.Property(t => t.Free_text_2).HasColumnName("Free_text_2").HasMaxLength(30);
               this.Property(t => t.ImportComplete).HasColumnName("ImportComplete");
               this.Property(t => t.WarehouseError).HasColumnName("WarehouseError").HasMaxLength(50);

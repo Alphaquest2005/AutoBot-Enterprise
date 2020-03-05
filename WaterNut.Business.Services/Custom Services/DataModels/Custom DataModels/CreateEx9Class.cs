@@ -1122,7 +1122,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                 if (cdoc.Document != null)
                                 {
 
-                                    SaveAttachments(docSet, cdoc);
+                                    BaseDataModel.SaveAttachments(docSet, cdoc);
 
                                     await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                     //}
@@ -1187,7 +1187,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     }
 
                 }
-                SaveAttachments(docSet, cdoc);
+                BaseDataModel.SaveAttachments(docSet, cdoc);
                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
                 if (cdoc.Document.ASYCUDA_Id == 0)
                 {
@@ -1204,43 +1204,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             }
         }
 
-        private static void SaveAttachments(AsycudaDocumentSet docSet, DocumentCT cdoc)
-        {
-            if (!cdoc.DocumentItems.Any()) return;
-            var alst = docSet.AsycudaDocumentSet_Attachments
-                .Where(x => x.DocumentSpecific == false 
-                            && cdoc.EmailIds.Contains(x.EmailUniqueId)
-                            && cdoc.Document.AsycudaDocument_Attachments.All(z => z.AttachmentId != x.AttachmentId))
-                .Select(x => x.Attachment);
-            foreach (var att in alst)
-            {
-                cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
-                {
-                    AttachmentId = att.Id,
-                    AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
-                    //Attachment = att,
-                    //xcuda_ASYCUDA = cdoc.Document,
-                    TrackingState = TrackingState.Added
-                });
 
-                var f = new FileInfo(att.FilePath);
-                cdoc.DocumentItems.First().xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
-                {
-                    Attached_document_code = att.DocumentCode,
-                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                    Attached_document_reference = f.Name.Replace(f.Extension, ""), //pod.EntryData.EntryDataId,
-                    xcuda_Attachments = new List<xcuda_Attachments>()
-                    {
-                        new xcuda_Attachments(true)
-                        {
-                            AttachmentId = att.Id,
-                            TrackingState = TrackingState.Added
-                        }
-                    },
-                    TrackingState = TrackingState.Added
-                });
-            }
-        }
 
 
         private bool IsPerIM7(string prevIM7, AllocationDataBlock monthyear)
@@ -1423,6 +1387,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                           DPQtyAllocated =  x.DPQtyAllocated,
                           pLineNumber =  x.pLineNumber,
                           LineNumber = x.SalesLineNumber,
+                          Comment = x.Comment,
                           Customs_clearance_office_code = x.Customs_clearance_office_code,
                           pQuantity = x.pQuantity,
                           pRegistrationDate =  x.pRegistrationDate,
@@ -1826,6 +1791,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                              QtyAllocated = x.SalesQtyAllocated,
                                              EffectiveDate = x.EffectiveDate,
                                              LineNumber = x.LineNumber,
+                                             Comment = x.Comment
                                          }
                                      }).ToList(),
                                   EntlnData = new AlloEntryLineData
@@ -1847,6 +1813,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                                                     EntryDataDate = z.InvoiceDate,
                                                                     EffectiveDate = z.EffectiveDate.GetValueOrDefault(),
                                                                     Currency = z.Currency,
+                                                                    Comment = z.Comment
                                                                 }).ToList(),
                                       PreviousDocumentItemId = Convert.ToInt32(s.Key.PreviousItem_Id),
                                       InternalFreight = s.LastOrDefault().InternalFreight,
@@ -1919,6 +1886,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                              QtyAllocated = x.SalesQtyAllocated,
                                              EffectiveDate = x.EffectiveDate,
                                              LineNumber = x.LineNumber,
+                                             Comment = x.Comment
                                          }
                                      }},
                                   EntlnData = new AlloEntryLineData
@@ -1940,6 +1908,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                                                     EntryDataDate = x.InvoiceDate,
                                                                     EffectiveDate = x.EffectiveDate.GetValueOrDefault(),
                                                                     Currency = x.Currency,
+                                                                    Comment = x.Comment
                                                                 }},
                                       PreviousDocumentItemId = Convert.ToInt32(x.PreviousItem_Id),
                                       InternalFreight = x.InternalFreight,
@@ -2299,7 +2268,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                 TrackingState = TrackingState.Added
                             });
 
-                            itmcnt = AddFreeText(itmcnt, itm, allo.EntryDataDetails.EntryDataId, allo.EntryDataDetails.LineNumber.GetValueOrDefault());
+                            itmcnt = AddFreeText(itmcnt, itm, allo.EntryDataDetails.EntryDataId, allo.EntryDataDetails.LineNumber.GetValueOrDefault(), allo.EntryDataDetails.Comment, mypod.EntlnData.ItemNumber);
                         }
 
                        
@@ -2456,30 +2425,23 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
         
 
-        private int AddFreeText(int itmcnt, xcuda_Item itm, string entryDataId, int lineNumber)
+        private int AddFreeText(int itmcnt, xcuda_Item itm, string entryDataId, int lineNumber, string comment,
+            string itemCode)
         {
             if (BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == true) return itmcnt;
             if (itm.Free_text_1 == null) itm.Free_text_1 = "";
-            itm.Free_text_1 = $"{entryDataId}|{lineNumber}";
+            itm.Free_text_1 = $"{entryDataId}|{lineNumber}|{itemCode}";
+            if(!string.IsNullOrEmpty(comment)) itm.Free_text_2 = $"{comment}";
             itmcnt += 1;
 
-            if (itm.Free_text_1 != null && itm.Free_text_1.Length > 1)
-            {
-                itm.Free_text_1 = itm.Free_text_1.Length < 31 ? itm.Free_text_1.Substring(0) 
-                                                              : itm.Free_text_1.Substring(0, 30);
-            }
-
-
-            if (itm.Free_text_2 != null && itm.Free_text_2.Length > 1)
-            {
-                itm.Free_text_2 = itm.Free_text_2.Length < 21 ? itm.Free_text_2.Substring(0) 
-                                                              : itm.Free_text_2.Substring(0, 20);
-            }
+            BaseDataModel.LimitFreeText(itm);
             return itmcnt;
         }
-    
 
-    private  async Task Ex9Bucket(MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
+        
+
+
+        private  async Task Ex9Bucket(MyPodData mypod, string dfp,  double docPi, List<ItemSalesPiSummary> itemSalesPiSummaryLst)
         {
             // prevent over draw down of pqty == quantity allocated
             try
@@ -2953,6 +2915,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
         public int? FileTypeId { get; set; }
         public int? EmailId { get; set; }
         public int EntryData_Id { get; set; }
+        public string Comment { get; set; }
     }
 
     public class AllocationDataBlock

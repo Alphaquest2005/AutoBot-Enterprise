@@ -20,6 +20,7 @@ namespace AdjustmentQS.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId, string ex9Type, string dutyFreePaid);
+        Task CreateIM9(string filterExpression, bool perInvoice, bool process7100, int asycudaDocumentSetId,
+            string ex9Type, string dutyFreePaid, string adjustmentType);
     }
 }

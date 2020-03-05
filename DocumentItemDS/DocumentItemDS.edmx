@@ -95,7 +95,7 @@
           <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="Licence_number" Type="nvarchar" MaxLength="6" />
-          <Property Name="Free_text_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="Free_text_1" Type="nvarchar" MaxLength="35" />
           <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
           <Property Name="EntryDataDetailsId" Type="int" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
@@ -919,7 +919,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="xcuda_Taxation" Relationship="WaterNutDBModel.FK_Item_Taxation" FromRole="xcuda_Item" ToRole="xcuda_Taxation" />
           <NavigationProperty Name="xcuda_Valuation_item" Relationship="WaterNutDBModel.FK_Item_Valuation_item" FromRole="xcuda_Item" ToRole="xcuda_Valuation_item" />
           <NavigationProperty Name="xcuda_PreviousItem" Relationship="WaterNutDBModel.FK_xcuda_PreviousItem_xcuda_Item" FromRole="xcuda_Item" ToRole="xcuda_PreviousItem" />
-          <Property Type="String" Name="Free_text_1" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Free_text_1" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Free_text_2" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.FK_xcuda_ItemEntryDataDetails_xcuda_Item" FromRole="xcuda_Item" ToRole="xcuda_ItemEntryDataDetails" />
           <NavigationProperty Name="xcuda_Suppliers_link" Relationship="WaterNutDBModel.FK_Item_Suppliers_link" FromRole="xcuda_Item" ToRole="xcuda_Suppliers_link" />

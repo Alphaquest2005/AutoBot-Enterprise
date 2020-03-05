@@ -84,7 +84,7 @@ namespace EmailDownloader
         {
             try
             {
-
+                var sendNotifications = false;
 
                 var msgFiles = new Dictionary<Tuple<string, Email>, List<string>>();
                 foreach (var uid in imapClient.Inbox.Search(SearchQuery.NotSeen))
@@ -94,12 +94,16 @@ namespace EmailDownloader
 
                     if (!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase)))
                     {
-                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
-                        var errTxt = "Hey,\r\n\r\n The System is not configured for this message.\r\n" +
-                                           "Check the Subject again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
-                                           "Thanks\r\n" +
-                                           "Ez-Asycuda-Toolkit";
-                        SendBackMsg(msg, client, errTxt);
+                        if (sendNotifications)
+                        {
+                            imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                            var errTxt = "Hey,\r\n\r\n The System is not configured for this message.\r\n" +
+                                         "Check the Subject again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
+                                         "Thanks\r\n" +
+                                         "Ez-Asycuda-Toolkit";
+                            SendBackMsg(msg, client, errTxt);
+                        }
+
                         continue;
                     }
 
@@ -107,9 +111,14 @@ namespace EmailDownloader
 
                     if (string.IsNullOrEmpty(subject?.Item1))
                     {
+                        if (sendNotifications)
+                        {
 
-                        SendEmail(client, null, $"Bug Found",
-                            new[] { "Josephbartholomew@outlook.com" }, $"Subject not configured for Regex: '{msg.Subject}'", Array.Empty<string>());
+                            SendEmail(client, null, $"Bug Found",
+                                new[] {"Josephbartholomew@outlook.com"},
+                                $"Subject not configured for Regex: '{msg.Subject}'", Array.Empty<string>());
+                        }
+
                         imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                         continue;
                     }
@@ -125,12 +134,15 @@ namespace EmailDownloader
                     if (lst.Any() && patterns.All(x => !lst.Any(z => Regex.IsMatch(z, x, RegexOptions.IgnoreCase))))
                     {
                         imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
-                        var errTxt =
-                            "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
-                            "Check the file Name of attachments again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
-                            "Thanks\r\n" +
-                            "Ez-Asycuda-Toolkit";
-                        SendBackMsg(msg, client, errTxt);
+                        if (sendNotifications)
+                        {
+                            var errTxt =
+                                "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
+                                "Check the file Name of attachments again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
+                                "Thanks\r\n" +
+                                "Ez-Asycuda-Toolkit";
+                            SendBackMsg(msg, client, errTxt);
+                        }
                     }
 
                     

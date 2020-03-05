@@ -248,7 +248,7 @@ namespace AdjustmentQS.Business.Services
         /// /////////////////// Create one entry fro kim
 
         public async Task CreateIM9(string filterExpression, bool perInvoice, bool process7100,
-            int asycudaDocumentSetId, string ex9Type, string dutyFreePaid)
+            int asycudaDocumentSetId, string ex9Type, string dutyFreePaid, string adjustmentType)
         {
             try
             {
@@ -278,12 +278,22 @@ namespace AdjustmentQS.Business.Services
                     var itemPiSummarylst =
                         CreateEx9Class.Instance.GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
                             endDate, dutyFreePaid, "ADJ");
-
-                    await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+                    if(adjustmentType == "DIS")
+                    {
+                        await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                                    slst, docSet, "7400", false, itemPiSummarylst, false,
                                                    false, ex9Type, true, "Current", false, false, true)
                                                .ConfigureAwait(
                                                    false);
+                    }
+                    else
+                    {
+                        await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
+                                slst, docSet, "7400", false, itemPiSummarylst, true,
+                                false, ex9Type, true, "Historic", true, true, true)
+                            .ConfigureAwait(
+                                false);
+                    }
                 }
             }
             catch (Exception e)
@@ -465,6 +475,7 @@ namespace AdjustmentQS.Business.Services
             var res = new List<EX9SalesAllocations>();
             using (var ctx = new AllocationDSContext())
             {
+                ctx.Database.CommandTimeout = 0;
                 try
                 {
                     IQueryable<AdjustmentShortAllocations> pres;
@@ -536,6 +547,7 @@ namespace AdjustmentQS.Business.Services
                             DFQtyAllocated = c.x.PreviousDocumentItem.DFQtyAllocated,
                             DPQtyAllocated = c.x.PreviousDocumentItem.DPQtyAllocated,
                             LineNumber = (int)c.x.EntryDataDetails.LineNumber,
+                            Comment = c.x.EntryDataDetails.Comment,
                             pLineNumber = c.x.PreviousDocumentItem.LineNumber,
                             // Currency don't matter for im9 or exwarehouse
                             Customs_clearance_office_code = c.x.PreviousDocumentItem.AsycudaDocument.Customs_clearance_office_code,
