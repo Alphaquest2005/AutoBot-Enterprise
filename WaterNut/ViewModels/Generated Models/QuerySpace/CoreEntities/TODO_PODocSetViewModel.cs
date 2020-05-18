@@ -331,6 +331,60 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _invoiceTotalFilter;
+        public Double? InvoiceTotalFilter
+        {
+            get
+            {
+                return _invoiceTotalFilter;
+            }
+            set
+            {
+                _invoiceTotalFilter = value;
+				NotifyPropertyChanged(x => InvoiceTotalFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _licenseLinesFilter;
+        public Int32? LicenseLinesFilter
+        {
+            get
+            {
+                return _licenseLinesFilter;
+            }
+            set
+            {
+                _licenseLinesFilter = value;
+				NotifyPropertyChanged(x => LicenseLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalCIFFilter;
+        public Double? TotalCIFFilter
+        {
+            get
+            {
+                return _totalCIFFilter;
+            }
+            set
+            {
+                _totalCIFFilter = value;
+				NotifyPropertyChanged(x => TotalCIFFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -393,7 +447,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("TotalInvoices == {0}",  TotalInvoicesFilter.ToString()));				 
 
 					if(DocumentsCountFilter.HasValue)
-						res.Append(" && " + string.Format("DocumentsCount == {0}",  DocumentsCountFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("DocumentsCount == {0}",  DocumentsCountFilter.ToString()));				 
+
+					if(InvoiceTotalFilter.HasValue)
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
+
+					if(LicenseLinesFilter.HasValue)
+						res.Append(" && " + string.Format("LicenseLines == {0}",  LicenseLinesFilter.ToString()));				 
+
+					if(TotalCIFFilter.HasValue)
+						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -440,7 +503,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalInvoices = x.TotalInvoices ,
                     
  
-                    DocumentsCount = x.DocumentsCount 
+                    DocumentsCount = x.DocumentsCount ,
+                    
+ 
+                    InvoiceTotal = x.InvoiceTotal ,
+                    
+ 
+                    LicenseLines = x.LicenseLines ,
+                    
+ 
+                    TotalCIF = x.TotalCIF 
                     
                 }).ToList()
             };
@@ -478,6 +550,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> DocumentsCount { get; set; } 
+                    
+ 
+                    public Nullable<double> InvoiceTotal { get; set; } 
+                    
+ 
+                    public Nullable<int> LicenseLines { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalCIF { get; set; } 
                     
         }
 

@@ -36,6 +36,7 @@
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.Totals).HasColumnName("Totals");
+              this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.AsycudaDocuments).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.EntryDataDetailsExs).WithRequired(t => (EntryDataEx)t.EntryDataEx);

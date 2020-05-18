@@ -15,7 +15,7 @@
               this.ToTable("xLIC_License_Registered");
               this.Property(t => t.LicenseId).HasColumnName("LicenseId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.RegistrationNumber).HasColumnName("RegistrationNumber").IsRequired().HasMaxLength(50);
-              this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
+              this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired().HasMaxLength(300);
               this.Property(t => t.DocumentReference).HasColumnName("DocumentReference").HasMaxLength(50);
              // Nav Property Names
                   

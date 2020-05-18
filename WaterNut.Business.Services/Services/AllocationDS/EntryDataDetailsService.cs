@@ -281,6 +281,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ManualAllocations":
+                                return
+                                    await
+                                        GetWhere<ManualAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -799,6 +805,9 @@ namespace AllocationDS.Business.Services
                             case "EntryData":
                                 return await CountWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ManualAllocations":
+                                return await CountWhere<ManualAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -950,6 +959,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails1", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ManualAllocations":
+                                return
+                                    await
+                                        LoadRangeWhere<ManualAllocations>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1331,6 +1346,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryData":
                                 return await SumWhere<EntryData>(dbContext, exp, itm.Value, "EntryDataDetails1", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ManualAllocations":
+                                return await SumWhere<ManualAllocations>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

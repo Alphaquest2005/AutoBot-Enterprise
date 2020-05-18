@@ -24,6 +24,9 @@
               this.Property(t => t.Declarant_Reference_Number).HasColumnName("Declarant_Reference_Number").HasMaxLength(50);
               this.Property(t => t.TotalInvoices).HasColumnName("TotalInvoices");
               this.Property(t => t.DocumentsCount).HasColumnName("DocumentsCount");
+              this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
+              this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
+              this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

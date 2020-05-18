@@ -33,6 +33,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
+using Asycuda421;
 using TrackableEntities;
 using TrackableEntities.Client;
 using ValuationDS.Business.Entities;
@@ -66,6 +67,7 @@ namespace AutoBot
                 {"ExportEx9Entries",(ft, fs) => ExportEx9Entries() },
                 {"AssessEx9Entries",(ft, fs) => AssessEx9Entries() },
                 {"SaveCsv",(ft, fs) => SaveCsv(fs, ft) },
+                {"ReplaceCSV",(ft, fs) => ReplaceCSV(fs, ft) },
                 {"CreatePOEntries",(ft, fs) => CreatePOEntries(ft.AsycudaDocumentSetId) },
                 {"ExportPOEntries",(ft, fs) => ExportPOEntries(ft.AsycudaDocumentSetId) },
                 {"AssessPOEntry",(ft, fs) => AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
@@ -78,9 +80,9 @@ namespace AutoBot
                 {"MapUnClassifiedItems", (ft, fs) => MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => UpdateSupplierInfo(ft,fs) },
                 {"ImportPDF", (ft, fs) => ImportPDF(fs,ft) },
-                //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
+               //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
                 
-
+                {"AttachToDocSetByRef", (ft, fs) => AttachToDocSetByRef(ft.AsycudaDocumentSetId) },
 
             };
 
@@ -128,9 +130,9 @@ namespace AutoBot
                 {"SubmitIncompleteEntryData", SubmitIncompleteEntryData },
                 {"SubmitUnclassifiedItems", SubmitUnclassifiedItems },
                 {"SubmitInadequatePackages", SubmitInadequatePackages },
+                {"SubmitIncompleteSuppliers", SubmitIncompleteSuppliers },
                 {"AssessC71", AssessC71 },
                 {"AssessLicense", AssessLicense },
-                {"AttachToDocSetByRef", AttachToDocSetByRef },
                 {"CreatePOEntries",CreatePOEntries },
                 {"ExportPOEntries", ExportPOEntries },
                 {"AssessPOEntries", AssessPOEntries },
@@ -145,6 +147,10 @@ namespace AutoBot
                 {"ImportPDF", ImportPDF },
                 {"CreateInstructions", CreateInstructions },
                 {"SubmitUnknownDFPComments", SubmitUnknownDFPComments },
+                {"ClearPOEntries", ClearPOEntries },
+                {"AttachToDocSetByRef", AttachToDocSetByRef },
+                {"ExportLatestPOEntries", ExportLatestPOEntries },
+
 
             };
 
@@ -160,7 +166,7 @@ namespace AutoBot
             foreach (var file in files)
             {
                 File.AppendAllText(Path.Combine(dir.FullName, "Instructions.txt"), $"File\t{file.FullName}\r\n");
-                if(File.Exists(file.FullName.Replace("xml","csv")) && !File.Exists(file.FullName.Replace("xml", "csv.pdf")))
+                if (File.Exists(file.FullName.Replace("xml", "csv")) && !File.Exists(file.FullName.Replace("xml", "csv.pdf")))
                     File.Copy(file.FullName.Replace("xml", "csv"), file.FullName.Replace("xml", "csv.pdf"));
                 File.AppendAllText(Path.Combine(dir.FullName, "Instructions.txt"), $"Attachment\t{file.FullName.Replace("xml", "csv.pdf")}\r\n");
             }
@@ -180,14 +186,14 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     var contacts = ctx.Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
-                    
-                        var lst = ctx.TODO_ImportCompleteEntries
-                            .Where(x => x.ApplicationSettingsId ==
-                                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                            .GroupBy(x => x.AsycudaDocumentSetId)
-                            .Join(ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z });
-                        
-                            foreach (var doc in lst)
+
+                    var lst = ctx.TODO_ImportCompleteEntries
+                        .Where(x => x.ApplicationSettingsId ==
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .GroupBy(x => x.AsycudaDocumentSetId)
+                        .Join(ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z });
+
+                    foreach (var doc in lst)
                     {
 
 
@@ -235,17 +241,17 @@ namespace AutoBot
             using (var ctx = new CoreEntitiesContext())
             {
                 var fileType = ctx.FileTypes
-                   
+
                     .FirstOrDefault(x => x.Id == 17);
                 var files = new FileInfo[]
                     {new FileInfo(@"C:\Users\josep\OneDrive\Clients\Budget Marine\Emails\30-16170\7006359.pdf")};
-                ImportPDF(files,fileType);
+                ImportPDF(files, fileType);
             }
         }
 
 
         private static void ImportPDF(FileInfo[] csvFiles, FileTypes fileType)
-            //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
+        //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
             Console.WriteLine("Importing PDF " + fileType.Type);
             foreach (var file in csvFiles)
@@ -260,15 +266,33 @@ namespace AutoBot
                     emailId = res?.EmailUniqueId;
                     fileTypeId = res?.FileTypeId;
                 }
-                InvoiceReader.Import(file.FullName, fileTypeId,emailId,true,SaveCSVModel.Instance.GetDocSets(fileType),fileType.Type);
+                InvoiceReader.Import(file.FullName, fileTypeId, emailId, true, SaveCSVModel.Instance.GetDocSets(fileType), fileType.Type);
             }
         }
 
         private static void ExportPOEntries()
         {
+            Console.WriteLine("Export PO Entries");
             using (var ctx = new CoreEntitiesContext())
             {
-                foreach (var docset in ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                foreach (var docset in 
+                    ctx.TODO_PODocSetToExport.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                {
+                    ExportPOEntries(docset.AsycudaDocumentSetId);
+                }
+            }
+        }
+
+        private static void ExportLatestPOEntries()
+        {
+            Console.WriteLine("Export Latest PO Entries");
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var docset =
+                    ctx.TODO_PODocSetToExport.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                     .OrderByDescending(x => x.AsycudaDocumentSetId)
+                                     .FirstOrDefault();
+                if(docset != null)
                 {
                     ExportPOEntries(docset.AsycudaDocumentSetId);
                 }
@@ -277,9 +301,12 @@ namespace AutoBot
 
         private static void CreatePOEntries()
         {
+            Console.WriteLine("Create PO Entries");
             using (var ctx = new CoreEntitiesContext())
             {
-                foreach (var docset in ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId ))
+                foreach (var docset in 
+                    ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                                 && x.DocumentsCount == 0))
                 {
                     CreatePOEntries(docset.AsycudaDocumentSetId);
                 }
@@ -290,12 +317,12 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                var res = ctx.TODO_PODocSet.ToList();
+                var res = ctx.TODO_LICToCreate.ToList();
 
                 foreach (var doc in res)
                 {
 
-                    
+
                     var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         doc.Declarant_Reference_Number, "LIC-Instructions.txt");
                     if (!File.Exists(instrFile)) continue;
@@ -314,12 +341,12 @@ namespace AutoBot
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                var res = ctx.TODO_PODocSet.ToList();
+                var res = ctx.TODO_C71ToCreate.ToList();
 
                 foreach (var doc in res)
                 {
-                    
-                    
+
+
                     var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         doc.Declarant_Reference_Number, "C71-Instructions.txt");
                     if (!File.Exists(instrFile)) continue;
@@ -334,21 +361,34 @@ namespace AutoBot
             }
         }
 
-        private static void AttachToDocSetByRef()
+        private static void AttachToDocSetByRef(int asycudaDocumentSetId)
         {
-            //try
-            //{
-            //    using (var ctx = new VaContext())
-            //    {
-            //        //get C71 with just one docset
+            BaseDataModel.Instance.AttachToExistingDocuments(asycudaDocumentSetId);
+        }
 
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    Console.WriteLine(e);
-            //    throw;
-            //}
+        
+        public static void AttachToDocSetByRef()
+        {
+            Console.WriteLine("Attach Documents To DocSet");
+
+            // var saleInfo = CurrentSalesInfo();
+
+
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.TODO_PODocSet.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .GroupBy(x => x.AsycudaDocumentSetId)
+                    //.Where(x => x.Key != null)
+                    .Select(x => x.Key)
+                    .Distinct()
+                    .ToList();
+
+                foreach (var doc in lst)
+                {
+                    BaseDataModel.Instance.AttachToExistingDocuments(doc);
+                }
+
+            }
         }
 
 
@@ -369,7 +409,7 @@ namespace AutoBot
                         itm.SupplierName = row["SupplierName"].ToString();
                         itm.SupplierName = row["SupplierAddress"].ToString();
                         itm.SupplierName = row["CountryCode"].ToString();
-                        
+
                         ctx.SaveChanges();
                     }
 
@@ -379,15 +419,15 @@ namespace AutoBot
 
         private static void MapUnClassifiedItems(FileTypes ft, FileInfo[] fs)
         {
-            using (var ctx = new InventoryDSContext(){StartTracking = true})
+            using (var ctx = new InventoryDSContext() { StartTracking = true })
             {
                 foreach (var file in fs)
                 {
-                    var dt = CSV2DataTable(file,"YES");
+                    var dt = CSV2DataTable(file, "YES");
                     if (dt.Rows.Count == 0) continue;
-                    foreach(DataRow row in dt.Rows)
+                    foreach (DataRow row in dt.Rows)
                     {
-                        if(string.IsNullOrEmpty(row["TariffCode"].ToString())) continue;
+                        if (string.IsNullOrEmpty(row["TariffCode"].ToString())) continue;
                         var itmNumber = row["ItemNumber"].ToString();
                         var itms = ctx.InventoryItems.Where(x => x.ItemNumber == itmNumber && x.ApplicationSettingsId ==
                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
@@ -395,10 +435,10 @@ namespace AutoBot
                         {
                             itm.TariffCode = row["TariffCode"].ToString();
                         }
-                        
+
                         ctx.SaveChanges();
                     }
-                    
+
                 }
             }
         }
@@ -409,25 +449,30 @@ namespace AutoBot
 
             {
                 Console.WriteLine("Create License Files");
-                var pOs = CurrentPOInfo();
+                
 
                 using (var ctx = new LicenseDSContext())
                 {
+                    var pOs = ctx.TODO_LICToCreate.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
                     foreach (var pO in pOs)
                     {
                         //if (pO.Item1.Declarant_Reference_Number != "30-15936") continue;
-                        var directoryName = pO.Item2;
+                        var directoryName =  Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            pO.Declarant_Reference_Number);
                         if (!Directory.Exists(directoryName)) continue;
 
-                        
+
                         var lst = new CoreEntitiesContext().Database
                             .SqlQuery<TODO_LicenseToXML>(
-                                $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.Item1.AsycudaDocumentSetId}")
+                                $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId}")
+                            .GroupBy(x => new {x.EntryDataId, x.SourceFile})
                             .ToList();
                         foreach (var itm in lst)
                         {
-                            var fileName = Path.Combine(directoryName, $"{itm.EntryDataId}-LIC.xml");
-                            if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault() &&
+                            var fileName = Path.Combine(directoryName, $"{itm.Key.EntryDataId}-LIC.xml");
+                            if (//BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault() &&
                                 File.Exists(fileName)) continue;
                             var contact = new CoreEntitiesContext().Contacts.FirstOrDefault(x =>
                                 x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance
@@ -438,17 +483,17 @@ namespace AutoBot
                             {
                                 //var elst = lst.Select(s => s.EntryDataId).ToList();
                                 supplier = ectx.Suppliers.FirstOrDefault(x =>
-                                    ectx.EntryData.Where(z => z.EntryDataId == itm.EntryDataId).Select(z => z.SupplierCode)
+                                    ectx.EntryData.Where(z => z.EntryDataId == itm.Key.EntryDataId).Select(z => z.SupplierCode)
                                         .Any(z => z == x.SupplierCode) &&
-                                    x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId);
+                                    x.ApplicationSettingsId == pO.ApplicationSettingsId);
                             }
 
-                            var lic = LicenseToDataBase.Instance.CreateLicense(new List<TODO_LicenseToXML>(){itm}, contact, supplier,
-                                itm.EntryDataId);
-                            var invoices = lst.Where(x => x.EntryDataId == itm.EntryDataId).Select(x => x.EntryDataId).Distinct().ToList();
+                            var lic = LicenseToDataBase.Instance.CreateLicense(new List<TODO_LicenseToXML>(itm) , contact, supplier,
+                                itm.Key.EntryDataId);
+                            var invoices = itm.Select(x => new Tuple<string, string>(x.EntryDataId, x.SourceFile.Replace(".csv", ".pdf"))).Distinct().ToList();
                             ctx.xLIC_License.Add(lic);
                             ctx.SaveChanges();
-                            LicenseToDataBase.Instance.ExportLicense(pO.Item1.AsycudaDocumentSetId, lic, fileName,
+                            LicenseToDataBase.Instance.ExportLicense(pO.AsycudaDocumentSetId, lic, fileName,
                                 invoices);
 
                         }
@@ -470,18 +515,23 @@ namespace AutoBot
 
             {
                 Console.WriteLine("Create C71 Files");
-                var pOs = CurrentPOInfo();
+                
                 using (var ctx = new ValuationDSContext())
                 {
+                    var pOs = ctx.TODO_C71ToCreate.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
                     foreach (var pO in pOs)
                     {
                         //if (pO.Item1.Declarant_Reference_Number != "30-15936") continue;
-                        var directoryName = pO.Item2;
+                        var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            pO.Declarant_Reference_Number);
                         var fileName = Path.Combine(directoryName, "C71.xml");
-                        if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault() && File.Exists(fileName)) continue;
+                        if (//BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault() &&
+                            File.Exists(fileName)) continue;
                         var lst = new CoreEntitiesContext().TODO_C71ToXML.Where(x =>
-                            x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId &&
-                            x.AsycudaDocumentSetId == pO.Item1.AsycudaDocumentSetId)
+                            x.ApplicationSettingsId == pO.ApplicationSettingsId &&
+                            x.AsycudaDocumentSetId == pO.AsycudaDocumentSetId)
                             .GroupBy(x => x.AsycudaDocumentSetId)
                             .Where(x => (x.Sum(z => z.InvoiceTotal) > 184 && x.Any(z => z.Currency == "USD")) || (x.Sum(z => z.InvoiceTotal) > 500 && x.Any(z => z.Currency == "XCD"))).ToList();
                         var supplierCode = lst.SelectMany(x => x.Select(z => z.SupplierCode)).FirstOrDefault(x => !string.IsNullOrEmpty(x));
@@ -494,13 +544,13 @@ namespace AutoBot
                         {
                             supplier = new EntryDataDSContext().Suppliers.FirstOrDefault(x =>
                                 x.SupplierCode == supplierCode &&
-                                x.ApplicationSettingsId == pO.Item1.ApplicationSettingsId);
+                                x.ApplicationSettingsId == pO.ApplicationSettingsId);
                         }
-                        if(!lst.Any()) continue;
-                        var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst.SelectMany(x => x.Select(z => z)).ToList(), pO.Item1.Declarant_Reference_Number);
+                        if (!lst.Any()) continue;
+                        var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst.SelectMany(x => x.Select(z => z)).ToList(), pO.Declarant_Reference_Number);
                         ctx.xC71_Value_declaration_form.Add(c71);
                         ctx.SaveChanges();
-                        C71ToDataBase.Instance.ExportC71(pO.Item1.AsycudaDocumentSetId,c71, fileName);
+                        C71ToDataBase.Instance.ExportC71(pO.AsycudaDocumentSetId, c71, fileName);
 
 
                     }
@@ -514,7 +564,7 @@ namespace AutoBot
             }
         }
 
-        
+
 
 
         private static void DownLoadLicence()
@@ -522,15 +572,21 @@ namespace AutoBot
             try
 
             {
-                var pOs = CurrentPOInfo();
-                foreach (var pO in pOs)
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    var directoryName = pO.Item2;
-                    Console.WriteLine("Download License Files");
-                    var lcont = 0;
-                    while (ImportLICComplete(directoryName, out lcont) == false)
+
+
+                    var pOs = ctx.TODO_LICToCreate.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                    foreach (var pO in pOs)
                     {
-                        RunSiKuLi(pO.Item1.AsycudaDocumentSetId, "LIC", lcont.ToString());
+                         var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            pO.Declarant_Reference_Number);
+                        Console.WriteLine("Download License Files");
+                        var lcont = 0;
+                        while (ImportLICComplete(directoryName, out lcont) == false)
+                        {
+                            RunSiKuLi(pO.AsycudaDocumentSetId, "LIC", lcont.ToString());
+                        }
                     }
                 }
             }
@@ -546,16 +602,26 @@ namespace AutoBot
             try
 
             {
-                var pOs = CurrentPOInfo();
-                foreach (var pO in pOs)
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    var directoryName = pO.Item2;
-                    Console.WriteLine("Download C71 Files");
-                    var lcont = 0;
-                    while (ImportC71Complete(directoryName, out lcont) == false)
+
+                    var lst = ctx.TODO_C71ToCreate.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                    
+                    foreach (var pO in lst)
                     {
-                        RunSiKuLi(pO.Item1.AsycudaDocumentSetId, "C71", lcont.ToString());
+                        var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(
+                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                            pO.Declarant_Reference_Number));
+                        Console.WriteLine("Download C71 Files");
+                        var lcont = 0;
+                        while (ImportC71Complete(directoryName, out lcont) == false)
+                        {
+                            RunSiKuLi(pO.AsycudaDocumentSetId, "C71", lcont.ToString());
+                        }
                     }
+
                 }
             }
             catch (Exception e)
@@ -580,12 +646,12 @@ namespace AutoBot
 
                     var lst = ctx.TODO_Error_IncompleteItems
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .GroupBy(x => new {x.ASYCUDA_Id, x.SourceFileName, x.AsycudaDocumentSetId});
+                        .GroupBy(x => new { x.ASYCUDA_Id, x.SourceFileName, x.AsycudaDocumentSetId });
 
                     foreach (var doc in lst)
                     {
                         BaseDataModel.Instance.DeleteAsycudaDocument(doc.Key.ASYCUDA_Id).Wait();
-                        BaseDataModel.Instance.ImportDocuments(doc.Key.AsycudaDocumentSetId.GetValueOrDefault(),new List<string>(){doc.Key.SourceFileName},true,true,false,true,true).Wait();
+                        BaseDataModel.Instance.ImportDocuments(doc.Key.AsycudaDocumentSetId.GetValueOrDefault(), new List<string>() { doc.Key.SourceFileName }, true, true, false, true, true).Wait();
                     }
                 }
             }
@@ -604,11 +670,11 @@ namespace AutoBot
 
                 Console.WriteLine("Remove DuplicateEntries");
 
-                
+
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                   
+
                     var lst = ctx.TODO_Error_DuplicateEntry
                                 .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                                 .GroupBy(x => x.id);
@@ -652,31 +718,31 @@ namespace AutoBot
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId
                                 && x.AssessmentDate >= salesinfo.Item1 && x.AssessmentDate <= salesinfo.Item2).ToList()
-                        .GroupBy(x =>  x.EmailId );
+                        .GroupBy(x => x.EmailId);
                     foreach (var emailIds in lst)
                     {
-                       
-                        
 
-                            var body = "The Following Ex-Warehouse Entries were Assessed. \r\n" +
-                                       $"Start Date: {salesinfo.Item1} End Date {salesinfo.Item2}: \r\n" +
-                                       "\tCNumber\t\tReference\t\tAssessmentDate\r\n" +
-                                       $"{emailIds.Select(current => $"\t{current.CNumber}\t\t{current.ReferenceNumber}\t\t{current.RegistrationDate.Value:yyyy-MM-dd} \r\n").Aggregate((old, current) => old + current)}" +
-                                       $"\r\n" +
-                                       $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
-                                       $"\r\n" +
-                                       $"Regards,\r\n" +
-                                       $"AutoBot";
-                         List<string> attlst = new List<string>();
+
+
+                        var body = "The Following Ex-Warehouse Entries were Assessed. \r\n" +
+                                   $"Start Date: {salesinfo.Item1} End Date {salesinfo.Item2}: \r\n" +
+                                   "\tCNumber\t\tReference\t\tAssessmentDate\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.CNumber}\t\t{current.ReferenceNumber}\t\t{current.RegistrationDate.Value:yyyy-MM-dd} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"\r\n" +
+                                   $"Regards,\r\n" +
+                                   $"AutoBot";
+                        List<string> attlst = new List<string>();
                         foreach (var itm in emailIds)
                         {
-                            
+
                             attlst.AddRange(ctx.AsycudaDocument_Attachments
                                 .Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath)
                                 .ToList());
                         }
 
-                            
+
                         if (emailIds.Key == null)
                         {
                             EmailDownloader.EmailDownloader.SendEmail(Client, "", "Assessed Ex-Warehouse Entries",
@@ -704,7 +770,7 @@ namespace AutoBot
                                 });
                             }
                         }
-                        
+
                         ctx.SaveChanges();
 
                     }
@@ -727,7 +793,7 @@ namespace AutoBot
                 Console.WriteLine("Submit Discrepancies To Customs");
 
                 // var saleInfo = CurrentSalesInfo();
-                
+
 
                 using (var ctx = new CoreEntitiesContext())
                 {
@@ -742,7 +808,7 @@ namespace AutoBot
 
 
                         var body = "The Following Discrepancies Entries were Assessed. \r\n" +
-                                   
+
                                    $"\t{"CNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"\r\n" +
@@ -802,7 +868,7 @@ namespace AutoBot
 
                 Console.WriteLine("Submit Discrepancies PreAssessment Report to Customs");
 
-                
+
                 var info = BaseDataModel.CurrentSalesInfo();
                 var directory = info.Item4;
 
@@ -873,12 +939,12 @@ namespace AutoBot
 
                     if (errors.Any())
                     {
-                        
+
                         //foreach (var emailIds in lst)
                         //{
 
 
-                        
+
                         var errorfile = Path.Combine(directory, "DiscrepancyExecutionErrors.csv");
                         if (File.Exists(errorfile)) File.Delete(errorfile);
                         var errRes =
@@ -895,7 +961,7 @@ namespace AutoBot
                     if (goodadj.Any())
                     {
                         var goodfile = Path.Combine(directory, "DiscrepancyExecutions.csv");
-                        if(File.Exists(goodfile)) File.Delete(goodfile);
+                        if (File.Exists(goodfile)) File.Delete(goodfile);
                         var goodRes =
                             new ExportToCSV<DiscrepancyPreExecutionReport, List<DiscrepancyPreExecutionReport>>();
                         goodRes.dataToPrint = goodadj;
@@ -905,10 +971,10 @@ namespace AutoBot
                                 TaskCreationOptions.None, sta);
                         }
                         attachments.Add(goodfile);
-                        
+
                     }
                     if (attachments.Any())
-                        {
+                    {
                         var body =
                             $"For the Effective Period From: {totaladjustments.Min(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")} To: {totaladjustments.Max(x => x.EffectiveDate)?.ToString("yyyy-MM-dd")}. \r\n" +
                             $"\r\n" +
@@ -924,7 +990,7 @@ namespace AutoBot
                         EmailDownloader.EmailDownloader.SendEmail(Client, directory,
                                 $"Discrepancy Pre-Assessment Report for  {totaladjustments.Min(x => x.EffectiveDate)} To: {totaladjustments.Max(x => x.EffectiveDate)}",
                                 contacts.ToArray(), body, attachments.ToArray());
-                        }
+                    }
                 }
             }
             catch (Exception e)
@@ -943,10 +1009,11 @@ namespace AutoBot
                 Console.WriteLine("Submit Incomplete Entry Data");
 
                 // var saleInfo = CurrentSalesInfo();
-                
+
 
                 using (var ctx = new CoreEntitiesContext())
                 {
+                    ctx.Database.CommandTimeout = 0;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitIncompleteEntryData.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
@@ -966,7 +1033,7 @@ namespace AutoBot
                                    $"Regards,\r\n" +
                                    $"AutoBot";
                         List<string> attlst = new List<string>();
-                       
+
 
 
                         if (emailIds.Key == null)
@@ -979,7 +1046,7 @@ namespace AutoBot
                             EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Error:Incomplete Invoice Data", body, contacts, attlst.ToArray());
                         }
 
-                        
+
                         ctx.SaveChanges();
 
                     }
@@ -1010,10 +1077,11 @@ namespace AutoBot
                     var lst = ctx.TODO_SubmitDocSetWithIncompleteInvoices.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId).ToList()
-                        .GroupBy(x => x.EmailId);
+                        .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId });
+
                     foreach (var emailIds in lst)
                     {
-                        
+                        if (GetDocSetActions(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoices").Any()) continue;
 
 
                         var body = $"The {emailIds.FirstOrDefault().Declarant_Reference_Number} is missing Invoices. {emailIds.FirstOrDefault().ImportedInvoices} were Imported out of {emailIds.FirstOrDefault().TotalInvoices} . \r\n" +
@@ -1035,11 +1103,15 @@ namespace AutoBot
                         }
                         else
                         {
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Error:Missing Invoices", body, contacts, attlst.ToArray());
+                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key.EmailId), Client, "Error:Missing Invoices", body, contacts, attlst.ToArray());
                         }
 
 
                         ctx.SaveChanges();
+
+
+                        LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoices");
+
 
                     }
 
@@ -1055,57 +1127,68 @@ namespace AutoBot
         public static void SubmitUnclassifiedItems()
         {
 
-
-
-            var info = BaseDataModel.CurrentSalesInfo();
-            var directory = info.Item4;
-            
-
-
-
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
+                var info = BaseDataModel.CurrentSalesInfo();
+                var directory = info.Item4;
 
-                var emails = ctx.TODO_SubmitUnclassifiedItems
-                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                           && x.EmailId != null)
-                    .GroupBy(x => x.EmailId).ToList();
-                foreach (var email in emails)
+
+
+
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key}.csv");
-                    var errors = email.Select(x => new UnClassifiedItem()
+
+                    var emails = ctx.TODO_SubmitUnclassifiedItems
+                        .Where(x => x.ApplicationSettingsId ==
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                    && x.EmailId != null)
+                        .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId }).ToList();
+                    foreach (var email in emails)
                     {
-                        InvoiceNo = x.InvoiceNo,
-                        ItemNumber = x.ItemNumber,
-                        LineNumber = x.LineNumber.GetValueOrDefault(),
-                        ItemDescription = x.ItemDescription,
-                        TariffCode = x.TariffCode
-                    }).ToList();
+
+                        if (GetDocSetActions(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems").Any()) continue;
 
 
-                    var res =
-                        new ExportToCSV<UnClassifiedItem,
-                            List<UnClassifiedItem>>();
-                    res.dataToPrint = errors;
-                    using (var sta = new StaTaskScheduler(numberOfThreads: 1))
-                    {
-                        Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None,
-                            TaskCreationOptions.None, sta);
+                        var errorfile = Path.Combine(directory, $"UnclassifiedItems-{email.Key}.csv");
+                        var errors = email.Select(x => new UnClassifiedItem()
+                        {
+                            InvoiceNo = x.InvoiceNo,
+                            ItemNumber = x.ItemNumber,
+                            LineNumber = x.LineNumber.GetValueOrDefault(),
+                            ItemDescription = x.ItemDescription,
+                            TariffCode = x.TariffCode
+                        }).ToList();
+
+
+                        var res =
+                            new ExportToCSV<UnClassifiedItem,
+                                List<UnClassifiedItem>>();
+                        res.dataToPrint = errors;
+                        using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                        {
+                            Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None,
+                                TaskCreationOptions.None, sta);
+                        }
+
+                        var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
+                        if (File.Exists(errorfile))
+                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(email.Key.EmailId), Client,
+                                $"Error:UnClassified Items",
+                                "Please Fill out the attached Tarrif Codes and resend CSV...",
+                                contacts.Select(x => x.EmailAddress).ToArray(),
+                                new string[] { errorfile });
+
+                        LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
+
+
                     }
-
-                    var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
-                    if (File.Exists(errorfile))
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(email.Key),Client, 
-                            $"Error:UnClassified Items", "Please Fill out the attached Tarrif Codes and resend CSV...",
-                            contacts.Select(x => x.EmailAddress).ToArray(),
-                            new string[] {errorfile});
-
-                    
                 }
             }
-
-
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public static void SubmitIncompleteSuppliers()
@@ -1119,17 +1202,20 @@ namespace AutoBot
 
 
 
-            using (var ctx = new EntryDataDSContext())
+            using (var ctx = new CoreEntitiesContext())
             {
 
-                var suppliers = ctx.Suppliers
+                var suppliers = ctx.TODO_SubmitIncompleteSupplierInfo
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => x.CountryCode == null || x.SupplierName == null || x.Street == null);
-                    
-                
+                    .GroupBy(x => new { x.AsycudaDocumentSetId, x.SupplierCode }).ToList();
+
+                foreach (var sup in suppliers)
+                {
+                    if (GetDocSetActions(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers").Any()) continue;
+
                     var errorfile = Path.Combine(directory, $"IncompleteSuppliers.csv");
-                    var errors = suppliers.Select(x => new IncompleteSupplier()
+                    var errors = sup.Select(x => new IncompleteSupplier()
                     {
                         SupplierName = x.SupplierName,
                         SupplierCode = x.SupplierCode,
@@ -1148,15 +1234,18 @@ namespace AutoBot
                             TaskCreationOptions.None, sta);
                     }
 
-                    var contacts = new CoreEntitiesContext().Contacts.Where(x => x.Role == "Broker" || x.Role == "PO Clerk").ToList();
+                    var contacts = new CoreEntitiesContext().Contacts
+                        .Where(x => x.Role == "Broker" || x.Role == "PO Clerk").ToList();
                     if (File.Exists(errorfile))
-                        EmailDownloader.EmailDownloader.SendEmail(Client,  directory, 
-                            $"Error:InComplete Supplier Info",contacts.Select(x => x.EmailAddress).ToArray(), "Please Fill out the attached Supplier Info and resend CSV...",
+                        EmailDownloader.EmailDownloader.SendEmail(Client, directory,
+                            $"Error:InComplete Supplier Info", contacts.Select(x => x.EmailAddress).ToArray(),
+                            "Please Fill out the attached Supplier Info and resend CSV...",
                             new string[] { errorfile });
 
+                    LogDocSetAction(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers");
 
                 }
-            
+            }
 
 
 
@@ -1177,11 +1266,11 @@ namespace AutoBot
                     var lst = ctx.TODO_SubmitInadequatePackages.Where(x =>
                         x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                             .ApplicationSettingsId).ToList();
-                        
+
                     foreach (var docSet in lst)
                     {
 
-
+                        if (GetDocSetActions(docSet.AsycudaDocumentSetId, "SubmitInadequatePackages").Any()) continue;
 
                         var body = $"Error: Inadequate Lines\r\n" +
                                    $"\r\n" +
@@ -1195,13 +1284,13 @@ namespace AutoBot
                                    $"Regards,\r\n" +
                                    $"AutoBot";
                         List<string> attlst = new List<string>();
+                        EmailDownloader.EmailDownloader.SendEmail(Client, "", $"Shipment: {docSet.Declarant_Reference_Number}",
+                            contacts, body, attlst.ToArray());
+
+                        LogDocSetAction(docSet.AsycudaDocumentSetId, "SubmitInadequatePackages");
 
 
 
-                        
-                            EmailDownloader.EmailDownloader.SendEmail(Client, "", $"Shipment: {docSet.Declarant_Reference_Number}",
-                                contacts, body, attlst.ToArray());
-                        
                     }
 
                 }
@@ -1210,6 +1299,31 @@ namespace AutoBot
             {
 
                 throw e;
+            }
+        }
+
+        private static void LogDocSetAction(int docSetId, string actionName)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var action = ctx.Actions.FirstOrDefault(x => x.Name == actionName);
+                if (action == null) throw new ApplicationException($"Action with name:{actionName} not found");
+                ctx.ActionDocSetLogs.Add(new ActionDocSetLogs(true)
+                {
+                    ActonId = action.Id,
+                    AsycudaDocumentSetId = docSetId,
+                    TrackingState = TrackingState.Added
+                });
+                ctx.SaveChanges();
+            }
+        }
+
+        private static List<ActionDocSetLogs> GetDocSetActions(int docSetId, string actionName)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                return ctx.ActionDocSetLogs.Where(x => x.Actions.Name == actionName && x.AsycudaDocumentSetId == docSetId).ToList();
+
             }
         }
 
@@ -1240,7 +1354,7 @@ namespace AutoBot
                                    $"\r\n" +
                                    $"The Following Comments Classification(DutyFree Or Duty Paid) are Unknown.\r\n" +
                                    $"{docSet.MaxEntryLines}.\r\n" +
-                                   
+
                                    $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
@@ -1278,7 +1392,7 @@ namespace AutoBot
                 var lst = ctx.TODO_DocumentsToDelete
                     .Where(x => x.ApplicationSettingsId ==
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Select(x => new {x.ASYCUDA_Id, x.AsycudaDocumentSetId}).ToList();
+                    .Select(x => new { x.ASYCUDA_Id, x.AsycudaDocumentSetId }).ToList();
                 foreach (var itm in lst)
                 {
                     using (var dtx = new DocumentDSContext())
@@ -1293,7 +1407,7 @@ namespace AutoBot
 
                         dtx.SaveChanges();
                     }
-                        
+
                     BaseDataModel.Instance.DeleteAsycudaDocument(itm.ASYCUDA_Id).Wait();
                 }
 
@@ -1332,7 +1446,7 @@ namespace AutoBot
                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
 
                 SaveCSVReport(errors, errorfile);
-            
+
                 var contacts = ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Customs").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList();
                 contacts.AddRange(ctx.FileTypes.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Where(x => x.Type == "Sales").SelectMany(x => x.FileTypeContacts.Select(z => z.Contacts)).ToList());
                 contacts = ctx.Contacts.Where(x => x.Role == "Developer").ToList();
@@ -1386,7 +1500,7 @@ namespace AutoBot
                 if (File.Exists(errorfile))
                 {
                     var body = "Attached are Issues that have been found on Assessed Entries that prevent Ex-warehousing. \r\n" +
-                               
+
                                $"{Client.CompanyName} is kindly requesting Technical Assistance in resolving these issues to facilitate Ex-Warehousing. \r\n" +
                                $"\r\n" +
                                $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
@@ -1484,7 +1598,7 @@ namespace AutoBot
             try
             {
 
-                
+
                 if (!contacts.Any() || BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true) return;
                 if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
                 var lst = CurrentPOInfo();
@@ -1492,7 +1606,7 @@ namespace AutoBot
                 {
 
                     if (poInfo.Item1 == null) return;
-                    
+
                     var reference = poInfo.Item1.Declarant_Reference_Number;
                     var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         reference);
@@ -1538,11 +1652,13 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var lst = ctx.TODO_ImportCompleteEntries
+                    var entries = ctx.TODO_ImportCompleteEntries
                         .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                    var lst = entries
+
                         .GroupBy(x => x.AsycudaDocumentSetId)
-                        .Join(ctx.AsycudaDocumentSetExs, x => x.Key, z => z.AsycudaDocumentSetId, (x,z)=> new {x,z}).ToList();
+                        .Join(ctx.AsycudaDocumentSetExs.Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();
                     foreach (var doc in lst)
                     {
                         var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, doc.z.Declarant_Reference_Number)); ;
@@ -1554,7 +1670,7 @@ namespace AutoBot
                         }
                     }
                 }
-              
+
             }
             catch (Exception e)
             {
@@ -1588,7 +1704,7 @@ namespace AutoBot
                         ? line.Replace($"{DateTime.Now.Year}\t", "").Split('\t')
                         : line.Split('\t');
                     if (p.Length < 8) continue;
-                    if (File.Exists(Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{p[5]}.pdf")) 
+                    if (File.Exists(Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{p[5]}.pdf"))
                         && File.Exists(Path.Combine(desFolder, $"{p[7] + p[8]}-{p[0]}-{p[5]}-Assessment.pdf")))
                     {
                         existingfiles += 1;
@@ -1613,12 +1729,13 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var lst = ctx.TODO_ImportCompleteEntries
+                    var entries = ctx.TODO_ImportCompleteEntries
                         .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                    var lst = entries
                         .GroupBy(x => x.AsycudaDocumentSetId)
-                        .Join(ctx.AsycudaDocumentSetExs, x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new {x, z})
-                        .ToList();
+                        .Join(ctx.AsycudaDocumentSetExs.Where(x => x.Declarant_Reference_Number != "Imports"), x => x.Key, z => z.AsycudaDocumentSetId, (x, z) => new { x, z }).ToList();
+
                     foreach (var doc in lst)
                     {
                         var directoryName = StringExtensions.UpdateToCurrentUser(
@@ -1626,43 +1743,43 @@ namespace AutoBot
                                 doc.z.Declarant_Reference_Number));
                         ;
                         Console.WriteLine("Link PDF Files");
-                        
-                            var csvFiles = new DirectoryInfo(directoryName).GetFiles()
-                                .Where(x => Regex.IsMatch(x.FullName,
-                                    @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<CNumber>\d+).*.pdf",
-                                    RegexOptions.IgnoreCase)).ToArray();
-                            foreach (var file in csvFiles)
-                            {
-                                var dfile = ctx.Attachments.FirstOrDefault(x => x.FilePath == file.FullName);
-                                if (dfile != null) continue;
-                                var mat = Regex.Match(file.FullName,
-                                    @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<CNumber>\d+).*.pdf",
-                                    RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                                if (!mat.Success) continue;
 
-                                var cnumber = mat.Groups["CNumber"].Value;
-                                var cdoc = ctx.AsycudaDocuments.FirstOrDefault(x => x.CNumber == cnumber);
-                                if (cdoc == null) continue;
+                        var csvFiles = new DirectoryInfo(directoryName).GetFiles()
+                            .Where(x => Regex.IsMatch(x.FullName,
+                                @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<CNumber>\d+).*.pdf",
+                                RegexOptions.IgnoreCase)).ToArray();
+                        foreach (var file in csvFiles)
+                        {
+                            var dfile = ctx.Attachments.FirstOrDefault(x => x.FilePath == file.FullName);
+                            if (dfile != null) continue;
+                            var mat = Regex.Match(file.FullName,
+                                @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<CNumber>\d+).*.pdf",
+                                RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                            if (!mat.Success) continue;
+
+                            var cnumber = mat.Groups["CNumber"].Value;
+                            var cdoc = ctx.AsycudaDocuments.FirstOrDefault(x => x.CNumber == cnumber);
+                            if (cdoc == null) continue;
 
 
-                                ctx.AsycudaDocument_Attachments.Add(
-                                    new AsycudaDocument_Attachments(true)
+                            ctx.AsycudaDocument_Attachments.Add(
+                                new AsycudaDocument_Attachments(true)
+                                {
+                                    AsycudaDocumentId = cdoc.ASYCUDA_Id,
+                                    Attachments = new Attachments(true)
                                     {
-                                        AsycudaDocumentId = cdoc.ASYCUDA_Id,
-                                        Attachments = new Attachments(true)
-                                        {
-                                            FilePath = file.FullName,
-                                            DocumentCode = "NA",
-                                            Reference = file.Name.Replace(file.Extension, ""),
-                                            TrackingState = TrackingState.Added
-
-                                        },
-
+                                        FilePath = file.FullName,
+                                        DocumentCode = "NA",
+                                        Reference = file.Name.Replace(file.Extension, ""),
                                         TrackingState = TrackingState.Added
-                                    });
+
+                                    },
+
+                                    TrackingState = TrackingState.Added
+                                });
 
 
-                        
+
 
                             ctx.SaveChanges();
 
@@ -1690,10 +1807,10 @@ namespace AutoBot
             try
 
             {
-                var directoryName = BaseDataModel.CurrentSalesInfo().Item4;//$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\";
+                var directoryName = $@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\"; //BaseDataModel.CurrentSalesInfo().Item4;
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
-                while (ImportComplete(directoryName,redownload, out lcont) == false)
+                while (ImportComplete(directoryName, redownload, out lcont) == false)
                 {
                     RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
                 }
@@ -1710,18 +1827,18 @@ namespace AutoBot
             try
 
             {
-                var directoryName =
-                    BaseDataModel.CurrentSalesInfo().Item4;//$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\";
+                var directoryName = $@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\";
+               // var directoryName = BaseDataModel.CurrentSalesInfo().Item4;//$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\";
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
-                 
+
                 for (int i = 0; i < trytimes; i++)
                 {
                     if (ImportComplete(directoryName, false, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
                     RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
-                    if (ImportComplete(directoryName, false ,out lcont)) break;
+                    if (ImportComplete(directoryName, false, out lcont)) break;
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -1752,14 +1869,15 @@ namespace AutoBot
                         doc.Declarant_Reference_Number, "InstructionResults.txt");
                     var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         doc.Declarant_Reference_Number, "Instructions.txt");
-                    
+
                     var lcont = 0;
                     while (AssessComplete(instrFile, resultsFile, out lcont) == false)
                     {
-                        RunSiKuLi(doc.AsycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                       // RunSiKuLi(doc.AsycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                        RunSiKuLi(doc.AsycudaDocumentSetId, "SaveIM7", lcont.ToString());
                     }
                 }
-                
+
             }
 
         }
@@ -1792,7 +1910,8 @@ namespace AutoBot
             var lcont = 0;
             while (AssessComplete(instrFile, resultsFile, out lcont) == false)
             {
-                RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                RunSiKuLi(asycudaDocumentSetId, "SaveIM7", lcont.ToString());
             }
 
 
@@ -1809,7 +1928,8 @@ namespace AutoBot
             var lcont = 0;
             while (AssessComplete(instrFile, resultsFile, out lcont) == false)
             {
-                RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
+               // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                RunSiKuLi(asycudaDocumentSetId, "SaveIM7", lcont.ToString());
             }
 
 
@@ -1903,7 +2023,7 @@ namespace AutoBot
         {
             lcont = 0;
 
-            var desFolder = directoryName + (directoryName.EndsWith(@"\")?"":"\\");
+            var desFolder = directoryName + (directoryName.EndsWith(@"\") ? "" : "\\");
             var overviewFile = Path.Combine(desFolder, "OverView.txt");
             if (File.Exists(overviewFile) && File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-2))
             {
@@ -1933,7 +2053,7 @@ namespace AutoBot
                     return false;
                 }
 
-                if (redownload &&  (DateTime.Now - new FileInfo(overviewFile).LastWriteTime).Minutes > 5) return false;
+                if (redownload && (DateTime.Now - new FileInfo(overviewFile).LastWriteTime).Minutes > 5) return false;
                 return existingfiles != 0;
             }
             else
@@ -2032,44 +2152,44 @@ namespace AutoBot
             try
             {
 
-           
-            lcont = 0;
+
+                lcont = 0;
 
 
-            if (File.Exists(instrFile))
-            {
-                if (!File.Exists(resultsFile)) return false;
-                var lines = File.ReadAllLines(instrFile);
-                var res = File.ReadAllLines(resultsFile);
-                if (res.Length == 0)
+                if (File.Exists(instrFile))
                 {
-
-                    return false;
-                }
-                
-
-                foreach (var line in lines)
-                {
-                    var p = line.Split('\t');
-                    if (lcont >= res.Length) return true;
-                    if (string.IsNullOrEmpty(res[lcont])) continue;
-                    var r = res[lcont].Split('\t');
-                    
-                    if (p[1] == r[1] && r.Length == 3 && r[2] == "Success")
+                    if (!File.Exists(resultsFile)) return false;
+                    var lines = File.ReadAllLines(instrFile);
+                    var res = File.ReadAllLines(resultsFile);
+                    if (res.Length == 0)
                     {
-                        lcont += 1;
-                        continue;
+
+                        return false;
                     }
-                    return false;
+
+
+                    foreach (var line in lines)
+                    {
+                        var p = line.Split('\t');
+                        if (lcont >= res.Length) return true;
+                        if (string.IsNullOrEmpty(res[lcont])) continue;
+                        var r = res[lcont].Split('\t');
+
+                        if (p[1] == r[1] && r.Length == 3 && r[2] == "Success")
+                        {
+                            lcont += 1;
+                            continue;
+                        }
+                        return false;
+                    }
+
+                    return true;
                 }
+                else
+                {
 
-                return true;
-            }
-            else
-            {
-
-                return true;
-            }
+                    return true;
+                }
             }
             catch (Exception)
             {
@@ -2105,29 +2225,32 @@ namespace AutoBot
             Console.WriteLine("Import C71");
             using (var ctx = new CoreEntitiesContext())
             {
-                var docSets = CurrentPOInfo();
+                var docSets = ctx.TODO_C71ToCreate.Where(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .ToList();
                 foreach (var poInfo in docSets)
                 {
-                    if (poInfo.Item1 == null) return;
-                    var reference = poInfo.Item1.Declarant_Reference_Number;
+                    
+                    var reference = poInfo.Declarant_Reference_Number;
                     var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         reference);
                     if (!Directory.Exists(directory)) continue;
-                    
+
                     var ft = ctx.FileTypes.FirstOrDefault(x => x.Type == "C71" && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return;
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == poInfo.Item1.AsycudaDocumentSetId)
+                        ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == poInfo.AsycudaDocumentSetId)
                             .Declarant_Reference_Number);
                     var lastC71 = new DirectoryInfo(desFolder).GetFiles().LastOrDefault(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase));
-                    var csvFiles = new FileInfo[]{ lastC71 };
+                    var csvFiles = new FileInfo[] { lastC71 };
 
                     if (csvFiles.Length > 0)
                     {
-                        
-                        BaseDataModel.Instance.ImportC71(poInfo.Item1.AsycudaDocumentSetId,
+
+                        BaseDataModel.Instance.ImportC71(poInfo.AsycudaDocumentSetId,
                             csvFiles.Select(x => x.FullName).ToList());
-                        ft.AsycudaDocumentSetId = poInfo.Item1.AsycudaDocumentSetId;
+                        ft.AsycudaDocumentSetId = poInfo.AsycudaDocumentSetId;
                         BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, ft).Wait();
 
                     }
@@ -2156,13 +2279,21 @@ namespace AutoBot
                     var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == poInfo.Item1.AsycudaDocumentSetId)
                             .Declarant_Reference_Number);
-                    var csvFiles = new DirectoryInfo(desFolder).GetFiles().Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase)).ToArray();
-                    if (csvFiles.Length > 0)
-                    {
+                    var csvFiles = new DirectoryInfo(desFolder).GetFiles().Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase)).ToList();
+                    if (!csvFiles.Any()) continue;
+                    
+                        foreach (var file in csvFiles.ToList())
+                        {
+                            var a = Licence.LoadFromFile(file.FullName);
+                       
+                            if (a.General_segment.Exporter_address.Text.Any(x => x.Contains(file.Name.Replace("-LIC.xml", "")))) csvFiles.Remove(file);
+ 
+                        }
+                        
                         BaseDataModel.Instance.ImportLicense(poInfo.Item1.AsycudaDocumentSetId, csvFiles.Select(x => x.FullName).ToList());
                         ft.AsycudaDocumentSetId = poInfo.Item1.AsycudaDocumentSetId;
-                        BaseDataModel.Instance.SaveAttachedDocuments(csvFiles, ft).Wait();
-                    }
+                        BaseDataModel.Instance.SaveAttachedDocuments(csvFiles.ToArray(), ft).Wait();
+                   
 
                 }
             }
@@ -2249,26 +2380,26 @@ namespace AutoBot
             try
             {
                 Console.WriteLine("Clean up Discrepancies");
-                
+
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 0;
                     var lst = ctx.TODO_DiscrepanciesAlreadyXMLed.Where(x =>
                                 x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
                                     .ApplicationSettingsId
-                            //    && x.AsycudaDocumentSetId == 1462
-                            //     && x.InvoiceNo == "53371108"
-                            //&& x.InvoiceDate >= saleInfo.Item1
-                            //    &&  x.InvoiceDate <= saleInfo.Item2
+                        //    && x.AsycudaDocumentSetId == 1462
+                        //     && x.InvoiceNo == "53371108"
+                        //&& x.InvoiceDate >= saleInfo.Item1
+                        //    &&  x.InvoiceDate <= saleInfo.Item2
                         )
-                        .Select(x => new {x.AsycudaDocumentSetId, x.EntryData_Id }).Distinct().ToList();
+                        .Select(x => new { x.AsycudaDocumentSetId, x.EntryData_Id }).Distinct().ToList();
 
                     using (var etx = new EntryDataDSContext())
                     {
                         var res = etx.EntryDataDetailsEx
                             .Where(x => x.DoNotAllocate == true || x.IsReconciled == true)
                             .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                            .Select(x => new {x.AsycudaDocumentSetId, x.EntryData_Id}).Distinct().ToList();
+                            .Select(x => new {x.AsycudaDocumentSetId, x.EntryData_Id }).Distinct().ToList();
 
                         lst.AddRange(res);
                     }
@@ -2284,8 +2415,8 @@ namespace AutoBot
                                    x.AsycudaDocumentSet.SystemDocumentSet == null
                                  && x.AsycudaDocumentSetId == doc.AsycudaDocumentSetId
                                 && x.EntryData_Id == doc.EntryData_Id);
-                            if(res != null)
-                            dtx.AsycudaDocumentSetEntryDatas.Remove(res);
+                            if (res != null)
+                                dtx.AsycudaDocumentSetEntryDatas.Remove(res);
 
                         }
 
@@ -2325,13 +2456,38 @@ namespace AutoBot
                     .Select(x => x.Key)
                     .Distinct()
                     .ToList();
-               
-                    foreach (var doc in lst)
-                    {
-                        BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
-                        BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
-                    }
-              
+
+                foreach (var doc in lst)
+                {
+                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                }
+
+            }
+        }
+
+        public static void ClearPOEntries()
+        {
+            Console.WriteLine("Clear PO Entries");
+
+            // var saleInfo = CurrentSalesInfo();
+
+
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var lst = ctx.TODO_PODocSetToExport.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                    .GroupBy(x => x.AsycudaDocumentSetId)
+                    //.Where(x => x.Key != null)
+                    .Select(x => x.Key)
+                    .Distinct()
+                    .ToList();
+
+                foreach (var doc in lst)
+                {
+                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                }
+
             }
         }
 
@@ -2345,19 +2501,27 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 0;
-                    var lst = ctx.TODO_AdjustmentsToXML.Where(x =>
-                                x.ApplicationSettingsId ==
-                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                && x.AdjustmentType == adjustmentType
-                            //   && x.AsycudaDocumentSetId == 1462
-                          //  && x.InvoiceNo == "ADJ-June 2019"
-                        // && x.ItemNumber == "HEL/003361001"
-                        //&& x.InvoiceDate >= saleInfo.Item1
-                        //    &&  x.InvoiceDate <= saleInfo.Item2
-                        ).ToList()
-                        .GroupBy(x => new {x.AsycudaDocumentSetId})
-                    //; group bugging and leaving out invoice nos
-                    .ToList();
+                    var lst = new CoreEntitiesContext().Database
+                        .SqlQuery<TODO_AdjustmentsToXML>(
+                            $"select * from [TODO_AdjustmentsToXML]  where ApplicationSettingsId = {BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}" +
+                            $"and AdjustmentType = '{adjustmentType}'")
+                        .ToList()
+                        .GroupBy(x => new { x.AsycudaDocumentSetId })
+                        .ToList();
+
+                    //var lst = ctx.TODO_AdjustmentsToXML.Where(x =>
+                    //            x.ApplicationSettingsId ==
+                    //            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                    //            && x.AdjustmentType == adjustmentType
+                    //   && x.AsycudaDocumentSetId == 1462
+                    //  && x.InvoiceNo == "ADJ-June 2019"
+                    // && x.ItemNumber == "HEL/003361001"
+                    //&& x.InvoiceDate >= saleInfo.Item1
+                    //    &&  x.InvoiceDate <= saleInfo.Item2
+                    // ).ToList()
+
+                    //; group bugging and leaving out invoice nos;
+
                     if (overwrite)
                     {
                         foreach (var doc in lst.Select(x => x.Key.AsycudaDocumentSetId).Distinct())
@@ -2384,19 +2548,19 @@ namespace AutoBot
                             new AdjustmentShortService().CreateIM9(filterExpression, false, false,
                                 doc.Key.AsycudaDocumentSetId, "IM4", "Duty Paid", adjustmentType).Wait();
 
-                             filterExpression =
-                                    $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")"
+                            filterExpression =
+                                   $"(ApplicationSettingsId == \"{BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}\")"
 
-                                    //$"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
-                                    //$" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
+                                   //$"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
+                                   //$" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
                                    // + $" && EntryDataId == \"ADJ-June 2019\""
-                                    //+ $" && ItemNumber == \"7IT/PR-LBL-RBN\""
-                                    + $" && DutyFreePaid == \"Duty Free\""
-                                    + $" && \"{doc.Select(x => x.InvoiceNo).Distinct().Aggregate((old, current) => old + "," + current)}\".Contains(EntryDataId)"
-                                ;
+                                   //+ $" && ItemNumber == \"7IT/PR-LBL-RBN\""
+                                   + $" && DutyFreePaid == \"Duty Free\""
+                                   + $" && \"{doc.Select(x => x.InvoiceNo).Distinct().Aggregate((old, current) => old + "," + current)}\".Contains(EntryDataId)"
+                               ;
                             new AdjustmentShortService().CreateIM9(filterExpression, false, false,
                                 doc.Key.AsycudaDocumentSetId, "IM4-801", "Duty Free", adjustmentType).Wait();
-                           // new AdjustmentOverService().CreateOPS(filterExpression, false, doc.Key.AsycudaDocumentSetId)
+                            // new AdjustmentOverService().CreateOPS(filterExpression, false, doc.Key.AsycudaDocumentSetId)
                             //    .Wait();
                         }
                         catch (Exception e)
@@ -2433,11 +2597,11 @@ namespace AutoBot
                     ctx.Database.CommandTimeout = 0;
                     var lst = ctx.TODO_DiscrepanciesToAssess.AsNoTracking()
                         .Where(x => x.Type == adjustmentType
-                            //&& x.InvoiceDate >= saleInfo.Item1
-                            //    &&  x.InvoiceDate <= saleInfo.Item2
+                        //&& x.InvoiceDate >= saleInfo.Item1
+                        //    &&  x.InvoiceDate <= saleInfo.Item2
                         )
                         //.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId )
-                        .GroupBy(x => new {x.AsycudaDocumentSetId, x.Declarant_Reference_Number}).ToList();
+                        .GroupBy(x => new { x.AsycudaDocumentSetId, x.Declarant_Reference_Number }).ToList();
                     foreach (var doc in lst)
                     {
 
@@ -2560,15 +2724,15 @@ namespace AutoBot
                     .Include(x => x.EmailMapping)
 
                     .Include("FileTypes.FileTypeMappings").First(x => x.ApplicationSettingsId == id);
-                
-                    // set BaseDataModel CurrentAppSettings
-                    BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
-                    //check emails
-                
+
+                // set BaseDataModel CurrentAppSettings
+                BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
+                //check emails
+
             }
         }
 
- 
+
 
         public static List<Tuple<AsycudaDocumentSetEx, string>> CurrentPOInfo()
         {
@@ -2576,13 +2740,15 @@ namespace AutoBot
             {
                 using (var ctx = new CoreEntitiesContext())
                 {
+                    ctx.Database.CommandTimeout = 0;
                     var poDocSet = ctx.TODO_PODocSet.Where(x =>
                         x.ApplicationSettingsId ==
-                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                    if (poDocSet != null)
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList();
+                    if (poDocSet.Any())
                     {
+                        var itmlst = poDocSet.Select(x => x.AsycudaDocumentSetId).ToList();
                         var docSet = ctx.AsycudaDocumentSetExs.Where(x =>
-                            poDocSet.Any(z => z.AsycudaDocumentSetId == x.AsycudaDocumentSetId));
+                            itmlst.Any(z => z == x.AsycudaDocumentSetId)).ToList();
                         var lst = new List<Tuple<AsycudaDocumentSetEx, string>>();
                         foreach (var item in docSet)
                         {
@@ -2612,20 +2778,20 @@ namespace AutoBot
             using (var ctx = new CoreEntitiesContext())
             {
                 var poDocSet = ctx.LicenceSummary.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).Select(x => x.AsycudaDocumentSetId).Distinct().ToList();
-                
-                    var docSet = ctx.AsycudaDocumentSetExs.Where(x => poDocSet.Any(z => z == x.AsycudaDocumentSetId)
-                                                                && x.AsycudaDocumentSet_Attachments.All(z => z.FileTypes.Type != "LIC"));
-                    var lst = new List<Tuple<AsycudaDocumentSetEx, string>>();
-                    foreach (var item in docSet)
-                    {
 
-                        var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            item.Declarant_Reference_Number));
-                        lst.Add(new Tuple<AsycudaDocumentSetEx, string>(item, dirPath));
-                    }
-                    return lst;
-                
-                
+                var docSet = ctx.AsycudaDocumentSetExs.Where(x => poDocSet.Any(z => z == x.AsycudaDocumentSetId)
+                                                            && x.AsycudaDocumentSet_Attachments.All(z => z.FileTypes.Type != "LIC"));
+                var lst = new List<Tuple<AsycudaDocumentSetEx, string>>();
+                foreach (var item in docSet)
+                {
+
+                    var dirPath = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        item.Declarant_Reference_Number));
+                    lst.Add(new Tuple<AsycudaDocumentSetEx, string>(item, dirPath));
+                }
+                return lst;
+
+
             }
         }
 
@@ -2674,7 +2840,7 @@ namespace AutoBot
 
         public static void CreatePOEntries(int asycudaDocumentSetId)
         {
-            
+
             try
             {
                 using (var ctx = new CoreEntitiesContext())
@@ -2697,7 +2863,7 @@ namespace AutoBot
                         .ToList();
                     foreach (var docSetId in res)
                     {
-                        
+
                         BaseDataModel.Instance.ClearAsycudaDocumentSet(docSetId.DocSetId).Wait();
                         BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(docSetId.DocSetId, 0);
 
@@ -2713,7 +2879,7 @@ namespace AutoBot
 
 
                         BaseDataModel.Instance.AddToEntry(
-                               (IEnumerable<int>) docSetId.Entrylst.Select(x => x.EntryDataDetailsId),
+                               (IEnumerable<int>)docSetId.Entrylst.Select(x => x.EntryDataDetailsId),
                                 docSetId.DocSetId,
                                (BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry ?? true), true, false).Wait();
 
@@ -2731,12 +2897,12 @@ namespace AutoBot
 
         public static void ExportPOEntries(int asycudaDocumentSetId)
         {
-            
+
             try
             {
                 using (var ctx = new DocumentDS.Business.Entities.DocumentDSContext())
                 {
-                    
+
                     IQueryable<xcuda_ASYCUDA> docs;
                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true)
                     {
@@ -2745,12 +2911,12 @@ namespace AutoBot
                         Console.WriteLine("Export PO Entries");
                         docs = ctx.xcuda_ASYCUDA
                                 .Include(x => x.xcuda_Declarant)
-                                
+
                                 .Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
                                             && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId == asycudaDocumentSetId
                                             && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
-                                            && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Type_of_declaration == "IM"
-                                            && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Declaration_gen_procedure_code == "7")
+                                           // && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Type_of_declaration == "IM"
+                                            && "4000,7400".Contains( x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Extended_customs_procedure) )
                             ;
                     }
                     else
@@ -2764,22 +2930,24 @@ namespace AutoBot
                                         && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId ==
                                         asycudaDocumentSetId
                                         && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type
-                                            .Type_of_declaration == "IM"
-                                        && x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type
-                                            .Declaration_gen_procedure_code == "7");
+                                        && "4000,7400".Contains(x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Extended_customs_procedure)
+                                        //&& x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Type_of_declaration == "IM"
+                                        //&& x.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Document_Type.Declaration_gen_procedure_code == "7"
+                                        )
+                            
+                            ;
                     }
 
                     var res = docs.GroupBy(x => new
-                            {
-                                x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId,
-                                ReferenceNumber = x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
+                    {
+                        x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.AsycudaDocumentSetId,
+                        ReferenceNumber = x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
                                     .Declarant_Reference_Number
-                            }).Select(x => new
-                        {
-                            DocSet = x.Key,
-                            Entrylst = x.Select(z => new { z, ReferenceNumber = z.xcuda_Declarant.Number }).ToList()
-                        })
+                    }).Select(x => new
+                    {
+                        DocSet = x.Key,
+                        Entrylst = x.Select(z => new { z, ReferenceNumber = z.xcuda_Declarant.Number }).ToList()
+                    })
                         .ToList();
 
 
@@ -2788,16 +2956,16 @@ namespace AutoBot
                         var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                             docSetId.DocSet.ReferenceNumber);
                         if (!Directory.Exists(directoryName)) continue;
-                        if(File.Exists(Path.Combine(directoryName, "Instructions.txt"))) File.Delete(Path.Combine(directoryName, "Instructions.txt"));
+                        if (File.Exists(Path.Combine(directoryName, "Instructions.txt"))) File.Delete(Path.Combine(directoryName, "Instructions.txt"));
                         foreach (var item in docSetId.Entrylst)
                         {
                             var expectedfileName = Path.Combine(directoryName, item.ReferenceNumber + ".xml");
                             //if (File.Exists(expectedfileName)) continue;
                             BaseDataModel.Instance.ExportDocument(expectedfileName, item.z).Wait();
 
-                        }                    
-                        
-                        
+                        }
+
+
                     }
 
                 }
@@ -2823,7 +2991,7 @@ namespace AutoBot
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         i.Item3.Declarant_Reference_Number)).Wait();
 
-               
+
             }
             catch (Exception e)
             {
@@ -2921,7 +3089,7 @@ namespace AutoBot
             public string ItemNumber { get; set; }
             public string ItemDescription { get; set; }
             public string TariffCode { get; set; }
-           
+
         }
 
         public static ObservableCollection<SaleReportLine> IM9AdjustmentsReport(int ASYCUDA_Id)
@@ -2943,7 +3111,7 @@ namespace AutoBot
                     var d =
                         alst.Where(x => x.xLineNumber != null)
                             .Where(x => !string.IsNullOrEmpty(x.pCNumber))// prevent pre assessed entries
-                            .Where(x => x.pItemNumber.Length <= 17) // to match the entry
+                            .Where(x => x.pItemNumber.Length <= 20) // to match the entry
                             .OrderBy(s => s.xLineNumber)
                             .ThenBy(s => s.InvoiceNo)
                             .Select(s => new SaleReportLine
@@ -3001,7 +3169,7 @@ namespace AutoBot
                     var d =
                         alst.Where(x => x.xLineNumber != null)
                             .Where(x => !string.IsNullOrEmpty(x.pCNumber))// prevent pre assessed entries
-                            .Where(x => x.pItemNumber.Length <= 17) // to match the entry
+                            .Where(x => x.pItemNumber.Length <= 20) // to match the entry
                             .OrderBy(s => s.xLineNumber)
                             .ThenBy(s => s.InvoiceNo)
                             .Select(s => new SaleReportLine
@@ -3009,7 +3177,7 @@ namespace AutoBot
                                 Line = Convert.ToInt32(s.xLineNumber),
                                 Date = Convert.ToDateTime(s.InvoiceDate),
                                 InvoiceNo = s.InvoiceNo,
-                                CustomerName = s.CustomerName.StartsWith("- ")? s.CustomerName.Substring("- ".Length) : s.CustomerName,
+                                CustomerName = s.CustomerName.StartsWith("- ") ? s.CustomerName.Substring("- ".Length) : s.CustomerName,
                                 ItemNumber = s.ItemNumber,
                                 ItemDescription = s.ItemDescription,
                                 TariffCode = s.TariffCode,
@@ -3067,7 +3235,7 @@ namespace AutoBot
                                 x.Attachments.FilePath == file.FullName &&
                                 x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
 
-                        using (var ctx1 = new CoreEntitiesContext() {StartTracking = true})
+                        using (var ctx1 = new CoreEntitiesContext() { StartTracking = true })
                         {
                             var oldemail = ctx1.Emails.FirstOrDefault(x => x.EmailUniqueId == email.EmailId);
                             if (oldemail == null)
@@ -3127,11 +3295,11 @@ namespace AutoBot
         public static FileInfo[] CanSaveFileInfo(FileInfo[] csvFiles)
         {
             var res = new List<FileInfo>();
-            
-                using (var ctx = new CoreEntitiesContext())
-                {
-                    var infos = ctx.InfoMapping.Where(x => x.EntityType == "AsycudaDocumentSet")
-                        .ToList();
+
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var infos = ctx.InfoMapping.Where(x => x.EntityType == "AsycudaDocumentSet")
+                    .ToList();
                 foreach (var file in csvFiles)
                 {
                     var fileTxt = File.ReadAllLines(file.FullName);
@@ -3147,7 +3315,7 @@ namespace AutoBot
                             }
                     }
 
-                    
+
                 }
             }
             return res.ToArray();
@@ -3178,17 +3346,17 @@ namespace AutoBot
                     {
 
                         var im = res.SelectMany(x => x.InfoMappingRegEx.Select(z => new
-                            {
-                                Rx = z,
-                                Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase),
-                                Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase)
-                            }))
+                        {
+                            Rx = z,
+                            Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase),
+                            Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase)
+                        }))
                             .Where(z => z.Key.Success && z.Field.Success).ToList();
 
                         //match = Regex.Match(line,
                         //    @"[.]*((?<Key>[a-zA-Z\(\)]+)[:\s\#]+(?<Value>[a-zA-Z0-9\- :$,/\.]*))", RegexOptions.IgnoreCase);
-//res.Where(x =>
-//                            x.Key.ToLower() == match.Groups["Key"].Value.Trim().ToLower())
+                        //res.Where(x =>
+                        //                            x.Key.ToLower() == match.Groups["Key"].Value.Trim().ToLower())
 
                         if (im.Any())
                             foreach (var infoMapping in im)
@@ -3316,10 +3484,10 @@ namespace AutoBot
 
                 try
                 {
-                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, true)//set to false to merge
+                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, false)//set to false to merge
                         .Wait();
-                    
-                    
+
+
                     //if (VerifyCSVImport(file))
                     //    return;
                     //else
@@ -3335,7 +3503,59 @@ namespace AutoBot
                                 x.AsycudaDocumentSet_Attachments.Attachments.FilePath == file.FullName
                                 && x.Status == "Sender Informed of Error") == null)
                         {
-                            var att = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed","")));
+                            var att = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")));
+                            var body = "Error While Importing: \r\n" +
+                                       $"File: {file}\r\n" +
+                                       $"Error: {(e.InnerException ?? e).Message.Replace(file.FullName, file.Name)} \r\n" +
+                                       $"Please Check the spreadsheet or inform Joseph Bartholomew if this is an Error.\r\n" +
+                                       $"Regards,\r\n" +
+                                       $"AutoBot";
+                            var emailId = ctx.AsycudaDocumentSet_Attachments
+                                .FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")))?.EmailUniqueId;
+                            EmailDownloader.EmailDownloader.SendBackMsg(Convert.ToInt32(emailId), Client, body);
+                            ctx.AttachmentLog.Add(new AttachmentLog(true)
+                            {
+                                DocSetAttachment = att.Id,
+                                Status = "Sender Informed of Error",
+                                TrackingState = TrackingState.Added
+                            });
+                            ctx.SaveChanges();
+                        }
+                    }
+
+
+                }
+            }
+        }
+
+        public static void ReplaceCSV(FileInfo[] csvFiles, FileTypes fileType)
+        {
+            Console.WriteLine("Importing CSV " + fileType.Type);
+            foreach (var file in csvFiles)
+            {
+
+                try
+                {
+                    SaveCSVModel.Instance.ProcessDroppedFile(file.FullName, fileType, true)//set to false to merge
+                        .Wait();
+
+
+                    //if (VerifyCSVImport(file))
+                    //    return;
+                    //else
+                    //    continue;
+
+                }
+                catch (Exception e)
+                {
+
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        if (ctx.AttachmentLog.FirstOrDefault(x =>
+                                x.AsycudaDocumentSet_Attachments.Attachments.FilePath == file.FullName
+                                && x.Status == "Sender Informed of Error") == null)
+                        {
+                            var att = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x => x.Attachments.FilePath.Contains(file.FullName.Replace(file.Extension, "").Replace("-Fixed", "")));
                             var body = "Error While Importing: \r\n" +
                                        $"File: {file}\r\n" +
                                        $"Error: {(e.InnerException ?? e).Message.Replace(file.FullName, file.Name)} \r\n" +
@@ -3362,7 +3582,7 @@ namespace AutoBot
 
         public static bool VerifyCSVImport(FileInfo file)
         {
-            var dt = CSV2DataTable(file,"NO");
+            var dt = CSV2DataTable(file, "NO");
             if (dt.Rows.Count == 0) return false;
             var fileRes = dt.AsEnumerable()
                 .Where(x => x[0] != DBNull.Value)
@@ -3436,7 +3656,7 @@ namespace AutoBot
                 var result = excelReader.AsDataSet();
                 excelReader.Close();
 
-                
+
                 int row_no = 0;
 
                 result.Tables[0].Columns.Add("LineNumber", typeof(int));
@@ -3445,7 +3665,7 @@ namespace AutoBot
                 ///insert linenumber
                 while (row_no < result.Tables[0].Rows.Count)
                 {
-                    
+
                     var dataRow = result.Tables[0].Rows[row_no];
                     dataRow["LineNumber"] = row_no;
                     rows.Add(dataRow);
@@ -3453,7 +3673,7 @@ namespace AutoBot
                 }
 
                 var table = new ConcurrentDictionary<int, string>();
-                Parallel.ForEach(rows, new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount * 1},
+                Parallel.ForEach(rows, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 },
                     row =>
                     {
                         StringBuilder a = new StringBuilder();
@@ -3465,18 +3685,18 @@ namespace AutoBot
                             a.Append("");
                         }
 
-                        for (int i = 0; i < result.Tables[0].Columns.Count-1; i++)
+                        for (int i = 0; i < result.Tables[0].Columns.Count - 1; i++)
                         {
-                            
+
                             a.Append(StringToCSVCell(row[i].ToString()) + ",");
                         }
 
-                       
+
                         a.Append("\n");
                         table.GetOrAdd(Convert.ToInt32(row["LineNumber"]), a.ToString());
                     });
 
-              
+
 
 
                 string output = Path.ChangeExtension(file.FullName, ".csv");
@@ -3499,13 +3719,13 @@ namespace AutoBot
                 if (fileType.FileTypeMappings.Count == 0)
                 {
                     throw new ApplicationException($"Missing File Type Mappings for {fileType.FilePattern}");
-                    
+
                 }
                 var dfile = new FileInfo(
                     $@"{file.DirectoryName}\{file.Name.Replace(".csv", "")}-Fixed{file.Extension}");
                 if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime) return;
                 // Reading from a binary Excel file (format; *.xlsx)
-                var dt = CSV2DataTable(file,"NO");
+                var dt = CSV2DataTable(file, "NO");
 
 
                 var table = new System.Collections.Concurrent.ConcurrentDictionary<int, string>();
@@ -3519,7 +3739,7 @@ namespace AutoBot
                     if (dt.Rows[drow_no].ItemArray.Count(x => !string.IsNullOrEmpty(x.ToString())) >=
                         fileType.FileTypeMappings.Count(x => x.Required))
                     {
-                        dt.Rows[drow_no]["LineNumber"] = drow_no;
+                        //dt.Rows[drow_no]["LineNumber"] = drow_no;// give value to prevent upper from bugging later
                         dRows.Add(dt.Rows[drow_no]);
                     }
                     //else
@@ -3539,151 +3759,156 @@ namespace AutoBot
                     dRows.Remove(row);
                 }
 
-                
+
                 var header = dRows[0];
-                for (int i = 0; i < header.ItemArray.Length; i++)
+                for (int i = 0; i < header.ItemArray.Length - 1; i++)
                 {
                     header[i] = header[i].ToString().ToUpper();
                 }
 
+                for (int i = 0; i < dRows.Count; i++)
+                {
+                    dRows[i]["LineNumber"] = i;
+                }
 
-                var missingMaps = fileType.FileTypeMappings.Where(x => x.Required)
+
+                var missingMaps = fileType.FileTypeMappings.Where(x => x.Required && !x.OriginalName.Contains("{"))
                     .Where(item => !header.ItemArray.Contains(item.OriginalName.ToUpper())).ToList();
                 if (missingMaps.Any())
                 {
                     EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                        new[] {"Josephbartholomew@outlook.com"},
-                        $"Required Field - '{missingMaps.Select(x => x.OriginalName).Aggregate((o, n) =>  o + "," + n )}' in File: {file.Name} dose not exists.",
+                        new[] { "Josephbartholomew@outlook.com" },
+                        $"Required Field - '{missingMaps.Select(x => x.OriginalName).Aggregate((o, n) => o + "," + n)}' in File: {file.Name} dose not exists.",
                         Array.Empty<string>());
                     return; // not right file type
                 }
 
                 var mappingMailSent = false;
-                        Parallel.ForEach(dRows, new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount * 1},
-                    drow =>
+                Parallel.ForEach(dRows, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 },
+            drow =>
+            {
+                var row = new System.Collections.Generic.Dictionary<string, string>();
+                var row_no = Convert.ToInt32(drow["LineNumber"]);
+                foreach (var mapping in fileType.FileTypeMappings.OrderBy(x => x.Id))
+                {
+                    var maps = mapping.OriginalName.Split('+');
+                    var val = "";
+                    foreach (var map in maps)
                     {
-                        var row = new System.Collections.Generic.Dictionary<string, string>();
-                        var row_no = Convert.ToInt32(drow["LineNumber"]);
-                        foreach (var mapping in fileType.FileTypeMappings.OrderBy(x => x.Id))
+                        if (!header.ItemArray.Contains(map.ToUpper()) &&
+                            !dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
                         {
-                            var maps = mapping.OriginalName.Split('+');
-                            var val = "";
-                            foreach (var map in maps)
+                            if (mapping.Required)
                             {
-                                if (!header.ItemArray.Contains(map.ToUpper()) &&
-                                    !dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
-                                {
-                                    if (mapping.Required)
-                                    {
-                                        if (mappingMailSent) return;
-                                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                            new[] {"Josephbartholomew@outlook.com"},
-                                            $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
-                                            Array.Empty<string>());
-                                        mappingMailSent = true;
-                                        return;
-                                    }
+                                if (mappingMailSent) return;
+                                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                    new[] { "Josephbartholomew@outlook.com" },
+                                    $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
+                                    Array.Empty<string>());
+                                mappingMailSent = true;
+                                return;
+                            }
 
                                     //TODO: log error
                                     continue;
-                                }
+                        }
 
-                                if (row_no == 0)
-                                {
-                                    val += mapping.DestinationName;
-                                    if (maps.Length > 1) break;
-                                }
-                                else
-                                {
+                        if (row_no == 0)
+                        {
+                            val += mapping.DestinationName;
+                            if (maps.Length > 1) break;
+                        }
+                        else
+                        {
                                     //if (string.IsNullOrEmpty(dt.Rows[row_no][map].ToString())) continue;
                                     if (dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
-                                    {
+                            {
 
-                                        val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row);
-                                    }
-                                    else
-                                    {
-                                        var index = Array.LastIndexOf(header.ItemArray,
-                                            map.ToUpper()); //last index of because of Cost USD file has two columns
+                                val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row);
+                            }
+                            else
+                            {
+                                var index = Array.LastIndexOf(header.ItemArray,
+                                    map.ToUpper()); //last index of because of Cost USD file has two columns
                                         val += drow[index];
-                                    }
-
-                                    if (maps.Length > 1 && map != maps.Last()) val += " - ";
-                                }
-
-
                             }
 
-                            
-                            if (val == "{NULL}") continue;
-                            if (val == "" && row_no == 0) continue;
-                            if (val == "" && row_no > 0 &&
-                                (!header.ItemArray.Contains(mapping.OriginalName.ToUpper()) &&
-                                 !dic.ContainsKey(mapping.OriginalName.Replace("{", "").Replace("}", "")))) continue;
-                            if (row_no > 0)
-                                if (string.IsNullOrEmpty(val) &&
-                                    (mapping.Required == true || mapping.DestinationName == "Invoice #")
-                                ) // took out because it will replace invoice no regardless
-                                {
-                                    if (mapping.DestinationName == "Invoice #")
-                                    {
-                                        val += dic["DIS-Reference"].Invoke(row);
+                            if (maps.Length > 1 && map != maps.Last()) val += " - ";
+                        }
 
-                                    }
-                                    else
-                                    {
+
+                    }
+
+
+                    if (val == "{NULL}") continue;
+                    if (val == "" && row_no == 0) continue;
+                    if (val == "" && row_no > 0 &&
+                        (!header.ItemArray.Contains(mapping.OriginalName.ToUpper()) &&
+                         !dic.ContainsKey(mapping.OriginalName.Replace("{", "").Replace("}", "")))) continue;
+                    if (row_no > 0)
+                        if (string.IsNullOrEmpty(val) &&
+                            (mapping.Required == true || mapping.DestinationName == "Invoice #")
+                        ) // took out because it will replace invoice no regardless
+                                {
+                            if (mapping.DestinationName == "Invoice #")
+                            {
+                                val += dic["DIS-Reference"].Invoke(row);
+
+                            }
+                            else
+                            {
                                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
                                         //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
 
                                         break;
-                                    }
+                            }
 
-                                }
+                        }
 
-                                else if (mapping.DataType == "Number")
-                                {
-                                    if (string.IsNullOrEmpty(val)) val = "0";
-                                    if (val.ToCharArray().All(x => !char.IsDigit(x)))
-                                    {
+                        else if (mapping.DataType == "Number")
+                        {
+                            if (string.IsNullOrEmpty(val)) val = "0";
+                            if (val.ToCharArray().All(x => !char.IsDigit(x)))
+                            {
                                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
                                         //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                                         break;
                                         //val = "";
                                     }
-                                }
-                                else if (mapping.DataType == "Date")
-                                {
-                                    if (DateTime.TryParse(val, out var tmp) == false)
-                                    {
+                        }
+                        else if (mapping.DataType == "Date")
+                        {
+                            if (DateTime.TryParse(val, out var tmp) == false)
+                            {
                                         //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
                                         //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                                         break;
                                         //  val = "";
                                     }
-                                }
-
-                            if (row.ContainsKey(mapping.DestinationName))
-                            {
-                                row[mapping.DestinationName] = StringToCSVCell(val);
-                            }
-                            else
-                            {
-                                row.Add(mapping.DestinationName, StringToCSVCell(val));
-                            }
-
-
-
-
-
                         }
 
-                        
+                    if (row.ContainsKey(mapping.DestinationName))
+                    {
+                        row[mapping.DestinationName] = StringToCSVCell(val);
+                    }
+                    else
+                    {
+                        row.Add(mapping.DestinationName, StringToCSVCell(val));
+                    }
 
-                        if (row.Count > 0 && row.Count >= fileType.FileTypeMappings.DistinctBy(x => x.DestinationName)
-                                .Count(x => x.Required == true))
-                            table.GetOrAdd(row_no, row.Where(x => x.Key.StartsWith("{") == false).Select(x => x.Value)
-                                         .Aggregate((a, x) => a + "," + x) + "\n");
-                    });
+
+
+
+
+                }
+
+
+
+                if (row.Count > 0 && row.Count >= fileType.FileTypeMappings.DistinctBy(x => x.DestinationName)
+                        .Count(x => x.Required == true))
+                    table.GetOrAdd(row_no, row.Where(x => x.Key.StartsWith("{") == false).Select(x => x.Value)
+                                 .Aggregate((a, x) => a + "," + x) + "\n");
+            });
 
 
 
@@ -3695,9 +3920,9 @@ namespace AutoBot
                 {
                     var fileTypes = fileType.ChildFileTypes.First();
                     fileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
-                    SaveCsv(new FileInfo[]{new FileInfo(output)}, fileTypes);
+                    SaveCsv(new FileInfo[] { new FileInfo(output) }, fileTypes);
                 }
-                 
+
             }
             catch (Exception e)
             {

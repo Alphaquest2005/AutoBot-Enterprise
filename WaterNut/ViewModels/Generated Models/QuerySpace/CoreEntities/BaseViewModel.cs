@@ -53,6 +53,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                  if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return;
  
 
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentActionDocSetLogsIDChanged, OnCurrentActionDocSetLogsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentActionsIDChanged, OnCurrentActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentApplicationSettingsIDChanged, OnCurrentApplicationSettingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentIDChanged, OnCurrentAsycudaDocumentIDChanged);
@@ -85,7 +86,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSessionScheduleIDChanged, OnCurrentSessionScheduleIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentSubItemsIDChanged, OnCurrentSubItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_AdjustmentsAlreadyXMLedIDChanged, OnCurrentTODO_AdjustmentsAlreadyXMLedIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_AdjustmentsToXMLIDChanged, OnCurrentTODO_AdjustmentsToXMLIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_C71ToCreateIDChanged, OnCurrentTODO_C71ToCreateIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_C71ToXMLIDChanged, OnCurrentTODO_C71ToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_CreateDiscrepancyEntriesIDChanged, OnCurrentTODO_CreateDiscrepancyEntriesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_CreateEx9IDChanged, OnCurrentTODO_CreateEx9IDChanged);
@@ -108,6 +109,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, OnCurrentTODO_ERRReport_UnmappedItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged, OnCurrentTODO_ImportCompleteEntriesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, OnCurrentTODO_LicenseToXMLIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LICToCreateIDChanged, OnCurrentTODO_LICToCreateIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetToExportIDChanged, OnCurrentTODO_PODocSetToExportIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentToDo_POToXMLIDChanged, OnCurrentToDo_POToXMLIDChanged);
@@ -116,6 +118,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitInadequatePackagesIDChanged, OnCurrentTODO_SubmitInadequatePackagesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataIDChanged, OnCurrentTODO_SubmitIncompleteEntryDataIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoIDChanged, OnCurrentTODO_SubmitIncompleteSupplierInfoIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsIDChanged, OnCurrentTODO_SubmitUnclassifiedItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitXMLToCustomsIDChanged, OnCurrentTODO_SubmitXMLToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_TotalAdjustmentsToProcessIDChanged, OnCurrentTODO_TotalAdjustmentsToProcessIDChanged);
@@ -125,6 +128,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
        
 
 			// Recieve messages for Current Object Changed
+                        RegisterToReceiveMessages<ActionDocSetLogs>(MessageToken.CurrentActionDocSetLogsChanged, OnCurrentActionDocSetLogsChanged);
                         RegisterToReceiveMessages<Actions>(MessageToken.CurrentActionsChanged, OnCurrentActionsChanged);
                         RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
                         RegisterToReceiveMessages<AsycudaDocument>(MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
@@ -157,7 +161,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<SessionSchedule>(MessageToken.CurrentSessionScheduleChanged, OnCurrentSessionScheduleChanged);
                         RegisterToReceiveMessages<SubItems>(MessageToken.CurrentSubItemsChanged, OnCurrentSubItemsChanged);
                         RegisterToReceiveMessages<TODO_AdjustmentsAlreadyXMLed>(MessageToken.CurrentTODO_AdjustmentsAlreadyXMLedChanged, OnCurrentTODO_AdjustmentsAlreadyXMLedChanged);
-                        RegisterToReceiveMessages<TODO_AdjustmentsToXML>(MessageToken.CurrentTODO_AdjustmentsToXMLChanged, OnCurrentTODO_AdjustmentsToXMLChanged);
+                        RegisterToReceiveMessages<TODO_C71ToCreate>(MessageToken.CurrentTODO_C71ToCreateChanged, OnCurrentTODO_C71ToCreateChanged);
                         RegisterToReceiveMessages<TODO_C71ToXML>(MessageToken.CurrentTODO_C71ToXMLChanged, OnCurrentTODO_C71ToXMLChanged);
                         RegisterToReceiveMessages<TODO_CreateDiscrepancyEntries>(MessageToken.CurrentTODO_CreateDiscrepancyEntriesChanged, OnCurrentTODO_CreateDiscrepancyEntriesChanged);
                         RegisterToReceiveMessages<TODO_CreateEx9>(MessageToken.CurrentTODO_CreateEx9Changed, OnCurrentTODO_CreateEx9Changed);
@@ -180,6 +184,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_ERRReport_UnmappedItems>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged, OnCurrentTODO_ERRReport_UnmappedItemsChanged);
                         RegisterToReceiveMessages<TODO_ImportCompleteEntries>(MessageToken.CurrentTODO_ImportCompleteEntriesChanged, OnCurrentTODO_ImportCompleteEntriesChanged);
                         RegisterToReceiveMessages<TODO_LicenseToXML>(MessageToken.CurrentTODO_LicenseToXMLChanged, OnCurrentTODO_LicenseToXMLChanged);
+                        RegisterToReceiveMessages<TODO_LICToCreate>(MessageToken.CurrentTODO_LICToCreateChanged, OnCurrentTODO_LICToCreateChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
                         RegisterToReceiveMessages<TODO_PODocSetToExport>(MessageToken.CurrentTODO_PODocSetToExportChanged, OnCurrentTODO_PODocSetToExportChanged);
                         RegisterToReceiveMessages<ToDo_POToXML>(MessageToken.CurrentToDo_POToXMLChanged, OnCurrentToDo_POToXMLChanged);
@@ -188,6 +193,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_SubmitDocSetWithIncompleteInvoices>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged);
                         RegisterToReceiveMessages<TODO_SubmitInadequatePackages>(MessageToken.CurrentTODO_SubmitInadequatePackagesChanged, OnCurrentTODO_SubmitInadequatePackagesChanged);
                         RegisterToReceiveMessages<TODO_SubmitIncompleteEntryData>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataChanged, OnCurrentTODO_SubmitIncompleteEntryDataChanged);
+                        RegisterToReceiveMessages<TODO_SubmitIncompleteSupplierInfo>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoChanged, OnCurrentTODO_SubmitIncompleteSupplierInfoChanged);
                         RegisterToReceiveMessages<TODO_SubmitUnclassifiedItems>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsChanged, OnCurrentTODO_SubmitUnclassifiedItemsChanged);
                         RegisterToReceiveMessages<TODO_SubmitXMLToCustoms>(MessageToken.CurrentTODO_SubmitXMLToCustomsChanged, OnCurrentTODO_SubmitXMLToCustomsChanged);
                         RegisterToReceiveMessages<TODO_TotalAdjustmentsToProcess>(MessageToken.CurrentTODO_TotalAdjustmentsToProcessChanged, OnCurrentTODO_TotalAdjustmentsToProcessChanged);
@@ -213,6 +219,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 
 
+                        internal async void OnCurrentActionDocSetLogsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ActionDocSetLogsRepository ctx = new ActionDocSetLogsRepository())
+                            {
+                                CurrentActionDocSetLogs = await ctx.GetActionDocSetLogs(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentActionDocSetLogs);
+                        }
+
+                        private  string _currentActionDocSetLogsID = "";
+                        public string CurrentActionDocSetLogsID
+                        {
+                            get
+                            {
+                                return _currentActionDocSetLogsID;
+                            }
+                            set
+                            {
+                                if (_currentActionDocSetLogsID != value)
+                                {
+                                    _currentActionDocSetLogsID = value;
+                                    if (!string.IsNullOrEmpty(_currentActionDocSetLogsID)) BeginSendMessage(MessageToken.CurrentActionDocSetLogsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentActionDocSetLogsIDChanged, _currentActionDocSetLogsID));
+                                    NotifyPropertyChanged(x => this.CurrentActionDocSetLogsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentActionsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (ActionsRepository ctx = new ActionsRepository())
@@ -1077,30 +1110,30 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
-                        internal async void OnCurrentTODO_AdjustmentsToXMLIDChanged(object sender, NotificationEventArgs<string> e)
+                        internal async void OnCurrentTODO_C71ToCreateIDChanged(object sender, NotificationEventArgs<string> e)
                         {
-                            using (TODO_AdjustmentsToXMLRepository ctx = new TODO_AdjustmentsToXMLRepository())
+                            using (TODO_C71ToCreateRepository ctx = new TODO_C71ToCreateRepository())
                             {
-                                CurrentTODO_AdjustmentsToXML = await ctx.GetTODO_AdjustmentsToXML(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                                CurrentTODO_C71ToCreate = await ctx.GetTODO_C71ToCreate(e.Data).ConfigureAwait(continueOnCapturedContext: false);
                             }
-                            NotifyPropertyChanged(m => CurrentTODO_AdjustmentsToXML);
+                            NotifyPropertyChanged(m => CurrentTODO_C71ToCreate);
                         }
 
-                        private  string _currentTODO_AdjustmentsToXMLID = "";
-                        public string CurrentTODO_AdjustmentsToXMLID
+                        private  string _currentTODO_C71ToCreateID = "";
+                        public string CurrentTODO_C71ToCreateID
                         {
                             get
                             {
-                                return _currentTODO_AdjustmentsToXMLID;
+                                return _currentTODO_C71ToCreateID;
                             }
                             set
                             {
-                                if (_currentTODO_AdjustmentsToXMLID != value)
+                                if (_currentTODO_C71ToCreateID != value)
                                 {
-                                    _currentTODO_AdjustmentsToXMLID = value;
-                                    if (!string.IsNullOrEmpty(_currentTODO_AdjustmentsToXMLID)) BeginSendMessage(MessageToken.CurrentTODO_AdjustmentsToXMLIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_AdjustmentsToXMLIDChanged, _currentTODO_AdjustmentsToXMLID));
-                                    NotifyPropertyChanged(x => this.CurrentTODO_AdjustmentsToXMLID);  
+                                    _currentTODO_C71ToCreateID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_C71ToCreateID)) BeginSendMessage(MessageToken.CurrentTODO_C71ToCreateIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_C71ToCreateIDChanged, _currentTODO_C71ToCreateID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_C71ToCreateID);  
                                 }
                             }
                         }
@@ -1698,6 +1731,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentTODO_LICToCreateIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_LICToCreateRepository ctx = new TODO_LICToCreateRepository())
+                            {
+                                CurrentTODO_LICToCreate = await ctx.GetTODO_LICToCreate(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_LICToCreate);
+                        }
+
+                        private  string _currentTODO_LICToCreateID = "";
+                        public string CurrentTODO_LICToCreateID
+                        {
+                            get
+                            {
+                                return _currentTODO_LICToCreateID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_LICToCreateID != value)
+                                {
+                                    _currentTODO_LICToCreateID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_LICToCreateID)) BeginSendMessage(MessageToken.CurrentTODO_LICToCreateIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_LICToCreateIDChanged, _currentTODO_LICToCreateID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_LICToCreateID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentTODO_PODocSetIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (TODO_PODocSetRepository ctx = new TODO_PODocSetRepository())
@@ -1914,6 +1974,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentTODO_SubmitIncompleteSupplierInfoIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitIncompleteSupplierInfoRepository ctx = new TODO_SubmitIncompleteSupplierInfoRepository())
+                            {
+                                CurrentTODO_SubmitIncompleteSupplierInfo = await ctx.GetTODO_SubmitIncompleteSupplierInfo(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitIncompleteSupplierInfo);
+                        }
+
+                        private  string _currentTODO_SubmitIncompleteSupplierInfoID = "";
+                        public string CurrentTODO_SubmitIncompleteSupplierInfoID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitIncompleteSupplierInfoID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitIncompleteSupplierInfoID != value)
+                                {
+                                    _currentTODO_SubmitIncompleteSupplierInfoID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitIncompleteSupplierInfoID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoIDChanged, _currentTODO_SubmitIncompleteSupplierInfoID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitIncompleteSupplierInfoID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentTODO_SubmitUnclassifiedItemsIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (TODO_SubmitUnclassifiedItemsRepository ctx = new TODO_SubmitUnclassifiedItemsRepository())
@@ -2083,6 +2170,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentActionDocSetLogsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ActionDocSetLogs> e)
+        {
+            //CurrentActionDocSetLogs = e.Data;
+            NotifyPropertyChanged(m => this.CurrentActionDocSetLogs);
+        }
+
+        private  ActionDocSetLogs _currentActionDocSetLogs;
+        public ActionDocSetLogs CurrentActionDocSetLogs
+        {
+            get
+            {
+                return _currentActionDocSetLogs;
+            }
+            set
+            {
+                if (_currentActionDocSetLogs != value)
+                {
+                    _currentActionDocSetLogs = value;
+                    BeginSendMessage(MessageToken.CurrentActionDocSetLogsChanged,
+                                                     new NotificationEventArgs<ActionDocSetLogs>(MessageToken.CurrentActionDocSetLogsChanged, _currentActionDocSetLogs)); 
+                    NotifyPropertyChanged(x => this.CurrentActionDocSetLogs);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<ActionDocSetLogs> _vcurrentActionDocSetLogs;
+        public VirtualListItem<ActionDocSetLogs> VCurrentActionDocSetLogs
+        {
+            get
+            {
+                return _vcurrentActionDocSetLogs;
+            }
+            set
+            {
+                if (_vcurrentActionDocSetLogs != value)
+                {
+                    _vcurrentActionDocSetLogs = value;
+					if(_vcurrentActionDocSetLogs != null) CurrentActionDocSetLogs = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentActionDocSetLogs);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentActionsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Actions> e)
         {
             //CurrentActions = e.Data;
@@ -2107,6 +2244,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     // all current navigation properties = null
                  CurrentFileTypeActions = null;
                  CurrentSessionActions = null;
+                 CurrentActionDocSetLogs = null;
    
                 }
             }
@@ -3719,47 +3857,47 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
-        internal void OnCurrentTODO_AdjustmentsToXMLChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_AdjustmentsToXML> e)
+        internal void OnCurrentTODO_C71ToCreateChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_C71ToCreate> e)
         {
-            //CurrentTODO_AdjustmentsToXML = e.Data;
-            NotifyPropertyChanged(m => this.CurrentTODO_AdjustmentsToXML);
+            //CurrentTODO_C71ToCreate = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_C71ToCreate);
         }
 
-        private  TODO_AdjustmentsToXML _currentTODO_AdjustmentsToXML;
-        public TODO_AdjustmentsToXML CurrentTODO_AdjustmentsToXML
+        private  TODO_C71ToCreate _currentTODO_C71ToCreate;
+        public TODO_C71ToCreate CurrentTODO_C71ToCreate
         {
             get
             {
-                return _currentTODO_AdjustmentsToXML;
+                return _currentTODO_C71ToCreate;
             }
             set
             {
-                if (_currentTODO_AdjustmentsToXML != value)
+                if (_currentTODO_C71ToCreate != value)
                 {
-                    _currentTODO_AdjustmentsToXML = value;
-                    BeginSendMessage(MessageToken.CurrentTODO_AdjustmentsToXMLChanged,
-                                                     new NotificationEventArgs<TODO_AdjustmentsToXML>(MessageToken.CurrentTODO_AdjustmentsToXMLChanged, _currentTODO_AdjustmentsToXML)); 
-                    NotifyPropertyChanged(x => this.CurrentTODO_AdjustmentsToXML);    
+                    _currentTODO_C71ToCreate = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_C71ToCreateChanged,
+                                                     new NotificationEventArgs<TODO_C71ToCreate>(MessageToken.CurrentTODO_C71ToCreateChanged, _currentTODO_C71ToCreate)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_C71ToCreate);    
                     // all current navigation properties = null
    
                 }
             }
         }
 
-		VirtualListItem<TODO_AdjustmentsToXML> _vcurrentTODO_AdjustmentsToXML;
-        public VirtualListItem<TODO_AdjustmentsToXML> VCurrentTODO_AdjustmentsToXML
+		VirtualListItem<TODO_C71ToCreate> _vcurrentTODO_C71ToCreate;
+        public VirtualListItem<TODO_C71ToCreate> VCurrentTODO_C71ToCreate
         {
             get
             {
-                return _vcurrentTODO_AdjustmentsToXML;
+                return _vcurrentTODO_C71ToCreate;
             }
             set
             {
-                if (_vcurrentTODO_AdjustmentsToXML != value)
+                if (_vcurrentTODO_C71ToCreate != value)
                 {
-                    _vcurrentTODO_AdjustmentsToXML = value;
-					if(_vcurrentTODO_AdjustmentsToXML != null) CurrentTODO_AdjustmentsToXML = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentTODO_AdjustmentsToXML);                    
+                    _vcurrentTODO_C71ToCreate = value;
+					if(_vcurrentTODO_C71ToCreate != null) CurrentTODO_C71ToCreate = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_C71ToCreate);                    
                 }
             }
         }
@@ -4869,6 +5007,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentTODO_LICToCreateChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_LICToCreate> e)
+        {
+            //CurrentTODO_LICToCreate = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_LICToCreate);
+        }
+
+        private  TODO_LICToCreate _currentTODO_LICToCreate;
+        public TODO_LICToCreate CurrentTODO_LICToCreate
+        {
+            get
+            {
+                return _currentTODO_LICToCreate;
+            }
+            set
+            {
+                if (_currentTODO_LICToCreate != value)
+                {
+                    _currentTODO_LICToCreate = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_LICToCreateChanged,
+                                                     new NotificationEventArgs<TODO_LICToCreate>(MessageToken.CurrentTODO_LICToCreateChanged, _currentTODO_LICToCreate)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_LICToCreate);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_LICToCreate> _vcurrentTODO_LICToCreate;
+        public VirtualListItem<TODO_LICToCreate> VCurrentTODO_LICToCreate
+        {
+            get
+            {
+                return _vcurrentTODO_LICToCreate;
+            }
+            set
+            {
+                if (_vcurrentTODO_LICToCreate != value)
+                {
+                    _vcurrentTODO_LICToCreate = value;
+					if(_vcurrentTODO_LICToCreate != null) CurrentTODO_LICToCreate = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_LICToCreate);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentTODO_PODocSetChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PODocSet> e)
         {
             //CurrentTODO_PODocSet = e.Data;
@@ -5260,6 +5448,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_SubmitIncompleteEntryData = value;
 					if(_vcurrentTODO_SubmitIncompleteEntryData != null) CurrentTODO_SubmitIncompleteEntryData = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_SubmitIncompleteEntryData);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitIncompleteSupplierInfoChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitIncompleteSupplierInfo> e)
+        {
+            //CurrentTODO_SubmitIncompleteSupplierInfo = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitIncompleteSupplierInfo);
+        }
+
+        private  TODO_SubmitIncompleteSupplierInfo _currentTODO_SubmitIncompleteSupplierInfo;
+        public TODO_SubmitIncompleteSupplierInfo CurrentTODO_SubmitIncompleteSupplierInfo
+        {
+            get
+            {
+                return _currentTODO_SubmitIncompleteSupplierInfo;
+            }
+            set
+            {
+                if (_currentTODO_SubmitIncompleteSupplierInfo != value)
+                {
+                    _currentTODO_SubmitIncompleteSupplierInfo = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoChanged,
+                                                     new NotificationEventArgs<TODO_SubmitIncompleteSupplierInfo>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoChanged, _currentTODO_SubmitIncompleteSupplierInfo)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitIncompleteSupplierInfo);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitIncompleteSupplierInfo> _vcurrentTODO_SubmitIncompleteSupplierInfo;
+        public VirtualListItem<TODO_SubmitIncompleteSupplierInfo> VCurrentTODO_SubmitIncompleteSupplierInfo
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitIncompleteSupplierInfo;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitIncompleteSupplierInfo != value)
+                {
+                    _vcurrentTODO_SubmitIncompleteSupplierInfo = value;
+					if(_vcurrentTODO_SubmitIncompleteSupplierInfo != null) CurrentTODO_SubmitIncompleteSupplierInfo = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitIncompleteSupplierInfo);                    
                 }
             }
         }

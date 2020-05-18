@@ -156,8 +156,30 @@
           <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
           <Property Name="id" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="RegNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-C71ToCreate">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declaration_gen_procedure_code" Type="nvarchar" MaxLength="10" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalInvoices" Type="int" />
+          <Property Name="DocumentsCount" Type="int" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="LicenseLines" Type="int" />
+          <Property Name="TotalCIF" Type="float" />
         </EntityType>
         <Association Name="FK_xC71_Identification_segment_xC71_Value_declaration_form">
           <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1">
@@ -251,6 +273,24 @@
           <EntitySet Name="xC71_Seller_segment" EntityType="Self.xC71_Seller_segment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Value_declaration_form" EntityType="Self.xC71_Value_declaration_form" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xC71_Value_declaration_form_Registered" EntityType="Self.xC71_Value_declaration_form_Registered" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TODO-C71ToCreate" EntityType="Self.TODO-C71ToCreate" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-C71ToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-C71ToCreate].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-C71ToCreate].[Country_of_origin_code] AS [Country_of_origin_code], 
+[TODO-C71ToCreate].[Currency_Code] AS [Currency_Code], 
+[TODO-C71ToCreate].[Manifest_Number] AS [Manifest_Number], 
+[TODO-C71ToCreate].[BLNumber] AS [BLNumber], 
+[TODO-C71ToCreate].[Type_of_declaration] AS [Type_of_declaration], 
+[TODO-C71ToCreate].[Declaration_gen_procedure_code] AS [Declaration_gen_procedure_code], 
+[TODO-C71ToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-C71ToCreate].[TotalInvoices] AS [TotalInvoices], 
+[TODO-C71ToCreate].[DocumentsCount] AS [DocumentsCount], 
+[TODO-C71ToCreate].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-C71ToCreate].[LicenseLines] AS [LicenseLines], 
+[TODO-C71ToCreate].[TotalCIF] AS [TotalCIF]
+FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_xC71_Identification_segment_xC71_Value_declaration_form" Association="Self.FK_xC71_Identification_segment_xC71_Value_declaration_form">
             <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
             <End Role="xC71_Identification_segment" EntitySet="xC71_Identification_segment" />
@@ -307,6 +347,7 @@
             <End Role="xC71_Value_declaration_form" EntitySet="xC71_Value_declaration_form" />
             <End Role="xC71_Item" EntitySet="xC71_Item" />
           </AssociationSet>
+          <EntitySet Name="TODO_C71ToCreate" EntityType="WaterNutModelDB.TODO_C71ToCreate" />
           </EntityContainer>
         <EntityType Name="xC71_Buyer_segment">
           <Key>
@@ -535,8 +576,28 @@
         <EntityType Name="Registered" BaseType="WaterNutModelDB.xC71_Value_declaration_form">
           <Property Name="id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="RegNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="TODO_C71ToCreate">
+          <Key>
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declaration_gen_procedure_code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalInvoices" Type="Int32" />
+          <Property Name="DocumentsCount" Type="Int32" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="LicenseLines" Type="Int32" />
+          <Property Name="TotalCIF" Type="Double" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -700,6 +761,26 @@
                 <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="RegNumber" ColumnName="RegNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_C71ToCreate">
+            <EntityTypeMapping TypeName="WaterNutModelDB.TODO_C71ToCreate">
+              <MappingFragment StoreEntitySet="TODO-C71ToCreate">
+                <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
+                <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="DocumentsCount" ColumnName="DocumentsCount" />
+                <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="Declaration_gen_procedure_code" ColumnName="Declaration_gen_procedure_code" />
+                <ScalarProperty Name="Type_of_declaration" ColumnName="Type_of_declaration" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Manifest_Number" ColumnName="Manifest_Number" />
+                <ScalarProperty Name="Currency_Code" ColumnName="Currency_Code" />
+                <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

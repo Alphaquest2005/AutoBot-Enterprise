@@ -221,6 +221,51 @@ public Nullable<int> DocumentsCount
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> InvoiceTotal
+		{ 
+		    get { return this.todo_podocset.InvoiceTotal; }
+			set
+			{
+			    if (value == this.todo_podocset.InvoiceTotal) return;
+				this.todo_podocset.InvoiceTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InvoiceTotal");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> LicenseLines
+		{ 
+		    get { return this.todo_podocset.LicenseLines; }
+			set
+			{
+			    if (value == this.todo_podocset.LicenseLines) return;
+				this.todo_podocset.LicenseLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LicenseLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalCIF
+		{ 
+		    get { return this.todo_podocset.TotalCIF; }
+			set
+			{
+			    if (value == this.todo_podocset.TotalCIF) return;
+				this.todo_podocset.TotalCIF = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalCIF");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_PODocSet> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_PODocSet> ChangeTracker

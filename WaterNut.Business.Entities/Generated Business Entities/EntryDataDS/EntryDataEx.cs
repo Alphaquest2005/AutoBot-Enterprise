@@ -366,6 +366,21 @@ namespace EntryDataDS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
+        [DataMember]
         public EntryData EntryData { get; set; }
 
  //       [DataMember]

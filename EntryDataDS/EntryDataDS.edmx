@@ -42,6 +42,7 @@
           <Property Name="TotalDeduction" Type="float" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
           <Property Name="EntryData_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Packages" Type="int" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
@@ -228,6 +229,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
             
             
             
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -247,7 +249,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="Downloaded" Type="bit" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Total" Type="float" />
-          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -304,6 +306,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="TotalDeductions" Type="float" Nullable="false" />
           <Property Name="TotalFreight" Type="float" Nullable="false" />
           <Property Name="Totals" Type="float" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataExTotals' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -636,7 +639,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
     [EntryDataEx].[TotalOtherCost] AS [TotalOtherCost], 
     [EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
     [EntryDataEx].[TotalFreight] AS [TotalFreight], 
-    [EntryDataEx].[Totals] AS [Totals]
+    [EntryDataEx].[Totals] AS [Totals], 
+    [EntryDataEx].[SourceFile] AS [SourceFile]
     FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataExTotals" EntityType="Self.EntryDataExTotals" store:Type="Views" store:Schema="dbo">
@@ -848,6 +852,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <NavigationProperty Name="DocumentType" Relationship="WaterNutDBModel.FK_EntryData_DocumentType_EntryData" FromRole="EntryData" ToRole="EntryData_DocumentType" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Packages" Type="Int32" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="OpeningStock" BaseType="WaterNutDBModel.EntryData">
@@ -957,7 +962,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Type="String" Name="DutyFreePaid" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="EntryDataDetails" />
           <Property Type="Double" Name="Total" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="true" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1190,6 +1195,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="TotalFreight" Type="Double" Nullable="false" />
           <Property Name="Totals" Type="Double" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="EntryDataEntryDataEx">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1" />
@@ -1332,6 +1338,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryData">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.EntryData)">
               <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="TotalDeduction" ColumnName="TotalDeduction" />
@@ -1566,6 +1573,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataEx">
               <MappingFragment StoreEntitySet="EntryDataEx">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Totals" ColumnName="Totals" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />

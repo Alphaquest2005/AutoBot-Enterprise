@@ -320,6 +320,19 @@ namespace EntryDataQS.Client.DTO
 		}
         private double _Totals;
 
+        [DataMember]
+        public string SourceFile
+		{ 
+		    get { return _SourceFile; }
+			set
+			{
+			    if (value == _SourceFile) return;
+				_SourceFile = value;
+				NotifyPropertyChanged();//m => this.SourceFile
+			}
+		}
+        private string _SourceFile;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets

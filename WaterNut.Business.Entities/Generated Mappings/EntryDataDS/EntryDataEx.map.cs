@@ -36,6 +36,7 @@
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.Totals).HasColumnName("Totals");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.HasRequired(t => t.EntryData).WithOptional(t => (EntryDataEx)t.EntryDataEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

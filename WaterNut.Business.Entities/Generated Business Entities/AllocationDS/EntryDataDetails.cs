@@ -464,6 +464,8 @@ namespace AllocationDS.Business.Entities
         public List<EX9AsycudaSalesAllocations> EX9AsycudaSalesAllocations { get; set; }
         [DataMember]
         public EntryData EntryData { get; set; }
+        [DataMember]
+        public ManualAllocations ManualAllocations { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

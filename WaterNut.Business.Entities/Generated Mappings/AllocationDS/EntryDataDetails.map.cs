@@ -49,6 +49,7 @@
               this.HasMany(t => t.AdjustmentShortAllocations).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
               this.HasMany(t => t.AsycudaDocumentItemEntryDataDetails).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
               this.HasMany(t => t.EX9AsycudaSalesAllocations).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
+              this.HasOptional(t => t.ManualAllocations).WithRequired(t => (EntryDataDetails)t.EntryDataDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

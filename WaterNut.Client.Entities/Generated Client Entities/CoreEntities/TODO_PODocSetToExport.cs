@@ -266,6 +266,66 @@ public Nullable<double> InvoiceTotal
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> LicenseLines
+		{ 
+		    get { return this.todo_podocsettoexport.LicenseLines; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.LicenseLines) return;
+				this.todo_podocsettoexport.LicenseLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LicenseLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalCIF
+		{ 
+		    get { return this.todo_podocsettoexport.TotalCIF; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.TotalCIF) return;
+				this.todo_podocsettoexport.TotalCIF = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalCIF");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> HasC71
+		{ 
+		    get { return this.todo_podocsettoexport.HasC71; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.HasC71) return;
+				this.todo_podocsettoexport.HasC71 = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("HasC71");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> HasLicense
+		{ 
+		    get { return this.todo_podocsettoexport.HasLicense; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.HasLicense) return;
+				this.todo_podocsettoexport.HasLicense = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("HasLicense");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_PODocSetToExport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_PODocSetToExport> ChangeTracker

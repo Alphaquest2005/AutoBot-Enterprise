@@ -14,9 +14,9 @@
               this.HasKey(t => t.Id);        
               this.ToTable("Attachments");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.FilePath).HasColumnName("FilePath").IsRequired().HasMaxLength(500);
+              this.Property(t => t.FilePath).HasColumnName("FilePath").IsRequired().HasMaxLength(255);
               this.Property(t => t.DocumentCode).HasColumnName("DocumentCode").IsRequired().HasMaxLength(50);
-              this.Property(t => t.Reference).HasColumnName("Reference").IsRequired();
+              this.Property(t => t.Reference).HasColumnName("Reference").IsRequired().HasMaxLength(255);
               this.HasMany(t => t.AsycudaDocument_Attachments).WithRequired(t => (Attachment)t.Attachment);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (Attachment)t.Attachment);
              // Tracking Properties

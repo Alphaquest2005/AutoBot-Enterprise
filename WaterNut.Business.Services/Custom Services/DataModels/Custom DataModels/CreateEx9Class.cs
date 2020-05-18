@@ -1349,6 +1349,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             FilterExpression += "&& DoNotAllocateSales != true " +
                                 "&& DoNotAllocatePreviousEntry != true " +
                                 "&& DoNotEX != true " +
+                                "&& Status == null " + // force no error execution
                                 //"&& AllocationErrors == null" +
                                 "&& WarehouseError == null " +
                                 "&& (DocumentType == \"IM7\" " +

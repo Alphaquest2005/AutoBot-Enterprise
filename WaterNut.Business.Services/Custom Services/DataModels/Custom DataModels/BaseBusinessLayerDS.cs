@@ -641,7 +641,7 @@ namespace WaterNut.DataSpace
                     using (var ctx = new CoreEntitiesContext())
                     {
                         var ds = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId);
-                        if (ds.TotalPackages.GetValueOrDefault() > ds.TotalInvoices.GetValueOrDefault())
+                        if (ds.TotalInvoices.GetValueOrDefault() > ds.TotalPackages.GetValueOrDefault())
                             perInvoice = false;
                     }
                 }
@@ -773,6 +773,15 @@ namespace WaterNut.DataSpace
             EntryData oldentryData = new EntryData();
             foreach (var pod in entryLineDatas) //
             {
+                var remainingPackages = pod.EntryData.Packages.GetValueOrDefault();
+                var possibleEntries =
+                                      Math.Ceiling( (pod.EntryDataDetails.Count /(double) (currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines)))  ;
+                                    //var remLines =
+                                    //  pod.EntryDataDetails.Count % currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines;
+                if (combineEntryDataInSameFile == false && remainingPackages < possibleEntries)
+                {
+                    throw new ApplicationException("Entry data lines need more packages");
+                }
                 if (pod.EntryData.DocumentType?.DocumentType != null && cdoc.DocumentItems.Count == 0 && string.IsNullOrEmpty(oldentryData.EntryDataId))
                 {
                     var cp = AttachEntryDataDocumentType(cdoc, pod.EntryData.DocumentType);
@@ -787,6 +796,10 @@ namespace WaterNut.DataSpace
                             if (!combineEntryDataInSameFile || pod.EntryData.SourceFile != oldentryData.SourceFile)
                             {
                                 SetEffectiveAssessmentDate(cdoc);
+                                AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+
+                                SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
+
 
                                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                 cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
@@ -846,16 +859,9 @@ namespace WaterNut.DataSpace
                     //        TrackingState = TrackingState.Added
                     //    });
 
-                    var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
-                        .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) && x.FileType.DocumentCode == "IV05"
-                                         /*||
-                                         (x.DocumentSpecific == false
-                                          && x.EmailUniqueId == pod.EntryData.EmailId
-                                          && !cdoc.Document.AsycudaDocument_Attachments.Any(z =>
-                                              z.AttachmentId == x.AttachmentId))*/)
-                        .Select(x => x.Attachment);
-                    AttachToDocument(alst, cdoc.Document, itm);
-                    SaveAttachments(currentAsycudaDocumentSet, cdoc);
+
+                    // SaveAttachments(currentAsycudaDocumentSet, cdoc);
+                    AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
                     cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Amount_foreign_currency +=
                         pod.EntryData.TotalInternalFreight.GetValueOrDefault();
                     cdoc.Document.xcuda_Valuation.xcuda_Gs_internal_freight.Currency_code = cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code;
@@ -884,6 +890,8 @@ namespace WaterNut.DataSpace
                     if (cdoc.DocumentItems.Any())
                     {
                         SetEffectiveAssessmentDate(cdoc);
+                        AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+                        SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
                         await SaveDocumentCT(cdoc).ConfigureAwait(false);
                         cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
                         var cp = currentAsycudaDocumentSet.Customs_Procedure;
@@ -914,6 +922,53 @@ namespace WaterNut.DataSpace
 
             AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId);
 
+        }
+
+        private static void SetPackages(ref int remainingPackages,ref double possibleEntries, EntryLineData pod, DocumentCT cdoc)
+        {
+            if (remainingPackages > 0)
+            {
+                var itm = cdoc.DocumentItems.First();
+                var pkg = cdoc.DocumentItems.First().xcuda_Packages.FirstOrDefault();
+                if (pkg == null)
+                    {
+                        pkg = new xcuda_Packages(true)
+                        {
+                            Item_Id = itm.Item_Id,
+                            Kind_of_packages_code = "PK",
+                            Marks1_of_packages = "Marks",
+                            TrackingState = TrackingState.Added
+                            
+                        };
+                        itm.xcuda_Packages.Add(pkg);
+                    }
+                if (possibleEntries == 1)
+                {
+                    
+                    pkg.Number_of_packages = remainingPackages;
+                    remainingPackages = 0;
+                }
+                else
+                {
+                    pkg.Number_of_packages = 1;
+                    remainingPackages -= 1;
+                    possibleEntries -= 1;
+                }
+            }
+        }
+
+        private void AttachDocSetDocumentsToDocuments(AsycudaDocumentSet currentAsycudaDocumentSet, EntryLineData pod,
+            DocumentCT cdoc)
+        {
+            var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
+                .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) && x.FileType.DocumentCode == "IV05"
+                    /*||
+                    (x.DocumentSpecific == false
+                     && x.EmailUniqueId == pod.EntryData.EmailId
+                     && !cdoc.Document.AsycudaDocument_Attachments.Any(z =>
+                         z.AttachmentId == x.AttachmentId))*/)
+                .Select(x => x.Attachment).ToList();
+            AttachToDocument(alst, cdoc.Document, cdoc.DocumentItems);
         }
 
         private Customs_Procedure AttachEntryDataDocumentType(DocumentCT cdoc, EDDocumentTypes documentType)
@@ -957,7 +1012,8 @@ namespace WaterNut.DataSpace
             {
                 xcuda_ASYCUDA doc;
                 List<Attachment> attlst;
-                xcuda_Item itm;
+
+                List<xcuda_Item> itms;
                 using (var docCtx = new DocumentDSContext())
                 {
 
@@ -968,35 +1024,11 @@ namespace WaterNut.DataSpace
 
                 using (var docItemCtx = new DocumentItemDSContext())
                 {
-                    itm = docItemCtx.xcuda_Item.Include("xcuda_Attached_documents.xcuda_Attachments").First(x => x.Item_Id == itmId);
+                    itms = docItemCtx.xcuda_Item.Include("xcuda_Attached_documents.xcuda_Attachments").Where(x => x.Item_Id >= itmId).ToList();
                 }
 
-                AttachToDocument(attlst, doc, itm);
-                using (var docItemCtx = new DocumentItemDSContext(){StartTracking = true})
-                {
-                    foreach (var ad in itm.xcuda_Attached_documents)
-                    {
-                        if (docItemCtx.xcuda_Attached_documents.FirstOrDefault(x =>
-                                x.Item_Id == itm.Item_Id && x.Attached_document_reference == ad.Attached_document_reference) !=
-                            null) continue;
-                        ad.Item_Id = itm.Item_Id;
-                        docItemCtx.xcuda_Attached_documents.Add(ad);
-                    }
-                    docItemCtx.SaveChanges();
-                }
-
-                using (var ctx = new DocumentDSContext(){StartTracking = true})
-                {
-                    foreach (var at in doc.AsycudaDocument_Attachments)
-                    {
-                        if (ctx.AsycudaDocument_Attachments.FirstOrDefault(x =>
-                                x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == at.AttachmentId) !=
-                            null) continue;
-                        at.AsycudaDocumentId = doc.ASYCUDA_Id;
-                        ctx.AsycudaDocument_Attachments.Add(at);
-                    }
-                    ctx.SaveChanges();
-                }
+                AttachToDocument(attlst, doc, itms);
+                
                 
             }
 
@@ -1008,46 +1040,99 @@ namespace WaterNut.DataSpace
 
         }
 
-        private static void AttachToDocument(IEnumerable<Attachment> alst, xcuda_ASYCUDA doc, xcuda_Item itm)
+        public static void AttachToDocument(List<Attachment> alst, xcuda_ASYCUDA doc, List<xcuda_Item> itms)
         {
-            
-            foreach (var att in alst)
 
+            try
             {
-                if (doc.AsycudaDocument_Attachments.FirstOrDefault(x =>
-                        x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == att.Id) == null)
-                {
-                    doc.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
-                    {
-                        AttachmentId = att.Id,
-                        AsycudaDocumentId = doc.ASYCUDA_Id,
-                        //Attachment = att,
-                        //xcuda_ASYCUDA = cdoc.Document,
-                        TrackingState = TrackingState.Added
-                    });
-                }
 
 
-                //var f = new FileInfo(att.FilePath);
-                if (itm.xcuda_Attached_documents.Any(x => x.Attached_document_reference == att.Reference)) continue;
-                itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+
+                foreach (var att in alst)
+
                 {
-                    Attached_document_code = att.DocumentCode,
-                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                    Attached_document_reference = att.Reference, //pod.EntryData.EntryDataId,
-                    xcuda_Attachments = new List<xcuda_Attachments>()
+                    if (doc.AsycudaDocument_Attachments.FirstOrDefault(x =>
+                            x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == att.Id) == null)
                     {
-                        new xcuda_Attachments(true)
+                        doc.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
                         {
                             AttachmentId = att.Id,
+                            AsycudaDocumentId = doc.ASYCUDA_Id,
+                            //Attachment = att,
+                            //xcuda_ASYCUDA = cdoc.Document,
                             TrackingState = TrackingState.Added
+                        });
+                    }
+
+
+                    //var f = new FileInfo(att.FilePath);
+                    foreach (var itm in itms)
+                    {
+
+                        if (itm.xcuda_Attached_documents.Any(x => x.Attached_document_reference == att.Reference))
+                            break;
+                        itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                        {
+                            Attached_document_code = att.DocumentCode,
+                            Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                            Attached_document_reference = att.Reference, //pod.EntryData.EntryDataId,
+                            xcuda_Attachments = new List<xcuda_Attachments>()
+                            {
+                                new xcuda_Attachments(true)
+                                {
+                                    AttachmentId = att.Id,
+                                    TrackingState = TrackingState.Added
+                                }
+                            },
+                            TrackingState = TrackingState.Added
+                        });
+                        break;
+                    }
+                }
+
+                if (doc.ASYCUDA_Id == 0) return;
+                {
+                    foreach (var itm in itms)
+                    {
+
+
+                        using (var docItemCtx = new DocumentItemDSContext() {StartTracking = true})
+                        {
+                            foreach (var ad in itm.xcuda_Attached_documents)
+                            {
+                                if (docItemCtx.xcuda_Attached_documents.FirstOrDefault(x =>
+                                        x.Item_Id == itm.Item_Id &&
+                                        x.Attached_document_reference == ad.Attached_document_reference) !=
+                                    null) continue;
+                                ad.Item_Id = itm.Item_Id;
+                                docItemCtx.xcuda_Attached_documents.Add(ad);
+                            }
+
+                            docItemCtx.SaveChanges();
                         }
-                    },
-                    TrackingState = TrackingState.Added
-                });
+                    }
+
+                    using (var ctx = new DocumentDSContext() {StartTracking = true})
+                    {
+                        foreach (var at in doc.AsycudaDocument_Attachments)
+                        {
+                            if (ctx.AsycudaDocument_Attachments.FirstOrDefault(x =>
+                                    x.AsycudaDocumentId == doc.ASYCUDA_Id && x.AttachmentId == at.AttachmentId) !=
+                                null) continue;
+                            at.AsycudaDocumentId = doc.ASYCUDA_Id;
+                            ctx.AsycudaDocument_Attachments.Add(at);
+                        }
+
+                        ctx.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
 
-            
         }
 
         private static void SetEffectiveAssessmentDate(DocumentCT cdoc)
@@ -1269,7 +1354,7 @@ namespace WaterNut.DataSpace
                             totalFreight = asycudaDocumentSet.TotalFreight.Value;
                         if (asycudaDocumentSet.TotalWeight != null) totalWeight = asycudaDocumentSet.TotalWeight.Value;
 
-                        currency = asycudaDocumentSet.Currency_Code;
+                        currency = asycudaDocumentSet.FreightCurrencyCode ?? asycudaDocumentSet.Currency_Code;
                     }
 
                     doclst =
@@ -2156,6 +2241,8 @@ namespace WaterNut.DataSpace
             {
 
                 var a = Licence.LoadFromFile(file);
+                var fileinfo = new FileInfo(file);
+                if(a.General_segment.Exporter_address.Text.Any(x => x.Contains(fileinfo.Name.Replace("-LIC.xml",""))))return;
                 using (var ctx = new CoreEntitiesContext())
                 {
                     var declarantCode = ctx.ApplicationSettings
@@ -2808,6 +2895,7 @@ namespace WaterNut.DataSpace
                         res.AddRange(ctx.EntryDataDetails
                             .Include(x => x.EntryDataDetailsEx)
                             .Include(x => x.InventoryItems)
+                            .Include(x => x.InventoryItemEx)
                             .Include(x => x.EntryData.DocumentType)
                             .Include(x => x.EntryData.EntryDataTotals)
                             .Include(x => x.EntryData.EntryDataEx)
@@ -2816,7 +2904,10 @@ namespace WaterNut.DataSpace
                                         x.EntryDataDetailsEx.AsycudaDocumentSetId == asycudaDocumentSetId
                                         && x.EntryData.EntryDataEx != null)
                             .Where(x => Math.Abs((double)(x.EntryData.EntryDataEx.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx.ExpectedTotal))) < 0.01)//Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
-                            .ToList());
+                            .ToList()
+                            .DistinctBy(x => x.EntryDataDetailsId)
+                            );
+
                     }
                 }
             }
@@ -3142,8 +3233,8 @@ namespace WaterNut.DataSpace
             try
             {
                 AttachC71(asycudaDocumentSetId);
+                ///AttachPDF(asycudaDocumentSetId);
                 AttachPDF(asycudaDocumentSetId);
-                AttachBL(asycudaDocumentSetId);
                 AttachLicense(asycudaDocumentSetId);
                 AttachContainer(asycudaDocumentSetId);
             }
@@ -3213,62 +3304,80 @@ namespace WaterNut.DataSpace
 
 
 
+        //private static void AttachPDF(int asycudaDocumentSetId)
+        //{
+        //    using (var ctx = new CoreEntitiesContext())
+        //    {
+        //        var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1"
+        //                                                      && x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId);
+        //        var pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+        //                x.Attachments.FilePath.EndsWith("pdf") && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+        //            .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
+
+                
+                
+
+        //        foreach (var al in pdfs)
+        //        {
+                    
+        //                var itms = lst.Where(x => x.AsycudaDocumentItemEntryDataDetails.Any(z => z.key.Contains(al.Reference))).ToList();
+
+        //                foreach (var itm in itms)
+        //                {
+        //                    AttachToDocument(new List<int>() { al.Id },
+        //                        itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+
+        //                }
+                    
+        //        }
+        //    }
+        //}
+
         private static void AttachPDF(int asycudaDocumentSetId)
         {
-            using (var ctx = new CoreEntitiesContext())
+            List<xcuda_ASYCUDA> docs;
+            List<xcuda_Item> itms;
+            List<Attachment> pdfs;
+            using (var ctx = new DocumentDSContext())
             {
-                var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1"
-                                                              && x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId);
-                var pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        x.Attachments.FilePath.EndsWith("pdf") && x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
-
                 
+                docs = ctx.xcuda_ASYCUDA.Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId ==
+                                                    asycudaDocumentSetId).ToList();
+                pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
+                        x.Attachment.FilePath.EndsWith("pdf")  && (x.FileType.Type != "INV") && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                    .Select(x => x.Attachment).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
                 
-
-                foreach (var al in pdfs)
-                {
-                    
-                        var itms = lst.Where(x => x.AsycudaDocumentItemEntryDataDetails.Any(z => z.key.Contains(al.Reference))).ToList();
-
-                        foreach (var itm in itms)
-                        {
-                            AttachToDocument(new List<int>() { al.Id },
-                                itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
-
-                        }
-                    
-                }
             }
+            using (var ctx = new DocumentItemDSContext())
+            {
+                var list = docs.Select(z => z.ASYCUDA_Id).ToList();
+                itms = ctx.xcuda_Item.Where(x => list.Contains(x.ASYCUDA_Id)).ToList();
+            }
+
+           
+
+            foreach (var doc in docs)
+            {
+                AttachToDocument(pdfs, doc, itms);
+            }
+                
+
+
+                //foreach (var al in pdfs)
+                //{
+
+                //    foreach (var itm in lst)
+                //    {
+                //        AttachToDocument(new List<int>() { al.Id },
+                //            itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+
+                //    }
+
+                //}
+            
         }
 
-        private static void AttachBL(int asycudaDocumentSetId)
-        {
-            using (var ctx = new CoreEntitiesContext())
-            {
-                var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1"
-                                                              && x.AsycudaDocument.AsycudaDocumentSetId ==
-                                                              asycudaDocumentSetId);
-                var pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        (x.FileTypes.Type == "BL") && x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).ToList();
 
-
-
-
-                foreach (var al in pdfs)
-                {
-                    
-                    foreach (var itm in lst)
-                    {
-                        AttachToDocument(new List<int>() { al.Id },
-                            itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
-
-                    }
-
-                }
-            }
-        }
 
         private static void AttachLicense(int asycudaDocumentSetId)
         {
@@ -3327,9 +3436,11 @@ namespace WaterNut.DataSpace
         {
             using (var ctx = new CoreEntitiesContext())
             {
-                var lst = ctx.AsycudaDocumentItems.Where(x => x.LineNumber == "1" 
+                var lst = ctx.AsycudaDocumentItems
+                    .Include(x => x.AsycudaDocumentItemEntryDataDetails)
+                    .Where(x => x.LineNumber == "1" 
                                                               && x.AsycudaDocument.AsycudaDocumentSetId ==
-                                                              asycudaDocumentSetId);
+                                                              asycudaDocumentSetId).ToList();
                 var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
                         x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
                     .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).Where(x => new FileInfo(x.FilePath).Name != "C71.xml" && x.Reference != "C71").ToList();

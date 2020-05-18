@@ -77,7 +77,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     var d =
                         alst.Where(x => x.xLineNumber != null)
                             .Where(x => !string.IsNullOrEmpty(x.pCNumber))// prevent pre assessed entries
-                            .Where(x => x.pItemNumber.Length <= 17) // to match the entry
+                            .Where(x => x.pItemNumber.Length <= 20) // to match the entry
                             .OrderBy(s => s.xLineNumber)
                             .ThenBy(s => s.InvoiceNo)
                             .Select(s => new SaleReportLine
@@ -136,7 +136,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                     var d =
                         alst.Where(x => x.xLineNumber != null)
                             .Where(x => !string.IsNullOrEmpty(x.pCNumber))// prevent pre assessed entries
-                            .Where(x => x.pItemNumber.Length <= 17) // to match the entry
+                            .Where(x => x.pItemNumber.Length <= 20) // to match the entry
                             .OrderBy(s => s.xLineNumber)
                             .ThenBy(s => s.InvoiceNo)
                             .Select(s => new SaleReportLine

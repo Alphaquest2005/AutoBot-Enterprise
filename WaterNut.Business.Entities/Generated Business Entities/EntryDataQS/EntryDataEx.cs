@@ -373,6 +373,21 @@ namespace EntryDataQS.Business.Entities
         }
         double _totals;
         [DataMember]
+        public string SourceFile 
+        {
+            get
+            {
+                return _sourcefile;
+            }
+            set
+            {
+                _sourcefile = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _sourcefile;
+        [DataMember]
         public List<AsycudaDocumentSetEntryData> AsycudaDocumentSets { get; set; }
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }

@@ -63,7 +63,7 @@ public int Id
        [RequiredValidationAttribute(ErrorMessage= "FilePath is required")]
        
                 
-                [MaxLength(500, ErrorMessage = "FilePath has a max length of 500 letters ")]
+                [MaxLength(255, ErrorMessage = "FilePath has a max length of 255 letters ")]
 public string FilePath
 		{ 
 		    get { return this.attachments.FilePath; }
@@ -97,7 +97,7 @@ public string DocumentCode
        [RequiredValidationAttribute(ErrorMessage= "Reference is required")]
        
                 
-                
+                [MaxLength(255, ErrorMessage = "Reference has a max length of 255 letters ")]
 public string Reference
 		{ 
 		    get { return this.attachments.Reference; }

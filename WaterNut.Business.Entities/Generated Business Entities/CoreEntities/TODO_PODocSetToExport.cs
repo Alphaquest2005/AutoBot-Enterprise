@@ -230,6 +230,66 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<double> _invoicetotal;
+        [DataMember]
+        public Nullable<int> LicenseLines 
+        {
+            get
+            {
+                return _licenselines;
+            }
+            set
+            {
+                _licenselines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _licenselines;
+        [DataMember]
+        public Nullable<double> TotalCIF 
+        {
+            get
+            {
+                return _totalcif;
+            }
+            set
+            {
+                _totalcif = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalcif;
+        [DataMember]
+        public Nullable<int> HasC71 
+        {
+            get
+            {
+                return _hasc71;
+            }
+            set
+            {
+                _hasc71 = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _hasc71;
+        [DataMember]
+        public Nullable<int> HasLicense 
+        {
+            get
+            {
+                return _haslicense;
+            }
+            set
+            {
+                _haslicense = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _haslicense;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

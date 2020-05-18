@@ -710,6 +710,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _freightCurrencyCodeFilter;
+        public string FreightCurrencyCodeFilter
+        {
+            get
+            {
+                return _freightCurrencyCodeFilter;
+            }
+            set
+            {
+                _freightCurrencyCodeFilter = value;
+				NotifyPropertyChanged(x => FreightCurrencyCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -844,7 +862,11 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("LicenseLines == {0}",  LicenseLinesFilter.ToString()));				 
 
 					if(InvoiceTotalFilter.HasValue)
-						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(FreightCurrencyCodeFilter) == false)
+						res.Append(" && " + string.Format("FreightCurrencyCode.Contains(\"{0}\")",  FreightCurrencyCodeFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -936,7 +958,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     LicenseLines = x.LicenseLines ,
                     
  
-                    InvoiceTotal = x.InvoiceTotal 
+                    InvoiceTotal = x.InvoiceTotal ,
+                    
+ 
+                    FreightCurrencyCode = x.FreightCurrencyCode 
                     
                 }).ToList()
             };
@@ -1019,6 +1044,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> InvoiceTotal { get; set; } 
+                    
+ 
+                    public string FreightCurrencyCode { get; set; } 
                     
         }
 

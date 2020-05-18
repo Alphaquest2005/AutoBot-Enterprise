@@ -101,8 +101,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_UnallocatedShorts> TODO_UnallocatedShorts { get; set; }
      
-        public DbSet<TODO_AdjustmentsToXML> TODO_AdjustmentsToXML { get; set; }
-     
         public DbSet<SessionActions> SessionActions { get; set; }
      
         public DbSet<Sessions> Sessions { get; set; }
@@ -185,6 +183,14 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<InfoMappingRegEx> InfoMappingRegEx { get; set; }
      
+        public DbSet<ActionDocSetLogs> ActionDocSetLogs { get; set; }
+     
+        public DbSet<TODO_SubmitIncompleteSupplierInfo> TODO_SubmitIncompleteSupplierInfo { get; set; }
+     
+        public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
+     
+        public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -242,8 +248,6 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new FileTypeContactsMap());
          
             modelBuilder.Configurations.Add(new TODO_UnallocatedShortsMap());
-         
-            modelBuilder.Configurations.Add(new TODO_AdjustmentsToXMLMap());
          
             modelBuilder.Configurations.Add(new SessionActionsMap());
          
@@ -326,6 +330,14 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new EmailFileTypesMap());
          
             modelBuilder.Configurations.Add(new InfoMappingRegExMap());
+         
+            modelBuilder.Configurations.Add(new ActionDocSetLogsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitIncompleteSupplierInfoMap());
+         
+            modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
+         
+            modelBuilder.Configurations.Add(new TODO_LICToCreateMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

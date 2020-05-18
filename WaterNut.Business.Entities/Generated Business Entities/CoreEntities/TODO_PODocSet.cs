@@ -185,6 +185,51 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _documentscount;
+        [DataMember]
+        public Nullable<double> InvoiceTotal 
+        {
+            get
+            {
+                return _invoicetotal;
+            }
+            set
+            {
+                _invoicetotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _invoicetotal;
+        [DataMember]
+        public Nullable<int> LicenseLines 
+        {
+            get
+            {
+                return _licenselines;
+            }
+            set
+            {
+                _licenselines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _licenselines;
+        [DataMember]
+        public Nullable<double> TotalCIF 
+        {
+            get
+            {
+                return _totalcif;
+            }
+            set
+            {
+                _totalcif = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalcif;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

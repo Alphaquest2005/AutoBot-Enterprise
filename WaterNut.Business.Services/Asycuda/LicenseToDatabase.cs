@@ -292,7 +292,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
         }
 
-        public bool ExportLicense(int docSetId, xLIC_License lic, string fileName, List<string> invoices)
+        public bool ExportLicense(int docSetId, xLIC_License lic, string fileName, List<Tuple<string, string>> invoices)
         {
             try
             {
@@ -308,7 +308,7 @@ namespace WaterNut.DataSpace.Asycuda
                 File.AppendAllText(instructions, $"File\t{fileInfo.FullName}\r\n");
                 foreach (var itm in invoices)
                 {
-                    File.AppendAllText(instructions, $"Attach\t{Path.Combine(fileInfo.DirectoryName, $"{itm}.pdf")}\t{itm}\t{"IV05"}\r\n");
+                    File.AppendAllText(instructions, $"Attach\t{itm.Item2}\t{itm.Item1}\t{"IV05"}\r\n");
                 }
                 return true;
             }

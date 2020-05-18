@@ -29,9 +29,7 @@ namespace AutoBot
                 Console.WriteLine($"{beforeImport}");
                 using (var ctx = new CoreEntitiesContext() { })
                 {
-
-
-                    foreach (var appSetting in ctx.ApplicationSettings.AsNoTracking()
+                    var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
                         .Include("FileTypes.FileTypeContacts.Contacts")
                         .Include("FileTypes.FileTypeActions.Actions")
@@ -42,7 +40,9 @@ namespace AutoBot
                         .Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeMappings")
                         .Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
                         .Include("FileTypes.ChildFileTypes")
-                        .Include("FileTypes.FileTypeMappings").ToList())
+                        .Include("FileTypes.FileTypeMappings").ToList();
+
+                    foreach (var appSetting in applicationSettings)
                     {
                         appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
                         if(appSetting.TestMode == null) continue;
@@ -189,6 +189,7 @@ namespace AutoBot
                         {
                             foreach (var item in sLst)
                             {
+                                
                                 item.Sessions.SessionActions
                                     .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
                                     .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))

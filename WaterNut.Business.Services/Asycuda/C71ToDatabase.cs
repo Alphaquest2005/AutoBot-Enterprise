@@ -413,6 +413,7 @@ namespace WaterNut.DataSpace.Asycuda
             c71.xC71_Identification_segment.xC71_Seller_segment.Name = supplier.SupplierName ?? supplier.SupplierCode;
             c71.xC71_Identification_segment.xC71_Seller_segment.Address = $"Ref:{docRef},\r\n{supplier.Street}" ;
             c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode = supplier.CountryCode;
+            
 
             c71.xC71_Identification_segment.xC71_Buyer_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
             c71.xC71_Identification_segment.xC71_Declarant_segment.Code = BaseDataModel.Instance.CurrentApplicationSettings.DeclarantCode;
@@ -425,7 +426,7 @@ namespace WaterNut.DataSpace.Asycuda
             {
                 c71.xC71_Item.Add(new xC71_Item(true)
                 {
-                    Terms_of_Delivery_Code = item.Code,
+                    Terms_of_Delivery_Code = item.Code ?? "FOB",
                     Invoice_Number = item.InvoiceNo,
                     Invoice_Date = item.InvoiceDate.ToShortDateString(),
                     Currency_code_net = item.Currency,

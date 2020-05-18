@@ -30,8 +30,8 @@
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="Exchange_Rate" Type="float" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" />
-          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="50" />
-          <Property Name="Currency_Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" />
           <Property Name="Document_TypeId" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
@@ -46,6 +46,7 @@
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="MaxLines" Type="int" />
           <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="50" />
+          <Property Name="FreightCurrencyCode" Type="nvarchar" MaxLength="3" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
@@ -72,9 +73,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Reference" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <EntityType Name="Container">
           <Key>
@@ -2272,8 +2273,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Exchange_Rate" Type="Double" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" />
-          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="Document_TypeId" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2297,6 +2298,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="LocationOfGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Container" Relationship="WaterNutDBModel.FK_Container_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="Container" />
           <NavigationProperty Name="SystemDocumentSet" Relationship="WaterNutDBModel.FK_SystemDocumentSets_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="SystemDocumentSet" />
+          <Property Name="FreightCurrencyCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3810,11 +3812,11 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocument_Attachments" />
           <NavigationProperty Name="AsycudaDocumentSet_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" FromRole="Attachment" ToRole="AsycudaDocumentSet_Attachments" />
           <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Reference" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_AsycudaDocument_Attachments_Attachments">
           <End Type="WaterNutDBModel.Attachment" Role="Attachment" Multiplicity="1">
@@ -3997,6 +3999,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSets">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="FreightCurrencyCode" ColumnName="FreightCurrencyCode" />
                 <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
                 <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
                 <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />

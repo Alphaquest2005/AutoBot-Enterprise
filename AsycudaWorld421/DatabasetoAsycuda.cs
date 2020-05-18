@@ -49,6 +49,12 @@ namespace Asycuda421
                     a.Valuation.Gs_Invoice.Amount_foreign_currency = Math.Round(da.xcuda_Item.Where(i => i.xcuda_Valuation_item.xcuda_Item_Invoice != null 
                                                                                                          && (i.xcuda_PreviousItem == null || !string.IsNullOrEmpty(i.xcuda_PreviousItem.Prev_reg_nbr)))
                                                                         .Sum(i => i.xcuda_Valuation_item.xcuda_Item_Invoice.Amount_foreign_currency), 2).ToString();
+                var totalPkgs = a.Item.Select(x => Convert.ToInt32(x.Packages.Number_of_packages)).Sum();
+                if (totalPkgs > 1)
+                {
+                    a.Property.Nbers.Total_number_of_packages = totalPkgs.ToString();
+                }
+
             }
             catch (Exception)
             {
@@ -346,7 +352,7 @@ namespace Asycuda421
                     pi.Prev_decl_weight_written_off = item.Prev_net_weight.ToString();
                     pi.Prev_decl_supp_quantity_written_off = item.Preveious_suplementary_quantity.ToString();
                     pi.Prev_decl_ref_value_written_off = Math.Round(item.Previous_value, 4).ToString();
-                    pi.Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 17? item.Prev_decl_HS_spec:"";
+                    pi.Prev_decl_HS_spec = item.Prev_decl_HS_spec.Length <= 20? item.Prev_decl_HS_spec:"";
 
                     a.Prev_decl.Add(pi);
                 }
@@ -533,7 +539,7 @@ namespace Asycuda421
                     SaveTarification(item, ai);
                     SaveGoodsDescription(item, ai);
                     SavePreviousDoc(item, ai);
-
+                    SavePackages(item, ai);
                     SaveValuationItem(item, ai);
                     if (db.TariffCodes.FirstOrDefault(x =>
                             x.TariffCode == item.xcuda_Tarification.xcuda_HScode.Commodity_code &&
@@ -543,13 +549,26 @@ namespace Asycuda421
                     }
                     a.Item.Add(ai);
                 }
-                if (a.Item.Count != 0)
+                if (a.Item.Count != 0 && a.Item[0].Packages.Number_of_packages == "0")
                     a.Item[0].Packages.Number_of_packages = "1";
 
 
             }
         }
 
+        private void SavePackages(xcuda_Item item, ASYCUDAItem ai)
+        {
+            
+            if (item.xcuda_Packages.Count > 0 && item.xcuda_Packages.First().Number_of_packages > 0)
+            {
+                var pk = item.xcuda_Packages.First();
+                ai.Packages.Number_of_packages = pk.Number_of_packages.ToString(CultureInfo.InvariantCulture);
+                ai.Packages.Marks1_of_packages.Text.Clear();
+                ai.Packages.Marks1_of_packages.Text.Add(pk.Marks1_of_packages);
+                ai.Packages.Kind_of_packages_code.Text.Clear();
+                ai.Packages.Kind_of_packages_code.Text.Add(pk.Kind_of_packages_code);
+            }
+        }
 
 
         private  void SavePreviousDoc(xcuda_Item item, ASYCUDAItem ai)
@@ -766,8 +785,8 @@ namespace Asycuda421
                 if (item.xcuda_Tarification.xcuda_HScode.Commodity_code != null)
                     ai.Tarification.HScode.Commodity_code.Text.Add(item.xcuda_Tarification.xcuda_HScode.Commodity_code); // item.xcuda_Tarification.xcuda_HScode.Commodity_code;
                 // ai.Tarification.HScode.Precision_1 = item.xcuda_Tarification.xcuda_HScode.Precision_1;
-                if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 17)//
-                    ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim().Truncate(17));
+                if (item.xcuda_Tarification.xcuda_HScode.Precision_4 != null && item.ItemNumber.Length <= 20)//
+                    ai.Tarification.HScode.Precision_4.Text.Add(item.xcuda_Tarification.xcuda_HScode.Precision_4.Trim().Truncate(20));
             }
         }
 

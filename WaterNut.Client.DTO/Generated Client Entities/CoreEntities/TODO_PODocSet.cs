@@ -164,6 +164,45 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _DocumentsCount;
 
+        [DataMember]
+        public Nullable<double> InvoiceTotal
+		{ 
+		    get { return _InvoiceTotal; }
+			set
+			{
+			    if (value == _InvoiceTotal) return;
+				_InvoiceTotal = value;
+				NotifyPropertyChanged();//m => this.InvoiceTotal
+			}
+		}
+        private Nullable<double> _InvoiceTotal;
+
+        [DataMember]
+        public Nullable<int> LicenseLines
+		{ 
+		    get { return _LicenseLines; }
+			set
+			{
+			    if (value == _LicenseLines) return;
+				_LicenseLines = value;
+				NotifyPropertyChanged();//m => this.LicenseLines
+			}
+		}
+        private Nullable<int> _LicenseLines;
+
+        [DataMember]
+        public Nullable<double> TotalCIF
+		{ 
+		    get { return _TotalCIF; }
+			set
+			{
+			    if (value == _TotalCIF) return;
+				_TotalCIF = value;
+				NotifyPropertyChanged();//m => this.TotalCIF
+			}
+		}
+        private Nullable<double> _TotalCIF;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

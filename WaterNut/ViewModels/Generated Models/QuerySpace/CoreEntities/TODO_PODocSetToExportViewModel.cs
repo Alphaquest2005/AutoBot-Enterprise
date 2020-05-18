@@ -385,6 +385,78 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _licenseLinesFilter;
+        public Int32? LicenseLinesFilter
+        {
+            get
+            {
+                return _licenseLinesFilter;
+            }
+            set
+            {
+                _licenseLinesFilter = value;
+				NotifyPropertyChanged(x => LicenseLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalCIFFilter;
+        public Double? TotalCIFFilter
+        {
+            get
+            {
+                return _totalCIFFilter;
+            }
+            set
+            {
+                _totalCIFFilter = value;
+				NotifyPropertyChanged(x => TotalCIFFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _hasC71Filter;
+        public Int32? HasC71Filter
+        {
+            get
+            {
+                return _hasC71Filter;
+            }
+            set
+            {
+                _hasC71Filter = value;
+				NotifyPropertyChanged(x => HasC71Filter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _hasLicenseFilter;
+        public Int32? HasLicenseFilter
+        {
+            get
+            {
+                return _hasLicenseFilter;
+            }
+            set
+            {
+                _hasLicenseFilter = value;
+				NotifyPropertyChanged(x => HasLicenseFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -456,7 +528,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("DocumentsCount == {0}",  DocumentsCountFilter.ToString()));				 
 
 					if(InvoiceTotalFilter.HasValue)
-						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
+
+					if(LicenseLinesFilter.HasValue)
+						res.Append(" && " + string.Format("LicenseLines == {0}",  LicenseLinesFilter.ToString()));				 
+
+					if(TotalCIFFilter.HasValue)
+						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));				 
+
+					if(HasC71Filter.HasValue)
+						res.Append(" && " + string.Format("HasC71 == {0}",  HasC71Filter.ToString()));				 
+
+					if(HasLicenseFilter.HasValue)
+						res.Append(" && " + string.Format("HasLicense == {0}",  HasLicenseFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -512,7 +596,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     DocumentsCount = x.DocumentsCount ,
                     
  
-                    InvoiceTotal = x.InvoiceTotal 
+                    InvoiceTotal = x.InvoiceTotal ,
+                    
+ 
+                    LicenseLines = x.LicenseLines ,
+                    
+ 
+                    TotalCIF = x.TotalCIF ,
+                    
+ 
+                    HasC71 = x.HasC71 ,
+                    
+ 
+                    HasLicense = x.HasLicense 
                     
                 }).ToList()
             };
@@ -559,6 +655,18 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> InvoiceTotal { get; set; } 
+                    
+ 
+                    public Nullable<int> LicenseLines { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalCIF { get; set; } 
+                    
+ 
+                    public Nullable<int> HasC71 { get; set; } 
+                    
+ 
+                    public Nullable<int> HasLicense { get; set; } 
                     
         }
 

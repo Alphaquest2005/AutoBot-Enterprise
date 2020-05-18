@@ -449,6 +449,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _invoicetotal;
         [DataMember]
+        public string FreightCurrencyCode 
+        {
+            get
+            {
+                return _freightcurrencycode;
+            }
+            set
+            {
+                _freightcurrencycode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _freightcurrencycode;
+        [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]
         public List<LicenceSummary> LicenceSummary { get; set; }

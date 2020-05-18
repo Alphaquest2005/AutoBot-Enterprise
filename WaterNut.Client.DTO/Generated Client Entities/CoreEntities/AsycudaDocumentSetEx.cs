@@ -385,6 +385,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<double> _InvoiceTotal;
 
+        [DataMember]
+        public string FreightCurrencyCode
+		{ 
+		    get { return _FreightCurrencyCode; }
+			set
+			{
+			    if (value == _FreightCurrencyCode) return;
+				_FreightCurrencyCode = value;
+				NotifyPropertyChanged();//m => this.FreightCurrencyCode
+			}
+		}
+        private string _FreightCurrencyCode;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocument> AsycudaDocuments

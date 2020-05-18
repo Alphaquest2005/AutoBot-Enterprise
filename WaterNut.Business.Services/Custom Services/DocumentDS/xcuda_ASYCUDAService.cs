@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using DocumentDS.Business.Entities;
 using System.Linq;
+using TrackableEntities;
 
 namespace DocumentDS.Business.Services
 {
@@ -19,6 +20,8 @@ namespace DocumentDS.Business.Services
                 res.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = null;
                 res.xcuda_ASYCUDA_ExtendedProperties.Document_Type = null;
                 res.xcuda_ASYCUDA_ExtendedProperties.ExportTemplate = null;
+                if (res.xcuda_Traders.xcuda_Exporter.TrackingState == TrackingState.Added 
+                    &&  string.IsNullOrEmpty(res.xcuda_Traders.xcuda_Exporter.Exporter_name)) res.xcuda_Traders = null;
                 return await Updatexcuda_ASYCUDA(res).ConfigureAwait(false);
                
             }

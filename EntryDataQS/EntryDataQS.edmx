@@ -204,6 +204,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="TotalDeductions" Type="float" Nullable="false" />
           <Property Name="TotalFreight" Type="float" Nullable="false" />
           <Property Name="Totals" Type="float" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -357,7 +358,8 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
 [EntryDataEx].[TotalOtherCost] AS [TotalOtherCost], 
 [EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
 [EntryDataEx].[TotalFreight] AS [TotalFreight], 
-[EntryDataEx].[Totals] AS [Totals]
+[EntryDataEx].[Totals] AS [Totals], 
+[EntryDataEx].[SourceFile] AS [SourceFile]
 FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -470,6 +472,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="TotalFreight" Type="Double" Nullable="false" />
           <Property Name="Totals" Type="Double" Nullable="false" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="AsycudaDocumentEntryData">
           <Key>
@@ -797,6 +800,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataEx">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutEntities.EntryDataEx)">
               <MappingFragment StoreEntitySet="EntryDataEx">
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Totals" ColumnName="Totals" />
                 <ScalarProperty Name="TotalFreight" ColumnName="TotalFreight" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />

@@ -305,6 +305,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ManualAllocations":
+                                return
+                                    await
+                                        GetWhere<ManualAllocations>(dbContext, exp, itm.Value, "xcuda_Item", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -835,6 +841,9 @@ namespace AllocationDS.Business.Services
                             case "AdjustmentShortAllocations":
                                 return await CountWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ManualAllocations":
+                                return await CountWhere<ManualAllocations>(dbContext, exp, itm.Value, "xcuda_Item", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.xcuda_Item.Where(exp == "All" || exp == null ? "Item_Id != null" : exp)
@@ -1010,6 +1019,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AdjustmentShortAllocations>(startIndex, count, dbContext, exp, itm.Value, "PreviousDocumentItem", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ManualAllocations":
+                                return
+                                    await
+                                        LoadRangeWhere<ManualAllocations>(startIndex, count, dbContext, exp, itm.Value, "xcuda_Item", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1232,6 +1247,7 @@ namespace AllocationDS.Business.Services
                                                     // .Include(x => x.EX9AsycudaSalesAllocations)									  
                                                     // .Include(x => x.EntryPreviousItems)									  
                                                     // .Include(x => x.AdjustmentShortAllocations)									  
+                                                    // .Include(x => x.ManualAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.ASYCUDA_Id.ToString() == ASYCUDA_Id.ToString())
 										.ToListAsync()
@@ -1268,6 +1284,7 @@ namespace AllocationDS.Business.Services
                                                     // .Include(x => x.EX9AsycudaSalesAllocations)									  
                                                     // .Include(x => x.EntryPreviousItems)									  
                                                     // .Include(x => x.AdjustmentShortAllocations)									  
+                                                    // .Include(x => x.ManualAllocations)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataDetailsId.ToString() == EntryDataDetailsId.ToString())
 										.ToListAsync()
@@ -1376,6 +1393,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AdjustmentShortAllocations":
                                 return await SumWhere<AdjustmentShortAllocations>(dbContext, exp, itm.Value, "PreviousDocumentItem", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ManualAllocations":
+                                return await SumWhere<ManualAllocations>(dbContext, exp, itm.Value, "xcuda_Item", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

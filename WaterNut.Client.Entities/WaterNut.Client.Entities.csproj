@@ -147,6 +147,7 @@
     <Compile Include="Generated Client Entities\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Client Entities\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\ActionDocSetLogs.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\Actions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\AsycudaDocument.cs" />
@@ -179,7 +180,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\SubItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
-    <Compile Include="Generated Client Entities\CoreEntities\TODO_AdjustmentsToXML.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_C71ToCreate.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_C71ToXML.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_CreateEx9.cs" />
@@ -202,6 +203,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\ToDo_POToXML.cs" />
@@ -210,6 +212,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
@@ -278,6 +281,7 @@
     <Compile Include="Generated Constructors Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated Constructors Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ActionDocSetLogs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocument.cs" />
@@ -310,7 +314,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
-    <Compile Include="Generated Constructors Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_C71ToCreate.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_C71ToXML.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_CreateEx9.cs" />
@@ -333,6 +337,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ToDo_POToXML.cs" />
@@ -341,6 +346,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
@@ -409,6 +415,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ActionDocSetLogs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs" />
@@ -441,7 +448,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_C71ToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_CreateEx9.cs" />
@@ -464,6 +471,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs" />
@@ -472,6 +480,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
@@ -544,6 +553,7 @@
     <Compile Include="Generated MyNavProp Models\AllocationQS\AdjustmentShortAllocation.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAllocationsEx.cs" />
     <Compile Include="Generated MyNavProp Models\AllocationQS\AsycudaSalesAndAdjustmentAllocationsEx.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\ActionDocSetLogs.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs" />
@@ -576,7 +586,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\SessionSchedule.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\SubItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_AdjustmentsAlreadyXMLed.cs" />
-    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_AdjustmentsToXML.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_C71ToCreate.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_C71ToXML.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateDiscrepancyEntries.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_CreateEx9.cs" />
@@ -599,6 +609,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_ImportCompleteEntries.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LicenseToXML.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs" />
@@ -607,6 +618,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />

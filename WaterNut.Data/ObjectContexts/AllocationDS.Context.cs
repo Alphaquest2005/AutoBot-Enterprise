@@ -121,6 +121,8 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<ItemSalesAsycudaPiSummary> ItemSalesAsycudaPiSummary { get; set; }
      
+        public DbSet<ManualAllocations> ManualAllocationsSet { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -198,6 +200,8 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new SystemDocumentSetsMap());
          
             modelBuilder.Configurations.Add(new ItemSalesAsycudaPiSummaryMap());
+         
+            modelBuilder.Configurations.Add(new ManualAllocationsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

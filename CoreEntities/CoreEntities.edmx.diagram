@@ -111,6 +111,11 @@
         <EntityTypeShape EntityType="WaterNutDBModel.InfoMappingRegEx" Width="1.5" PointX="3" PointY="29.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_InfoMappingRegEx_InfoMapping" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitUnknownDFPComments" Width="1.5" PointX="27.625" PointY="13.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ActionDocSetLogs" Width="1.5" PointX="9.75" PointY="31.875" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ActionDocSetLogs_Actions" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitIncompleteSupplierInfo" Width="1.5" PointX="15.375" PointY="18.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_C71ToCreate" Width="1.5" PointX="28.5" PointY="13.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToCreate" Width="1.5" PointX="28.625" PointY="18.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

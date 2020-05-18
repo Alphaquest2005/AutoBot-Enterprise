@@ -85,9 +85,13 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
@@ -99,10 +103,44 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Registered.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TODO_C71ToCreate.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ValuationDS.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValuationDS.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ValuationDS.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
     <Compile Include="ValuationDS.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ValuationDS.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="xC71_Buyer_segment.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xC71_Declarant_segment.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xC71_Identification_segment.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xC71_Item.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xC71_Seller_segment.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
+    </Compile>
+    <Compile Include="xC71_Value_declaration_form.cs">
+      <DependentUpon>ValuationDS.tt</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +149,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>ValuationDS.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <None Include="packages.config" />
     <None Include="ValuationDS.edmx.diagram">
       <DependentUpon>ValuationDS.edmx</DependentUpon>
     </None>
@@ -129,6 +168,18 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ValuationDS.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ValuationDS.Context.cs</LastGenOutput>
+      <DependentUpon>ValuationDS.edmx</DependentUpon>
+    </Content>
+    <Content Include="ValuationDS.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ValuationDS.cs</LastGenOutput>
+      <DependentUpon>ValuationDS.edmx</DependentUpon>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -59,6 +59,8 @@ namespace ValuationDS.Business.Entities
      
         public DbSet<xC71_Value_declaration_form> xC71_Value_declaration_form { get; set; }
      
+        public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -74,6 +76,8 @@ namespace ValuationDS.Business.Entities
             modelBuilder.Configurations.Add(new xC71_Seller_segmentMap());
          
             modelBuilder.Configurations.Add(new xC71_Value_declaration_formMap());
+         
+            modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
          
             modelBuilder.Configurations.Add(new RegisteredMap());
       

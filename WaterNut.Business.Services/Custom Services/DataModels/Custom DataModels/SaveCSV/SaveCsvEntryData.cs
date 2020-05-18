@@ -69,7 +69,15 @@ namespace WaterNut.DataSpace
                     }
                 }
 
+                var i = Array.IndexOf(headings,"Instructions");
+                List<string> instructions = new List<string>();
+                if (i > 0)
+                {
+                    instructions = lines.Select(x => x.Split(',')[i]).Where(x => !string.IsNullOrEmpty(x)).ToList();
+                }
 
+                if (instructions.Contains("Append")) overWriteExisting = false;
+                if (instructions.Contains("Replace")) overWriteExisting = true;
 
                 return await ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, fileTypeId,
                     droppedFilePath, eslst).ConfigureAwait(false);
@@ -175,7 +183,8 @@ namespace WaterNut.DataSpace
                                 DocumentType = g.FirstOrDefault(x => x.DocumentType != "")?.DocumentType,
                                 SupplierInvoiceNo = g.FirstOrDefault(x => x.SupplierInvoiceNo != "")?.SupplierInvoiceNo,
                                 PONumber = g.FirstOrDefault(x => x.PONumber != "")?.PONumber,
-                                SourceFile = droppedFilePath
+                                SourceFile = droppedFilePath,
+                                
                             },
                         EntryDataDetails = g.Where(x => !string.IsNullOrEmpty(x.ItemNumber)).Select(x =>
                             new EntryDataDetails()
@@ -210,7 +219,9 @@ namespace WaterNut.DataSpace
                             TotalOtherCost = x.TotalOtherCost,
                             TotalInsurance = x.TotalInsurance,
                             TotalDeductions = x.TotalDeductions,
-                            InvoiceTotal = x.InvoiceTotal
+                            InvoiceTotal = x.InvoiceTotal,
+                            Packages = x.Packages,
+
 
 
                         }),
@@ -223,10 +234,10 @@ namespace WaterNut.DataSpace
 
                 List<EntryData> eLst = null;
 
-                //Parallel.ForEach(ed, new ParallelOptions() {MaxDegreeOfParallelism = 1},//Environment.ProcessorCount * 1
+                //Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
                 //    async item =>
-                foreach (var item in ed)
-               
+                    foreach (var item in ed)
+
                     {
                         if (!item.EntryDataDetails.Any())
                             throw new ApplicationException(item.EntryData.EntryDataId + " has no details");
@@ -354,6 +365,7 @@ namespace WaterNut.DataSpace
                                         TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
                                         TotalInsurance = item.f.Sum(x => x.TotalInsurance),
                                         TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                        Packages = item.f.Sum(x => x.Packages),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
 
                                         EmailId = item.EntryData.EmailId,
@@ -398,7 +410,7 @@ namespace WaterNut.DataSpace
                                         TotalInsurance = item.f.Sum(x => x.TotalInsurance),
                                         TotalDeduction = item.f.Sum(x => x.TotalDeductions),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-
+                                        Packages = item.f.Sum(x => x.Packages),
                                         EmailId = item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
@@ -713,7 +725,7 @@ namespace WaterNut.DataSpace
                     //    $"ApplicationSettingsId == \"{applicationSettingsId}\"",
                     //}, new List<string>() {"AsycudaDocumentSets", "EntryDataDetails"}).ConfigureAwait(false));
                     
-                    loadedEntryData.GetOrAdd($"{entryDataId}|{applicationSettingsId}", entryDatas.ToList());
+                    loadedEntryData.AddOrUpdate($"{entryDataId}|{applicationSettingsId}", entryDatas.ToList(), (k,v) => v);
                     //eLst.FirstOrDefault(x => x.EntryDataId == item.e.EntryDataId && x.EntryDataDate != item.e.EntryDataDate);
                 }
             }
@@ -957,6 +969,18 @@ namespace WaterNut.DataSpace
                 if ("Supplier Invoice#|SupplierInvoice#".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("SupplierInvoiceNo", i);
+                    continue;
+                }
+
+                if ("Inventory Source|InventorySource".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("InventorySource", i);
+                    continue;
+                }
+
+                if ("Packages|Package".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("Packages", i);
                     continue;
                 }
 
@@ -1216,6 +1240,18 @@ namespace WaterNut.DataSpace
                         ? splits[mapping["SupplierInvoiceNo"]]
                         : ""
                 },
+                {
+                    "InventorySource",
+                    (c, mapping, splits) => c.SupplierInvoiceNo = mapping.ContainsKey("InventorySource")
+                        ? splits[mapping["InventorySource"]]
+                        : ""
+                },
+                {
+                    "Packages",
+                    (c, mapping, splits) => c.Packages = Convert.ToInt32(mapping.ContainsKey("Packages") && !string.IsNullOrEmpty(splits[mapping["Packages"]])
+                        ? splits[mapping["Packages"]]
+                        : "0")
+                },
 
             };
 
@@ -1320,6 +1356,10 @@ namespace WaterNut.DataSpace
             public int? LineNumber { get; set; }
             public int InventoryItemId { get; set; }
             public string SourceRow { get; set; }
+
+            public string Instructions { get; set; }
+            public string InventorySource { get; set; }
+            public int Packages { get; set; }
         }
 
         private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)
@@ -1442,8 +1482,9 @@ namespace WaterNut.DataSpace
 
 
                         i = ctx.InventoryItems.Add(i);
+                        ctx.SaveChanges();
 
-                    }
+                        }
                     else
                     {
                         if (i.Description != item.Key.ItemDescription || i.TariffCode != item.Key.TariffCode)
@@ -1461,7 +1502,7 @@ namespace WaterNut.DataSpace
                         {
                             line.InventoryItemId = i.Id;
                         }
-                    }
+                }
 
                 ctx.SaveChanges();
             }

@@ -12,6 +12,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" />
         <EntityTypeShape EntityType="WaterNutDBModel.Registered" Width="4" PointX="3" PointY="10.75" />
         <InheritanceConnector EntityType="WaterNutDBModel.Registered" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToCreate" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -400,6 +400,23 @@ public double Totals
 		}
      
 
+       
+       
+                
+                
+public string SourceFile
+		{ 
+		    get { return this.entrydataex.SourceFile; }
+			set
+			{
+			    if (value == this.entrydataex.SourceFile) return;
+				this.entrydataex.SourceFile = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SourceFile");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEntryData> _AsycudaDocumentSets = null;
         public  ObservableCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets
 		{

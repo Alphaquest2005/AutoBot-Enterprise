@@ -27,6 +27,10 @@
               this.Property(t => t.NeedLicense).HasColumnName("NeedLicense").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.DocumentsCount).HasColumnName("DocumentsCount");
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
+              this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
+              this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
+              this.Property(t => t.HasC71).HasColumnName("HasC71");
+              this.Property(t => t.HasLicense).HasColumnName("HasLicense");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

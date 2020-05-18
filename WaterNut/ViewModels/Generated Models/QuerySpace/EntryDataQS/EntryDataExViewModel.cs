@@ -546,6 +546,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private string _sourceFileFilter;
+        public string SourceFileFilter
+        {
+            get
+            {
+                return _sourceFileFilter;
+            }
+            set
+            {
+                _sourceFileFilter = value;
+				NotifyPropertyChanged(x => SourceFileFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -659,7 +677,11 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 						res.Append(" && " + string.Format("TotalFreight == {0}",  TotalFreightFilter.ToString()));				 
 
 					if(TotalsFilter.HasValue)
-						res.Append(" && " + string.Format("Totals == {0}",  TotalsFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Totals == {0}",  TotalsFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(SourceFileFilter) == false)
+						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -733,7 +755,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TotalFreight = x.TotalFreight ,
                     
  
-                    Totals = x.Totals 
+                    Totals = x.Totals ,
+                    
+ 
+                    SourceFile = x.SourceFile 
                     
                 }).ToList()
             };
@@ -798,6 +823,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public double Totals { get; set; } 
+                    
+ 
+                    public string SourceFile { get; set; } 
                     
         }
 
