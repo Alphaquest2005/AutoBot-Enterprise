@@ -85,26 +85,56 @@ namespace WaterNut.DataSpace
 		}
 
 
-		public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment)
+		public async Task AllocateSales(ApplicationSettings applicationSettings, bool allocateToLastAdjustment )
 		{
 			var forceDiscrepancyExecution = true;
 
 			try
 			{
-				// update nonstock entrydetails status
-				using (var ctx = new EntryDataDSContext())
+				PrepareDataForAllocation(applicationSettings);
+
+
+			    StatusModel.Timer("Auto Match Adjustments");
+				using (var ctx = new AdjustmentShortService())
 				{
-					ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
+					await ctx.AutoMatch(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+				   if(forceDiscrepancyExecution) await ctx.ProcessDISErrorsForAllocation(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+				}
+
+
+					await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment, null).ConfigureAwait(false);
+				
+
+				await MarkErrors(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
+
+				StatusModel.StopStatusUpdate();
+			}
+			catch (Exception ex)
+			{
+
+				throw ex;
+			}
+
+		}
+
+	    public static void PrepareDataForAllocation(ApplicationSettings applicationSettings)
+	    {
+// update nonstock entrydetails status
+	        using (var ctx = new EntryDataDSContext())
+	        {
+	            ctx.Database.ExecuteSqlCommand($@"UPDATE EntryDataDetails
 						SET         Status = N'Non Stock', DoNotAllocate = 1
 						FROM    EntryData INNER JOIN
 										 EntryDataDetails ON EntryData.EntryDataId = EntryDataDetails.EntryDataId INNER JOIN
 										 [InventoryItems-NonStock] INNER JOIN
 										 InventoryItems ON [InventoryItems-NonStock].InventoryItemId = InventoryItems.Id ON EntryDataDetails.ItemNumber = InventoryItems.ItemNumber AND 
 										 EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
-						WHERE (EntryData.ApplicationSettingsId = {applicationSettings.ApplicationSettingsId}) AND (EntryDataDetails.Status IS NULL)");
+						WHERE (EntryData.ApplicationSettingsId = {
+	                    applicationSettings.ApplicationSettingsId
+	                }) AND (EntryDataDetails.Status IS NULL)");
 
-					// Consider moving this this is shit code
-					ctx.Database.ExecuteSqlCommand($@"  update EntryDataDetails
+	            // Consider moving this this is shit code
+	            ctx.Database.ExecuteSqlCommand($@"  update EntryDataDetails
 						  set taxamount = 1
 						  where taxamount is null and comment in ('Promotional Expenses','Charity','Shop / Office / Warehouse Expenses','Office Expenses','PROMOTION','Promotional Expense','Promotional Expenses','Sample',
 											'Shop / Office / Warehouse Expenses','SHOP EXPENSES','SP','SPONSORSHIP','STORE / WAREHOUSE EXPENSE','Store / Warehouse Expenses','STORE EXPENSE','VEHICLE EXPENSE'
@@ -121,10 +151,11 @@ namespace WaterNut.DataSpace
 						  set taxamount = 1
 						  where entrydataid like 'ADJ%' and TaxAmount is null");
 
-					ctx.Database.ExecuteSqlCommand($@"EXEC [dbo].[GetMappingFromInventory] @appsettingId
-													 EXEC[dbo].[CreateInventoryAliasFromInventoryMapping]",new SqlParameter("@appsettingId", applicationSettings.ApplicationSettingsId));
+	            ctx.Database.ExecuteSqlCommand($@"EXEC [dbo].[GetMappingFromInventory] @appsettingId
+													 EXEC[dbo].[CreateInventoryAliasFromInventoryMapping]",
+	                new SqlParameter("@appsettingId", applicationSettings.ApplicationSettingsId));
 
-					ctx.Database.ExecuteSqlCommand($@"WITH CTE AS(
+	            ctx.Database.ExecuteSqlCommand($@"WITH CTE AS(
 													SELECT EntryDataDetails.EntryDataId, FileLineNumber,ItemNumber, Quantity, InvoiceQty, ReceivedQty,
 													RN = ROW_NUMBER()OVER(PARTITION BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty  ORDER BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty)
 													FROM EntryDataDetails
@@ -132,33 +163,10 @@ namespace WaterNut.DataSpace
 													DELETE FROM CTE WHERE RN > 1
 
 													delete from entrydata where entrydata_id not in (select distinct Entrydata_id from entrydatadetails)");
-				}
+	        }
+	    }
 
-
-				StatusModel.Timer("Auto Match Adjustments");
-				using (var ctx = new AdjustmentShortService())
-				{
-					await ctx.AutoMatch(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
-				   if(forceDiscrepancyExecution) await ctx.ProcessDISErrorsForAllocation(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
-				}
-
-
-					await AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(applicationSettings.ApplicationSettingsId, allocateToLastAdjustment).ConfigureAwait(false);
-				
-
-				await MarkErrors(applicationSettings.ApplicationSettingsId).ConfigureAwait(false);
-
-				StatusModel.StopStatusUpdate();
-			}
-			catch (Exception ex)
-			{
-
-				throw ex;
-			}
-
-		}
-
-		private async Task MarkErrors(int applicationSettingsId)
+	    public async Task MarkErrors(int applicationSettingsId)
 		{
 		   // MarkNoAsycudaEntry();
 				
@@ -169,10 +177,10 @@ namespace WaterNut.DataSpace
 
 		}
 
-		private async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
-			int applicationSettingsId, bool allocateToLastAdjustment)
+		public  async Task AllocateSalesByMatchingSalestoAsycudaEntriesOnItemNumber(
+			int applicationSettingsId, bool allocateToLastAdjustment, string lst)
 		{
-			var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber(applicationSettingsId).ConfigureAwait(false);
+			var itemSets = await MatchSalestoAsycudaEntriesOnItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
 			StatusModel.StopStatusUpdate();
 			
 			StatusModel.StartStatusUpdate("Allocating Item Sales", itemSets.Count());
@@ -194,7 +202,11 @@ namespace WaterNut.DataSpace
 					t += 1;
 				   // Debug.WriteLine($"Processing {itm.Key} - {t} with {itm.SalesList.Count} Sales: {0} of {itm.SalesList.Count}");
 					//StatusModel.Refresh();
-				var sales = itm.SalesList.OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId).ThenBy(x => x.LineNumber ?? x.EntryDataDetailsId).ThenByDescending(x => x.Quantity)/**/.ToList();
+				var sales = itm.SalesList
+				    .OrderBy(x => x.Sales.EntryDataDate)
+				    .ThenBy(x => x.EntryDataId)
+				    .ThenBy(x => x.LineNumber ?? x.EntryDataDetailsId)
+				    .ThenByDescending(x => x.Quantity)/**/.ToList();
 				var asycudaItems = itm.EntriesList.OrderBy(x => x.AsycudaDocument.AssessmentDate)
 					
 					.ThenBy(x => x.IsAssessed == null).ThenBy(x => x.AsycudaDocument.RegistrationDate)
@@ -246,6 +258,7 @@ namespace WaterNut.DataSpace
 						.Include(x => x.SubItems)
 						.Include(x => x.xcuda_Goods_description)
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+                        
 						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 									(x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" || 
 									 x.AsycudaDocument.Extended_customs_procedure == "9000") &&
@@ -391,7 +404,7 @@ namespace WaterNut.DataSpace
 						.Include(x => x.SubItems)
 						.Include(x => x.xcuda_Goods_description)
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
-						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
+					    .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 									(x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" ||
 									 x.AsycudaDocument.Extended_customs_procedure == "9000") &&
 									x.AsycudaDocument.DoNotAllocate != true)
@@ -522,20 +535,20 @@ namespace WaterNut.DataSpace
 
 
 		private async Task<ConcurrentDictionary<string, ItemSet>> MatchSalestoAsycudaEntriesOnItemNumber(
-			int applicationSettingsId)
+		    int applicationSettingsId, string lst)
 		{
 			try
 			{
-				var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+				var asycudaEntries = await GetAsycudaEntriesWithItemNumber(applicationSettingsId, null).ConfigureAwait(false);
 				//var testr = asycudaEntries.Where(x => x.EntriesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
 
-				var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+				var saleslst = await GetSaleslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
 				//var test = saleslst.Where(x => x.SalesList.Any(z => z.ItemNumber == "BM/FGCM150-50")).ToList();
 
-				var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+				var adjlst = await GetAdjustmentslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
 				saleslst.AddRange(adjlst);
 
-				var dislst = await GetDiscrepancieslstWithItemNumber(applicationSettingsId).ConfigureAwait(false);
+				var dislst = await GetDiscrepancieslstWithItemNumber(applicationSettingsId, lst).ConfigureAwait(false);
 				saleslst.AddRange(dislst);
 
 				var itmLst = CreateItemSetsWithItemNumbers(saleslst, asycudaEntries);
@@ -639,7 +652,7 @@ namespace WaterNut.DataSpace
 		}
 
 
-		private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithItemNumber(int applicationSettingsId)
+		private static async Task<IEnumerable<ItemEntries>> GetAsycudaEntriesWithItemNumber(int applicationSettingsId, int? asycudaDocumentSetId)
 		{
 			StatusModel.Timer("Getting Data - Asycuda Entries...");
 			//string itmnumber = "WMHP24-72";
@@ -652,6 +665,7 @@ namespace WaterNut.DataSpace
 					.Include(x => x.SubItems)
 					.Include("EntryPreviousItems.xcuda_PreviousItem")
 					.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+                    .Where(x => asycudaDocumentSetId == null || x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId)
 					.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 								(x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" || x.AsycudaDocument.Extended_customs_procedure == "9000") &&
 								// x.WarehouseError == null && 
@@ -727,7 +741,8 @@ namespace WaterNut.DataSpace
 			return asycudaEntries;
 		}
 
-		private static async Task<List<ItemSales>> GetSaleslstWithItemNumber(int applicationSettingsId)
+		private static async Task<List<ItemSales>> GetSaleslstWithItemNumber(int applicationSettingsId,
+		    string lst)
 		{
 			StatusModel.Timer("Getting Data - Sales Entries...");
 
@@ -743,13 +758,14 @@ namespace WaterNut.DataSpace
 
 															   "QtyAllocated != Quantity " +
 															   $"&& Sales.ApplicationSettingsId == {applicationSettingsId} " +
-															   //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
-															   "&& DoNotAllocate != true", new Dictionary<string, string>()
+															//	$" && (\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) " +
+                                                               //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
+                                                               "&& DoNotAllocate != true", new Dictionary<string, string>()
 															   {
 																   { "Sales", "INVNumber != null" }
 															   }, new List<string>() { "Sales", "AsycudaSalesAllocations", "ManualAllocations" },false)
 							.ConfigureAwait(false);
-				saleslst = from d in salesData
+				saleslst = from d in salesData.Where(x => lst == "" || lst.Contains(x.ItemNumber))
 					group d by d.ItemNumber.ToUpper().Trim()
 					into g
 					select
@@ -762,7 +778,8 @@ namespace WaterNut.DataSpace
 			return saleslst.ToList();
 		}
 
-		private static async Task<List<ItemSales>> GetAdjustmentslstWithItemNumber(int applicationSettingsId)
+		private static async Task<List<ItemSales>> GetAdjustmentslstWithItemNumber(int applicationSettingsId,
+		    string lst)
 		{
 			StatusModel.Timer("Getting Data - Adjustments Entries...");
 
@@ -777,7 +794,8 @@ namespace WaterNut.DataSpace
 																	: "") +
 															   "QtyAllocated != Quantity && " +
 																$"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
-																$"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have CNumber to get matched
+																$"(\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) && " +
+                                                                $"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have CNumber to get matched
 																"((CNumber == null && PreviousInvoiceNumber == null) ||" +
 																" ((CNumber != null || PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments
 																" && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"": "") +  ")" +
@@ -816,7 +834,8 @@ namespace WaterNut.DataSpace
 		}
 
 
-		private static async Task<List<ItemSales>> GetDiscrepancieslstWithItemNumber(int applicationSettingsId)
+		private static async Task<List<ItemSales>> GetDiscrepancieslstWithItemNumber(int applicationSettingsId,
+		    string lst)
 		{
 			try
 			{
@@ -835,7 +854,8 @@ namespace WaterNut.DataSpace
 																	: "") +
 															   "QtyAllocated != Quantity && " +
 																$"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
-																$"Adjustments.Type == \"DIS\" && " + /// Only Discrepancies with Errors
+																$"(\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) && " +
+                                                                $"Adjustments.Type == \"DIS\" && " + /// Only Discrepancies with Errors
 																$"Comment.StartsWith(\"DISERROR:\") && " +
 																"((CNumber == null && PreviousInvoiceNumber == null) ||" +
 																" ((CNumber != null || PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments

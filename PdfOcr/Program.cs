@@ -18,9 +18,9 @@ namespace pdf_ocr
             var recognizedText = PdfOcr.Ocr("test.pdf");
 
             Console.WriteLine($"Recognized text on page");
-            Console.WriteLine($"==========================");
+            Console.WriteLine($"=====");
             Console.WriteLine(recognizedText);
-            Console.WriteLine($"==========================");
+            Console.WriteLine($"=====");
 
             
 

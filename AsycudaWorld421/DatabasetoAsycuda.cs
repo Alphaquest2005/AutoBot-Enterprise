@@ -504,55 +504,69 @@ namespace Asycuda421
             }
         }
 
-        private  void SaveItem(xcuda_ASYCUDA da, ASYCUDA a)
+        private void SaveItem(xcuda_ASYCUDA da, ASYCUDA a)
         {
-
-            if (da.xcuda_Item != null )
+            try
             {
-                var lnCounter = 0;
-                foreach (var item in da.xcuda_Item.OrderBy(x => x.LineNumber))
+
+
+                if (da.xcuda_Item != null)
                 {
-                   //if (item.ItemNumber.Length > 17) continue;
-
-                    if(item.xcuda_PreviousItem != null && string.IsNullOrEmpty(item.xcuda_PreviousItem.Prev_reg_nbr)) continue;
-
-                    lnCounter += 1;
-                    item.LineNumber = lnCounter;
-                    var ai = SetupItemProperties(da);
-
-                    if (item.Licence_number != null)
-                        ai.Licence_number.Text.Add(item.Licence_number);
-                    if (item.Quantity_deducted_from_licence != null)
-                        ai.Quantity_deducted_from_licence = item.Quantity_deducted_from_licence;
-                    if (item.Free_text_1 != null)
-                        ai.Free_text_1.Text.Add(item.Free_text_1);
-                    if (item.Free_text_2 != null)
-                        ai.Free_text_2.Text.Add(item.Free_text_2);
-
-
-
-                    SaveAttachedDocuments(item, ai);
-                    if (item.xcuda_Tarification == null)
+                    var lnCounter = 0;
+                    foreach (var item in da.xcuda_Item.OrderBy(x => x.LineNumber))
                     {
-                        throw new Exception("Null Tarification, for item number: " + item.ItemNumber);
+                        //if (item.ItemNumber.Length > 17) continue;
+
+                        if (item.xcuda_PreviousItem != null &&
+                            string.IsNullOrEmpty(item.xcuda_PreviousItem.Prev_reg_nbr)) continue;
+
+                        lnCounter += 1;
+                        item.LineNumber = lnCounter;
+                        var ai = SetupItemProperties(da);
+
+                        if (item.Licence_number != null)
+                            ai.Licence_number.Text.Add(item.Licence_number);
+                        if (item.Quantity_deducted_from_licence != null)
+                            ai.Quantity_deducted_from_licence = item.Quantity_deducted_from_licence;
+                        if (item.Free_text_1 != null)
+                            ai.Free_text_1.Text.Add(item.Free_text_1);
+                        if (item.Free_text_2 != null)
+                            ai.Free_text_2.Text.Add(item.Free_text_2);
+
+
+
+                        SaveAttachedDocuments(item, ai);
+                        if (item.xcuda_Tarification == null)
+                        {
+                            throw new Exception("Null Tarification, for item number: " + item.ItemNumber);
+                        }
+
+                        SaveTarification(item, ai);
+                        SaveGoodsDescription(item, ai);
+                        SavePreviousDoc(item, ai);
+                        SavePackages(item, ai);
+                        SaveValuationItem(item, ai);
+                        if (db.TariffCodes.FirstOrDefault(x =>
+                                x.TariffCode == item.xcuda_Tarification.xcuda_HScode.Commodity_code &&
+                                x.LicenseRequired == true) != null)
+                        {
+                            ai.Quantity_deducted_from_licence =
+                                item.ItemQuantity.ToString(CultureInfo.InvariantCulture);
+                        }
+
+                        a.Item.Add(ai);
                     }
-                    SaveTarification(item, ai);
-                    SaveGoodsDescription(item, ai);
-                    SavePreviousDoc(item, ai);
-                    SavePackages(item, ai);
-                    SaveValuationItem(item, ai);
-                    if (db.TariffCodes.FirstOrDefault(x =>
-                            x.TariffCode == item.xcuda_Tarification.xcuda_HScode.Commodity_code &&
-                            x.LicenseRequired == true) != null)
-                    {
-                        ai.Quantity_deducted_from_licence = item.ItemQuantity.ToString(CultureInfo.InvariantCulture);
-                    }
-                    a.Item.Add(ai);
+
+                    if (a.Item.Count != 0 && a.Item[0].Packages.Number_of_packages == "0")
+                        a.Item[0].Packages.Number_of_packages = "1";
+
+
                 }
-                if (a.Item.Count != 0 && a.Item[0].Packages.Number_of_packages == "0")
-                    a.Item[0].Packages.Number_of_packages = "1";
-
-
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
@@ -619,10 +633,19 @@ namespace Asycuda421
 
         private FileInfo Change2Pdf(FileInfo fileinfo)
         {
-            var res = new FileInfo(fileinfo.FullName + ".pdf");
-            if (res.Exists) return res;
-            File.Copy(fileinfo.FullName, res.FullName);
-            return res;
+            try
+            {
+                var res = new FileInfo(fileinfo.FullName + ".pdf");
+                if (res.Exists) return res;
+                File.Copy(fileinfo.FullName, res.FullName);
+                return res;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         private  ASYCUDAItem SetupItemProperties(xcuda_ASYCUDA da)

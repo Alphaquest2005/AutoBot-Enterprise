@@ -20,6 +20,7 @@ using Omu.ValueInjecter;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
 using System.Globalization;
 using System.Net;
@@ -618,7 +619,7 @@ namespace WaterNut.DataSpace
                 ;
                 if (!IsValidEntryData(slstSource)) return;
 
-                await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false, combineEntryDataInSameFile, groupItems)
+                await CreateEntryItems(slstSource, currentAsycudaDocumentSet, perInvoice, true, false, combineEntryDataInSameFile, groupItems, true)
                     .ConfigureAwait(false);
             }
             catch (Exception)
@@ -653,7 +654,7 @@ namespace WaterNut.DataSpace
                 ;
                 if (!IsValidEntryData(slstSource)) return;
 
-                await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile, groupItems).ConfigureAwait(false);
+                await CreateEntryItems(slstSource, docSet, perInvoice, true, false, combineEntryDataInSameFile, groupItems, true).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -724,7 +725,7 @@ namespace WaterNut.DataSpace
 
         public async Task CreateEntryItems(List<EntryDataDetails> slstSource,
             AsycudaDocumentSet currentAsycudaDocumentSet, bool perInvoice, bool autoUpdate, bool autoAssess,
-            bool combineEntryDataInSameFile, bool groupItems)
+            bool combineEntryDataInSameFile, bool groupItems, bool checkPackages)
         {
             var itmcount = 0;
             var slst = groupItems? CreateGroupEntryLineData(slstSource): CreateSingleEntryLineData(slstSource);
@@ -759,10 +760,20 @@ namespace WaterNut.DataSpace
             switch (CurrentApplicationSettings.OrderEntriesBy)
             {
                 case "TariffCode":
-                    entryLineDatas = entryLineDatas.OrderBy(p => p.InventoryItem.TariffCode).ToList();
+                    if (combineEntryDataInSameFile)
+                    {
+                        entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.SourceFile).ThenBy(p => p.InventoryItem.TariffCode).ToList();
+                    }
+                    else
+                        entryLineDatas = entryLineDatas.OrderBy(p => p.InventoryItem.TariffCode).ToList();
                     break;
                 case "Invoice":
-                    entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.EntryDataId).ToList();
+                    if (combineEntryDataInSameFile)
+                    {
+                        entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.SourceFile).ThenBy(p => p.EntryData.EntryDataId).ToList();
+                    }
+                    else
+                        entryLineDatas = entryLineDatas.OrderBy(p => p.EntryData.EntryDataId).ToList();
                     break;
                 default:
                     break;
@@ -776,12 +787,13 @@ namespace WaterNut.DataSpace
                 var remainingPackages = pod.EntryData.Packages.GetValueOrDefault();
                 var possibleEntries =
                                       Math.Ceiling( (pod.EntryDataDetails.Count /(double) (currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines)))  ;
-                                    //var remLines =
-                                    //  pod.EntryDataDetails.Count % currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines;
-                if (combineEntryDataInSameFile == false && remainingPackages < possibleEntries)
-                {
-                    throw new ApplicationException("Entry data lines need more packages");
-                }
+                //var remLines =
+                //  pod.EntryDataDetails.Count % currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines;
+                if(checkPackages)
+                    if (combineEntryDataInSameFile == false && remainingPackages < possibleEntries)
+                    {
+                        throw new ApplicationException("Entry data lines need more packages");
+                    }
                 if (pod.EntryData.DocumentType?.DocumentType != null && cdoc.DocumentItems.Count == 0 && string.IsNullOrEmpty(oldentryData.EntryDataId))
                 {
                     var cp = AttachEntryDataDocumentType(cdoc, pod.EntryData.DocumentType);
@@ -796,8 +808,7 @@ namespace WaterNut.DataSpace
                             if (!combineEntryDataInSameFile || pod.EntryData.SourceFile != oldentryData.SourceFile)
                             {
                                 SetEffectiveAssessmentDate(cdoc);
-                                AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
-
+                                
                                 SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
 
 
@@ -890,7 +901,7 @@ namespace WaterNut.DataSpace
                     if (cdoc.DocumentItems.Any())
                     {
                         SetEffectiveAssessmentDate(cdoc);
-                        AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
+                       // AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
                         SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
                         await SaveDocumentCT(cdoc).ConfigureAwait(false);
                         cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
@@ -1659,6 +1670,10 @@ namespace WaterNut.DataSpace
                             itm.Free_text_1 = $"{fr.EntryDataId}|{fr.LineNumber}|{pod.ItemNumber}";
                             itm.Free_text_2 = fr.Comment ;
                         }
+
+                        itm.PreviousInvoiceItemNumber = pod.ItemNumber;
+                        itm.PreviousInvoiceLineNumber = fr.LineNumber.ToString();
+                        itm.PreviousInvoiceNumber = fr.EntryDataId;
 
                         LimitFreeText(itm);
                     }
@@ -2601,41 +2616,61 @@ namespace WaterNut.DataSpace
 
         public static void SaveAttachments(AsycudaDocumentSet docSet, DocumentCT cdoc)
         {
-            if (!cdoc.DocumentItems.Any()) return;
-            var alst = docSet.AsycudaDocumentSet_Attachments
-                .Where(x => x.DocumentSpecific == false
-                            && cdoc.EmailIds.Contains(x.EmailUniqueId)
-                            && cdoc.Document.AsycudaDocument_Attachments.All(z => z.AttachmentId != x.AttachmentId))
-                .Select(x => x.Attachment);
-            foreach (var att in alst)
+            try
             {
-                cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
-                {
-                    AttachmentId = att.Id,
-                    AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
-                    //Attachment = att,
-                    //xcuda_ASYCUDA = cdoc.Document,
-                    TrackingState = TrackingState.Added
-                });
 
-                var f = new FileInfo(att.FilePath);
-                cdoc.DocumentItems.First().xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+
+                if (!cdoc.DocumentItems.Any()) return;
+                var alst = docSet.AsycudaDocumentSet_Attachments
+                    .Where(x => x.DocumentSpecific == false
+                                && cdoc.EmailIds.Contains(x.EmailUniqueId)
+                                && cdoc.Document.AsycudaDocument_Attachments.All(z =>
+                                    z.AttachmentId != x.AttachmentId));
+
+                foreach (var att in alst)
                 {
-                    Attached_document_code = att.DocumentCode,
-                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                    Attached_document_reference = f.Name.Replace(f.Extension, ""), //pod.EntryData.EntryDataId,
-                    xcuda_Attachments = new List<xcuda_Attachments>()
+                    foreach (var itm in cdoc.DocumentItems)
                     {
-                        new xcuda_Attachments(true)
+                        if (itm.EmailId != att.EmailUniqueId) continue;
+                        //.Select(x => x.InvoiceNo).Distinct().Aggregate((old, current) => old + "," + current)
+                        cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
                         {
                             AttachmentId = att.Id,
+                            AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
+                            //Attachment = att,
+                            //xcuda_ASYCUDA = cdoc.Document,
                             TrackingState = TrackingState.Added
-                        }
-                    },
-                    TrackingState = TrackingState.Added
-                });
+                        });
+
+                        var f = new FileInfo(att.Attachment.FilePath);
+                        itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                        {
+                            Attached_document_code = att.Attachment.DocumentCode,
+                            Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                            Attached_document_reference =
+                                f.Name.Replace(f.Extension, ""), //pod.EntryData.EntryDataId,
+                            xcuda_Attachments = new List<xcuda_Attachments>()
+                            {
+                                new xcuda_Attachments(true)
+                                {
+                                    AttachmentId = att.Id,
+                                    TrackingState = TrackingState.Added
+                                }
+                            },
+                            TrackingState = TrackingState.Added
+                        });
+                        break;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
+
+
 
         internal void ExportDocSet(AsycudaDocumentSet docSet, string directoryName, bool overWrite)
         {
@@ -3358,7 +3393,7 @@ namespace WaterNut.DataSpace
 
             foreach (var doc in docs)
             {
-                AttachToDocument(pdfs, doc, itms);
+                AttachToDocument(pdfs, doc, itms.Where(x => x.ASYCUDA_Id == doc.ASYCUDA_Id).ToList());
             }
                 
 

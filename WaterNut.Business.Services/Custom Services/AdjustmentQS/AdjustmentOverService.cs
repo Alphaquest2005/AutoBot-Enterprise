@@ -71,7 +71,7 @@ namespace AdjustmentQS.Business.Services
 
                         }).ToList();
 
-                    await BaseDataModel.Instance.CreateEntryItems(olst, docSet, perInvoice, false, true, false, false)
+                    await BaseDataModel.Instance.CreateEntryItems(olst, docSet, perInvoice, false, true, false, false,false)
                     .ConfigureAwait(false);
 
 

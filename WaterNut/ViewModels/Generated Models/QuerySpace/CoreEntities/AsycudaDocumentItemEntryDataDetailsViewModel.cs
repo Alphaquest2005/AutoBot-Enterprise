@@ -299,6 +299,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -346,6 +364,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(ImportCompleteFilter.HasValue)
 						res.Append(" && " + string.Format("ImportComplete == {0}",  ImportCompleteFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -381,7 +403,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Quantity = x.Quantity ,
                     
  
-                    ImportComplete = x.ImportComplete 
+                    ImportComplete = x.ImportComplete ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure 
                     
                 }).ToList()
             };
@@ -407,6 +432,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public bool ImportComplete { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
                     
         }
 

@@ -222,5 +222,8 @@ namespace DocumentItemDS.Business.Entities
                 return Convert.ToDouble(DFQtyAllocated) + Convert.ToDouble(DPQtyAllocated);
             }
         }
+        [IgnoreDataMember]
+        [NotMapped]
+        public int? EmailId { get; set; }
     }
 }

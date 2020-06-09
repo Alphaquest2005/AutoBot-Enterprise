@@ -283,6 +283,75 @@ namespace WaterNut.DataSpace
         }
 
 
+      
+
+        public async Task ClearDocSetAllocations(string lst)
+        {
+            try
+            {
+
+
+                StatusModel.Timer("Clear DocSet Existing Allocations");
+
+                using (var ctx = new AllocationDSContext())
+                {
+                    var sql = $@" DELETE FROM AdjustmentOversAllocations
+							FROM    AdjustmentOversAllocations INNER JOIN
+											 EntryDataDetails ON AdjustmentOversAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
+											 EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId 
+                            WHERE (EntryDataDetails.ItemNumber in ({lst}))
+
+                            DELETE FROM AsycudaSalesAllocations
+                            FROM    AsycudaSalesAllocations INNER JOIN
+                                             EntryDataDetails ON AsycudaSalesAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
+                                             EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId 
+                            WHERE (EntryDataDetails.ItemNumber in ({lst}))
+
+                            UPDATE xcuda_Item
+                            SET         DFQtyAllocated = 0, DPQtyAllocated = 0
+                            FROM    xcuda_Item INNER JOIN
+                                             xcuda_HScode ON xcuda_Item.Item_Id = xcuda_HScode.Item_Id INNER JOIN
+                                                 (SELECT InventoryItemsWithAlias.ItemNumber
+                                                  FROM     InventoryItems INNER JOIN
+                                                                   InventoryItemsWithAlias ON InventoryItems.Id = InventoryItemsWithAlias.Id
+                                                  WHERE  (InventoryItems.ItemNumber IN ({lst}))) AS items ON xcuda_HScode.Precision_4 = items.ItemNumber
+
+
+                            UPDATE EntryDataDetails
+                            SET         QtyAllocated = 0, Status = NULL, EffectiveDate = NULL
+                            FROM    EntryDataDetails INNER JOIN
+                                             EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId 
+                            WHERE (EntryDataDetails.ItemNumber in ({lst}))
+
+
+                            UPDATE xcuda_PreviousItem
+                            SET         QtyAllocated = 0
+                            FROM  xcuda_PreviousItem inner join  xcuda_Item on xcuda_Item.Item_Id = xcuda_PreviousItem.PreviousItem_Id INNER JOIN
+                                             xcuda_HScode ON xcuda_Item.Item_Id = xcuda_HScode.Item_Id INNER JOIN
+                                                 (SELECT InventoryItemsWithAlias.ItemNumber
+                                                  FROM     InventoryItems INNER JOIN
+                                                                   InventoryItemsWithAlias ON InventoryItems.Id = InventoryItemsWithAlias.Id
+                                                  WHERE  (InventoryItems.ItemNumber IN ({lst}))) AS items ON xcuda_HScode.Precision_4 = items.ItemNumber
+
+                            UPDATE SubItems
+                            SET         QtyAllocated = 0
+                            FROM    xcuda_Item INNER JOIN
+                                             SubItems ON xcuda_Item.Item_Id = SubItems.Item_Id INNER JOIN
+                                             xcuda_HScode ON xcuda_Item.Item_Id = xcuda_HScode.Item_Id INNER JOIN
+                                                 (SELECT InventoryItemsWithAlias.ItemNumber
+                                                  FROM     InventoryItems INNER JOIN
+                                                                   InventoryItemsWithAlias ON InventoryItems.Id = InventoryItemsWithAlias.Id
+                                                  WHERE  (InventoryItems.ItemNumber IN ({lst}))) AS items ON xcuda_HScode.Precision_4 = items.ItemNumber";
+                    await ctx.Database.ExecuteSqlCommandAsync(TransactionalBehavior.EnsureTransaction, sql).ConfigureAwait(false);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
 
         public  async Task ClearAllocations(IEnumerable<AsycudaSalesAllocations> alst)
         {

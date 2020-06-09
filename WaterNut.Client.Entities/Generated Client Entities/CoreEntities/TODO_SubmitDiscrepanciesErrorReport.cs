@@ -377,6 +377,21 @@ public int Entrydatadetailsid
 		}
      
 
+       
+       
+public Nullable<int> AsycudaDocumentSetId
+		{ 
+		    get { return this.todo_submitdiscrepancieserrorreport.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.todo_submitdiscrepancieserrorreport.AsycudaDocumentSetId) return;
+				this.todo_submitdiscrepancieserrorreport.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_SubmitDiscrepanciesErrorReport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_SubmitDiscrepanciesErrorReport> ChangeTracker

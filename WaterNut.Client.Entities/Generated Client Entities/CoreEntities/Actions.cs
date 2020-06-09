@@ -63,7 +63,7 @@ public int Id
        [RequiredValidationAttribute(ErrorMessage= "Name is required")]
        
                 
-                [MaxLength(50, ErrorMessage = "Name has a max length of 50 letters ")]
+                [MaxLength(100, ErrorMessage = "Name has a max length of 100 letters ")]
 public string Name
 		{ 
 		    get { return this.actions.Name; }

@@ -168,6 +168,23 @@ public int EntryData_Id
 		}
      
 
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.CustomsProcedure; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.CustomsProcedure) return;
+				this.asycudadocumentitementrydatadetails.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
+			}
+		}
+     
+
        private AsycudaDocumentItem _AsycudaDocumentItem;
         public  AsycudaDocumentItem AsycudaDocumentItem
 		{

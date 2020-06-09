@@ -148,7 +148,7 @@ namespace WaterNut.DataSpace
                                     itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
                                         .ToList(), true, true,
                                     dfp == "Duty Free" ? "EX9" : "IM4", true, "Historic", true, ApplyCurrentChecks,
-                                    true)
+                                    true, false)
                                 .ConfigureAwait(false);
                         }
 
@@ -1059,7 +1059,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
         public async Task CreateDutyFreePaidDocument(string dfp, IEnumerable<AllocationDataBlock> slst,
             AsycudaDocumentSet docSet, string im7Type, bool isGrouped, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, string ex9Type,
-            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks, bool autoAssess)
+            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks, bool autoAssess, bool perInvoice)
         {
             try
             {
@@ -1113,7 +1113,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                         if (!(mypod.EntlnData.Quantity > 0)) continue;
                         if (MaxLineCount(itmcount)
-                            || InvoicePerEntry(prevEntryId, mypod)
+                            || InvoicePerEntry(perInvoice, prevEntryId, mypod)
                             || (cdoc.Document == null || itmcount == 0)
                             || IsPerIM7(prevIM7, monthyear))
                         {
@@ -1214,10 +1214,10 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                      (!string.IsNullOrEmpty(prevIM7) && prevIM7 != monthyear.CNumber)));
         }
 
-        private bool InvoicePerEntry(string prevEntryId, MyPodData mypod)
+        private bool InvoicePerEntry(bool perInvoice,string prevEntryId, MyPodData mypod)
         {
-            return (BaseDataModel.Instance.CurrentApplicationSettings
-                        .InvoicePerEntry == true &&
+            return (//BaseDataModel.Instance.CurrentApplicationSettings.InvoicePerEntry == true &&
+                    perInvoice == true &&
                     //prevEntryId != "" &&
                     prevEntryId != mypod.EntlnData.EntryDataDetails[0].EntryDataId);
         }
@@ -2250,6 +2250,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                     global::DocumentItemDS.Business.Entities.xcuda_Item itm =
                         BaseDataModel.Instance.CreateItemFromEntryDataDetail(lineData, cdoc);
+                    itm.EmailId = lineData.EmailId;
                     itm.xcuda_Valuation_item.Total_CIF_itm = pitm.Current_value;
                     itm.xcuda_Tarification.xcuda_HScode.Precision_4 = lineData.pDocumentItem.ItemNumber;
                     itm.xcuda_Goods_description.Commercial_Description = BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
@@ -2432,6 +2433,9 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             if (BaseDataModel.Instance.CurrentApplicationSettings.GroupEX9 == true) return itmcnt;
             if (itm.Free_text_1 == null) itm.Free_text_1 = "";
             itm.Free_text_1 = $"{entryDataId}|{lineNumber}|{itemCode}";
+            itm.PreviousInvoiceItemNumber = itemCode;
+            itm.PreviousInvoiceLineNumber = lineNumber.ToString();
+            itm.PreviousInvoiceNumber = entryDataId;
             if(!string.IsNullOrEmpty(comment)) itm.Free_text_2 = $"{comment}";
             itmcnt += 1;
 

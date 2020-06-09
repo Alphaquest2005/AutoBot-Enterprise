@@ -51,109 +51,140 @@ namespace AdjustmentQS.Business.Services
                     .DistinctBy(x => x.EntryDataDetailsId)
                     .ToList();
 
-                StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
-                foreach (var s in lst)
-                {
-                    //StatusModel.StatusUpdate("Matching Shorts To Asycuda Entries");
-                    var tryCNumber = false;
-                    try
-                    {
-                        ctx.SaveChanges();
-
-                        if (string.IsNullOrEmpty(s.ItemNumber)) continue;
-                        var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
-                        if (!string.IsNullOrEmpty(s.PreviousInvoiceNumber))
-                        {
-                            List<AsycudaDocumentItem> aItem;
-                            if(s.InvoiceQty > 0)
-                            {
-                                aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
-                                        s.PreviousInvoiceNumber,s.EntryDataId, s.ItemNumber)
-                                    .ConfigureAwait(false);
-                                if (aItem.Any()) MatchToAsycudaItem(s, aItem, ed, ctx);
-                            }
-                            else
-                            {
-                                aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
-                                        s.PreviousInvoiceNumber, s.EntryDataId)
-                                    .ConfigureAwait(false);
-                                if(aItem.Any()) MatchToAsycudaDocument(aItem.First().AsycudaDocument, ed);
-                            }
-                            if (!aItem.Any())
-                            {
-                                tryCNumber = true;
-                            }
-
-                        }
-
-                        if (( tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber) )&&
-                                 s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
-                        {
-                            var aItem = await GetAsycudaEntriesInCNumber(s.PreviousCNumber, s.ItemNumber)
-                                .ConfigureAwait(false);
-                            if (!aItem.Any())
-                                aItem = await GetAsycudaEntriesInCNumberReference(applicationSettingsId,
-                                        s.PreviousCNumber, s.ItemNumber)
-                                    .ConfigureAwait(false);
-                            MatchToAsycudaItem(s, aItem, ed, ctx);
-                            // continue;
-                        }
-
-                        else if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
-                                 s.InvoiceQty.GetValueOrDefault() <= 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
-                        {
-                            var asycudaDocument = GetAsycudaDocumentInCNumber(applicationSettingsId, s.PreviousCNumber);
-                            MatchToAsycudaDocument(asycudaDocument, ed);
-                        }
-                        if(ed.EffectiveDate == null)
-                        {
-                            //Set Overs 1st and Shorts to Last of Month
-                            //Try match effective date if i find the invoice if not leave it blank
-
-                            // if (ed.EffectiveDate == null) ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
-                            if(s.Type == "DIS")
-                                ed.EffectiveDate = new EntryDataDSContext().EntryData.OfType<PurchaseOrders>().FirstOrDefault(x =>
-                                   x.EntryDataId == ed.EntryDataId ||
-                                    ed.PreviousInvoiceNumber.Contains(x.EntryDataId))?.EntryDataDate;
-                            else
-                            {
-                                ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
-                            }
-                            
-
-                        }
-
-                        if (ed.Cost != 0) continue;
-                        if (s.InvoiceQty.GetValueOrDefault() > 0)
-                            continue; // if invoice > 0 it should have been imported
-
-                        //////////// only apply to Adjustments because they are after shipment... discrepancies have to be provided.
-                        if (s.Type != "ADJ") continue;
-                        var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
-                            .Where(x => x.assessmentdate <= ed.EffectiveDate)
-                            .OrderByDescending(x => x.assessmentdate)
-                            .FirstOrDefault(x =>
-                                x.ItemNumber == ed.ItemNumber &&
-                                x.applicationsettingsid == applicationSettingsId);
-                        if (lastItemCost != null)
-                            ed.LastCost = (double) lastItemCost.LocalItemCost.GetValueOrDefault();
-
-
-
-                        
-
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
-
-                }
-                    ctx.SaveChanges();
-                StatusModel.StopStatusUpdate();
+                await DoAutoMatch(applicationSettingsId, lst, ctx);
             }
 
         }
+
+
+        public async Task AutoMatchDocSet(int applicationSettingsId, int docSetId)
+        {
+
+
+
+            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+            {
+                ctx.Database.CommandTimeout = 0;
+
+
+
+                var lst = ctx.AdjustmentDetails
+                    .Include(x => x.AdjustmentEx)
+                    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
+                    .Where(x => x.AsycudaDocumentSetId == docSetId)
+                    //.Where(x => x.SystemDocumentSet != null)
+                    // .Where(x => x.ItemNumber == "HEL/003361001")
+                    //.Where(x => x.EntryDataId == "120902")
+                    //.Where( x => x.EntryDataDetailsId == 545303)
+                    .Where(x => x.DoNotAllocate == null || x.DoNotAllocate != true)
+                    .Where(x => x.EffectiveDate == null) // take out other check cuz of existing entries 
+                    .OrderBy(x => x.EntryDataDetailsId)
+                    .DistinctBy(x => x.EntryDataDetailsId)
+                    .ToList();
+
+                await DoAutoMatch(applicationSettingsId, lst, ctx);
+            }
+
+        }
+
+        private async Task DoAutoMatch(int applicationSettingsId, List<AdjustmentDetail> lst, AdjustmentQSContext ctx)
+        {
+            StatusModel.StartStatusUpdate("Matching Shorts To Asycuda Entries", lst.Count());
+            foreach (var s in lst)
+            {
+                //StatusModel.StatusUpdate("Matching Shorts To Asycuda Entries");
+                var tryCNumber = false;
+                try
+                {
+                    ctx.SaveChanges();
+
+                    if (string.IsNullOrEmpty(s.ItemNumber)) continue;
+                    var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
+                    if (!string.IsNullOrEmpty(s.PreviousInvoiceNumber))
+                    {
+                        List<AsycudaDocumentItem> aItem;
+                        if (s.InvoiceQty > 0)
+                        {
+                            aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
+                                    s.PreviousInvoiceNumber, s.EntryDataId, s.ItemNumber)
+                                .ConfigureAwait(false);
+                            if (aItem.Any()) MatchToAsycudaItem(s, aItem, ed, ctx);
+                        }
+                        else
+                        {
+                            aItem = await GetAsycudaEntriesWithInvoiceNumber(applicationSettingsId,
+                                    s.PreviousInvoiceNumber, s.EntryDataId)
+                                .ConfigureAwait(false);
+                            if (aItem.Any()) MatchToAsycudaDocument(aItem.First().AsycudaDocument, ed);
+                        }
+
+                        if (!aItem.Any())
+                        {
+                            tryCNumber = true;
+                        }
+                    }
+
+                    if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
+                        s.InvoiceQty.GetValueOrDefault() > 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
+                    {
+                        var aItem = await GetAsycudaEntriesInCNumber(s.PreviousCNumber, s.ItemNumber)
+                            .ConfigureAwait(false);
+                        if (!aItem.Any())
+                            aItem = await GetAsycudaEntriesInCNumberReference(applicationSettingsId,
+                                    s.PreviousCNumber, s.ItemNumber)
+                                .ConfigureAwait(false);
+                        MatchToAsycudaItem(s, aItem, ed, ctx);
+                        // continue;
+                    }
+
+                    else if ((tryCNumber || string.IsNullOrEmpty(s.PreviousInvoiceNumber)) &&
+                             s.InvoiceQty.GetValueOrDefault() <= 0 && !string.IsNullOrEmpty(s.PreviousCNumber))
+                    {
+                        var asycudaDocument = GetAsycudaDocumentInCNumber(applicationSettingsId, s.PreviousCNumber);
+                        MatchToAsycudaDocument(asycudaDocument, ed);
+                    }
+
+                    if (ed.EffectiveDate == null)
+                    {
+                        //Set Overs 1st and Shorts to Last of Month
+                        //Try match effective date if i find the invoice if not leave it blank
+
+                        // if (ed.EffectiveDate == null) ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
+                        if (s.Type == "DIS")
+                            ed.EffectiveDate = new EntryDataDSContext().EntryData.OfType<PurchaseOrders>().FirstOrDefault(x =>
+                                x.EntryDataId == ed.EntryDataId ||
+                                ed.PreviousInvoiceNumber.Contains(x.EntryDataId))?.EntryDataDate;
+                        else
+                        {
+                            ed.EffectiveDate = s.AdjustmentEx.InvoiceDate;
+                        }
+                    }
+
+                    if (ed.Cost != 0) continue;
+                    if (s.InvoiceQty.GetValueOrDefault() > 0)
+                        continue; // if invoice > 0 it should have been imported
+
+                    //////////// only apply to Adjustments because they are after shipment... discrepancies have to be provided.
+                    if (s.Type != "ADJ") continue;
+                    var lastItemCost = ctx.AsycudaDocumentItemLastItemCosts
+                        .Where(x => x.assessmentdate <= ed.EffectiveDate)
+                        .OrderByDescending(x => x.assessmentdate)
+                        .FirstOrDefault(x =>
+                            x.ItemNumber == ed.ItemNumber &&
+                            x.applicationsettingsid == applicationSettingsId);
+                    if (lastItemCost != null)
+                        ed.LastCost = (double) lastItemCost.LocalItemCost.GetValueOrDefault();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            ctx.SaveChanges();
+            StatusModel.StopStatusUpdate();
+        }
+
 
         private static void MatchToAsycudaDocument(AsycudaDocument asycudaDocument, EntryDataDetail ed)
         {
@@ -282,7 +313,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                                    slst, docSet, "7400", false, itemPiSummarylst, false,
-                                                   false, ex9Type, true, "Current", false, false, true)
+                                                   false, ex9Type, true, "Current", false, false, true,perInvoice)
                                                .ConfigureAwait(
                                                    false);
                     }
@@ -290,7 +321,7 @@ namespace AdjustmentQS.Business.Services
                     {
                         await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                 slst, docSet, "7400", false, itemPiSummarylst, true,
-                                false, ex9Type, true, "Historic", true, true, true)
+                                false, ex9Type, true, "Historic", true, true, true, perInvoice)
                             .ConfigureAwait(
                                 false);
                     }
@@ -870,20 +901,47 @@ namespace AdjustmentQS.Business.Services
                     .ToList();
                 // looking for 'INT/YBA473/3GL'
 
-                StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
-                foreach (var s in lst)
-                {
-                    var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
-                    ed.EffectiveDate = BaseDataModel.CurrentSalesInfo().Item2;
-                    ed.QtyAllocated = 0;
-                    ed.Comment = $@"DISERROR:{s.Status}";
-                    ed.Status = null;
-                    ctx.Database.ExecuteSqlCommand(
-                        $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}");
-                }
-
-                ctx.SaveChanges();
+                ProcessDISErrorsForAllocation(lst, ctx);
             }
+        }
+
+        public async Task ProcessDISErrorsForAllocation(int applicationSettingsId, string res)
+        {
+            // get Discrepancy Allocation Errors && Discrepancies that can't be Exwarehoused
+            using (var ctx = new AdjustmentQSContext() { StartTracking = true })
+            {
+                ctx.Database.CommandTimeout = 0;
+
+
+
+                var lst = ctx.TODO_PreDiscrepancyErrors
+                    .Where(x => x.ApplicationSettingsId == applicationSettingsId
+                                && res.Contains(x.EntryDataDetailsId.ToString()))
+                    //.Where(x => x.ItemNumber == "HEL/003361001")
+                    .OrderBy(x => x.EntryDataDetailsId)
+                    .DistinctBy(x => x.EntryDataDetailsId)
+                    .ToList();
+                // looking for 'INT/YBA473/3GL'
+
+                ProcessDISErrorsForAllocation(lst, ctx);
+            }
+        }
+
+        private static void ProcessDISErrorsForAllocation(List<TODO_PreDiscrepancyErrors> lst, AdjustmentQSContext ctx)
+        {
+            StatusModel.StartStatusUpdate("Preparing Discrepancy Errors for Re-Allocation", lst.Count());
+            foreach (var s in lst)
+            {
+                var ed = ctx.EntryDataDetails.First(x => x.EntryDataDetailsId == s.EntryDataDetailsId);
+                ed.EffectiveDate = BaseDataModel.CurrentSalesInfo().Item2;
+                ed.QtyAllocated = 0;
+                ed.Comment = $@"DISERROR:{s.Status}";
+                ed.Status = null;
+                ctx.Database.ExecuteSqlCommand(
+                    $"delete from AsycudaSalesAllocations where EntryDataDetailsId = {ed.EntryDataDetailsId}");
+            }
+
+            ctx.SaveChanges();
         }
     }
 }

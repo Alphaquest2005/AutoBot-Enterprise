@@ -294,6 +294,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _Entrydatadetailsid;
 
+        [DataMember]
+        public Nullable<int> AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private Nullable<int> _AsycudaDocumentSetId;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

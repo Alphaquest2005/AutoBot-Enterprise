@@ -82,6 +82,9 @@ namespace CoreEntities.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByemailId(string emailId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+        
   		
     }
 }

@@ -117,6 +117,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetTODO_SubmitDiscrepanciesErrorReportByemailId(emailId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

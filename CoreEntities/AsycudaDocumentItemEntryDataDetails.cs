@@ -22,6 +22,7 @@ namespace CoreEntities
         public Nullable<double> Quantity { get; set; }
         public bool ImportComplete { get; set; }
         public int EntryData_Id { get; set; }
+        public string CustomsProcedure { get; set; }
     
         public virtual AsycudaDocumentItem AsycudaDocumentItem { get; set; }
     }

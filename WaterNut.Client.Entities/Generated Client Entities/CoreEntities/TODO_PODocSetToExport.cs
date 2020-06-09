@@ -75,7 +75,7 @@ public int ApplicationSettingsId
        
        
                 
-                [MaxLength(50, ErrorMessage = "Country_of_origin_code has a max length of 50 letters ")]
+                [MaxLength(3, ErrorMessage = "Country_of_origin_code has a max length of 3 letters ")]
 public string Country_of_origin_code
 		{ 
 		    get { return this.todo_podocsettoexport.Country_of_origin_code; }
@@ -92,7 +92,7 @@ public string Country_of_origin_code
        
        
                 
-                [MaxLength(50, ErrorMessage = "Currency_Code has a max length of 50 letters ")]
+                [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]
 public string Currency_Code
 		{ 
 		    get { return this.todo_podocsettoexport.Currency_Code; }

@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using TODO_SubmitDiscrepanciesErrorReport = CoreEntities.Client.Entities.TODO_SubmitDiscrepanciesErrorReport;
+using ActionDocSetLogs = CoreEntities.Client.Entities.ActionDocSetLogs;
 
 namespace CoreEntities.Client.Repositories 
 {
    
-    public partial class TODO_SubmitDiscrepanciesErrorReportRepository : BaseRepository<TODO_SubmitDiscrepanciesErrorReportRepository>
+    public partial class ActionDocSetLogsRepository : BaseRepository<ActionDocSetLogsRepository>
     {
 
-       private static readonly TODO_SubmitDiscrepanciesErrorReportRepository instance;
-       static TODO_SubmitDiscrepanciesErrorReportRepository()
+       private static readonly ActionDocSetLogsRepository instance;
+       static ActionDocSetLogsRepository()
         {
-            instance = new TODO_SubmitDiscrepanciesErrorReportRepository();
+            instance = new ActionDocSetLogsRepository();
         }
 
-       public static TODO_SubmitDiscrepanciesErrorReportRepository Instance
+       public static ActionDocSetLogsRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> TODO_SubmitDiscrepanciesErrorReport(List<string> includesLst = null)
+        public async Task<IEnumerable<ActionDocSetLogs>> ActionDocSetLogs(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<ActionDocSetLogs>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReport(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetActionDocSetLogs(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new ActionDocSetLogs(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<ActionDocSetLogs>> GetActionDocSetLogsByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<ActionDocSetLogs>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                     {
-					    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+					    IEnumerable<DTO.ActionDocSetLogs> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetTODO_SubmitDiscrepanciesErrorReport(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetActionDocSetLogs(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetTODO_SubmitDiscrepanciesErrorReportByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetActionDocSetLogsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new ActionDocSetLogs(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<ActionDocSetLogs>> GetActionDocSetLogsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ActionDocSetLogs>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                     {
-					    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+					    IEnumerable<DTO.ActionDocSetLogs> res = null;
                        
-                        res = await t.GetTODO_SubmitDiscrepanciesErrorReportByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.GetActionDocSetLogsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new ActionDocSetLogs(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<ActionDocSetLogs>> GetActionDocSetLogsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<ActionDocSetLogs>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                     {
-					    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+					    IEnumerable<DTO.ActionDocSetLogs> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetTODO_SubmitDiscrepanciesErrorReport(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetActionDocSetLogs(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetTODO_SubmitDiscrepanciesErrorReportByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetActionDocSetLogsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new ActionDocSetLogs(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,16 +191,19 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> GetTODO_SubmitDiscrepanciesErrorReport(string id, List<string> includesLst = null)
+        public async Task<ActionDocSetLogs> GetActionDocSetLogs(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                 using (var t = new ActionDocSetLogsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReportByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetActionDocSetLogsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new TODO_SubmitDiscrepanciesErrorReport(res);
+                            return new ActionDocSetLogs(res)
+                    {
+                  // Actions = (res.Actions != null?new Actions(res.Actions): null)    
+                  };
                     }
                     else
                     {
@@ -219,7 +222,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> UpdateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity)
+        public async Task<ActionDocSetLogs> UpdateActionDocSetLogs(ActionDocSetLogs entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -227,10 +230,10 @@ namespace CoreEntities.Client.Repositories
             {
                 try
                 {
-                    using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                    using (var t = new ActionDocSetLogsClient())
                     {
      
-                        var updatedEntity =  await t.UpdateTODO_SubmitDiscrepanciesErrorReport(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.UpdateActionDocSetLogs(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -256,13 +259,13 @@ namespace CoreEntities.Client.Repositories
 
         }
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> CreateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity)
+        public async Task<ActionDocSetLogs> CreateActionDocSetLogs(ActionDocSetLogs entity)
         {
             try
             {   
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                     {
-                        return new TODO_SubmitDiscrepanciesErrorReport(await t.CreateTODO_SubmitDiscrepanciesErrorReport(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new ActionDocSetLogs(await t.CreateActionDocSetLogs(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -276,13 +279,13 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteTODO_SubmitDiscrepanciesErrorReport(string id)
+        public async Task<bool> DeleteActionDocSetLogs(string id)
         {
             try
             {
-             using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+             using (var t = new ActionDocSetLogsClient())
                 {
-                    return await t.DeleteTODO_SubmitDiscrepanciesErrorReport(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.DeleteActionDocSetLogs(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -296,13 +299,13 @@ namespace CoreEntities.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedTODO_SubmitDiscrepanciesErrorReport(IEnumerable<string> selectedTODO_SubmitDiscrepanciesErrorReport)
+        public async Task<bool> RemoveSelectedActionDocSetLogs(IEnumerable<string> selectedActionDocSetLogs)
         {
             try
             {
-                using (var ctx = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var ctx = new ActionDocSetLogsClient())
                 {
-                    return await ctx.RemoveSelectedTODO_SubmitDiscrepanciesErrorReport(selectedTODO_SubmitDiscrepanciesErrorReport).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedActionDocSetLogs(selectedActionDocSetLogs).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -319,21 +322,21 @@ namespace CoreEntities.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<ActionDocSetLogs>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>, int>(new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<ActionDocSetLogs>, int>(new List<ActionDocSetLogs>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                 {
 
-                    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+                    IEnumerable<DTO.ActionDocSetLogs> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -342,7 +345,7 @@ namespace CoreEntities.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>, int>(res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<ActionDocSetLogs>, int>(res.Select(x => new ActionDocSetLogs(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -361,17 +364,17 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByemailId(string emailId, List<string> includesLst = null)
+	 public async Task<IEnumerable<ActionDocSetLogs>> GetActionDocSetLogsByActonId(string ActonId, List<string> includesLst = null)
         {
-             if (emailId == "0") return null;
+             if (ActonId == "0") return null;
             try
             {
-                 using (TODO_SubmitDiscrepanciesErrorReportClient t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                 using (ActionDocSetLogsClient t = new ActionDocSetLogsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReportByemailId(emailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetActionDocSetLogsByActonId(ActonId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new ActionDocSetLogs(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -389,17 +392,17 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+ 	 public async Task<IEnumerable<ActionDocSetLogs>> GetActionDocSetLogsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
              if (AsycudaDocumentSetId == "0") return null;
             try
             {
-                 using (TODO_SubmitDiscrepanciesErrorReportClient t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                 using (ActionDocSetLogsClient t = new ActionDocSetLogsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetActionDocSetLogsByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new ActionDocSetLogs(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -422,7 +425,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -443,7 +446,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new ActionDocSetLogsClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }
