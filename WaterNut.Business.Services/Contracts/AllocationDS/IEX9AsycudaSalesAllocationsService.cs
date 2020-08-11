@@ -129,6 +129,15 @@ namespace AllocationDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
   
 
 

@@ -29,6 +29,7 @@ namespace AdjustmentQS
         public string SuppUnitCode2 { get; set; }
         public Nullable<double> SuppQty { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public int InventoryItemId { get; set; }
     
         public virtual ICollection<InventoryItemAliasEx> InventoryItemAliasExes { get; set; }
         public virtual ICollection<EntryDataDetail> EntryDataDetails { get; set; }

@@ -80,10 +80,19 @@ namespace CoreEntities.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
+		Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
+  		[OperationContract]
 		Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null);
         
   		[OperationContract]
 		Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
+  		[OperationContract]
+		Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEntryDataId(string EntryDataId, List<string> includesLst = null);
         
   		
     }

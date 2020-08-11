@@ -1,9 +1,11 @@
 ﻿using CoreEntities.Business.Entities;
+using CoreEntities.Business.Enums;
 using CoreEntities.Business.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DocumentDS.Business.Entities;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
 
 namespace WaterNut.DataSpace
@@ -55,7 +57,7 @@ namespace WaterNut.DataSpace
 
 	                (await
 	                    ctx.GetAsycudaDocumentsByExpression(
-	                        $"AsycudaDocumentSetId == {docSetId} && DoNotAllocate != true && (DocumentType.Contains(\"EX\") || DocumentType == \"IM4\" || DocumentType == \"IM9\")",
+	                        $"AsycudaDocumentSetId == {docSetId} && DoNotAllocate != true && (CustomsOperationId == {(int) CustomsOperations.Exwarehouse})",
                             null
 	                        ).ConfigureAwait(false));
 

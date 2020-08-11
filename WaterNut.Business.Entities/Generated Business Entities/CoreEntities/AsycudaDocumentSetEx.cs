@@ -26,6 +26,7 @@ namespace CoreEntities.Business.Entities
             this.LicenceSummary = new List<LicenceSummary>();
             this.FileTypes = new List<FileTypes>();
             this.AsycudaDocumentSet_Attachments = new List<AsycudaDocumentSet_Attachments>();
+            this.AsycudaDocumentSetEntryDataEx = new List<AsycudaDocumentSetEntryDataEx>();
         }
 
         [DataMember]
@@ -464,6 +465,36 @@ namespace CoreEntities.Business.Entities
         }
         string _freightcurrencycode;
         [DataMember]
+        public Nullable<int> QtyLicensesRequired 
+        {
+            get
+            {
+                return _qtylicensesrequired;
+            }
+            set
+            {
+                _qtylicensesrequired = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _qtylicensesrequired;
+        [DataMember]
+        public Nullable<int> EntryPackages 
+        {
+            get
+            {
+                return _entrypackages;
+            }
+            set
+            {
+                _entrypackages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _entrypackages;
+        [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]
         public List<LicenceSummary> LicenceSummary { get; set; }
@@ -473,6 +504,8 @@ namespace CoreEntities.Business.Entities
         public List<FileTypes> FileTypes { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        [DataMember]
+        public List<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

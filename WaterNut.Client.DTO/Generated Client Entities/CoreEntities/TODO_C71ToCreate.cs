@@ -203,6 +203,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<double> _TotalCIF;
 
+        [DataMember]
+        public Nullable<double> C71Total
+		{ 
+		    get { return _C71Total; }
+			set
+			{
+			    if (value == _C71Total) return;
+				_C71Total = value;
+				NotifyPropertyChanged();//m => this.C71Total
+			}
+		}
+        private Nullable<double> _C71Total;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

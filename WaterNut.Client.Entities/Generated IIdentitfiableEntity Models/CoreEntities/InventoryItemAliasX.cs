@@ -48,7 +48,7 @@ namespace CoreEntities.Client.Entities
                         {
                             this.InventoryItemsEx = (InventoryItemX)new InventoryItemX().CreateEntityFromString(value);
 							
-							this.AliasId = Convert.ToInt32(this.InventoryItemsEx.ItemNumber);
+							this.AliasId = Convert.ToInt32(this.InventoryItemsEx.InventoryItemId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddInventoryItemsEx");
                         }
@@ -56,6 +56,44 @@ namespace CoreEntities.Client.Entities
                         {
                             var obj = new InventoryItemX(dto);
                            if (this.InventoryItemsEx == null || this.InventoryItemsEx.EntityId != obj.EntityId) this.InventoryItemsEx = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string ApplicationSettingsEntityName
+        {
+            get
+            {
+                return this.ApplicationSettings == null ? "" : this.ApplicationSettings.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ApplicationSettingsClient ctx = new ApplicationSettingsClient())
+                    {
+                        var dto = ctx.GetApplicationSettings().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
+							
+							this.ApplicationSettingsId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddApplicationSettings");
+                        }
+                        else
+                        {
+                            var obj = new ApplicationSettings(dto);
+                           if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
                            
                         }
                          

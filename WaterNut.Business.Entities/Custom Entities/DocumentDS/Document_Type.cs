@@ -20,21 +20,7 @@ namespace DocumentDS.Business.Entities
             }
         }
 
-        private Customs_Procedure _defaultCustoms_Procedure = null;
-        [IgnoreDataMember]
-        [NotMapped]
-        public Customs_Procedure DefaultCustoms_Procedure
-        {
-            get
-            {
-                return _defaultCustoms_Procedure ??
-                       (_defaultCustoms_Procedure = Customs_Procedure.FirstOrDefault(x => x.IsDefault == true) ??
-                                                    Customs_Procedure.FirstOrDefault());
-            }
-            set
-            {
-                _defaultCustoms_Procedure = value;
-            }
-        }
+     
+      
     }
 }

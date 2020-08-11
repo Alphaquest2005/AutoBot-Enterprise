@@ -67,6 +67,7 @@ namespace CoreEntities
         public string PreviousInvoiceLineNumber { get; set; }
         public string PreviousInvoiceItemNumber { get; set; }
         public Nullable<int> ApplicationSettingsId { get; set; }
+        public Nullable<int> InventoryItemId { get; set; }
     
         public virtual AsycudaDocument AsycudaDocument { get; set; }
         public virtual ICollection<SubItems> SubItems { get; set; }

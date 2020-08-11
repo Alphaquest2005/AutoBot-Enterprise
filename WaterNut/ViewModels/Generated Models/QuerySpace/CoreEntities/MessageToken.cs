@@ -58,6 +58,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string AsycudaDocumentSet_AttachmentsDeleted = "AsycudaDocumentSet_AttachmentsDeleted";
 			public const string AsycudaDocumentSet_AttachmentsCreated = "AsycudaDocumentSet_AttachmentsCreated";
 			public const string AsycudaDocumentSet_AttachmentsUpdated = "AsycudaDocumentSet_AttachmentsUpdated";
+			public const string AsycudaDocumentSetEntryDataExFilterExpressionChanged = "AsycudaDocumentSetEntryDataExFilterExpressionChanged";
+			public const string SelectedAsycudaDocumentSetEntryDataExChanged = "SelectedAsycudaDocumentSetEntryDataExChanged";
+            public const string AsycudaDocumentSetEntryDataExChanged = "AsycudaDocumentSetEntryDataExChanged";
+			public const string AsycudaDocumentSetEntryDataExDeleted = "AsycudaDocumentSetEntryDataExDeleted";
+			public const string AsycudaDocumentSetEntryDataExCreated = "AsycudaDocumentSetEntryDataExCreated";
+			public const string AsycudaDocumentSetEntryDataExUpdated = "AsycudaDocumentSetEntryDataExUpdated";
 			public const string AsycudaDocumentSetExsFilterExpressionChanged = "AsycudaDocumentSetExsFilterExpressionChanged";
 			public const string SelectedAsycudaDocumentSetExsChanged = "SelectedAsycudaDocumentSetExsChanged";
             public const string AsycudaDocumentSetExsChanged = "AsycudaDocumentSetExsChanged";
@@ -88,6 +94,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string Customs_ProcedureDeleted = "Customs_ProcedureDeleted";
 			public const string Customs_ProcedureCreated = "Customs_ProcedureCreated";
 			public const string Customs_ProcedureUpdated = "Customs_ProcedureUpdated";
+			public const string CustomsOperationsFilterExpressionChanged = "CustomsOperationsFilterExpressionChanged";
+			public const string SelectedCustomsOperationsChanged = "SelectedCustomsOperationsChanged";
+            public const string CustomsOperationsChanged = "CustomsOperationsChanged";
+			public const string CustomsOperationsDeleted = "CustomsOperationsDeleted";
+			public const string CustomsOperationsCreated = "CustomsOperationsCreated";
+			public const string CustomsOperationsUpdated = "CustomsOperationsUpdated";
 			public const string Document_TypeFilterExpressionChanged = "Document_TypeFilterExpressionChanged";
 			public const string SelectedDocument_TypeChanged = "SelectedDocument_TypeChanged";
             public const string Document_TypeChanged = "Document_TypeChanged";
@@ -100,6 +112,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string EmailFileTypesDeleted = "EmailFileTypesDeleted";
 			public const string EmailFileTypesCreated = "EmailFileTypesCreated";
 			public const string EmailFileTypesUpdated = "EmailFileTypesUpdated";
+			public const string EmailInfoMappingsFilterExpressionChanged = "EmailInfoMappingsFilterExpressionChanged";
+			public const string SelectedEmailInfoMappingsChanged = "SelectedEmailInfoMappingsChanged";
+            public const string EmailInfoMappingsChanged = "EmailInfoMappingsChanged";
+			public const string EmailInfoMappingsDeleted = "EmailInfoMappingsDeleted";
+			public const string EmailInfoMappingsCreated = "EmailInfoMappingsCreated";
+			public const string EmailInfoMappingsUpdated = "EmailInfoMappingsUpdated";
 			public const string EmailMappingFilterExpressionChanged = "EmailMappingFilterExpressionChanged";
 			public const string SelectedEmailMappingChanged = "SelectedEmailMappingChanged";
             public const string EmailMappingChanged = "EmailMappingChanged";
@@ -244,6 +262,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_DiscrepanciesAlreadyXMLedDeleted = "TODO_DiscrepanciesAlreadyXMLedDeleted";
 			public const string TODO_DiscrepanciesAlreadyXMLedCreated = "TODO_DiscrepanciesAlreadyXMLedCreated";
 			public const string TODO_DiscrepanciesAlreadyXMLedUpdated = "TODO_DiscrepanciesAlreadyXMLedUpdated";
+			public const string TODO_DiscrepanciesErrorsFilterExpressionChanged = "TODO_DiscrepanciesErrorsFilterExpressionChanged";
+			public const string SelectedTODO_DiscrepanciesErrorsChanged = "SelectedTODO_DiscrepanciesErrorsChanged";
+            public const string TODO_DiscrepanciesErrorsChanged = "TODO_DiscrepanciesErrorsChanged";
+			public const string TODO_DiscrepanciesErrorsDeleted = "TODO_DiscrepanciesErrorsDeleted";
+			public const string TODO_DiscrepanciesErrorsCreated = "TODO_DiscrepanciesErrorsCreated";
+			public const string TODO_DiscrepanciesErrorsUpdated = "TODO_DiscrepanciesErrorsUpdated";
 			public const string TODO_DiscrepanciesToAssessFilterExpressionChanged = "TODO_DiscrepanciesToAssessFilterExpressionChanged";
 			public const string SelectedTODO_DiscrepanciesToAssessChanged = "SelectedTODO_DiscrepanciesToAssessChanged";
             public const string TODO_DiscrepanciesToAssessChanged = "TODO_DiscrepanciesToAssessChanged";
@@ -358,6 +382,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_PODocSetDeleted = "TODO_PODocSetDeleted";
 			public const string TODO_PODocSetCreated = "TODO_PODocSetCreated";
 			public const string TODO_PODocSetUpdated = "TODO_PODocSetUpdated";
+			public const string TODO_PODocSetToAssessFilterExpressionChanged = "TODO_PODocSetToAssessFilterExpressionChanged";
+			public const string SelectedTODO_PODocSetToAssessChanged = "SelectedTODO_PODocSetToAssessChanged";
+            public const string TODO_PODocSetToAssessChanged = "TODO_PODocSetToAssessChanged";
+			public const string TODO_PODocSetToAssessDeleted = "TODO_PODocSetToAssessDeleted";
+			public const string TODO_PODocSetToAssessCreated = "TODO_PODocSetToAssessCreated";
+			public const string TODO_PODocSetToAssessUpdated = "TODO_PODocSetToAssessUpdated";
 			public const string TODO_PODocSetToExportFilterExpressionChanged = "TODO_PODocSetToExportFilterExpressionChanged";
 			public const string SelectedTODO_PODocSetToExportChanged = "SelectedTODO_PODocSetToExportChanged";
             public const string TODO_PODocSetToExportChanged = "TODO_PODocSetToExportChanged";
@@ -370,6 +400,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string ToDo_POToXMLDeleted = "ToDo_POToXMLDeleted";
 			public const string ToDo_POToXMLCreated = "ToDo_POToXMLCreated";
 			public const string ToDo_POToXMLUpdated = "ToDo_POToXMLUpdated";
+			public const string TODO_SubmitAllXMLToCustomsFilterExpressionChanged = "TODO_SubmitAllXMLToCustomsFilterExpressionChanged";
+			public const string SelectedTODO_SubmitAllXMLToCustomsChanged = "SelectedTODO_SubmitAllXMLToCustomsChanged";
+            public const string TODO_SubmitAllXMLToCustomsChanged = "TODO_SubmitAllXMLToCustomsChanged";
+			public const string TODO_SubmitAllXMLToCustomsDeleted = "TODO_SubmitAllXMLToCustomsDeleted";
+			public const string TODO_SubmitAllXMLToCustomsCreated = "TODO_SubmitAllXMLToCustomsCreated";
+			public const string TODO_SubmitAllXMLToCustomsUpdated = "TODO_SubmitAllXMLToCustomsUpdated";
 			public const string TODO_SubmitDiscrepanciesErrorReportFilterExpressionChanged = "TODO_SubmitDiscrepanciesErrorReportFilterExpressionChanged";
 			public const string SelectedTODO_SubmitDiscrepanciesErrorReportChanged = "SelectedTODO_SubmitDiscrepanciesErrorReportChanged";
             public const string TODO_SubmitDiscrepanciesErrorReportChanged = "TODO_SubmitDiscrepanciesErrorReportChanged";
@@ -406,6 +442,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_SubmitIncompleteSupplierInfoDeleted = "TODO_SubmitIncompleteSupplierInfoDeleted";
 			public const string TODO_SubmitIncompleteSupplierInfoCreated = "TODO_SubmitIncompleteSupplierInfoCreated";
 			public const string TODO_SubmitIncompleteSupplierInfoUpdated = "TODO_SubmitIncompleteSupplierInfoUpdated";
+			public const string TODO_SubmitPOInfoFilterExpressionChanged = "TODO_SubmitPOInfoFilterExpressionChanged";
+			public const string SelectedTODO_SubmitPOInfoChanged = "SelectedTODO_SubmitPOInfoChanged";
+            public const string TODO_SubmitPOInfoChanged = "TODO_SubmitPOInfoChanged";
+			public const string TODO_SubmitPOInfoDeleted = "TODO_SubmitPOInfoDeleted";
+			public const string TODO_SubmitPOInfoCreated = "TODO_SubmitPOInfoCreated";
+			public const string TODO_SubmitPOInfoUpdated = "TODO_SubmitPOInfoUpdated";
 			public const string TODO_SubmitUnclassifiedItemsFilterExpressionChanged = "TODO_SubmitUnclassifiedItemsFilterExpressionChanged";
 			public const string SelectedTODO_SubmitUnclassifiedItemsChanged = "SelectedTODO_SubmitUnclassifiedItemsChanged";
             public const string TODO_SubmitUnclassifiedItemsChanged = "TODO_SubmitUnclassifiedItemsChanged";
@@ -452,13 +494,16 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string AsycudaDocumentItemChanged = "AsycudaDocumentItemChanged";
           // public const string AsycudaDocumentItemEntryDataDetailsChanged = "AsycudaDocumentItemEntryDataDetailsChanged";
           // public const string AsycudaDocumentSet_AttachmentsChanged = "AsycudaDocumentSet_AttachmentsChanged";
+          // public const string AsycudaDocumentSetEntryDataExChanged = "AsycudaDocumentSetEntryDataExChanged";
           // public const string AsycudaDocumentSetExChanged = "AsycudaDocumentSetExChanged";
           // public const string AttachmentLogChanged = "AttachmentLogChanged";
           // public const string AttachmentsChanged = "AttachmentsChanged";
           // public const string ContactsChanged = "ContactsChanged";
           // public const string Customs_ProcedureChanged = "Customs_ProcedureChanged";
+          // public const string CustomsOperationsChanged = "CustomsOperationsChanged";
           // public const string Document_TypeChanged = "Document_TypeChanged";
           // public const string EmailFileTypesChanged = "EmailFileTypesChanged";
+          // public const string EmailInfoMappingsChanged = "EmailInfoMappingsChanged";
           // public const string EmailMappingChanged = "EmailMappingChanged";
           // public const string EmailsChanged = "EmailsChanged";
           // public const string EntryPreviousItemsChanged = "EntryPreviousItemsChanged";
@@ -483,6 +528,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_CreateEx9Changed = "TODO_CreateEx9Changed";
           // public const string TODO_DeleteDocumentSetChanged = "TODO_DeleteDocumentSetChanged";
           // public const string TODO_DiscrepanciesAlreadyXMLedChanged = "TODO_DiscrepanciesAlreadyXMLedChanged";
+          // public const string TODO_DiscrepanciesErrorsChanged = "TODO_DiscrepanciesErrorsChanged";
           // public const string TODO_DiscrepanciesToAssessChanged = "TODO_DiscrepanciesToAssessChanged";
           // public const string TODO_DiscrepanciesToSubmitChanged = "TODO_DiscrepanciesToSubmitChanged";
           // public const string TODO_DiscrepancyPreExecutionReportChanged = "TODO_DiscrepancyPreExecutionReportChanged";
@@ -502,14 +548,17 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_LicenseToXMLChanged = "TODO_LicenseToXMLChanged";
           // public const string TODO_LICToCreateChanged = "TODO_LICToCreateChanged";
           // public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
+          // public const string TODO_PODocSetToAssessChanged = "TODO_PODocSetToAssessChanged";
           // public const string TODO_PODocSetToExportChanged = "TODO_PODocSetToExportChanged";
           // public const string ToDo_POToXMLChanged = "ToDo_POToXMLChanged";
+          // public const string TODO_SubmitAllXMLToCustomsChanged = "TODO_SubmitAllXMLToCustomsChanged";
           // public const string TODO_SubmitDiscrepanciesErrorReportChanged = "TODO_SubmitDiscrepanciesErrorReportChanged";
           // public const string TODO_SubmitDiscrepanciesToCustomsChanged = "TODO_SubmitDiscrepanciesToCustomsChanged";
           // public const string TODO_SubmitDocSetWithIncompleteInvoicesChanged = "TODO_SubmitDocSetWithIncompleteInvoicesChanged";
           // public const string TODO_SubmitInadequatePackagesChanged = "TODO_SubmitInadequatePackagesChanged";
           // public const string TODO_SubmitIncompleteEntryDataChanged = "TODO_SubmitIncompleteEntryDataChanged";
           // public const string TODO_SubmitIncompleteSupplierInfoChanged = "TODO_SubmitIncompleteSupplierInfoChanged";
+          // public const string TODO_SubmitPOInfoChanged = "TODO_SubmitPOInfoChanged";
           // public const string TODO_SubmitUnclassifiedItemsChanged = "TODO_SubmitUnclassifiedItemsChanged";
           // public const string TODO_SubmitXMLToCustomsChanged = "TODO_SubmitXMLToCustomsChanged";
           // public const string TODO_TotalAdjustmentsToProcessChanged = "TODO_TotalAdjustmentsToProcessChanged";
@@ -535,6 +584,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentAsycudaDocumentSet_AttachmentsChanged = "CurrentAsycudaDocumentSet_AttachmentsChanged";
    
+           public const string CurrentAsycudaDocumentSetEntryDataExChanged = "CurrentAsycudaDocumentSetEntryDataExChanged";
+   
            public const string CurrentAsycudaDocumentSetExChanged = "CurrentAsycudaDocumentSetExChanged";
    
            public const string CurrentAttachmentLogChanged = "CurrentAttachmentLogChanged";
@@ -545,9 +596,13 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentCustoms_ProcedureChanged = "CurrentCustoms_ProcedureChanged";
    
+           public const string CurrentCustomsOperationsChanged = "CurrentCustomsOperationsChanged";
+   
            public const string CurrentDocument_TypeChanged = "CurrentDocument_TypeChanged";
    
            public const string CurrentEmailFileTypesChanged = "CurrentEmailFileTypesChanged";
+   
+           public const string CurrentEmailInfoMappingsChanged = "CurrentEmailInfoMappingsChanged";
    
            public const string CurrentEmailMappingChanged = "CurrentEmailMappingChanged";
    
@@ -597,6 +652,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_DiscrepanciesAlreadyXMLedChanged = "CurrentTODO_DiscrepanciesAlreadyXMLedChanged";
    
+           public const string CurrentTODO_DiscrepanciesErrorsChanged = "CurrentTODO_DiscrepanciesErrorsChanged";
+   
            public const string CurrentTODO_DiscrepanciesToAssessChanged = "CurrentTODO_DiscrepanciesToAssessChanged";
    
            public const string CurrentTODO_DiscrepanciesToSubmitChanged = "CurrentTODO_DiscrepanciesToSubmitChanged";
@@ -635,9 +692,13 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_PODocSetChanged = "CurrentTODO_PODocSetChanged";
    
+           public const string CurrentTODO_PODocSetToAssessChanged = "CurrentTODO_PODocSetToAssessChanged";
+   
            public const string CurrentTODO_PODocSetToExportChanged = "CurrentTODO_PODocSetToExportChanged";
    
            public const string CurrentToDo_POToXMLChanged = "CurrentToDo_POToXMLChanged";
+   
+           public const string CurrentTODO_SubmitAllXMLToCustomsChanged = "CurrentTODO_SubmitAllXMLToCustomsChanged";
    
            public const string CurrentTODO_SubmitDiscrepanciesErrorReportChanged = "CurrentTODO_SubmitDiscrepanciesErrorReportChanged";
    
@@ -650,6 +711,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_SubmitIncompleteEntryDataChanged = "CurrentTODO_SubmitIncompleteEntryDataChanged";
    
            public const string CurrentTODO_SubmitIncompleteSupplierInfoChanged = "CurrentTODO_SubmitIncompleteSupplierInfoChanged";
+   
+           public const string CurrentTODO_SubmitPOInfoChanged = "CurrentTODO_SubmitPOInfoChanged";
    
            public const string CurrentTODO_SubmitUnclassifiedItemsChanged = "CurrentTODO_SubmitUnclassifiedItemsChanged";
    
@@ -681,6 +744,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentAsycudaDocumentSet_AttachmentsIDChanged = "OnCurrentAsycudaDocumentSet_AttachmentsIDChanged";
    
+           public const string CurrentAsycudaDocumentSetEntryDataExIDChanged = "OnCurrentAsycudaDocumentSetEntryDataExIDChanged";
+   
            public const string CurrentAsycudaDocumentSetExIDChanged = "OnCurrentAsycudaDocumentSetExIDChanged";
    
            public const string CurrentAttachmentLogIDChanged = "OnCurrentAttachmentLogIDChanged";
@@ -691,9 +756,13 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentCustoms_ProcedureIDChanged = "OnCurrentCustoms_ProcedureIDChanged";
    
+           public const string CurrentCustomsOperationsIDChanged = "OnCurrentCustomsOperationsIDChanged";
+   
            public const string CurrentDocument_TypeIDChanged = "OnCurrentDocument_TypeIDChanged";
    
            public const string CurrentEmailFileTypesIDChanged = "OnCurrentEmailFileTypesIDChanged";
+   
+           public const string CurrentEmailInfoMappingsIDChanged = "OnCurrentEmailInfoMappingsIDChanged";
    
            public const string CurrentEmailMappingIDChanged = "OnCurrentEmailMappingIDChanged";
    
@@ -743,6 +812,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_DiscrepanciesAlreadyXMLedIDChanged = "OnCurrentTODO_DiscrepanciesAlreadyXMLedIDChanged";
    
+           public const string CurrentTODO_DiscrepanciesErrorsIDChanged = "OnCurrentTODO_DiscrepanciesErrorsIDChanged";
+   
            public const string CurrentTODO_DiscrepanciesToAssessIDChanged = "OnCurrentTODO_DiscrepanciesToAssessIDChanged";
    
            public const string CurrentTODO_DiscrepanciesToSubmitIDChanged = "OnCurrentTODO_DiscrepanciesToSubmitIDChanged";
@@ -781,9 +852,13 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_PODocSetIDChanged = "OnCurrentTODO_PODocSetIDChanged";
    
+           public const string CurrentTODO_PODocSetToAssessIDChanged = "OnCurrentTODO_PODocSetToAssessIDChanged";
+   
            public const string CurrentTODO_PODocSetToExportIDChanged = "OnCurrentTODO_PODocSetToExportIDChanged";
    
            public const string CurrentToDo_POToXMLIDChanged = "OnCurrentToDo_POToXMLIDChanged";
+   
+           public const string CurrentTODO_SubmitAllXMLToCustomsIDChanged = "OnCurrentTODO_SubmitAllXMLToCustomsIDChanged";
    
            public const string CurrentTODO_SubmitDiscrepanciesErrorReportIDChanged = "OnCurrentTODO_SubmitDiscrepanciesErrorReportIDChanged";
    
@@ -796,6 +871,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_SubmitIncompleteEntryDataIDChanged = "OnCurrentTODO_SubmitIncompleteEntryDataIDChanged";
    
            public const string CurrentTODO_SubmitIncompleteSupplierInfoIDChanged = "OnCurrentTODO_SubmitIncompleteSupplierInfoIDChanged";
+   
+           public const string CurrentTODO_SubmitPOInfoIDChanged = "OnCurrentTODO_SubmitPOInfoIDChanged";
    
            public const string CurrentTODO_SubmitUnclassifiedItemsIDChanged = "OnCurrentTODO_SubmitUnclassifiedItemsIDChanged";
    

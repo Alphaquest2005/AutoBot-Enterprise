@@ -250,9 +250,9 @@ public Nullable<double> Total
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-       
-public Nullable<int> AsycudaDocumentSetId
+public int AsycudaDocumentSetId
 		{ 
 		    get { return this.adjustmentdetail.AsycudaDocumentSetId; }
 			set
@@ -594,6 +594,21 @@ public int EntryData_Id
 				this.adjustmentdetail.EntryData_Id = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "InventoryItem is required")]
+       
+public int InventoryItemId
+		{ 
+		    get { return this.adjustmentdetail.InventoryItemId; }
+			set
+			{
+			    if (value == this.adjustmentdetail.InventoryItemId) return;
+				this.adjustmentdetail.InventoryItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InventoryItemId");
 			}
 		}
      

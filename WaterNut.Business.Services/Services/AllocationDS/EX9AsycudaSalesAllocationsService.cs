@@ -1328,6 +1328,93 @@ namespace AllocationDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(CustomsOperationId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EX9AsycudaSalesAllocations> entities = await set//dbContext.EX9AsycudaSalesAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.CustomsOperationId.ToString() == CustomsOperationId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByCustoms_ProcedureId(string Customs_ProcedureId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(Customs_ProcedureId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EX9AsycudaSalesAllocations> entities = await set//dbContext.EX9AsycudaSalesAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<EX9AsycudaSalesAllocations>> GetEX9AsycudaSalesAllocationsByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EX9AsycudaSalesAllocations> entities = await set//dbContext.EX9AsycudaSalesAllocations
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

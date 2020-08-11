@@ -112,14 +112,14 @@ namespace AdjustmentQS.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
-        {
-            return  await Channel.GetTODO_AdjustmentOversToXMLByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(false);
-        }
-			 
-  		public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null)
+		public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null)
         {
             return  await Channel.GetTODO_AdjustmentOversToXMLByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_AdjustmentOversToXMLByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
   		public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)

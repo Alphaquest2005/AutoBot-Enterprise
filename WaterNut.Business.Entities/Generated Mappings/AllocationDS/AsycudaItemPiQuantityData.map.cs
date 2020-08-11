@@ -29,6 +29,7 @@
               this.Property(t => t.pCNumber).HasColumnName("pCNumber").HasMaxLength(20);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.pReference).HasColumnName("pReference").HasMaxLength(30);
+              this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -74,32 +74,6 @@ namespace CoreEntities.Client.DTO
         private string _National_customs_procedure;
 
         [DataMember]
-        public Nullable<bool> IsDefault
-		{ 
-		    get { return _IsDefault; }
-			set
-			{
-			    if (value == _IsDefault) return;
-				_IsDefault = value;
-				NotifyPropertyChanged();//m => this.IsDefault
-			}
-		}
-        private Nullable<bool> _IsDefault;
-
-        [DataMember]
-        public Nullable<bool> IsImportExport
-		{ 
-		    get { return _IsImportExport; }
-			set
-			{
-			    if (value == _IsImportExport) return;
-				_IsImportExport = value;
-				NotifyPropertyChanged();//m => this.IsImportExport
-			}
-		}
-        private Nullable<bool> _IsImportExport;
-
-        [DataMember]
         public string CustomsProcedure
 		{ 
 		    get { return _CustomsProcedure; }
@@ -111,6 +85,123 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private string _CustomsProcedure;
+
+        [DataMember]
+        public Nullable<bool> IsObsolete
+		{ 
+		    get { return _IsObsolete; }
+			set
+			{
+			    if (value == _IsObsolete) return;
+				_IsObsolete = value;
+				NotifyPropertyChanged();//m => this.IsObsolete
+			}
+		}
+        private Nullable<bool> _IsObsolete;
+
+        [DataMember]
+        public Nullable<bool> IsPaid
+		{ 
+		    get { return _IsPaid; }
+			set
+			{
+			    if (value == _IsPaid) return;
+				_IsPaid = value;
+				NotifyPropertyChanged();//m => this.IsPaid
+			}
+		}
+        private Nullable<bool> _IsPaid;
+
+        [DataMember]
+        public Nullable<int> BondTypeId
+		{ 
+		    get { return _BondTypeId; }
+			set
+			{
+			    if (value == _BondTypeId) return;
+				_BondTypeId = value;
+				NotifyPropertyChanged();//m => this.BondTypeId
+			}
+		}
+        private Nullable<int> _BondTypeId;
+
+        [DataMember]
+        public Nullable<bool> Stock
+		{ 
+		    get { return _Stock; }
+			set
+			{
+			    if (value == _Stock) return;
+				_Stock = value;
+				NotifyPropertyChanged();//m => this.Stock
+			}
+		}
+        private Nullable<bool> _Stock;
+
+        [DataMember]
+        public Nullable<bool> Discrepancy
+		{ 
+		    get { return _Discrepancy; }
+			set
+			{
+			    if (value == _Discrepancy) return;
+				_Discrepancy = value;
+				NotifyPropertyChanged();//m => this.Discrepancy
+			}
+		}
+        private Nullable<bool> _Discrepancy;
+
+        [DataMember]
+        public Nullable<bool> Adjustment
+		{ 
+		    get { return _Adjustment; }
+			set
+			{
+			    if (value == _Adjustment) return;
+				_Adjustment = value;
+				NotifyPropertyChanged();//m => this.Adjustment
+			}
+		}
+        private Nullable<bool> _Adjustment;
+
+        [DataMember]
+        public Nullable<bool> Sales
+		{ 
+		    get { return _Sales; }
+			set
+			{
+			    if (value == _Sales) return;
+				_Sales = value;
+				NotifyPropertyChanged();//m => this.Sales
+			}
+		}
+        private Nullable<bool> _Sales;
+
+        [DataMember]
+        public int CustomsOperationId
+		{ 
+		    get { return _CustomsOperationId; }
+			set
+			{
+			    if (value == _CustomsOperationId) return;
+				_CustomsOperationId = value;
+				NotifyPropertyChanged();//m => this.CustomsOperationId
+			}
+		}
+        private int _CustomsOperationId;
+
+        [DataMember]
+        public Nullable<bool> SubmitToCustoms
+		{ 
+		    get { return _SubmitToCustoms; }
+			set
+			{
+			    if (value == _SubmitToCustoms) return;
+				_SubmitToCustoms = value;
+				NotifyPropertyChanged();//m => this.SubmitToCustoms
+			}
+		}
+        private Nullable<bool> _SubmitToCustoms;
 
        
         [DataMember]
@@ -128,6 +219,35 @@ namespace CoreEntities.Client.DTO
 		}
         private Document_Type _Document_Type;
         private ChangeTrackingCollection<Document_Type> Document_TypeChangeTracker { get; set; }
+
+        [DataMember]
+        public CustomsOperations CustomsOperations
+		{
+		    get { return _CustomsOperations; }
+			set
+			{
+			    if (value == _CustomsOperations) return;
+				_CustomsOperations = value;
+                CustomsOperationsChangeTracker = _CustomsOperations == null ? null
+                    : new ChangeTrackingCollection<CustomsOperations> { _CustomsOperations };
+				NotifyPropertyChanged();//m => this.CustomsOperations
+			}
+		}
+        private CustomsOperations _CustomsOperations;
+        private ChangeTrackingCollection<CustomsOperations> CustomsOperationsChangeTracker { get; set; }
+
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocument> AsycudaDocument
+		{
+		    get { return _AsycudaDocument; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocument)) return;
+				_AsycudaDocument = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocument
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocument> _AsycudaDocument = new ChangeTrackingCollection<AsycudaDocument>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

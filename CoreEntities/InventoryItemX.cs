@@ -28,6 +28,7 @@ namespace CoreEntities
         public string SuppUnitCode2 { get; set; }
         public Nullable<double> SuppQty { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public int InventoryItemId { get; set; }
     
         public virtual ICollection<InventoryItemAliasX> InventoryItemAliasEx { get; set; }
         public virtual ApplicationSettings ApplicationSettings { get; set; }

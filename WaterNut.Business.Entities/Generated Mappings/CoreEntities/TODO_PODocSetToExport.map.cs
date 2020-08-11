@@ -31,6 +31,9 @@
               this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
               this.Property(t => t.HasC71).HasColumnName("HasC71");
               this.Property(t => t.HasLicense).HasColumnName("HasLicense");
+              this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
+              this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
+              this.Property(t => t.TotalLines).HasColumnName("TotalLines");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

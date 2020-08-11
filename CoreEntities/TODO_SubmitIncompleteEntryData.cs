@@ -28,5 +28,6 @@ namespace CoreEntities
         public string SupplierCode { get; set; }
         public double ExpectedTotal { get; set; }
         public Nullable<double> InvoiceTotal { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
     }
 }

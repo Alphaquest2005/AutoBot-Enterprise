@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using AdjustmentQS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using WaterNut.DataSpace;
 using System.Linq.Dynamic;
+using CoreEntities.Business.Entities;
+using CoreEntities.Business.Enums;
+using DocumentDS.Business.Entities;
+using DocumentItemDS.Business.Entities;
+using TrackableEntities;
+using WaterNut.Business.Entities;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using InventoryItemsEx = EntryDataDS.Business.Entities.InventoryItemsEx;
 
 namespace AdjustmentQS.Business.Services
@@ -15,22 +23,26 @@ namespace AdjustmentQS.Business.Services
         /// <summary>
         /// one entry for kim
 
-        public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
+        public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId,
+            List<int> entryDataDetailsIds = null, string emailId = null)
         {
             try
             {
 
-
+                entryDataDetailsIds = entryDataDetailsIds ?? new List<int>();
                 var docSet =
                     await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
                         .ConfigureAwait(false);
+                var cp =
+                    BaseDataModel.Instance.Customs_Procedures
+                        .Single(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse && x.Discrepancy == true && x.IsPaid == true);
+
+                var exportTemplate = BaseDataModel.Instance.ExportTemplates.First(z => z.Customs_Procedure == cp.CustomsProcedure);
+
+                docSet.Customs_Procedure = cp;
 
                 // inject custom procedure in docset
-                docSet.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures
-                                            .First(x => x.DisplayName == BaseDataModel.Instance.ExportTemplates.First(z => z.Description == "OS7").Customs_Procedure);
-
-                docSet.Document_Type = docSet.Customs_Procedure.Document_Type;
-
+                BaseDataModel.ConfigureDocSet(docSet, exportTemplate);
                 using (var ctx = new AdjustmentQSContext())
                 {
                     ctx.Database.CommandTimeout = 0;
@@ -38,6 +50,7 @@ namespace AdjustmentQS.Business.Services
                     var olst = ctx.TODO_AdjustmentOversToXML
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
+                      //  .Where(x => !entryDataDetailsIds.Any() || entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId))
                         .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
                         .OrderBy(x => x.EffectiveDate)
                         .Select(x => new EntryDataDetails()
@@ -47,8 +60,8 @@ namespace AdjustmentQS.Business.Services
                             EntryData_Id = x.EntryData_Id,
                             ItemNumber = x.ItemNumber,
                             ItemDescription = x.ItemDescription,
-                            Cost = (double)x.Cost,
-                            Quantity = (double)x.ReceivedQty - (double)x.InvoiceQty,
+                            Cost = (double) x.Cost,
+                            Quantity = (double) x.ReceivedQty - (double) x.InvoiceQty,
                             EffectiveDate = x.EffectiveDate ?? x.InvoiceDate,
                             LineNumber = x.LineNumber,
                             Comment = x.Comment,
@@ -57,9 +70,10 @@ namespace AdjustmentQS.Business.Services
                                 EntryDataId = x.EntryDataId,
                                 EntryData_Id = x.EntryData_Id,
                                 Currency = x.Currency,
-                                EntryDataDate = x.InvoiceDate,
+                                EntryDataDate =(DateTime) x.InvoiceDate,
                                 EmailId = x.EmailId,
-                                FileTypeId = x.FileTypeId
+                                FileTypeId = x.FileTypeId,
+
                             },
                             InventoryItemEx = new InventoryItemsEx()
                             {
@@ -71,8 +85,20 @@ namespace AdjustmentQS.Business.Services
 
                         }).ToList();
 
-                    await BaseDataModel.Instance.CreateEntryItems(olst, docSet, perInvoice, false, true, false, false,false)
-                    .ConfigureAwait(false);
+                    var docList = await BaseDataModel.Instance
+                        .CreateEntryItems(olst, docSet, perInvoice, false, true, false, false, false)
+                        .ConfigureAwait(false);
+                    
+                    if (emailId != null)
+                    {
+                        BaseDataModel.StripAttachments(docList, emailId);
+                        BaseDataModel.AttachEmailPDF(asycudaDocumentSetId, emailId);
+                        BaseDataModel.AttachBlankC71(docList);
+                    }
+
+                    BaseDataModel.RenameDuplicateDocumentCodes(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
+                    ConvertFirstInvoicetoWarehouseCode(docList);
+
 
 
                 }
@@ -84,74 +110,43 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        //public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
-        //{
-        //    try
-        //    {
 
 
-        //        var docSet =
-        //            await BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId)
-        //                .ConfigureAwait(false);
+        private static void ConvertFirstInvoicetoWarehouseCode(List<DocumentCT> docList)
+        {
+            try
+            {
+                using (var ctx = new DocumentItemDSContext())
+                {
+                    foreach (var doc in docList)
+                    {
+                        var itm = doc.DocumentItems.First();
+                        var att = ctx.xcuda_Item
+                            .Where(x => x.Item_Id == itm.Item_Id)
+                            .SelectMany(x => x.xcuda_Attached_documents)
+                            .FirstOrDefault(x => x.Attached_document_code == "IV05");
+                           
+                        if (att == null) continue;
+                        att.Attached_document_code = "W02";
+                        att.Attached_document_reference = $"W02-{att.Attached_document_reference}";
+                        att.TrackingState = TrackingState.Modified;
+                        ctx.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
-        //        // inject custom procedure in docset
-        //        docSet.Customs_Procedure = BaseDataModel.Instance.Customs_Procedures.First(x =>
-        //            x.DisplayName == BaseDataModel.Instance.ExportTemplates.First(z => z.Description == "OS7")
-        //                .Customs_Procedure);
+        
 
-        //        docSet.Document_Type = docSet.Customs_Procedure.Document_Type;
-
-        //        using (var ctx = new AdjustmentQSContext())
-        //        {
-
-
-        //            var olst = ctx.TODO_AdjustmentOversToXML
-        //                .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
-        //                .Where(filterExpression)
-        //                .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
-        //                .OrderBy(x => x.EffectiveDate)
-        //                .Select(x => new EntryDataDetails()
-        //                {
-        //                    EntryDataDetailsId = x.EntryDataDetailsId,
-        //                    EntryDataId = x.EntryDataId,
-        //                    EntryData_Id = x.EntryData_Id,
-        //                    ItemNumber = x.ItemNumber,
-        //                    ItemDescription = x.ItemDescription,
-        //                    Cost = (double)x.Cost,
-        //                    Quantity = (double)x.ReceivedQty - (double)x.InvoiceQty,
-        //                    EffectiveDate = x.EffectiveDate ?? x.InvoiceDate,
-        //                    LineNumber = x.LineNumber,
-        //                    EntryData = new EntryData()
-        //                    {
-        //                        EntryDataId = x.EntryDataId,
-        //                        EntryData_Id = x.EntryData_Id,
-        //                        Currency = x.Currency,
-        //                        EntryDataDate = x.InvoiceDate,
-        //                        EmailId = x.EmailId,
-        //                        FileTypeId = x.FileTypeId
-        //                    },
-        //                    InventoryItemEx = new InventoryItemsEx()
-        //                    {
-        //                        TariffCode = x.TariffCode,
-        //                        ItemNumber = x.ItemNumber,
-        //                        Description = x.ItemDescription,
-        //                    }
-
-
-        //                }).ToList().GroupBy(x => x.EffectiveDate.GetValueOrDefault().ToString("MM-yyyy"));
-        //            foreach (var set in olst)
-        //            {
-        //                await BaseDataModel.Instance.CreateEntryItems(set.ToList(), docSet, perInvoice, false, true, false)
-        //                .ConfigureAwait(false);
-        //            }
-
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //        throw;
-        //    }
-        //}
+       
+        public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
+        {
+            await CreateOPS(filterExpression, perInvoice, asycudaDocumentSetId, null).ConfigureAwait(false);
+        }
     }
 }

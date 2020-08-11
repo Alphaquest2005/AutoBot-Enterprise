@@ -13,7 +13,6 @@ using System.Windows.Controls;
 using AllocationQS.Client.Repositories;
 using Core.Common.Converters;
 using Core.Common.UI;
-using CoreEntities.Business.Entities;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
 using SalesDataQS.Client.Repositories;

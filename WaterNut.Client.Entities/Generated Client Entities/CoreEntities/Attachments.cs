@@ -111,6 +111,23 @@ public string Reference
 		}
      
 
+       
+       
+                
+                [MaxLength(10, ErrorMessage = "EmailId has a max length of 10 letters ")]
+public string EmailId
+		{ 
+		    get { return this.attachments.EmailId; }
+			set
+			{
+			    if (value == this.attachments.EmailId) return;
+				this.attachments.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = null;
         public  ObservableCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments
 		{

@@ -75,7 +75,7 @@ public int ApplicationSettingsId
        
        
                 
-                [MaxLength(50, ErrorMessage = "Country_of_origin_code has a max length of 50 letters ")]
+                [MaxLength(3, ErrorMessage = "Country_of_origin_code has a max length of 3 letters ")]
 public string Country_of_origin_code
 		{ 
 		    get { return this.todo_podocset.Country_of_origin_code; }
@@ -92,7 +92,7 @@ public string Country_of_origin_code
        
        
                 
-                [MaxLength(50, ErrorMessage = "Currency_Code has a max length of 50 letters ")]
+                [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]
 public string Currency_Code
 		{ 
 		    get { return this.todo_podocset.Currency_Code; }
@@ -262,6 +262,66 @@ public Nullable<double> TotalCIF
 				this.todo_podocset.TotalCIF = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("TotalCIF");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> QtyLicensesRequired
+		{ 
+		    get { return this.todo_podocset.QtyLicensesRequired; }
+			set
+			{
+			    if (value == this.todo_podocset.QtyLicensesRequired) return;
+				this.todo_podocset.QtyLicensesRequired = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("QtyLicensesRequired");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalFreight
+		{ 
+		    get { return this.todo_podocset.TotalFreight; }
+			set
+			{
+			    if (value == this.todo_podocset.TotalFreight) return;
+				this.todo_podocset.TotalFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalFreight");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> ClassifiedLines
+		{ 
+		    get { return this.todo_podocset.ClassifiedLines; }
+			set
+			{
+			    if (value == this.todo_podocset.ClassifiedLines) return;
+				this.todo_podocset.ClassifiedLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ClassifiedLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> TotalLines
+		{ 
+		    get { return this.todo_podocset.TotalLines; }
+			set
+			{
+			    if (value == this.todo_podocset.TotalLines) return;
+				this.todo_podocset.TotalLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalLines");
 			}
 		}
      

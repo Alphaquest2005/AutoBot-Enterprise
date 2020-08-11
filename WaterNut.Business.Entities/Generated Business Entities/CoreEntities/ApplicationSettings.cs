@@ -662,6 +662,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _testmode;
         [DataMember]
+        public int BondTypeId 
+        {
+            get
+            {
+                return _bondtypeid;
+            }
+            set
+            {
+                _bondtypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _bondtypeid;
+        [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]
         public List<AsycudaDocument> AsycudaDocument { get; set; }

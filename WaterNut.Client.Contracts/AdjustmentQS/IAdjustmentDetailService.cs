@@ -97,6 +97,9 @@ namespace AdjustmentQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+        
   		
     }
 }

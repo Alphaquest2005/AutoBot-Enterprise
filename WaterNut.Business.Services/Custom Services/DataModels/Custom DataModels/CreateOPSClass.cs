@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Common.UI;
+using CoreEntities.Business.Entities;
+using CoreEntities.Business.Enums;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.Interfaces;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
+using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
+using Document_Type = DocumentDS.Business.Entities.Document_Type;
 
 namespace WaterNut.DataSpace
 {
@@ -23,7 +28,7 @@ namespace WaterNut.DataSpace
             get { return _instance; }
         }
 
-        public void OPSIntializeCdoc(DocumentCT cdoc, Document_Type dt, AsycudaDocumentSet ads)
+        public void OPSIntializeCdoc(DocumentCT cdoc,  AsycudaDocumentSet ads)
         {
             BaseDataModel.Instance.IntCdoc(cdoc, ads);
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
@@ -103,26 +108,16 @@ namespace WaterNut.DataSpace
 
             var itmcount = cdoc.DocumentItems.Count();
 
-            var dt = BaseDataModel.Instance.Document_Types.AsEnumerable().FirstOrDefault(x => x.DisplayName == "IM7");
+            
+            var cp =
+                BaseDataModel.Instance.Customs_Procedures
+                    .Single(x => x.CustomsOperationId == (int) CustomsOperations.Warehouse && x.Stock == true);
 
-            if (dt == null)
-            {
-                throw new ApplicationException($"Null Document Type for '{"IM7"}' Contact your Network Administrator");
-                
-            }
+            docSet.Customs_Procedure = cp;
+           
 
-            dt.DefaultCustoms_Procedure =
-                BaseDataModel.Instance.Customs_Procedures.AsEnumerable()
-                    .FirstOrDefault(x => x.DisplayName.Contains("OPS") && x.Document_TypeId == dt.Document_TypeId);
+            OPSIntializeCdoc(cdoc, docSet);
 
-            if (dt.DefaultCustoms_Procedure == null)
-            {
-                throw new ApplicationException(
-                    $"Null Customs Procedure for '{"OPS"}' Contact your Network Administrator");
-                
-            }
-
-            OPSIntializeCdoc(cdoc, dt, docSet);
 
             StatusModel.StartStatusUpdate("Creating Opening Stock Entries", slst.Count());
 
@@ -144,7 +139,7 @@ namespace WaterNut.DataSpace
                     cdoc = new DocumentCT();
                     cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
 
-                    OPSIntializeCdoc(cdoc, dt, docSet);
+                    OPSIntializeCdoc(cdoc, docSet);
                 }
 
             }

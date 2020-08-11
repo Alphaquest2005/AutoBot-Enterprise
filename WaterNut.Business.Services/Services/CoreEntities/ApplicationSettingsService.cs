@@ -1141,7 +1141,43 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByBondTypeId(string BondTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(BondTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ApplicationSettings> entities = await set//dbContext.ApplicationSettings
+                                                    // .Include(x => x.AsycudaDocumentSetEx)									  
+                                                    // .Include(x => x.AsycudaDocument)									  
+                                                    // .Include(x => x.AsycudaDocumentItem)									  
+                                                    // .Include(x => x.InventoryItemsEx)									  
+                                                    // .Include(x => x.FileTypes)									  
+                                                    // .Include(x => x.InfoMapping)									  
+                                                    // .Include(x => x.EmailMapping)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.BondTypeId.ToString() == BondTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try

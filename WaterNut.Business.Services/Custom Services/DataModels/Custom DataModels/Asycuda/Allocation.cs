@@ -20,6 +20,7 @@ using MoreLinq;
 using TrackableEntities;
 using TrackableEntities.Common;
 using TrackableEntities.EF6;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using EntryDataDetails = AllocationDS.Business.Entities.EntryDataDetails;
 using InventoryItem = AllocationDS.Business.Entities.InventoryItem;
 using InventoryItemAlias = AllocationDS.Business.Entities.InventoryItemAlias;
@@ -157,13 +158,22 @@ namespace WaterNut.DataSpace
 
 	            ctx.Database.ExecuteSqlCommand($@"WITH CTE AS(
 													SELECT EntryDataDetails.EntryDataId, FileLineNumber,ItemNumber, Quantity, InvoiceQty, ReceivedQty,
-													RN = ROW_NUMBER()OVER(PARTITION BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty  ORDER BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty)
+													RN = ROW_NUMBER()OVER(PARTITION BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty  ORDER BY EntryDataDetailsId desc)
 													FROM EntryDataDetails
 														)
 													DELETE FROM CTE WHERE RN > 1
 
 													delete from entrydata where entrydata_id not in (select distinct Entrydata_id from entrydatadetails)");
-	        }
+
+                //ctx.Database.ExecuteSqlCommand($@"WITH CTE AS(
+                //SELECT EntryDataDetails.EntryDataId, FileLineNumber,ItemNumber, Quantity, InvoiceQty, ReceivedQty,
+                //RN = ROW_NUMBER()OVER(PARTITION BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty  ORDER BY EntryDataDetails.EntryDataId, FileLineNumber, ItemNumber, Quantity, InvoiceQty, ReceivedQty)
+                //FROM EntryDataDetails
+                //	)
+                //DELETE FROM CTE WHERE RN > 1
+
+                //delete from entrydata where entrydata_id not in (select distinct Entrydata_id from entrydatadetails)");
+            }
 	    }
 
 	    public async Task MarkErrors(int applicationSettingsId)
@@ -260,9 +270,10 @@ namespace WaterNut.DataSpace
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                         
 						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-									(x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" || 
-									 x.AsycudaDocument.Extended_customs_procedure == "9000") &&
-									x.AsycudaDocument.DoNotAllocate != true)
+									(x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import 
+									    || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
+						            && x.AsycudaDocument.Customs_Procedure.Sales == true 
+					                && x.AsycudaDocument.DoNotAllocate != true)
 						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
 																			 .OpeningStockDate ?? DateTime.MinValue.Date))
 						.ToList();
@@ -405,9 +416,10 @@ namespace WaterNut.DataSpace
 						.Include(x => x.xcuda_Goods_description)
 						.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
 					    .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-									(x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" ||
-									 x.AsycudaDocument.Extended_customs_procedure == "9000") &&
-									x.AsycudaDocument.DoNotAllocate != true)
+					                (x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import
+					                 || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
+					                && x.AsycudaDocument.Customs_Procedure.Sales == true
+                                    && x.AsycudaDocument.DoNotAllocate != true)
 						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
 																			 .OpeningStockDate ?? DateTime.MinValue.Date))
 						.ToList();
@@ -659,19 +671,20 @@ namespace WaterNut.DataSpace
 			IEnumerable<ItemEntries> asycudaEntries = null;
 			using (var ctx = new AllocationDSContext(){StartTracking = false})
 			{
-				var lst = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
+				var lst = ctx.xcuda_Item.Include(x => x.AsycudaDocument.Customs_Procedure)
 					.Include(x => x.xcuda_Tarification.xcuda_HScode)
 					.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
 					.Include(x => x.SubItems)
 					.Include("EntryPreviousItems.xcuda_PreviousItem")
 					.Where(x => x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                     .Where(x => asycudaDocumentSetId == null || x.AsycudaDocument.AsycudaDocumentSetId == asycudaDocumentSetId)
-					.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
-								(x.AsycudaDocument.Extended_customs_procedure == "7000" || x.AsycudaDocument.Extended_customs_procedure == "7400" || x.AsycudaDocument.Extended_customs_procedure == "7100" || x.AsycudaDocument.Extended_customs_procedure == "7500" || x.AsycudaDocument.Extended_customs_procedure == "9000") &&
-								// x.WarehouseError == null && 
-								 (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
-								 x.AsycudaDocument.DoNotAllocate != true )
-					.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
+                    .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true)
+                                && (x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Import
+                                 || x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse)
+                                && x.AsycudaDocument.Customs_Procedure.Sales == true &&
+                                 (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
+                                 x.AsycudaDocument.DoNotAllocate != true)
+                    .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
 									.OpeningStockDate ?? DateTime.MinValue.Date))
 					.OrderBy(x => x.LineNumber)
 					.ToList();
@@ -713,13 +726,17 @@ namespace WaterNut.DataSpace
 					"All",
 					// "xcuda_Tarification.xcuda_HScode.Precision_4 == \"1360\"",
 					new Dictionary<string, string>() { { "AsycudaDocument", (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"AssessmentDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-																				: "") + "(CNumber != null || IsManuallyAssessed == true) && (Extended_customs_procedure == \"7000\" ||Extended_customs_procedure == \"7400\" ||Extended_customs_procedure == \"7100\" ||Extended_customs_procedure == \"7500\" || Extended_customs_procedure == \"9000\") && DoNotAllocate != true" } }
+																				: "") + $"(CNumber != null || IsManuallyAssessed == true) " +
+					                                                        $"&& (Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Import} || Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Warehouse}) " +
+					                                                        $"&& Customs_Procedure.Sales == true)" +
+					                                                        $" && DoNotAllocate != true" } }
 					, new List<string>() { "AsycudaDocument",
 						"xcuda_Tarification.xcuda_HScode", "xcuda_Tarification.xcuda_Supplementary_unit","SubItems", "xcuda_Goods_description",
 					}).ConfigureAwait(false);//"EX"
+			  
 
 
-				asycudaEntries = from s in lst.Where(x => x.xcuda_Tarification.xcuda_HScode.Precision_4 != null)
+                asycudaEntries = from s in lst.Where(x => x.xcuda_Tarification.xcuda_HScode.Precision_4 != null)
 					 //.Where(x => x.ItemDescription == "Hardener-Resin 'A' Slow .44Pt")
 					//       .Where(x => x.AsycudaDocument.CNumber != null).AsEnumerable()
 					group s by s.ItemDescription.Trim()
@@ -741,44 +758,57 @@ namespace WaterNut.DataSpace
 			return asycudaEntries;
 		}
 
-		private static async Task<List<ItemSales>> GetSaleslstWithItemNumber(int applicationSettingsId,
-		    string lst)
-		{
-			StatusModel.Timer("Getting Data - Sales Entries...");
+	    private static async Task<List<ItemSales>> GetSaleslstWithItemNumber(int applicationSettingsId,
+	        string lst)
+	    {
 
-			IEnumerable<ItemSales> saleslst = null;
-			using (var ctx = new EntryDataDetailsService())
-			{
-				var salesData =
+	        try
+	        {
+	            StatusModel.Timer("Getting Data - Sales Entries...");
 
-				await
-						ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"PNW/30-53700\" &&" +
-																(BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Sales.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-																	: "") +
+	            IEnumerable<ItemSales> saleslst = null;
+	            using (var ctx = new EntryDataDetailsService())
+	            {
+	                var salesData =
 
-															   "QtyAllocated != Quantity " +
-															   $"&& Sales.ApplicationSettingsId == {applicationSettingsId} " +
-															//	$" && (\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) " +
-                                                               //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
-                                                               "&& DoNotAllocate != true", new Dictionary<string, string>()
-															   {
-																   { "Sales", "INVNumber != null" }
-															   }, new List<string>() { "Sales", "AsycudaSalesAllocations", "ManualAllocations" },false)
-							.ConfigureAwait(false);
-				saleslst = from d in salesData.Where(x => lst == "" || lst.Contains(x.ItemNumber))
-					group d by d.ItemNumber.ToUpper().Trim()
-					into g
-					select
-						new ItemSales
-						{
-							Key = g.Key,
-							SalesList = g.Where(xy => xy != null & xy.Sales != null).OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId).ToList()
-						};
-			}
-			return saleslst.ToList();
-		}
+	                    await
+	                        ctx.GetEntryDataDetailsByExpressionNav( //"ItemNumber == \"PNW/30-53700\" &&" +
+	                                (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue
+	                                    ? $"Sales.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
+	                                    : "") +
 
-		private static async Task<List<ItemSales>> GetAdjustmentslstWithItemNumber(int applicationSettingsId,
+	                                "QtyAllocated != Quantity " +
+	                                $"&& Sales.ApplicationSettingsId == {applicationSettingsId} " +
+	                                //	$" && (\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) " +
+	                                //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
+	                                "&& DoNotAllocate != true", new Dictionary<string, string>()
+	                                {
+	                                    {"Sales", "INVNumber != null"}
+	                                }, new List<string>() {"Sales", "AsycudaSalesAllocations", "ManualAllocations"}, false)
+	                            .ConfigureAwait(false);
+	                saleslst = from d in salesData.Where(x => lst == null || lst.Contains(x.ItemNumber))
+	                    group d by d.ItemNumber.ToUpper().Trim()
+	                    into g
+	                    select
+	                        new ItemSales
+	                        {
+	                            Key = g.Key,
+	                            SalesList = g.Where(xy => xy != null & xy.Sales != null)
+	                                .OrderBy(x => x.Sales.EntryDataDate).ThenBy(x => x.EntryDataId).ToList()
+	                        };
+	            }
+
+	            return saleslst.ToList();
+	        }
+	        catch (Exception e)
+	        {
+	            Console.WriteLine(e);
+	            throw;
+	        }
+
+	    }
+
+	    private static async Task<List<ItemSales>> GetAdjustmentslstWithItemNumber(int applicationSettingsId,
 		    string lst)
 		{
 			StatusModel.Timer("Getting Data - Adjustments Entries...");
@@ -967,7 +997,7 @@ namespace WaterNut.DataSpace
 						continue;
 					}
 
-					if (cAsycudaItm.AsycudaDocument.DocumentType == "IM7" &&
+					if (cAsycudaItm.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse &&
 						(cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
 					{
 						if (CurrentAsycudaItemIndex == 0)
@@ -1001,7 +1031,7 @@ namespace WaterNut.DataSpace
 							continue;
 						}
 
-						if (cAsycudaItm.AsycudaDocument.DocumentType == "IM7" && (cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
+						if (cAsycudaItm.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse && (cAsycudaItm.AsycudaDocument.AssessmentDate > saleitm.Sales.EntryDataDate))
 						{
 							if (CurrentAsycudaItemIndex == 0)
 							{

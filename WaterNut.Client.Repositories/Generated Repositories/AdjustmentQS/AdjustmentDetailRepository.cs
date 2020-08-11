@@ -537,6 +537,34 @@ namespace AdjustmentQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+             if (InventoryItemId == "0") return null;
+            try
+            {
+                 using (AdjustmentDetailClient t = new AdjustmentDetailClient())
+                    {
+                        var res = await t.GetAdjustmentDetailByInventoryItemId(InventoryItemId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AdjustmentDetail(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

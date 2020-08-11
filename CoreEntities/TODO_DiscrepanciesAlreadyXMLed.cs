@@ -45,5 +45,6 @@ namespace CoreEntities
         public string Comment { get; set; }
         public string DutyFreePaid { get; set; }
         public int EntryData_Id { get; set; }
+        public string pLineNumber { get; set; }
     }
 }

@@ -375,6 +375,60 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _customsProcedureFilter;
+        public string CustomsProcedureFilter
+        {
+            get
+            {
+                return _customsProcedureFilter;
+            }
+            set
+            {
+                _customsProcedureFilter = value;
+				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _asycuda_idFilter;
+        public Int32? Asycuda_idFilter
+        {
+            get
+            {
+                return _asycuda_idFilter;
+            }
+            set
+            {
+                _asycuda_idFilter = value;
+				NotifyPropertyChanged(x => Asycuda_idFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _entryDataTypeFilter;
+        public string EntryDataTypeFilter
+        {
+            get
+            {
+                return _entryDataTypeFilter;
+            }
+            set
+            {
+                _entryDataTypeFilter = value;
+				NotifyPropertyChanged(x => EntryDataTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -422,6 +476,17 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(ImportCompleteFilter.HasValue)
 						res.Append(" && " + string.Format("ImportComplete == {0}",  ImportCompleteFilter));						
+ 
+
+									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
+						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+ 
+
+					if(Asycuda_idFilter.HasValue)
+						res.Append(" && " + string.Format("Asycuda_id == {0}",  Asycuda_idFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
+						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -457,7 +522,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     Quantity = x.Quantity ,
                     
  
-                    ImportComplete = x.ImportComplete 
+                    ImportComplete = x.ImportComplete ,
+                    
+ 
+                    CustomsProcedure = x.CustomsProcedure ,
+                    
+ 
+                    Asycuda_id = x.Asycuda_id ,
+                    
+ 
+                    EntryDataType = x.EntryDataType 
                     
                 }).ToList()
             };
@@ -483,6 +557,15 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public bool ImportComplete { get; set; } 
+                    
+ 
+                    public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public int Asycuda_id { get; set; } 
+                    
+ 
+                    public string EntryDataType { get; set; } 
                     
         }
 

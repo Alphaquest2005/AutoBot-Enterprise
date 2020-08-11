@@ -109,6 +109,9 @@
     <Compile Include="AsycudaDocumentItemEntryDataDetails.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="AsycudaDocumentSetEntryDataEx.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="AsycudaDocumentSetEx.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -137,6 +140,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="CustomsOperations.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="Customs_Procedure.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -144,6 +150,9 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="EmailFileTypes.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmailInfoMappings.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="EmailMapping.cs">
@@ -234,6 +243,9 @@
     <Compile Include="TODO_DiscrepanciesAlreadyXMLed.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_DiscrepanciesErrors.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_DiscrepanciesToAssess.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -291,10 +303,16 @@
     <Compile Include="TODO_PODocSet.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_PODocSetToAssess.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_PODocSetToExport.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="ToDo_POToXML.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TODO_SubmitAllXMLToCustoms.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitDiscrepanciesErrorReport.cs">
@@ -313,6 +331,9 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitIncompleteSupplierInfo.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TODO_SubmitPOInfo.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitUnclassifiedItems.cs">

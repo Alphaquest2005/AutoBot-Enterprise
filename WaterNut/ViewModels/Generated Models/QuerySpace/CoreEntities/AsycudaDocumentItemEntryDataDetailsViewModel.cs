@@ -317,6 +317,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _asycuda_idFilter;
+        public Int32? Asycuda_idFilter
+        {
+            get
+            {
+                return _asycuda_idFilter;
+            }
+            set
+            {
+                _asycuda_idFilter = value;
+				NotifyPropertyChanged(x => Asycuda_idFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _entryDataTypeFilter;
+        public string EntryDataTypeFilter
+        {
+            get
+            {
+                return _entryDataTypeFilter;
+            }
+            set
+            {
+                _entryDataTypeFilter = value;
+				NotifyPropertyChanged(x => EntryDataTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -368,6 +404,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
 						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+ 
+
+					if(Asycuda_idFilter.HasValue)
+						res.Append(" && " + string.Format("Asycuda_id == {0}",  Asycuda_idFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
+						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -406,7 +449,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ImportComplete = x.ImportComplete ,
                     
  
-                    CustomsProcedure = x.CustomsProcedure 
+                    CustomsProcedure = x.CustomsProcedure ,
+                    
+ 
+                    Asycuda_id = x.Asycuda_id ,
+                    
+ 
+                    EntryDataType = x.EntryDataType 
                     
                 }).ToList()
             };
@@ -435,6 +484,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public int Asycuda_id { get; set; } 
+                    
+ 
+                    public string EntryDataType { get; set; } 
                     
         }
 

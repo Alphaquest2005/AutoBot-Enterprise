@@ -230,6 +230,36 @@ namespace ValuationDS.Business.Entities
             }
         }
         Nullable<double> _totalcif;
+        [DataMember]
+        public double C71Total 
+        {
+            get
+            {
+                return _c71total;
+            }
+            set
+            {
+                _c71total = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _c71total;
+        [DataMember]
+        public int Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _id;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

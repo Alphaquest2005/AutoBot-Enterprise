@@ -79,7 +79,10 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<Attachments>> GetAttachmentsByEmailId(string EmailId, List<string> includesLst = null);
+        
+  		
     }
 }
 

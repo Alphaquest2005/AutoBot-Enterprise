@@ -203,6 +203,32 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<double> _TotalCIF;
 
+        [DataMember]
+        public Nullable<int> QtyLicensesRequired
+		{ 
+		    get { return _QtyLicensesRequired; }
+			set
+			{
+			    if (value == _QtyLicensesRequired) return;
+				_QtyLicensesRequired = value;
+				NotifyPropertyChanged();//m => this.QtyLicensesRequired
+			}
+		}
+        private Nullable<int> _QtyLicensesRequired;
+
+        [DataMember]
+        public Nullable<int> HasLicense
+		{ 
+		    get { return _HasLicense; }
+			set
+			{
+			    if (value == _HasLicense) return;
+				_HasLicense = value;
+				NotifyPropertyChanged();//m => this.HasLicense
+			}
+		}
+        private Nullable<int> _HasLicense;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

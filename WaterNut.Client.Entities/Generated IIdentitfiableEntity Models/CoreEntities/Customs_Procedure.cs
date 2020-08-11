@@ -66,6 +66,44 @@ namespace CoreEntities.Client.Entities
             }
 
       }
+        public string CustomsOperationsEntityName
+        {
+            get
+            {
+                return this.CustomsOperations == null ? "" : this.CustomsOperations.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (CustomsOperationsClient ctx = new CustomsOperationsClient())
+                    {
+                        var dto = ctx.GetCustomsOperations().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.CustomsOperations = (CustomsOperations)new CustomsOperations().CreateEntityFromString(value);
+							
+							this.Customs_ProcedureId = Convert.ToInt32(this.CustomsOperations.Id);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddCustomsOperations");
+                        }
+                        else
+                        {
+                            var obj = new CustomsOperations(dto);
+                           if (this.CustomsOperations == null || this.CustomsOperations.EntityId != obj.EntityId) this.CustomsOperations = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
 
 
 

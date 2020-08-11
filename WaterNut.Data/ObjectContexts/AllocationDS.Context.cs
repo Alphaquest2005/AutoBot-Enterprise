@@ -123,6 +123,10 @@ namespace AllocationDS.Business.Entities
      
         public DbSet<ManualAllocations> ManualAllocationsSet { get; set; }
      
+        public DbSet<Customs_Procedure> Customs_Procedure { get; set; }
+     
+        public DbSet<CustomsOperations> CustomsOperations { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -202,6 +206,10 @@ namespace AllocationDS.Business.Entities
             modelBuilder.Configurations.Add(new ItemSalesAsycudaPiSummaryMap());
          
             modelBuilder.Configurations.Add(new ManualAllocationsMap());
+         
+            modelBuilder.Configurations.Add(new Customs_ProcedureMap());
+         
+            modelBuilder.Configurations.Add(new CustomsOperationsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

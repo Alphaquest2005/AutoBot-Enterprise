@@ -255,6 +255,45 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _HasLicense;
 
+        [DataMember]
+        public Nullable<double> TotalFreight
+		{ 
+		    get { return _TotalFreight; }
+			set
+			{
+			    if (value == _TotalFreight) return;
+				_TotalFreight = value;
+				NotifyPropertyChanged();//m => this.TotalFreight
+			}
+		}
+        private Nullable<double> _TotalFreight;
+
+        [DataMember]
+        public Nullable<int> ClassifiedLines
+		{ 
+		    get { return _ClassifiedLines; }
+			set
+			{
+			    if (value == _ClassifiedLines) return;
+				_ClassifiedLines = value;
+				NotifyPropertyChanged();//m => this.ClassifiedLines
+			}
+		}
+        private Nullable<int> _ClassifiedLines;
+
+        [DataMember]
+        public Nullable<int> TotalLines
+		{ 
+		    get { return _TotalLines; }
+			set
+			{
+			    if (value == _TotalLines) return;
+				_TotalLines = value;
+				NotifyPropertyChanged();//m => this.TotalLines
+			}
+		}
+        private Nullable<int> _TotalLines;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

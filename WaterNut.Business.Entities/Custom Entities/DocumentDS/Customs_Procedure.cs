@@ -19,5 +19,11 @@ namespace DocumentDS.Business.Entities
                 return $"{Extended_customs_procedure}-{National_customs_procedure}";
             }
         }
+
+        
     }
+
+
+
+
 }

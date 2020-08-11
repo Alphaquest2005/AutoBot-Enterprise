@@ -398,6 +398,32 @@ namespace CoreEntities.Client.DTO
 		}
         private string _FreightCurrencyCode;
 
+        [DataMember]
+        public Nullable<int> QtyLicensesRequired
+		{ 
+		    get { return _QtyLicensesRequired; }
+			set
+			{
+			    if (value == _QtyLicensesRequired) return;
+				_QtyLicensesRequired = value;
+				NotifyPropertyChanged();//m => this.QtyLicensesRequired
+			}
+		}
+        private Nullable<int> _QtyLicensesRequired;
+
+        [DataMember]
+        public Nullable<int> EntryPackages
+		{ 
+		    get { return _EntryPackages; }
+			set
+			{
+			    if (value == _EntryPackages) return;
+				_EntryPackages = value;
+				NotifyPropertyChanged();//m => this.EntryPackages
+			}
+		}
+        private Nullable<int> _EntryPackages;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocument> AsycudaDocuments
@@ -466,6 +492,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<AsycudaDocumentSet_Attachments> _AsycudaDocumentSet_Attachments = new ChangeTrackingCollection<AsycudaDocumentSet_Attachments>();
+
+        [DataMember]
+        public ChangeTrackingCollection<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx
+		{
+		    get { return _AsycudaDocumentSetEntryDataEx; }
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSetEntryDataEx)) return;
+				_AsycudaDocumentSetEntryDataEx = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetEntryDataEx
+			}
+		}
+        private ChangeTrackingCollection<AsycudaDocumentSetEntryDataEx> _AsycudaDocumentSetEntryDataEx = new ChangeTrackingCollection<AsycudaDocumentSetEntryDataEx>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

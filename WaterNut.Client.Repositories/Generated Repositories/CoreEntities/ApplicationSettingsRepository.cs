@@ -370,7 +370,35 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByBondTypeId(string BondTypeId, List<string> includesLst = null)
+        {
+             if (BondTypeId == "0") return null;
+            try
+            {
+                 using (ApplicationSettingsClient t = new ApplicationSettingsClient())
+                    {
+                        var res = await t.GetApplicationSettingsByBondTypeId(BondTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new ApplicationSettings(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

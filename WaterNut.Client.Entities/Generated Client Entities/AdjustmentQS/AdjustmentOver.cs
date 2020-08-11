@@ -267,9 +267,9 @@ public Nullable<int> CLineNumber
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-       
-public Nullable<int> AsycudaDocumentSetId
+public int AsycudaDocumentSetId
 		{ 
 		    get { return this.adjustmentover.AsycudaDocumentSetId; }
 			set
@@ -564,6 +564,21 @@ public Nullable<bool> IsReconciled
 				this.adjustmentover.IsReconciled = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("IsReconciled");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "InventoryItem is required")]
+       
+public int InventoryItemId
+		{ 
+		    get { return this.adjustmentover.InventoryItemId; }
+			set
+			{
+			    if (value == this.adjustmentover.InventoryItemId) return;
+				this.adjustmentover.InventoryItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InventoryItemId");
 			}
 		}
      

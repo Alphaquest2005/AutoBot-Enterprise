@@ -204,7 +204,8 @@ namespace CoreEntities.Client.Repositories
                     {
                      // AsycudaDocumentItems = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocumentItem>(res.AsycudaDocumentItems.Select(y => new AsycudaDocumentItem(y))),    
                   // AsycudaDocumentSetEx = (res.AsycudaDocumentSetEx != null?new AsycudaDocumentSetEx(res.AsycudaDocumentSetEx): null),    
-                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null)    
+                  // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
+                  // Customs_Procedure = (res.Customs_Procedure != null?new Customs_Procedure(res.Customs_Procedure): null)    
                   };
                     }
                     else
@@ -458,6 +459,34 @@ namespace CoreEntities.Client.Repositories
                  using (AsycudaDocumentClient t = new AsycudaDocumentClient())
                     {
                         var res = await t.GetAsycudaDocumentByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocument(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<AsycudaDocument>> GetAsycudaDocumentByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
+        {
+             if (CustomsOperationId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentClient t = new AsycudaDocumentClient())
+                    {
+                        var res = await t.GetAsycudaDocumentByCustomsOperationId(CustomsOperationId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new AsycudaDocument(x)).AsEnumerable();

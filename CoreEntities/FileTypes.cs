@@ -37,6 +37,8 @@ namespace CoreEntities
         public bool MergeEmails { get; set; }
         public bool CopyEntryData { get; set; }
         public Nullable<int> ParentFileTypeId { get; set; }
+        public Nullable<bool> OverwriteFiles { get; set; }
+        public Nullable<bool> HasFiles { get; set; }
     
         public virtual ApplicationSettings ApplicationSettings { get; set; }
         public virtual AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

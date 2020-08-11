@@ -22,7 +22,7 @@ namespace CoreEntities.Client.DTO
     public partial class TODO_ImportCompleteEntries : BaseEntity<TODO_ImportCompleteEntries>, ITrackable, IEquatable<TODO_ImportCompleteEntries>
     {
         [DataMember]
-        public int AsycudaDocumentSetId
+        public Nullable<int> AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -32,10 +32,10 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private int _AsycudaDocumentSetId;
+        private Nullable<int> _AsycudaDocumentSetId;
 
         [DataMember]
-        public int ApplicationSettingsId
+        public Nullable<int> ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -45,7 +45,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private int _ApplicationSettingsId;
+        private Nullable<int> _ApplicationSettingsId;
 
         [DataMember]
         public Nullable<int> EmailId
@@ -74,19 +74,6 @@ namespace CoreEntities.Client.DTO
         private Nullable<int> _FileTypeId;
 
         [DataMember]
-        public int ASYCUDA_Id
-		{ 
-		    get { return _ASYCUDA_Id; }
-			set
-			{
-			    if (value == _ASYCUDA_Id) return;
-				_ASYCUDA_Id = value;
-				NotifyPropertyChanged();//m => this.ASYCUDA_Id
-			}
-		}
-        private int _ASYCUDA_Id;
-
-        [DataMember]
         public string EntryDataId
 		{ 
 		    get { return _EntryDataId; }
@@ -98,6 +85,32 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private string _EntryDataId;
+
+        [DataMember]
+        public int NewAsycuda_Id
+		{ 
+		    get { return _NewAsycuda_Id; }
+			set
+			{
+			    if (value == _NewAsycuda_Id) return;
+				_NewAsycuda_Id = value;
+				NotifyPropertyChanged();//m => this.NewAsycuda_Id
+			}
+		}
+        private int _NewAsycuda_Id;
+
+        [DataMember]
+        public int AssessedAsycuda_Id
+		{ 
+		    get { return _AssessedAsycuda_Id; }
+			set
+			{
+			    if (value == _AssessedAsycuda_Id) return;
+				_AssessedAsycuda_Id = value;
+				NotifyPropertyChanged();//m => this.AssessedAsycuda_Id
+			}
+		}
+        private int _AssessedAsycuda_Id;
 
        
    //     [DataMember]

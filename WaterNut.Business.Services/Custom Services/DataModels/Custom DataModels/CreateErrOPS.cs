@@ -4,9 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
 using Core.Common.UI;
+using CoreEntities.Business.Enums;
 using DocumentDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.Interfaces;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 
 
 namespace WaterNut.DataSpace
@@ -38,10 +40,13 @@ namespace WaterNut.DataSpace
             var slst = await GetErrOPSData(filterExpression).ConfigureAwait(false);
 
 
-            Document_Type dt;
-            if (GetOPSDocumentType(out dt)) return;
-            
-            ErrOpsIntializeCdoc(cdoc, dt, docSet);
+            var cp =
+                BaseDataModel.Instance.Customs_Procedures
+                    .Single(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse && x.Stock == true);
+
+            docSet.Customs_Procedure = cp;
+
+            ErrOpsIntializeCdoc(cdoc, docSet);
 
             StatusModel.StartStatusUpdate("Creating Error OPS entries", slst.Count());
 
@@ -64,7 +69,7 @@ namespace WaterNut.DataSpace
                     cdoc = new DocumentCT();
                     cdoc.Document = BaseDataModel.Instance.CreateNewAsycudaDocument(docSet);
 
-                    ErrOpsIntializeCdoc(cdoc, dt, docSet);
+                    ErrOpsIntializeCdoc(cdoc, docSet);
                 }
 
             }
@@ -113,28 +118,7 @@ namespace WaterNut.DataSpace
         }
 
 
-        private bool GetOPSDocumentType(out Document_Type dt)
-        {
-            dt = BaseDataModel.Instance.Document_Types.AsEnumerable().FirstOrDefault(x => /*x.DisplayName == "IM7" ||*/ x.DisplayName == "OS7");
-
-            if (dt == null)
-            {
-                throw new ApplicationException($"Null Document Type for '{"IM7"}' Contact your Network Administrator");
-
-            }
-            var docTypeId = dt.Document_TypeId;
-            dt.DefaultCustoms_Procedure =
-                BaseDataModel.Instance.Customs_Procedures.AsEnumerable()
-                    .FirstOrDefault(x => x.DisplayName.Contains("OPS") && x.Document_TypeId == docTypeId);
-
-            if (dt.DefaultCustoms_Procedure == null)
-            {
-                throw new ApplicationException(
-                    $"Null Customs Procedure for '{"OPS"}' Contact your Network Administrator");
-
-            }
-            return false;
-        }
+       
 
         private async Task<List<AsycudaSalesAllocations>> GetErrOPSData(string filterExpression)
         {
@@ -150,7 +134,7 @@ namespace WaterNut.DataSpace
             //              "&& Cost > 0");
         }
 
-        public void ErrOpsIntializeCdoc(DocumentCT cdoc, Document_Type dt, AsycudaDocumentSet ads)
+        public void ErrOpsIntializeCdoc(DocumentCT cdoc, AsycudaDocumentSet ads)
         {
             BaseDataModel.Instance.IntCdoc(cdoc, ads);
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;

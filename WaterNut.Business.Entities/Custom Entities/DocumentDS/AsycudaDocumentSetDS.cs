@@ -20,6 +20,7 @@ namespace DocumentDS.Business.Entities
         {
             get
             {
+                if(xcuda_ASYCUDA_ExtendedProperties == null) return new List<xcuda_ASYCUDA>();
                 var alist = from a in xcuda_ASYCUDA_ExtendedProperties.Where(x => x.xcuda_ASYCUDA != null)
                             select a.xcuda_ASYCUDA;
                 return new List<xcuda_ASYCUDA>(alist);

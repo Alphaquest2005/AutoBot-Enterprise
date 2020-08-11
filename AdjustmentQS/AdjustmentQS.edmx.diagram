@@ -43,7 +43,7 @@
         <EntityTypeShape EntityType="Model.SystemDocumentSet" Width="1.5" PointX="9.875" PointY="1" />
         <AssociationConnector Association="Model.SystemDocumentSetAdjustmentDetail" />
         <EntityTypeShape EntityType="Model.TODO_PreDiscrepancyErrors" Width="1.5" PointX="0.75" PointY="15.75" />
-        <EntityTypeShape EntityType="Model.TODO_AdjustmentOversToXML" Width="1.5" PointX="25.125" PointY="0.5" />
+        <EntityTypeShape EntityType="Model.TODO_AdjustmentOversToXML" Width="1.5" PointX="15.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

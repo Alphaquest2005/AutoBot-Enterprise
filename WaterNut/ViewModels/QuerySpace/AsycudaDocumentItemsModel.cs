@@ -10,9 +10,11 @@ using System.Linq;
 using System.Data.Entity;
 using AdjustmentQS.Client.Repositories;
 using CoreEntities.Client.Entities;
+using CoreEntities.Client.Enums;
 using CoreEntities.Client.Repositories;
 using PreviousDocumentQS.Client.Entities;
 using SimpleMvvmToolkit;
+using CustomsOperations = CoreEntities.Client.Enums.CustomsOperations;
 
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
@@ -171,19 +173,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             res.Append($" && ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}");
             if (ViewIM7 == true)
             {
-                navexp.Append("|| DocumentType == \"IM7\" || DocumentType == \"OS7\"");
+                navexp.Append($"|| CustomsOperationId == {(int) CustomsOperations.Warehouse}");
             }
             if (ViewEx9 == true)
             {
-              navexp.Append("|| DocumentType == \"EX9\"");
+              navexp.Append($"|| CustomsOperationId == {(int)CustomsOperations.Exwarehouse}");
             }
             if (ViewIM9 == true)
             {
-                navexp.Append("|| DocumentType == \"IM9\"");
+                navexp.Append($"|| CustomsOperationId == {(int)CustomsOperations.Import}");
             }
             if (ViewIM4 == true)
             {
-              navexp.Append("|| DocumentType == \"IM4\"");
+              navexp.Append($"|| CustomsOperationId == {(int)CustomsOperations.Import}");
             }
 
             if (ViewCurrentDocumentOnly)

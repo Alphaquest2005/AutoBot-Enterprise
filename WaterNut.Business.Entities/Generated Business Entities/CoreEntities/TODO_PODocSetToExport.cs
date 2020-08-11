@@ -290,6 +290,51 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _haslicense;
+        [DataMember]
+        public Nullable<double> TotalFreight 
+        {
+            get
+            {
+                return _totalfreight;
+            }
+            set
+            {
+                _totalfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalfreight;
+        [DataMember]
+        public Nullable<int> ClassifiedLines 
+        {
+            get
+            {
+                return _classifiedlines;
+            }
+            set
+            {
+                _classifiedlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _classifiedlines;
+        [DataMember]
+        public Nullable<int> TotalLines 
+        {
+            get
+            {
+                return _totallines;
+            }
+            set
+            {
+                _totallines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _totallines;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

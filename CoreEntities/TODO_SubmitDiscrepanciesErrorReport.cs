@@ -35,6 +35,6 @@ namespace CoreEntities
         public int ApplicationSettingsId { get; set; }
         public double Quantity { get; set; }
         public int Entrydatadetailsid { get; set; }
-        public Nullable<int> AsycudaDocumentSetId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
     }
 }

@@ -424,6 +424,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _EntryData_Id;
 
+        [DataMember]
+        public string pLineNumber
+		{ 
+		    get { return _pLineNumber; }
+			set
+			{
+			    if (value == _pLineNumber) return;
+				_pLineNumber = value;
+				NotifyPropertyChanged();//m => this.pLineNumber
+			}
+		}
+        private string _pLineNumber;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -91,6 +91,9 @@ namespace CoreEntities.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AsycudaDocument>> GetAsycudaDocumentByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AsycudaDocument>> GetAsycudaDocumentByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null);
+        
   		
     }
 }

@@ -203,6 +203,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<double> _InvoiceTotal;
 
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -18,11 +18,11 @@ namespace CoreEntities.Business.Entities
         {
             get
             {
-                return this.AsycudaDocumentSetId.ToString();  // this.AsycudaDocumentSetId == null?"0":
+                return this.NewAsycuda_Id.ToString();  // this.NewAsycuda_Id == null?"0":
             }
             set
             {
-                this.AsycudaDocumentSetId = Convert.ToInt32(value);
+                this.NewAsycuda_Id = Convert.ToInt32(value);
             }
         }
 

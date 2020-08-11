@@ -385,6 +385,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _qtyLicensesRequiredFilter;
+        public Int32? QtyLicensesRequiredFilter
+        {
+            get
+            {
+                return _qtyLicensesRequiredFilter;
+            }
+            set
+            {
+                _qtyLicensesRequiredFilter = value;
+				NotifyPropertyChanged(x => QtyLicensesRequiredFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _hasLicenseFilter;
+        public Int32? HasLicenseFilter
+        {
+            get
+            {
+                return _hasLicenseFilter;
+            }
+            set
+            {
+                _hasLicenseFilter = value;
+				NotifyPropertyChanged(x => HasLicenseFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -456,7 +492,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("LicenseLines == {0}",  LicenseLinesFilter.ToString()));				 
 
 					if(TotalCIFFilter.HasValue)
-						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));				 
+
+					if(QtyLicensesRequiredFilter.HasValue)
+						res.Append(" && " + string.Format("QtyLicensesRequired == {0}",  QtyLicensesRequiredFilter.ToString()));				 
+
+					if(HasLicenseFilter.HasValue)
+						res.Append(" && " + string.Format("HasLicense == {0}",  HasLicenseFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -512,7 +554,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     LicenseLines = x.LicenseLines ,
                     
  
-                    TotalCIF = x.TotalCIF 
+                    TotalCIF = x.TotalCIF ,
+                    
+ 
+                    QtyLicensesRequired = x.QtyLicensesRequired ,
+                    
+ 
+                    HasLicense = x.HasLicense 
                     
                 }).ToList()
             };
@@ -559,6 +607,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> TotalCIF { get; set; } 
+                    
+ 
+                    public Nullable<int> QtyLicensesRequired { get; set; } 
+                    
+ 
+                    public Nullable<int> HasLicense { get; set; } 
                     
         }
 

@@ -19,17 +19,17 @@ namespace AdjustmentQS
         public string EntryDataId { get; set; }
         public Nullable<int> LineNumber { get; set; }
         public string ItemNumber { get; set; }
-        public double Quantity { get; set; }
+        public Nullable<double> Quantity { get; set; }
         public string Units { get; set; }
         public string ItemDescription { get; set; }
-        public double Cost { get; set; }
-        public double QtyAllocated { get; set; }
-        public double UnitWeight { get; set; }
-        public bool DoNotAllocate { get; set; }
+        public Nullable<double> Cost { get; set; }
+        public Nullable<double> QtyAllocated { get; set; }
+        public Nullable<double> UnitWeight { get; set; }
+        public Nullable<bool> DoNotAllocate { get; set; }
         public string TariffCode { get; set; }
         public string CNumber { get; set; }
         public Nullable<int> CLineNumber { get; set; }
-        public int AsycudaDocumentSetId { get; set; }
+        public Nullable<int> AsycudaDocumentSetId { get; set; }
         public Nullable<double> InvoiceQty { get; set; }
         public Nullable<double> ReceivedQty { get; set; }
         public string PreviousInvoiceNumber { get; set; }
@@ -38,14 +38,14 @@ namespace AdjustmentQS
         public string Status { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }
         public string Currency { get; set; }
-        public int ApplicationSettingsId { get; set; }
+        public Nullable<int> ApplicationSettingsId { get; set; }
         public string Type { get; set; }
         public string DutyFreePaid { get; set; }
         public Nullable<int> EmailId { get; set; }
         public Nullable<int> FileTypeId { get; set; }
-        public System.DateTime InvoiceDate { get; set; }
+        public Nullable<System.DateTime> InvoiceDate { get; set; }
         public string Subject { get; set; }
-        public System.DateTime EmailDate { get; set; }
+        public Nullable<System.DateTime> EmailDate { get; set; }
         public int AlreadyExecuted { get; set; }
     }
 }

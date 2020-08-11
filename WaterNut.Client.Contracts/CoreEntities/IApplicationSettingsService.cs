@@ -79,7 +79,10 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<ApplicationSettings>> GetApplicationSettingsByBondTypeId(string BondTypeId, List<string> includesLst = null);
+        
+  		
     }
 }
 

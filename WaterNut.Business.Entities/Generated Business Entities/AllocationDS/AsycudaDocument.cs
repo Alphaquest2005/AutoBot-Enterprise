@@ -536,9 +536,56 @@ namespace AllocationDS.Business.Entities
         }
         string _customsprocedure;
         [DataMember]
+        public Nullable<int> CustomsOperationId 
+        {
+            get
+            {
+                return _customsoperationid;
+            }
+            set
+            {
+                _customsoperationid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _customsoperationid;
+        [DataMember]
+        public Nullable<bool> IsPaid 
+        {
+            get
+            {
+                return _ispaid;
+            }
+            set
+            {
+                _ispaid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _ispaid;
+        [DataMember]
+        public Nullable<bool> SubmitToCustoms 
+        {
+            get
+            {
+                return _submittocustoms;
+            }
+            set
+            {
+                _submittocustoms = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _submittocustoms;
+        [DataMember]
         public List<xcuda_Item> xcuda_Item { get; set; }
         [DataMember]
         public SystemDocumentSets SystemDocumentSets { get; set; }
+        [DataMember]
+        public Customs_Procedure Customs_Procedure { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -15,5 +15,17 @@ namespace CoreEntities.Business.Entities
         [IgnoreDataMember]
         [NotMapped]
         public string DocReference { get; set; }
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public string EmailId { get; set; }
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public List<KeyValuePair<string, string>> Data { get; set; } = new List<KeyValuePair<string, string>>();
+
+        [IgnoreDataMember]
+        [NotMapped]
+        public List<EmailInfoMappings> EmailInfoMappings { get; set; } = new List<EmailInfoMappings>();
     }
 }

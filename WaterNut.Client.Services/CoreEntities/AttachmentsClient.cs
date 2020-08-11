@@ -112,7 +112,12 @@ namespace CoreEntities.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-        public decimal SumField(string whereExp, string sumExp)
+		public async Task<IEnumerable<Attachments>> GetAttachmentsByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAttachmentsByEmailId(EmailId, includesLst).ConfigureAwait(false);
+        }
+			 
+          public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
 		}

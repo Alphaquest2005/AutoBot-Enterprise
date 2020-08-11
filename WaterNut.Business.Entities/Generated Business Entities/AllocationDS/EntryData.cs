@@ -281,6 +281,21 @@ namespace AllocationDS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
+        public Nullable<int> Packages 
+        {
+            get
+            {
+                return _packages;
+            }
+            set
+            {
+                _packages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _packages;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails1 { get; set; }
 
  //       [DataMember]

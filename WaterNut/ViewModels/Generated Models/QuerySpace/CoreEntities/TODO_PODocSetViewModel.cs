@@ -385,6 +385,78 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _qtyLicensesRequiredFilter;
+        public Int32? QtyLicensesRequiredFilter
+        {
+            get
+            {
+                return _qtyLicensesRequiredFilter;
+            }
+            set
+            {
+                _qtyLicensesRequiredFilter = value;
+				NotifyPropertyChanged(x => QtyLicensesRequiredFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalFreightFilter;
+        public Double? TotalFreightFilter
+        {
+            get
+            {
+                return _totalFreightFilter;
+            }
+            set
+            {
+                _totalFreightFilter = value;
+				NotifyPropertyChanged(x => TotalFreightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _classifiedLinesFilter;
+        public Int32? ClassifiedLinesFilter
+        {
+            get
+            {
+                return _classifiedLinesFilter;
+            }
+            set
+            {
+                _classifiedLinesFilter = value;
+				NotifyPropertyChanged(x => ClassifiedLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _totalLinesFilter;
+        public Int32? TotalLinesFilter
+        {
+            get
+            {
+                return _totalLinesFilter;
+            }
+            set
+            {
+                _totalLinesFilter = value;
+				NotifyPropertyChanged(x => TotalLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -456,7 +528,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("LicenseLines == {0}",  LicenseLinesFilter.ToString()));				 
 
 					if(TotalCIFFilter.HasValue)
-						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));				 
+
+					if(QtyLicensesRequiredFilter.HasValue)
+						res.Append(" && " + string.Format("QtyLicensesRequired == {0}",  QtyLicensesRequiredFilter.ToString()));				 
+
+					if(TotalFreightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalFreight == {0}",  TotalFreightFilter.ToString()));				 
+
+					if(ClassifiedLinesFilter.HasValue)
+						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
+
+					if(TotalLinesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -512,7 +596,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     LicenseLines = x.LicenseLines ,
                     
  
-                    TotalCIF = x.TotalCIF 
+                    TotalCIF = x.TotalCIF ,
+                    
+ 
+                    QtyLicensesRequired = x.QtyLicensesRequired ,
+                    
+ 
+                    TotalFreight = x.TotalFreight ,
+                    
+ 
+                    ClassifiedLines = x.ClassifiedLines ,
+                    
+ 
+                    TotalLines = x.TotalLines 
                     
                 }).ToList()
             };
@@ -559,6 +655,18 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> TotalCIF { get; set; } 
+                    
+ 
+                    public Nullable<int> QtyLicensesRequired { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalFreight { get; set; } 
+                    
+ 
+                    public Nullable<int> ClassifiedLines { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalLines { get; set; } 
                     
         }
 

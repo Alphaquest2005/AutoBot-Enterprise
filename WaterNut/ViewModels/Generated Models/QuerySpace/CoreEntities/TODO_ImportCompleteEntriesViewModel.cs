@@ -133,6 +133,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
             void CurrentTODO_ImportCompleteEntries__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentTODO_ImportCompleteEntries.ApplicationSettings) == false) ApplicationSettings.Add(CurrentTODO_ImportCompleteEntries.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnTODO_ImportCompleteEntriesChanged(object sender, NotificationEventArgs e)
         {
@@ -144,6 +148,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    TODO_ImportCompleteEntries.Refresh();
+					NotifyPropertyChanged(x => this.TODO_ImportCompleteEntries);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()

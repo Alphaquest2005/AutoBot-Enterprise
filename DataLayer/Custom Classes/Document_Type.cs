@@ -16,35 +16,6 @@ namespace WaterNut.DataLayer
             }
         }
 
-        public Customs_Procedure DefaultCustoms_Procedure
-        {
-            get { return Customs_Procedures.FirstOrDefault(x => x.IsDefault == true); }
-            set
-            {
-                var cp = value;
-                var rcp = Customs_Procedures.FirstOrDefault(x => x.Customs_ProcedureId == cp.Customs_ProcedureId);
-
-
-                if (rcp != null)
-                {
-                    ClearIsDefault();
-                    rcp.IsDefault = true;
-                }
-                else
-                {
-                    ClearIsDefault();
-                    cp.IsDefault = true;
-                    Customs_Procedures.Add(cp);
-                }
-            }
-        }
-
-        private void ClearIsDefault()
-        {
-            foreach (var c in Customs_Procedures.Where(x => x.IsDefault == true))
-            {
-                c.IsDefault = false;
-            }
-        }
+       
     }
 }

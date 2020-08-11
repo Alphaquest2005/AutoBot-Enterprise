@@ -14,11 +14,12 @@ namespace CoreEntities
     
     public partial class TODO_ImportCompleteEntries
     {
-        public int AsycudaDocumentSetId { get; set; }
-        public int ApplicationSettingsId { get; set; }
+        public Nullable<int> AsycudaDocumentSetId { get; set; }
+        public Nullable<int> ApplicationSettingsId { get; set; }
         public Nullable<int> EmailId { get; set; }
         public Nullable<int> FileTypeId { get; set; }
-        public int ASYCUDA_Id { get; set; }
         public string EntryDataId { get; set; }
+        public int NewAsycuda_Id { get; set; }
+        public int AssessedAsycuda_Id { get; set; }
     }
 }

@@ -182,6 +182,7 @@ namespace WaterNut.DataSpace
                                 FileTypeId = fileTypeId,
                                 DocumentType = g.FirstOrDefault(x => x.DocumentType != "")?.DocumentType,
                                 SupplierInvoiceNo = g.FirstOrDefault(x => x.SupplierInvoiceNo != "")?.SupplierInvoiceNo,
+                                WarehouseNo = g.FirstOrDefault(x => x.WarehouseNo != "")?.WarehouseNo,
                                 PONumber = g.FirstOrDefault(x => x.PONumber != "")?.PONumber,
                                 SourceFile = droppedFilePath,
                                 
@@ -221,6 +222,7 @@ namespace WaterNut.DataSpace
                             TotalDeductions = x.TotalDeductions,
                             InvoiceTotal = x.InvoiceTotal,
                             Packages = x.Packages,
+                            
 
 
 
@@ -411,6 +413,7 @@ namespace WaterNut.DataSpace
                                         TotalDeduction = item.f.Sum(x => x.TotalDeductions),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
                                         Packages = item.f.Sum(x => x.Packages),
+                                        
                                         EmailId = item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
@@ -420,6 +423,9 @@ namespace WaterNut.DataSpace
                                         SupplierInvoiceNo = string.IsNullOrEmpty(item.EntryData.SupplierInvoiceNo)
                                             ? null
                                             : item.EntryData.SupplierInvoiceNo,
+                                        WarehouseNo = string.IsNullOrEmpty(item.EntryData.WarehouseNo)
+                                            ? null
+                                            : item.EntryData.WarehouseNo,
 
                                     };
                                     if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
@@ -563,6 +569,10 @@ namespace WaterNut.DataSpace
                                     throw new ApplicationException("Unknown FileType");
 
                             }
+                        }
+                        else
+                        {
+                            olded.EmailId = emailId;
                         }
 
 
@@ -742,7 +752,7 @@ namespace WaterNut.DataSpace
 
                 if (h == "") continue;
 
-                if ("INVNO|Reciept #|NUM|Invoice #|Invoice#".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("INVNO|Reciept #|NUM|Invoice #|Invoice#|Order Reference".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("EntryDataId", i);
                     continue;
@@ -779,7 +789,7 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("PRICE|COST".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("PRICE|COST|USD".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("Cost", i);
                     continue;
@@ -984,6 +994,12 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
+                if ("Warehouse|WarehouseNo".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("WarehouseNo", i);
+                    continue;
+                }
+
             }
         }
 
@@ -1041,13 +1057,21 @@ namespace WaterNut.DataSpace
 
             var ImportActions = new Dictionary<string, Action<CSVDataSummary, Dictionary<string, int>, string[]>>()
             {
-                {"EntryDataId", (c, mapping, splits) => c.EntryDataId = splits[mapping["EntryDataId"]]},
+                {"EntryDataId", (c, mapping, splits) => c.EntryDataId = splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/","")},
                 {
                     "EntryDataDate",
-                    (c, mapping, splits) => c.EntryDataDate = DateTime.Parse(
-                        string.IsNullOrEmpty(splits[mapping["EntryDataDate"]])
-                            ? DateTime.MinValue.ToShortDateString()
-                            : splits[mapping["EntryDataDate"]].Replace("�", ""), CultureInfo.CurrentCulture)
+                    (c, mapping, splits) =>
+                    {
+                        DateTime date = DateTime.MinValue;
+                        var strDate = string.IsNullOrEmpty(splits[mapping["EntryDataDate"]])
+                                ? DateTime.MinValue.ToShortDateString()
+                                : splits[mapping["EntryDataDate"]].Replace("�", "");
+                        if(DateTime.TryParse(strDate, out date) == false)
+                            DateTime.TryParseExact(strDate, "dd'/'MM'/'yyyy",
+                                CultureInfo.InvariantCulture,
+                                DateTimeStyles.None, out date);
+                        c.EntryDataDate = date;
+                    }
                 },
                 {"ItemNumber", (c, mapping, splits) => c.ItemNumber = splits[mapping["ItemNumber"]]},
                 {
@@ -1252,6 +1276,12 @@ namespace WaterNut.DataSpace
                         ? splits[mapping["Packages"]]
                         : "0")
                 },
+                {
+                    "WarehouseNo",
+                    (c, mapping, splits) => c.WarehouseNo = mapping.ContainsKey("WarehouseNo")
+                        ? splits[mapping["WarehouseNo"]]
+                        : ""
+                },
 
             };
 
@@ -1360,6 +1390,8 @@ namespace WaterNut.DataSpace
             public string Instructions { get; set; }
             public string InventorySource { get; set; }
             public int Packages { get; set; }
+
+            public string WarehouseNo { get; set; }
         }
 
         private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)

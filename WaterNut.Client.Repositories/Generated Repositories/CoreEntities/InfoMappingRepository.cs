@@ -203,7 +203,8 @@ namespace CoreEntities.Client.Repositories
                             return new InfoMapping(res)
                     {
                   // ApplicationSettings = (res.ApplicationSettings != null?new ApplicationSettings(res.ApplicationSettings): null),    
-                     // InfoMappingRegEx = new System.Collections.ObjectModel.ObservableCollection<InfoMappingRegEx>(res.InfoMappingRegEx.Select(y => new InfoMappingRegEx(y)))    
+                     // InfoMappingRegEx = new System.Collections.ObjectModel.ObservableCollection<InfoMappingRegEx>(res.InfoMappingRegEx.Select(y => new InfoMappingRegEx(y))),    
+                     // EmailInfoMappings = new System.Collections.ObjectModel.ObservableCollection<EmailInfoMappings>(res.EmailInfoMappings.Select(y => new EmailInfoMappings(y)))    
                   };
                     }
                     else

@@ -8,7 +8,6 @@ using System.Windows.Data;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Core.Common.Converters;
-using CoreEntities.Business.Entities;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
 using SimpleMvvmToolkit;

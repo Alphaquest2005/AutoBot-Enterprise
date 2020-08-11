@@ -111,6 +111,51 @@ namespace CoreEntities.Business.Entities
         }
         string _fieldreplacerx;
         [DataMember]
+        public string LineRegx 
+        {
+            get
+            {
+                return _lineregx;
+            }
+            set
+            {
+                _lineregx = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _lineregx;
+        [DataMember]
+        public string KeyValue 
+        {
+            get
+            {
+                return _keyvalue;
+            }
+            set
+            {
+                _keyvalue = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _keyvalue;
+        [DataMember]
+        public string FieldValue 
+        {
+            get
+            {
+                return _fieldvalue;
+            }
+            set
+            {
+                _fieldvalue = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _fieldvalue;
+        [DataMember]
         public InfoMapping InfoMapping { get; set; }
 
  //       [DataMember]

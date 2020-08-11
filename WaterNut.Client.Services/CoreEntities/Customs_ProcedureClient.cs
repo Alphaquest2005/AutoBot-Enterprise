@@ -117,6 +117,16 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetCustoms_ProcedureByDocument_TypeId(Document_TypeId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBondTypeId(string BondTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetCustoms_ProcedureByBondTypeId(BondTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
+        {
+            return  await Channel.GetCustoms_ProcedureByCustomsOperationId(CustomsOperationId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

@@ -201,7 +201,7 @@ public int ASYCUDA_Id
        
        
                 
-                [MaxLength(500, ErrorMessage = "FilePath has a max length of 500 letters ")]
+                [MaxLength(255, ErrorMessage = "FilePath has a max length of 255 letters ")]
 public string FilePath
 		{ 
 		    get { return this.todo_submitxmltocustoms.FilePath; }

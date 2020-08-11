@@ -42,11 +42,14 @@
               this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
               this.Property(t => t.FreightCurrencyCode).HasColumnName("FreightCurrencyCode").HasMaxLength(3);
+              this.Property(t => t.QtyLicensesRequired).HasColumnName("QtyLicensesRequired");
+              this.Property(t => t.EntryPackages).HasColumnName("EntryPackages");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentSetEx>) t.AsycudaDocumentSetEx).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocuments).WithOptional(t => t.AsycudaDocumentSetEx).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.LicenceSummary).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
               this.HasMany(t => t.FileTypes).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
               this.HasMany(t => t.AsycudaDocumentSet_Attachments).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
+              this.HasMany(t => t.AsycudaDocumentSetEntryDataEx).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

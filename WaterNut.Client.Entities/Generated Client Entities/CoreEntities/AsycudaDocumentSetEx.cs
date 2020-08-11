@@ -498,6 +498,36 @@ public string FreightCurrencyCode
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> QtyLicensesRequired
+		{ 
+		    get { return this.asycudadocumentsetex.QtyLicensesRequired; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.QtyLicensesRequired) return;
+				this.asycudadocumentsetex.QtyLicensesRequired = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("QtyLicensesRequired");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> EntryPackages
+		{ 
+		    get { return this.asycudadocumentsetex.EntryPackages; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.EntryPackages) return;
+				this.asycudadocumentsetex.EntryPackages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryPackages");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocument> _AsycudaDocuments = null;
         public  ObservableCollection<AsycudaDocument> AsycudaDocuments
 		{
@@ -760,6 +790,60 @@ public string FreightCurrencyCode
                     {
                         if (itm != null)
                         asycudadocumentsetex.AsycudaDocumentSet_Attachments.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<AsycudaDocumentSetEntryDataEx> _AsycudaDocumentSetEntryDataEx = null;
+        public  ObservableCollection<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocumentSetEntryDataEx != null) return _AsycudaDocumentSetEntryDataEx;
+					//if (this.asycudadocumentsetex.AsycudaDocumentSetEntryDataEx == null) Debugger.Break();
+					if(this.asycudadocumentsetex.AsycudaDocumentSetEntryDataEx != null)
+					{
+						_AsycudaDocumentSetEntryDataEx = new ObservableCollection<AsycudaDocumentSetEntryDataEx>(this.asycudadocumentsetex.AsycudaDocumentSetEntryDataEx.Select(x => new AsycudaDocumentSetEntryDataEx(x)));
+					}
+					
+						_AsycudaDocumentSetEntryDataEx.CollectionChanged += AsycudaDocumentSetEntryDataEx_CollectionChanged; 
+					
+					return _AsycudaDocumentSetEntryDataEx; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocumentSetEntryDataEx)) return;
+				if (value != null)
+					this.asycudadocumentsetex.AsycudaDocumentSetEntryDataEx = new ChangeTrackingCollection<DTO.AsycudaDocumentSetEntryDataEx>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocumentSetEntryDataEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocumentSetEntryDataEx != null)
+				_AsycudaDocumentSetEntryDataEx.CollectionChanged += AsycudaDocumentSetEntryDataEx_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocumentSetEntryDataEx");
+			}
+		}
+        
+        void AsycudaDocumentSetEntryDataEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocumentSetEntryDataEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentsetex.AsycudaDocumentSetEntryDataEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocumentSetEntryDataEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        asycudadocumentsetex.AsycudaDocumentSetEntryDataEx.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

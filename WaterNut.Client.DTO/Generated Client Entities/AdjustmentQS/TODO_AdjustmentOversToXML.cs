@@ -87,7 +87,7 @@ namespace AdjustmentQS.Client.DTO
         private string _ItemNumber;
 
         [DataMember]
-        public double Quantity
+        public Nullable<double> Quantity
 		{ 
 		    get { return _Quantity; }
 			set
@@ -97,7 +97,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Quantity
 			}
 		}
-        private double _Quantity;
+        private Nullable<double> _Quantity;
 
         [DataMember]
         public string Units
@@ -126,7 +126,7 @@ namespace AdjustmentQS.Client.DTO
         private string _ItemDescription;
 
         [DataMember]
-        public double Cost
+        public Nullable<double> Cost
 		{ 
 		    get { return _Cost; }
 			set
@@ -136,10 +136,10 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.Cost
 			}
 		}
-        private double _Cost;
+        private Nullable<double> _Cost;
 
         [DataMember]
-        public double QtyAllocated
+        public Nullable<double> QtyAllocated
 		{ 
 		    get { return _QtyAllocated; }
 			set
@@ -149,10 +149,10 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.QtyAllocated
 			}
 		}
-        private double _QtyAllocated;
+        private Nullable<double> _QtyAllocated;
 
         [DataMember]
-        public double UnitWeight
+        public Nullable<double> UnitWeight
 		{ 
 		    get { return _UnitWeight; }
 			set
@@ -162,10 +162,10 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.UnitWeight
 			}
 		}
-        private double _UnitWeight;
+        private Nullable<double> _UnitWeight;
 
         [DataMember]
-        public bool DoNotAllocate
+        public Nullable<bool> DoNotAllocate
 		{ 
 		    get { return _DoNotAllocate; }
 			set
@@ -175,7 +175,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.DoNotAllocate
 			}
 		}
-        private bool _DoNotAllocate;
+        private Nullable<bool> _DoNotAllocate;
 
         [DataMember]
         public string TariffCode
@@ -217,7 +217,7 @@ namespace AdjustmentQS.Client.DTO
         private Nullable<int> _CLineNumber;
 
         [DataMember]
-        public int AsycudaDocumentSetId
+        public Nullable<int> AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -227,7 +227,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private int _AsycudaDocumentSetId;
+        private Nullable<int> _AsycudaDocumentSetId;
 
         [DataMember]
         public Nullable<double> InvoiceQty
@@ -334,7 +334,7 @@ namespace AdjustmentQS.Client.DTO
         private string _Currency;
 
         [DataMember]
-        public int ApplicationSettingsId
+        public Nullable<int> ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -344,7 +344,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private int _ApplicationSettingsId;
+        private Nullable<int> _ApplicationSettingsId;
 
         [DataMember]
         public string Type
@@ -399,7 +399,7 @@ namespace AdjustmentQS.Client.DTO
         private Nullable<int> _FileTypeId;
 
         [DataMember]
-        public System.DateTime InvoiceDate
+        public Nullable<System.DateTime> InvoiceDate
 		{ 
 		    get { return _InvoiceDate; }
 			set
@@ -409,7 +409,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.InvoiceDate
 			}
 		}
-        private System.DateTime _InvoiceDate;
+        private Nullable<System.DateTime> _InvoiceDate;
 
         [DataMember]
         public string Subject
@@ -425,7 +425,7 @@ namespace AdjustmentQS.Client.DTO
         private string _Subject;
 
         [DataMember]
-        public System.DateTime EmailDate
+        public Nullable<System.DateTime> EmailDate
 		{ 
 		    get { return _EmailDate; }
 			set
@@ -435,7 +435,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailDate
 			}
 		}
-        private System.DateTime _EmailDate;
+        private Nullable<System.DateTime> _EmailDate;
 
         [DataMember]
         public int AlreadyExecuted

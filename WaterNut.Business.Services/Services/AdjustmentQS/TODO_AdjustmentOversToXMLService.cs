@@ -1013,17 +1013,17 @@ namespace AdjustmentQS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryData_Id);
+                var i = EntryDataId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<TODO_AdjustmentOversToXML> entities = await set//dbContext.TODO_AdjustmentOversToXML
                                       .AsNoTracking()
-                                        .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
+                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1042,17 +1042,17 @@ namespace AdjustmentQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(AsycudaDocumentSetId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<TODO_AdjustmentOversToXML> entities = await set//dbContext.TODO_AdjustmentOversToXML
                                       .AsNoTracking()
-                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
+                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;

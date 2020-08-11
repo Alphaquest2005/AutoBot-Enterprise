@@ -124,8 +124,8 @@ namespace WaterNut.DataSpace.Asycuda
 
                 if (LinkPi) await BaseDataModel.Instance.LinkExistingPreviousItems(da).ConfigureAwait(false);
 
-                if (da.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7000" &&
-                    da.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7400")
+                //if ( da.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7000" &&
+                //    da.DocumentItems.FirstOrDefault().xcuda_Tarification.Extended_customs_procedure != "7400")
                     await SavePreviousItem().ConfigureAwait(false);
 
                 await Save_Suppliers_Documents().ConfigureAwait(false);
@@ -1383,7 +1383,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             {
                 f = new xcuda_Financial(true) { ASYCUDA_Id = da.Document.ASYCUDA_Id, TrackingState = TrackingState.Added };
                // await DBaseDataModel.Instance.Savexcuda_Financial(f).ConfigureAwait(false); 
-               // da.Document.xcuda_Financial.Add(f);
+                da.Document.xcuda_Financial.Add(f);
             }
             if (a.Financial.Deffered_payment_reference.Text.Count != 0)
                 f.Deffered_payment_reference = a.Financial.Deffered_payment_reference.Text[0];
@@ -1549,7 +1549,9 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
         private void SetEffectiveAssessmentDate(DocumentCT documentCt, string commentsFreeText)
         {
             if (string.IsNullOrEmpty(commentsFreeText) || !commentsFreeText.Contains("EffectiveAssessmentDate:")) return;
-            documentCt.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = DateTime.ParseExact(commentsFreeText.Replace("EffectiveAssessmentDate:",""),"MMM-dd-yyyy",null);
+            var strlst = commentsFreeText.Split(new string[] { "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
+            var res = strlst.First(x => x.Contains("EffectiveAssessmentDate:"));
+            documentCt.Document.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = DateTime.ParseExact(res.Replace("EffectiveAssessmentDate:",""),"MMM-dd-yyyy",null);
         }
 
         private void SaveCountry(xcuda_General_information gi)

@@ -191,6 +191,20 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
      
+        public DbSet<TODO_DiscrepanciesErrors> TODO_DiscrepanciesErrors { get; set; }
+     
+        public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
+     
+        public DbSet<CustomsOperations> CustomsOperations { get; set; }
+     
+        public DbSet<EmailInfoMappings> EmailInfoMappings { get; set; }
+     
+        public DbSet<TODO_SubmitAllXMLToCustoms> TODO_SubmitAllXMLToCustoms { get; set; }
+     
+        public DbSet<TODO_PODocSetToAssess> TODO_PODocSetToAssess { get; set; }
+     
+        public DbSet<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -338,6 +352,20 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
          
             modelBuilder.Configurations.Add(new TODO_LICToCreateMap());
+         
+            modelBuilder.Configurations.Add(new TODO_DiscrepanciesErrorsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitPOInfoMap());
+         
+            modelBuilder.Configurations.Add(new CustomsOperationsMap());
+         
+            modelBuilder.Configurations.Add(new EmailInfoMappingsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitAllXMLToCustomsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_PODocSetToAssessMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentSetEntryDataExMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

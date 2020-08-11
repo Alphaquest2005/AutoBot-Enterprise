@@ -236,7 +236,7 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<int> _clinenumber;
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -249,7 +249,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public Nullable<double> InvoiceQty 
         {
@@ -520,6 +520,21 @@ namespace AdjustmentQS.Business.Entities
             }
         }
         Nullable<bool> _isreconciled;
+        [DataMember]
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
         [DataMember]
         public AdjustmentEx AdjustmentEx { get; set; }
         [DataMember]

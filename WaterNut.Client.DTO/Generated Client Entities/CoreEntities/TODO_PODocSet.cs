@@ -203,6 +203,58 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<double> _TotalCIF;
 
+        [DataMember]
+        public Nullable<int> QtyLicensesRequired
+		{ 
+		    get { return _QtyLicensesRequired; }
+			set
+			{
+			    if (value == _QtyLicensesRequired) return;
+				_QtyLicensesRequired = value;
+				NotifyPropertyChanged();//m => this.QtyLicensesRequired
+			}
+		}
+        private Nullable<int> _QtyLicensesRequired;
+
+        [DataMember]
+        public Nullable<double> TotalFreight
+		{ 
+		    get { return _TotalFreight; }
+			set
+			{
+			    if (value == _TotalFreight) return;
+				_TotalFreight = value;
+				NotifyPropertyChanged();//m => this.TotalFreight
+			}
+		}
+        private Nullable<double> _TotalFreight;
+
+        [DataMember]
+        public Nullable<int> ClassifiedLines
+		{ 
+		    get { return _ClassifiedLines; }
+			set
+			{
+			    if (value == _ClassifiedLines) return;
+				_ClassifiedLines = value;
+				NotifyPropertyChanged();//m => this.ClassifiedLines
+			}
+		}
+        private Nullable<int> _ClassifiedLines;
+
+        [DataMember]
+        public Nullable<int> TotalLines
+		{ 
+		    get { return _TotalLines; }
+			set
+			{
+			    if (value == _TotalLines) return;
+				_TotalLines = value;
+				NotifyPropertyChanged();//m => this.TotalLines
+			}
+		}
+        private Nullable<int> _TotalLines;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -216,7 +216,7 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<double> _total;
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -229,7 +229,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public Nullable<double> InvoiceQty 
         {

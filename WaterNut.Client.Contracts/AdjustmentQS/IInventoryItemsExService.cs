@@ -79,7 +79,10 @@ namespace AdjustmentQS.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<InventoryItemsEx>> GetInventoryItemsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
+  		
     }
 }
 

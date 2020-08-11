@@ -124,7 +124,7 @@ namespace CoreEntities.Client.Entities
                         {
                             this.Customs_Procedure = (Customs_Procedure)new Customs_Procedure().CreateEntityFromString(value);
 							
-							this.Customs_ProcedureId = Convert.ToInt32(this.Customs_Procedure.Customs_ProcedureId);
+							this.ASYCUDA_Id = Convert.ToInt32(this.Customs_Procedure.Customs_ProcedureId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddCustoms_Procedure");
                         }

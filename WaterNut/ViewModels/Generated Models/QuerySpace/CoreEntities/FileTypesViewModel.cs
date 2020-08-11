@@ -437,6 +437,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _overwriteFilesFilter;
+        public Boolean? OverwriteFilesFilter
+        {
+            get
+            {
+                return _overwriteFilesFilter;
+            }
+            set
+            {
+                _overwriteFilesFilter = value;
+				NotifyPropertyChanged(x => OverwriteFilesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _hasFilesFilter;
+        public Boolean? HasFilesFilter
+        {
+            get
+            {
+                return _hasFilesFilter;
+            }
+            set
+            {
+                _hasFilesFilter = value;
+				NotifyPropertyChanged(x => HasFilesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -497,6 +533,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(CopyEntryDataFilter.HasValue)
 						res.Append(" && " + string.Format("CopyEntryData == {0}",  CopyEntryDataFilter));						
+ 
+
+									if(OverwriteFilesFilter.HasValue)
+						res.Append(" && " + string.Format("OverwriteFiles == {0}",  OverwriteFilesFilter));						
+ 
+
+									if(HasFilesFilter.HasValue)
+						res.Append(" && " + string.Format("HasFiles == {0}",  HasFilesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -541,7 +585,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     MergeEmails = x.MergeEmails ,
                     
  
-                    CopyEntryData = x.CopyEntryData 
+                    CopyEntryData = x.CopyEntryData ,
+                    
+ 
+                    OverwriteFiles = x.OverwriteFiles ,
+                    
+ 
+                    HasFiles = x.HasFiles 
                     
                 }).ToList()
             };
@@ -576,6 +626,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public bool CopyEntryData { get; set; } 
+                    
+ 
+                    public Nullable<bool> OverwriteFiles { get; set; } 
+                    
+ 
+                    public Nullable<bool> HasFiles { get; set; } 
                     
         }
 

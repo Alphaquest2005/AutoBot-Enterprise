@@ -11,7 +11,7 @@
     {
         public InventoryItemXMap()
         {                        
-              this.HasKey(t => new {t.ItemNumber, t.ApplicationSettingsId});        
+              this.HasKey(t => t.InventoryItemId);        
               this.ToTable("InventoryItemsEx");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.Description).HasColumnName("Description").IsRequired().HasMaxLength(255);
@@ -20,10 +20,11 @@
               this.Property(t => t.EntryTimeStamp).HasColumnName("EntryTimeStamp");
               this.Property(t => t.SuppUnitCode2).HasColumnName("SuppUnitCode2").HasMaxLength(50);
               this.Property(t => t.SuppQty).HasColumnName("SuppQty");
-              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<InventoryItemX>) t.InventoryItemsEx).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.InventoryItemAliasEx).WithRequired(t => (InventoryItemX)t.InventoryItemsEx);
-              this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.InventoryItemsEx).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
+              this.HasMany(t => t.AsycudaDocumentItem).WithOptional(t => t.InventoryItemsEx).HasForeignKey(d => d.InventoryItemId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -88,6 +88,9 @@ namespace CoreEntities.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<AsycudaDocumentItem>> GetAsycudaDocumentItemByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<AsycudaDocumentItem>> GetAsycudaDocumentItemByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+        
   		
     }
 }

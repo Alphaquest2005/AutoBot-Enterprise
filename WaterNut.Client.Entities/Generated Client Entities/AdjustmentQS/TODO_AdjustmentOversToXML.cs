@@ -72,7 +72,7 @@ public int EntryData_Id
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "EntryData is required")]
+       
        
                 
                 [MaxLength(50, ErrorMessage = "EntryDataId has a max length of 50 letters ")]
@@ -104,7 +104,7 @@ public Nullable<int> LineNumber
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ItemNumber is required")]
+       
        
                 
                 [MaxLength(20, ErrorMessage = "ItemNumber has a max length of 20 letters ")]
@@ -121,9 +121,9 @@ public string ItemNumber
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Quantity is required")]
+       
        [NumberValidationAttribute]
-public double Quantity
+public Nullable<double> Quantity
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.Quantity; }
 			set
@@ -153,7 +153,7 @@ public string Units
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ItemDescription is required")]
+       
        
                 
                 [MaxLength(255, ErrorMessage = "ItemDescription has a max length of 255 letters ")]
@@ -170,9 +170,9 @@ public string ItemDescription
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Cost is required")]
+       
        [NumberValidationAttribute]
-public double Cost
+public Nullable<double> Cost
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.Cost; }
 			set
@@ -185,9 +185,9 @@ public double Cost
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "QtyAllocated is required")]
+       
        [NumberValidationAttribute]
-public double QtyAllocated
+public Nullable<double> QtyAllocated
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.QtyAllocated; }
 			set
@@ -200,9 +200,9 @@ public double QtyAllocated
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "UnitWeight is required")]
+       
        [NumberValidationAttribute]
-public double UnitWeight
+public Nullable<double> UnitWeight
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.UnitWeight; }
 			set
@@ -215,9 +215,9 @@ public double UnitWeight
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "DoNotAllocate is required")]
        
-public bool DoNotAllocate
+       
+public Nullable<bool> DoNotAllocate
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.DoNotAllocate; }
 			set
@@ -279,9 +279,9 @@ public Nullable<int> CLineNumber
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-public int AsycudaDocumentSetId
+       
+public Nullable<int> AsycudaDocumentSetId
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.AsycudaDocumentSetId; }
 			set
@@ -424,9 +424,9 @@ public string Currency
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-public int ApplicationSettingsId
+       
+public Nullable<int> ApplicationSettingsId
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.ApplicationSettingsId; }
 			set
@@ -456,7 +456,7 @@ public string Type
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "DutyFreePaid is required")]
+       
        
                 
                 [MaxLength(9, ErrorMessage = "DutyFreePaid has a max length of 9 letters ")]
@@ -503,9 +503,9 @@ public Nullable<int> FileTypeId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "InvoiceDate is required")]
        
-public System.DateTime InvoiceDate
+       
+public Nullable<System.DateTime> InvoiceDate
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.InvoiceDate; }
 			set
@@ -518,7 +518,7 @@ public System.DateTime InvoiceDate
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
        
                 
                 
@@ -535,9 +535,9 @@ public string Subject
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
        
-public System.DateTime EmailDate
+       
+public Nullable<System.DateTime> EmailDate
 		{ 
 		    get { return this.todo_adjustmentoverstoxml.EmailDate; }
 			set

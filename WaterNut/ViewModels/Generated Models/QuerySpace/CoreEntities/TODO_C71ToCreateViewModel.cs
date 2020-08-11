@@ -385,6 +385,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _c71TotalFilter;
+        public Double? C71TotalFilter
+        {
+            get
+            {
+                return _c71TotalFilter;
+            }
+            set
+            {
+                _c71TotalFilter = value;
+				NotifyPropertyChanged(x => C71TotalFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -456,7 +474,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("LicenseLines == {0}",  LicenseLinesFilter.ToString()));				 
 
 					if(TotalCIFFilter.HasValue)
-						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));				 
+
+					if(C71TotalFilter.HasValue)
+						res.Append(" && " + string.Format("C71Total == {0}",  C71TotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -512,7 +533,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     LicenseLines = x.LicenseLines ,
                     
  
-                    TotalCIF = x.TotalCIF 
+                    TotalCIF = x.TotalCIF ,
+                    
+ 
+                    C71Total = x.C71Total 
                     
                 }).ToList()
             };
@@ -559,6 +583,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> TotalCIF { get; set; } 
+                    
+ 
+                    public Nullable<double> C71Total { get; set; } 
                     
         }
 

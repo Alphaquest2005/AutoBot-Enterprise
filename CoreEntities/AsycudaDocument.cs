@@ -53,9 +53,13 @@ namespace CoreEntities
         public Nullable<int> ApplicationSettingsId { get; set; }
         public string SourceFileName { get; set; }
         public string CustomsProcedure { get; set; }
+        public Nullable<int> CustomsOperationId { get; set; }
+        public Nullable<bool> IsPaid { get; set; }
+        public Nullable<bool> SubmitToCustoms { get; set; }
     
         public virtual ICollection<AsycudaDocumentItem> AsycudaDocumentItems { get; set; }
         public virtual AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }
         public virtual ApplicationSettings ApplicationSettings { get; set; }
+        public virtual Customs_Procedure Customs_Procedure { get; set; }
     }
 }

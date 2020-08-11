@@ -26,7 +26,7 @@
               this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(50);
               this.Property(t => t.PreviousInvoiceNumber).HasColumnName("PreviousInvoiceNumber").HasMaxLength(50);
               this.Property(t => t.comment).HasColumnName("comment").HasMaxLength(255);
-              this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
+              this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(306);
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.subject).HasColumnName("subject").IsRequired();
               this.Property(t => t.emailDate).HasColumnName("emailDate");

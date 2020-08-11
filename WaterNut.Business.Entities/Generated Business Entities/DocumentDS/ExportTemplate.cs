@@ -446,6 +446,36 @@ namespace DocumentDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public string Manifest 
+        {
+            get
+            {
+                return _manifest;
+            }
+            set
+            {
+                _manifest = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _manifest;
+        [DataMember]
+        public string BL 
+        {
+            get
+            {
+                return _bl;
+            }
+            set
+            {
+                _bl = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _bl;
+        [DataMember]
         public List<xcuda_ASYCUDA_ExtendedProperties> xcuda_ASYCUDA_ExtendedProperties { get; set; }
 
  //       [DataMember]

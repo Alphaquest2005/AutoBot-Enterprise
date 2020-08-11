@@ -281,6 +281,60 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _lineRegxFilter;
+        public string LineRegxFilter
+        {
+            get
+            {
+                return _lineRegxFilter;
+            }
+            set
+            {
+                _lineRegxFilter = value;
+				NotifyPropertyChanged(x => LineRegxFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _keyValueFilter;
+        public string KeyValueFilter
+        {
+            get
+            {
+                return _keyValueFilter;
+            }
+            set
+            {
+                _keyValueFilter = value;
+				NotifyPropertyChanged(x => KeyValueFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _fieldValueFilter;
+        public string FieldValueFilter
+        {
+            get
+            {
+                return _fieldValueFilter;
+            }
+            set
+            {
+                _fieldValueFilter = value;
+				NotifyPropertyChanged(x => FieldValueFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -325,6 +379,18 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(FieldReplaceRxFilter) == false)
 						res.Append(" && " + string.Format("FieldReplaceRx.Contains(\"{0}\")",  FieldReplaceRxFilter));						
+ 
+
+									if(string.IsNullOrEmpty(LineRegxFilter) == false)
+						res.Append(" && " + string.Format("LineRegx.Contains(\"{0}\")",  LineRegxFilter));						
+ 
+
+									if(string.IsNullOrEmpty(KeyValueFilter) == false)
+						res.Append(" && " + string.Format("KeyValue.Contains(\"{0}\")",  KeyValueFilter));						
+ 
+
+									if(string.IsNullOrEmpty(FieldValueFilter) == false)
+						res.Append(" && " + string.Format("FieldValue.Contains(\"{0}\")",  FieldValueFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -357,7 +423,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     KeyReplaceRx = x.KeyReplaceRx ,
                     
  
-                    FieldReplaceRx = x.FieldReplaceRx 
+                    FieldReplaceRx = x.FieldReplaceRx ,
+                    
+ 
+                    LineRegx = x.LineRegx ,
+                    
+ 
+                    KeyValue = x.KeyValue ,
+                    
+ 
+                    FieldValue = x.FieldValue 
                     
                 }).ToList()
             };
@@ -380,6 +455,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string FieldReplaceRx { get; set; } 
+                    
+ 
+                    public string LineRegx { get; set; } 
+                    
+ 
+                    public string KeyValue { get; set; } 
+                    
+ 
+                    public string FieldValue { get; set; } 
                     
         }
 

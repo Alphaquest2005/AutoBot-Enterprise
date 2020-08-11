@@ -58,9 +58,10 @@
               this.Property(t => t.PreviousInvoiceLineNumber).HasColumnName("PreviousInvoiceLineNumber").HasMaxLength(50);
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.HasOptional(t => t.AsycudaDocument).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItems).HasForeignKey(d => d.AsycudaDocumentId);
               this.HasOptional(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => d.ApplicationSettingsId);
-              this.HasOptional(t => t.InventoryItemsEx).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
+              this.HasOptional(t => t.InventoryItemsEx).WithMany(t =>(ICollection<AsycudaDocumentItem>) t.AsycudaDocumentItem).HasForeignKey(d => d.InventoryItemId);
               this.HasMany(t => t.SubItems).WithRequired(t => (AsycudaDocumentItem)t.AsycudaDocumentItem);
               this.HasMany(t => t.PreviousItems).WithRequired(t => (AsycudaDocumentItem)t.AsycudaDocumentItem);
               this.HasMany(t => t.xcuda_Supplementary_unit).WithRequired(t => (AsycudaDocumentItem)t.AsycudaDocumentItem);

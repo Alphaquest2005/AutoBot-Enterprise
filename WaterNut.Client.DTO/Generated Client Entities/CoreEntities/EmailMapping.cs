@@ -90,6 +90,19 @@ namespace CoreEntities.Client.DTO
 		}
         private ChangeTrackingCollection<EmailFileTypes> _EmailFileTypes = new ChangeTrackingCollection<EmailFileTypes>();
 
+        [DataMember]
+        public ChangeTrackingCollection<EmailInfoMappings> EmailInfoMappings
+		{
+		    get { return _EmailInfoMappings; }
+			set
+			{
+			    if (Equals(value, _EmailInfoMappings)) return;
+				_EmailInfoMappings = value;
+				NotifyPropertyChanged();//m => this.EmailInfoMappings
+			}
+		}
+        private ChangeTrackingCollection<EmailInfoMappings> _EmailInfoMappings = new ChangeTrackingCollection<EmailInfoMappings>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

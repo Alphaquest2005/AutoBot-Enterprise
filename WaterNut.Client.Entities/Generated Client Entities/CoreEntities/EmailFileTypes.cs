@@ -87,6 +87,21 @@ public int FileTypeId
 		}
      
 
+       
+       
+public Nullable<bool> IsRequired
+		{ 
+		    get { return this.emailfiletypes.IsRequired; }
+			set
+			{
+			    if (value == this.emailfiletypes.IsRequired) return;
+				this.emailfiletypes.IsRequired = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsRequired");
+			}
+		}
+     
+
        private EmailMapping _EmailMapping;
         public  EmailMapping EmailMapping
 		{

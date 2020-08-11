@@ -33,7 +33,7 @@ namespace AdjustmentQS
         public Nullable<bool> DoNotAllocate { get; set; }
         public string TariffCode { get; set; }
         public Nullable<double> Total { get; set; }
-        public Nullable<int> AsycudaDocumentSetId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
         public Nullable<double> InvoiceQty { get; set; }
         public Nullable<double> ReceivedQty { get; set; }
         public string Status { get; set; }
@@ -55,6 +55,7 @@ namespace AdjustmentQS
         public string Subject { get; set; }
         public System.DateTime EmailDate { get; set; }
         public int EntryData_Id { get; set; }
+        public int InventoryItemId { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual AdjustmentShort AdjustmentShorts { get; set; }

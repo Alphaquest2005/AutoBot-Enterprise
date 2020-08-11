@@ -190,6 +190,32 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _ParentFileTypeId;
 
+        [DataMember]
+        public Nullable<bool> OverwriteFiles
+		{ 
+		    get { return _OverwriteFiles; }
+			set
+			{
+			    if (value == _OverwriteFiles) return;
+				_OverwriteFiles = value;
+				NotifyPropertyChanged();//m => this.OverwriteFiles
+			}
+		}
+        private Nullable<bool> _OverwriteFiles;
+
+        [DataMember]
+        public Nullable<bool> HasFiles
+		{ 
+		    get { return _HasFiles; }
+			set
+			{
+			    if (value == _HasFiles) return;
+				_HasFiles = value;
+				NotifyPropertyChanged();//m => this.HasFiles
+			}
+		}
+        private Nullable<bool> _HasFiles;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

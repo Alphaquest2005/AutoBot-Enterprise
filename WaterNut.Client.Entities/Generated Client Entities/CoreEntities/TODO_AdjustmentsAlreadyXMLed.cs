@@ -537,6 +537,23 @@ public string DutyFreePaid
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "pLineNumber has a max length of 50 letters ")]
+public string pLineNumber
+		{ 
+		    get { return this.todo_adjustmentsalreadyxmled.pLineNumber; }
+			set
+			{
+			    if (value == this.todo_adjustmentsalreadyxmled.pLineNumber) return;
+				this.todo_adjustmentsalreadyxmled.pLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pLineNumber");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_AdjustmentsAlreadyXMLed> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_AdjustmentsAlreadyXMLed> ChangeTracker

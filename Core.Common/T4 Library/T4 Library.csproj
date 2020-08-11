@@ -302,6 +302,9 @@
     <None Include="T4\DomainInterface\DomainClientEntityInterfaceTemplate.tt" />
     <None Include="T4\DomainInterface\DomainEntityInterfaceTemplate.tt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="T4\Entities\Business\EF6\BusinessEnumTemplate.tt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -239,6 +239,18 @@ namespace CoreEntities.Business.Services
                                         GetWhere<Document_Type>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "CustomsOperations":
+                                return
+                                    await
+                                        GetWhere<CustomsOperations>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocument":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocument>(dbContext, exp, itm.Value, "Customs_Procedure", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -736,6 +748,12 @@ namespace CoreEntities.Business.Services
                             case "Document_Type":
                                 return await CountWhere<Document_Type>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "CustomsOperations":
+                                return await CountWhere<CustomsOperations>(dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocument":
+                                return await CountWhere<AsycudaDocument>(dbContext, exp, itm.Value, "Customs_Procedure", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Customs_Procedure.Where(exp == "All" || exp == null ? "Customs_ProcedureId != null" : exp)
@@ -845,6 +863,18 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Document_Type>(startIndex, count, dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "CustomsOperations":
+                                return
+                                    await
+                                        LoadRangeWhere<CustomsOperations>(startIndex, count, dbContext, exp, itm.Value, "Customs_Procedure", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocument":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocument>(startIndex, count, dbContext, exp, itm.Value, "Customs_Procedure", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1060,8 +1090,69 @@ namespace CoreEntities.Business.Services
                 var i = Convert.ToInt32(Document_TypeId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<Customs_Procedure> entities = await set//dbContext.Customs_Procedure
+                                                    // .Include(x => x.AsycudaDocument)									  
                                       .AsNoTracking()
                                         .Where(x => x.Document_TypeId.ToString() == Document_TypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBondTypeId(string BondTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(BondTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Customs_Procedure> entities = await set//dbContext.Customs_Procedure
+                                                    // .Include(x => x.AsycudaDocument)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.BondTypeId.ToString() == BondTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(CustomsOperationId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Customs_Procedure> entities = await set//dbContext.Customs_Procedure
+                                                    // .Include(x => x.AsycudaDocument)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.CustomsOperationId.ToString() == CustomsOperationId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1135,6 +1226,12 @@ namespace CoreEntities.Business.Services
                         {
                             case "Document_Type":
                                 return await SumWhere<Document_Type>(dbContext, exp, itm.Value, "Customs_Procedure", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "CustomsOperations":
+                                return await SumWhere<CustomsOperations>(dbContext, exp, itm.Value, "Customs_Procedure", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocument":
+                                return await SumWhere<AsycudaDocument>(dbContext, exp, itm.Value, "Customs_Procedure", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

@@ -14,8 +14,8 @@
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="Exchange_Rate" Type="float" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" />
-          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="50" />
-          <Property Name="Currency_Code" Type="nvarchar" MaxLength="50" />
+          <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" />
           <Property Name="Document_TypeId" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
@@ -30,15 +30,18 @@
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="MaxLines" Type="int" />
           <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="50" />
+          <Property Name="FreightCurrencyCode" Type="nvarchar" MaxLength="3" />
+          <Property Name="Office" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Attachments">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Reference" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="Container">
           <Key>
@@ -49,9 +52,6 @@
           <Property Name="Empty_full_indicator" Type="nvarchar" MaxLength="255" />
           <Property Name="Gross_weight" Type="float" />
           <Property Name="Goods_description" Type="nvarchar" MaxLength="255" />
-          <Property Name="Packages_type" Type="nvarchar" MaxLength="4" />
-          <Property Name="Packages_number" Type="nvarchar" MaxLength="3" />
-          <Property Name="Packages_weight" Type="float" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="TotalValue" Type="float" />
           <Property Name="ShipDate" Type="date" />
@@ -64,9 +64,18 @@
           </Key>
           <Property Name="Document_TypeId" Type="int" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Extended_customs_procedure" Type="nvarchar(max)" />
-          <Property Name="National_customs_procedure" Type="nvarchar(max)" />
-          <Property Name="IsDefault" Type="bit" />
+          <Property Name="Extended_customs_procedure" Type="nvarchar" MaxLength="5" />
+          <Property Name="National_customs_procedure" Type="nvarchar" MaxLength="5" />
+          <Property Name="CustomsProcedure" Type="nvarchar" MaxLength="11" StoreGeneratedPattern="Computed" />
+          <Property Name="IsObsolete" Type="bit" />
+          <Property Name="IsPaid" Type="bit" />
+          <Property Name="BondTypeId" Type="int" />
+          <Property Name="Stock" Type="bit" />
+          <Property Name="Discrepancy" Type="bit" />
+          <Property Name="Adjustment" Type="bit" />
+          <Property Name="Sales" Type="bit" />
+          <Property Name="CustomsOperationId" Type="int" Nullable="false" />
+          <Property Name="SubmitToCustoms" Type="bit" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -116,6 +125,20 @@
           <Property Name="Total_number_of_packages" Type="nvarchar" MaxLength="100" />
           <Property Name="Deffered_payment_reference" Type="nvarchar" MaxLength="100" />
           <Property Name="AttachedDocumentCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Manifest" Type="nvarchar" MaxLength="100" />
+          <Property Name="BL" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="InventoryItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="60" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -220,7 +243,7 @@
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
           <Property Name="EffectiveExpiryDate" Type="datetime2" Precision="7" />
-          <Property Name="SourceFileName" Type="nvarchar(max)" />
+          <Property Name="SourceFileName" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
@@ -505,11 +528,10 @@
         </EntityType>
         <EntityType Name="xcuda_Inventory_Item">
           <Key>
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="Item_Id" />
           </Key>
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="xcuda_Item">
           <Key>
@@ -520,7 +542,7 @@
           <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="Licence_number" Type="nvarchar" MaxLength="6" />
-          <Property Name="Free_text_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="Free_text_1" Type="nvarchar" MaxLength="35" />
           <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
           <Property Name="EntryDataDetailsId" Type="int" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
@@ -537,6 +559,7 @@
           <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -912,10 +935,12 @@
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="InventoryItemsEx">
           <Key>
+            <PropertyRef Name="InventoryItemId" />
             <PropertyRef Name="ItemNumber" />
             
             
           </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Category" Type="nvarchar" MaxLength="60" />
@@ -1185,18 +1210,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Containers_PackageTypes">
-          <End Role="PackageTypes" Type="Self.PackageTypes" Multiplicity="0..1" />
-          <End Role="Container" Type="Self.Container" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="PackageTypes">
-              <PropertyRef Name="PackageType" />
-            </Principal>
-            <Dependent Role="Container">
-              <PropertyRef Name="Packages_type" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Customs_Procedure_Document_Type">
           <End Role="Document_Type" Type="Self.Document_Type" Multiplicity="1" />
           <End Role="Customs_Procedure" Type="Self.Customs_Procedure" Multiplicity="*" />
@@ -1290,6 +1303,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Principal>
             <Dependent Role="xcuda_Type">
               <PropertyRef Name="ASYCUDA_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryItems_TariffCodes">
+          <End Role="TariffCodes" Type="Self.TariffCodes" Multiplicity="0..1" />
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TariffCodes">
+              <PropertyRef Name="TariffCode" />
+            </Principal>
+            <Dependent Role="InventoryItems">
+              <PropertyRef Name="TariffCode" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2041,17 +2066,31 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode">
-          <End Role="xcuda_HScode" Type="Self.xcuda_HScode" Multiplicity="1">
+        <Association Name="FK_xcuda_Inventory_Item_InventoryItems">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
           <End Role="xcuda_Inventory_Item" Type="Self.xcuda_Inventory_Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xcuda_Inventory_Item">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode1">
+          <End Role="xcuda_HScode" Type="Self.xcuda_HScode" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="xcuda_Inventory_Item" Type="Self.xcuda_Inventory_Item" Multiplicity="0..1" />
           <ReferentialConstraint>
             <Principal Role="xcuda_HScode">
               <PropertyRef Name="Item_Id" />
             </Principal>
             <Dependent Role="xcuda_Inventory_Item">
-              <PropertyRef Name="Id" />
+              <PropertyRef Name="Item_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -2138,6 +2177,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="Document_Type" EntityType="Self.Document_Type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryPreviousItems" EntityType="Self.EntryPreviousItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ExportTemplate" EntityType="Self.ExportTemplate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategory" EntityType="Self.TariffCategory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TariffCategoryCodeSuppUnit" EntityType="Self.TariffCategoryCodeSuppUnit" Schema="dbo" store:Type="Tables" />
@@ -2218,6 +2258,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="xcuda_Weight_itm" EntityType="Self.xcuda_Weight_itm" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+    [InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
     [InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
     [InventoryItemsEx].[Description] AS [Description], 
     [InventoryItemsEx].[Category] AS [Category], 
@@ -2304,10 +2345,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
             <End Role="Container" EntitySet="Container" />
           </AssociationSet>
-          <AssociationSet Name="FK_Containers_PackageTypes" Association="Self.FK_Containers_PackageTypes">
-            <End Role="PackageTypes" EntitySet="PackageTypes" />
-            <End Role="Container" EntitySet="Container" />
-          </AssociationSet>
           <AssociationSet Name="FK_Customs_Procedure_Document_Type" Association="Self.FK_Customs_Procedure_Document_Type">
             <End Role="Document_Type" EntitySet="Document_Type" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
@@ -2335,6 +2372,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <AssociationSet Name="FK_Identification_Type" Association="Self.FK_Identification_Type">
             <End Role="xcuda_Identification" EntitySet="xcuda_Identification" />
             <End Role="xcuda_Type" EntitySet="xcuda_Type" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItems_TariffCodes" Association="Self.FK_InventoryItems_TariffCodes">
+            <End Role="TariffCodes" EntitySet="TariffCodes" />
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
           </AssociationSet>
           <AssociationSet Name="FK_Item_Attached_documents" Association="Self.FK_Item_Attached_documents">
             <End Role="xcuda_Item" EntitySet="xcuda_Item" />
@@ -2552,7 +2593,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="xcuda_Valuation" EntitySet="xcuda_Valuation" />
             <End Role="xcuda_Gs_other_cost" EntitySet="xcuda_Gs_other_cost" />
           </AssociationSet>
-          <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode" Association="Self.FK_xcuda_Inventory_Item_xcuda_HScode">
+          <AssociationSet Name="FK_xcuda_Inventory_Item_InventoryItems" Association="Self.FK_xcuda_Inventory_Item_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
+          </AssociationSet>
+          <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode1" Association="Self.FK_xcuda_Inventory_Item_xcuda_HScode1">
             <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
             <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
           </AssociationSet>
@@ -3090,15 +3135,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="TariffCodes" EntitySet="TariffCodes" />
             <End Role="InventoryItemsEx" EntitySet="InventoryItemsEx" />
           </AssociationSet>
-          <EntitySet Name="xcuda_Inventory_Item" EntityType="WaterNutDB.DataLayer.xcuda_Inventory_Item" />
-          <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode" Association="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode">
-            <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
-            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
-          </AssociationSet>
-          <AssociationSet Name="InventoryItemsExxcuda_Inventory_Item" Association="WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item">
-            <End Role="InventoryItemsEx" EntitySet="InventoryItemsEx" />
-            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
-          </AssociationSet>
           <EntitySet Name="Attachments" EntityType="WaterNutDB.DataLayer.Attachments" />
           <EntitySet Name="xcuda_Attachments" EntityType="WaterNutDB.DataLayer.xcuda_Attachments" />
           <AssociationSet Name="FK_xcuda_Attachments_Attachments" Association="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments">
@@ -3109,15 +3145,25 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="xcuda_Attached_documents" EntitySet="xcuda_Attached_documents" />
             <End Role="xcuda_Attachments" EntitySet="xcuda_Attachments" />
           </AssociationSet>
-          <EntitySet Name="Container" EntityType="WaterNutDB.DataLayer.Container" />
           <EntitySet Name="PackageTypes" EntityType="WaterNutDB.DataLayer.PackageTypes" />
+          <EntitySet Name="xcuda_Inventory_Item" EntityType="WaterNutDB.DataLayer.xcuda_Inventory_Item" />
+          <AssociationSet Name="FK_xcuda_Inventory_Item_xcuda_HScode1" Association="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode1">
+            <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
+            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
+          </AssociationSet>
+          <EntitySet Name="Container" EntityType="WaterNutDB.DataLayer.Container" />
           <AssociationSet Name="FK_Container_AsycudaDocumentSet" Association="WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet">
             <End Role="AsycudaDocumentSet" EntitySet="AsycudaDocumentSet" />
             <End Role="Container" EntitySet="Container" />
           </AssociationSet>
-          <AssociationSet Name="FK_Containers_PackageTypes" Association="WaterNutDB.DataLayer.FK_Containers_PackageTypes">
-            <End Role="PackageTypes" EntitySet="PackageTypes" />
-            <End Role="Container" EntitySet="Container" />
+          <EntitySet Name="InventoryItems" EntityType="WaterNutDB.DataLayer.InventoryItems" />
+          <AssociationSet Name="FK_InventoryItems_TariffCodes" Association="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes">
+            <End Role="TariffCodes" EntitySet="TariffCodes" />
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+          </AssociationSet>
+          <AssociationSet Name="InventoryItemsxcuda_Inventory_Item" Association="WaterNutDB.DataLayer.InventoryItemsxcuda_Inventory_Item">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="xcuda_Inventory_Item" EntitySet="xcuda_Inventory_Item" />
           </AssociationSet>
           </EntityContainer>
         <ComplexType Name="sp_helpdiagramdefinition_Result">
@@ -3577,8 +3623,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Exchange_Rate" Type="Double" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" />
-          <Property Name="Country_of_origin_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="Document_TypeId" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3597,7 +3643,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="TotalInvoices" Type="Int32" />
           <Property Name="MaxLines" Type="Int32" />
           <Property Name="LocationOfGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FreightCurrencyCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Container" Relationship="WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="Container" />
+          <Property Name="Office" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -3605,12 +3653,21 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           </Key>
           <Property Name="Document_TypeId" Type="Int32" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Extended_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="National_customs_procedure" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="IsDefault" Type="Boolean" />
+          <Property Name="Extended_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="National_customs_procedure" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_AsycudaDocumentSet_Customs_Procedure" FromRole="Customs_Procedure" ToRole="AsycudaDocumentSet" />
           <NavigationProperty Name="Document_Type" Relationship="WaterNutDB.DataLayer.FK_Customs_Procedure_Document_Type" FromRole="Customs_Procedure" ToRole="Document_Type" />
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" FromRole="Customs_Procedure" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
+          <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="IsObsolete" Type="Boolean" />
+          <Property Name="IsPaid" Type="Boolean" />
+          <Property Name="BondTypeId" Type="Int32" />
+          <Property Name="Stock" Type="Boolean" />
+          <Property Name="Discrepancy" Type="Boolean" />
+          <Property Name="Adjustment" Type="Boolean" />
+          <Property Name="Sales" Type="Boolean" />
+          <Property Name="CustomsOperationId" Type="Int32" Nullable="false" />
+          <Property Name="SubmitToCustoms" Type="Boolean" />
         </EntityType>
         <EntityType Name="Document_Type">
           <Key>
@@ -3656,6 +3713,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDB.DataLayer.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" FromRole="ExportTemplate" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="AttachedDocumentCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Manifest" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="BL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
@@ -3688,6 +3747,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Invalid" Type="Boolean" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDB.DataLayer.TariffCodesInventoryItemsEx" FromRole="TariffCodes" ToRole="InventoryItemsEx" />
           <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes" FromRole="TariffCodes" ToRole="InventoryItems" />
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -3775,7 +3835,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="TotalInternalFreight" Type="Double" />
           <Property Name="TotalPackages" Type="Int32" />
           <Property Name="EffectiveExpiryDate" Type="DateTime" Precision="7" />
-          <Property Name="SourceFileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SourceFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
@@ -3944,8 +4004,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Precision_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Tarification" Relationship="WaterNutDB.DataLayer.FK_Tarification_HScode" FromRole="xcuda_HScode" ToRole="xcuda_Tarification" />
-          <NavigationProperty Name="xcuda_Inventory_Item" Relationship="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode" FromRole="xcuda_HScode" ToRole="xcuda_Inventory_Item" />
-        </EntityType>
+          <NavigationProperty Name="xcuda_Inventory_Item" Relationship="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode1" FromRole="xcuda_HScode" ToRole="xcuda_Inventory_Item" />
+          </EntityType>
         <EntityType Name="xcuda_Identification">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -3968,7 +4028,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Item_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
           <Property Name="Licence_number" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
-          <Property Name="Free_text_1" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Free_text_1" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="Free_text_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataDetailsId" Type="Int32" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
@@ -3996,6 +4056,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -5307,6 +5368,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="InventoryItemsEx">
           <Key>
             <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="InventoryItemId" />
           </Key>
           <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -5317,7 +5379,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="SuppQty" Type="Double" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="TariffCodes" Relationship="WaterNutDB.DataLayer.TariffCodesInventoryItemsEx" FromRole="InventoryItemsEx" ToRole="TariffCodes" />
-          <NavigationProperty Name="xcuda_Inventory_Item" Relationship="WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item" FromRole="InventoryItemsEx" ToRole="xcuda_Inventory_Item" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="TariffCodesInventoryItemsEx">
           <End Type="WaterNutDB.DataLayer.TariffCodes" Role="TariffCodes" Multiplicity="0..1" />
@@ -5331,51 +5393,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="xcuda_Inventory_Item">
-          <Key>
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="xcuda_HScode" Relationship="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode" FromRole="xcuda_Inventory_Item" ToRole="xcuda_HScode" />
-          <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDB.DataLayer.InventoryItemsExxcuda_Inventory_Item" FromRole="xcuda_Inventory_Item" ToRole="InventoryItemsEx" />
-        </EntityType>
-        <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode">
-          <End Type="WaterNutDB.DataLayer.xcuda_HScode" Role="xcuda_HScode" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Type="WaterNutDB.DataLayer.xcuda_Inventory_Item" Role="xcuda_Inventory_Item" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="xcuda_HScode">
-              <PropertyRef Name="Item_Id" />
-            </Principal>
-            <Dependent Role="xcuda_Inventory_Item">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="InventoryItemsExxcuda_Inventory_Item">
-          <End Type="WaterNutDB.DataLayer.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
-          <End Type="WaterNutDB.DataLayer.xcuda_Inventory_Item" Role="xcuda_Inventory_Item" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="InventoryItemsEx">
-              <PropertyRef Name="ItemNumber" />
-            </Principal>
-            <Dependent Role="xcuda_Inventory_Item">
-              <PropertyRef Name="ItemNumber" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="Attachments">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDB.DataLayer.FK_xcuda_Attachments_Attachments" FromRole="Attachments" ToRole="xcuda_Attachments" />
-          <Property Name="Reference" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Attachments">
           <Key>
@@ -5415,6 +5442,36 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="PackageTypes">
+          <Key>
+            <PropertyRef Name="PackageType" />
+          </Key>
+          <Property Name="PackageType" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="xcuda_Inventory_Item">
+          <Key>
+            <PropertyRef Name="Item_Id" />
+          </Key>
+          <Property Name="Item_Id" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="xcuda_HScode" Relationship="WaterNutDB.DataLayer.FK_xcuda_Inventory_Item_xcuda_HScode1" FromRole="xcuda_Inventory_Item" ToRole="xcuda_HScode" />
+          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDB.DataLayer.InventoryItemsxcuda_Inventory_Item" FromRole="xcuda_Inventory_Item" ToRole="InventoryItems" />
+        </EntityType>
+        <Association Name="FK_xcuda_Inventory_Item_xcuda_HScode1">
+          <End Type="WaterNutDB.DataLayer.xcuda_HScode" Role="xcuda_HScode" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDB.DataLayer.xcuda_Inventory_Item" Role="xcuda_Inventory_Item" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xcuda_HScode">
+              <PropertyRef Name="Item_Id" />
+            </Principal>
+            <Dependent Role="xcuda_Inventory_Item">
+              <PropertyRef Name="Item_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityType Name="Container">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -5424,24 +5481,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Empty_full_indicator" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Gross_weight" Type="Double" />
           <Property Name="Goods_description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Packages_type" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="Packages_number" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="Packages_weight" Type="Double" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="TotalValue" Type="Double" />
           <Property Name="ShipDate" Type="DateTime" Precision="0" />
           <Property Name="DeliveryDate" Type="DateTime" Precision="0" />
           <Property Name="Seal" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AsycudaDocumentSet" Relationship="WaterNutDB.DataLayer.FK_Container_AsycudaDocumentSet" FromRole="Container" ToRole="AsycudaDocumentSet" />
-          <NavigationProperty Name="PackageTypes" Relationship="WaterNutDB.DataLayer.FK_Containers_PackageTypes" FromRole="Container" ToRole="PackageTypes" />
-        </EntityType>
-        <EntityType Name="PackageTypes">
-          <Key>
-            <PropertyRef Name="PackageType" />
-          </Key>
-          <Property Name="PackageType" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="true" />
-          <Property Name="PackageDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Container" Relationship="WaterNutDB.DataLayer.FK_Containers_PackageTypes" FromRole="PackageTypes" ToRole="Container" />
         </EntityType>
         <Association Name="FK_Container_AsycudaDocumentSet">
           <End Type="WaterNutDB.DataLayer.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -5457,15 +5502,41 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Containers_PackageTypes">
-          <End Type="WaterNutDB.DataLayer.PackageTypes" Role="PackageTypes" Multiplicity="0..1" />
-          <End Type="WaterNutDB.DataLayer.Container" Role="Container" Multiplicity="*" />
+        <EntityType Name="InventoryItems">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="TariffCodes" Relationship="WaterNutDB.DataLayer.FK_InventoryItems_TariffCodes" FromRole="InventoryItems" ToRole="TariffCodes" />
+          <NavigationProperty Name="xcuda_Inventory_Item" Relationship="WaterNutDB.DataLayer.InventoryItemsxcuda_Inventory_Item" FromRole="InventoryItems" ToRole="xcuda_Inventory_Item" />
+        </EntityType>
+        <Association Name="FK_InventoryItems_TariffCodes">
+          <End Type="WaterNutDB.DataLayer.TariffCodes" Role="TariffCodes" Multiplicity="0..1" />
+          <End Type="WaterNutDB.DataLayer.InventoryItems" Role="InventoryItems" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="PackageTypes">
-              <PropertyRef Name="PackageType" />
+            <Principal Role="TariffCodes">
+              <PropertyRef Name="TariffCode" />
             </Principal>
-            <Dependent Role="Container">
-              <PropertyRef Name="Packages_type" />
+            <Dependent Role="InventoryItems">
+              <PropertyRef Name="TariffCode" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsxcuda_Inventory_Item">
+          <End Type="WaterNutDB.DataLayer.InventoryItems" Role="InventoryItems" Multiplicity="1" />
+          <End Type="WaterNutDB.DataLayer.xcuda_Inventory_Item" Role="xcuda_Inventory_Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="xcuda_Inventory_Item">
+              <PropertyRef Name="InventoryItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -5715,6 +5786,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="AsycudaDocumentSet">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="Office" ColumnName="Office" />
+                <ScalarProperty Name="FreightCurrencyCode" ColumnName="FreightCurrencyCode" />
                 <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
                 <ScalarProperty Name="MaxLines" ColumnName="MaxLines" />
                 <ScalarProperty Name="TotalInvoices" ColumnName="TotalInvoices" />
@@ -5742,7 +5815,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="Customs_Procedure">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.Customs_Procedure">
               <MappingFragment StoreEntitySet="Customs_Procedure">
-                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
+                <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
+                <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />
+                <ScalarProperty Name="Sales" ColumnName="Sales" />
+                <ScalarProperty Name="Adjustment" ColumnName="Adjustment" />
+                <ScalarProperty Name="Discrepancy" ColumnName="Discrepancy" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
+                <ScalarProperty Name="BondTypeId" ColumnName="BondTypeId" />
+                <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
+                <ScalarProperty Name="IsObsolete" ColumnName="IsObsolete" />
+                <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />
                 <ScalarProperty Name="National_customs_procedure" ColumnName="National_customs_procedure" />
                 <ScalarProperty Name="Extended_customs_procedure" ColumnName="Extended_customs_procedure" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
@@ -5762,6 +5844,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="ExportTemplate">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.ExportTemplate">
               <MappingFragment StoreEntitySet="ExportTemplate">
+                <ScalarProperty Name="BL" ColumnName="BL" />
+                <ScalarProperty Name="Manifest" ColumnName="Manifest" />
                 <ScalarProperty Name="AttachedDocumentCode" ColumnName="AttachedDocumentCode" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Deffered_payment_reference" ColumnName="Deffered_payment_reference" />
@@ -6066,6 +6150,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
                 <ScalarProperty Name="PreviousInvoiceLineNumber" ColumnName="PreviousInvoiceLineNumber" />
                 <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
@@ -6412,6 +6497,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="InventoryItemsEx">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.InventoryItemsEx">
               <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
                 <ScalarProperty Name="SuppUnitCode2" ColumnName="SuppUnitCode2" />
@@ -6423,17 +6509,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="xcuda_Inventory_Item">
-            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Inventory_Item">
-              <MappingFragment StoreEntitySet="xcuda_Inventory_Item">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Attachments">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.Attachments">
               <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
@@ -6450,6 +6529,22 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PackageTypes">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.PackageTypes">
+              <MappingFragment StoreEntitySet="PackageTypes">
+                <ScalarProperty Name="PackageDescription" ColumnName="PackageDescription" />
+                <ScalarProperty Name="PackageType" ColumnName="PackageType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="xcuda_Inventory_Item">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.xcuda_Inventory_Item">
+              <MappingFragment StoreEntitySet="xcuda_Inventory_Item">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Container">
             <EntityTypeMapping TypeName="WaterNutDB.DataLayer.Container">
               <MappingFragment StoreEntitySet="Container">
@@ -6458,9 +6553,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
                 <ScalarProperty Name="ShipDate" ColumnName="ShipDate" />
                 <ScalarProperty Name="TotalValue" ColumnName="TotalValue" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
-                <ScalarProperty Name="Packages_weight" ColumnName="Packages_weight" />
-                <ScalarProperty Name="Packages_number" ColumnName="Packages_number" />
-                <ScalarProperty Name="Packages_type" ColumnName="Packages_type" />
                 <ScalarProperty Name="Goods_description" ColumnName="Goods_description" />
                 <ScalarProperty Name="Gross_weight" ColumnName="Gross_weight" />
                 <ScalarProperty Name="Empty_full_indicator" ColumnName="Empty_full_indicator" />
@@ -6469,11 +6561,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="PackageTypes">
-            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.PackageTypes">
-              <MappingFragment StoreEntitySet="PackageTypes">
-                <ScalarProperty Name="PackageDescription" ColumnName="PackageDescription" />
-                <ScalarProperty Name="PackageType" ColumnName="PackageType" />
+          <EntitySetMapping Name="InventoryItems">
+            <EntityTypeMapping TypeName="WaterNutDB.DataLayer.InventoryItems">
+              <MappingFragment StoreEntitySet="InventoryItems">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

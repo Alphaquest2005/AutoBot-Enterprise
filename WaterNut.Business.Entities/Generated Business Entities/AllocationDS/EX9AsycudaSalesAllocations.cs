@@ -891,6 +891,51 @@ namespace AllocationDS.Business.Entities
         }
         string _comment;
         [DataMember]
+        public Nullable<int> CustomsOperationId 
+        {
+            get
+            {
+                return _customsoperationid;
+            }
+            set
+            {
+                _customsoperationid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _customsoperationid;
+        [DataMember]
+        public Nullable<int> Customs_ProcedureId 
+        {
+            get
+            {
+                return _customs_procedureid;
+            }
+            set
+            {
+                _customs_procedureid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _customs_procedureid;
+        [DataMember]
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public InventoryItem InventoryItemsEx { get; set; }

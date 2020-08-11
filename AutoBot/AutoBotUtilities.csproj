@@ -185,32 +185,20 @@
       <Name>System.Linq.Dynamic</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaterNut.Business.Entities\WaterNut.Business.Entities.csproj">
-      <Project>{978B7943-BD11-41EB-91C9-59A09C6F0ECC}</Project>
+      <Project>{978b7943-bd11-41eb-91c9-59a09c6f0ecc}</Project>
       <Name>WaterNut.Business.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaterNut.Business.Services\WaterNut.Business.Services.csproj">
-      <Project>{02885F55-31E7-48FB-9944-DF99540F3270}</Project>
+      <Project>{02885f55-31e7-48fb-9944-df99540f3270}</Project>
       <Name>WaterNut.Business.Services</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WaterNut.Client.Contracts\WaterNut.Client.Contracts.csproj">
-      <Project>{658bb505-087e-48b0-9adc-b227367af83c}</Project>
-      <Name>WaterNut.Client.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WaterNut.Client.DTO\WaterNut.Client.DTO.csproj">
-      <Project>{c05bd1be-cb99-451e-845d-077243489c5b}</Project>
-      <Name>WaterNut.Client.DTO</Name>
-    </ProjectReference>
     <ProjectReference Include="..\WaterNut.Client.Entities\WaterNut.Client.Entities.csproj">
-      <Project>{367497e0-90a4-47bf-b740-717d8769710c}</Project>
+      <Project>{367497E0-90A4-47BF-B740-717D8769710C}</Project>
       <Name>WaterNut.Client.Entities</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaterNut.Client.Repositories\WaterNut.Client.Repositories.csproj">
-      <Project>{e16cffe7-8f60-41a8-8895-7cb73fe09399}</Project>
+      <Project>{E16CFFE7-8F60-41A8-8895-7CB73FE09399}</Project>
       <Name>WaterNut.Client.Repositories</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WaterNut.Client.Services\WaterNut.Client.Services.csproj">
-      <Project>{ec5d3b67-8bec-4678-a876-ed6ecbbfe59a}</Project>
-      <Name>WaterNut.Client.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\WaterNut.Data\WaterNut.Data.csproj">
       <Project>{92EB0CBF-4018-427B-AA8B-13B088650DB8}</Project>

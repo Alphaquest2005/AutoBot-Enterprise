@@ -1312,6 +1312,37 @@ namespace AdjustmentQS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AdjustmentDetail> entities = await set//dbContext.AdjustmentDetails
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
+                                                    // .Include(x => x.ShortAllocations)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

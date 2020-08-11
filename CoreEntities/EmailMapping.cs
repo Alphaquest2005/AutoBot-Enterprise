@@ -17,6 +17,7 @@ namespace CoreEntities
         public EmailMapping()
         {
             this.EmailFileTypes = new HashSet<EmailFileTypes>();
+            this.EmailInfoMappings = new HashSet<EmailInfoMappings>();
         }
     
         public int Id { get; set; }
@@ -25,5 +26,6 @@ namespace CoreEntities
     
         public virtual ApplicationSettings ApplicationSettings { get; set; }
         public virtual ICollection<EmailFileTypes> EmailFileTypes { get; set; }
+        public virtual ICollection<EmailInfoMappings> EmailInfoMappings { get; set; }
     }
 }

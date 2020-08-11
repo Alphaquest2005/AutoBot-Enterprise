@@ -1066,7 +1066,38 @@ namespace DocumentDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<Attachment>> GetAttachmentByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
+              {
+                var i = EmailId;
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Attachment> entities = await set//dbContext.Attachments
+                                                    // .Include(x => x.AsycudaDocument_Attachments)									  
+                                                    // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try

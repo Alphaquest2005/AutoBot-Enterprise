@@ -266,6 +266,36 @@ public Nullable<double> TotalCIF
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> QtyLicensesRequired
+		{ 
+		    get { return this.todo_lictocreate.QtyLicensesRequired; }
+			set
+			{
+			    if (value == this.todo_lictocreate.QtyLicensesRequired) return;
+				this.todo_lictocreate.QtyLicensesRequired = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("QtyLicensesRequired");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> HasLicense
+		{ 
+		    get { return this.todo_lictocreate.HasLicense; }
+			set
+			{
+			    if (value == this.todo_lictocreate.HasLicense) return;
+				this.todo_lictocreate.HasLicense = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("HasLicense");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_LICToCreate> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_LICToCreate> ChangeTracker

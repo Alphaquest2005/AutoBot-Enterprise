@@ -254,7 +254,7 @@ public string comment
        
        
                 
-                [MaxLength(50, ErrorMessage = "Status has a max length of 50 letters ")]
+                [MaxLength(306, ErrorMessage = "Status has a max length of 306 letters ")]
 public string Status
 		{ 
 		    get { return this.todo_submitdiscrepancieserrorreport.Status; }
@@ -377,9 +377,9 @@ public int Entrydatadetailsid
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-       
-public Nullable<int> AsycudaDocumentSetId
+public int AsycudaDocumentSetId
 		{ 
 		    get { return this.todo_submitdiscrepancieserrorreport.AsycudaDocumentSetId; }
 			set

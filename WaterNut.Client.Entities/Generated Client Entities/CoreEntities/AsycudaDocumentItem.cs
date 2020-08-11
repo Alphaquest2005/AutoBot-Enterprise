@@ -750,6 +750,21 @@ public Nullable<int> ApplicationSettingsId
 		}
      
 
+       
+       
+public Nullable<int> InventoryItemId
+		{ 
+		    get { return this.asycudadocumentitem.InventoryItemId; }
+			set
+			{
+			    if (value == this.asycudadocumentitem.InventoryItemId) return;
+				this.asycudadocumentitem.InventoryItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InventoryItemId");
+			}
+		}
+     
+
        private AsycudaDocument _AsycudaDocument;
         public  AsycudaDocument AsycudaDocument
 		{

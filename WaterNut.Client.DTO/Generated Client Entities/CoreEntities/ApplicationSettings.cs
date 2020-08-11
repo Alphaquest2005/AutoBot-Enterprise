@@ -567,6 +567,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _TestMode;
 
+        [DataMember]
+        public int BondTypeId
+		{ 
+		    get { return _BondTypeId; }
+			set
+			{
+			    if (value == _BondTypeId) return;
+				_BondTypeId = value;
+				NotifyPropertyChanged();//m => this.BondTypeId
+			}
+		}
+        private int _BondTypeId;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx

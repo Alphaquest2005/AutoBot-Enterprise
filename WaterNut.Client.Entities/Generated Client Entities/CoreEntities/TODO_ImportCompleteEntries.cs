@@ -42,9 +42,9 @@ namespace CoreEntities.Client.Entities
                 todo_importcompleteentries = value;
             }
         }
-       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-public int AsycudaDocumentSetId
+       
+public Nullable<int> AsycudaDocumentSetId
 		{ 
 		    get { return this.todo_importcompleteentries.AsycudaDocumentSetId; }
 			set
@@ -57,9 +57,9 @@ public int AsycudaDocumentSetId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-public int ApplicationSettingsId
+       
+public Nullable<int> ApplicationSettingsId
 		{ 
 		    get { return this.todo_importcompleteentries.ApplicationSettingsId; }
 			set
@@ -102,21 +102,6 @@ public Nullable<int> FileTypeId
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "ASYCUDA_ is required")]
-       
-public int ASYCUDA_Id
-		{ 
-		    get { return this.todo_importcompleteentries.ASYCUDA_Id; }
-			set
-			{
-			    if (value == this.todo_importcompleteentries.ASYCUDA_Id) return;
-				this.todo_importcompleteentries.ASYCUDA_Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("ASYCUDA_Id");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "EntryData is required")]
        
                 
@@ -130,6 +115,36 @@ public string EntryDataId
 				this.todo_importcompleteentries.EntryDataId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EntryDataId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "NewAsycuda_ is required")]
+       
+public int NewAsycuda_Id
+		{ 
+		    get { return this.todo_importcompleteentries.NewAsycuda_Id; }
+			set
+			{
+			    if (value == this.todo_importcompleteentries.NewAsycuda_Id) return;
+				this.todo_importcompleteentries.NewAsycuda_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("NewAsycuda_Id");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AssessedAsycuda_ is required")]
+       
+public int AssessedAsycuda_Id
+		{ 
+		    get { return this.todo_importcompleteentries.AssessedAsycuda_Id; }
+			set
+			{
+			    if (value == this.todo_importcompleteentries.AssessedAsycuda_Id) return;
+				this.todo_importcompleteentries.AssessedAsycuda_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AssessedAsycuda_Id");
 			}
 		}
      

@@ -23,6 +23,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //EmailMapping()
         {
             this.EmailFileTypes = new List<EmailFileTypes>();
+            this.EmailInfoMappings = new List<EmailInfoMappings>();
         }
 
         [DataMember]
@@ -74,6 +75,8 @@ namespace CoreEntities.Business.Entities
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public List<EmailFileTypes> EmailFileTypes { get; set; }
+        [DataMember]
+        public List<EmailInfoMappings> EmailInfoMappings { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

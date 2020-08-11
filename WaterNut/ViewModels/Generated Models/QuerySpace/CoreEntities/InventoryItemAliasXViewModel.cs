@@ -139,6 +139,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(InventoryItemX.Contains(CurrentInventoryItemAliasX.InventoryItemsEx) == false) InventoryItemX.Add(CurrentInventoryItemAliasX.InventoryItemsEx);
                     //}
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentInventoryItemAliasX.ApplicationSettings) == false) ApplicationSettings.Add(CurrentInventoryItemAliasX.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnInventoryItemAliasXChanged(object sender, NotificationEventArgs e)
         {
@@ -151,15 +155,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemX> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
-			if (e.Data == null || e.Data.ItemNumber == null)
+			if (e.Data == null || e.Data.InventoryItemId == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("ItemNumber == \"{0}\"", e.Data.ItemNumber.ToString());
-                }
+				vloader.FilterExpression = string.Format("InventoryItemId == {0}", e.Data.InventoryItemId.ToString());
+                 }
 
 				InventoryItemAliasX.Refresh();
 				NotifyPropertyChanged(x => this.InventoryItemAliasX);
@@ -170,6 +173,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    InventoryItemAliasX.Refresh();
+					NotifyPropertyChanged(x => this.InventoryItemAliasX);
+				}
   
 // Filtering Each Field except IDs
  	

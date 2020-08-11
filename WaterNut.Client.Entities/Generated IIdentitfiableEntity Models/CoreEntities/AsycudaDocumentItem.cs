@@ -124,7 +124,7 @@ namespace CoreEntities.Client.Entities
                         {
                             this.InventoryItemsEx = (InventoryItemX)new InventoryItemX().CreateEntityFromString(value);
 							
-							this.Item_Id = Convert.ToInt32(this.InventoryItemsEx.ItemNumber);
+							this.Item_Id = Convert.ToInt32(this.InventoryItemsEx.InventoryItemId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddInventoryItemsEx");
                         }

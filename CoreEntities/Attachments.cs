@@ -24,6 +24,7 @@ namespace CoreEntities
         public string FilePath { get; set; }
         public string DocumentCode { get; set; }
         public string Reference { get; set; }
+        public string EmailId { get; set; }
     
         public virtual ICollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
         public virtual ICollection<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }

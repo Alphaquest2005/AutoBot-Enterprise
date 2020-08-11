@@ -86,6 +86,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _ApplicationSettingsId;
 
+        [DataMember]
+        public string EntityKeyField
+		{ 
+		    get { return _EntityKeyField; }
+			set
+			{
+			    if (value == _EntityKeyField) return;
+				_EntityKeyField = value;
+				NotifyPropertyChanged();//m => this.EntityKeyField
+			}
+		}
+        private string _EntityKeyField;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings
@@ -115,6 +128,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<InfoMappingRegEx> _InfoMappingRegEx = new ChangeTrackingCollection<InfoMappingRegEx>();
+
+        [DataMember]
+        public ChangeTrackingCollection<EmailInfoMappings> EmailInfoMappings
+		{
+		    get { return _EmailInfoMappings; }
+			set
+			{
+			    if (Equals(value, _EmailInfoMappings)) return;
+				_EmailInfoMappings = value;
+				NotifyPropertyChanged();//m => this.EmailInfoMappings
+			}
+		}
+        private ChangeTrackingCollection<EmailInfoMappings> _EmailInfoMappings = new ChangeTrackingCollection<EmailInfoMappings>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

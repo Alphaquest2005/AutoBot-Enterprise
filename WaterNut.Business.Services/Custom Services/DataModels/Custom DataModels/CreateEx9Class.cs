@@ -22,10 +22,14 @@ using System.Data.Entity;
 using System.IO;
 using System.Text.RegularExpressions;
 using AllocationQS.Business.Entities;
+using CoreEntities.Business.Enums;
 using DocumentItemDS.Business.Entities;
+using EntryDataDS.Business.Entities;
 using MoreLinq;
 using PreviousDocumentQS.Business.Entities;
 using TrackableEntities.EF6;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
+using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 
@@ -128,7 +132,7 @@ namespace WaterNut.DataSpace
                     //}
 
                     var exPro =
-                        " && (PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7000\" || PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7400\" || PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7500\")";
+                        " && (PreviousDocumentItem.AsycudaDocument.Customs_Procedure.CustomsOperations.Name == \"Warehouse\" )";
                     var slst =
                         (await CreateAllocationDataBlocks(currentFilter + exPro, errors).ConfigureAwait(false))
                         .Where(x => x.Allocations.Count > 0);
@@ -136,6 +140,11 @@ namespace WaterNut.DataSpace
 
                     foreach (var dfp in dutylst)
                     {
+                        var cp =
+                            BaseDataModel.Instance.Customs_Procedures
+                                .Single(x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == (dfp == "Duty Paid"));
+
+                        docSet.Customs_Procedure = cp;
 
                         if (slst != null && slst.ToList().Any())
                         {
@@ -144,34 +153,20 @@ namespace WaterNut.DataSpace
                             itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
                                 endDate,
                                 dfp, "Sales"); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
-                            await CreateDutyFreePaidDocument(dfp, res, docSet, "7400", true,
+                            await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
                                     itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
-                                        .ToList(), true, true,
-                                    dfp == "Duty Free" ? "EX9" : "IM4", true, "Historic", true, ApplyCurrentChecks,
-                                    true, false)
+                                        .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
+                                    true, false, true)
                                 .ConfigureAwait(false);
                         }
 
-                        if (Process7100)
-                        {
-                            //exPro = " && PreviousDocumentItem.AsycudaDocument.Extended_customs_procedure == \"7500\"";
-                            //slst =
-                            //    (await CreateAllocationDataBlocks(currentFilter + exPro, errors).ConfigureAwait(false)).Where(
-                            //        x => x.Allocations.Count > 0);
-                            //if (slst != null && slst.ToList().Any())
-                            //{
-                            //    List<ItemSalesPiSummary> itemSalesPiSummarylst = Get7100SalesPiSummaryLst(docSet.ApplicationSettingsId, startDate, endDate);
-                            //    await CreateDutyFreePaidDocument(dfp, slst.Where(x => x.DutyFreePaid == dfp), docSet,
-                            //            "7500", true, itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp).ToList(), true, true, dfp == "Duty Free" ? "EX9" : "IM4", true, true, true, true)
-                            //        .ConfigureAwait(false);
-                            //}
-                        }
+                      
 
                     }
 
                     startDate = new DateTime(startDate.Year, startDate.Month, 1).AddMonths(1);
                 }
-
+                BaseDataModel.RenameDuplicateDocuments(docSet.AsycudaDocumentSetId);
                 StatusModel.StopStatusUpdate();
             }
             catch (Exception e)
@@ -181,188 +176,6 @@ namespace WaterNut.DataSpace
             }
         }
 
-
-        private static List<ItemSalesPiSummary> Historic7100ItemSalesPi(int applicationSettingsId, DateTime endDate)
-        {
-            using (var ctx = new AllocationDSContext())
-            {
-                var res = ctx.Database.SqlQuery<x7100SalesPi>(
-                        $@"SELECT        AllocationsItemNameMapping.ItemNumber, SIM.ItemQuantity, ISNULL(SEX.PiQuantity, 0) AS PiQuantity, SIM.DPQtyAllocated, ISNULL(SEX.DPPi, 0) AS DPPi, SIM.DFQtyAllocated, ISNULL(SEX.DFPi, 0) AS DFPi
-FROM            (SELECT        ItemNumber, SUM(ItemQuantity) AS ItemQuantity, SUM(DPQtyAllocated) AS DPQtyAllocated, SUM(DFQtyAllocated) AS DFQtyAllocated
-                          FROM            (SELECT        AsycudaDocumentItem.ItemNumber, AsycudaDocumentItem.DPQtyAllocated, AsycudaDocumentItem.DFQtyAllocated, AsycudaDocumentItem.ItemQuantity, AsycudaDocument.AssessmentDate, 
-                                                                              AsycudaDocument.ExpiryDate, AsycudaDocument.CNumber, AsycudaDocumentItem.LineNumber
-                                                    FROM            AsycudaDocumentBasicInfo AS AsycudaDocument INNER JOIN
-                                                                              AsycudaItemBasicInfo AS AsycudaDocumentItem ON AsycudaDocument.ASYCUDA_Id = AsycudaDocumentItem.ASYCUDA_Id
-                                                    WHERE   (AsycudaDocument.ApplicationSettingsId = {applicationSettingsId}) AND     (AsycudaDocument.Extended_customs_procedure = '7500')
-                                                    GROUP BY AsycudaDocumentItem.ItemNumber, AsycudaDocumentItem.DPQtyAllocated, AsycudaDocumentItem.DFQtyAllocated, AsycudaDocumentItem.ItemQuantity, AsycudaDocument.AssessmentDate, 
-                                                                              AsycudaDocument.ExpiryDate, AsycudaDocument.CNumber, AsycudaDocumentItem.LineNumber) AS IM
-                          WHERE   (AssessmentDate <= CONVERT(DATETIME, '{
-                                endDate.Date.ToShortDateString()
-                            }', 102)) AND (ExpiryDate >= CONVERT(DATETIME, '{endDate.Date.ToShortDateString()}', 102))
-                          GROUP BY ItemNumber) AS SIM INNER JOIN
-                         AllocationsItemNameMapping ON SIM.ItemNumber = AllocationsItemNameMapping.Precision_4 LEFT OUTER JOIN
-                             (SELECT        ItemNumber, SUM(ISNULL(ItemQuantity, 0)) AS PiQuantity, ISNULL(SUM(DPPiQuantity), 0) AS DPPi, ISNULL(SUM(DFPiQuantity), 0) AS DFPi
-                               FROM            (SELECT        AsycudaDocumentItem_1.ItemNumber, AsycudaDocumentItem_1.ItemQuantity, CAST(CASE WHEN Extended_customs_procedure = '4071' THEN itemquantity ELSE 0 END AS float) AS DPPiQuantity, 
-                                                                                   CAST(CASE WHEN Extended_customs_procedure = '9071' THEN itemquantity ELSE 0 END AS float) AS DFPiQuantity, AsycudaDocument_1.AssessmentDate, AsycudaDocument_1.ExpiryDate, 
-                                                                                   AsycudaDocument_1.CNumber
-                                                         FROM            AsycudaItemBasicInfo AS AsycudaDocumentItem_1 INNER JOIN
-                                                                                   AsycudaDocumentBasicInfo AS AsycudaDocument_1 ON AsycudaDocumentItem_1.ASYCUDA_Id = AsycudaDocument_1.ASYCUDA_Id
-                                                         GROUP BY AsycudaDocumentItem_1.ItemNumber, AsycudaDocumentItem_1.ItemQuantity, AsycudaDocument_1.AssessmentDate, AsycudaDocument_1.ExpiryDate, AsycudaDocument_1.CNumber, 
-                                                                                   AsycudaDocument_1.Extended_customs_procedure
-                                                         HAVING       (AsycudaDocument_1.ApplicationSettingsId = {applicationSettingsId}) AND   (AsycudaDocument_1.Extended_customs_procedure = '9075' OR
-                                                                                   AsycudaDocument_1.Extended_customs_procedure = '4075')) AS Ex
-                               WHERE        (AssessmentDate <= CONVERT(DATETIME, '{
-                                endDate.Date.ToShortDateString()
-                            }', 102))
-                               GROUP BY ItemNumber) AS SEX ON SIM.ItemNumber = SEX.ItemNumber
-GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.ItemQuantity, ISNULL(SEX.PiQuantity, 0), SIM.DPQtyAllocated, ISNULL(SEX.DPPi, 0), SIM.DFQtyAllocated, ISNULL(SEX.DFPi, 0)")
-                    .ToList();
-
-                var lst = res.Where(x => x.DPQtyAllocated > 0).Select(x => new ItemSalesPiSummary()
-                {
-                    DutyFreePaid = "Duty Paid",
-                    ItemNumber = x.ItemNumber,
-                    PiQuantity = x.DPPi,
-                    QtyAllocated = x.DPQtyAllocated,
-                    Type = "Historic"
-                }).ToList();
-
-                lst.AddRange(res.Where(x => x.DFQtyAllocated > 0).Select(x => new ItemSalesPiSummary()
-                {
-                    DutyFreePaid = "Duty Free",
-                    ItemNumber = x.ItemNumber,
-                    PiQuantity = x.DFPi,
-                    QtyAllocated = x.DFQtyAllocated,
-                    Type = "Historic"
-                }).ToList());
-
-                return lst;
-            }
-        }
-
-        private static List<ItemSalesPiSummary> Current7100ItemSalesPi(DateTime startDate, DateTime endDate)
-        {
-            using (var ctx = new AllocationDSContext())
-            {
-                var res = ctx.Database.SqlQuery<x7100SalesPi>(
-                        $@"SELECT        AllocationsItemNameMapping.ItemNumber, SIM.QtySold AS ItemQuantity, ISNULL(SEX.PiQuantity, 0) AS PiQuantity, SIM.DPQtyAllocated, ISNULL(SEX.DPPi, 0) AS DPPi, SIM.DFQtyAllocated, ISNULL(SEX.DFPi, 0) AS DFPi
-FROM            (SELECT        ItemNumber, SUM(SalesQuantity) AS QtySold, SUM(QtyAllocated) AS QtyAllocated, SUM(DPQtyAllocated) AS DPQtyAllocated, SUM(DPSalesQuantity) AS DPSalesQuantity, SUM(DFQtyAllocated) AS DFQtyAllocated, 
-                         SUM(DFSalesQuantity) AS DFSalesQuantity
-FROM            (SELECT        TOP (100) PERCENT AsycudaItemBasicInfo.ItemNumber, EntryDataDetails.Quantity AS SalesQuantity, AsycudaSalesAllocations.QtyAllocated, EntryDataDetails.EntryDataId AS Invoice, EntryData.EntryDataDate AS InvoiceDate, 
-                         EntryDataDetails.EntryDataDetailsId, CASE WHEN taxamount > 0 THEN AsycudaSalesAllocations.qtyallocated ELSE 0 END AS DPQtyAllocated, CASE WHEN taxamount > 0 THEN quantity ELSE 0 END AS DPSalesQuantity, 
-                         CASE WHEN taxamount = 0 THEN AsycudaSalesAllocations.qtyallocated ELSE 0 END AS DFQtyAllocated, CASE WHEN taxamount = 0 THEN quantity ELSE 0 END AS DFSalesQuantity
-FROM            AsycudaSalesAllocations INNER JOIN
-                         AsycudaItemBasicInfo ON AsycudaSalesAllocations.PreviousItem_Id = AsycudaItemBasicInfo.Item_Id INNER JOIN
-                         AsycudaDocumentBasicInfo ON AsycudaItemBasicInfo.ASYCUDA_Id = AsycudaDocumentBasicInfo.ASYCUDA_Id INNER JOIN
-                         EntryDataDetails ON AsycudaSalesAllocations.EntryDataDetailsId = EntryDataDetails.EntryDataDetailsId INNER JOIN
-                         EntryData ON EntryDataDetails.EntryDataId = EntryData.EntryDataId INNER JOIN
-                         EntryData_Sales ON EntryData.EntryDataId = EntryData_Sales.EntryDataId
-WHERE        (AsycudaDocumentBasicInfo.Extended_customs_procedure = '7500')
-GROUP BY AsycudaItemBasicInfo.ItemNumber, EntryDataDetails.Quantity, EntryData_Sales.TaxAmount, AsycudaSalesAllocations.QtyAllocated, EntryDataDetails.EntryDataId, EntryData.EntryDataDate, 
-                         EntryDataDetails.EntryDataDetailsId
-ORDER BY InvoiceDate) AS sales
-WHERE        (InvoiceDate <= CONVERT(DATETIME, '{
-                                endDate.Date.ToShortDateString()
-                            }', 102)) AND (InvoiceDate >= CONVERT(DATETIME, '{
-                                startDate.Date.ToShortDateString()
-                            }', 102))
-GROUP BY ItemNumber) AS SIM INNER JOIN
-                         AllocationsItemNameMapping ON SIM.ItemNumber = AllocationsItemNameMapping.Precision_4 LEFT OUTER JOIN
-                             (SELECT        ItemNumber, SUM(ISNULL(ItemQuantity, 0)) AS PiQuantity, ISNULL(SUM(DPPiQuantity), 0) AS DPPi, ISNULL(SUM(DFPiQuantity), 0) AS DFPi
-                               FROM            (SELECT        AsycudaDocumentItem_1.ItemNumber, AsycudaDocumentItem_1.ItemQuantity, CAST(CASE WHEN Extended_customs_procedure = '4071' THEN itemquantity ELSE 0 END AS float) AS DPPiQuantity, 
-                                                                                   CAST(CASE WHEN Extended_customs_procedure = '9071' THEN itemquantity ELSE 0 END AS float) AS DFPiQuantity, AsycudaDocument_1.AssessmentDate, AsycudaDocument_1.ExpiryDate, 
-                                                                                   AsycudaDocument_1.CNumber
-                                                         FROM            AsycudaItemBasicInfo AS AsycudaDocumentItem_1 INNER JOIN
-                                                                                   AsycudaDocumentBasicInfo AS AsycudaDocument_1 ON AsycudaDocumentItem_1.ASYCUDA_Id = AsycudaDocument_1.ASYCUDA_Id
-                                                         GROUP BY AsycudaDocumentItem_1.ItemNumber, AsycudaDocumentItem_1.ItemQuantity, AsycudaDocument_1.AssessmentDate, AsycudaDocument_1.ExpiryDate, AsycudaDocument_1.CNumber, 
-                                                                                   AsycudaDocument_1.Extended_customs_procedure
-                                                         HAVING         (AsycudaDocument_1.Extended_customs_procedure = '9071') OR
-                                                                                   (AsycudaDocument_1.Extended_customs_procedure = '4071')) AS Ex
-                               WHERE        (AssessmentDate <= CONVERT(DATETIME, '{
-                                endDate.Date.ToShortDateString()
-                            }', 102)) AND (AssessmentDate >= CONVERT(DATETIME, '{
-                                startDate.Date.ToShortDateString()
-                            }', 102))
-                               GROUP BY ItemNumber) AS SEX ON SIM.ItemNumber = SEX.ItemNumber
-GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuantity, 0), SIM.DPQtyAllocated, ISNULL(SEX.DPPi, 0), SIM.DFQtyAllocated, ISNULL(SEX.DFPi, 0)")
-                    .ToList();
-
-                var lst = res.Where(x => x.DPQtyAllocated > 0).Select(x => new ItemSalesPiSummary()
-                {
-                    DutyFreePaid = "Duty Paid",
-                    ItemNumber = x.ItemNumber,
-                    PiQuantity = x.DPPi,
-                    QtyAllocated = x.DPQtyAllocated,
-                    Type = "Current"
-                }).ToList();
-
-                lst.AddRange(res.Where(x => x.DFQtyAllocated > 0).Select(x => new ItemSalesPiSummary()
-                {
-                    DutyFreePaid = "Duty Free",
-                    ItemNumber = x.ItemNumber,
-                    PiQuantity = x.DFPi,
-                    QtyAllocated = x.DFQtyAllocated,
-                    Type = "Current"
-                }).ToList());
-
-                return lst;
-            }
-        }
-
-
-        //private List<PiSummary> GetPiSummary(DateTime startDate,DateTime endDate)
-        //{
-
-        //    using (var ctx = new AllocationDSContext())
-        //    {
-
-        //        var piSummaryHistoric = ctx.xcuda_PreviousItem
-        //                        .Where(x => x.xcuda_Item.AsycudaDocument.Cancelled != true
-        //                                  //  && x.xcuda_Item.IsAssessed == true --- did not force assesed so that system checks potential ex-warehouse too
-        //                                    && (x.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "9070" || x.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070")
-        //                                    && x.xcuda_Item.AsycudaDocument.AssessmentDate != null 
-        //                                    && x.xcuda_Item.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate ?? DateTime.MinValue)
-        //                                    //  && x.xcuda_Item.AsycudaDocument.AssessmentDate >= startDate
-        //                                    && x.xcuda_Item.AsycudaDocument.AssessmentDate.Value <= endDate)
-        //            .GroupBy(x => new { ItemNumber = x.xcuda_Item.xcuda_Tarification.xcuda_HScode.Precision_4, DutyFreePaid = (x.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "9070" ? "Duty Free" : "Duty Paid"), pCNumber = x.Prev_reg_nbr, pLineNumber = x.Previous_item_number, pOffice = x.Prev_reg_cuo, pAssessmentDate = x.xcuda_Item.AsycudaDocument.AssessmentDate, pItemQuantity = x.Preveious_suplementary_quantity })
-        //            .Select(g => new PiSummary
-        //            {
-        //                ItemNumber = g.Key.ItemNumber,
-        //                pItemQuantity = g.Key.pItemQuantity,
-        //                DutyFreePaid = g.Key.DutyFreePaid,
-        //                TotalQuantity = g.Sum(z => z.Suplementary_Quantity),
-        //                Type = "Historic",
-        //                pCNumber = g.Key.pCNumber,
-        //                pLineNumber = g.Key.pLineNumber,
-        //                pOffice = g.Key.pOffice,
-        //                pAssessmentDate = g.Key.pAssessmentDate.Value
-        //            }).ToList();
-
-        //        var piSummaryCurrent = ctx.xcuda_PreviousItem
-        //            .Where(x => x.xcuda_Item.AsycudaDocument.Cancelled != true
-        //                        //  && x.xcuda_Item.IsAssessed == true --- did not force assesed so that system checks potential ex-warehouse too
-        //                        && (x.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "9070" || x.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "4070")
-        //                        && x.xcuda_Item.AsycudaDocument.AssessmentDate != null
-        //                        && x.xcuda_Item.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate ?? DateTime.MinValue)
-        //                        && x.xcuda_Item.AsycudaDocument.AssessmentDate >= startDate
-        //                        && x.xcuda_Item.AsycudaDocument.AssessmentDate.Value <= endDate)
-        //            .GroupBy(x => new { ItemNumber = x.xcuda_Item.xcuda_Tarification.xcuda_HScode.Precision_4, DutyFreePaid = (x.xcuda_Item.AsycudaDocument.Extended_customs_procedure == "9070" ? "Duty Free" : "Duty Paid"), pCNumber = x.Prev_reg_nbr, pLineNumber = x.Previous_item_number, pOffice = x.Prev_reg_cuo, pAssessmentDate = x.xcuda_Item.AsycudaDocument.AssessmentDate, pItemQuantity = x.Preveious_suplementary_quantity })
-        //            .Select(g => new PiSummary
-        //            {
-        //                ItemNumber = g.Key.ItemNumber,
-        //                pItemQuantity = g.Key.pItemQuantity,
-        //                DutyFreePaid = g.Key.DutyFreePaid,
-        //                TotalQuantity = g.Sum(z => z.Suplementary_Quantity),
-        //                Type = "Current",
-        //                pCNumber = g.Key.pCNumber,
-        //                pLineNumber = g.Key.pLineNumber,
-        //                pOffice = g.Key.pOffice,
-        //                pAssessmentDate = g.Key.pAssessmentDate.Value
-        //            }).ToList();
-        //        piSummaryHistoric.AddRange(piSummaryCurrent);
-        //        return piSummaryHistoric;
-        //    }
-        //}
 
         public List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
             DateTime endDate, string dfp, string entryDataType)
@@ -390,7 +203,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             var allSales = ctx.ItemSalesAsycudaPiSummary
                 //.Where(x => x.ItemNumber == "CB/BM35X178")
                 .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                //.Where(x => x.Type == entryType || x.Type == null)
+                .Where(x => x.EntryDataType == entryType || x.Type == null)
                 .ToList();
             res.AddRange(allSales
                 .GroupBy(g => new
@@ -416,8 +229,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     EntryDataType = entryType
                 }).ToList());
 
-            var test2 = allSales.Where(x => x.pCNumber == "43429" && x.pLineNumber == 18).ToList();
-            var test = res.Where(x => x.pCNumber == "43429" && x.pLineNumber == 18).ToList();
+           // var test2 = allSales.Where(x => x.pCNumber == "43429" && x.pLineNumber == 18).ToList();
+           // var test = res.Where(x => x.pCNumber == "43429" && x.pLineNumber == 18).ToList();
 
 
             var allHistoricSales = allSales
@@ -475,570 +288,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 }).ToList());
             return res;
         }
-        //private static void GetAdjustments(int applicationSettingsId, DateTime startDate, DateTime endDate, string dfp,
-        //    AllocationDSContext ctx, List<ItemSalesPiSummary> res, string entryType)
-        //{
-        //    var allSales = ctx.ItemSalesAsycudaPiSummary.AsNoTracking()
-        //      //.Where(x => x.ItemNumber == "AOR/112310F")
-        //      .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-        //      .Where(x => x.Type == entryType).ToList();
-        //    res.AddRange(allSales
-        //        .GroupBy(g => new
-        //        {
-        //            PreviousItem_Id = g.PreviousItem_Id,
-        //            pCNumber = g.pCNumber,
-        //            pRegistrationDate = g.pRegistrationDate,
-        //            pLineNumber = g.pLineNumber,
-        //            ItemNumber = g.ItemNumber,
-
-            //        })
-            //        .Select(x => new ItemSalesPiSummary
-            //        {
-            //            PreviousItem_Id = x.Key.PreviousItem_Id,
-            //            ItemNumber = x.Key.ItemNumber,
-            //            QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //            pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-            //            PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-            //            pCNumber = x.Key.pCNumber,
-            //            pRegistrationDate = x.Key.pRegistrationDate,
-            //            pLineNumber = x.Key.pLineNumber,
-            //            DutyFreePaid = "All",
-            //            Type = "All",
-            //            EntryDataType = entryType
-            //        }).ToList());
-
-            //    var allHistoricSales = allSales
-            //        .Where(x => x.EntryDataDate <= endDate)
-            //        .Where(x => x.DutyFreePaid == dfp).ToList();
-
-            //    res.AddRange(allHistoricSales
-            //        .GroupBy(g => new
-            //        {
-            //            PreviousItem_Id = g.PreviousItem_Id,
-            //            pCNumber = g.pCNumber,
-            //            pRegistrationDate = g.pRegistrationDate,
-            //            pLineNumber = g.pLineNumber,
-            //            ItemNumber = g.ItemNumber,
-            //            DutyFreePaid = g.DutyFreePaid
-
-            //        })
-            //        .Select(x => new ItemSalesPiSummary
-            //        {
-            //            PreviousItem_Id = x.Key.PreviousItem_Id,
-            //            ItemNumber = x.Key.ItemNumber,
-            //            QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //            pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-            //            PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-            //            pCNumber = x.Key.pCNumber,
-            //            pRegistrationDate = x.Key.pRegistrationDate,
-            //            pLineNumber = x.Key.pLineNumber,
-            //            DutyFreePaid = x.Key.DutyFreePaid,
-            //            Type = "Historic",
-            //            EntryDataType = entryType
-            //        }).ToList());
-
-            //    res.AddRange(allHistoricSales
-            //        .Where(x => x.EntryDataDate >= startDate)
-            //        .GroupBy(g => new
-            //        {
-            //            PreviousItem_Id = g.PreviousItem_Id,
-            //            pCNumber = g.pCNumber,
-            //            pRegistrationDate = g.pRegistrationDate,
-            //            pLineNumber = g.pLineNumber,
-            //            ItemNumber = g.ItemNumber,
-            //            DutyFreePaid = g.DutyFreePaid
-
-            //        })
-            //        .Select(x => new ItemSalesPiSummary
-            //        {
-            //            PreviousItem_Id = x.Key.PreviousItem_Id,
-            //            ItemNumber = x.Key.ItemNumber,
-            //            QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //            pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-            //            PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-            //            pCNumber = x.Key.pCNumber,
-            //            pRegistrationDate = x.Key.pRegistrationDate,
-            //            pLineNumber = x.Key.pLineNumber,
-            //            DutyFreePaid = x.Key.DutyFreePaid,
-            //            Type = "Current",
-            //            EntryDataType = entryType
-            //        }).ToList());
-            //var resAllSales = ctx.ItemSalesPiSummary.AsNoTracking()
-            //    .Where(x => x.ItemNumber == "AOR/112310F")
-            //    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-            //    //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-            //    .Where(x => x.PreviousItem_Id != 0)
-            //    .Where(x => x.Type == "ADJ")
-            //    .GroupBy(g => new
-            //    {
-            //        PreviousItem_Id = g.PreviousItem_Id,
-            //        pQtyAllocated = g.pQtyAllocated,
-            //        pCNumber = g.pCNumber,
-            //        pRegistrationDate = g.pRegistrationDate,
-            //        pLineNumber = g.pLineNumber,
-            //        ItemNumber = g.ItemNumber,
-            //        DutyFreePaid = g.DutyFreePaid
-            //    }).ToList();
-
-
-            //res.AddRange(resAllSales.GroupJoin(
-            //        ctx.AsycudaItemPiQuantityData.AsNoTracking(),
-            //        g => g.Key.PreviousItem_Id.ToString(),///need to determine adjustment is dutyfree/paid  - AOR/112310F/////////////////////TAKE OUT DFP because it can switch
-            //        p => p.Item_Id.ToString(), (g, p) => new { g, p })
-            //    .Select(x => new ItemSalesPiSummary
-            //    {
-            //        PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
-            //        ItemNumber = x.g.Key.ItemNumber,
-            //        QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-            //        pQtyAllocated = x.g.Key.pQtyAllocated,
-            //        PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-            //        pCNumber = x.g.Key.pCNumber,
-            //        pRegistrationDate = x.g.Key.pRegistrationDate,
-            //        pLineNumber = x.g.Key.pLineNumber,
-            //        DutyFreePaid = x.g.Key.DutyFreePaid,
-            //        Type = "All",
-            //        EntryDataType = "ADJ"
-            //    }).ToList());
-
-
-            //var resHistoricSales = ctx.ItemSalesPiSummary.AsNoTracking()
-            //    //.Where(x => x.ItemNumber == "AOR/112310F")
-            //    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-            //    //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-            //    .Where(x => x.EntryDataDate <= endDate)
-            //    .Where(x => x.PreviousItem_Id != 0)
-            //    .Where(x => x.DutyFreePaid == dfp)//need to determine adjustment is dutyfree/paid  - AOR/112310F/////////////////////TAKE OUT DFP because it can switch
-            //    .Where(x => x.Type == "ADJ")
-            //    .GroupBy(g => new
-            //    {
-            //        PreviousItem_Id = g.PreviousItem_Id,
-            //        pQtyAllocated = g.pQtyAllocated,
-            //        pCNumber = g.pCNumber,
-            //        pRegistrationDate = g.pRegistrationDate,
-            //        pLineNumber = g.pLineNumber,
-            //        ItemNumber = g.ItemNumber,
-            //        DutyFreePaid = g.DutyFreePaid
-            //    });//.ToList();
-
-
-            //res.AddRange(resHistoricSales.GroupJoin(
-            //        ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
-            //        g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,///need to determine adjustment is dutyfree/paid  - AOR/112310F/////////////////////TAKE OUT DFP because it can switch
-            //        p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new { g, p })
-            //    .Select(x => new ItemSalesPiSummary
-            //    {
-            //        PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
-            //        ItemNumber = x.g.Key.ItemNumber,
-            //        QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-            //        pQtyAllocated = x.g.Key.pQtyAllocated,
-            //        PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-            //        pCNumber = x.g.Key.pCNumber,
-            //        pRegistrationDate = x.g.Key.pRegistrationDate,
-            //        pLineNumber = x.g.Key.pLineNumber,
-            //        DutyFreePaid = x.g.Key.DutyFreePaid,
-            //        Type = "Historic",
-            //        EntryDataType = "ADJ"
-            //    }).ToList());
-
-            //var resCurrentSales = ctx.ItemSalesPiSummary.AsNoTracking()
-            //    //.Where(x => x.ItemNumber == "AOR/112310F")
-            //    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-            //    //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-            //    .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
-            //    .Where(x => x.PreviousItem_Id != 0)
-            //    .Where(x => x.DutyFreePaid == dfp)//need to determine adjustment is dutyfree/paid  - AOR/112310F//////////////////////TAKE OUT DFP because it can switch
-            //    .Where(x => x.Type == "ADJ")
-            //    .GroupBy(g => new
-            //    {
-            //        PreviousItem_Id = g.PreviousItem_Id,
-            //        pQtyAllocated = g.pQtyAllocated,
-            //        pCNumber = g.pCNumber,
-            //        pRegistrationDate = g.pRegistrationDate,
-            //        pLineNumber = g.pLineNumber,
-            //        ItemNumber = g.ItemNumber,
-            //        DutyFreePaid = g.DutyFreePaid
-            //    });//.ToList();
-
-            //res.AddRange(resCurrentSales.GroupJoin(
-            //        ctx.AsycudaItemPiQuantityData.AsNoTracking()
-            //            .Where(x => x.AssessmentDate >= startDate && x.AssessmentDate <= endDate),
-            //        g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,//need to determine adjustment is dutyfree/paid  - AOR/112310F//////////////////////TAKE OUT DFP because it can switch
-            //        p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new { g, p })
-            //    .Select(x => new ItemSalesPiSummary
-            //    {
-            //        PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
-            //        ItemNumber = x.g.Key.ItemNumber,
-            //        QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-            //        pQtyAllocated = x.g.Key.pQtyAllocated,
-            //        PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-            //        pCNumber = x.g.Key.pCNumber,
-            //        pRegistrationDate = x.g.Key.pRegistrationDate,
-            //        pLineNumber = x.g.Key.pLineNumber,
-            //        DutyFreePaid = x.g.Key.DutyFreePaid,
-            //        Type = "Current",
-            //        EntryDataType = "ADJ"
-            //    }).ToList());
-            //}
-            //private static void GetSales(int applicationSettingsId, DateTime startDate, DateTime endDate, string dfp,
-            //    AllocationDSContext ctx, List<ItemSalesPiSummary> res)
-            //{
-            //    var allSales = ctx.ItemSalesAsycudaPiSummary.AsNoTracking()
-            //        //.Where(x => x.ItemNumber == "AOR/112310F")
-            //        .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-            //        .Where(x => x.Type == "Sales").ToList();
-            //    res.AddRange(allSales
-            //        .GroupBy(g => new
-            //        {
-            //            PreviousItem_Id = g.PreviousItem_Id,
-            //            pCNumber = g.pCNumber,
-            //            pRegistrationDate = g.pRegistrationDate,
-            //            pLineNumber = g.pLineNumber,
-            //            ItemNumber = g.ItemNumber,
-
-            //        })
-            //        .Select(x => new ItemSalesPiSummary
-            //        {
-            //            PreviousItem_Id = x.Key.PreviousItem_Id,
-            //            ItemNumber = x.Key.ItemNumber,
-            //            QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //            pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-            //            PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-            //            pCNumber = x.Key.pCNumber,
-            //            pRegistrationDate = x.Key.pRegistrationDate,
-            //            pLineNumber = x.Key.pLineNumber,
-            //            DutyFreePaid = "All",
-            //            Type = "All",
-            //            EntryDataType = "Sales"
-            //        }).ToList());
-
-            //    var allHistoricSales = allSales
-            //        .Where(x => x.EntryDataDate <= endDate)
-            //        .Where(x => x.DutyFreePaid == dfp).ToList();
-
-            //    res.AddRange(allHistoricSales
-            //        .GroupBy(g => new
-            //        {
-            //            PreviousItem_Id = g.PreviousItem_Id,
-            //            pCNumber = g.pCNumber,
-            //            pRegistrationDate = g.pRegistrationDate,
-            //            pLineNumber = g.pLineNumber,
-            //            ItemNumber = g.ItemNumber,
-            //            DutyFreePaid = g.DutyFreePaid
-
-            //        })
-            //        .Select(x => new ItemSalesPiSummary
-            //        {
-            //            PreviousItem_Id = x.Key.PreviousItem_Id,
-            //            ItemNumber = x.Key.ItemNumber,
-            //            QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //            pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-            //            PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-            //            pCNumber = x.Key.pCNumber,
-            //            pRegistrationDate = x.Key.pRegistrationDate,
-            //            pLineNumber = x.Key.pLineNumber,
-            //            DutyFreePaid = x.Key.DutyFreePaid,
-            //            Type = "Historic",
-            //            EntryDataType = "Sales"
-            //        }).ToList());
-
-            //    res.AddRange(allHistoricSales
-            //        .Where(x => x.EntryDataDate >= startDate)
-            //        .GroupBy(g => new
-            //        {
-            //            PreviousItem_Id = g.PreviousItem_Id,
-            //            pCNumber = g.pCNumber,
-            //            pRegistrationDate = g.pRegistrationDate,
-            //            pLineNumber = g.pLineNumber,
-            //            ItemNumber = g.ItemNumber,
-            //            DutyFreePaid = g.DutyFreePaid
-
-            //        })
-            //        .Select(x => new ItemSalesPiSummary
-            //        {
-            //            PreviousItem_Id = x.Key.PreviousItem_Id,
-            //            ItemNumber = x.Key.ItemNumber,
-            //            QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //            pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-            //            PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
-            //            pCNumber = x.Key.pCNumber,
-            //            pRegistrationDate = x.Key.pRegistrationDate,
-            //            pLineNumber = x.Key.pLineNumber,
-            //            DutyFreePaid = x.Key.DutyFreePaid,
-            //            Type = "Current",
-            //            EntryDataType = "Sales"
-            //        }).ToList());
-            //    //var resAllSales = ctx.ItemSalesPiSummary.AsNoTracking()
-            //    //   .Where(x => x.ItemNumber == "AOR/112310F")
-            //    //   .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-            //    //   //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-            //    //   .Where(x => x.PreviousItem_Id != 0)
-            //    //   .Where(x => x.Type == "Sales")
-            //    //   .GroupBy(g => new
-            //    //   {
-            //    //       PreviousItem_Id = g.PreviousItem_Id,
-            //    //       pCNumber = g.pCNumber,
-            //    //       pRegistrationDate = g.pRegistrationDate,
-            //    //       pLineNumber = g.pLineNumber,
-            //    //       ItemNumber = g.ItemNumber,
-
-            //    //   }).ToList();
-
-
-            //    //res.AddRange(resAllSales.GroupJoin(
-            //    //        ctx.AsycudaItemPiQuantityData.AsNoTracking(),
-            //    //        g => g.Key.PreviousItem_Id.ToString(),
-            //    //        p => p.Item_Id.ToString(), (g, p) => new { g, p })
-            //    //    .Select(x => new ItemSalesPiSummary
-            //    //    {
-            //    //        PreviousItem_Id = (int)x.g.Key.PreviousItem_Id,
-            //    //        ItemNumber = x.g.Key.ItemNumber,
-            //    //        QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-            //    //        pQtyAllocated = x.g.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-            //    //        PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-            //    //        pCNumber = x.g.Key.pCNumber,
-            //    //        pRegistrationDate = x.g.Key.pRegistrationDate,
-            //    //        pLineNumber = x.g.Key.pLineNumber,
-            //    //        DutyFreePaid = "All",
-            //    //        Type = "All",
-            //    //        EntryDataType = "Sales"
-            //    //    }).ToList());
-
-
-
-
-
-            //    //var resHistoricSales = ctx.ItemSalesPiSummary.AsNoTracking()
-            //    //    .Where(x => x.ItemNumber == "AOR/112310F")
-            //    //    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-            //    //    //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-            //    //    .Where(x => x.EntryDataDate <= endDate)
-            //    //    .Where(x => x.PreviousItem_Id != 0)
-            //    //    .Where(x => x.DutyFreePaid == dfp)
-            //    //    .Where(x => x.Type == "Sales")
-            //    //    .GroupBy(g => new
-            //    //    {
-            //    //        PreviousItem_Id = g.PreviousItem_Id,
-            //    //        pQtyAllocated = g.pQtyAllocated,
-            //    //        pCNumber = g.pCNumber,
-            //    //        pRegistrationDate = g.pRegistrationDate,
-            //    //        pLineNumber = g.pLineNumber,
-            //    //        ItemNumber = g.ItemNumber,
-            //    //        DutyFreePaid = g.DutyFreePaid
-            //    //    }).ToList();
-
-
-            //    //res.AddRange(resHistoricSales.GroupJoin(
-            //    //        ctx.AsycudaItemPiQuantityData.AsNoTracking().Where(x => x.AssessmentDate <= endDate),
-            //    //        g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
-            //    //        p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new {g, p})
-            //    //    .Select(x => new ItemSalesPiSummary
-            //    //    {
-            //    //        PreviousItem_Id = (int) x.g.Key.PreviousItem_Id,
-            //    //        ItemNumber = x.g.Key.ItemNumber,
-            //    //        QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-            //    //        pQtyAllocated = x.g.Key.pQtyAllocated,
-            //    //        PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-            //    //        pCNumber = x.g.Key.pCNumber,
-            //    //        pRegistrationDate = x.g.Key.pRegistrationDate,
-            //    //        pLineNumber = x.g.Key.pLineNumber,
-            //    //        DutyFreePaid = x.g.Key.DutyFreePaid,
-            //    //        Type = "Historic",
-            //    //        EntryDataType = "Sales"
-            //    //    }).ToList());
-
-
-
-
-            //    //var resCurrentSales = ctx.ItemSalesPiSummary.AsNoTracking()
-            //    //    .Where(x => x.ItemNumber == "AOR/112310F")
-            //    //    .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-            //    //    //.Where(x => allallocations.Contains(x.ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-            //    //    .Where(x => x.EntryDataDate >= startDate && x.EntryDataDate <= endDate)
-            //    //    .Where(x => x.PreviousItem_Id != 0)
-            //    //    .Where(x => x.DutyFreePaid == dfp)
-            //    //    .Where(x => x.Type == "Sales")
-            //    //    .GroupBy(g => new
-            //    //    {
-            //    //        PreviousItem_Id = g.PreviousItem_Id,
-            //    //        pQtyAllocated = g.pQtyAllocated,
-            //    //        pCNumber = g.pCNumber,
-            //    //        pRegistrationDate = g.pRegistrationDate,
-            //    //        pLineNumber = g.pLineNumber,
-            //    //        ItemNumber = g.ItemNumber,
-            //    //        DutyFreePaid = g.DutyFreePaid
-            //    //    }).ToList();
-
-            //    //res.AddRange(resCurrentSales.GroupJoin(
-            //    //        ctx.AsycudaItemPiQuantityData.AsNoTracking()
-            //    //            .Where(x => x.AssessmentDate >= startDate && x.AssessmentDate <= endDate),
-            //    //        g => g.Key.PreviousItem_Id.ToString() + g.Key.DutyFreePaid,
-            //    //        p => p.Item_Id.ToString() + p.DutyFreePaid, (g, p) => new {g, p})
-            //    //    .Select(x => new ItemSalesPiSummary
-            //    //    {
-            //    //        PreviousItem_Id = (int) x.g.Key.PreviousItem_Id,
-            //    //        ItemNumber = x.g.Key.ItemNumber,
-            //    //        QtyAllocated = x.g.Select(z => z.QtyAllocated ?? 0).DefaultIfEmpty(0).Sum(),
-            //    //        pQtyAllocated = x.g.Key.pQtyAllocated,
-            //    //        PiQuantity = x.p.Select(z => z.PiQuantity ?? 0).DefaultIfEmpty(0).Sum(),
-            //    //        pCNumber = x.g.Key.pCNumber,
-            //    //        pRegistrationDate = x.g.Key.pRegistrationDate,
-            //    //        pLineNumber = x.g.Key.pLineNumber,
-            //    //        DutyFreePaid = x.g.Key.DutyFreePaid,
-            //    //        Type = "Current",
-            //    //        EntryDataType = "Sales"
-            //    //    }).ToList());
-
-
-            //}
-
-            //private List<ItemSalesPiSummary> GetItemSalesPiSummary(int applicationSettingsId, DateTime startDate,
-            //    DateTime endDate,
-            //    List<int> alst)
-            //{
-            //    try
-            //    {
-
-            //        using (var ctx = new AllocationDSContext())
-            //        {
-            //            var allallocations = ctx.AsycudaSalesAllocations.Where(x => alst.Contains(x.AllocationId))
-            //                .Select(x => x.EntryDataDetails.ItemNumber).ToList();
-
-            //            var resHistoric = ctx.AsycudaSalesAllocations
-            //                //.Where(x => x.EntryDataDetails.ItemNumber == "EVC/100508")
-            //                .Where(x => x.EntryDataDetails.EntryDataDetailsEx.ApplicationSettingsId ==
-            //                            applicationSettingsId)
-            //                .Where(x => allallocations.Contains(x.EntryDataDetails
-            //                    .ItemNumber)) //changed from Allocationid to itemnumber because i need all allocations for that item number to do current total
-            //                .Where(x => x.EntryDataDetails.Sales.EntryDataDate <= endDate
-            //                            || (x.EntryDataDetails.Adjustments != null &&
-            //                                x.EntryDataDetails.EffectiveDate <= endDate))
-            //                .Where(x => x.PreviousItem_Id != null)
-            //                .GroupBy(g => new
-            //                {
-            //                    PreviousDocumentItem = new
-            //                    {
-            //                        PreviousItem_Id = g.PreviousItem_Id,
-            //                        PiQuantity = g.PreviousDocumentItem.EntryPreviousItems
-            //                            .Where(z => z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.AssessmentDate <=
-            //                                        endDate)
-            //                            .Where(z =>
-            //                                ((g.EntryDataDetails.Sales.TaxAmount ?? 0) == 0 ? "Duty Free" : "Duty Paid") ==
-            //                                (z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.Extended_customs_procedure ==
-            //                                 "4074"
-            //                                 || z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument
-            //                                     .Extended_customs_procedure == "4070"
-            //                                    ? "Duty Paid"
-            //                                    : "Duty Free"))
-            //                            .Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-            //                        QtyAllocated =
-            //                            (g.EntryDataDetails.Sales.TaxAmount ?? 0) == 0
-            //                                ? g.PreviousDocumentItem.DFQtyAllocated
-            //                                : g.PreviousDocumentItem.DPQtyAllocated,
-
-            //                        pCNumber = g.PreviousDocumentItem.AsycudaDocument.CNumber,
-            //                        pRegistrationDate = g.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
-            //                        pLineNumber = g.PreviousDocumentItem.LineNumber
-            //                    },
-            //                    ItemNumber = g.EntryDataDetails.ItemNumber,
-            //                    DutyFreePaid = ((g.EntryDataDetails.Sales.TaxAmount ?? 0) == 0 ? "Duty Free" : "Duty Paid")
-
-            //                })
-            //                .GroupJoin(ctx.PreviousItemsEx.Where(x => x.AssessmentDate <= endDate)
-            //                    , a => a.Key.ItemNumber, p => p.ItemNumber,
-            //                    (a, p) => new {a, p})
-            //                .Select(x => new ItemSalesPiSummary
-            //                {
-            //                    PreviousItem_Id = (int) x.a.Key.PreviousDocumentItem.PreviousItem_Id,
-            //                    ItemNumber = x.a.Key.ItemNumber,
-            //                    QtyAllocated = x.a.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //                    pQtyAllocated = x.a.Key.PreviousDocumentItem.QtyAllocated,
-            //                    PiQuantity = x.p.Where(z => z.DutyFreePaid == x.a.Key.DutyFreePaid &&
-            //                                                z.PreviousDocumentItemId ==
-            //                                                (int) x.a.Key.PreviousDocumentItem.PreviousItem_Id)
-            //                        .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-            //                    pCNumber = x.a.Key.PreviousDocumentItem.pCNumber,
-            //                    pRegistrationDate = x.a.Key.PreviousDocumentItem.pRegistrationDate,
-            //                    pLineNumber = x.a.Key.PreviousDocumentItem.pLineNumber,
-            //                    DutyFreePaid = x.a.Key.DutyFreePaid,
-            //                    Type = "Historic"
-
-            //                }).ToList();
-            //            if (ApplyCurrentChecks)
-            //            {
-            //                var resCurrent = ctx.AsycudaSalesAllocations
-            //                    //  .Where(x => x.EntryDataDetails.ItemNumber == "WES/404-45")
-            //                    .Where(x => alst.Contains(x
-            //                        .AllocationId)) // left this as is because pQtyallocated is totaled anyways
-            //                    .Where(x => x.EntryDataDetails.EntryDataDetailsEx.ApplicationSettingsId ==
-            //                                applicationSettingsId)
-            //                    .Where(x =>
-            //                        x.EntryDataDetails.Sales.EntryDataDate >= startDate &&
-            //                        x.EntryDataDetails.Sales.EntryDataDate <= endDate ||
-            //                        (x.EntryDataDetails.Adjustments != null &&
-            //                         x.EntryDataDetails.EffectiveDate >= startDate &&
-            //                         x.EntryDataDetails.EffectiveDate <= endDate))
-            //                    .Where(x => x.PreviousItem_Id != null)
-            //                    .GroupBy(g => new
-            //                    {
-            //                        PreviousDocumentItem = new
-            //                        {
-            //                            PreviousItem_Id = g.PreviousItem_Id,
-            //                            PiQuantity = g.PreviousDocumentItem.EntryPreviousItems
-            //                                .Where(z => z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument.AssessmentDate <=
-            //                                            endDate)
-            //                                .Where(z =>
-            //                                    ((g.EntryDataDetails.Sales.TaxAmount ?? 0) == 0
-            //                                        ? "Duty Free"
-            //                                        : "Duty Paid") ==
-            //                                    (z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument
-            //                                         .Extended_customs_procedure == "4074"
-            //                                     || z.xcuda_PreviousItem.xcuda_Item.AsycudaDocument
-            //                                         .Extended_customs_procedure == "4070"
-            //                                        ? "Duty Paid"
-            //                                        : "Duty Free"))
-            //                                .Select(z => z.xcuda_PreviousItem.Suplementary_Quantity).DefaultIfEmpty(0)
-            //                                .Sum(),
-            //                            pCNumber = g.PreviousDocumentItem.AsycudaDocument.CNumber,
-            //                            pRegistrationDate = g.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
-            //                            pLineNumber = g.PreviousDocumentItem.LineNumber
-            //                        },
-            //                        ItemNumber = g.EntryDataDetails.ItemNumber,
-            //                        DutyFreePaid =
-            //                            ((g.EntryDataDetails.Sales.TaxAmount ?? 0) == 0 ? "Duty Free" : "Duty Paid")
-            //                    })
-            //                    .GroupJoin(ctx.PreviousItemsEx.Where(x =>
-            //                            x.AssessmentDate >= startDate && x.AssessmentDate <= endDate)
-            //                        , a => a.Key.ItemNumber, p => p.ItemNumber,
-            //                        (a, p) => new {a, p})
-            //                    .Select(x => new ItemSalesPiSummary
-            //                    {
-            //                        PreviousItem_Id = (int) x.a.Key.PreviousDocumentItem.PreviousItem_Id,
-            //                        ItemNumber = x.a.Key.ItemNumber,
-            //                        QtyAllocated = x.a.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-            //                        PiQuantity = x.p.Where(z => z.DutyFreePaid == x.a.Key.DutyFreePaid
-            //                                                    && z.PreviousDocumentItemId ==
-            //                                                    (int) x.a.Key.PreviousDocumentItem.PreviousItem_Id)
-            //                            .Select(z => z.Suplementary_Quantity).DefaultIfEmpty(0).Sum(),
-            //                        pCNumber = x.a.Key.PreviousDocumentItem.pCNumber,
-            //                        pRegistrationDate = x.a.Key.PreviousDocumentItem.pRegistrationDate,
-            //                        pLineNumber = x.a.Key.PreviousDocumentItem.pLineNumber,
-            //                        DutyFreePaid = x.a.Key.DutyFreePaid,
-            //                        Type = "Current"
-
-            //                    }).ToList();
-            //                resHistoric.AddRange(resCurrent);
-            //            }
-
-            //            return resHistoric;
-            //        }
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Console.WriteLine(e);
-            //        throw;
-            //    }
-            //}
-
+      
         public class ItemSalesPiSummary
         {
             public string ItemNumber { get; set; }
@@ -1056,25 +306,21 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
         
 
-        public async Task CreateDutyFreePaidDocument(string dfp, IEnumerable<AllocationDataBlock> slst,
-            AsycudaDocumentSet docSet, string im7Type, bool isGrouped, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
-            bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, string ex9Type,
-            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks, bool autoAssess, bool perInvoice)
+        public async Task<List<DocumentCT>> CreateDutyFreePaidDocument(string dfp,
+            IEnumerable<AllocationDataBlock> slst,
+            AsycudaDocumentSet docSet, string documentType, bool isGrouped, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
+            bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, 
+            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
+            bool autoAssess, bool perInvoice, bool overPIcheck)
         {
             try
             {
                 
 
                 var itmcount = 0;
+                var docList = new List<DocumentCT>();
 
-
-                Document_Type dt;
-                dt = await GetDocumentType(dfp).ConfigureAwait(false);
-                if (dt == null)
-                {
-                    throw new ApplicationException(
-                        $"Null Document Type for '{dfp}' Contact your Network Administrator");
-                }
+             
 
                 if (checkForMultipleMonths)
                     if (slst.ToList().SelectMany(x => x.Allocations).Select(x => x.InvoiceDate.Month).Distinct()
@@ -1089,7 +335,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 StatusModel.StatusUpdate($"Creating xBond Entries - {dfp}");
 
                 var cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
-                Ex9InitializeCdoc(dfp, cdoc, docSet, im7Type, ex9Type);
+                Ex9InitializeCdoc(dfp, cdoc, docSet, documentType);
                 var effectiveAssessmentDate =
                     slst.SelectMany(x =>x.Allocations).Select(x =>
                                             x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
@@ -1123,8 +369,9 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                 {
 
                                     BaseDataModel.SaveAttachments(docSet, cdoc);
-
+                                    AttachSupplier(cdoc);
                                     await SaveDocumentCT(cdoc).ConfigureAwait(false);
+                                    docList.Add(cdoc);
                                     //}
                                     //else
                                     //{
@@ -1138,7 +385,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                 }
                             }
 
-                            Ex9InitializeCdoc(dfp, cdoc, docSet, im7Type, ex9Type);
+                            Ex9InitializeCdoc(dfp, cdoc, docSet, documentType);
                             if (PerIM7)
                                 cdoc.Document.xcuda_Declarant.Number =
                                     cdoc.Document.xcuda_Declarant.Number.Replace(
@@ -1172,8 +419,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
 
                         var newItms = await
-                            CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, monthyear.MonthYear, im7Type,
-                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks)
+                            CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, monthyear.MonthYear, documentType,
+                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck)
                                 .ConfigureAwait(false);
 
                         itmcount += newItms;
@@ -1188,6 +435,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
                 }
                 BaseDataModel.SaveAttachments(docSet, cdoc);
+                AttachSupplier(cdoc);
                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
                 if (cdoc.Document.ASYCUDA_Id == 0)
                 {
@@ -1196,6 +444,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     cdoc.Document = null;
                 }
 
+                if(cdoc.Document != null) docList.Add(cdoc);
+                return docList;
             }
             catch (Exception)
             {
@@ -1204,7 +454,19 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             }
         }
 
-
+        private void AttachSupplier(DocumentCT cdoc)
+        {
+            var firstItm = cdoc.DocumentItems.FirstOrDefault();
+            if (firstItm == null) return;
+            using (var ctx = new EntryDataDSContext())
+            {
+                var invoice = firstItm.PreviousInvoiceNumber;
+                var supplier = ctx.EntryData
+                    .Include(x => x.Suppliers)
+                    .FirstOrDefault(x => x.EntryDataId == invoice)?.Suppliers;
+                //if(suppl)
+            }
+        }
 
 
         private bool IsPerIM7(string prevIM7, AllocationDataBlock monthyear)
@@ -1306,20 +568,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             }
         }
 
-        private IEnumerable<string> CreateDutyList(IEnumerable<AllocationDataBlock> slst)
-        {
-            try
-            {
-                var dutylst = slst.Where(x => x.Allocations.Count > 0).Select(x => x.DutyFreePaid).Distinct();
-                return dutylst;
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
-
-        }
 
         private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(string filterExpression,
             List<string> errors)
@@ -1352,8 +601,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                 "&& Status == null " + // force no error execution
                                 //"&& AllocationErrors == null" +
                                 "&& WarehouseError == null " +
-                                "&& (DocumentType == \"IM7\" " +
-                                        "|| DocumentType == \"OS7\")";
+                                $"&& (CustomsOperationId == { (int)CustomsOperations.Warehouse})";
             var res = new List<EX9SalesAllocations>();
             using (var ctx = new AllocationDSContext())
             {
@@ -1405,7 +653,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                     {
                                         PreviousItem_Id = z.PreviousItem_Id,
                                         DutyFreePaid =
-                                            z.xcuda_Item.AsycudaDocument.DocumentType == "IM4"
+                                            z.xcuda_Item.AsycudaDocument.Customs_Procedure.CustomsOperationId ==(int)CustomsOperations.Exwarehouse && z.xcuda_Item.AsycudaDocument.Customs_Procedure.IsPaid == true
                                                 ? "Duty Paid"
                                                 : "Duty Free",
                                         Net_weight = z.Net_weight,
@@ -1427,153 +675,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             return res;
         }
 
-        //private IEnumerable<EX9SalesAllocations> GetEX9Data(string FilterExpression)
-        //{
-        //    FilterExpression =
-        //        FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\" || pExpiryDate == null)", "");
-
-        //    //Regex.Replace(FilterExpression, @"&& \(pExpiryDate >= * \|\| pExpiryDate == null\)", @"");
-
-        //    FilterExpression += "&& PreviousDocumentItem.DoNotAllocate != true " +
-        //                        "&& PreviousDocumentItem.DoNotEX != true " +
-        //                       // "&& EntryDataDetails.EntryDataDetailsEx.AllocationErrors == null" +
-        //                        "&& PreviousDocumentItem.WarehouseError == null " +
-        //                        "&& (PreviousDocumentItem.AsycudaDocument.DocumentType == \"IM7\" " +
-        //                                "|| PreviousDocumentItem.AsycudaDocument.DocumentType == \"OS7\")";
-
-
-
-        //    var exp1 = AllocationsModel.Instance.TranslateAllocationWhereExpression(FilterExpression);
-        //    var map = new Dictionary<string, string>()
-        //    {
-        //        {"pIsAssessed", "PreviousDocumentItem.IsAssessed"},
-        //        {"pRegistrationDate", "PreviousDocumentItem.AsycudaDocument.RegistrationDate"},
-        //        {"ApplicationSettingsId", "PreviousDocumentItem.AsycudaDocument.ApplicationSettingsId"},
-        //        {"PiQuantity", "EX9AsycudaSalesAllocations.PiQuantity"},
-        //        {"pQtyAllocated", "EX9AsycudaSalesAllocations.pQtyAllocated"},
-        //        // {"pExpiryDate", "(DbFunctions.AddDays(PreviousDocumentItem.AsycudaDocument.RegistrationDate.GetValueOrDefault(),730))"},
-        //        {"Invalid", "EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.Invalid"},
-        //        {"xBond_Item_Id == 0", "(xEntryItem_Id == null || xEntryItem_Id == 0)"}//xBondAllocations != null  && xBondAllocations.Any() == false
-
-        //    };
-        //    var exp = map.Aggregate(exp1, (current, m) => current.Replace(m.Key, m.Value));
-        //    var res = new List<EX9SalesAllocations>();
-        //    using (var ctx = new AllocationDSContext())
-        //    {
-        //        try
-        //        {
-        //           IQueryable<AsycudaSalesAllocations> pres;
-        //            if (FilterExpression.Contains("xBond_Item_Id == 0"))
-        //            {
-        //                //TODO: use expirydate in asycuda document
-        //                pres = ctx.AsycudaSalesAllocations.OrderBy(x => x.AllocationId)
-        //                    .Where(
-        //                        x =>
-        //                            (DbFunctions.AddDays(
-        //                                ((DateTime) x.PreviousDocumentItem.AsycudaDocument.RegistrationDate), 730)) >
-        //                            DateTime.Now).Where(x => !x.xBondAllocations.Any());
-        //            }
-        //            else
-        //            {
-        //                pres = ctx.AsycudaSalesAllocations.OrderBy(x => x.AllocationId)
-        //                    .Where(
-        //                        x =>
-        //                            (DbFunctions.AddDays(
-        //                                ((DateTime) x.PreviousDocumentItem.AsycudaDocument.RegistrationDate), 730)) >
-        //                            DateTime.Now);
-
-        //            }
-
-
-        //            var ppRes = pres.Where(exp)
-        //                .Where(x => x.PreviousItem_Id != null && x.PreviousItem_Id != 0)
-        //                .Where(x => x.EntryDataDetailsId != null && x.EntryDataDetailsId != 0)
-        //                .Where(
-        //                    x =>
-        //                        x.xEntryItem_Id == null &&
-        //                        x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit.Any(ss => ss.IsFirstRow == true) &&
-        //                        x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(ss => ss.IsFirstRow == true)
-        //                            .Suppplementary_unit_quantity != 0)
-
-
-        //                .GroupJoin(ctx.xcuda_Weight_itm, x => x.PreviousItem_Id, q => q.Valuation_item_Id,
-        //                    (x, w) => new {x, w})
-        //                .Where(g => g.x.PreviousDocumentItem != null && g.w.Any() && g.x.EntryDataDetails.Sales != null);
-        //            res = ppRes
-        //                .Select(c => new EX9SalesAllocations
-        //                {
-        //                    AllocationId = c.x.AllocationId,
-        //                    Commercial_Description = c.x.PreviousDocumentItem.xcuda_Goods_description.Commercial_Description,
-        //                    DutyFreePaid = c.x.EntryDataDetails.Sales.TaxAmount != 0 ? "Duty Paid" : "Duty Free",
-        //                    EntryDataDetailsId = c.x.EntryDataDetailsId,
-        //                    InvoiceDate = c.x.EntryDataDetails.Sales.EntryDataDate,
-        //                    EffectiveDate =  c.x.EntryDataDetails.EffectiveDate,
-        //                    InvoiceNo = c.x.EntryDataDetails.EntryDataId,
-        //                    ItemDescription = c.x.EntryDataDetails.ItemDescription,
-        //                    ItemNumber = c.x.EntryDataDetails.ItemNumber,
-        //                    pCNumber = c.x.PreviousDocumentItem.AsycudaDocument.CNumber,
-        //                    pItemCost =
-        //                                (c.x.PreviousDocumentItem.xcuda_Tarification.Item_price/
-        //                                 c.x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit
-        //                                     .FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity),
-        //                    Status = c.x.Status,
-        //                    PreviousItem_Id = c.x.PreviousItem_Id,
-        //                    QtyAllocated = c.x.QtyAllocated,
-        //                    SalesFactor = c.x.PreviousDocumentItem.SalesFactor,
-        //                    SalesQtyAllocated = c.x.EntryDataDetails.QtyAllocated,
-        //                    SalesQuantity = c.x.EntryDataDetails.Quantity,
-        //                    pItemNumber = c.x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.Precision_4,
-        //                    pItemDescription = c.x.PreviousDocumentItem.xcuda_Goods_description.Commercial_Description,
-        //                    pTariffCode = c.x.PreviousDocumentItem.xcuda_Tarification.xcuda_HScode.Commodity_code,
-        //                    DFQtyAllocated = c.x.PreviousDocumentItem.DFQtyAllocated,
-        //                    DPQtyAllocated = c.x.PreviousDocumentItem.DPQtyAllocated,
-        //                    pLineNumber = c.x.PreviousDocumentItem.LineNumber,
-        //                    LineNumber = c.x.EntryDataDetails.LineNumber,
-        //                    //not issue for Taking Out of Bond - should depend on Export template
-        //                    //Currency = c.x.EntryDataDetails.Sales.Currency,
-        //                    Customs_clearance_office_code = c.x.PreviousDocumentItem.AsycudaDocument.Customs_clearance_office_code,
-        //                    pQuantity = c.x.PreviousDocumentItem.xcuda_Tarification.xcuda_Supplementary_unit.FirstOrDefault(z => z.IsFirstRow == true).Suppplementary_unit_quantity,
-        //                    pRegistrationDate = (DateTime) c.x.PreviousDocumentItem.AsycudaDocument.RegistrationDate,
-        //                    pAssessmentDate = (DateTime) c.x.PreviousDocumentItem.AsycudaDocument.AssessmentDate,
-        //                    Country_of_origin_code =
-        //                        c.x.PreviousDocumentItem.xcuda_Goods_description.Country_of_origin_code,
-        //                    Total_CIF_itm =c.x.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm,
-        //                    Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm ,
-        //                    // Net_weight_itm = c.x.PreviousDocumentItem != null ? ctx.xcuda_Weight_itm.FirstOrDefault(q => q.Valuation_item_Id == x.PreviousItem_Id).Net_weight_itm: 0,
-        //                    previousItems = c.x.PreviousDocumentItem.EntryPreviousItems.Select(y => y.xcuda_PreviousItem)
-        //                            .Where(y => (y.xcuda_Item.AsycudaDocument.CNumber != null || y.xcuda_Item.AsycudaDocument.IsManuallyAssessed == true) && y.xcuda_Item.AsycudaDocument.Cancelled != true)
-        //                            .Select(z => new previousItems()
-        //                            {
-        //                                DutyFreePaid =
-        //                                    z.xcuda_Item.AsycudaDocument.DocumentType == "IM4"
-        //                                        ? "Duty Paid"
-        //                                        : "Duty Free",
-        //                                Net_weight = z.Net_weight,
-        //                                Suplementary_Quantity = z.Suplementary_Quantity
-        //                            }).ToList(),
-        //                    TariffSupUnitLkps =
-        //                        c.x.EntryDataDetails.EntryDataDetailsEx.InventoryItemsEx.TariffCodes.TariffCategory.TariffCategoryCodeSuppUnit.Select(x => x.TariffSupUnitLkps).ToList()
-        //                    //.Select(x => (ITariffSupUnitLkp)x)
-
-        //                }
-        //                )
-        //                //////////// prevent exwarehouse of item whos piQuantity > than AllocatedQuantity//////////
-
-        //                .ToList();
-
-
-
-
-        //        }
-        //        catch (Exception)
-        //        {
-        //            throw;
-        //        }
-        //    }
-        //    return res;
-        //}
-
-
+       
 
         private IEnumerable<AllocationDataBlock> CreateWholeAllocationDataBlocks(
             IEnumerable<EX9SalesAllocations> slstSource)
@@ -1648,95 +750,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             }
         }
 
-        private IEnumerable<AllocationDataBlock> CreateBreakOnMonthYearAllocationDataBlocks(
-            IEnumerable<EX9SalesAllocations> slstSource)
-        {
-            try
-            {
-                IEnumerable<AllocationDataBlock> slst;
-                if (PerIM7 == true)
-                {
-                    slst = CreatePerIM7AllocationDataBlocks(slstSource);
-                }
-                else
-                {
-                    slst = CreateAllocationDataBlocks(slstSource);
-                }
-                return slst;
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
-        }
-
-        private IEnumerable<AllocationDataBlock> CreateAllocationDataBlocks(
-            IEnumerable<EX9SalesAllocations> slstSource)
-        {
-            try
-            {
-                IEnumerable<AllocationDataBlock> slst;
-                slst = from s in slstSource
-                    group s by
-                        new
-                        {
-                            s.DutyFreePaid,
-                            MonthYear =
-                                Convert.ToDateTime(
-                                    s.InvoiceDate)
-                                    .ToString("MMM-yy")
-                        }
-                    into g
-                    select new AllocationDataBlock
-                    {
-                        MonthYear = g.Key.MonthYear,
-                        DutyFreePaid = g.Key.DutyFreePaid,
-                        Allocations = g.ToList(),
-                    };
-                return slst;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private IEnumerable<AllocationDataBlock> CreatePerIM7AllocationDataBlocks(
-            IEnumerable<EX9SalesAllocations> slstSource)
-        {
-            try
-            {
-
-                IEnumerable<AllocationDataBlock> slst;
-                slst = from s in slstSource
-                    group s by
-                        new
-                        {
-                            s.DutyFreePaid,
-                            MonthYear =
-                                Convert.ToDateTime(
-                                    s.InvoiceDate)
-                                    .ToString("MMM-yy"),
-                            CNumber = s.pCNumber
-                        }
-                    into g
-                    select new AllocationDataBlock
-                    {
-                        MonthYear = g.Key.MonthYear,
-                        DutyFreePaid = g.Key.DutyFreePaid,
-                        Allocations = g.ToList(),
-                        CNumber = g.Key.CNumber
-                    };
-                return slst;
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-        }
 
         private IEnumerable<MyPodData> PrepareAllocationsData(AllocationDataBlock monthyear, bool isGrouped)
         {
@@ -1976,8 +990,10 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
 
         public async Task<int> CreateEx9EntryAsync(MyPodData mypod, DocumentCT cdoc, int itmcount, string dfp,
             string monthyear,
-            string im7Type, List<ItemSalesPiSummary> itemSalesPiSummaryLst, bool checkQtyAllocatedGreaterThanPiQuantity,
-            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks)
+            string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
+            bool checkQtyAllocatedGreaterThanPiQuantity,
+            bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
+            bool overPIcheck)
         {
             try
             {
@@ -1985,83 +1001,63 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 /////////////// QtyAllocated >= piQuantity cap
                 /// 
                 if (checkQtyAllocatedGreaterThanPiQuantity)
-                    if (im7Type == "7000" || im7Type == "7400")
+                {
+                   
+                    var psum = mypod.EntlnData.pDocumentItem.previousItems
+                        .DistinctBy(x => x.PreviousItem_Id)
+                        .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum();
+                    if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
                     {
-                        var psum = mypod.EntlnData.pDocumentItem.previousItems
-                            .DistinctBy(x => x.PreviousItem_Id)
-                            .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum();
-                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
-                        {
-                            updateXStatus(mypod.Allocations,
-                                $@"Failed QtyAllocated <= PiQuantity:: QtyAllocated: {mypod.EntlnData.pDocumentItem.QtyAllocated} PiQuantity: {psum}");
-                            return 0;
-                        }
-                    }
-                    else
-                    {
-                        var psum = itemSalesPiSummaryLst.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
-                        if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
-                        {
-                            updateXStatus(mypod.Allocations,
-                                $@"Failed QtyAllocated <= PiQuantity:: QtyAllocated: {mypod.EntlnData.pDocumentItem.QtyAllocated} PiQuantity: {psum}");
-                            return 0;
-                        }
+                        updateXStatus(mypod.Allocations,
+                            $@"Failed QtyAllocated <= PiQuantity:: QtyAllocated: {
+                                    mypod.EntlnData.pDocumentItem.QtyAllocated
+                                } PiQuantity: {psum}");
+                        return 0;
                     }
 
+                   
+                }
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
 
-                List<ItemSalesPiSummary> salesPiAll = new List<ItemSalesPiSummary>(); ;
+                List<ItemSalesPiSummary> salesPiAll = new List<ItemSalesPiSummary>();
+                ;
                 List<ItemSalesPiSummary> salesPiHistoric;
                 List<ItemSalesPiSummary> salesPiCurrent;
                 List<ItemSalesPiSummary> itemSalesPiHistoric = new List<ItemSalesPiSummary>();
                 List<ItemSalesPiSummary> itemSalesPiCurrent = new List<ItemSalesPiSummary>();
-                if (im7Type == "7500")
-                {
-                    //TODO:Include itemSalesPiHistoric & itemSalesPiCurrent
-                    salesPiHistoric = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber &&
-                                                                       string.IsNullOrEmpty(x.pCNumber) &&
-                                                                       x.pLineNumber == 0 &&
-                                                                       x.Type == "Historic").ToList();
-                    salesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber &&
-                                                                      string.IsNullOrEmpty(x.pCNumber) &&
-                                                                      x.pLineNumber == 0 &&
-                                                                      x.Type == "Current").ToList();
 
-                }
-                else
-                {
-                    salesPiAll = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
+                salesPiAll = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
+                                                              && x.pCNumber == mypod.EntlnData.EX9Allocation
+                                                                  .pCNumber // donot disable this because previous month pi are not included
+                                                              && x.pLineNumber == mypod.EntlnData.pDocumentItem
+                                                                  .LineNumber
+                                                              && x.Type == "All").ToList();
+                salesPiHistoric = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
+                                                                   // took this out because of changed allocation can lead to overallocation
+                                                                   //eg HS/SAN2, nov 2018 - reallocated to HS/SAN2 but orignally allocated to HS-SAN2
+
+                                                                   //&& x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
+                                                                   //&& x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
+                                                                   && x.Type == "Historic").ToList();
+                salesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
                                                                   && x.pCNumber == mypod.EntlnData.EX9Allocation
                                                                       .pCNumber // donot disable this because previous month pi are not included
                                                                   && x.pLineNumber == mypod.EntlnData.pDocumentItem
                                                                       .LineNumber
-                                                                       && x.Type == "All").ToList();
-                    salesPiHistoric = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                                                                       // took this out because of changed allocation can lead to overallocation
-                                                                       //eg HS/SAN2, nov 2018 - reallocated to HS/SAN2 but orignally allocated to HS-SAN2
+                                                                  && x.Type == "Current").ToList();
 
-                                                                       //&& x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                                                                       //&& x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
+                itemSalesPiHistoric = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
+                                                                       && x.pCNumber == mypod.EntlnData
+                                                                           .EX9Allocation.pCNumber
+                                                                       && x.pLineNumber ==
+                                                                       mypod.EntlnData.pDocumentItem.LineNumber
                                                                        && x.Type == "Historic").ToList();
-                    salesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                                                                      && x.pCNumber == mypod.EntlnData.EX9Allocation
-                                                                          .pCNumber // donot disable this because previous month pi are not included
-                                                                      && x.pLineNumber == mypod.EntlnData.pDocumentItem
-                                                                          .LineNumber
-                                                                      && x.Type == "Current").ToList();
+                //itemSalesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
+                //                                                  && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
+                //                                                  && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
+                //                                                  && x.Type == "Current").ToList();
 
-                    itemSalesPiHistoric = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                                                                           && x.pCNumber == mypod.EntlnData
-                                                                               .EX9Allocation.pCNumber
-                                                                           && x.pLineNumber ==
-                                                                           mypod.EntlnData.pDocumentItem.LineNumber
-                                                                           && x.Type == "Historic").ToList();
-                    //itemSalesPiCurrent = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                    //                                                  && x.pCNumber == mypod.EntlnData.EX9Allocation.pCNumber
-                    //                                                  && x.pLineNumber == mypod.EntlnData.pDocumentItem.LineNumber
-                    //                                                  && x.Type == "Current").ToList();
-                }
 
                 Debug.WriteLine(
                     $"Create EX9 For {mypod.EntlnData.ItemNumber}:{mypod.EntlnData.EntryDataDetails.First().EntryDataDate:MMM-yy} - {mypod.EntlnData.Quantity} | C#{mypod.EntlnData.EX9Allocation.pCNumber}-{mypod.EntlnData.pDocumentItem.LineNumber}");
@@ -2078,19 +1074,25 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
-                var totalSalesAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated).DefaultIfEmpty(0).Sum();
-                var totalPiAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
-                var totalSalesHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated).DefaultIfEmpty(0).Sum();
-                var totalPiHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+                var totalSalesAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated)
+                    .DefaultIfEmpty(0).Sum();
+                var totalPiAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
+                    .DefaultIfEmpty(0).Sum();
+                var totalSalesHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id)
+                    .Select(x => x.First().pQtyAllocated).DefaultIfEmpty(0).Sum();
+                var totalPiHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
+                    .DefaultIfEmpty(0).Sum();
                 var totalSalesCurrent = salesPiCurrent.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();
-                var totalPiCurrent = salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+                var totalPiCurrent = salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
+                    .DefaultIfEmpty(0).Sum();
 
 
                 var preEx9Bucket = mypod.EntlnData.Quantity;
                 if (applyEx9Bucket)
                     if (ex9BucketType == "Current")
                     {
-                        await Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any()?salesPiCurrent: salesPiAll).ConfigureAwait(false);
+                        await Ex9Bucket(mypod, dfp, docPi, salesPiCurrent.Any() ? salesPiCurrent : salesPiAll)
+                            .ConfigureAwait(false);
                     }
                     else
                     {
@@ -2137,9 +1139,10 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 //////////////////////////////////////////////////////////////////////////
                 ///     Sales Cap/ Sales Bucket historic
 
-                
 
-                var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
+
+                var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id)
+                    .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
                 if (totalSalesAll == 0 && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped")
                 {
@@ -2149,31 +1152,31 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 }
 
 
-
-                if (Math.Round(totalSalesAll, 2) <
-                    Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
-                {
-                    updateXStatus(mypod.Allocations,
-                        $@"Failed All Sales Check:: Total All Sales:{Math.Round(totalSalesAll, 2)}
+                if (overPIcheck)
+                    if (Math.Round(totalSalesAll, 2) <
+                        Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
+                    {
+                        updateXStatus(mypod.Allocations,
+                            $@"Failed All Sales Check:: Total All Sales:{Math.Round(totalSalesAll, 2)}
                                Total All PI: {totalPiAll}
                                xQuantity:{mypod.EntlnData.Quantity}");
-                    return 0;
-                }
+                        return 0;
+                    }
 
 
                 if (applyHistoricChecks)
                 {
-                    
+
                     if (totalSalesHistoric == 0 && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped")
                     {
                         updateXStatus(mypod.Allocations,
                             $@"No Historical Sales Found");
                         return 0; // no sales found
                     }
-                
 
 
-                if (Math.Round(totalSalesHistoric, 2) <
+
+                    if (Math.Round(totalSalesHistoric, 2) <
                         Math.Round((totalPiHistoric + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
                     {
                         updateXStatus(mypod.Allocations,
@@ -2189,7 +1192,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 {
                     //////////////////////////////////////////////////////////////////////////
                     ///     Sales Cap/ Sales Bucket Current
-                    
+
 
                     if (totalSalesCurrent == 0 && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped")
                     {
@@ -2216,25 +1219,29 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 ////////////////////////////////////////////////////////////////////////
                 //// Cap to prevent over creation of ex9 vs Item Quantity espectially if creating Duty paid and Duty Free at same time
 
-                if (mypod.EntlnData.pDocumentItem.ItemQuantity < Math.Round((itemPiHistoric + docPi + mypod.EntlnData.Quantity) ,2))
+                if (mypod.EntlnData.pDocumentItem.ItemQuantity <
+                    Math.Round((itemPiHistoric + docPi + mypod.EntlnData.Quantity), 2))
                 {
                     updateXStatus(mypod.Allocations,
-                        $@"Failed ItemQuantity < ItemPIHistoric:: ItemQuantity:{mypod.EntlnData.pDocumentItem.ItemQuantity}
+                        $@"Failed ItemQuantity < ItemPIHistoric:: ItemQuantity:{
+                                mypod.EntlnData.pDocumentItem.ItemQuantity
+                            }
                                Item Historic PI: {itemPiHistoric}
                                xQuantity:{mypod.EntlnData.Quantity}");
                     return 0;
                 }
 
-                
+
                 //////////////////// can't delump allocations because of returns and 1kg weights issue too much items wont be able to exwarehouse
                 var itmsToBeCreated = 1;
                 var itmsCreated = 0;
 
-    
+
                 for (int i = 0; i < itmsToBeCreated; i++)
                 {
 
-                    var lineData = mypod.EntlnData; ///itmsToBeCreated == 1 ? mypod.EntlnData : CreateLineData(mypod, i);
+                    var lineData =
+                        mypod.EntlnData; ///itmsToBeCreated == 1 ? mypod.EntlnData : CreateLineData(mypod, i);
 
                     global::DocumentItemDS.Business.Entities.xcuda_PreviousItem pitm = CreatePreviousItem(
                         lineData,
@@ -2245,6 +1252,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                             $@"Failed PiQuantity < 0.01 :: PiQuantity:{Math.Round(pitm.Net_weight, 2)}");
                         return 0;
                     }
+
                     pitm.ASYCUDA_Id = cdoc.Document.ASYCUDA_Id;
 
 
@@ -2253,7 +1261,8 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                     itm.EmailId = lineData.EmailId;
                     itm.xcuda_Valuation_item.Total_CIF_itm = pitm.Current_value;
                     itm.xcuda_Tarification.xcuda_HScode.Precision_4 = lineData.pDocumentItem.ItemNumber;
-                    itm.xcuda_Goods_description.Commercial_Description = BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
+                    itm.xcuda_Goods_description.Commercial_Description =
+                        BaseDataModel.Instance.CleanText(lineData.pDocumentItem.Description);
                     itm.IsAssessed = false;
                     itm.SalesFactor = lineData.EX9Allocation.SalesFactor;
                     //TODO:Refactor this dup code
@@ -2270,85 +1279,99 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                                 TrackingState = TrackingState.Added
                             });
 
-                            itmcnt = AddFreeText(itmcnt, itm, allo.EntryDataDetails.EntryDataId, allo.EntryDataDetails.LineNumber.GetValueOrDefault(), allo.EntryDataDetails.Comment, mypod.EntlnData.ItemNumber);
+                            itmcnt = AddFreeText(itmcnt, itm, allo.EntryDataDetails.EntryDataId,
+                                allo.EntryDataDetails.LineNumber.GetValueOrDefault(), allo.EntryDataDetails.Comment,
+                                mypod.EntlnData.ItemNumber);
                         }
 
-                       
+
                     }
 
 
-                    if (im7Type == "7000" || im7Type == "7400")
+
+                    itm.xcuda_PreviousItem = pitm;
+                    pitm.xcuda_Item = itm;
+
+                    var ep = new EntryPreviousItems(true)
                     {
-                        itm.xcuda_PreviousItem = pitm;
-                        pitm.xcuda_Item = itm;
-
-                        var ep = new EntryPreviousItems(true) { Item_Id = lineData.PreviousDocumentItemId, PreviousItem_Id = pitm.PreviousItem_Id, TrackingState = TrackingState.Added };
-                        pitm.xcuda_Items.Add(ep);
-
-
+                        Item_Id = lineData.PreviousDocumentItemId,
+                        PreviousItem_Id = pitm.PreviousItem_Id,
+                        TrackingState = TrackingState.Added
+                    };
+                    pitm.xcuda_Items.Add(ep);
 
 
 
-                        if (cdoc.DocumentItems.Select(x => x.xcuda_PreviousItem).Count() == 1 || itmcount == 0)
+
+
+                    if (cdoc.DocumentItems.Select(x => x.xcuda_PreviousItem).Count() == 1 || itmcount == 0)
+                    {
+                        pitm.Packages_number = "1"; //(i.Packages.Number_of_packages).ToString();
+                        pitm.Previous_Packages_number = pitm.Previous_item_number == "1" ? "1" : "0";
+
+
+                        itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
                         {
-                            pitm.Packages_number = "1"; //(i.Packages.Number_of_packages).ToString();
-                            pitm.Previous_Packages_number = pitm.Previous_item_number == "1" ? "1" : "0";
-
-                            
-                                itm.xcuda_Attached_documents.Add(new xcuda_Attached_documents(true)
+                            Attached_document_code =
+                                BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x =>
+                                    x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties
+                                        .Customs_Procedure.CustomsProcedure)?.AttachedDocumentCode ?? "DFS1",
+                            Attached_document_date = DateTime.Today.Date.ToShortDateString(),
+                            Attached_document_reference = cdoc.Document.ReferenceNumber,
+                            xcuda_Attachments = new List<xcuda_Attachments>()
+                            {
+                                new xcuda_Attachments(true)
                                 {
-                                    Attached_document_code = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(x => x.Customs_Procedure == cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.DisplayName)?.AttachedDocumentCode ?? "DFS1",
-                                    Attached_document_date = DateTime.Today.Date.ToShortDateString(),
-                                    Attached_document_reference = cdoc.Document.ReferenceNumber,
-                                    xcuda_Attachments = new List<xcuda_Attachments>()
+                                    Attachments = new Attachments(true)
                                     {
-                                        new xcuda_Attachments(true)
-                                        {
-                                            Attachments = new Attachments(true)
-                                            {
-                                                FilePath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number,
-                                                    cdoc.Document.ReferenceNumber + ".csv.pdf"),
-                                                TrackingState = TrackingState.Added,
-                                                DocumentCode = "DFS1",
-                                                Reference = cdoc.Document.ReferenceNumber ,
-                                            },
-                                            
-                                            TrackingState = TrackingState.Added
-                                        }
+                                        FilePath = Path.Combine(
+                                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                                            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
+                                                .Declarant_Reference_Number,
+                                            cdoc.Document.ReferenceNumber + ".csv.pdf"),
+                                        TrackingState = TrackingState.Added,
+                                        DocumentCode = "DFS1",
+                                        EmailId = lineData.EmailId.ToString(),
+                                        Reference = cdoc.Document.ReferenceNumber,
                                     },
+
                                     TrackingState = TrackingState.Added
-                                });
+                                }
+                            },
+                            TrackingState = TrackingState.Added
+                        });
 
-                               
-                           
 
 
-                        }
-                        else
+
+
+                    }
+                    else
+                    {
+                        if (pitm.Packages_number == null)
                         {
-                            if (pitm.Packages_number == null)
-                            {
-                                pitm.Packages_number = (0).ToString(CultureInfo.InvariantCulture);
-                                pitm.Previous_Packages_number = (0).ToString(CultureInfo.InvariantCulture);
-                            }
-                        }
-                        if (pitm.Previous_Packages_number != null && pitm.Previous_Packages_number != "0")
-                        {
-                            var pkg = itm.xcuda_Packages.FirstOrDefault();
-                            if (pkg == null)
-                            {
-                                pkg = new xcuda_Packages(true)
-                                {
-                                    Item_Id = itm.Item_Id,
-                                    TrackingState = TrackingState.Added
-                                };
-                                itm.xcuda_Packages.Add(pkg);
-                            }
-                            pkg.Number_of_packages =
-                                Convert.ToDouble(pitm.Previous_Packages_number);
+                            pitm.Packages_number = (0).ToString(CultureInfo.InvariantCulture);
+                            pitm.Previous_Packages_number = (0).ToString(CultureInfo.InvariantCulture);
                         }
                     }
+
+                    if (pitm.Previous_Packages_number != null && pitm.Previous_Packages_number != "0")
+                    {
+                        var pkg = itm.xcuda_Packages.FirstOrDefault();
+                        if (pkg == null)
+                        {
+                            pkg = new xcuda_Packages(true)
+                            {
+                                Item_Id = itm.Item_Id,
+                                TrackingState = TrackingState.Added
+                            };
+                            itm.xcuda_Packages.Add(pkg);
+                        }
+
+                        pkg.Number_of_packages =
+                            Convert.ToDouble(pitm.Previous_Packages_number);
+                    }
+
 
 
 
@@ -2679,7 +1702,7 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
             }
         }
 
-        public void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string im7Type, string ex9Type)
+        public void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string DocumentType)
         {
             try
             {
@@ -2687,59 +1710,26 @@ GROUP BY AllocationsItemNameMapping.ItemNumber, SIM.QtySold, ISNULL(SEX.PiQuanti
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
                 BaseDataModel.Instance.IntCdoc(cdoc, ads);
                 Customs_Procedure customsProcedure;
-                
-                switch (ex9Type)
+                var isPaid = dfp == "Duty Paid" ;
+                Func<Customs_Procedure, bool> dtpredicate = x => false;
+                switch (DocumentType)
                 {
-                    case "EX9":
-
-
-                        cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = "Duty Free Entries";
-                        customsProcedure =
-                            BaseDataModel.Instance.Customs_Procedures.AsEnumerable()
-                                .FirstOrDefault(x =>
-                                    x.DisplayName == (im7Type == "7000" ? "9071-000" : "9072-000") ||
-                                    x.DisplayName == (im7Type == "7400" ? "9074-000" : "9075-000"));
-
+                    case "Sales":
+                        dtpredicate = x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Sales == true && x.IsPaid == isPaid;
                         break;
-                    case "IM4":
-
-                        cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = "Duty Paid Entries";
-                        customsProcedure = BaseDataModel.Instance.Customs_Procedures.AsEnumerable()
-                            .FirstOrDefault(
-                                x =>
-                                    x.DisplayName == (im7Type == "7000" ? "4071-000" : "4072-000") ||
-                                    x.DisplayName == (im7Type == "7400" ? "4074-000" : "4075-000"));
-
-
-
-
+                    case "DIS":
+                        dtpredicate = x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Discrepancy == true && x.IsPaid == isPaid;
                         break;
-                    case "IM4-801":
-
-                        cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = "Duty Paid Entries";
-                        customsProcedure = BaseDataModel.Instance.Customs_Procedures.AsEnumerable()
-                            .FirstOrDefault(
-                                x =>
-                                    x.DisplayName == (im7Type == "7000" ? "4071-000" : "4072-000") ||
-                                    x.DisplayName == (im7Type == "7400" ? "4074-801" : "4075-801"));
-
-
-
-
-                        break;
-                    case "IM9":
-                        cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = "Adjustment Short Entries";
-                        customsProcedure = BaseDataModel.Instance.Customs_Procedures.AsEnumerable()
-                            .FirstOrDefault(
-                                x =>
-                                    x.DisplayName == (im7Type == "7000" ? "9370-EXW" : "9371-EXW") ||
-                                    x.DisplayName == (im7Type == "7400" ? "9374-EXW" : "9375-EXW"));
+                    case "ADJ":
+                        dtpredicate = x => x.CustomsOperationId == (int)CustomsOperations.Exwarehouse && x.Adjustment == true && x.IsPaid == isPaid;
                         break;
                     default:
-                        throw new ApplicationException("Unspecified Ex9 Type");
-
+                        throw new ApplicationException("Document Type");
 
                 }
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = $"{DocumentType } {dfp} Entries";
+                
+                customsProcedure = BaseDataModel.Instance.Customs_Procedures.Single(dtpredicate);
 
                 BaseDataModel.Instance.AttachCustomProcedure(cdoc, customsProcedure);
                 AllocationsModel.Instance.AddDutyFreePaidtoRef(cdoc, dfp, ads);

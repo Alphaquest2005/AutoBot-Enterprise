@@ -4,13 +4,13 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="57">
+      <Diagram DiagramId="854f53cbf00c44538b256d1947980b44" Name="Diagram1" ZoomLevel="49">
         <EntityTypeShape EntityType="WaterNutDBModel.ApplicationSettings" Width="1.5" PointX="0.5" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument" Width="2.375" PointX="7.75" PointY="1.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItem" Width="2.375" PointX="11.25" PointY="1.5" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentAsycudaDocumentItem" />
         <EntityTypeShape EntityType="WaterNutDBModel.Customs_Procedure" Width="1.5" PointX="2.875" PointY="5.875" />
-        <EntityTypeShape EntityType="WaterNutDBModel.Document_Type" Width="1.5" PointX="2.75" PointY="10.625" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Document_Type" Width="1.5" PointX="2.25" PointY="11.75" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_Document_Type" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEx" Width="2.375" PointX="4.875" PointY="1.5" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocument" />
@@ -27,8 +27,8 @@
         <AssociationConnector Association="WaterNutDBModel.ApplicationSettingsAsycudaDocumentSetEx" />
         <AssociationConnector Association="WaterNutDBModel.ApplicationSettingsAsycudaDocument" />
         <AssociationConnector Association="WaterNutDBModel.ApplicationSettingsAsycudaDocumentItem" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemX" Width="2.125" PointX="7.375" PointY="12.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAliasX" Width="1.5" PointX="10.625" PointY="13.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemX" Width="2.125" PointX="7.125" PointY="13.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAliasX" Width="2.125" PointX="10.625" PointY="13.125" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExInventoryItemAliasEx" />
         <AssociationConnector Association="WaterNutDBModel.ApplicationSettingsInventoryItemsEx" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExAsycudaDocumentItem" />
@@ -43,7 +43,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.Attachments" Width="1.5" PointX="16.75" PointY="15.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_AsycudaDocumentSet_Attachments_Attachments" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSet_Attachments" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EmailMapping" Width="1.5" PointX="2.75" PointY="21.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailMapping" Width="2.625" PointX="3.375" PointY="21.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_UnallocatedSales" Width="1.5" PointX="13.375" PointY="15.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.Contacts" Width="1.5" PointX="5.625" PointY="18.25" />
@@ -116,6 +116,18 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitIncompleteSupplierInfo" Width="1.5" PointX="15.375" PointY="18.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_C71ToCreate" Width="1.5" PointX="28.5" PointY="13.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToCreate" Width="1.5" PointX="28.625" PointY="18.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_DiscrepanciesErrors" Width="2.125" PointX="28.375" PointY="23.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitPOInfo" Width="1.5" PointX="29.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperations" Width="1.5" PointX="0.875" PointY="28.625" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
+        <AssociationConnector Association="WaterNutDBModel.Customs_ProcedureAsycudaDocument" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EmailInfoMappings" Width="2.125" PointX="6.25" PointY="30.5" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailInfoMappings_EmailMapping" />
+        <AssociationConnector Association="WaterNutDBModel.FK_EmailInfoMappings_InfoMapping" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitAllXMLToCustoms" Width="1.5" PointX="29.375" PointY="6.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSetToAssess" Width="1.5" PointX="12.375" PointY="30.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEntryDataEx" Width="2.625" PointX="16.875" PointY="1.125" />
+        <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetEntryDataEx" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

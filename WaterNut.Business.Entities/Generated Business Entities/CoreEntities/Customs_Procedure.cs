@@ -20,6 +20,11 @@ namespace CoreEntities.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Customs_Procedure : BaseEntity<Customs_Procedure>, ITrackable 
     {
+        partial void AutoGenStartUp() //Customs_Procedure()
+        {
+            this.AsycudaDocument = new List<AsycudaDocument>();
+        }
+
         [DataMember]
         public int Document_TypeId 
         {
@@ -81,36 +86,6 @@ namespace CoreEntities.Business.Entities
         }
         string _national_customs_procedure;
         [DataMember]
-        public Nullable<bool> IsDefault 
-        {
-            get
-            {
-                return _isdefault;
-            }
-            set
-            {
-                _isdefault = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<bool> _isdefault;
-        [DataMember]
-        public Nullable<bool> IsImportExport 
-        {
-            get
-            {
-                return _isimportexport;
-            }
-            set
-            {
-                _isimportexport = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<bool> _isimportexport;
-        [DataMember]
         public string CustomsProcedure 
         {
             get
@@ -126,7 +101,146 @@ namespace CoreEntities.Business.Entities
         }
         string _customsprocedure;
         [DataMember]
+        public Nullable<bool> IsObsolete 
+        {
+            get
+            {
+                return _isobsolete;
+            }
+            set
+            {
+                _isobsolete = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isobsolete;
+        [DataMember]
+        public Nullable<bool> IsPaid 
+        {
+            get
+            {
+                return _ispaid;
+            }
+            set
+            {
+                _ispaid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _ispaid;
+        [DataMember]
+        public Nullable<int> BondTypeId 
+        {
+            get
+            {
+                return _bondtypeid;
+            }
+            set
+            {
+                _bondtypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _bondtypeid;
+        [DataMember]
+        public Nullable<bool> Stock 
+        {
+            get
+            {
+                return _stock;
+            }
+            set
+            {
+                _stock = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _stock;
+        [DataMember]
+        public Nullable<bool> Discrepancy 
+        {
+            get
+            {
+                return _discrepancy;
+            }
+            set
+            {
+                _discrepancy = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _discrepancy;
+        [DataMember]
+        public Nullable<bool> Adjustment 
+        {
+            get
+            {
+                return _adjustment;
+            }
+            set
+            {
+                _adjustment = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _adjustment;
+        [DataMember]
+        public Nullable<bool> Sales 
+        {
+            get
+            {
+                return _sales;
+            }
+            set
+            {
+                _sales = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _sales;
+        [DataMember]
+        public int CustomsOperationId 
+        {
+            get
+            {
+                return _customsoperationid;
+            }
+            set
+            {
+                _customsoperationid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _customsoperationid;
+        [DataMember]
+        public Nullable<bool> SubmitToCustoms 
+        {
+            get
+            {
+                return _submittocustoms;
+            }
+            set
+            {
+                _submittocustoms = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _submittocustoms;
+        [DataMember]
         public Document_Type Document_Type { get; set; }
+        [DataMember]
+        public CustomsOperations CustomsOperations { get; set; }
+        [DataMember]
+        public List<AsycudaDocument> AsycudaDocument { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

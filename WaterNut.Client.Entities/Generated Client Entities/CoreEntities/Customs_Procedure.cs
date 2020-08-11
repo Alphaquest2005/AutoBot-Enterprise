@@ -42,6 +42,9 @@ namespace CoreEntities.Client.Entities
                 customs_procedure = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= "Document_Type is required")]
        
 public int Document_TypeId
@@ -108,36 +111,6 @@ public string National_customs_procedure
 
        
        
-public Nullable<bool> IsDefault
-		{ 
-		    get { return this.customs_procedure.IsDefault; }
-			set
-			{
-			    if (value == this.customs_procedure.IsDefault) return;
-				this.customs_procedure.IsDefault = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("IsDefault");
-			}
-		}
-     
-
-       
-       
-public Nullable<bool> IsImportExport
-		{ 
-		    get { return this.customs_procedure.IsImportExport; }
-			set
-			{
-			    if (value == this.customs_procedure.IsImportExport) return;
-				this.customs_procedure.IsImportExport = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("IsImportExport");
-			}
-		}
-     
-
-       
-       
                 
                 [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
 public string CustomsProcedure
@@ -149,6 +122,141 @@ public string CustomsProcedure
 				this.customs_procedure.CustomsProcedure = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("CustomsProcedure");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> IsObsolete
+		{ 
+		    get { return this.customs_procedure.IsObsolete; }
+			set
+			{
+			    if (value == this.customs_procedure.IsObsolete) return;
+				this.customs_procedure.IsObsolete = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsObsolete");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> IsPaid
+		{ 
+		    get { return this.customs_procedure.IsPaid; }
+			set
+			{
+			    if (value == this.customs_procedure.IsPaid) return;
+				this.customs_procedure.IsPaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsPaid");
+			}
+		}
+     
+
+       
+       
+public Nullable<int> BondTypeId
+		{ 
+		    get { return this.customs_procedure.BondTypeId; }
+			set
+			{
+			    if (value == this.customs_procedure.BondTypeId) return;
+				this.customs_procedure.BondTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("BondTypeId");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> Stock
+		{ 
+		    get { return this.customs_procedure.Stock; }
+			set
+			{
+			    if (value == this.customs_procedure.Stock) return;
+				this.customs_procedure.Stock = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Stock");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> Discrepancy
+		{ 
+		    get { return this.customs_procedure.Discrepancy; }
+			set
+			{
+			    if (value == this.customs_procedure.Discrepancy) return;
+				this.customs_procedure.Discrepancy = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Discrepancy");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> Adjustment
+		{ 
+		    get { return this.customs_procedure.Adjustment; }
+			set
+			{
+			    if (value == this.customs_procedure.Adjustment) return;
+				this.customs_procedure.Adjustment = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Adjustment");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> Sales
+		{ 
+		    get { return this.customs_procedure.Sales; }
+			set
+			{
+			    if (value == this.customs_procedure.Sales) return;
+				this.customs_procedure.Sales = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Sales");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "CustomsOperation is required")]
+       
+public int CustomsOperationId
+		{ 
+		    get { return this.customs_procedure.CustomsOperationId; }
+			set
+			{
+			    if (value == this.customs_procedure.CustomsOperationId) return;
+				this.customs_procedure.CustomsOperationId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsOperationId");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> SubmitToCustoms
+		{ 
+		    get { return this.customs_procedure.SubmitToCustoms; }
+			set
+			{
+			    if (value == this.customs_procedure.SubmitToCustoms) return;
+				this.customs_procedure.SubmitToCustoms = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SubmitToCustoms");
 			}
 		}
      
@@ -205,6 +313,113 @@ public string CustomsProcedure
 			}
 		}
         
+
+       private CustomsOperations _CustomsOperations;
+        public  CustomsOperations CustomsOperations
+		{
+		    get
+               { 
+                  if (this.customs_procedure != null)
+                   {
+                       if (_CustomsOperations != null)
+                       {
+                           if (this.customs_procedure.CustomsOperations !=
+                               _CustomsOperations.DTO)
+                           {
+                                if (this.customs_procedure.CustomsOperations  != null)
+                               _CustomsOperations = new CustomsOperations(this.customs_procedure.CustomsOperations);
+                           }
+                       }
+                       else
+                       {
+                             if (this.customs_procedure.CustomsOperations  != null)
+                           _CustomsOperations = new CustomsOperations(this.customs_procedure.CustomsOperations);
+                       }
+                   }
+
+
+             //       if (_CustomsOperations != null) return _CustomsOperations;
+                       
+             //       var i = new CustomsOperations(){TrackingState = TrackingState.Added};
+			//		//if (this.customs_procedure.CustomsOperations == null) Debugger.Break();
+			//		if (this.customs_procedure.CustomsOperations != null)
+            //        {
+            //           i. = this.customs_procedure.CustomsOperations;
+            //        }
+            //        else
+            //        {
+            //            this.customs_procedure.CustomsOperations = i.;
+             //       }
+                           
+            //        _CustomsOperations = i;
+                     
+                    return _CustomsOperations;
+               }
+			set
+			{
+			    if (value == _CustomsOperations) return;
+                _CustomsOperations = value;
+                if(value != null)
+                     this.customs_procedure.CustomsOperations = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("CustomsOperations");
+			}
+		}
+        
+
+        ObservableCollection<AsycudaDocument> _AsycudaDocument = null;
+        public  ObservableCollection<AsycudaDocument> AsycudaDocument
+		{
+            
+		    get 
+				{ 
+					if(_AsycudaDocument != null) return _AsycudaDocument;
+					//if (this.customs_procedure.AsycudaDocument == null) Debugger.Break();
+					if(this.customs_procedure.AsycudaDocument != null)
+					{
+						_AsycudaDocument = new ObservableCollection<AsycudaDocument>(this.customs_procedure.AsycudaDocument.Select(x => new AsycudaDocument(x)));
+					}
+					
+						_AsycudaDocument.CollectionChanged += AsycudaDocument_CollectionChanged; 
+					
+					return _AsycudaDocument; 
+				}
+			set
+			{
+			    if (Equals(value, _AsycudaDocument)) return;
+				if (value != null)
+					this.customs_procedure.AsycudaDocument = new ChangeTrackingCollection<DTO.AsycudaDocument>(value.Select(x => x.DTO).ToList());
+                _AsycudaDocument = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_AsycudaDocument != null)
+				_AsycudaDocument.CollectionChanged += AsycudaDocument_CollectionChanged;               
+				NotifyPropertyChanged("AsycudaDocument");
+			}
+		}
+        
+        void AsycudaDocument_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (AsycudaDocument itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        customs_procedure.AsycudaDocument.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (AsycudaDocument itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        customs_procedure.AsycudaDocument.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.Customs_Procedure> _changeTracker;    

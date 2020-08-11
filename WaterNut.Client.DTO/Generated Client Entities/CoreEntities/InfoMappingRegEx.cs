@@ -99,6 +99,45 @@ namespace CoreEntities.Client.DTO
 		}
         private string _FieldReplaceRx;
 
+        [DataMember]
+        public string LineRegx
+		{ 
+		    get { return _LineRegx; }
+			set
+			{
+			    if (value == _LineRegx) return;
+				_LineRegx = value;
+				NotifyPropertyChanged();//m => this.LineRegx
+			}
+		}
+        private string _LineRegx;
+
+        [DataMember]
+        public string KeyValue
+		{ 
+		    get { return _KeyValue; }
+			set
+			{
+			    if (value == _KeyValue) return;
+				_KeyValue = value;
+				NotifyPropertyChanged();//m => this.KeyValue
+			}
+		}
+        private string _KeyValue;
+
+        [DataMember]
+        public string FieldValue
+		{ 
+		    get { return _FieldValue; }
+			set
+			{
+			    if (value == _FieldValue) return;
+				_FieldValue = value;
+				NotifyPropertyChanged();//m => this.FieldValue
+			}
+		}
+        private string _FieldValue;
+
        
         [DataMember]
         public InfoMapping InfoMapping

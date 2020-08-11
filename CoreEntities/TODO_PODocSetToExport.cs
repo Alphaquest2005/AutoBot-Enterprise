@@ -32,5 +32,8 @@ namespace CoreEntities
         public Nullable<double> TotalCIF { get; set; }
         public Nullable<int> HasC71 { get; set; }
         public Nullable<int> HasLicense { get; set; }
+        public Nullable<double> TotalFreight { get; set; }
+        public Nullable<int> ClassifiedLines { get; set; }
+        public Nullable<int> TotalLines { get; set; }
     }
 }

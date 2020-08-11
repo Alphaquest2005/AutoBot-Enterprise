@@ -226,6 +226,36 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _parentfiletypeid;
         [DataMember]
+        public Nullable<bool> OverwriteFiles 
+        {
+            get
+            {
+                return _overwritefiles;
+            }
+            set
+            {
+                _overwritefiles = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _overwritefiles;
+        [DataMember]
+        public Nullable<bool> HasFiles 
+        {
+            get
+            {
+                return _hasfiles;
+            }
+            set
+            {
+                _hasfiles = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _hasfiles;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

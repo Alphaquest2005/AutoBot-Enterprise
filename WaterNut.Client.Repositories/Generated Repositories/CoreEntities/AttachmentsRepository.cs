@@ -365,7 +365,35 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<Attachments>> GetAttachmentsByEmailId(string EmailId, List<string> includesLst = null)
+        {
+             if (EmailId == "0") return null;
+            try
+            {
+                 using (AttachmentsClient t = new AttachmentsClient())
+                    {
+                        var res = await t.GetAttachmentsByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Attachments(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

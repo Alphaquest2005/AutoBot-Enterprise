@@ -20,6 +20,7 @@ namespace CoreEntities
             this.LicenceSummary = new HashSet<LicenceSummary>();
             this.FileTypes = new HashSet<FileTypes>();
             this.AsycudaDocumentSet_Attachments = new HashSet<AsycudaDocumentSet_Attachments>();
+            this.AsycudaDocumentSetEntryDataEx = new HashSet<AsycudaDocumentSetEntryDataEx>();
         }
     
         public int AsycudaDocumentSetId { get; set; }
@@ -51,11 +52,14 @@ namespace CoreEntities
         public Nullable<int> LicenseLines { get; set; }
         public Nullable<double> InvoiceTotal { get; set; }
         public string FreightCurrencyCode { get; set; }
+        public Nullable<int> QtyLicensesRequired { get; set; }
+        public Nullable<int> EntryPackages { get; set; }
     
         public virtual ICollection<AsycudaDocument> AsycudaDocuments { get; set; }
         public virtual ICollection<LicenceSummary> LicenceSummary { get; set; }
         public virtual ApplicationSettings ApplicationSettings { get; set; }
         public virtual ICollection<FileTypes> FileTypes { get; set; }
         public virtual ICollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }
+        public virtual ICollection<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx { get; set; }
     }
 }

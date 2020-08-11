@@ -20,6 +20,9 @@ namespace CoreEntities
         public string FieldRx { get; set; }
         public string KeyReplaceRx { get; set; }
         public string FieldReplaceRx { get; set; }
+        public string LineRegx { get; set; }
+        public string KeyValue { get; set; }
+        public string FieldValue { get; set; }
     
         public virtual InfoMapping InfoMapping { get; set; }
     }

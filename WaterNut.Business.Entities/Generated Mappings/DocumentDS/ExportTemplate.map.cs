@@ -41,6 +41,8 @@
               this.Property(t => t.Deffered_payment_reference).HasColumnName("Deffered_payment_reference").HasMaxLength(100);
               this.Property(t => t.AttachedDocumentCode).HasColumnName("AttachedDocumentCode").HasMaxLength(100);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.Manifest).HasColumnName("Manifest").HasMaxLength(100);
+              this.Property(t => t.BL).HasColumnName("BL").HasMaxLength(100);
               this.HasMany(t => t.xcuda_ASYCUDA_ExtendedProperties).WithOptional(t => t.ExportTemplate).HasForeignKey(d => d.ExportTemplateId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

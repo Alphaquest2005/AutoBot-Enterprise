@@ -26,6 +26,8 @@
               this.Property(t => t.MergeEmails).HasColumnName("MergeEmails");
               this.Property(t => t.CopyEntryData).HasColumnName("CopyEntryData");
               this.Property(t => t.ParentFileTypeId).HasColumnName("ParentFileTypeId");
+              this.Property(t => t.OverwriteFiles).HasColumnName("OverwriteFiles");
+              this.Property(t => t.HasFiles).HasColumnName("HasFiles");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.FileGroups).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.FileGroupId);

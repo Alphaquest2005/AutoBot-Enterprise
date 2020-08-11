@@ -115,9 +115,9 @@ namespace DocumentDS.Business.Entities
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas { get; set; }
         [DataMember]
-        public xcuda_ASYCUDA_ExtendedProperties xcuda_ASYCUDA_ExtendedProperties { get; set; }
-        [DataMember]
         public List<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
+        [DataMember]
+        public xcuda_ASYCUDA_ExtendedProperties xcuda_ASYCUDA_ExtendedProperties { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

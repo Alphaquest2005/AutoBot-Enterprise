@@ -55,6 +55,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			InventoryItemsExes = new VirtualList<InventoryItemsEx>(vloader);
@@ -135,6 +136,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
             void CurrentInventoryItemsEx__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentInventoryItemsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentInventoryItemsEx.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnInventoryItemsExesChanged(object sender, NotificationEventArgs e)
         {
@@ -146,6 +151,20 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    InventoryItemsExes.Refresh();
+					NotifyPropertyChanged(x => this.InventoryItemsExes);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()

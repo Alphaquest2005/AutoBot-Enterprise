@@ -361,14 +361,14 @@ namespace AdjustmentQS.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
+	 public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null)
         {
-             if (EntryData_Id == "0") return null;
+             if (EntryDataId == "0") return null;
             try
             {
                  using (TODO_AdjustmentOversToXMLClient t = new TODO_AdjustmentOversToXMLClient())
                     {
-                        var res = await t.GetTODO_AdjustmentOversToXMLByEntryData_Id(EntryData_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetTODO_AdjustmentOversToXMLByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new TODO_AdjustmentOversToXML(x)).AsEnumerable();
@@ -389,14 +389,14 @@ namespace AdjustmentQS.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null)
+ 	 public async Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
-             if (EntryDataId == "0") return null;
+             if (AsycudaDocumentSetId == "0") return null;
             try
             {
                  using (TODO_AdjustmentOversToXMLClient t = new TODO_AdjustmentOversToXMLClient())
                     {
-                        var res = await t.GetTODO_AdjustmentOversToXMLByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetTODO_AdjustmentOversToXMLByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new TODO_AdjustmentOversToXML(x)).AsEnumerable();

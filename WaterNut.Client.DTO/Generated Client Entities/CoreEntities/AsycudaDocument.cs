@@ -463,6 +463,45 @@ namespace CoreEntities.Client.DTO
 		}
         private string _CustomsProcedure;
 
+        [DataMember]
+        public Nullable<int> CustomsOperationId
+		{ 
+		    get { return _CustomsOperationId; }
+			set
+			{
+			    if (value == _CustomsOperationId) return;
+				_CustomsOperationId = value;
+				NotifyPropertyChanged();//m => this.CustomsOperationId
+			}
+		}
+        private Nullable<int> _CustomsOperationId;
+
+        [DataMember]
+        public Nullable<bool> IsPaid
+		{ 
+		    get { return _IsPaid; }
+			set
+			{
+			    if (value == _IsPaid) return;
+				_IsPaid = value;
+				NotifyPropertyChanged();//m => this.IsPaid
+			}
+		}
+        private Nullable<bool> _IsPaid;
+
+        [DataMember]
+        public Nullable<bool> SubmitToCustoms
+		{ 
+		    get { return _SubmitToCustoms; }
+			set
+			{
+			    if (value == _SubmitToCustoms) return;
+				_SubmitToCustoms = value;
+				NotifyPropertyChanged();//m => this.SubmitToCustoms
+			}
+		}
+        private Nullable<bool> _SubmitToCustoms;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentItem> AsycudaDocumentItems
@@ -508,6 +547,22 @@ namespace CoreEntities.Client.DTO
 		}
         private ApplicationSettings _ApplicationSettings;
         private ChangeTrackingCollection<ApplicationSettings> ApplicationSettingsChangeTracker { get; set; }
+
+        [DataMember]
+        public Customs_Procedure Customs_Procedure
+		{
+		    get { return _Customs_Procedure; }
+			set
+			{
+			    if (value == _Customs_Procedure) return;
+				_Customs_Procedure = value;
+                Customs_ProcedureChangeTracker = _Customs_Procedure == null ? null
+                    : new ChangeTrackingCollection<Customs_Procedure> { _Customs_Procedure };
+				NotifyPropertyChanged();//m => this.Customs_Procedure
+			}
+		}
+        private Customs_Procedure _Customs_Procedure;
+        private ChangeTrackingCollection<Customs_Procedure> Customs_ProcedureChangeTracker { get; set; }
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

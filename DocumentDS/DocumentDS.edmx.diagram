@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="d2df53f1a16547b1ae489592c6eb455f" Name="Diagram1" ZoomLevel="67">
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet" Width="2.125" PointX="0.5" PointY="63.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.Customs_Procedure" Width="1.5" PointX="1.5" PointY="72.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Customs_Procedure" Width="3.125" PointX="0.875" PointY="72.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.Document_Type" Width="1.5" PointX="1.5" PointY="80.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.ExportTemplate" Width="1.5" PointX="1.5" PointY="39.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Assessment" Width="1.5" PointX="5.25" PointY="16.625" />
@@ -120,7 +120,6 @@
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Customs_Procedure" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_Document_Type" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ASYCUDA_ExtendedProperties_ExportTemplate" />
-        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocument_Attachments" Width="1.5" PointX="10.875" PointY="30.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSet_Attachments" Width="2.375" PointX="10.875" PointY="34.875" />
         <EntityTypeShape EntityType="WaterNutDBModel.Attachment" Width="1.5" PointX="8.625" PointY="2.5" />
@@ -137,6 +136,9 @@
         <EntityTypeShape EntityType="WaterNutDBModel.SystemDocumentSet" Width="1.5" PointX="3.375" PointY="57.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_SystemDocumentSets_AsycudaDocumentSet" />
         <AssociationConnector Association="WaterNutDBModel.FK_FileTypes_FileTypes" />
+        <AssociationConnector Association="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" />
+        <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperation" Width="2" PointX="7.875" PointY="73.25" />
+        <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

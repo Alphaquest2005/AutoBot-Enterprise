@@ -230,6 +230,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<double> _totalcif;
+        [DataMember]
+        public Nullable<double> C71Total 
+        {
+            get
+            {
+                return _c71total;
+            }
+            set
+            {
+                _c71total = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _c71total;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

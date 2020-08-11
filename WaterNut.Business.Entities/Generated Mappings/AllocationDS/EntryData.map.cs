@@ -30,6 +30,7 @@
               this.Property(t => t.TotalDeduction).HasColumnName("TotalDeduction");
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.Property(t => t.Packages).HasColumnName("Packages");
               this.HasMany(t => t.EntryDataDetails1).WithRequired(t => (EntryData)t.EntryData);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

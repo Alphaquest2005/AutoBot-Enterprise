@@ -126,6 +126,23 @@ public int ApplicationSettingsId
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EntityKeyField has a max length of 50 letters ")]
+public string EntityKeyField
+		{ 
+		    get { return this.infomapping.EntityKeyField; }
+			set
+			{
+			    if (value == this.infomapping.EntityKeyField) return;
+				this.infomapping.EntityKeyField = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntityKeyField");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{
@@ -226,6 +243,60 @@ public int ApplicationSettingsId
                     {
                         if (itm != null)
                         infomapping.InfoMappingRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<EmailInfoMappings> _EmailInfoMappings = null;
+        public  ObservableCollection<EmailInfoMappings> EmailInfoMappings
+		{
+            
+		    get 
+				{ 
+					if(_EmailInfoMappings != null) return _EmailInfoMappings;
+					//if (this.infomapping.EmailInfoMappings == null) Debugger.Break();
+					if(this.infomapping.EmailInfoMappings != null)
+					{
+						_EmailInfoMappings = new ObservableCollection<EmailInfoMappings>(this.infomapping.EmailInfoMappings.Select(x => new EmailInfoMappings(x)));
+					}
+					
+						_EmailInfoMappings.CollectionChanged += EmailInfoMappings_CollectionChanged; 
+					
+					return _EmailInfoMappings; 
+				}
+			set
+			{
+			    if (Equals(value, _EmailInfoMappings)) return;
+				if (value != null)
+					this.infomapping.EmailInfoMappings = new ChangeTrackingCollection<DTO.EmailInfoMappings>(value.Select(x => x.DTO).ToList());
+                _EmailInfoMappings = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_EmailInfoMappings != null)
+				_EmailInfoMappings.CollectionChanged += EmailInfoMappings_CollectionChanged;               
+				NotifyPropertyChanged("EmailInfoMappings");
+			}
+		}
+        
+        void EmailInfoMappings_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (EmailInfoMappings itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        infomapping.EmailInfoMappings.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (EmailInfoMappings itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        infomapping.EmailInfoMappings.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

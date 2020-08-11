@@ -454,6 +454,34 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<AsycudaDocumentItem>> GetAsycudaDocumentItemByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+             if (InventoryItemId == "0") return null;
+            try
+            {
+                 using (AsycudaDocumentItemClient t = new AsycudaDocumentItemClient())
+                    {
+                        var res = await t.GetAsycudaDocumentItemByInventoryItemId(InventoryItemId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AsycudaDocumentItem(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

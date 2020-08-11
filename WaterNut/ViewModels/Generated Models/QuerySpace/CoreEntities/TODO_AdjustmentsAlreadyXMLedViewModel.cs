@@ -747,6 +747,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _pLineNumberFilter;
+        public string pLineNumberFilter
+        {
+            get
+            {
+                return _pLineNumberFilter;
+            }
+            set
+            {
+                _pLineNumberFilter = value;
+				NotifyPropertyChanged(x => pLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -970,6 +988,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(DutyFreePaidFilter) == false)
 						res.Append(" && " + string.Format("DutyFreePaid.Contains(\"{0}\")",  DutyFreePaidFilter));						
+ 
+
+									if(string.IsNullOrEmpty(pLineNumberFilter) == false)
+						res.Append(" && " + string.Format("pLineNumber.Contains(\"{0}\")",  pLineNumberFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1065,7 +1087,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Comment = x.Comment ,
                     
  
-                    DutyFreePaid = x.DutyFreePaid 
+                    DutyFreePaid = x.DutyFreePaid ,
+                    
+ 
+                    pLineNumber = x.pLineNumber 
                     
                 }).ToList()
             };
@@ -1151,6 +1176,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string DutyFreePaid { get; set; } 
+                    
+ 
+                    public string pLineNumber { get; set; } 
                     
         }
 

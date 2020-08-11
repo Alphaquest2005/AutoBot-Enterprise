@@ -17,6 +17,7 @@ namespace CoreEntities
         public InfoMapping()
         {
             this.InfoMappingRegEx = new HashSet<InfoMappingRegEx>();
+            this.EmailInfoMappings = new HashSet<EmailInfoMappings>();
         }
     
         public int Id { get; set; }
@@ -24,8 +25,10 @@ namespace CoreEntities
         public string Field { get; set; }
         public string EntityType { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public string EntityKeyField { get; set; }
     
         public virtual ApplicationSettings ApplicationSettings { get; set; }
         public virtual ICollection<InfoMappingRegEx> InfoMappingRegEx { get; set; }
+        public virtual ICollection<EmailInfoMappings> EmailInfoMappings { get; set; }
     }
 }

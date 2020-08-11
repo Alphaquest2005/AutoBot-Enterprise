@@ -326,6 +326,51 @@ public Nullable<int> HasLicense
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalFreight
+		{ 
+		    get { return this.todo_podocsettoexport.TotalFreight; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.TotalFreight) return;
+				this.todo_podocsettoexport.TotalFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalFreight");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> ClassifiedLines
+		{ 
+		    get { return this.todo_podocsettoexport.ClassifiedLines; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.ClassifiedLines) return;
+				this.todo_podocsettoexport.ClassifiedLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ClassifiedLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> TotalLines
+		{ 
+		    get { return this.todo_podocsettoexport.TotalLines; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.TotalLines) return;
+				this.todo_podocsettoexport.TotalLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalLines");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_PODocSetToExport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_PODocSetToExport> ChangeTracker

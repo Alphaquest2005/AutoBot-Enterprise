@@ -359,6 +359,21 @@ namespace DocumentDS.Business.Entities
         }
         string _freightcurrencycode;
         [DataMember]
+        public string Office 
+        {
+            get
+            {
+                return _office;
+            }
+            set
+            {
+                _office = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _office;
+        [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
         [DataMember]
         public Document_Type Document_Type { get; set; }

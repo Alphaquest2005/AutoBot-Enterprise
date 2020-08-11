@@ -20,11 +20,12 @@
               this.Property(t => t.pCNumber).HasColumnName("pCNumber").HasMaxLength(20);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.Type).HasColumnName("Type").IsUnicode(false).HasMaxLength(5);
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.pQtyAllocated).HasColumnName("pQtyAllocated");
               this.Property(t => t.MonthYear).HasColumnName("MonthYear").IsUnicode(false).HasMaxLength(7);
               this.Property(t => t.EntryDataDate).HasColumnName("EntryDataDate");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsUnicode(false).HasMaxLength(9);
+              this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

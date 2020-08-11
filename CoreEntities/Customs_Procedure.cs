@@ -14,14 +14,28 @@ namespace CoreEntities
     
     public partial class Customs_Procedure
     {
+        public Customs_Procedure()
+        {
+            this.AsycudaDocument = new HashSet<AsycudaDocument>();
+        }
+    
         public int Document_TypeId { get; set; }
         public int Customs_ProcedureId { get; set; }
         public string Extended_customs_procedure { get; set; }
         public string National_customs_procedure { get; set; }
-        public Nullable<bool> IsDefault { get; set; }
-        public Nullable<bool> IsImportExport { get; set; }
         public string CustomsProcedure { get; set; }
+        public Nullable<bool> IsObsolete { get; set; }
+        public Nullable<bool> IsPaid { get; set; }
+        public Nullable<int> BondTypeId { get; set; }
+        public Nullable<bool> Stock { get; set; }
+        public Nullable<bool> Discrepancy { get; set; }
+        public Nullable<bool> Adjustment { get; set; }
+        public Nullable<bool> Sales { get; set; }
+        public int CustomsOperationId { get; set; }
+        public Nullable<bool> SubmitToCustoms { get; set; }
     
         public virtual Document_Type Document_Type { get; set; }
+        public virtual CustomsOperations CustomsOperations { get; set; }
+        public virtual ICollection<AsycudaDocument> AsycudaDocument { get; set; }
     }
 }

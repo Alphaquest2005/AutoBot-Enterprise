@@ -61,6 +61,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 			RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			AdjustmentOvers = new VirtualList<AdjustmentOver>(vloader);
@@ -153,6 +154,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                    // {
                    //    if(InventoryItemsExes.Contains(CurrentAdjustmentOver.InventoryItemsEx) == false) InventoryItemsExes.Add(CurrentAdjustmentOver.InventoryItemsEx);
                     //}
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentAdjustmentOver.ApplicationSettings) == false) ApplicationSettings.Add(CurrentAdjustmentOver.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnAdjustmentOversChanged(object sender, NotificationEventArgs e)
         {
@@ -199,15 +204,14 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
-			if (e.Data == null || e.Data.ItemNumber == null)
+			if (e.Data == null || e.Data.InventoryItemId == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("ItemNumber == \"{0}\"", e.Data.ItemNumber.ToString());
-                }
+				vloader.FilterExpression = string.Format("InventoryItemId == {0}", e.Data.InventoryItemId.ToString());
+                 }
 
 				AdjustmentOvers.Refresh();
 				NotifyPropertyChanged(x => this.AdjustmentOvers);
@@ -216,6 +220,20 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    AdjustmentOvers.Refresh();
+					NotifyPropertyChanged(x => this.AdjustmentOvers);
+				}
   
 // Filtering Each Field except IDs
  	

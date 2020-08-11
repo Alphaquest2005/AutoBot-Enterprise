@@ -141,6 +141,51 @@ namespace AdjustmentQS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
+        public string CustomsProcedure 
+        {
+            get
+            {
+                return _customsprocedure;
+            }
+            set
+            {
+                _customsprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _customsprocedure;
+        [DataMember]
+        public int Asycuda_id 
+        {
+            get
+            {
+                return _asycuda_id;
+            }
+            set
+            {
+                _asycuda_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycuda_id;
+        [DataMember]
+        public string EntryDataType 
+        {
+            get
+            {
+                return _entrydatatype;
+            }
+            set
+            {
+                _entrydatatype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydatatype;
+        [DataMember]
         public AdjustmentOver AdjustmentOver { get; set; }
         [DataMember]
         public AdjustmentShort AdjustmentShort { get; set; }

@@ -53,6 +53,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 			RegisterToReceiveMessages<Document_Type>(MessageToken.CurrentDocument_TypeChanged, OnCurrentDocument_TypeChanged);
+ 
+			RegisterToReceiveMessages<CustomsOperations>(MessageToken.CurrentCustomsOperationsChanged, OnCurrentCustomsOperationsChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -139,6 +141,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(Document_Type.Contains(CurrentCustoms_Procedure.Document_Type) == false) Document_Type.Add(CurrentCustoms_Procedure.Document_Type);
                     //}
+                    //if (e.PropertyName == "AddCustomsOperations")
+                   // {
+                   //    if(CustomsOperations.Contains(CurrentCustoms_Procedure.CustomsOperations) == false) CustomsOperations.Add(CurrentCustoms_Procedure.CustomsOperations);
+                    //}
                  } 
         internal virtual void OnCustoms_ProcedureChanged(object sender, NotificationEventArgs e)
         {
@@ -166,6 +172,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentCustoms_Procedure = null;
 			}
+	
+		 internal virtual void OnCurrentCustomsOperationsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<CustomsOperations> e)
+			{
+			if(ViewCurrentCustomsOperations == false) return;
+			if (e.Data == null || e.Data.Id == null)
+                {
+                    vloader.FilterExpression = "None";
+                }
+                else
+                {
+				vloader.FilterExpression = string.Format("CustomsOperationId == {0}", e.Data.Id.ToString());
+                 }
+
+				Customs_Procedure.Refresh();
+				NotifyPropertyChanged(x => this.Customs_Procedure);
+                // SendMessage(MessageToken.Customs_ProcedureChanged, new NotificationEventArgs(MessageToken.Customs_ProcedureChanged));
+                                          
+                BaseViewModel.Instance.CurrentCustoms_Procedure = null;
+			}
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
@@ -183,6 +208,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentDocument_Type = value;
                  NotifyPropertyChanged(x => x.ViewCurrentDocument_Type);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentCustomsOperations = false;
+         public bool ViewCurrentCustomsOperations
+         {
+             get
+             {
+                 return _viewCurrentCustomsOperations;
+             }
+             set
+             {
+                 _viewCurrentCustomsOperations = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentCustomsOperations);
                 FilterData();
              }
          }
@@ -246,42 +286,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Boolean? _isDefaultFilter;
-        public Boolean? IsDefaultFilter
-        {
-            get
-            {
-                return _isDefaultFilter;
-            }
-            set
-            {
-                _isDefaultFilter = value;
-				NotifyPropertyChanged(x => IsDefaultFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private Boolean? _isImportExportFilter;
-        public Boolean? IsImportExportFilter
-        {
-            get
-            {
-                return _isImportExportFilter;
-            }
-            set
-            {
-                _isImportExportFilter = value;
-				NotifyPropertyChanged(x => IsImportExportFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _customsProcedureFilter;
         public string CustomsProcedureFilter
         {
@@ -293,6 +297,132 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _customsProcedureFilter = value;
 				NotifyPropertyChanged(x => CustomsProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _isObsoleteFilter;
+        public Boolean? IsObsoleteFilter
+        {
+            get
+            {
+                return _isObsoleteFilter;
+            }
+            set
+            {
+                _isObsoleteFilter = value;
+				NotifyPropertyChanged(x => IsObsoleteFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _isPaidFilter;
+        public Boolean? IsPaidFilter
+        {
+            get
+            {
+                return _isPaidFilter;
+            }
+            set
+            {
+                _isPaidFilter = value;
+				NotifyPropertyChanged(x => IsPaidFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _stockFilter;
+        public Boolean? StockFilter
+        {
+            get
+            {
+                return _stockFilter;
+            }
+            set
+            {
+                _stockFilter = value;
+				NotifyPropertyChanged(x => StockFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _discrepancyFilter;
+        public Boolean? DiscrepancyFilter
+        {
+            get
+            {
+                return _discrepancyFilter;
+            }
+            set
+            {
+                _discrepancyFilter = value;
+				NotifyPropertyChanged(x => DiscrepancyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _adjustmentFilter;
+        public Boolean? AdjustmentFilter
+        {
+            get
+            {
+                return _adjustmentFilter;
+            }
+            set
+            {
+                _adjustmentFilter = value;
+				NotifyPropertyChanged(x => AdjustmentFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _salesFilter;
+        public Boolean? SalesFilter
+        {
+            get
+            {
+                return _salesFilter;
+            }
+            set
+            {
+                _salesFilter = value;
+				NotifyPropertyChanged(x => SalesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _submitToCustomsFilter;
+        public Boolean? SubmitToCustomsFilter
+        {
+            get
+            {
+                return _submitToCustomsFilter;
+            }
+            set
+            {
+                _submitToCustomsFilter = value;
+				NotifyPropertyChanged(x => SubmitToCustomsFilter);
                 FilterData();
                 
             }
@@ -337,16 +467,36 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("National_customs_procedure.Contains(\"{0}\")",  National_customs_procedureFilter));						
  
 
-									if(IsDefaultFilter.HasValue)
-						res.Append(" && " + string.Format("IsDefault == {0}",  IsDefaultFilter));						
- 
-
-									if(IsImportExportFilter.HasValue)
-						res.Append(" && " + string.Format("IsImportExport == {0}",  IsImportExportFilter));						
- 
-
 									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
 						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+ 
+
+									if(IsObsoleteFilter.HasValue)
+						res.Append(" && " + string.Format("IsObsolete == {0}",  IsObsoleteFilter));						
+ 
+
+									if(IsPaidFilter.HasValue)
+						res.Append(" && " + string.Format("IsPaid == {0}",  IsPaidFilter));						
+ 
+
+									if(StockFilter.HasValue)
+						res.Append(" && " + string.Format("Stock == {0}",  StockFilter));						
+ 
+
+									if(DiscrepancyFilter.HasValue)
+						res.Append(" && " + string.Format("Discrepancy == {0}",  DiscrepancyFilter));						
+ 
+
+									if(AdjustmentFilter.HasValue)
+						res.Append(" && " + string.Format("Adjustment == {0}",  AdjustmentFilter));						
+ 
+
+									if(SalesFilter.HasValue)
+						res.Append(" && " + string.Format("Sales == {0}",  SalesFilter));						
+ 
+
+									if(SubmitToCustomsFilter.HasValue)
+						res.Append(" && " + string.Format("SubmitToCustoms == {0}",  SubmitToCustomsFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -376,13 +526,28 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     National_customs_procedure = x.National_customs_procedure ,
                     
  
-                    IsDefault = x.IsDefault ,
+                    CustomsProcedure = x.CustomsProcedure ,
                     
  
-                    IsImportExport = x.IsImportExport ,
+                    IsObsolete = x.IsObsolete ,
                     
  
-                    CustomsProcedure = x.CustomsProcedure 
+                    IsPaid = x.IsPaid ,
+                    
+ 
+                    Stock = x.Stock ,
+                    
+ 
+                    Discrepancy = x.Discrepancy ,
+                    
+ 
+                    Adjustment = x.Adjustment ,
+                    
+ 
+                    Sales = x.Sales ,
+                    
+ 
+                    SubmitToCustoms = x.SubmitToCustoms 
                     
                 }).ToList()
             };
@@ -401,13 +566,28 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string National_customs_procedure { get; set; } 
                     
  
-                    public Nullable<bool> IsDefault { get; set; } 
-                    
- 
-                    public Nullable<bool> IsImportExport { get; set; } 
-                    
- 
                     public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsObsolete { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsPaid { get; set; } 
+                    
+ 
+                    public Nullable<bool> Stock { get; set; } 
+                    
+ 
+                    public Nullable<bool> Discrepancy { get; set; } 
+                    
+ 
+                    public Nullable<bool> Adjustment { get; set; } 
+                    
+ 
+                    public Nullable<bool> Sales { get; set; } 
+                    
+ 
+                    public Nullable<bool> SubmitToCustoms { get; set; } 
                     
         }
 

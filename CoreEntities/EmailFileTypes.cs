@@ -17,6 +17,7 @@ namespace CoreEntities
         public int Id { get; set; }
         public int EmailMappingId { get; set; }
         public int FileTypeId { get; set; }
+        public Nullable<bool> IsRequired { get; set; }
     
         public virtual EmailMapping EmailMapping { get; set; }
         public virtual FileTypes FileTypes { get; set; }

@@ -201,7 +201,7 @@ public Nullable<int> EmailId
        
        
                 
-                [MaxLength(500, ErrorMessage = "FilePath has a max length of 500 letters ")]
+                [MaxLength(255, ErrorMessage = "FilePath has a max length of 255 letters ")]
 public string FilePath
 		{ 
 		    get { return this.todo_submitdiscrepanciestocustoms.FilePath; }

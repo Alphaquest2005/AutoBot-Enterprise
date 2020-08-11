@@ -112,7 +112,17 @@ namespace CoreEntities.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null)
+		public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_ImportCompleteEntriesByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_ImportCompleteEntriesByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null)
         {
             return  await Channel.GetTODO_ImportCompleteEntriesByEmailId(EmailId, includesLst).ConfigureAwait(false);
         }
@@ -120,6 +130,11 @@ namespace CoreEntities.Client.Services
   		public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             return  await Channel.GetTODO_ImportCompleteEntriesByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_ImportCompleteEntriesByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

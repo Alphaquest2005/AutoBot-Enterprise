@@ -485,6 +485,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _dutyfreepaid;
+        [DataMember]
+        public string pLineNumber 
+        {
+            get
+            {
+                return _plinenumber;
+            }
+            set
+            {
+                _plinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _plinenumber;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

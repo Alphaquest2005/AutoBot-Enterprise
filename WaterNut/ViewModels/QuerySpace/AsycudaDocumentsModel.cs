@@ -11,7 +11,9 @@ using SimpleMvvmToolkit;
 
 using System.Data;
 using CoreEntities.Client.Entities;
+using CoreEntities.Client.Enums;
 using CoreEntities.Client.Repositories;
+using CustomsOperations = CoreEntities.Client.Enums.CustomsOperations;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 {
@@ -166,19 +168,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             
             if (ViewIm7 == true)
             {
-                viewres.Append(" || DocumentType == \"IM7\" || DocumentType == \"OS7\"");
+                viewres.Append($"|| CustomsOperationId == {(int)CustomsOperations.Warehouse}");
             }
             if (ViewEx9 == true)
             {
-                viewres.Append(" || DocumentType.Contains(\"EX\")");
+                viewres.Append($"|| CustomsOperationId == {(int)CustomsOperations.Exwarehouse}");
             }
             if (ViewIm9 == true)
             {
-                viewres.Append(" || DocumentType.Contains(\"IM9\")");
+                viewres.Append($"|| CustomsOperationId == {(int)CustomsOperations.Import}");
             }
             if (ViewIm4 == true)
             {
-                viewres.Append(" || DocumentType == \"IM4\"");
+                viewres.Append($"|| CustomsOperationId == {(int)CustomsOperations.Import}");
             }
             if (viewres.Length > 0)
             {

@@ -18,7 +18,7 @@
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.AliasName).HasColumnName("AliasName").IsRequired().HasMaxLength(20);
-              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<InventoryItemAliasEx>) t.InventoryItemAliasExes).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
+              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<InventoryItemAliasEx>) t.InventoryItemAliasExes).HasForeignKey(d => d.InventoryItemId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

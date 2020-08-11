@@ -107,10 +107,19 @@ namespace CoreEntities.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEntryDataId(string EntryDataId, List<string> includesLst = null);
   
 
 

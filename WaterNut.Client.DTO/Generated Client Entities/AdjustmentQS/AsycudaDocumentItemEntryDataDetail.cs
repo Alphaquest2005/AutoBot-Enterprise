@@ -125,6 +125,45 @@ namespace AdjustmentQS.Client.DTO
 		}
         private int _EntryData_Id;
 
+        [DataMember]
+        public string CustomsProcedure
+		{ 
+		    get { return _CustomsProcedure; }
+			set
+			{
+			    if (value == _CustomsProcedure) return;
+				_CustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.CustomsProcedure
+			}
+		}
+        private string _CustomsProcedure;
+
+        [DataMember]
+        public int Asycuda_id
+		{ 
+		    get { return _Asycuda_id; }
+			set
+			{
+			    if (value == _Asycuda_id) return;
+				_Asycuda_id = value;
+				NotifyPropertyChanged();//m => this.Asycuda_id
+			}
+		}
+        private int _Asycuda_id;
+
+        [DataMember]
+        public string EntryDataType
+		{ 
+		    get { return _EntryDataType; }
+			set
+			{
+			    if (value == _EntryDataType) return;
+				_EntryDataType = value;
+				NotifyPropertyChanged();//m => this.EntryDataType
+			}
+		}
+        private string _EntryDataType;
+
        
         [DataMember]
         public AdjustmentOver AdjustmentOver

@@ -8,7 +8,7 @@
 <#@ output extension=".cs"#>
 <#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
 <#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEntityMappingsTemplate.tt"#>
-
+<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEnumTemplate.tt" once="true"#>
 
 <#+ 
     
@@ -60,7 +60,27 @@
                 be.Output.File = @"Generated Mappings\" + container.Name + @"\"+ entity.Name + ".map.cs";
                 be.Render();  
 
+                if (entity.Properties.Count() == 2 && entity.Properties.Any(x=> x.Name == "Id") && entity.Properties.Any(x=> x.Name == "Name"))
+                {
 
+                    DataLayerEnumTPL ee = new DataLayerEnumTPL(); 
+                    ee.entity = entity;
+                    ee.code = code;
+                    ee.container = container;
+                    ee.COREcontainer = COREcontainer;
+                    ee.region = region;
+                    ee.ef = ef;
+
+                    ee.propertyToColumnMapping = loadResult.PropertyToColumnMapping;
+                    ee.manyToManyMappings = loadResult.ManyToManyMappings;
+                    ee.tphMappings = loadResult.TphMappings;
+                               
+                    ee.namespaceName = container.Name + ".Business.Enums";
+                
+                    ee.Output.Project = outputProject;
+                    ee.Output.File = @"Generated Business Entities\"+ container.Name + @"\Enums\" + entity.Name + ".cs";
+                    ee.Render();          
+                }
 
 
             }

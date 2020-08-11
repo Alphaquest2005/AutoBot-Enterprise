@@ -204,7 +204,7 @@ namespace AdjustmentQS.Client.DTO
         private Nullable<int> _CLineNumber;
 
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId
+        public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -214,7 +214,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private Nullable<int> _AsycudaDocumentSetId;
+        private int _AsycudaDocumentSetId;
 
         [DataMember]
         public Nullable<double> InvoiceQty
@@ -449,6 +449,19 @@ namespace AdjustmentQS.Client.DTO
 			}
 		}
         private Nullable<bool> _IsReconciled;
+
+        [DataMember]
+        public int InventoryItemId
+		{ 
+		    get { return _InventoryItemId; }
+			set
+			{
+			    if (value == _InventoryItemId) return;
+				_InventoryItemId = value;
+				NotifyPropertyChanged();//m => this.InventoryItemId
+			}
+		}
+        private int _InventoryItemId;
 
        
         [DataMember]

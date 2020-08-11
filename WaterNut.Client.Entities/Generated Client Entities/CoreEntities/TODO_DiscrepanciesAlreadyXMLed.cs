@@ -537,6 +537,23 @@ public int EntryData_Id
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "pLineNumber has a max length of 50 letters ")]
+public string pLineNumber
+		{ 
+		    get { return this.todo_discrepanciesalreadyxmled.pLineNumber; }
+			set
+			{
+			    if (value == this.todo_discrepanciesalreadyxmled.pLineNumber) return;
+				this.todo_discrepanciesalreadyxmled.pLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("pLineNumber");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_DiscrepanciesAlreadyXMLed> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_DiscrepanciesAlreadyXMLed> ChangeTracker

@@ -21,11 +21,11 @@ namespace CoreEntities.Client.Entities
         {
             get
             {
-                return this.ItemNumber.ToString();//this.ItemNumber == null?"0":			
+                return this.InventoryItemId.ToString();//this.InventoryItemId == null?"0":			
             }
             set
             {
-                this.ItemNumber = Convert.ToString(value);
+                this.InventoryItemId = Convert.ToInt32(value);
             }
         }
         public string ApplicationSettingsEntityName
@@ -48,7 +48,7 @@ namespace CoreEntities.Client.Entities
                         {
                             this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
 							
-							this.ItemNumber = Convert.ToString(this.ApplicationSettings.ApplicationSettingsId);
+							this.InventoryItemId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddApplicationSettings");
                         }

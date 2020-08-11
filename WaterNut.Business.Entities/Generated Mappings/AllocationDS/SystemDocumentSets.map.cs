@@ -15,7 +15,7 @@
               this.ToTable("SystemDocumentSets");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasMany(t => t.AsycudaDocument).WithOptional(t => t.SystemDocumentSets).HasForeignKey(d => d.AsycudaDocumentSetId);
-              this.HasMany(t => t.EntryDataDetailsEx).WithOptional(t => t.SystemDocumentSets).HasForeignKey(d => d.AsycudaDocumentSetId);
+              this.HasMany(t => t.EntryDataDetailsEx).WithRequired(t => (SystemDocumentSets)t.SystemDocumentSets);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -200,6 +200,21 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _dutyfreepaid;
+        [DataMember]
+        public string EntryDataType 
+        {
+            get
+            {
+                return _entrydatatype;
+            }
+            set
+            {
+                _entrydatatype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydatatype;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

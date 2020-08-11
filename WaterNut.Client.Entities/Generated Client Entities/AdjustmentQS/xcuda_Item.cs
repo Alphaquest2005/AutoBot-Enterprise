@@ -129,7 +129,7 @@ public string Licence_number
        
        
                 
-                [MaxLength(30, ErrorMessage = "Free_text_1 has a max length of 30 letters ")]
+                [MaxLength(35, ErrorMessage = "Free_text_1 has a max length of 35 letters ")]
 public string Free_text_1
 		{ 
 		    get { return this.xcuda_item.Free_text_1; }
@@ -389,6 +389,23 @@ public string PreviousInvoiceItemNumber
 				this.xcuda_item.PreviousInvoiceItemNumber = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("PreviousInvoiceItemNumber");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EntryDataType has a max length of 50 letters ")]
+public string EntryDataType
+		{ 
+		    get { return this.xcuda_item.EntryDataType; }
+			set
+			{
+			    if (value == this.xcuda_item.EntryDataType) return;
+				this.xcuda_item.EntryDataType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataType");
 			}
 		}
      

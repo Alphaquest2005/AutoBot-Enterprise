@@ -108,6 +108,12 @@ namespace CoreEntities.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByDocument_TypeId(string Document_TypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBondTypeId(string BondTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null);
   
 
 

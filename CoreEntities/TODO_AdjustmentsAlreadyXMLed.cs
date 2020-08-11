@@ -45,5 +45,6 @@ namespace CoreEntities
         public string PreviousInvoiceNumber { get; set; }
         public string Comment { get; set; }
         public string DutyFreePaid { get; set; }
+        public string pLineNumber { get; set; }
     }
 }

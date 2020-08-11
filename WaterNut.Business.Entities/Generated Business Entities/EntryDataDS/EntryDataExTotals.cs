@@ -141,6 +141,36 @@ namespace EntryDataDS.Business.Entities
         }
         int _entrydata_id;
         [DataMember]
+        public Nullable<int> QtyLicensesRequired 
+        {
+            get
+            {
+                return _qtylicensesrequired;
+            }
+            set
+            {
+                _qtylicensesrequired = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _qtylicensesrequired;
+        [DataMember]
+        public int AsycudaDocumentSetId 
+        {
+            get
+            {
+                return _asycudadocumentsetid;
+            }
+            set
+            {
+                _asycudadocumentsetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycudadocumentsetid;
+        [DataMember]
         public EntryData EntryData { get; set; }
 
  //       [DataMember]

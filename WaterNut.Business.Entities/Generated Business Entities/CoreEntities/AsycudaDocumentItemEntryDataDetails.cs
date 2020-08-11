@@ -156,6 +156,36 @@ namespace CoreEntities.Business.Entities
         }
         string _customsprocedure;
         [DataMember]
+        public int Asycuda_id 
+        {
+            get
+            {
+                return _asycuda_id;
+            }
+            set
+            {
+                _asycuda_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycuda_id;
+        [DataMember]
+        public string EntryDataType 
+        {
+            get
+            {
+                return _entrydatatype;
+            }
+            set
+            {
+                _entrydatatype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydatatype;
+        [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem { get; set; }
 
  //       [DataMember]

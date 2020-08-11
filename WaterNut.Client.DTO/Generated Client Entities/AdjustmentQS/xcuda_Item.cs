@@ -307,6 +307,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _PreviousInvoiceItemNumber;
 
+        [DataMember]
+        public string EntryDataType
+		{ 
+		    get { return _EntryDataType; }
+			set
+			{
+			    if (value == _EntryDataType) return;
+				_EntryDataType = value;
+				NotifyPropertyChanged();//m => this.EntryDataType
+			}
+		}
+        private string _EntryDataType;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

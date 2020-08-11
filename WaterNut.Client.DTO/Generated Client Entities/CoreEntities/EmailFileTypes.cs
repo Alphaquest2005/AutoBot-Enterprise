@@ -60,6 +60,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _FileTypeId;
 
+        [DataMember]
+        public Nullable<bool> IsRequired
+		{ 
+		    get { return _IsRequired; }
+			set
+			{
+			    if (value == _IsRequired) return;
+				_IsRequired = value;
+				NotifyPropertyChanged();//m => this.IsRequired
+			}
+		}
+        private Nullable<bool> _IsRequired;
+
        
         [DataMember]
         public EmailMapping EmailMapping

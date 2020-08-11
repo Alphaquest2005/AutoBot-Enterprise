@@ -175,6 +175,21 @@ public int ApplicationSettingsId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "InventoryItem is required")]
+       
+public int InventoryItemId
+		{ 
+		    get { return this.inventoryitemx.InventoryItemId; }
+			set
+			{
+			    if (value == this.inventoryitemx.InventoryItemId) return;
+				this.inventoryitemx.InventoryItemId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("InventoryItemId");
+			}
+		}
+     
+
         ObservableCollection<InventoryItemAliasX> _InventoryItemAliasEx = null;
         public  ObservableCollection<InventoryItemAliasX> InventoryItemAliasEx
 		{

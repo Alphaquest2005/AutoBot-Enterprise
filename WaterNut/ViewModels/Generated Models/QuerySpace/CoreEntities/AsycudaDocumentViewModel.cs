@@ -55,6 +55,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 			RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
  
 			RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+ 
+			RegisterToReceiveMessages<Customs_Procedure>(MessageToken.CurrentCustoms_ProcedureChanged, OnCurrentCustoms_ProcedureChanged);
 
  			// Recieve messages for Core Current Entities Changed
  
@@ -199,23 +201,28 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                           
                 BaseViewModel.Instance.CurrentAsycudaDocument = null;
 			}
-
-  			// Core Current Entities Changed
-			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
-                internal virtual void OnCurrentCustoms_ProcedureChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Customs_Procedure> e)
-				{
-				if (e.Data == null || e.Data.Customs_ProcedureId == null)
+	
+		 internal virtual void OnCurrentCustoms_ProcedureChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Customs_Procedure> e)
+			{
+			if(ViewCurrentCustoms_Procedure == false) return;
+			if (e.Data == null || e.Data.Customs_ProcedureId == null)
                 {
-                    vloader.FilterExpression = null;
+                    vloader.FilterExpression = "None";
                 }
                 else
                 {
-                    vloader.FilterExpression = string.Format("Customs_ProcedureId == {0}", e.Data.Customs_ProcedureId.ToString());
-                }
-					
-                    AsycudaDocuments.Refresh();
-					NotifyPropertyChanged(x => this.AsycudaDocuments);
-				}
+				vloader.FilterExpression = string.Format("Customs_ProcedureId == {0}", e.Data.Customs_ProcedureId.ToString());
+                 }
+
+				AsycudaDocuments.Refresh();
+				NotifyPropertyChanged(x => this.AsycudaDocuments);
+                // SendMessage(MessageToken.AsycudaDocumentsChanged, new NotificationEventArgs(MessageToken.AsycudaDocumentsChanged));
+                                          
+                BaseViewModel.Instance.CurrentAsycudaDocument = null;
+			}
+
+  			// Core Current Entities Changed
+			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
                 internal virtual void OnCurrentDocument_TypeChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<Document_Type> e)
 				{
 				if (e.Data == null || e.Data.Document_TypeId == null)
@@ -259,6 +266,21 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
              {
                  _viewCurrentApplicationSettings = value;
                  NotifyPropertyChanged(x => x.ViewCurrentApplicationSettings);
+                FilterData();
+             }
+         }
+ 	
+		 bool _viewCurrentCustoms_Procedure = false;
+         public bool ViewCurrentCustoms_Procedure
+         {
+             get
+             {
+                 return _viewCurrentCustoms_Procedure;
+             }
+             set
+             {
+                 _viewCurrentCustoms_Procedure = value;
+                 NotifyPropertyChanged(x => x.ViewCurrentCustoms_Procedure);
                 FilterData();
              }
          }
@@ -935,6 +957,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _isPaidFilter;
+        public Boolean? IsPaidFilter
+        {
+            get
+            {
+                return _isPaidFilter;
+            }
+            set
+            {
+                _isPaidFilter = value;
+				NotifyPropertyChanged(x => IsPaidFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Boolean? _submitToCustomsFilter;
+        public Boolean? SubmitToCustomsFilter
+        {
+            get
+            {
+                return _submitToCustomsFilter;
+            }
+            set
+            {
+                _submitToCustomsFilter = value;
+				NotifyPropertyChanged(x => SubmitToCustomsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1174,6 +1232,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(CustomsProcedureFilter) == false)
 						res.Append(" && " + string.Format("CustomsProcedure.Contains(\"{0}\")",  CustomsProcedureFilter));						
+ 
+
+									if(IsPaidFilter.HasValue)
+						res.Append(" && " + string.Format("IsPaid == {0}",  IsPaidFilter));						
+ 
+
+									if(SubmitToCustomsFilter.HasValue)
+						res.Append(" && " + string.Format("SubmitToCustoms == {0}",  SubmitToCustomsFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -1281,7 +1347,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     SourceFileName = x.SourceFileName ,
                     
  
-                    CustomsProcedure = x.CustomsProcedure 
+                    CustomsProcedure = x.CustomsProcedure ,
+                    
+ 
+                    IsPaid = x.IsPaid ,
+                    
+ 
+                    SubmitToCustoms = x.SubmitToCustoms 
                     
                 }).ToList()
             };
@@ -1379,6 +1451,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string CustomsProcedure { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsPaid { get; set; } 
+                    
+ 
+                    public Nullable<bool> SubmitToCustoms { get; set; } 
                     
         }
 

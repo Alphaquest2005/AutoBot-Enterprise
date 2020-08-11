@@ -384,7 +384,7 @@ namespace Asycuda421
                 a.Financial.Deffered_payment_reference.Text.Add(Exp.Deffered_payment_reference);
 
             a.Export_release = new ASYCUDAExport_release();
-            a.Identification.Office_segment.Customs_clearance_office_code.Text.Add(Exp.Customs_clearance_office_code);
+            a.Identification.Office_segment.Customs_clearance_office_code.Text.Add(da.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Office ?? Exp.Customs_clearance_office_code);
 
             a.General_information = new ASYCUDAGeneral_information();
             //a.Property = new ASYCUDAProperty();
@@ -544,7 +544,7 @@ namespace Asycuda421
                         SaveTarification(item, ai);
                         SaveGoodsDescription(item, ai);
                         SavePreviousDoc(item, ai);
-                        SavePackages(item, ai);
+                        SavePackages(item, ai, lnCounter);
                         SaveValuationItem(item, ai);
                         if (db.TariffCodes.FirstOrDefault(x =>
                                 x.TariffCode == item.xcuda_Tarification.xcuda_HScode.Commodity_code &&
@@ -570,7 +570,7 @@ namespace Asycuda421
             }
         }
 
-        private void SavePackages(xcuda_Item item, ASYCUDAItem ai)
+        private void SavePackages(xcuda_Item item, ASYCUDAItem ai, int lnCounter)
         {
             
             if (item.xcuda_Packages.Count > 0 && item.xcuda_Packages.First().Number_of_packages > 0)
@@ -581,6 +581,16 @@ namespace Asycuda421
                 ai.Packages.Marks1_of_packages.Text.Add(pk.Marks1_of_packages);
                 ai.Packages.Kind_of_packages_code.Text.Clear();
                 ai.Packages.Kind_of_packages_code.Text.Add(pk.Kind_of_packages_code);
+            }
+            else
+            {
+                if (lnCounter != 1) return;
+                ai.Packages.Number_of_packages = "1";
+                ai.Packages.Marks1_of_packages.Text.Clear();
+                ai.Packages.Marks1_of_packages.Text.Add("No Marks");
+                ai.Packages.Kind_of_packages_code.Text.Clear();
+                ai.Packages.Kind_of_packages_code.Text.Add("PK");
+
             }
         }
 
@@ -621,11 +631,22 @@ namespace Asycuda421
                 if (doc.Attached_document_name != null)
                     adoc.Attached_document_name.Text.Add(doc.Attached_document_name);
                 ai.Attached_documents.Add(adoc);
-                if (doc.xcuda_Attachments.Any())
+                if (doc.xcuda_Attachments.Any(x => x.Attachments.Reference != "Info"))
                 {
-                    var fileinfo = new FileInfo(doc.xcuda_Attachments.FirstOrDefault().Attachments.FilePath);
-                    if (item.xcuda_ASYCUDA.xcuda_ASYCUDA_ExtendedProperties.Document_Type.DisplayName != "IM7" && fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{fileinfo.FullName}\r\n");
+                    var att = doc.xcuda_Attachments.FirstOrDefault(x => x.Attachments.Reference != "Info");
+                    if(att == null) continue;
+                    var filePath = att.Attachments.FilePath;
+                    if (string.IsNullOrEmpty(filePath))
+                    {
+                        File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\tBlank File\r\n");
+                    }
+                    else
+                    {
+                      var fileinfo = new FileInfo(filePath);
+                    if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{fileinfo.FullName}\r\n");  
+                    }
+                    
                 }
                     
             }

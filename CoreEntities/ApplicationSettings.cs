@@ -67,6 +67,7 @@ namespace CoreEntities
         public Nullable<bool> AssessIM7 { get; set; }
         public Nullable<bool> AssessEX { get; set; }
         public Nullable<bool> TestMode { get; set; }
+        public int BondTypeId { get; set; }
     
         public virtual ICollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         public virtual ICollection<AsycudaDocument> AsycudaDocument { get; set; }

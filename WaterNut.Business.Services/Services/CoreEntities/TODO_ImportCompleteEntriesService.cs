@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_ImportCompleteEntries> GetTODO_ImportCompleteEntriesByKey(string AsycudaDocumentSetId, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_ImportCompleteEntries> GetTODO_ImportCompleteEntriesByKey(string NewAsycuda_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(AsycudaDocumentSetId))return null; 
+			   if(string.IsNullOrEmpty(NewAsycuda_Id))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
+                var i = Convert.ToInt32(NewAsycuda_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                TODO_ImportCompleteEntries entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i).ConfigureAwait(continueOnCapturedContext: false);
+                TODO_ImportCompleteEntries entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.NewAsycuda_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -285,11 +285,11 @@ namespace CoreEntities.Business.Services
                                 IQueryable<TODO_ImportCompleteEntries> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
+                                    dset = set.OrderBy(x => x.NewAsycuda_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId).Where(exp);
+                                    dset = set.OrderBy(x => x.NewAsycuda_Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -359,12 +359,12 @@ namespace CoreEntities.Business.Services
                                 IQueryable<TODO_ImportCompleteEntries> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
+                                    dset = set.OrderBy(x => x.NewAsycuda_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.AsycudaDocumentSetId);
+                                    dset = set.OrderBy(x => x.NewAsycuda_Id);
                                 }
 
                                 var lst = dset
@@ -510,15 +510,15 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_ImportCompleteEntries(string AsycudaDocumentSetId)
+        public async Task<bool> DeleteTODO_ImportCompleteEntries(string NewAsycuda_Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
+                var i = Convert.ToInt32(NewAsycuda_Id);
                 TODO_ImportCompleteEntries entity = await dbContext.TODO_ImportCompleteEntries
-													.SingleOrDefaultAsync(x => x.AsycudaDocumentSetId == i)
+													.SingleOrDefaultAsync(x => x.NewAsycuda_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -668,7 +668,7 @@ namespace CoreEntities.Business.Services
                     {
                         return await dbContext.TODO_ImportCompleteEntries
 										.AsNoTracking()
-                                        .OrderBy(y => y.AsycudaDocumentSetId)
+                                        .OrderBy(y => y.NewAsycuda_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -680,7 +680,7 @@ namespace CoreEntities.Business.Services
                         return await dbContext.TODO_ImportCompleteEntries
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.AsycudaDocumentSetId)
+										.OrderBy(y => y.NewAsycuda_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -716,7 +716,7 @@ namespace CoreEntities.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.TODO_ImportCompleteEntries.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                    return await dbContext.TODO_ImportCompleteEntries.Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -759,9 +759,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_ImportCompleteEntries>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("NewAsycuda_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -780,9 +780,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_ImportCompleteEntries>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("NewAsycuda_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -808,7 +808,7 @@ namespace CoreEntities.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.AsycudaDocumentSetId)
+                                    .OrderBy(y => y.NewAsycuda_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -817,8 +817,8 @@ namespace CoreEntities.Business.Services
                     }
                     return await set//dbContext.TODO_ImportCompleteEntries
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
-								.OrderBy(y => y.AsycudaDocumentSetId)
+                                .Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
+								.OrderBy(y => y.NewAsycuda_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -870,9 +870,9 @@ namespace CoreEntities.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.AsycudaDocumentSetId)
+                .OrderBy(y => y.NewAsycuda_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -899,9 +899,9 @@ namespace CoreEntities.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.AsycudaDocumentSetId)
+                .OrderBy(y => y.NewAsycuda_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -951,7 +951,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<TODO_ImportCompleteEntries>()
-							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+							.Where(exp == "All" || exp == null?"NewAsycuda_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -961,7 +961,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_ImportCompleteEntries>()
-                .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+                .Where(exp == "All" || exp == null?"NewAsycuda_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -988,7 +988,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<TODO_ImportCompleteEntries>()
-							.Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+							.Where(exp == "All" || exp == null?"NewAsycuda_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -998,7 +998,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_ImportCompleteEntries>()
-                .Where(exp == "All" || exp == null?"AsycudaDocumentSetId != null":exp)
+                .Where(exp == "All" || exp == null?"NewAsycuda_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1013,7 +1013,65 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(AsycudaDocumentSetId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_ImportCompleteEntries> entities = await set//dbContext.TODO_ImportCompleteEntries
+                                      .AsNoTracking()
+                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_ImportCompleteEntries> entities = await set//dbContext.TODO_ImportCompleteEntries
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null)
         {
             try
             {
@@ -1053,6 +1111,35 @@ namespace CoreEntities.Business.Services
                 IEnumerable<TODO_ImportCompleteEntries> entities = await set//dbContext.TODO_ImportCompleteEntries
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = EntryDataId;
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_ImportCompleteEntries> entities = await set//dbContext.TODO_ImportCompleteEntries
+                                      .AsNoTracking()
+                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1120,7 +1207,7 @@ namespace CoreEntities.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.TODO_ImportCompleteEntries.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                    return Convert.ToDecimal(dbContext.TODO_ImportCompleteEntries.Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1161,9 +1248,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_ImportCompleteEntries>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("NewAsycuda_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1181,9 +1268,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_ImportCompleteEntries>()
-                .Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
+                .Where(exp == "All" || exp == null ? "NewAsycuda_Id != null" : exp)
                 .Distinct()
-                .OrderBy("AsycudaDocumentSetId")
+                .OrderBy("NewAsycuda_Id")
                 .Sum(field));
 			}
 			catch (Exception)

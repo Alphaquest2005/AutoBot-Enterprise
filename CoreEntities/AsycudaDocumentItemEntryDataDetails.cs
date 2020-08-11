@@ -23,6 +23,8 @@ namespace CoreEntities
         public bool ImportComplete { get; set; }
         public int EntryData_Id { get; set; }
         public string CustomsProcedure { get; set; }
+        public int Asycuda_id { get; set; }
+        public string EntryDataType { get; set; }
     
         public virtual AsycudaDocumentItem AsycudaDocumentItem { get; set; }
     }

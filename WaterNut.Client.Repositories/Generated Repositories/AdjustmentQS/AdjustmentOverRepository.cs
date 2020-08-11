@@ -535,6 +535,34 @@ namespace AdjustmentQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<AdjustmentOver>> GetAdjustmentOverByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+             if (InventoryItemId == "0") return null;
+            try
+            {
+                 using (AdjustmentOverClient t = new AdjustmentOverClient())
+                    {
+                        var res = await t.GetAdjustmentOverByInventoryItemId(InventoryItemId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new AdjustmentOver(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

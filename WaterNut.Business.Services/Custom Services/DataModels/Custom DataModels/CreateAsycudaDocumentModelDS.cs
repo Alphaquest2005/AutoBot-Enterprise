@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 using System.Linq;
 using DocumentDS.Business.Entities;
@@ -149,72 +150,72 @@ namespace WaterNut.DataSpace
 
          //}
 
-        private  void UpdateDocument(xcuda_ASYCUDA doc, DocInfo docInfo)
-        {
-            if (doc != null ||doc.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate == false)
-            {
-               // doc.SetupProperties();
-                doc.xcuda_Declarant.Number = docInfo.DeclarantReferenceNumber;
+	    private void UpdateDocument(xcuda_ASYCUDA doc, DocInfo docInfo)
+	    {
+	        try
+	        {
 
-                if (docInfo.Description != null)
-                    doc.xcuda_ASYCUDA_ExtendedProperties.Description = docInfo.Description;
-                if (docInfo.Currency_Code != null)
-                    doc.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = docInfo.Currency_Code;
-                doc.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = docInfo.Document_TypeId;
-                var dt = BaseDataModel.Instance.Document_Types.FirstOrDefault(x => x.Document_TypeId == docInfo.Document_TypeId);
-                if (dt != null)
-                {
-                    doc.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
-                        dt.Declaration_gen_procedure_code;
-                    doc.xcuda_Identification.xcuda_Type.Type_of_declaration = dt.Type_of_declaration;
-                }
 
-                doc.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = (float)docInfo.Exchange_Rate;
-                if (docInfo.Country_of_origin_code != null)
-                    doc.xcuda_General_information.xcuda_Country.Country_first_destination = docInfo.Country_of_origin_code;
+	            if (doc != null || doc.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate == false)
+	            {
+	                // doc.SetupProperties();
+	                doc.xcuda_Declarant.Number = docInfo.DeclarantReferenceNumber;
 
-                if (docInfo.ManifestNumber != null)
-                    doc.xcuda_Identification.Manifest_reference_number = docInfo.ManifestNumber;
-                if (docInfo.BlNumber != null)
-                    doc.xcuda_ASYCUDA_ExtendedProperties.BLNumber = docInfo.BlNumber;
+	                if (docInfo.Description != null)
+	                    doc.xcuda_ASYCUDA_ExtendedProperties.Description = docInfo.Description;
+	                if (docInfo.Currency_Code != null)
+	                    doc.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = docInfo.Currency_Code;
+	                doc.xcuda_ASYCUDA_ExtendedProperties.Document_TypeId = docInfo.Document_TypeId;
+	                var dt = BaseDataModel.Instance.Document_Types.FirstOrDefault(x =>
+	                    x.Document_TypeId == docInfo.Document_TypeId);
+	                if (dt != null)
+	                {
+	                    doc.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code =
+	                        dt.Declaration_gen_procedure_code;
+	                    doc.xcuda_Identification.xcuda_Type.Type_of_declaration = dt.Type_of_declaration;
+	                }
 
-                //if (doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure == null || doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Customs_ProcedureId != CustomsProcedureId)
-                //{
+	                doc.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = (float) docInfo.Exchange_Rate;
+	                if (docInfo.Country_of_origin_code != null)
+	                    doc.xcuda_General_information.xcuda_Country.Country_first_destination =
+	                        docInfo.Country_of_origin_code;
 
-                    var c = new Customs_Procedure();
-                    c = BaseDataModel.Instance.Customs_Procedures.FirstOrDefault(x => x != null && x.Customs_ProcedureId == docInfo.Customs_ProcedureId);
-                           if (c == null && docInfo.Document_TypeId != null)
-                        {
-                            c = BaseDataModel.Instance.Document_Types.FirstOrDefault(x => x.Document_TypeId == docInfo.Document_TypeId).DefaultCustoms_Procedure;
-                        }
-                        if (c != null)
-                        {
-                            //TODO: implement this
-                            //foreach (var item in doc.PreviousDocumentItem
-                            //    .Where(x => x.xcuda_Tarification.Extended_customs_procedure != c.Extended_customs_procedure 
-                            //            || x.xcuda_Tarification.National_customs_procedure != c.National_customs_procedure).ToList())
-                            //{
-                            //    item.xcuda_Tarification.Extended_customs_procedure = c.Extended_customs_procedure;
-                            //    item.xcuda_Tarification.National_customs_procedure = c.National_customs_procedure;
-                            //}
-                        }
-                    doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = c;
-                    doc.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = docInfo.Customs_ProcedureId;
-               
-                    var b = docInfo.BlNumber;
-                        //TODO: Implement this
-                        //foreach (var item in doc.PreviousDocumentItem.Where(x => x.xcuda_Previous_doc.Summary_declaration != b).ToList())
-                        //{
-                        //    item.xcuda_Previous_doc.Summary_declaration = BlNumber;
-                        //}
+	                if (docInfo.ManifestNumber != null)
+	                    doc.xcuda_Identification.Manifest_reference_number = docInfo.ManifestNumber;
+	                if (docInfo.BlNumber != null)
+	                    doc.xcuda_ASYCUDA_ExtendedProperties.BLNumber = docInfo.BlNumber;
 
-                    doc.xcuda_ASYCUDA_ExtendedProperties.BLNumber = docInfo.BlNumber;
-          
+	                //if (doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure == null || doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure.Customs_ProcedureId != CustomsProcedureId)
+	                //{
 
-            }
-        }
+	                var c = new Customs_Procedure();
+	                c = BaseDataModel.Instance.Customs_Procedures.Single(x =>
+	                    x != null && x.Customs_ProcedureId == docInfo.Customs_ProcedureId);
 
-        //public async Task DeleteAsycudaDocument(xcuda_ASYCUDA doc)
+	                doc.xcuda_ASYCUDA_ExtendedProperties.Customs_Procedure = c;
+	                doc.xcuda_ASYCUDA_ExtendedProperties.Customs_ProcedureId = docInfo.Customs_ProcedureId;
+
+	                var b = docInfo.BlNumber;
+	                //TODO: Implement this
+	                //foreach (var item in doc.PreviousDocumentItem.Where(x => x.xcuda_Previous_doc.Summary_declaration != b).ToList())
+	                //{
+	                //    item.xcuda_Previous_doc.Summary_declaration = BlNumber;
+	                //}
+
+	                doc.xcuda_ASYCUDA_ExtendedProperties.BLNumber = docInfo.BlNumber;
+
+
+	            }
+
+	        }
+	        catch (Exception e)
+	        {
+	            Console.WriteLine(e);
+	            throw;
+	        }
+	    }
+
+	    //public async Task DeleteAsycudaDocument(xcuda_ASYCUDA doc)
         //{
         //    await BaseDataModel.Instance.DeleteAsycudaDocument(doc).ConfigureAwait(false);
         //}

@@ -249,6 +249,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }
 
  
+
+		private Boolean? _isRequiredFilter;
+        public Boolean? IsRequiredFilter
+        {
+            get
+            {
+                return _isRequiredFilter;
+            }
+            set
+            {
+                _isRequiredFilter = value;
+				NotifyPropertyChanged(x => IsRequiredFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -277,6 +295,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		internal virtual StringBuilder GetAutoPropertyFilterString()
 		{
 		var res = new StringBuilder();
+ 
+
+									if(IsRequiredFilter.HasValue)
+						res.Append(" && " + string.Format("IsRequired == {0}",  IsRequiredFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -299,6 +321,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 dataToPrint = lst.Select(x => new EmailFileTypesExcelLine
                 {
+ 
+                    IsRequired = x.IsRequired 
+                    
                 }).ToList()
             };
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -309,7 +334,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
         public class EmailFileTypesExcelLine
         {
-		        }
+		 
+                    public Nullable<bool> IsRequired { get; set; } 
+                    
+        }
 
 		
     }

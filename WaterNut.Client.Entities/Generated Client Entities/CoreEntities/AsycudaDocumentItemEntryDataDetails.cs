@@ -185,6 +185,38 @@ public string CustomsProcedure
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Asycuda_id is required")]
+       [NumberValidationAttribute]
+public int Asycuda_id
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.Asycuda_id; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.Asycuda_id) return;
+				this.asycudadocumentitementrydatadetails.Asycuda_id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Asycuda_id");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EntryDataType has a max length of 50 letters ")]
+public string EntryDataType
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.EntryDataType; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.EntryDataType) return;
+				this.asycudadocumentitementrydatadetails.EntryDataType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataType");
+			}
+		}
+     
+
        private AsycudaDocumentItem _AsycudaDocumentItem;
         public  AsycudaDocumentItem AsycudaDocumentItem
 		{

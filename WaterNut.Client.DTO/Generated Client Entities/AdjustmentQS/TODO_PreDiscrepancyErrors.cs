@@ -191,7 +191,7 @@ namespace AdjustmentQS.Client.DTO
         private Nullable<double> _Total;
 
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId
+        public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -201,7 +201,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private Nullable<int> _AsycudaDocumentSetId;
+        private int _AsycudaDocumentSetId;
 
         [DataMember]
         public Nullable<double> InvoiceQty

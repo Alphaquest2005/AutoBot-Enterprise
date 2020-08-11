@@ -23,6 +23,7 @@ namespace CoreEntities.Business.Entities
         partial void AutoGenStartUp() //InfoMapping()
         {
             this.InfoMappingRegEx = new List<InfoMappingRegEx>();
+            this.EmailInfoMappings = new List<EmailInfoMappings>();
         }
 
         [DataMember]
@@ -101,9 +102,26 @@ namespace CoreEntities.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public string EntityKeyField 
+        {
+            get
+            {
+                return _entitykeyfield;
+            }
+            set
+            {
+                _entitykeyfield = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entitykeyfield;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public List<InfoMappingRegEx> InfoMappingRegEx { get; set; }
+        [DataMember]
+        public List<EmailInfoMappings> EmailInfoMappings { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

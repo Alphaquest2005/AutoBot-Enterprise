@@ -175,6 +175,8 @@ namespace DocumentDS.Business.Entities
      
         public DbSet<SystemDocumentSet> SystemDocumentSets { get; set; }
      
+        public DbSet<CustomsOperation> CustomsOperations { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -306,6 +308,8 @@ namespace DocumentDS.Business.Entities
             modelBuilder.Configurations.Add(new PackageTypeMap());
          
             modelBuilder.Configurations.Add(new SystemDocumentSetMap());
+         
+            modelBuilder.Configurations.Add(new CustomsOperationMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

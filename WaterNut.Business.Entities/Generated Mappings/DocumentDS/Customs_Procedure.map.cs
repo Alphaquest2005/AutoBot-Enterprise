@@ -17,10 +17,18 @@
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Extended_customs_procedure).HasColumnName("Extended_customs_procedure").HasMaxLength(5);
               this.Property(t => t.National_customs_procedure).HasColumnName("National_customs_procedure").HasMaxLength(5);
-              this.Property(t => t.IsDefault).HasColumnName("IsDefault");
-              this.Property(t => t.IsImportExport).HasColumnName("IsImportExport");
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed)).HasMaxLength(11);
+              this.Property(t => t.IsObsolete).HasColumnName("IsObsolete");
+              this.Property(t => t.IsPaid).HasColumnName("IsPaid");
+              this.Property(t => t.BondTypeId).HasColumnName("BondTypeId");
+              this.Property(t => t.Stock).HasColumnName("Stock");
+              this.Property(t => t.Discrepancy).HasColumnName("Discrepancy");
+              this.Property(t => t.Adjustment).HasColumnName("Adjustment");
+              this.Property(t => t.Sales).HasColumnName("Sales");
+              this.Property(t => t.CustomsOperationId).HasColumnName("CustomsOperationId");
+              this.Property(t => t.SubmitToCustoms).HasColumnName("SubmitToCustoms");
               this.HasRequired(t => t.Document_Type).WithMany(t =>(ICollection<Customs_Procedure>) t.Customs_Procedure).HasForeignKey(d => d.Document_TypeId);
+              this.HasRequired(t => t.CustomsOperation).WithMany(t =>(ICollection<Customs_Procedure>) t.Customs_Procedure).HasForeignKey(d => d.CustomsOperationId);
               this.HasMany(t => t.AsycudaDocumentSets).WithOptional(t => t.Customs_Procedure).HasForeignKey(d => d.Customs_ProcedureId);
               this.HasMany(t => t.xcuda_ASYCUDA_ExtendedProperties).WithOptional(t => t.Customs_Procedure).HasForeignKey(d => d.Customs_ProcedureId);
              // Tracking Properties

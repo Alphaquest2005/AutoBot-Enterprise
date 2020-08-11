@@ -246,6 +246,36 @@ public Nullable<int> ParentFileTypeId
 		}
      
 
+       
+       
+public Nullable<bool> OverwriteFiles
+		{ 
+		    get { return this.filetypes.OverwriteFiles; }
+			set
+			{
+			    if (value == this.filetypes.OverwriteFiles) return;
+				this.filetypes.OverwriteFiles = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("OverwriteFiles");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> HasFiles
+		{ 
+		    get { return this.filetypes.HasFiles; }
+			set
+			{
+			    if (value == this.filetypes.HasFiles) return;
+				this.filetypes.HasFiles = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("HasFiles");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

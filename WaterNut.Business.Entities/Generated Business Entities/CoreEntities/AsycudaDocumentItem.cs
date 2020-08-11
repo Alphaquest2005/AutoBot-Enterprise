@@ -704,6 +704,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _applicationsettingsid;
         [DataMember]
+        public Nullable<int> InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _inventoryitemid;
+        [DataMember]
         public AsycudaDocument AsycudaDocument { get; set; }
         [DataMember]
         public List<SubItems> SubItems { get; set; }

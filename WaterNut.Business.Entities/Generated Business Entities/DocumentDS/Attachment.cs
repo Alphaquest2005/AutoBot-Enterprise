@@ -87,6 +87,21 @@ namespace DocumentDS.Business.Entities
         }
         string _reference;
         [DataMember]
+        public string EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _emailid;
+        [DataMember]
         public List<AsycudaDocument_Attachments> AsycudaDocument_Attachments { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }

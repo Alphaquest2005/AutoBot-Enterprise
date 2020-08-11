@@ -96,7 +96,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _itemnumber;
         [DataMember]
-        public double Quantity 
+        public Nullable<double> Quantity 
         {
             get
             {
@@ -109,7 +109,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _quantity;
+        Nullable<double> _quantity;
         [DataMember]
         public string Units 
         {
@@ -141,7 +141,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _itemdescription;
         [DataMember]
-        public double Cost 
+        public Nullable<double> Cost 
         {
             get
             {
@@ -154,9 +154,9 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _cost;
+        Nullable<double> _cost;
         [DataMember]
-        public double QtyAllocated 
+        public Nullable<double> QtyAllocated 
         {
             get
             {
@@ -169,9 +169,9 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _qtyallocated;
+        Nullable<double> _qtyallocated;
         [DataMember]
-        public double UnitWeight 
+        public Nullable<double> UnitWeight 
         {
             get
             {
@@ -184,9 +184,9 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        double _unitweight;
+        Nullable<double> _unitweight;
         [DataMember]
-        public bool DoNotAllocate 
+        public Nullable<bool> DoNotAllocate 
         {
             get
             {
@@ -199,7 +199,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        bool _donotallocate;
+        Nullable<bool> _donotallocate;
         [DataMember]
         public string TariffCode 
         {
@@ -246,7 +246,7 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<int> _clinenumber;
         [DataMember]
-        public int AsycudaDocumentSetId 
+        public Nullable<int> AsycudaDocumentSetId 
         {
             get
             {
@@ -259,7 +259,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _asycudadocumentsetid;
+        Nullable<int> _asycudadocumentsetid;
         [DataMember]
         public Nullable<double> InvoiceQty 
         {
@@ -381,7 +381,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _currency;
         [DataMember]
-        public int ApplicationSettingsId 
+        public Nullable<int> ApplicationSettingsId 
         {
             get
             {
@@ -394,7 +394,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _applicationsettingsid;
+        Nullable<int> _applicationsettingsid;
         [DataMember]
         public string Type 
         {
@@ -456,7 +456,7 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<int> _filetypeid;
         [DataMember]
-        public System.DateTime InvoiceDate 
+        public Nullable<System.DateTime> InvoiceDate 
         {
             get
             {
@@ -469,7 +469,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _invoicedate;
+        Nullable<System.DateTime> _invoicedate;
         [DataMember]
         public string Subject 
         {
@@ -486,7 +486,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _subject;
         [DataMember]
-        public System.DateTime EmailDate 
+        public Nullable<System.DateTime> EmailDate 
         {
             get
             {
@@ -499,7 +499,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _emaildate;
+        Nullable<System.DateTime> _emaildate;
         [DataMember]
         public int AlreadyExecuted 
         {

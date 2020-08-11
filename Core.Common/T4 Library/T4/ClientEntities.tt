@@ -2,9 +2,12 @@
 <#@ output extension=".cs"#>
 <#@ include file="T4Toolbox.tt" #>
 <#@ include file="EF.Utility.CS.ttinclude" #>
+<#@ assembly name="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\Microsoft.Data.Entity.Design.DatabaseGeneration.dll"#>
+<#@ import namespace="Microsoft.Data.Entity.Design.DatabaseGeneration"#>
 <#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Utilities\Utils.tt" once="true"#>	
 <#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Client\ClientEntityTemplate.tt" #>
 <#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Client\ClientEntityTemplateDTO.tt" #>
+<#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEnumTemplate.tt" once="true"#>
 
 <#+ 
   // Note: You can call this method from the outside of the template,
@@ -12,91 +15,114 @@
   // To include this templaate just drag this file on another editor
   // then call this.Template_NewTemplate1_Render()
   void CreateClientEntities(string projectName, string inputFile, string coreEdmx, string outputProject, string project)
-    {	
-        //string MainEntity = "Employee";
-        //string MainEntitySet = "Employees";
-        
+	{	
+		//string MainEntity = "Employee";
+		//string MainEntitySet = "Employees";
+		
 
-        //CreateSummaryListViewModel(MainEntity, MainEntitySet, fileManager);
+		//CreateSummaryListViewModel(MainEntity, MainEntitySet, fileManager);
 
-        CodeGenerationTools code = new CodeGenerationTools(this);
-        MetadataLoader loader = new MetadataLoader(this);
-        CodeRegion region = new CodeRegion(this, 1);
-        MetadataTools ef = new MetadataTools(this);
+		CodeGenerationTools code = new CodeGenerationTools(this);
+		MetadataLoader loader = new MetadataLoader(this);
+		CodeRegion region = new CodeRegion(this, 1);
+		MetadataTools ef = new MetadataTools(this);
+		
+		var loadResult = LoadMetadata(inputFile);
+	   
+		MetadataWorkspace metadataWorkspace = null;
+		bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
+		EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
+		EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
-       
-        MetadataWorkspace metadataWorkspace = null;
-        bool allMetadataLoaded =loader.TryLoadAllMetadata(inputFile, out metadataWorkspace);
-        EdmItemCollection ItemCollection = (EdmItemCollection)metadataWorkspace.GetItemCollection(DataSpace.CSpace);
-        EntityContainer container = ItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+		OriginalValueMembers originalValueMembers = new OriginalValueMembers(allMetadataLoaded, metadataWorkspace, ef);
+	 
+		MetadataWorkspace COREmetadataWorkspace = null;
+		bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreEdmx, out COREmetadataWorkspace);
+		EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
+		EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
 
-        OriginalValueMembers originalValueMembers = new OriginalValueMembers(allMetadataLoaded, metadataWorkspace, ef);
-     
-        MetadataWorkspace COREmetadataWorkspace = null;
-        bool COREallMetadataLoaded =loader.TryLoadAllMetadata(coreEdmx, out COREmetadataWorkspace);
-        EdmItemCollection COREItemCollection = (EdmItemCollection)COREmetadataWorkspace.GetItemCollection(DataSpace.CSpace);
-        EntityContainer COREcontainer = COREItemCollection.GetItems<EntityContainer>().FirstOrDefault();
+		//string namespaceName = code.VsNamespaceSuggestion();
 
-        //string namespaceName = code.VsNamespaceSuggestion();
+		   
 
-           
+		foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
+		{
+			
+			ClientDTOEntityTPL ce = new ClientDTOEntityTPL();     
+			ce.projectName = projectName;
+			ce.entity = entity;
+			ce.code = code;
+			ce.loader = loader;
+			ce.region = region;
+			ce.ef = ef;
 
-        foreach (EntityType entity in code.GetItemsToGenerate<EntityType>(ItemCollection).OrderBy(e => e.Name))
-        {
-            
-            ClientDTOEntityTPL ce = new ClientDTOEntityTPL();     
-            ce.projectName = projectName;
-            ce.entity = entity;
-            ce.code = code;
-            ce.loader = loader;
-            ce.region = region;
-            ce.ef = ef;
+			ce.inputFile = inputFile;
+			ce.metadataWorkspace = metadataWorkspace;
+			ce.allMetadataLoaded = allMetadataLoaded;
+			ce.ItemCollection = ItemCollection;
+			ce.originalValueMembers = originalValueMembers;
+			//ce.namespaceName = namespaceName;
+			ce.container = container;
 
-            ce.inputFile = inputFile;
-            ce.metadataWorkspace = metadataWorkspace;
-            ce.allMetadataLoaded = allMetadataLoaded;
-            ce.ItemCollection = ItemCollection;
-            ce.originalValueMembers = originalValueMembers;
-            //ce.namespaceName = namespaceName;
-            ce.container = container;
+			ce.COREmetadataWorkspace = COREmetadataWorkspace;
+			ce.COREallMetadataLoaded = COREallMetadataLoaded;
+			ce.COREItemCollection = COREItemCollection;
+			ce.COREcontainer = COREcontainer;
+			ce.Output.Project = project;
+			ce.Output.File = @"Generated Client Entities\" + container.Name + @"\" + entity.Name + ".cs";
+			ce.Render();    
+	   
+			ClientEntityTPL c = new ClientEntityTPL();     
+			c.projectName = projectName;
+			c.entity = entity;
+			c.code = code;
+			c.loader = loader;
+			c.region = region;
+			c.ef = ef;
 
-            ce.COREmetadataWorkspace = COREmetadataWorkspace;
-            ce.COREallMetadataLoaded = COREallMetadataLoaded;
-            ce.COREItemCollection = COREItemCollection;
-            ce.COREcontainer = COREcontainer;
-            ce.Output.Project = project;
-            ce.Output.File = @"Generated Client Entities\" + container.Name + @"\" + entity.Name + ".cs";
-            ce.Render();    
-       
-            ClientEntityTPL c = new ClientEntityTPL();     
-            c.projectName = projectName;
-            c.entity = entity;
-            c.code = code;
-            c.loader = loader;
-            c.region = region;
-            c.ef = ef;
+			c.inputFile = inputFile;
+			c.metadataWorkspace = metadataWorkspace;
+			c.allMetadataLoaded = allMetadataLoaded;
+			c.ItemCollection = ItemCollection;
+			c.originalValueMembers = originalValueMembers;
+			//c.namespaceName = namespaceName;
+			c.container = container;
 
-            c.inputFile = inputFile;
-            c.metadataWorkspace = metadataWorkspace;
-            c.allMetadataLoaded = allMetadataLoaded;
-            c.ItemCollection = ItemCollection;
-            c.originalValueMembers = originalValueMembers;
-            //c.namespaceName = namespaceName;
-            c.container = container;
+			c.COREmetadataWorkspace = COREmetadataWorkspace;
+			c.COREallMetadataLoaded = COREallMetadataLoaded;
+			c.COREItemCollection = COREItemCollection;
+			c.COREcontainer = COREcontainer;
+			c.Output.Project = outputProject;
+			c.Output.File =  @"Generated Client Entities\" + container.Name + @"\" + entity.Name + ".cs";
+			c.Render();   
 
-            c.COREmetadataWorkspace = COREmetadataWorkspace;
-            c.COREallMetadataLoaded = COREallMetadataLoaded;
-            c.COREItemCollection = COREItemCollection;
-            c.COREcontainer = COREcontainer;
-            c.Output.Project = outputProject;
-            c.Output.File =  @"Generated Client Entities\" + container.Name + @"\" + entity.Name + ".cs";
-            c.Render();   
+			 if (entity.Properties.Count() == 2 && entity.Properties.Any(x=> x.Name == "Id") && entity.Properties.Any(x=> x.Name == "Name"))
+				{
+
+					DataLayerEnumTPL ee = new DataLayerEnumTPL(); 
+					ee.entity = entity;
+					ee.code = code;
+					ee.container = container;
+					ee.COREcontainer = COREcontainer;
+					ee.region = region;
+					ee.ef = ef;
+
+					ee.propertyToColumnMapping = loadResult.PropertyToColumnMapping;
+					ee.manyToManyMappings = loadResult.ManyToManyMappings;
+					ee.tphMappings = loadResult.TphMappings;
+							   
+					ee.namespaceName = container.Name + ".Client.Enums";
+				
+					ee.Output.Project = outputProject;
+					ee.Output.File = @"Generated Client Entities\"+ container.Name + @"\Enums\" + entity.Name + ".cs";
+					ee.Render();          
+				}
 
 
-        }
+		}
 
-    }
-        
+	}
+		
 #>
 
 
@@ -104,60 +130,225 @@
 
 private void DefineMetadata()
 {
-    TemplateMetadata[MetadataConstants.TT_TEMPLATE_NAME] = "CSharpSelfTracking.Types";
-    TemplateMetadata[MetadataConstants.TT_TEMPLATE_VERSION] = "5.0";
+	TemplateMetadata[MetadataConstants.TT_TEMPLATE_NAME] = "CSharpSelfTracking.Types";
+	TemplateMetadata[MetadataConstants.TT_TEMPLATE_VERSION] = "5.0";
 }
 
 // Set recordRequiredOriginalValuesOnly to false in the OriginalValueMembers constructor in order to always record all original values
-public class OriginalValueMembers
-{
-    private readonly HashSet<EdmProperty> _concurrencyMembers;
-
-    public OriginalValueMembers(bool recordRequiredOriginalValuesOnly, MetadataWorkspace metadataWorkspace, MetadataTools metadataTools)
+    public class OriginalValueMembers
     {
-        if (recordRequiredOriginalValuesOnly)
+        private readonly HashSet<EdmProperty> _concurrencyMembers;
+
+        public OriginalValueMembers(bool recordRequiredOriginalValuesOnly, MetadataWorkspace metadataWorkspace, MetadataTools metadataTools)
         {
-            try
+            if (recordRequiredOriginalValuesOnly)
             {
-                _concurrencyMembers = new HashSet<EdmProperty>();
-                foreach (EntityContainer container in metadataWorkspace.GetItems<EntityContainer>(DataSpace.CSpace))
+                try
                 {
-                    ILookup<EntityType, EntityType> directSubTypeLookup = metadataWorkspace.GetItems<EntityType>(DataSpace.CSpace).ToLookup(e => (EntityType)e.BaseType);
-                    foreach (EntitySetBase eSet in container.BaseEntitySets.Where(es => es.BuiltInTypeKind == BuiltInTypeKind.EntitySet))
+                    _concurrencyMembers = new HashSet<EdmProperty>();
+                    foreach (EntityContainer container in metadataWorkspace.GetItems<EntityContainer>(DataSpace.CSpace))
                     {
-                        List<EntityType> subTypes = new List<EntityType>();
-                        GetSubtypes(directSubTypeLookup, (EntityType)eSet.ElementType, subTypes);
-                        foreach (EntityType eType in subTypes)
+                        ILookup<EntityType, EntityType> directSubTypeLookup = metadataWorkspace.GetItems<EntityType>(DataSpace.CSpace).ToLookup(e => (EntityType)e.BaseType);
+                        foreach (EntitySetBase eSet in container.BaseEntitySets.Where(es => es.BuiltInTypeKind == BuiltInTypeKind.EntitySet))
                         {
-                            foreach (EdmProperty member in metadataWorkspace.GetRelevantMembersForUpdate(eSet, eType, false))
+                            List<EntityType> subTypes = new List<EntityType>();
+                            GetSubtypes(directSubTypeLookup, (EntityType)eSet.ElementType, subTypes);
+                            foreach (EntityType eType in subTypes)
                             {
-                                _concurrencyMembers.Add(member);
+                                foreach (EdmProperty member in metadataWorkspace.GetRelevantMembersForUpdate(eSet, eType, false))
+                                {
+                                    _concurrencyMembers.Add(member);
+                                }
                             }
                         }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                // If any exceptions occur, fall back to always recording original values for all properties
-                _concurrencyMembers = null;
+                catch (Exception)
+                {
+                    // If any exceptions occur, fall back to always recording original values for all properties
+                    _concurrencyMembers = null;
+                }
             }
         }
-    }
 
-    public bool IsOriginalValueMember(EdmProperty edmProperty)
-    {
-        return _concurrencyMembers == null || _concurrencyMembers.Contains(edmProperty);
-    }
-
-    private static void GetSubtypes(ILookup<EntityType, EntityType> lookup, EntityType eType, List<EntityType> subTypes)
-    {
-        subTypes.Add(eType);
-        foreach (EntityType subType in lookup[eType])
+        public bool IsOriginalValueMember(EdmProperty edmProperty)
         {
-            GetSubtypes(lookup, subType, subTypes);
+            return _concurrencyMembers == null || _concurrencyMembers.Contains(edmProperty);
         }
+
+        private static void GetSubtypes(ILookup<EntityType, EntityType> lookup, EntityType eType, List<EntityType> subTypes)
+        {
+            subTypes.Add(eType);
+            foreach (EntityType subType in lookup[eType])
+            {
+                GetSubtypes(lookup, subType, subTypes);
+            }
+        }
+
+
     }
-}
+
+            MetadataLoadResult LoadMetadata(string inputFile)
+        {       
+            var loader = new MetadataLoader(this);
+            bool loaded = false;
+            EdmItemCollection edmItemCollection = loader.CreateEdmItemCollection(inputFile);      
+            StoreItemCollection storeItemCollection = null;
+            if (loader.TryCreateStoreItemCollection(inputFile, out storeItemCollection))
+            {
+                StorageMappingItemCollection storageMappingItemCollection;
+                if (loader.TryCreateStorageMappingItemCollection(inputFile, edmItemCollection, storeItemCollection, out storageMappingItemCollection))
+                    loaded = true;
+            }
+
+            if(loaded == false)
+                throw new Exception("Cannot load a metadata from the file " + inputFile);
+
+            var mappingMetadata = LoadMappingMetadata(inputFile);
+            var mappingNode	 = mappingMetadata.Item1;
+            var nsmgr			 = mappingMetadata.Item2;
+	
+            var allEntitySets = storeItemCollection.GetAllEntitySets();   
+	 
+            return new MetadataLoadResult
+                {
+                    EdmItems = edmItemCollection,
+                    PropertyToColumnMapping = BuildEntityMappings(mappingNode, nsmgr, edmItemCollection.GetItems<EntityType>(), edmItemCollection.GetAllEntitySets(), allEntitySets),
+                    ManyToManyMappings = BuildManyToManyMappings(mappingNode, nsmgr, edmItemCollection.GetAllAssociationSets(), allEntitySets),
+                    TphMappings=BuildTPHMappings(mappingNode, nsmgr, edmItemCollection.GetItems<EntityType>(), edmItemCollection.GetAllEntitySets(), allEntitySets)
+                    };
+        }
+
+        private Tuple<XmlNode, XmlNamespaceManager> LoadMappingMetadata(string inputFile)
+        {
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(inputFile);//Host.ResolvePath(inputFile)
+
+            var schemaConstantsList = new SchemaConstants[]
+                {
+                MetadataConstants.V3_SCHEMA_CONSTANTS,
+                MetadataConstants.V2_SCHEMA_CONSTANTS,
+                MetadataConstants.V1_SCHEMA_CONSTANTS,
+                };
+            foreach (var schemaConstants in schemaConstantsList)
+            {
+                var nsmgr = new XmlNamespaceManager(xmlDoc.NameTable);
+                nsmgr.AddNamespace("ef", schemaConstants.MslNamespace);
+                nsmgr.AddNamespace("edmx", schemaConstants.EdmxNamespace);
+                var mappingNode = xmlDoc.DocumentElement.SelectSingleNode("./*/edmx:Mappings", nsmgr);
+
+                if(mappingNode != null)
+                    return Tuple.Create(mappingNode, nsmgr);
+            }     
+
+            throw new Exception(CodeGenerationTools.GetResourceString("Template_UnsupportedSchema"));
+        }
+
+        private Dictionary<EntityType, Dictionary<EntityType, Dictionary<EdmProperty, string>>> BuildTPHMappings(XmlNode mappingNode, XmlNamespaceManager nsmgr, IEnumerable<EntityType> entityTypes, IEnumerable<EntitySet> entitySets, IEnumerable<EntitySet> tableSets)
+        {
+            var dictionary = new Dictionary<EntityType, Dictionary<EntityType, Dictionary<EdmProperty, string>>>();
+
+            foreach (EntitySet set in entitySets)
+            {
+                XmlNodeList nodes = mappingNode.SelectNodes(string.Format(".//ef:EntitySetMapping[@Name=\"{0}\"]/ef:EntityTypeMapping/ef:MappingFragment", set.Name), nsmgr);
+                foreach(XmlNode node in nodes)
+                {
+                    string typeName=node.ParentNode.Attributes["TypeName"].Value;
+                    if(typeName.StartsWith("IsTypeOf("))
+                        typeName=typeName.Substring("IsTypeOf(".Length, typeName.Length-"IsTypeOf()".Length);
+                    EntityType type=entityTypes.Single(z=>z.FullName==typeName);
+                    string tableName = node.Attributes["StoreEntitySet"].Value;
+                    EntitySet set2 = tableSets.Single(entitySet => entitySet.Name == tableName);
+                    var entityMap = new Dictionary<EdmProperty, string>();
+              
+                    XmlNodeList propertyNodes = node.SelectNodes("./ef:Condition", nsmgr);
+                    if(propertyNodes.Count==0) continue;
+                    foreach(XmlNode propertyNode in propertyNodes)
+                    {
+                        string str = propertyNode.Attributes["ColumnName"].Value;
+                        EdmProperty property2 = set2.ElementType.Properties[str];
+                        string val=propertyNode.Attributes["Value"].Value;
+                        entityMap.Add(property2, val);
+                    }
+                    EntityType baseType=(EntityType)(type.BaseType??type);
+                    if(!dictionary.Keys.Contains(baseType))
+                    {
+                        var entityMappings=new Dictionary<EntityType, Dictionary<EdmProperty, string>>();
+                        //entityMappings.Add(type,entityMap);
+                        dictionary.Add(baseType, entityMappings);
+                    }
+                    dictionary[baseType].Add(type,entityMap);
+                }
+            }
+            return dictionary;
+        }         
+
+        private Dictionary<EntityType, Tuple<EntitySet, Dictionary<EdmProperty, EdmProperty>>> BuildEntityMappings(XmlNode mappingNode, XmlNamespaceManager nsmgr, IEnumerable<EntityType> entityTypes, IEnumerable<EntitySet> entitySets, IEnumerable<EntitySet> tableSets)
+        {
+            var dictionary = new Dictionary<EntityType, Tuple<EntitySet, Dictionary<EdmProperty, EdmProperty>>>();
+
+            foreach (EntitySet set in entitySets)
+            {
+                XmlNodeList nodes = mappingNode.SelectNodes(string.Format(".//ef:EntitySetMapping[@Name=\"{0}\"]/ef:EntityTypeMapping/ef:MappingFragment", set.Name), nsmgr);
+                foreach(XmlNode node in nodes)
+                {
+                    string typeName=node.ParentNode.Attributes["TypeName"].Value;
+                    if(typeName.StartsWith("IsTypeOf("))
+                        typeName=typeName.Substring("IsTypeOf(".Length, typeName.Length-"IsTypeOf()".Length);
+                    EntityType type=entityTypes.Single(z=>z.FullName==typeName);
+                    string tableName = node.Attributes["StoreEntitySet"].Value;
+                    EntitySet set2 = tableSets.Single(entitySet => entitySet.Name == tableName);
+                    var entityMap = new Dictionary<EdmProperty, EdmProperty>();
+                    foreach (EdmProperty property in type.Properties)
+                    {
+                        XmlNode propertyNode = node.SelectSingleNode(string.Format("./ef:ScalarProperty[@Name=\"{0}\"]", property.Name), nsmgr);
+                        if(propertyNode == null) continue;
+                        string str = propertyNode.Attributes["ColumnName"].Value;
+                        EdmProperty property2 = set2.ElementType.Properties[str];
+                        entityMap.Add(property, property2);
+                    }
+                    dictionary.Add(type, Tuple.Create(set2, entityMap));
+                }
+            }
+            return dictionary;
+        }
+
+        Dictionary<AssociationType, Tuple<EntitySet, Dictionary<RelationshipEndMember, Dictionary<EdmMember, string>>>> BuildManyToManyMappings(XmlNode mappingNode, XmlNamespaceManager nsmgr, IEnumerable<AssociationSet> associationSets, IEnumerable<EntitySet> tableSets)
+        {
+            var dictionary = new Dictionary<AssociationType, Tuple<EntitySet, Dictionary<RelationshipEndMember, Dictionary<EdmMember, string>>>>();
+            foreach (AssociationSet associationSet in associationSets.Where(set => set.ElementType.IsManyToMany()))
+            {
+          
+                XmlNode node = mappingNode.SelectSingleNode(string.Format("//ef:AssociationSetMapping[@Name=\"{0}\"]", associationSet.Name), nsmgr);
+                string tableName = node.Attributes["StoreEntitySet"].Value;
+                EntitySet entitySet = tableSets.Single(s => s.Name == tableName);
+          
+                var relationEndMap = new Dictionary<RelationshipEndMember, Dictionary<EdmMember, string>>();
+                foreach (AssociationSetEnd end in associationSet.AssociationSetEnds)
+                {
+                    var map = new Dictionary<EdmMember, string>();
+                    foreach (XmlNode endProperty in node.SelectSingleNode(string.Format("./ef:EndProperty[@Name=\"{0}\"]", end.Name), nsmgr).ChildNodes)
+                    {
+                        string str = endProperty.Attributes["Name"].Value;
+                        EdmProperty key = end.EntitySet.ElementType.Properties[str];
+                        string str2 = endProperty.Attributes["ColumnName"].Value;
+                        map.Add(key, str2);
+                    }
+                    relationEndMap.Add(end.CorrespondingAssociationEndMember, map);
+                }
+                dictionary.Add(associationSet.ElementType, Tuple.Create(entitySet, relationEndMap));
+            }
+            return dictionary;
+        }
+
+
+
+        public class MetadataLoadResult
+        {
+            public EdmItemCollection EdmItems { get; set; }
+            public Dictionary<EntityType, Tuple<EntitySet, Dictionary<EdmProperty, EdmProperty>>> PropertyToColumnMapping { get; set; }
+            public Dictionary<AssociationType, Tuple<EntitySet, Dictionary<RelationshipEndMember, Dictionary<EdmMember, string>>>> ManyToManyMappings { get; set; }
+            public Dictionary<EntityType, Dictionary<EntityType, Dictionary<EdmProperty, string>>> TphMappings { get; set; }
+        }
 #>
 

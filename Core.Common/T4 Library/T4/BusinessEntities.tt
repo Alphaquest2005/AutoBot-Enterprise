@@ -6,6 +6,7 @@
 <#@ include file="C:\Users\josep\OneDrive\AutoBot-Enterprise\Core.Common\T4 Library\T4\Entities\Business\EF6\BusinessEntityTemplate.tt" once="true"#>
 
 
+
 <#+ 
   // Note: You can call this method from the outside of the template,
   //       please add parameters as needed.	
@@ -66,7 +67,8 @@
             ce.Output.Project = outputProject;
             ce.Output.File = @"Generated Business Entities\"+ container.Name + @"\" + entity.Name + ".cs";
             ce.Render();          
- 
+        
+     
            //var ro = new DataLayerROEntityTPL();  
             //ro.projectName = projectName;
             //ro.entity = entity;

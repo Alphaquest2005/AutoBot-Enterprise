@@ -202,7 +202,9 @@ namespace CoreEntities.Client.Repositories
                         {
                             return new Customs_Procedure(res)
                     {
-                  // Document_Type = (res.Document_Type != null?new Document_Type(res.Document_Type): null)    
+                  // Document_Type = (res.Document_Type != null?new Document_Type(res.Document_Type): null),    
+                  // CustomsOperations = (res.CustomsOperations != null?new CustomsOperations(res.CustomsOperations): null),    
+                     // AsycudaDocument = new System.Collections.ObjectModel.ObservableCollection<AsycudaDocument>(res.AsycudaDocument.Select(y => new AsycudaDocument(y)))    
                   };
                     }
                     else
@@ -372,6 +374,62 @@ namespace CoreEntities.Client.Repositories
                  using (Customs_ProcedureClient t = new Customs_ProcedureClient())
                     {
                         var res = await t.GetCustoms_ProcedureByDocument_TypeId(Document_TypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Customs_Procedure(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByBondTypeId(string BondTypeId, List<string> includesLst = null)
+        {
+             if (BondTypeId == "0") return null;
+            try
+            {
+                 using (Customs_ProcedureClient t = new Customs_ProcedureClient())
+                    {
+                        var res = await t.GetCustoms_ProcedureByBondTypeId(BondTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Customs_Procedure(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<Customs_Procedure>> GetCustoms_ProcedureByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
+        {
+             if (CustomsOperationId == "0") return null;
+            try
+            {
+                 using (Customs_ProcedureClient t = new Customs_ProcedureClient())
+                    {
+                        var res = await t.GetCustoms_ProcedureByCustomsOperationId(CustomsOperationId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new Customs_Procedure(x)).AsEnumerable();

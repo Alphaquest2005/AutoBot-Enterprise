@@ -33,7 +33,7 @@ namespace AdjustmentQS
         public string TariffCode { get; set; }
         public string CNumber { get; set; }
         public Nullable<int> CLineNumber { get; set; }
-        public Nullable<int> AsycudaDocumentSetId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
         public Nullable<double> InvoiceQty { get; set; }
         public Nullable<double> ReceivedQty { get; set; }
         public string Status { get; set; }
@@ -52,6 +52,7 @@ namespace AdjustmentQS
         public System.DateTime EmailDate { get; set; }
         public int EntryData_Id { get; set; }
         public Nullable<bool> IsReconciled { get; set; }
+        public int InventoryItemId { get; set; }
     
         public virtual AdjustmentEx AdjustmentEx { get; set; }
         public virtual ICollection<AsycudaDocumentItemEntryDataDetail> AsycudaDocumentItemEntryDataDetails { get; set; }

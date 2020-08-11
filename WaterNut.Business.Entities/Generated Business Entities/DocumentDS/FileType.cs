@@ -222,6 +222,36 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<int> _parentfiletypeid;
         [DataMember]
+        public Nullable<bool> OverwriteFiles 
+        {
+            get
+            {
+                return _overwritefiles;
+            }
+            set
+            {
+                _overwritefiles = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _overwritefiles;
+        [DataMember]
+        public Nullable<bool> HasFiles 
+        {
+            get
+            {
+                return _hasfiles;
+            }
+            set
+            {
+                _hasfiles = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _hasfiles;
+        [DataMember]
         public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }

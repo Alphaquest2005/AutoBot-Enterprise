@@ -87,7 +87,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                 MessageBox.Show("Please select a Document Set.");
                 return;
             }
-            await EntryDataExRepository.Instance.AddDocToEntry(lst.Select(x => x.InvoiceNo),docSet.AsycudaDocumentSetId, perInvoice, combineEntryDataInSameFile).ConfigureAwait(false);
+            await EntryDataExRepository.Instance.AddDocToEntry(lst.Select(x => x.InvoiceNo),docSet.AsycudaDocumentSetId, perInvoice, combineEntryDataInSameFile, false).ConfigureAwait(false);
             //----- think this causing the docset to overwrite with empty one and not necessary
             //await AsycudaDocumentSetExRepository.Instance.SaveAsycudaDocumentSetEx(docSet).ConfigureAwait(false);
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,

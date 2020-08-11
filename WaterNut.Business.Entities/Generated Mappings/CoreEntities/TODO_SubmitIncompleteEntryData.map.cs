@@ -11,7 +11,7 @@
     {
         public TODO_SubmitIncompleteEntryDataMap()
         {                        
-              this.HasKey(t => t.InvoiceNo);        
+              this.HasKey(t => new {t.InvoiceNo, t.AsycudaDocumentSetId});        
               this.ToTable("TODO-SubmitIncompleteEntryData");
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
@@ -27,6 +27,7 @@
               this.Property(t => t.SupplierCode).HasColumnName("SupplierCode").HasMaxLength(100);
               this.Property(t => t.ExpectedTotal).HasColumnName("ExpectedTotal");
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

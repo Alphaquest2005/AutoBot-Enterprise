@@ -545,6 +545,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private string _entryDataTypeFilter;
+        public string EntryDataTypeFilter
+        {
+            get
+            {
+                return _entryDataTypeFilter;
+            }
+            set
+            {
+                _entryDataTypeFilter = value;
+				NotifyPropertyChanged(x => EntryDataTypeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -670,6 +688,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(PreviousInvoiceItemNumberFilter) == false)
 						res.Append(" && " + string.Format("PreviousInvoiceItemNumber.Contains(\"{0}\")",  PreviousInvoiceItemNumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
+						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -747,7 +769,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     PreviousInvoiceLineNumber = x.PreviousInvoiceLineNumber ,
                     
  
-                    PreviousInvoiceItemNumber = x.PreviousInvoiceItemNumber 
+                    PreviousInvoiceItemNumber = x.PreviousInvoiceItemNumber ,
+                    
+ 
+                    EntryDataType = x.EntryDataType 
                     
                 }).ToList()
             };
@@ -815,6 +840,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string PreviousInvoiceItemNumber { get; set; } 
+                    
+ 
+                    public string EntryDataType { get; set; } 
                     
         }
 

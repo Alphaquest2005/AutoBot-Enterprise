@@ -737,6 +737,21 @@ public Nullable<bool> TestMode
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "BondType is required")]
+       
+public int BondTypeId
+		{ 
+		    get { return this.applicationsettings.BondTypeId; }
+			set
+			{
+			    if (value == this.applicationsettings.BondTypeId) return;
+				this.applicationsettings.BondTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("BondTypeId");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEx> _AsycudaDocumentSetEx = null;
         public  ObservableCollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx
 		{

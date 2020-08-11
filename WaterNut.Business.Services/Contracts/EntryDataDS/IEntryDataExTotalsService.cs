@@ -108,6 +108,9 @@ namespace EntryDataDS.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryDataExTotals>> GetEntryDataExTotalsByEntryDataId(string EntryDataId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataExTotals>> GetEntryDataExTotalsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
   
 
 

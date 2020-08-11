@@ -58,7 +58,7 @@ namespace WaterNut.DataSpace.Asycuda
 
                 SaveDocumentRef(da);
                 SaveItems(adoc.Lic_item_segment, da);
-
+                AttachLicenseToDocSet(docSet, file, regNumber);
                 using (var ctx = new LicenseDSContext())
                 {
                     ctx.ApplyChanges(da);
@@ -191,8 +191,14 @@ namespace WaterNut.DataSpace.Asycuda
                 {
                     ndoc = CreateRegisteredLicense(regNumber,file.FullName);
                     
-                    AttachLicenseToDocSet(docSet, file);
                     
+                    
+                }
+                else
+                {
+                    // to fix wrong imported files or changed file paths
+                    ndoc.SourceFile = file.FullName;
+                    ctx.SaveChanges();
                 }
             }
 
@@ -264,30 +270,42 @@ namespace WaterNut.DataSpace.Asycuda
             return ndoc;
         }
 
-        private static void AttachLicenseToDocSet(AsycudaDocumentSet docSet, FileInfo file)
+        private static void AttachLicenseToDocSet(AsycudaDocumentSet docSet, FileInfo file, string regNumber)
         {
             using (var cctx = new CoreEntitiesContext())
             {
                 var fileType = cctx.FileTypes.First(x =>
                     x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                     x.Type == "LIC");
-                var res = new AsycudaDocumentSet_Attachments(true)
+                var res = cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).FirstOrDefault(x =>
+
+                    x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId
+                    && x.Attachments.FilePath == file.FullName);
+                if (res == null)
                 {
-                    AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
-                    DocumentSpecific = true,
-                    FileDate = file.LastWriteTime,
-                    EmailUniqueId = null,
-                    FileTypeId = fileType.Id,
-                    TrackingState = TrackingState.Added,
-                    Attachments = new CoreEntities.Business.Entities.Attachments(true)
+                     res = new AsycudaDocumentSet_Attachments(true)
                     {
-                        FilePath = file.FullName,
-                        DocumentCode = fileType.DocumentCode,
-                        Reference = "LIC",
+                        AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
+                        DocumentSpecific = true,
+                        FileDate = file.LastWriteTime,
+                        EmailUniqueId = null,
+                        FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
-                    }
-                };
-                cctx.AsycudaDocumentSet_Attachments.Add(res);
+                        Attachments = new CoreEntities.Business.Entities.Attachments(true)
+                        {
+                            FilePath = file.FullName,
+                            DocumentCode = fileType.DocumentCode,
+                            Reference = regNumber,
+                            TrackingState = TrackingState.Added,
+                        }
+                    };
+                    cctx.AsycudaDocumentSet_Attachments.Add(res);
+                }
+                else
+                {
+                    res.Attachments.Reference = regNumber;
+                }
+                
                 cctx.SaveChanges();
             }
         }
@@ -300,7 +318,7 @@ namespace WaterNut.DataSpace.Asycuda
                 var adoc = DatabaseToLicence(lic);
                 adoc.SaveToFile(fileName);
                 var fileInfo = new FileInfo(fileName);
-                AttachLicenseToDocSet(docSet, fileInfo);
+                AttachLicenseToDocSet(docSet, fileInfo, "LIC");
                 //var emailres = new FileInfo(Path.Combine(fileInfo.DirectoryName, "LICResults.txt"));
                 var results = new FileInfo(Path.Combine(fileInfo.DirectoryName, "LIC-Results.txt"));
                 if(File.Exists(results.FullName)) File.Delete(results.FullName);

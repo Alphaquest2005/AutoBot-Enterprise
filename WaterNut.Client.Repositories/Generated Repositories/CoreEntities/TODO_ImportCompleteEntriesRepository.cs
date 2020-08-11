@@ -361,7 +361,63 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null)
+	 public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+             if (AsycudaDocumentSetId == "0") return null;
+            try
+            {
+                 using (TODO_ImportCompleteEntriesClient t = new TODO_ImportCompleteEntriesClient())
+                    {
+                        var res = await t.GetTODO_ImportCompleteEntriesByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_ImportCompleteEntries(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+             if (ApplicationSettingsId == "0") return null;
+            try
+            {
+                 using (TODO_ImportCompleteEntriesClient t = new TODO_ImportCompleteEntriesClient())
+                    {
+                        var res = await t.GetTODO_ImportCompleteEntriesByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_ImportCompleteEntries(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEmailId(string EmailId, List<string> includesLst = null)
         {
              if (EmailId == "0") return null;
             try
@@ -397,6 +453,34 @@ namespace CoreEntities.Client.Repositories
                  using (TODO_ImportCompleteEntriesClient t = new TODO_ImportCompleteEntriesClient())
                     {
                         var res = await t.GetTODO_ImportCompleteEntriesByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_ImportCompleteEntries(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_ImportCompleteEntries>> GetTODO_ImportCompleteEntriesByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+             if (EntryDataId == "0") return null;
+            try
+            {
+                 using (TODO_ImportCompleteEntriesClient t = new TODO_ImportCompleteEntriesClient())
+                    {
+                        var res = await t.GetTODO_ImportCompleteEntriesByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new TODO_ImportCompleteEntries(x)).AsEnumerable();

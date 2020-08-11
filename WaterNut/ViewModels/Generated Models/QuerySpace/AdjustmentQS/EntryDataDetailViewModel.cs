@@ -153,15 +153,14 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
-			if (e.Data == null || e.Data.ItemNumber == null)
+			if (e.Data == null || e.Data.InventoryItemId == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("ItemNumber == \"{0}\"", e.Data.ItemNumber.ToString());
-                }
+				vloader.FilterExpression = string.Format("InventoryItemId == {0}", e.Data.InventoryItemId.ToString());
+                 }
 
 				EntryDataDetails.Refresh();
 				NotifyPropertyChanged(x => this.EntryDataDetails);

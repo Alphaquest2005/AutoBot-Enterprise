@@ -105,7 +105,10 @@ namespace AllocationDS.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<InventoryItem>> GetInventoryItemByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  
 
 
 

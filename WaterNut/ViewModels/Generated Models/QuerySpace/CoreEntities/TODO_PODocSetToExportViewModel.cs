@@ -457,6 +457,60 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _totalFreightFilter;
+        public Double? TotalFreightFilter
+        {
+            get
+            {
+                return _totalFreightFilter;
+            }
+            set
+            {
+                _totalFreightFilter = value;
+				NotifyPropertyChanged(x => TotalFreightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _classifiedLinesFilter;
+        public Int32? ClassifiedLinesFilter
+        {
+            get
+            {
+                return _classifiedLinesFilter;
+            }
+            set
+            {
+                _classifiedLinesFilter = value;
+				NotifyPropertyChanged(x => ClassifiedLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _totalLinesFilter;
+        public Int32? TotalLinesFilter
+        {
+            get
+            {
+                return _totalLinesFilter;
+            }
+            set
+            {
+                _totalLinesFilter = value;
+				NotifyPropertyChanged(x => TotalLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -540,7 +594,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("HasC71 == {0}",  HasC71Filter.ToString()));				 
 
 					if(HasLicenseFilter.HasValue)
-						res.Append(" && " + string.Format("HasLicense == {0}",  HasLicenseFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("HasLicense == {0}",  HasLicenseFilter.ToString()));				 
+
+					if(TotalFreightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalFreight == {0}",  TotalFreightFilter.ToString()));				 
+
+					if(ClassifiedLinesFilter.HasValue)
+						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
+
+					if(TotalLinesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -608,7 +671,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     HasC71 = x.HasC71 ,
                     
  
-                    HasLicense = x.HasLicense 
+                    HasLicense = x.HasLicense ,
+                    
+ 
+                    TotalFreight = x.TotalFreight ,
+                    
+ 
+                    ClassifiedLines = x.ClassifiedLines ,
+                    
+ 
+                    TotalLines = x.TotalLines 
                     
                 }).ToList()
             };
@@ -667,6 +739,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> HasLicense { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalFreight { get; set; } 
+                    
+ 
+                    public Nullable<int> ClassifiedLines { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalLines { get; set; } 
                     
         }
 

@@ -35,6 +35,7 @@
               this.Property(t => t.MaxLines).HasColumnName("MaxLines");
               this.Property(t => t.LocationOfGoods).HasColumnName("LocationOfGoods").HasMaxLength(50);
               this.Property(t => t.FreightCurrencyCode).HasColumnName("FreightCurrencyCode").HasMaxLength(3);
+              this.Property(t => t.Office).HasColumnName("Office").HasMaxLength(50);
               this.HasOptional(t => t.Customs_Procedure).WithMany(t =>(ICollection<AsycudaDocumentSet>) t.AsycudaDocumentSets).HasForeignKey(d => d.Customs_ProcedureId);
               this.HasOptional(t => t.Document_Type).WithMany(t =>(ICollection<AsycudaDocumentSet>) t.AsycudaDocumentSets).HasForeignKey(d => d.Document_TypeId);
               this.HasMany(t => t.AsycudaDocumentSetEntryDatas).WithRequired(t => (AsycudaDocumentSet)t.AsycudaDocumentSet);

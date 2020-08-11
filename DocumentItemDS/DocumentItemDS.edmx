@@ -10,9 +10,10 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="FilePath" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="DocumentCode" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Reference" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -94,7 +95,7 @@
           <Property Name="Quantity_deducted_from_licence" Type="nvarchar" MaxLength="4" />
           <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Licence_number" Type="nvarchar" MaxLength="6" />
+          <Property Name="Licence_number" Type="nvarchar" MaxLength="50" />
           <Property Name="Free_text_1" Type="nvarchar" MaxLength="35" />
           <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
           <Property Name="EntryDataDetailsId" Type="int" />
@@ -112,6 +113,7 @@
           <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -899,7 +901,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Quantity_deducted_from_licence" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="Licence_number" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="Licence_number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataDetailsId" Type="Int32" />
           <Property Name="LineNumber" Type="Int32" Nullable="false" />
           <Property Name="IsAssessed" Type="Boolean" />
@@ -930,6 +932,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocumentItem,IWeightItem</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
@@ -1754,10 +1757,11 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="DocumentCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="xcuda_Attachments" Relationship="WaterNutDBModel.FK_xcuda_Attachments_Attachments" FromRole="Attachments" ToRole="xcuda_Attachments" />
-          <Property Name="Reference" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Reference" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Attachments">
           <Key>
@@ -1820,6 +1824,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
                 <ScalarProperty Name="PreviousInvoiceLineNumber" ColumnName="PreviousInvoiceLineNumber" />
                 <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
@@ -2162,6 +2167,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="Attachments">
             <EntityTypeMapping TypeName="WaterNutDBModel.Attachments">
               <MappingFragment StoreEntitySet="Attachments">
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="DocumentCode" ColumnName="DocumentCode" />
                 <ScalarProperty Name="FilePath" ColumnName="FilePath" />
@@ -2252,8 +2258,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
         <EntityTypeShape EntityType="WaterNutDBModel.EntryPreviousItems" Width="3.375" PointX="3.25" PointY="0.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_Item" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryPreviousItems_xcuda_PreviousItem" />
-        <EntityTypeShape EntityType="WaterNutDBModel.Attachments" Width="1.5" PointX="3" PointY="36.5" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Attachments" Width="1.5" PointX="5.25" PointY="9.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.Attachments" Width="1.5" PointX="8.375" PointY="9.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xcuda_Attachments" Width="2.25" PointX="5.25" PointY="9.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Attachments_Attachments" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Attachments_xcuda_Attached_documents" />
         <AssociationConnector Association="WaterNutDBModel.FK_xcuda_Inventory_Item_xcuda_HScode1" />

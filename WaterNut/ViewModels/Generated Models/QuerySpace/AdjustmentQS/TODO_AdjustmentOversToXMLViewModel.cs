@@ -1097,7 +1097,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public string ItemNumber { get; set; } 
                     
  
-                    public double Quantity { get; set; } 
+                    public Nullable<double> Quantity { get; set; } 
                     
  
                     public string Units { get; set; } 
@@ -1106,16 +1106,16 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public string ItemDescription { get; set; } 
                     
  
-                    public double Cost { get; set; } 
+                    public Nullable<double> Cost { get; set; } 
                     
  
-                    public double QtyAllocated { get; set; } 
+                    public Nullable<double> QtyAllocated { get; set; } 
                     
  
-                    public double UnitWeight { get; set; } 
+                    public Nullable<double> UnitWeight { get; set; } 
                     
  
-                    public bool DoNotAllocate { get; set; } 
+                    public Nullable<bool> DoNotAllocate { get; set; } 
                     
  
                     public string TariffCode { get; set; } 
@@ -1157,13 +1157,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public string DutyFreePaid { get; set; } 
                     
  
-                    public System.DateTime InvoiceDate { get; set; } 
+                    public Nullable<System.DateTime> InvoiceDate { get; set; } 
                     
  
                     public string Subject { get; set; } 
                     
  
-                    public System.DateTime EmailDate { get; set; } 
+                    public Nullable<System.DateTime> EmailDate { get; set; } 
                     
  
                     public int AlreadyExecuted { get; set; } 

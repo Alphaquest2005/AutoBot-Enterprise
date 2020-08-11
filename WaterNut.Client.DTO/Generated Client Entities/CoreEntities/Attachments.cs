@@ -73,6 +73,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Reference;
 
+        [DataMember]
+        public string EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private string _EmailId;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments

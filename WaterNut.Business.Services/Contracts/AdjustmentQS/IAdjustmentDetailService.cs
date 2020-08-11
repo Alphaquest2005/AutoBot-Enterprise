@@ -123,6 +123,9 @@ namespace AdjustmentQS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<AdjustmentDetail>> GetAdjustmentDetailByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
   
 
 

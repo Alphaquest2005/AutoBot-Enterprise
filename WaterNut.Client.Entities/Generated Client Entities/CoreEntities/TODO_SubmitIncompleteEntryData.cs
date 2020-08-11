@@ -262,6 +262,21 @@ public Nullable<double> InvoiceTotal
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.todo_submitincompleteentrydata.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.todo_submitincompleteentrydata.AsycudaDocumentSetId) return;
+				this.todo_submitincompleteentrydata.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_SubmitIncompleteEntryData> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_SubmitIncompleteEntryData> ChangeTracker

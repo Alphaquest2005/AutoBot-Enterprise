@@ -71,8 +71,11 @@
               this.Property(t => t.xStatus).HasColumnName("xStatus").HasMaxLength(255);
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.Property(t => t.Comment).HasColumnName("Comment").HasMaxLength(255);
+              this.Property(t => t.CustomsOperationId).HasColumnName("CustomsOperationId");
+              this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.HasRequired(t => t.PreviousDocumentItem).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.PreviousItem_Id);
-              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => new {d.ItemNumber, d.ApplicationSettingsId});
+              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.AsycudaSalesAllocations).WithOptional(t => (EX9AsycudaSalesAllocations)t.EX9AsycudaSalesAllocations);
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<EX9AsycudaSalesAllocations>) t.EX9AsycudaSalesAllocations).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties

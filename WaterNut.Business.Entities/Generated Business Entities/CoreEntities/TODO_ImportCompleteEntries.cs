@@ -21,7 +21,7 @@ namespace CoreEntities.Business.Entities
     public partial class TODO_ImportCompleteEntries : BaseEntity<TODO_ImportCompleteEntries>, ITrackable 
     {
         [DataMember]
-        public int AsycudaDocumentSetId 
+        public Nullable<int> AsycudaDocumentSetId 
         {
             get
             {
@@ -34,9 +34,9 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _asycudadocumentsetid;
+        Nullable<int> _asycudadocumentsetid;
         [DataMember]
-        public int ApplicationSettingsId 
+        public Nullable<int> ApplicationSettingsId 
         {
             get
             {
@@ -49,7 +49,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _applicationsettingsid;
+        Nullable<int> _applicationsettingsid;
         [DataMember]
         public Nullable<int> EmailId 
         {
@@ -81,21 +81,6 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _filetypeid;
         [DataMember]
-        public int ASYCUDA_Id 
-        {
-            get
-            {
-                return _asycuda_id;
-            }
-            set
-            {
-                _asycuda_id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycuda_id;
-        [DataMember]
         public string EntryDataId 
         {
             get
@@ -110,6 +95,36 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _entrydataid;
+        [DataMember]
+        public int NewAsycuda_Id 
+        {
+            get
+            {
+                return _newasycuda_id;
+            }
+            set
+            {
+                _newasycuda_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _newasycuda_id;
+        [DataMember]
+        public int AssessedAsycuda_Id 
+        {
+            get
+            {
+                return _assessedasycuda_id;
+            }
+            set
+            {
+                _assessedasycuda_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _assessedasycuda_id;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -585,6 +585,51 @@ public string CustomsProcedure
 		}
      
 
+       
+       
+public Nullable<int> CustomsOperationId
+		{ 
+		    get { return this.asycudadocument.CustomsOperationId; }
+			set
+			{
+			    if (value == this.asycudadocument.CustomsOperationId) return;
+				this.asycudadocument.CustomsOperationId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsOperationId");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> IsPaid
+		{ 
+		    get { return this.asycudadocument.IsPaid; }
+			set
+			{
+			    if (value == this.asycudadocument.IsPaid) return;
+				this.asycudadocument.IsPaid = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsPaid");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> SubmitToCustoms
+		{ 
+		    get { return this.asycudadocument.SubmitToCustoms; }
+			set
+			{
+			    if (value == this.asycudadocument.SubmitToCustoms) return;
+				this.asycudadocument.SubmitToCustoms = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SubmitToCustoms");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentItem> _AsycudaDocumentItems = null;
         public  ObservableCollection<AsycudaDocumentItem> AsycudaDocumentItems
 		{
@@ -741,6 +786,59 @@ public string CustomsProcedure
                      this.asycudadocument.ApplicationSettings = value.DTO;
 				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                 NotifyPropertyChanged("ApplicationSettings");
+			}
+		}
+        
+
+       private Customs_Procedure _Customs_Procedure;
+        public  Customs_Procedure Customs_Procedure
+		{
+		    get
+               { 
+                  if (this.asycudadocument != null)
+                   {
+                       if (_Customs_Procedure != null)
+                       {
+                           if (this.asycudadocument.Customs_Procedure !=
+                               _Customs_Procedure.DTO)
+                           {
+                                if (this.asycudadocument.Customs_Procedure  != null)
+                               _Customs_Procedure = new Customs_Procedure(this.asycudadocument.Customs_Procedure);
+                           }
+                       }
+                       else
+                       {
+                             if (this.asycudadocument.Customs_Procedure  != null)
+                           _Customs_Procedure = new Customs_Procedure(this.asycudadocument.Customs_Procedure);
+                       }
+                   }
+
+
+             //       if (_Customs_Procedure != null) return _Customs_Procedure;
+                       
+             //       var i = new Customs_Procedure(){TrackingState = TrackingState.Added};
+			//		//if (this.asycudadocument.Customs_Procedure == null) Debugger.Break();
+			//		if (this.asycudadocument.Customs_Procedure != null)
+            //        {
+            //           i. = this.asycudadocument.Customs_Procedure;
+            //        }
+            //        else
+            //        {
+            //            this.asycudadocument.Customs_Procedure = i.;
+             //       }
+                           
+            //        _Customs_Procedure = i;
+                     
+                    return _Customs_Procedure;
+               }
+			set
+			{
+			    if (value == _Customs_Procedure) return;
+                _Customs_Procedure = value;
+                if(value != null)
+                     this.asycudadocument.Customs_Procedure = value.DTO;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                NotifyPropertyChanged("Customs_Procedure");
 			}
 		}
         

@@ -263,6 +263,12 @@ namespace CoreEntities.Business.Services
                                         GetWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "AsycudaDocumentSetEx", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AsycudaDocumentSetEntryDataEx":
+                                return
+                                    await
+                                        GetWhere<AsycudaDocumentSetEntryDataEx>(dbContext, exp, itm.Value, "AsycudaDocumentSetEx", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -772,6 +778,9 @@ namespace CoreEntities.Business.Services
                             case "AsycudaDocumentSet_Attachments":
                                 return await CountWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "AsycudaDocumentSetEx", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentSetEntryDataEx":
+                                return await CountWhere<AsycudaDocumentSetEntryDataEx>(dbContext, exp, itm.Value, "AsycudaDocumentSetEx", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.AsycudaDocumentSetExs.Where(exp == "All" || exp == null ? "AsycudaDocumentSetId != null" : exp)
@@ -905,6 +914,12 @@ namespace CoreEntities.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<AsycudaDocumentSet_Attachments>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSetEx", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AsycudaDocumentSetEntryDataEx":
+                                return
+                                    await
+                                        LoadRangeWhere<AsycudaDocumentSetEntryDataEx>(startIndex, count, dbContext, exp, itm.Value, "AsycudaDocumentSetEx", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1124,6 +1139,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.LicenceSummary)									  
                                                     // .Include(x => x.FileTypes)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.AsycudaDocumentSetEntryDataEx)									  
                                       .AsNoTracking()
                                         .Where(x => x.Customs_ProcedureId.ToString() == Customs_ProcedureId.ToString())
 										.ToListAsync()
@@ -1157,6 +1173,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.LicenceSummary)									  
                                                     // .Include(x => x.FileTypes)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.AsycudaDocumentSetEntryDataEx)									  
                                       .AsNoTracking()
                                         .Where(x => x.Document_TypeId.ToString() == Document_TypeId.ToString())
 										.ToListAsync()
@@ -1190,6 +1207,7 @@ namespace CoreEntities.Business.Services
                                                     // .Include(x => x.LicenceSummary)									  
                                                     // .Include(x => x.FileTypes)									  
                                                     // .Include(x => x.AsycudaDocumentSet_Attachments)									  
+                                                    // .Include(x => x.AsycudaDocumentSetEntryDataEx)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1277,6 +1295,9 @@ namespace CoreEntities.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "AsycudaDocumentSet_Attachments":
                                 return await SumWhere<AsycudaDocumentSet_Attachments>(dbContext, exp, itm.Value, "AsycudaDocumentSetEx", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AsycudaDocumentSetEntryDataEx":
+                                return await SumWhere<AsycudaDocumentSetEntryDataEx>(dbContext, exp, itm.Value, "AsycudaDocumentSetEx", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

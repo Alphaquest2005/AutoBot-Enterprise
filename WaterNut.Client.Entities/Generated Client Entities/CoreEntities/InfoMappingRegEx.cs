@@ -75,7 +75,7 @@ public int InfoMappingId
        [RequiredValidationAttribute(ErrorMessage= "KeyRegX is required")]
        
                 
-                
+                [MaxLength(1000, ErrorMessage = "KeyRegX has a max length of 1000 letters ")]
 public string KeyRegX
 		{ 
 		    get { return this.infomappingregex.KeyRegX; }
@@ -92,7 +92,7 @@ public string KeyRegX
        [RequiredValidationAttribute(ErrorMessage= "FieldRx is required")]
        
                 
-                
+                [MaxLength(1000, ErrorMessage = "FieldRx has a max length of 1000 letters ")]
 public string FieldRx
 		{ 
 		    get { return this.infomappingregex.FieldRx; }
@@ -109,7 +109,7 @@ public string FieldRx
        
        
                 
-                
+                [MaxLength(1000, ErrorMessage = "KeyReplaceRx has a max length of 1000 letters ")]
 public string KeyReplaceRx
 		{ 
 		    get { return this.infomappingregex.KeyReplaceRx; }
@@ -126,7 +126,7 @@ public string KeyReplaceRx
        
        
                 
-                
+                [MaxLength(1000, ErrorMessage = "FieldReplaceRx has a max length of 1000 letters ")]
 public string FieldReplaceRx
 		{ 
 		    get { return this.infomappingregex.FieldReplaceRx; }
@@ -136,6 +136,57 @@ public string FieldReplaceRx
 				this.infomappingregex.FieldReplaceRx = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FieldReplaceRx");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "LineRegx is required")]
+       
+                
+                [MaxLength(1000, ErrorMessage = "LineRegx has a max length of 1000 letters ")]
+public string LineRegx
+		{ 
+		    get { return this.infomappingregex.LineRegx; }
+			set
+			{
+			    if (value == this.infomappingregex.LineRegx) return;
+				this.infomappingregex.LineRegx = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineRegx");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "KeyValue has a max length of 50 letters ")]
+public string KeyValue
+		{ 
+		    get { return this.infomappingregex.KeyValue; }
+			set
+			{
+			    if (value == this.infomappingregex.KeyValue) return;
+				this.infomappingregex.KeyValue = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("KeyValue");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(1000, ErrorMessage = "FieldValue has a max length of 1000 letters ")]
+public string FieldValue
+		{ 
+		    get { return this.infomappingregex.FieldValue; }
+			set
+			{
+			    if (value == this.infomappingregex.FieldValue) return;
+				this.infomappingregex.FieldValue = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FieldValue");
 			}
 		}
      

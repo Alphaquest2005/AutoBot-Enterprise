@@ -17,18 +17,27 @@ namespace EmailDownloader
 {
     public static partial class EmailDownloader
     {
-        public static Dictionary<Tuple<string, Email>, List<string>> CheckEmails(Client client, List<string> patterns)
+        public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client, List<string> patterns)
         {
-            if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email>, List<string>>();
-            var imapClient = new ImapClient();
-            imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
-            imapClient.Authenticate(client.Email, client.Password);
-            var dataFolder = client.DataFolder;
-            imapClient.Inbox.Open(FolderAccess.ReadWrite);
-            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client, patterns);
+            try
+            {
+                if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<string>>();
+                            var imapClient = new ImapClient();
+                            imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
+                            imapClient.Authenticate(client.Email, client.Password);
+                            var dataFolder = client.DataFolder;
+                            imapClient.Inbox.Open(FolderAccess.ReadWrite);
+                            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client, patterns);
 
-            imapClient.Disconnect(true);
-            return res;
+                            imapClient.Disconnect(true);
+                            return res;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new Dictionary<Tuple<string, Email, string>, List<string>>();
+            }
+            
         }
 
         public static void SendEmail(Client client, string directory, string subject, string[] To, string body,
@@ -79,14 +88,14 @@ namespace EmailDownloader
         }
 
 
-        public static Dictionary<Tuple<string, Email>, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
+        public static Dictionary<Tuple<string, Email, string>, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
             List<EmailMapping> emailMappings, Client client, List<string> patterns)
         {
             try
             {
-                var sendNotifications = false;
+                var sendNotifications = true;
 
-                var msgFiles = new Dictionary<Tuple<string, Email>, List<string>>();
+                var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
                 foreach (var uid in imapClient.Inbox.Search(SearchQuery.NotSeen))
                 {
                     var lst = new List<string>();
@@ -124,8 +133,9 @@ namespace EmailDownloader
                     }
                         
                     var desFolder = Path.Combine(dataFolder, subject.Item1, uid.ToString());
+                    if(Directory.Exists(desFolder)) Directory.Delete(desFolder, true);
                     Directory.CreateDirectory(desFolder);
-                    foreach (var a in msg.Attachments)
+                    foreach (var a in msg.Attachments.Where(x => x.ContentType.MediaType != "message"))
                     {
                         if (!a.IsAttachment) continue;
                         SaveAttachmentPart(desFolder, a, lst);
@@ -159,6 +169,7 @@ namespace EmailDownloader
                     {
                         msgFiles.Add(subject, lst);
                     }
+                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                 }
 
                 return msgFiles;
@@ -170,7 +181,7 @@ namespace EmailDownloader
             }
         }
 
-        private static Tuple<string, Email> GetSubject(MimeMessage msg, UniqueId uid, List<EmailMapping> emailMappings)
+        private static Tuple<string, Email, string> GetSubject(MimeMessage msg, UniqueId uid, List<EmailMapping> emailMappings)
         {
             //var patterns = new string[]
             //{
@@ -198,7 +209,7 @@ namespace EmailDownloader
                 }
 
                  
-                return new Tuple<string, Email>($"{subject.Trim()}", new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping));
+                return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
 
             }
 

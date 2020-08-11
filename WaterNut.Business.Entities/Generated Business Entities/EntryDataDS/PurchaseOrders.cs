@@ -50,6 +50,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _supplierinvoiceno;
+        [DataMember]
+        public string WarehouseNo 
+        {
+            get
+            {
+                return _warehouseno;
+            }
+            set
+            {
+                _warehouseno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _warehouseno;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

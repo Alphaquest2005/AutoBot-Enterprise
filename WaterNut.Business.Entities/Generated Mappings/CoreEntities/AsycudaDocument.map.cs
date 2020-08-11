@@ -47,8 +47,12 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.SourceFileName).HasColumnName("SourceFileName").HasMaxLength(500);
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
+              this.Property(t => t.CustomsOperationId).HasColumnName("CustomsOperationId");
+              this.Property(t => t.IsPaid).HasColumnName("IsPaid");
+              this.Property(t => t.SubmitToCustoms).HasColumnName("SubmitToCustoms");
               this.HasOptional(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<AsycudaDocument>) t.AsycudaDocuments).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocument>) t.AsycudaDocument).HasForeignKey(d => d.ApplicationSettingsId);
+              this.HasOptional(t => t.Customs_Procedure).WithMany(t =>(ICollection<AsycudaDocument>) t.AsycudaDocument).HasForeignKey(d => d.Customs_ProcedureId);
               this.HasMany(t => t.AsycudaDocumentItems).WithOptional(t => t.AsycudaDocument).HasForeignKey(d => d.AsycudaDocumentId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

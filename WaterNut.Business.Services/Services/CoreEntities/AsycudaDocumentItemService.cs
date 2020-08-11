@@ -1240,6 +1240,39 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<AsycudaDocumentItem>> GetAsycudaDocumentItemByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<AsycudaDocumentItem> entities = await set//dbContext.AsycudaDocumentItems
+                                                    // .Include(x => x.SubItems)									  
+                                                    // .Include(x => x.PreviousItems)									  
+                                                    // .Include(x => x.xcuda_Supplementary_unit)									  
+                                                    // .Include(x => x.AsycudaDocumentItemEntryDataDetails)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {

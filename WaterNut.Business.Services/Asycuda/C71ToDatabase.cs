@@ -58,7 +58,7 @@ namespace WaterNut.DataSpace.Asycuda
                 SaveIdentification(adoc.Identification_segment, da.xC71_Identification_segment);
                 SaveDocumentRef(da);
                 SaveItems(adoc.Item, da);
-
+                AttachC71ToDocset(docSet, file, da);
                 using (var ctx = new ValuationDSContext())
                 {
                     ctx.ApplyChanges(da);
@@ -330,7 +330,7 @@ namespace WaterNut.DataSpace.Asycuda
                     ndoc = (ValuationDS.Business.Entities.Registered) CreateNewRegisteredC71();
                     ndoc.RegNumber = regNumber;
                     ndoc.SourceFile = file.FullName;
-                    AttachC71ToDocset(docSet, file);
+                   
                 }
             }
 
@@ -360,13 +360,51 @@ namespace WaterNut.DataSpace.Asycuda
             };
         }
 
-        private static void AttachC71ToDocset(AsycudaDocumentSet docSet, FileInfo file)
+        private static void AttachC71ToDocset(AsycudaDocumentSet docSet, FileInfo file, Registered ndoc = null)
         {
             using (var cctx = new CoreEntitiesContext())
             {
+                
                 var fileType = cctx.FileTypes.First(x =>
                     x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
                     x.Type == "C71");
+
+                var elst = ndoc?.xC71_Item.Select(x => x.Invoice_Number).ToList();
+
+                if (ndoc != null && ndoc.xC71_Item.Any() && !cctx.AsycudaDocumentSetEntryDataEx.Any(z =>
+                    z.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
+                    elst.Any(x => x == z.EntryDataId))) return;
+
+                var attachments =
+                    cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                        x.Attachments.FilePath == file.FullName &&
+                        x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId).ToList();
+                if (attachments.Any())
+                {
+                    cctx.Attachments.RemoveRange(attachments.Select(x => x.Attachments));
+                    cctx.AsycudaDocumentSet_Attachments.RemoveRange(attachments);
+                    cctx.SaveChanges();
+                }
+
+
+
+                var c71s = cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments)
+                    .Where(x => x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
+                                x.FileTypeId == fileType.Id && x.Attachments.Reference != "C71").ToList();//OrderByDescending(x => x.AttachmentId).Skip(1).ToList();
+
+                    var rc71s = cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments)
+                        .Where(x => x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
+                                    x.FileTypeId == fileType.Id && x.Attachments.Reference == "C71" && !x.Attachments.FilePath.Contains("\\C71.xml")).ToList();
+
+                    cctx.Attachments.RemoveRange(c71s.Select(x => x.Attachments));
+                    cctx.AsycudaDocumentSet_Attachments.RemoveRange(c71s);
+                    cctx.Attachments.RemoveRange(rc71s.Select(x => x.Attachments));
+                    cctx.AsycudaDocumentSet_Attachments.RemoveRange(rc71s);
+                    cctx.SaveChanges();
+               
+
+
+
                 var res = new AsycudaDocumentSet_Attachments(true)
                 {
                     AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
@@ -379,7 +417,7 @@ namespace WaterNut.DataSpace.Asycuda
                     {
                         FilePath = file.FullName,
                         DocumentCode = fileType.DocumentCode,
-                        Reference = "C71",
+                        Reference = ndoc.RegNumber??"C71",
                         TrackingState = TrackingState.Added,
                     }
                 };
@@ -476,12 +514,12 @@ namespace WaterNut.DataSpace.Asycuda
             {
                 foreach (var dItem in c71.xC71_Item)
                 {
-                    var aItem = adocItem.FirstOrDefault(x => x.Invoice_Number.Text.FirstOrDefault() == dItem.Invoice_Number);
-                    if (aItem == null)
-                    {
-                        aItem = new Value_declaration_formItem();
+                    //var aItem = adocItem.FirstOrDefault(x => x.Invoice_Number.Text.FirstOrDefault() == dItem.Invoice_Number);
+                    //if (aItem == null)
+                    //{
+                        var aItem = new Value_declaration_formItem();
                         adocItem.Add(aItem);
-                    }
+                   // }
 
                     aItem.Terms_of_Delivery_Code.Text.Add(dItem.Terms_of_Delivery_Code);
                     if (dItem.Terms_of_Delivery_Desc == null) aItem.Terms_of_Delivery_Desc = new Value_declaration_formItemTerms_of_Delivery_Desc() { @null = new object() }; else aItem.Terms_of_Delivery_Desc.Text.Add(dItem.Terms_of_Delivery_Desc);

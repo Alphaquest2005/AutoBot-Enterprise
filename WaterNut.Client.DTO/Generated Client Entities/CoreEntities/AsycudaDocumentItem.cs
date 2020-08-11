@@ -606,6 +606,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _ApplicationSettingsId;
 
+        [DataMember]
+        public Nullable<int> InventoryItemId
+		{ 
+		    get { return _InventoryItemId; }
+			set
+			{
+			    if (value == _InventoryItemId) return;
+				_InventoryItemId = value;
+				NotifyPropertyChanged();//m => this.InventoryItemId
+			}
+		}
+        private Nullable<int> _InventoryItemId;
+
        
         [DataMember]
         public AsycudaDocument AsycudaDocument

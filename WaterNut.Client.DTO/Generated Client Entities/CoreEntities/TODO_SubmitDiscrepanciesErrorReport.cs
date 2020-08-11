@@ -295,7 +295,7 @@ namespace CoreEntities.Client.DTO
         private int _Entrydatadetailsid;
 
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId
+        public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -305,7 +305,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private Nullable<int> _AsycudaDocumentSetId;
+        private int _AsycudaDocumentSetId;
 
        
    //     [DataMember]

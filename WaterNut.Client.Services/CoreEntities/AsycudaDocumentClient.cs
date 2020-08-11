@@ -132,6 +132,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetAsycudaDocumentByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<AsycudaDocument>> GetAsycudaDocumentByCustomsOperationId(string CustomsOperationId, List<string> includesLst = null)
+        {
+            return  await Channel.GetAsycudaDocumentByCustomsOperationId(CustomsOperationId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

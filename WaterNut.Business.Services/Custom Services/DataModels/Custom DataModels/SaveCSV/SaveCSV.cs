@@ -113,9 +113,10 @@ namespace WaterNut.DataSpace
                     var res = ctx.AsycudaDocumentSet_Attachments.Where(x => x.Attachments.FilePath.Replace(".xlsx", "-Fixed.csv") == droppedFilePath 
                                                                             || x.Attachments.FilePath == droppedFilePath) 
                         .Select(x => new{x.EmailUniqueId, x.FileTypeId}).FirstOrDefault();
-                    emailId = res?.EmailUniqueId;
+                    emailId = res?.EmailUniqueId ?? Convert.ToInt32(fileType.EmailId);
                     fileTypeId = res?.FileTypeId;
                 }
+
 
                 var fileTxt = File.ReadAllText(droppedFilePath).Replace("�", " ");
 

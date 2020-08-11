@@ -6,10 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AllocationDS.Business.Entities;
+using CoreEntities.Business.Enums;
 using DocumentDS.Business.Entities;
 using DocumentItemDS.Business.Entities;
 using TrackableEntities;
 using WaterNut.Business.Entities;
+using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
 using xcuda_PreviousItem = DocumentItemDS.Business.Entities.xcuda_PreviousItem;
 using xcuda_Supplementary_unit = DocumentItemDS.Business.Entities.xcuda_Supplementary_unit;
@@ -130,7 +132,7 @@ namespace WaterNut.DataSpace
                     ctx.xcuda_Item
                                 
                                 .Where(x => x.AsycudaDocument.RegistrationDate <= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate ?? DateTime.Now))
-                                .Where(x => x.AsycudaDocument.DocumentType == "IM7" || x.AsycudaDocument.DocumentType == "OS7")
+                                .Where(x => x.AsycudaDocument.CustomsOperationId == (int) CustomsOperations.Warehouse)
                                 .Where(x => x.WarehouseError == null)
                                 .Where(x => x.xcuda_Tarification.Item_price > 0)
                                 .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.Any())
@@ -335,35 +337,29 @@ namespace WaterNut.DataSpace
                 itmcount = 0;
             }
 
+            var cp = BaseDataModel.Instance.Customs_Procedures.Single(x =>
+                x.CustomsOperationId == (int) CustomsOperations.Exwarehouse && x.Stock == true);
 
-            var Exp = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(y => y.Description.ToUpper() == "IM9".ToUpper());
+            var Exp = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(y => y.Customs_Procedure == cp.CustomsProcedure);
             if (Exp.Customs_Procedure == null || string.IsNullOrEmpty(Exp.Customs_Procedure))
             {
-                throw new ApplicationException("Export Template default Customs Procedures not Configured for IM9!");
+                throw new ApplicationException($"Export Template default Customs Procedures not Configured for {cp.CustomsProcedure}");
             }
 
-            var dt = BaseDataModel.Instance.Document_Types.AsEnumerable().FirstOrDefault(x =>x.DisplayName == "IM9");
-            if (dt == null) dt = docSet.Document_Type;
+            docSet.Customs_Procedure = cp;
+
+            BaseDataModel.ConfigureDocSet(docSet,Exp);
+
             cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
             BaseDataModel.Instance.IntCdoc(cdoc, docSet);
 
-            //cdoc.Document.xcuda_Identification.xcuda_Type.Declaration_gen_procedure_code = "9";
-            //cdoc.Document.xcuda_Identification.xcuda_Type.Type_of_declaration = "IM";
-            cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = "XCD";
+
+            
+            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = $"{cp.Document_Type.DisplayName} Entries";
 
 
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = "IM9 Entries";
-            var df =
-                BaseDataModel.Instance.Customs_Procedures.AsEnumerable()
-                    .FirstOrDefault(
-                        x =>
-                            x.DisplayName ==
-                            ((Exp == null || string.IsNullOrEmpty(Exp.Customs_Procedure))
-                                ? "9374-EXB"
-                                : Exp.Customs_Procedure) && x.Document_TypeId == dt.Document_TypeId);
-
-            BaseDataModel.Instance.AttachCustomProcedure(cdoc, df);
+            BaseDataModel.Instance.AttachCustomProcedure(cdoc, cp);
             return cdoc;
         }
 

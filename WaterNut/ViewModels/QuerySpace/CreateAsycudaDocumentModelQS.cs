@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Core.Common;
-using CoreEntities.Business.Entities;
 using CoreEntities.Client.Entities;
 using CoreEntities.Client.Repositories;
 using SimpleMvvmToolkit;
+using Document_Type = CoreEntities.Client.Entities.Document_Type;
 
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
@@ -47,7 +47,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 		{
 			using (var ctx = new Customs_ProcedureRepository())
 			{
-				_customs_Procedures = new ObservableCollection<Customs_Procedure>(await ctx.Customs_Procedure(new List<string>() { "Document_Type" }).ConfigureAwait(false));
+				_customs_Procedures = new ObservableCollection<Customs_Procedure>(await ctx.GetCustoms_ProcedureByExpression($"BondTypeId == {BaseViewModel.Instance.CurrentApplicationSettings.BondTypeId} && IsObsolete != true",new List<string>() { "Document_Type" }).ConfigureAwait(false));
 				NotifyPropertyChanged(x => this.Customs_Procedures);
 			}
 		}

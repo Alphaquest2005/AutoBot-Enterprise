@@ -28,5 +28,7 @@ namespace ValuationDS
         public Nullable<double> InvoiceTotal { get; set; }
         public Nullable<int> LicenseLines { get; set; }
         public Nullable<double> TotalCIF { get; set; }
+        public double C71Total { get; set; }
+        public int Id { get; set; }
     }
 }

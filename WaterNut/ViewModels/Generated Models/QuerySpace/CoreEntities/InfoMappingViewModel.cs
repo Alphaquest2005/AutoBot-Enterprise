@@ -263,6 +263,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _entityKeyFieldFilter;
+        public string EntityKeyFieldFilter
+        {
+            get
+            {
+                return _entityKeyFieldFilter;
+            }
+            set
+            {
+                _entityKeyFieldFilter = value;
+				NotifyPropertyChanged(x => EntityKeyFieldFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -303,6 +321,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(EntityTypeFilter) == false)
 						res.Append(" && " + string.Format("EntityType.Contains(\"{0}\")",  EntityTypeFilter));						
+ 
+
+									if(string.IsNullOrEmpty(EntityKeyFieldFilter) == false)
+						res.Append(" && " + string.Format("EntityKeyField.Contains(\"{0}\")",  EntityKeyFieldFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -332,7 +354,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Field = x.Field ,
                     
  
-                    EntityType = x.EntityType 
+                    EntityType = x.EntityType ,
+                    
+ 
+                    EntityKeyField = x.EntityKeyField 
                     
                 }).ToList()
             };
@@ -352,6 +377,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string EntityType { get; set; } 
+                    
+ 
+                    public string EntityKeyField { get; set; } 
                     
         }
 

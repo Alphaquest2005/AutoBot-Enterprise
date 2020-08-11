@@ -80,10 +80,10 @@ namespace AdjustmentQS.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
-		Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+		Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null);
         
   		[OperationContract]
-		Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByEntryDataId(string EntryDataId, List<string> includesLst = null);
+		Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
   		[OperationContract]
 		Task<IEnumerable<TODO_AdjustmentOversToXML>> GetTODO_AdjustmentOversToXMLByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);

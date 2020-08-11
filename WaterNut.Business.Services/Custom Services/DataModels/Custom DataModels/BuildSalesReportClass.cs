@@ -370,7 +370,7 @@ namespace WaterNut.DataSpace
 		{
 			using (var ctx = new AllocationDSContext())
 			{
-				var doc = ctx.AsycudaDocument.FirstOrDefault(x => x.id == id);
+				var doc = ctx.AsycudaDocument.Include(x => x.Customs_Procedure).FirstOrDefault(x => x.id == id);
 				await ReBuildSalesReports(doc).ConfigureAwait(false);
 			}
 		}
@@ -384,7 +384,7 @@ namespace WaterNut.DataSpace
 				var plst = await GetPreviousItems(doc).ConfigureAwait(false);
 				await ReLinkPi2Item(plst).ConfigureAwait(false);
 				string dfp;
-				if (doc.DocumentType == "IM4" && doc.Extended_customs_procedure != "4000")
+				if (doc.Customs_Procedure.IsPaid == true)
 				{
 					dfp = "Duty Paid";
 				}

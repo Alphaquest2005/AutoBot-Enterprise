@@ -79,6 +79,7 @@
           <Property Name="PONumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="WarehouseNo" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryData_Sales">
           <Key>
@@ -230,6 +231,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
             
             
             
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -249,7 +251,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="Downloaded" Type="bit" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Total" Type="float" />
-          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -314,6 +316,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataExTotals' does n
           <Key>
             <PropertyRef Name="EntryData_Id" />
             
+            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -323,6 +326,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataExTotals' does n
           <Property Name="Tax" Type="float" />
           <Property Name="ClassifiedLines" Type="int" />
           <Property Name="LicenseLines" Type="int" />
+          <Property Name="QtyLicensesRequired" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -652,7 +657,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
     [EntryDataExTotals].[TotalLines] AS [TotalLines], 
     [EntryDataExTotals].[Tax] AS [Tax], 
     [EntryDataExTotals].[ClassifiedLines] AS [ClassifiedLines], 
-    [EntryDataExTotals].[LicenseLines] AS [LicenseLines]
+    [EntryDataExTotals].[LicenseLines] AS [LicenseLines], 
+    [EntryDataExTotals].[QtyLicensesRequired] AS [QtyLicensesRequired], 
+    [EntryDataExTotals].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
     FROM [dbo].[EntryDataExTotals] AS [EntryDataExTotals]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
@@ -861,6 +868,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="PurchaseOrders" BaseType="WaterNutDBModel.EntryData">
           <Property Name="PONumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WarehouseNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -1154,6 +1162,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="ClassifiedLines" Type="Int32" />
           <Property Name="LicenseLines" Type="Int32" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="QtyLicensesRequired" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="EntryDataEntryDataExTotals">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1" />
@@ -1373,6 +1383,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.PurchaseOrders)">
               <MappingFragment StoreEntitySet="EntryData_PurchaseOrders">
+                <ScalarProperty Name="WarehouseNo" ColumnName="WarehouseNo" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
                 <ScalarProperty Name="PONumber" ColumnName="PONumber" />
@@ -1559,6 +1570,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataExTotals">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataExTotals">
               <MappingFragment StoreEntitySet="EntryDataExTotals">
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="QtyLicensesRequired" ColumnName="QtyLicensesRequired" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />
                 <ScalarProperty Name="ClassifiedLines" ColumnName="ClassifiedLines" />

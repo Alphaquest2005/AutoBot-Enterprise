@@ -7,6 +7,7 @@ using System.Windows;
 using AdjustmentQS.Client.Entities;
 using AdjustmentQS.Client.Repositories;
 using Core.Common.UI;
+using CoreEntities.Client.Enums;
 using EntryDataQS.Client.Repositories;
 using SimpleMvvmToolkit;
 
@@ -122,7 +123,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         internal void ViewSuggestions(AdjustmentOver osd)
         {
             QuerySpace.CoreEntities.ViewModels.AsycudaDocumentItemsModel.Instance.vloader.FilterExpression =
-                $"ItemNumber == \"{osd.ItemNumber}\" && (DocumentType == \"IM7\"  || DocumentType == \"OS7\")";
+                $"ItemNumber == \"{osd.ItemNumber}\" && (CustomsOperationId == { (int)CustomsOperations.Warehouse})";// i don't know what going on so left it
 
             QuerySpace.CoreEntities.ViewModels.AsycudaDocumentItemsModel.Instance.AsycudaDocumentItems.OrderBy(
                 x => x.Data.AsycudaDocument.RegistrationDate - osd.AdjustmentEx.InvoiceDate);

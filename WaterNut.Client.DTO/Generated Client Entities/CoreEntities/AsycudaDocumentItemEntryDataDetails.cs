@@ -138,6 +138,32 @@ namespace CoreEntities.Client.DTO
 		}
         private string _CustomsProcedure;
 
+        [DataMember]
+        public int Asycuda_id
+		{ 
+		    get { return _Asycuda_id; }
+			set
+			{
+			    if (value == _Asycuda_id) return;
+				_Asycuda_id = value;
+				NotifyPropertyChanged();//m => this.Asycuda_id
+			}
+		}
+        private int _Asycuda_id;
+
+        [DataMember]
+        public string EntryDataType
+		{ 
+		    get { return _EntryDataType; }
+			set
+			{
+			    if (value == _EntryDataType) return;
+				_EntryDataType = value;
+				NotifyPropertyChanged();//m => this.EntryDataType
+			}
+		}
+        private string _EntryDataType;
+
        
         [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem

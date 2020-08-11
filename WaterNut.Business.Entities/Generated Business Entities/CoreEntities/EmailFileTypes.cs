@@ -66,6 +66,21 @@ namespace CoreEntities.Business.Entities
         }
         int _filetypeid;
         [DataMember]
+        public Nullable<bool> IsRequired 
+        {
+            get
+            {
+                return _isrequired;
+            }
+            set
+            {
+                _isrequired = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isrequired;
+        [DataMember]
         public EmailMapping EmailMapping { get; set; }
         [DataMember]
         public FileTypes FileTypes { get; set; }

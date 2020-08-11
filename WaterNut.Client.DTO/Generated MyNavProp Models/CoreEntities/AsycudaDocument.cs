@@ -14,28 +14,7 @@ namespace CoreEntities.Client.DTO
     {
        #region MyNavProp Entities
 
-        Customs_Procedure _customs_Procedure = null;
-
-        public Customs_Procedure Customs_Procedure
-        {
-            get
-            {
-                return _customs_Procedure;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    _customs_Procedure = value;
-
-                    Customs_ProcedureId = _customs_Procedure.Customs_ProcedureId;
-
-                    NotifyPropertyChanged("Customs_Procedure");
-                }
-            }
-
-        }
-         Document_Type _document_Type = null;
+        Document_Type _document_Type = null;
 
         public Document_Type Document_Type
         {

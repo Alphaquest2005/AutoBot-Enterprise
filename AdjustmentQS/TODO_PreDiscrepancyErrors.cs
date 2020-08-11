@@ -27,7 +27,7 @@ namespace AdjustmentQS
         public Nullable<bool> DoNotAllocate { get; set; }
         public string TariffCode { get; set; }
         public Nullable<double> Total { get; set; }
-        public Nullable<int> AsycudaDocumentSetId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
         public Nullable<double> InvoiceQty { get; set; }
         public Nullable<double> ReceivedQty { get; set; }
         public string Status { get; set; }
