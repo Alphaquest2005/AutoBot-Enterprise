@@ -92,6 +92,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQLSchemas", "SQLSchemas", "{792D84FC-768D-4B04-9F21-5AB5FF6D6D03}"
 	ProjectSection(SolutionItems) = preProject
 		SqlSchemaCompare.scmp = SqlSchemaCompare.scmp
+		WaterNut-EnterpriseDB Script.sql = WaterNut-EnterpriseDB Script.sql
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{11BB58A0-1C42-49D9-BF54-EA05ECC74719}"
