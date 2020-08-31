@@ -124,7 +124,7 @@ public string Country_of_origin_code
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Currency_Code is required")]
        
                 
                 [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]
@@ -481,7 +481,7 @@ public Nullable<double> InvoiceTotal
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "FreightCurrencyCode is required")]
        
                 
                 [MaxLength(3, ErrorMessage = "FreightCurrencyCode has a max length of 3 letters ")]
@@ -524,6 +524,36 @@ public Nullable<int> EntryPackages
 				this.asycudadocumentsetex.EntryPackages = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EntryPackages");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "CurrencyRate is required")]
+       [NumberValidationAttribute]
+public double CurrencyRate
+		{ 
+		    get { return this.asycudadocumentsetex.CurrencyRate; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.CurrencyRate) return;
+				this.asycudadocumentsetex.CurrencyRate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CurrencyRate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "FreightCurrencyRate is required")]
+       [NumberValidationAttribute]
+public double FreightCurrencyRate
+		{ 
+		    get { return this.asycudadocumentsetex.FreightCurrencyRate; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.FreightCurrencyRate) return;
+				this.asycudadocumentsetex.FreightCurrencyRate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FreightCurrencyRate");
 			}
 		}
      

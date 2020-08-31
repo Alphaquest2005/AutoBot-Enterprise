@@ -169,7 +169,25 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
+
+        
+
         int _asycudadocumentsetid;
+        [DataMember]
+        public double CurrencyRate 
+        {
+            get
+            {
+                return _currencyrate;
+            }
+            set
+            {
+                _currencyrate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _currencyrate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

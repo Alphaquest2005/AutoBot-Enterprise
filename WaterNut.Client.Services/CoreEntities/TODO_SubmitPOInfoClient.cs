@@ -117,11 +117,6 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetTODO_SubmitPOInfoByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
         }
 			 
-  		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            return  await Channel.GetTODO_SubmitPOInfoByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
-        }
-			 
   		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEmailId(string EmailId, List<string> includesLst = null)
         {
             return  await Channel.GetTODO_SubmitPOInfoByEmailId(EmailId, includesLst).ConfigureAwait(false);

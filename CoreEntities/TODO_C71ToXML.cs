@@ -24,5 +24,6 @@ namespace CoreEntities
         public string SupplierCode { get; set; }
         public double InvoiceTotal { get; set; }
         public int AsycudaDocumentSetId { get; set; }
+        public double CurrencyRate { get; set; }
     }
 }

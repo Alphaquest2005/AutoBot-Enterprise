@@ -60,7 +60,7 @@ namespace EmailDownloader
 
         }
 
-        private static MimeMessage CreateMessage(Client client, string subject, string[] to, string body, string[] attachments)
+        public static MimeMessage CreateMessage(Client client, string subject, string[] to, string body, string[] attachments)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{client.CompanyName}-AutoBot", client.Email));
@@ -266,7 +266,7 @@ namespace EmailDownloader
             SendEmail(clientDetails, message);
         }
 
-        private static void SendEmail(Client clientDetails, MimeMessage message)
+        public static void SendEmail(Client clientDetails, MimeMessage message)
         {
             using (var client = new SmtpClient())
             {

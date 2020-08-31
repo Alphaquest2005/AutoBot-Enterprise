@@ -335,6 +335,51 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _totallines;
+        [DataMember]
+        public Nullable<int> EntryPackages 
+        {
+            get
+            {
+                return _entrypackages;
+            }
+            set
+            {
+                _entrypackages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _entrypackages;
+        [DataMember]
+        public Nullable<double> TotalWeight 
+        {
+            get
+            {
+                return _totalweight;
+            }
+            set
+            {
+                _totalweight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalweight;
+        [DataMember]
+        public string FreightCurrencyCode 
+        {
+            get
+            {
+                return _freightcurrencycode;
+            }
+            set
+            {
+                _freightcurrencycode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _freightcurrencycode;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

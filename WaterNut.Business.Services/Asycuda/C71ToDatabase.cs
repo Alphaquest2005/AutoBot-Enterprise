@@ -330,7 +330,9 @@ namespace WaterNut.DataSpace.Asycuda
                     ndoc = (ValuationDS.Business.Entities.Registered) CreateNewRegisteredC71();
                     ndoc.RegNumber = regNumber;
                     ndoc.SourceFile = file.FullName;
-                   
+                    ndoc.ApplicationSettingsId =
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId;
+
                 }
             }
 
@@ -364,65 +366,76 @@ namespace WaterNut.DataSpace.Asycuda
         {
             using (var cctx = new CoreEntitiesContext())
             {
-                
-                var fileType = cctx.FileTypes.First(x =>
-                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                    x.Type == "C71");
-
-                var elst = ndoc?.xC71_Item.Select(x => x.Invoice_Number).ToList();
-
-                if (ndoc != null && ndoc.xC71_Item.Any() && !cctx.AsycudaDocumentSetEntryDataEx.Any(z =>
-                    z.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
-                    elst.Any(x => x == z.EntryDataId))) return;
-
-                var attachments =
-                    cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        x.Attachments.FilePath == file.FullName &&
-                        x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId).ToList();
-                if (attachments.Any())
+                try
                 {
-                    cctx.Attachments.RemoveRange(attachments.Select(x => x.Attachments));
-                    cctx.AsycudaDocumentSet_Attachments.RemoveRange(attachments);
-                    cctx.SaveChanges();
-                }
+                    var fileType = cctx.FileTypes.First(x =>
+                        x.ApplicationSettingsId ==
+                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                        x.Type == "C71");
+
+                    var elst = ndoc?.xC71_Item.Select(x => x.Invoice_Number).ToList();
+
+                    if (ndoc != null && ndoc.xC71_Item.Any() && !cctx.AsycudaDocumentSetEntryDataEx.Any(z =>
+                            z.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
+                            elst.Any(x => x == z.EntryDataId))) return;
+
+                    var attachments =
+                        cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                            x.Attachments.FilePath == file.FullName &&
+                            x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId).ToList();
+                    if (attachments.Any())
+                    {
+                        cctx.Attachments.RemoveRange(attachments.Select(x => x.Attachments));
+                        cctx.AsycudaDocumentSet_Attachments.RemoveRange(attachments);
+                        cctx.SaveChanges();
+                    }
 
 
 
-                var c71s = cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments)
-                    .Where(x => x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
-                                x.FileTypeId == fileType.Id && x.Attachments.Reference != "C71").ToList();//OrderByDescending(x => x.AttachmentId).Skip(1).ToList();
+                    var c71s = cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments)
+                        .Where(x => x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
+                                    x.FileTypeId == fileType.Id && x.Attachments.Reference != "C71")
+                        .ToList(); //OrderByDescending(x => x.AttachmentId).Skip(1).ToList();
 
                     var rc71s = cctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments)
                         .Where(x => x.AsycudaDocumentSetId == docSet.AsycudaDocumentSetId &&
-                                    x.FileTypeId == fileType.Id && x.Attachments.Reference == "C71" && !x.Attachments.FilePath.Contains("\\C71.xml")).ToList();
+                                    x.FileTypeId == fileType.Id && x.Attachments.Reference == "C71" &&
+                                    !x.Attachments.FilePath.Contains("\\C71.xml")).ToList();
 
                     cctx.Attachments.RemoveRange(c71s.Select(x => x.Attachments));
                     cctx.AsycudaDocumentSet_Attachments.RemoveRange(c71s);
                     cctx.Attachments.RemoveRange(rc71s.Select(x => x.Attachments));
                     cctx.AsycudaDocumentSet_Attachments.RemoveRange(rc71s);
                     cctx.SaveChanges();
-               
 
 
 
-                var res = new AsycudaDocumentSet_Attachments(true)
-                {
-                    AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
-                    DocumentSpecific = true,
-                    FileDate = file.LastWriteTime,
-                    EmailUniqueId = null,
-                    FileTypeId = fileType.Id,
-                    TrackingState = TrackingState.Added,
-                    Attachments = new CoreEntities.Business.Entities.Attachments(true)
+
+                    var res = new AsycudaDocumentSet_Attachments(true)
                     {
-                        FilePath = file.FullName,
-                        DocumentCode = fileType.DocumentCode,
-                        Reference = ndoc.RegNumber??"C71",
+                        AsycudaDocumentSetId = docSet.AsycudaDocumentSetId,
+                        DocumentSpecific = true,
+                        FileDate = file.LastWriteTime,
+                        EmailUniqueId = null,
+                        FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
-                    }
-                };
-                cctx.AsycudaDocumentSet_Attachments.Add(res);
-                cctx.SaveChanges();
+                        Attachments = new CoreEntities.Business.Entities.Attachments(true)
+                        {
+                            FilePath = file.FullName,
+                            DocumentCode = fileType.DocumentCode,
+                            Reference = ndoc?.RegNumber ?? "C71",
+                            TrackingState = TrackingState.Added,
+                        }
+                    };
+                    cctx.AsycudaDocumentSet_Attachments.Add(res);
+                    cctx.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+
             }
         }
 
@@ -486,10 +499,12 @@ namespace WaterNut.DataSpace.Asycuda
                 adoc.SaveToFile(fileName);
                 var fileInfo = new FileInfo(fileName);
                 AttachC71ToDocset(docSet, fileInfo);
-
+                var instructionsFile = Path.Combine(fileInfo.DirectoryName, "C71-Instructions.txt");
                 var results = new FileInfo(Path.Combine(fileInfo.DirectoryName, "C71-Results.txt"));
                 if (File.Exists(results.FullName)) File.Delete(results.FullName);
-                File.AppendAllText(Path.Combine(fileInfo.DirectoryName, "C71-Instructions.txt"),
+                if (File.Exists(instructionsFile)) File.Delete(instructionsFile);
+                
+                File.WriteAllText(instructionsFile,
                     $"File\t{fileInfo.FullName}\t{c71.xC71_Identification_segment.xC71_Seller_segment.Address.Replace("\r\n","|")}\t{c71.xC71_Identification_segment.xC71_Seller_segment.CountryCode}\r\n");
                 return true;
             }

@@ -80,6 +80,21 @@ namespace ValuationDS.Business.Entities
             }
         }
         string _documentreference;
+        [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -138,7 +138,7 @@ public string InvoiceNo
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Currency is required")]
        
                 
                 [MaxLength(4, ErrorMessage = "Currency has a max length of 4 letters ")]
@@ -198,6 +198,21 @@ public int AsycudaDocumentSetId
 				this.todo_c71toxml.AsycudaDocumentSetId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "CurrencyRate is required")]
+       [NumberValidationAttribute]
+public double CurrencyRate
+		{ 
+		    get { return this.todo_c71toxml.CurrencyRate; }
+			set
+			{
+			    if (value == this.todo_c71toxml.CurrencyRate) return;
+				this.todo_c71toxml.CurrencyRate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CurrencyRate");
 			}
 		}
      

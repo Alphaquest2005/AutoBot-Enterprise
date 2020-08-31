@@ -306,13 +306,13 @@ namespace EntryDataDS.Business.Entities
         [DataMember]
         public FileTypes FileTypes { get; set; }
         [DataMember]
-        public Suppliers Suppliers { get; set; }
-        [DataMember]
         public EntryDataExTotals EntryDataTotals { get; set; }
         [DataMember]
         public EntryDataEx EntryDataEx { get; set; }
         [DataMember]
         public EDDocumentTypes DocumentType { get; set; }
+        [DataMember]
+        public Suppliers Suppliers { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

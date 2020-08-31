@@ -82,6 +82,9 @@ namespace CoreEntities.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<LicenceSummary>> GetLicenceSummaryByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<LicenceSummary>> GetLicenceSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
   		
     }
 }

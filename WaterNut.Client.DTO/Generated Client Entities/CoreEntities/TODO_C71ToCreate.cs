@@ -204,7 +204,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _TotalCIF;
 
         [DataMember]
-        public Nullable<double> C71Total
+        public double C71Total
 		{ 
 		    get { return _C71Total; }
 			set
@@ -214,7 +214,33 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.C71Total
 			}
 		}
-        private Nullable<double> _C71Total;
+        private double _C71Total;
+
+        [DataMember]
+        public int Id
+		{ 
+		    get { return _Id; }
+			set
+			{
+			    if (value == _Id) return;
+				_Id = value;
+				NotifyPropertyChanged();//m => this.Id
+			}
+		}
+        private int _Id;
+
+        [DataMember]
+        public double Rate
+		{ 
+		    get { return _Rate; }
+			set
+			{
+			    if (value == _Rate) return;
+				_Rate = value;
+				NotifyPropertyChanged();//m => this.Rate
+			}
+		}
+        private double _Rate;
 
        
    //     [DataMember]

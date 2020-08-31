@@ -269,30 +269,95 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _TotalFreight;
 
         [DataMember]
-        public Nullable<int> classifiedlines
+        public Nullable<int> ClassifiedLines
 		{ 
-		    get { return _classifiedlines; }
+		    get { return _ClassifiedLines; }
 			set
 			{
-			    if (value == _classifiedlines) return;
-				_classifiedlines = value;
-				NotifyPropertyChanged();//m => this.classifiedlines
+			    if (value == _ClassifiedLines) return;
+				_ClassifiedLines = value;
+				NotifyPropertyChanged();//m => this.ClassifiedLines
 			}
 		}
-        private Nullable<int> _classifiedlines;
+        private Nullable<int> _ClassifiedLines;
 
         [DataMember]
-        public Nullable<int> totallines
+        public Nullable<int> TotalLines
 		{ 
-		    get { return _totallines; }
+		    get { return _TotalLines; }
 			set
 			{
-			    if (value == _totallines) return;
-				_totallines = value;
-				NotifyPropertyChanged();//m => this.totallines
+			    if (value == _TotalLines) return;
+				_TotalLines = value;
+				NotifyPropertyChanged();//m => this.TotalLines
 			}
 		}
-        private Nullable<int> _totallines;
+        private Nullable<int> _TotalLines;
+
+        [DataMember]
+        public Nullable<int> GeneratedLines
+		{ 
+		    get { return _GeneratedLines; }
+			set
+			{
+			    if (value == _GeneratedLines) return;
+				_GeneratedLines = value;
+				NotifyPropertyChanged();//m => this.GeneratedLines
+			}
+		}
+        private Nullable<int> _GeneratedLines;
+
+        [DataMember]
+        public Nullable<int> DocumentAttachments
+		{ 
+		    get { return _DocumentAttachments; }
+			set
+			{
+			    if (value == _DocumentAttachments) return;
+				_DocumentAttachments = value;
+				NotifyPropertyChanged();//m => this.DocumentAttachments
+			}
+		}
+        private Nullable<int> _DocumentAttachments;
+
+        [DataMember]
+        public Nullable<int> AttachedDocuments
+		{ 
+		    get { return _AttachedDocuments; }
+			set
+			{
+			    if (value == _AttachedDocuments) return;
+				_AttachedDocuments = value;
+				NotifyPropertyChanged();//m => this.AttachedDocuments
+			}
+		}
+        private Nullable<int> _AttachedDocuments;
+
+        [DataMember]
+        public Nullable<double> EntryDataInvoiceTotal
+		{ 
+		    get { return _EntryDataInvoiceTotal; }
+			set
+			{
+			    if (value == _EntryDataInvoiceTotal) return;
+				_EntryDataInvoiceTotal = value;
+				NotifyPropertyChanged();//m => this.EntryDataInvoiceTotal
+			}
+		}
+        private Nullable<double> _EntryDataInvoiceTotal;
+
+        [DataMember]
+        public Nullable<double> GeneratedFreight
+		{ 
+		    get { return _GeneratedFreight; }
+			set
+			{
+			    if (value == _GeneratedFreight) return;
+				_GeneratedFreight = value;
+				NotifyPropertyChanged();//m => this.GeneratedFreight
+			}
+		}
+        private Nullable<double> _GeneratedFreight;
 
        
    //     [DataMember]

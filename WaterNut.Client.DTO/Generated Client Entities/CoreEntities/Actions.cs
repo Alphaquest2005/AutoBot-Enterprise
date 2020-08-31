@@ -60,6 +60,19 @@ namespace CoreEntities.Client.DTO
 		}
         private bool _TestMode;
 
+        [DataMember]
+        public Nullable<bool> IsDataSpecific
+		{ 
+		    get { return _IsDataSpecific; }
+			set
+			{
+			    if (value == _IsDataSpecific) return;
+				_IsDataSpecific = value;
+				NotifyPropertyChanged();//m => this.IsDataSpecific
+			}
+		}
+        private Nullable<bool> _IsDataSpecific;
+
        
         [DataMember]
         public ChangeTrackingCollection<FileTypeActions> FileTypeActions

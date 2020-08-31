@@ -133,6 +133,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PurchaseOrders>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PurchaseOrders>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PurchaseOrders>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -257,12 +259,6 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Suppliers":
-                                return
-                                    await
-                                        GetWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "EntryDataTotals":
                                 return
                                     await
@@ -279,6 +275,18 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         GetWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Suppliers":
+                                return
+                                    await
+                                        GetWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "WarehouseInfo":
+                                return
+                                    await
+                                        GetWhere<WarehouseInfo>(dbContext, exp, itm.Value, "", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -334,6 +342,7 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -408,6 +417,7 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -643,6 +653,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<PurchaseOrders>)dbContext.Set<PurchaseOrders>(); 
                     if (expLst.FirstOrDefault() == "All")
@@ -718,6 +729,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PurchaseOrders>();
                     if (exp == "All")
                     {
@@ -764,6 +776,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.Set<PurchaseOrders>()
@@ -787,9 +800,6 @@ namespace EntryDataDS.Business.Services
                             case "FileTypes":
                                 return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Suppliers":
-                                return await CountWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataTotals":
                                 return await CountWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -798,6 +808,12 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "DocumentType":
                                 return await CountWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Suppliers":
+                                return await CountWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "WarehouseInfo":
+                                return await CountWhere<WarehouseInfo>(dbContext, exp, itm.Value, "", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -885,6 +901,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<PurchaseOrders>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -928,12 +945,6 @@ namespace EntryDataDS.Business.Services
                                         LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Suppliers":
-                                return
-                                    await
-                                        LoadRangeWhere<Suppliers>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "EntryDataTotals":
                                 return
                                     await
@@ -950,6 +961,18 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EDDocumentTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Suppliers":
+                                return
+                                    await
+                                        LoadRangeWhere<Suppliers>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "WarehouseInfo":
+                                return
+                                    await
+                                        LoadRangeWhere<WarehouseInfo>(startIndex, count, dbContext, exp, itm.Value, "", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1165,6 +1188,7 @@ namespace EntryDataDS.Business.Services
                 var i = EntryDataId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
+                                                    // .Include(x => x.WarehouseInfo)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
@@ -1194,6 +1218,7 @@ namespace EntryDataDS.Business.Services
                 var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
+                                                    // .Include(x => x.WarehouseInfo)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1223,6 +1248,7 @@ namespace EntryDataDS.Business.Services
                 var i = Convert.ToInt32(EmailId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
+                                                    // .Include(x => x.WarehouseInfo)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1252,6 +1278,7 @@ namespace EntryDataDS.Business.Services
                 var i = Convert.ToInt32(FileTypeId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
+                                                    // .Include(x => x.WarehouseInfo)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
@@ -1279,6 +1306,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1314,6 +1342,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.Set<PurchaseOrders>().Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1337,9 +1366,6 @@ namespace EntryDataDS.Business.Services
                             case "FileTypes":
                                 return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Suppliers":
-                                return await SumWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataTotals":
                                 return await SumWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -1348,6 +1374,12 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "DocumentType":
                                 return await SumWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Suppliers":
+                                return await SumWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "WarehouseInfo":
+                                return await SumWhere<WarehouseInfo>(dbContext, exp, itm.Value, "", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -1432,6 +1464,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

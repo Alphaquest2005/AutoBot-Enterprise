@@ -5,4 +5,6 @@ SELECT DISTINCT
        INNER JOIN
        sys.objects o
          ON m.object_id = o.object_id
-where m.definition like '%''9074''%'
+where m.definition like '%EntryDataDetails.ItemNumber =%'
+
+

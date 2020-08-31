@@ -73,6 +73,21 @@ namespace CoreEntities.Business.Entities
         }
         bool _testmode;
         [DataMember]
+        public Nullable<bool> IsDataSpecific 
+        {
+            get
+            {
+                return _isdataspecific;
+            }
+            set
+            {
+                _isdataspecific = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isdataspecific;
+        [DataMember]
         public List<FileTypeActions> FileTypeActions { get; set; }
         [DataMember]
         public List<SessionActions> SessionActions { get; set; }

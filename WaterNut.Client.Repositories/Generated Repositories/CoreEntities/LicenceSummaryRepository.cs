@@ -392,6 +392,34 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<LicenceSummary>> GetLicenceSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+             if (ApplicationSettingsId == "0") return null;
+            try
+            {
+                 using (LicenceSummaryClient t = new LicenceSummaryClient())
+                    {
+                        var res = await t.GetLicenceSummaryByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new LicenceSummary(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

@@ -39,6 +39,7 @@ namespace CoreEntities
         public Nullable<int> ParentFileTypeId { get; set; }
         public Nullable<bool> OverwriteFiles { get; set; }
         public Nullable<bool> HasFiles { get; set; }
+        public Nullable<int> OldFileTypeId { get; set; }
     
         public virtual ApplicationSettings ApplicationSettings { get; set; }
         public virtual AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

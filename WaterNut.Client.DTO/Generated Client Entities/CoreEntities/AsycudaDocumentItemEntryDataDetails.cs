@@ -164,6 +164,32 @@ namespace CoreEntities.Client.DTO
 		}
         private string _EntryDataType;
 
+        [DataMember]
+        public int ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private int _ApplicationSettingsId;
+
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
+
        
         [DataMember]
         public AsycudaDocumentItem AsycudaDocumentItem

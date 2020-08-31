@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_SubmitPOInfo> GetTODO_SubmitPOInfoByKey(string EntryDataId, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_SubmitPOInfo> GetTODO_SubmitPOInfoByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryDataId))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                TODO_SubmitPOInfo entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryDataId == i).ConfigureAwait(continueOnCapturedContext: false);
+                TODO_SubmitPOInfo entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -133,6 +133,7 @@ namespace CoreEntities.Business.Services
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitPOInfo>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace CoreEntities.Business.Services
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitPOInfo>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace CoreEntities.Business.Services
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitPOInfo>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -279,17 +281,18 @@ namespace CoreEntities.Business.Services
                         {
                             using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
                                 IQueryable<TODO_SubmitPOInfo> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -353,18 +356,19 @@ namespace CoreEntities.Business.Services
                         {
                             using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
                                 IQueryable<TODO_SubmitPOInfo> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryDataId);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset
@@ -510,15 +514,15 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_SubmitPOInfo(string EntryDataId)
+        public async Task<bool> DeleteTODO_SubmitPOInfo(string Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(Id);
                 TODO_SubmitPOInfo entity = await dbContext.TODO_SubmitPOInfo
-													.SingleOrDefaultAsync(x => x.EntryDataId == i)
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -588,6 +592,7 @@ namespace CoreEntities.Business.Services
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<TODO_SubmitPOInfo>)dbContext.TODO_SubmitPOInfo; 
                     if (expLst.FirstOrDefault() == "All")
@@ -663,12 +668,13 @@ namespace CoreEntities.Business.Services
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitPOInfo>();
                     if (exp == "All")
                     {
                         return await dbContext.TODO_SubmitPOInfo
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryDataId)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -680,7 +686,7 @@ namespace CoreEntities.Business.Services
                         return await dbContext.TODO_SubmitPOInfo
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryDataId)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -709,6 +715,7 @@ namespace CoreEntities.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.TODO_SubmitPOInfo
@@ -716,7 +723,7 @@ namespace CoreEntities.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.TODO_SubmitPOInfo.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return await dbContext.TODO_SubmitPOInfo.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -759,9 +766,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_SubmitPOInfo>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -780,9 +787,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_SubmitPOInfo>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -800,6 +807,7 @@ namespace CoreEntities.Business.Services
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_SubmitPOInfo>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -808,7 +816,7 @@ namespace CoreEntities.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryDataId)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -817,8 +825,8 @@ namespace CoreEntities.Business.Services
                     }
                     return await set//dbContext.TODO_SubmitPOInfo
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
-								.OrderBy(y => y.EntryDataId)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -870,9 +878,9 @@ namespace CoreEntities.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -899,9 +907,9 @@ namespace CoreEntities.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryDataId)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -951,7 +959,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<TODO_SubmitPOInfo>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -961,7 +969,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_SubmitPOInfo>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -988,7 +996,7 @@ namespace CoreEntities.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<TODO_SubmitPOInfo>()
-							.Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -998,7 +1006,7 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_SubmitPOInfo>()
-                .Where(exp == "All" || exp == null?"EntryDataId != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1024,35 +1032,6 @@ namespace CoreEntities.Business.Services
                 IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
-                                      .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1136,6 +1115,7 @@ namespace CoreEntities.Business.Services
              {
                  using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1171,6 +1151,7 @@ namespace CoreEntities.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.TODO_SubmitPOInfo.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1178,7 +1159,7 @@ namespace CoreEntities.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.TODO_SubmitPOInfo.Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                    return Convert.ToDecimal(dbContext.TODO_SubmitPOInfo.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1219,9 +1200,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<TODO_SubmitPOInfo>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1239,9 +1220,9 @@ namespace CoreEntities.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<TODO_SubmitPOInfo>()
-                .Where(exp == "All" || exp == null ? "EntryDataId != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryDataId")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1259,6 +1240,7 @@ namespace CoreEntities.Business.Services
              {
                  using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

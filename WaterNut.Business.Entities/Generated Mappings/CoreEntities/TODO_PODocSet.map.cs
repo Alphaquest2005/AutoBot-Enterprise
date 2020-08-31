@@ -11,12 +11,12 @@
     {
         public TODO_PODocSetMap()
         {                        
-              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId});        
+              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId, t.FreightCurrencyCode, t.CurrencyRate, t.FreightCurrencyRate});        
               this.ToTable("TODO-PODocSet");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Country_of_origin_code).HasColumnName("Country_of_origin_code").HasMaxLength(3);
-              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").HasMaxLength(3);
+              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").IsRequired().HasMaxLength(3);
               this.Property(t => t.Manifest_Number).HasColumnName("Manifest_Number").HasMaxLength(50);
               this.Property(t => t.BLNumber).HasColumnName("BLNumber").HasMaxLength(50);
               this.Property(t => t.Type_of_declaration).HasColumnName("Type_of_declaration").HasMaxLength(10);
@@ -31,6 +31,12 @@
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
               this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
               this.Property(t => t.TotalLines).HasColumnName("TotalLines");
+              this.Property(t => t.TotalPackages).HasColumnName("TotalPackages");
+              this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
+              this.Property(t => t.EntryPackages).HasColumnName("EntryPackages");
+              this.Property(t => t.FreightCurrencyCode).HasColumnName("FreightCurrencyCode").IsRequired().HasMaxLength(3);
+              this.Property(t => t.CurrencyRate).HasColumnName("CurrencyRate");
+              this.Property(t => t.FreightCurrencyRate).HasColumnName("FreightCurrencyRate");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

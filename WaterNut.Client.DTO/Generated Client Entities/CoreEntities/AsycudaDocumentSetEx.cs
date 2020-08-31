@@ -424,6 +424,32 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _EntryPackages;
 
+        [DataMember]
+        public double CurrencyRate
+		{ 
+		    get { return _CurrencyRate; }
+			set
+			{
+			    if (value == _CurrencyRate) return;
+				_CurrencyRate = value;
+				NotifyPropertyChanged();//m => this.CurrencyRate
+			}
+		}
+        private double _CurrencyRate;
+
+        [DataMember]
+        public double FreightCurrencyRate
+		{ 
+		    get { return _FreightCurrencyRate; }
+			set
+			{
+			    if (value == _FreightCurrencyRate) return;
+				_FreightCurrencyRate = value;
+				NotifyPropertyChanged();//m => this.FreightCurrencyRate
+			}
+		}
+        private double _FreightCurrencyRate;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocument> AsycudaDocuments

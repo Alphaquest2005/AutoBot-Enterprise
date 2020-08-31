@@ -23,6 +23,7 @@
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.QtyLicensesRequired).HasColumnName("QtyLicensesRequired");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
+              this.Property(t => t.Packages).HasColumnName("Packages");
               this.HasRequired(t => t.EntryData).WithOptional(t => (EntryDataExTotals)t.EntryDataTotals);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

@@ -215,6 +215,7 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_LicenseToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_LICToCreateRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToAssessErrorsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToAssessRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToExportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitInadequatePackagesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitIncompleteEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitIncompleteSupplierInfoRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitMissingInvoicePDFsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitPOInfoRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitUnclassifiedItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs" />

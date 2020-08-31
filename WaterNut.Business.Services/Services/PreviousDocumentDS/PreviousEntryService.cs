@@ -133,6 +133,7 @@ namespace PreviousDocumentDS.Business.Services
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PreviousEntry>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace PreviousDocumentDS.Business.Services
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PreviousEntry>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace PreviousDocumentDS.Business.Services
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PreviousEntry>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -310,6 +312,7 @@ namespace PreviousDocumentDS.Business.Services
                         {
                             using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -384,6 +387,7 @@ namespace PreviousDocumentDS.Business.Services
                         {
                             using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -619,6 +623,7 @@ namespace PreviousDocumentDS.Business.Services
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<PreviousEntry>)dbContext.PreviousEntries; 
                     if (expLst.FirstOrDefault() == "All")
@@ -694,6 +699,7 @@ namespace PreviousDocumentDS.Business.Services
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PreviousEntry>();
                     if (exp == "All")
                     {
@@ -740,6 +746,7 @@ namespace PreviousDocumentDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.PreviousEntries
@@ -849,6 +856,7 @@ namespace PreviousDocumentDS.Business.Services
             {
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<PreviousEntry>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1163,6 +1171,7 @@ namespace PreviousDocumentDS.Business.Services
              {
                  using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1198,6 +1207,7 @@ namespace PreviousDocumentDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.PreviousEntries.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1304,6 +1314,7 @@ namespace PreviousDocumentDS.Business.Services
              {
                  using (var dbContext = new PreviousDocumentDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

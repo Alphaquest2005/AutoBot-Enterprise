@@ -476,17 +476,17 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _classifiedlinesFilter;
-        public Int32? classifiedlinesFilter
+		private Int32? _classifiedLinesFilter;
+        public Int32? ClassifiedLinesFilter
         {
             get
             {
-                return _classifiedlinesFilter;
+                return _classifiedLinesFilter;
             }
             set
             {
-                _classifiedlinesFilter = value;
-				NotifyPropertyChanged(x => classifiedlinesFilter);
+                _classifiedLinesFilter = value;
+				NotifyPropertyChanged(x => ClassifiedLinesFilter);
                 FilterData();
                 
             }
@@ -494,17 +494,107 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _totallinesFilter;
-        public Int32? totallinesFilter
+		private Int32? _totalLinesFilter;
+        public Int32? TotalLinesFilter
         {
             get
             {
-                return _totallinesFilter;
+                return _totalLinesFilter;
             }
             set
             {
-                _totallinesFilter = value;
-				NotifyPropertyChanged(x => totallinesFilter);
+                _totalLinesFilter = value;
+				NotifyPropertyChanged(x => TotalLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _generatedLinesFilter;
+        public Int32? GeneratedLinesFilter
+        {
+            get
+            {
+                return _generatedLinesFilter;
+            }
+            set
+            {
+                _generatedLinesFilter = value;
+				NotifyPropertyChanged(x => GeneratedLinesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _documentAttachmentsFilter;
+        public Int32? DocumentAttachmentsFilter
+        {
+            get
+            {
+                return _documentAttachmentsFilter;
+            }
+            set
+            {
+                _documentAttachmentsFilter = value;
+				NotifyPropertyChanged(x => DocumentAttachmentsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _attachedDocumentsFilter;
+        public Int32? AttachedDocumentsFilter
+        {
+            get
+            {
+                return _attachedDocumentsFilter;
+            }
+            set
+            {
+                _attachedDocumentsFilter = value;
+				NotifyPropertyChanged(x => AttachedDocumentsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _entryDataInvoiceTotalFilter;
+        public Double? EntryDataInvoiceTotalFilter
+        {
+            get
+            {
+                return _entryDataInvoiceTotalFilter;
+            }
+            set
+            {
+                _entryDataInvoiceTotalFilter = value;
+				NotifyPropertyChanged(x => EntryDataInvoiceTotalFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _generatedFreightFilter;
+        public Double? GeneratedFreightFilter
+        {
+            get
+            {
+                return _generatedFreightFilter;
+            }
+            set
+            {
+                _generatedFreightFilter = value;
+				NotifyPropertyChanged(x => GeneratedFreightFilter);
                 FilterData();
                 
             }
@@ -599,11 +689,26 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 					if(TotalFreightFilter.HasValue)
 						res.Append(" && " + string.Format("TotalFreight == {0}",  TotalFreightFilter.ToString()));				 
 
-					if(classifiedlinesFilter.HasValue)
-						res.Append(" && " + string.Format("classifiedlines == {0}",  classifiedlinesFilter.ToString()));				 
+					if(ClassifiedLinesFilter.HasValue)
+						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
 
-					if(totallinesFilter.HasValue)
-						res.Append(" && " + string.Format("totallines == {0}",  totallinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+					if(TotalLinesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));				 
+
+					if(GeneratedLinesFilter.HasValue)
+						res.Append(" && " + string.Format("GeneratedLines == {0}",  GeneratedLinesFilter.ToString()));				 
+
+					if(DocumentAttachmentsFilter.HasValue)
+						res.Append(" && " + string.Format("DocumentAttachments == {0}",  DocumentAttachmentsFilter.ToString()));				 
+
+					if(AttachedDocumentsFilter.HasValue)
+						res.Append(" && " + string.Format("AttachedDocuments == {0}",  AttachedDocumentsFilter.ToString()));				 
+
+					if(EntryDataInvoiceTotalFilter.HasValue)
+						res.Append(" && " + string.Format("EntryDataInvoiceTotal == {0}",  EntryDataInvoiceTotalFilter.ToString()));				 
+
+					if(GeneratedFreightFilter.HasValue)
+						res.Append(" && " + string.Format("GeneratedFreight == {0}",  GeneratedFreightFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -677,10 +782,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalFreight = x.TotalFreight ,
                     
  
-                    classifiedlines = x.classifiedlines ,
+                    ClassifiedLines = x.ClassifiedLines ,
                     
  
-                    totallines = x.totallines 
+                    TotalLines = x.TotalLines ,
+                    
+ 
+                    GeneratedLines = x.GeneratedLines ,
+                    
+ 
+                    DocumentAttachments = x.DocumentAttachments ,
+                    
+ 
+                    AttachedDocuments = x.AttachedDocuments ,
+                    
+ 
+                    EntryDataInvoiceTotal = x.EntryDataInvoiceTotal ,
+                    
+ 
+                    GeneratedFreight = x.GeneratedFreight 
                     
                 }).ToList()
             };
@@ -744,10 +864,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> TotalFreight { get; set; } 
                     
  
-                    public Nullable<int> classifiedlines { get; set; } 
+                    public Nullable<int> ClassifiedLines { get; set; } 
                     
  
-                    public Nullable<int> totallines { get; set; } 
+                    public Nullable<int> TotalLines { get; set; } 
+                    
+ 
+                    public Nullable<int> GeneratedLines { get; set; } 
+                    
+ 
+                    public Nullable<int> DocumentAttachments { get; set; } 
+                    
+ 
+                    public Nullable<int> AttachedDocuments { get; set; } 
+                    
+ 
+                    public Nullable<double> EntryDataInvoiceTotal { get; set; } 
+                    
+ 
+                    public Nullable<double> GeneratedFreight { get; set; } 
                     
         }
 

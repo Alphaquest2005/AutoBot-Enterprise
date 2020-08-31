@@ -262,6 +262,8 @@ namespace WaterNut.DataSpace
 
 				using (var ctx = new AllocationDSContext() { StartTracking = false })
 				{
+				    ctx.Database.CommandTimeout = 0;
+
 					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
 						.Include(x => x.xcuda_Tarification.xcuda_HScode)
 						.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
@@ -276,6 +278,7 @@ namespace WaterNut.DataSpace
 					                && x.AsycudaDocument.DoNotAllocate != true)
 						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
 																			 .OpeningStockDate ?? DateTime.MinValue.Date))
+					    .AsNoTracking()
 						.ToList();
 
 				   
@@ -409,6 +412,7 @@ namespace WaterNut.DataSpace
 
 				using (var ctx = new AllocationDSContext() { StartTracking = false })
 				{
+				    ctx.Database.CommandTimeout = 0;
 					IMAsycudaEntries = ctx.xcuda_Item.Include(x => x.AsycudaDocument)
 						.Include(x => x.xcuda_Tarification.xcuda_HScode)
 						.Include(x => x.xcuda_Tarification.xcuda_Supplementary_unit)
@@ -422,6 +426,7 @@ namespace WaterNut.DataSpace
                                     && x.AsycudaDocument.DoNotAllocate != true)
 						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
 																			 .OpeningStockDate ?? DateTime.MinValue.Date))
+                        .AsNoTracking()
 						.ToList();
 
 
@@ -681,7 +686,7 @@ namespace WaterNut.DataSpace
                     .Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true)
                                 && (x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Import
                                  || x.AsycudaDocument.CustomsOperationId == (int)CustomsOperations.Warehouse)
-                                && x.AsycudaDocument.Customs_Procedure.Sales == true &&
+                                && (x.AsycudaDocument.Customs_Procedure.Sales == true || x.AsycudaDocument.Customs_Procedure.Stock == true) &&
                                  (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
                                  x.AsycudaDocument.DoNotAllocate != true)
                     .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings

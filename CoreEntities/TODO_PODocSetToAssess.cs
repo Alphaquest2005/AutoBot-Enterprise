@@ -33,7 +33,12 @@ namespace CoreEntities
         public Nullable<int> HasC71 { get; set; }
         public Nullable<int> HasLicense { get; set; }
         public Nullable<double> TotalFreight { get; set; }
-        public Nullable<int> classifiedlines { get; set; }
-        public Nullable<int> totallines { get; set; }
+        public Nullable<int> ClassifiedLines { get; set; }
+        public Nullable<int> TotalLines { get; set; }
+        public Nullable<int> GeneratedLines { get; set; }
+        public Nullable<int> DocumentAttachments { get; set; }
+        public Nullable<int> AttachedDocuments { get; set; }
+        public Nullable<double> EntryDataInvoiceTotal { get; set; }
+        public Nullable<double> GeneratedFreight { get; set; }
     }
 }

@@ -231,7 +231,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _totalcif;
         [DataMember]
-        public Nullable<double> C71Total 
+        public double C71Total 
         {
             get
             {
@@ -244,7 +244,37 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<double> _c71total;
+        double _c71total;
+        [DataMember]
+        public int Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _id;
+        [DataMember]
+        public double Rate 
+        {
+            get
+            {
+                return _rate;
+            }
+            set
+            {
+                _rate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _rate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

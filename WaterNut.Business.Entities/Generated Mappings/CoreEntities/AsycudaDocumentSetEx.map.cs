@@ -18,7 +18,7 @@
               this.Property(t => t.Exchange_Rate).HasColumnName("Exchange_Rate");
               this.Property(t => t.Customs_ProcedureId).HasColumnName("Customs_ProcedureId");
               this.Property(t => t.Country_of_origin_code).HasColumnName("Country_of_origin_code").HasMaxLength(3);
-              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").HasMaxLength(3);
+              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").IsRequired().HasMaxLength(3);
               this.Property(t => t.Document_TypeId).HasColumnName("Document_TypeId");
               this.Property(t => t.Description).HasColumnName("Description").HasMaxLength(255);
               this.Property(t => t.Manifest_Number).HasColumnName("Manifest_Number").HasMaxLength(50);
@@ -41,9 +41,11 @@
               this.Property(t => t.LocationOfGoods).HasColumnName("LocationOfGoods").HasMaxLength(50);
               this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
-              this.Property(t => t.FreightCurrencyCode).HasColumnName("FreightCurrencyCode").HasMaxLength(3);
+              this.Property(t => t.FreightCurrencyCode).HasColumnName("FreightCurrencyCode").IsRequired().HasMaxLength(3);
               this.Property(t => t.QtyLicensesRequired).HasColumnName("QtyLicensesRequired");
               this.Property(t => t.EntryPackages).HasColumnName("EntryPackages");
+              this.Property(t => t.CurrencyRate).HasColumnName("CurrencyRate");
+              this.Property(t => t.FreightCurrencyRate).HasColumnName("FreightCurrencyRate");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentSetEx>) t.AsycudaDocumentSetEx).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocuments).WithOptional(t => t.AsycudaDocumentSetEx).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.LicenceSummary).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);

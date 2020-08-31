@@ -255,6 +255,84 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _TotalLines;
 
+        [DataMember]
+        public Nullable<int> TotalPackages
+		{ 
+		    get { return _TotalPackages; }
+			set
+			{
+			    if (value == _TotalPackages) return;
+				_TotalPackages = value;
+				NotifyPropertyChanged();//m => this.TotalPackages
+			}
+		}
+        private Nullable<int> _TotalPackages;
+
+        [DataMember]
+        public Nullable<double> TotalWeight
+		{ 
+		    get { return _TotalWeight; }
+			set
+			{
+			    if (value == _TotalWeight) return;
+				_TotalWeight = value;
+				NotifyPropertyChanged();//m => this.TotalWeight
+			}
+		}
+        private Nullable<double> _TotalWeight;
+
+        [DataMember]
+        public Nullable<int> EntryPackages
+		{ 
+		    get { return _EntryPackages; }
+			set
+			{
+			    if (value == _EntryPackages) return;
+				_EntryPackages = value;
+				NotifyPropertyChanged();//m => this.EntryPackages
+			}
+		}
+        private Nullable<int> _EntryPackages;
+
+        [DataMember]
+        public string FreightCurrencyCode
+		{ 
+		    get { return _FreightCurrencyCode; }
+			set
+			{
+			    if (value == _FreightCurrencyCode) return;
+				_FreightCurrencyCode = value;
+				NotifyPropertyChanged();//m => this.FreightCurrencyCode
+			}
+		}
+        private string _FreightCurrencyCode;
+
+        [DataMember]
+        public double CurrencyRate
+		{ 
+		    get { return _CurrencyRate; }
+			set
+			{
+			    if (value == _CurrencyRate) return;
+				_CurrencyRate = value;
+				NotifyPropertyChanged();//m => this.CurrencyRate
+			}
+		}
+        private double _CurrencyRate;
+
+        [DataMember]
+        public double FreightCurrencyRate
+		{ 
+		    get { return _FreightCurrencyRate; }
+			set
+			{
+			    if (value == _FreightCurrencyRate) return;
+				_FreightCurrencyRate = value;
+				NotifyPropertyChanged();//m => this.FreightCurrencyRate
+			}
+		}
+        private double _FreightCurrencyRate;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -18,5 +18,6 @@ namespace ValuationDS
         public string RegNumber { get; set; }
         public string SourceFile { get; set; }
         public string DocumentReference { get; set; }
+        public int ApplicationSettingsId { get; set; }
     }
 }

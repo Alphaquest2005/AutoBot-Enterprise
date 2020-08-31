@@ -133,6 +133,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<EntryDataDetailsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -292,6 +294,7 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -366,6 +369,7 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -601,6 +605,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<EntryDataDetailsEx>)dbContext.EntryDataDetailsEx; 
                     if (expLst.FirstOrDefault() == "All")
@@ -676,6 +681,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<EntryDataDetailsEx>();
                     if (exp == "All")
                     {
@@ -722,6 +728,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.EntryDataDetailsEx
@@ -822,6 +829,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<EntryDataDetailsEx>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1225,6 +1233,35 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
+ 	        public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(InventoryItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<EntryDataDetailsEx> entities = await set//dbContext.EntryDataDetailsEx
+                                      .AsNoTracking()
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
  
 		public decimal SumField(string whereExp, string field)
          {
@@ -1232,6 +1269,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1267,6 +1305,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.EntryDataDetailsEx.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1364,6 +1403,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

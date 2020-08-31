@@ -100,9 +100,9 @@ namespace AllocationQS.Business.Services
                     .ConfigureAwait(false);
         }
 
-        public async Task ReBuildSalesReports()
+        public Task ReBuildSalesReports()
         {
-            await WaterNut.DataSpace.BuildSalesReportClass.Instance.ReBuildSalesReports().ConfigureAwait(false);
+           return Task.Run(() => WaterNut.DataSpace.BuildSalesReportClass.Instance.ReBuildSalesReports()) ;
         }
 
         public async Task ReBuildSalesReports(int asycuda_id)

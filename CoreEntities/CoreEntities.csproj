@@ -306,6 +306,9 @@
     <Compile Include="TODO_PODocSetToAssess.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_PODocSetToAssessErrors.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_PODocSetToExport.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -331,6 +334,9 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitIncompleteSupplierInfo.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TODO_SubmitMissingInvoicePDFs.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitPOInfo.cs">

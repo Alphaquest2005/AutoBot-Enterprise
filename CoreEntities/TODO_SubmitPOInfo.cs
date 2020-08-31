@@ -14,6 +14,7 @@ namespace CoreEntities
     
     public partial class TODO_SubmitPOInfo
     {
+        public int Id { get; set; }
         public string Number { get; set; }
         public string Date { get; set; }
         public string EntryDataId { get; set; }

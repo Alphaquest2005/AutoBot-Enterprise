@@ -98,11 +98,13 @@ namespace CoreEntities
         public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
         public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
         public DbSet<TODO_DiscrepanciesErrors> TODO_DiscrepanciesErrors { get; set; }
-        public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
         public DbSet<CustomsOperations> CustomsOperations { get; set; }
         public DbSet<EmailInfoMappings> EmailInfoMappings { get; set; }
         public DbSet<TODO_SubmitAllXMLToCustoms> TODO_SubmitAllXMLToCustoms { get; set; }
-        public DbSet<TODO_PODocSetToAssess> TODO_PODocSetToAssess { get; set; }
         public DbSet<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx { get; set; }
+        public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
+        public DbSet<TODO_PODocSetToAssessErrors> TODO_PODocSetToAssessErrors { get; set; }
+        public DbSet<TODO_PODocSetToAssess> TODO_PODocSetToAssess { get; set; }
+        public DbSet<TODO_SubmitMissingInvoicePDFs> TODO_SubmitMissingInvoicePDFs { get; set; }
     }
 }

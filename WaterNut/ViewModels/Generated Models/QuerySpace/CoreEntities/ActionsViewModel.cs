@@ -205,6 +205,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _isDataSpecificFilter;
+        public Boolean? IsDataSpecificFilter
+        {
+            get
+            {
+                return _isDataSpecificFilter;
+            }
+            set
+            {
+                _isDataSpecificFilter = value;
+				NotifyPropertyChanged(x => IsDataSpecificFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -241,6 +259,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(TestModeFilter.HasValue)
 						res.Append(" && " + string.Format("TestMode == {0}",  TestModeFilter));						
+ 
+
+									if(IsDataSpecificFilter.HasValue)
+						res.Append(" && " + string.Format("IsDataSpecific == {0}",  IsDataSpecificFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -267,7 +289,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Name = x.Name ,
                     
  
-                    TestMode = x.TestMode 
+                    TestMode = x.TestMode ,
+                    
+ 
+                    IsDataSpecific = x.IsDataSpecific 
                     
                 }).ToList()
             };
@@ -284,6 +309,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public bool TestMode { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsDataSpecific { get; set; } 
                     
         }
 

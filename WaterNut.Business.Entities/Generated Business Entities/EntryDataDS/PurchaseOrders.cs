@@ -20,6 +20,11 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class PurchaseOrders : EntryData 
     {
+        partial void AutoGenStartUp() //PurchaseOrders()
+        {
+            this.WarehouseInfo = new List<WarehouseInfo>();
+        }
+
         [DataMember]
         public string PONumber 
         {
@@ -51,20 +56,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _supplierinvoiceno;
         [DataMember]
-        public string WarehouseNo 
-        {
-            get
-            {
-                return _warehouseno;
-            }
-            set
-            {
-                _warehouseno = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _warehouseno;
+        public List<WarehouseInfo> WarehouseInfo { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

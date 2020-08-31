@@ -108,6 +108,9 @@ namespace CoreEntities.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<LicenceSummary>> GetLicenceSummaryByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<LicenceSummary>> GetLicenceSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   
 
 

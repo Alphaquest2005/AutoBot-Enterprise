@@ -158,21 +158,19 @@
           <Property Name="RegNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-C71ToCreate">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
-            <PropertyRef Name="ApplicationSettingsId" />
-            
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
-          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
@@ -184,6 +182,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
           <Property Name="LicenseLines" Type="int" />
           <Property Name="TotalCIF" Type="float" />
           <Property Name="C71Total" Type="float" Nullable="false" />
+          <Property Name="Rate" Type="float" Nullable="false" />
         </EntityType>
         <Association Name="FK_xC71_Identification_segment_xC71_Value_declaration_form">
           <End Role="xC71_Value_declaration_form" Type="Self.xC71_Value_declaration_form" Multiplicity="1">
@@ -294,7 +293,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
 [TODO-C71ToCreate].[InvoiceTotal] AS [InvoiceTotal], 
 [TODO-C71ToCreate].[LicenseLines] AS [LicenseLines], 
 [TODO-C71ToCreate].[TotalCIF] AS [TotalCIF], 
-[TODO-C71ToCreate].[C71Total] AS [C71Total]
+[TODO-C71ToCreate].[C71Total] AS [C71Total], 
+[TODO-C71ToCreate].[Rate] AS [Rate]
 FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_xC71_Identification_segment_xC71_Value_declaration_form" Association="Self.FK_xC71_Identification_segment_xC71_Value_declaration_form">
@@ -584,17 +584,17 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           <Property Name="RegNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_C71ToCreate">
           <Key>
-            <PropertyRef Name="AsycudaDocumentSetId" />
-            <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="Id" />
           </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -606,7 +606,7 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           <Property Name="LicenseLines" Type="Int32" />
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="C71Total" Type="Double" Nullable="false" />
-          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Rate" Type="Double" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -765,6 +765,7 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutModelDB.Registered)">
               <MappingFragment StoreEntitySet="xC71_Value_declaration_form_Registered">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
@@ -776,7 +777,7 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           <EntitySetMapping Name="TODO_C71ToCreate">
             <EntityTypeMapping TypeName="WaterNutModelDB.TODO_C71ToCreate">
               <MappingFragment StoreEntitySet="TODO-C71ToCreate">
-                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
                 <ScalarProperty Name="C71Total" ColumnName="C71Total" />
                 <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
                 <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />
@@ -792,6 +793,7 @@ FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -133,6 +133,7 @@ namespace ValuationDS.Business.Services
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Registered>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace ValuationDS.Business.Services
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Registered>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace ValuationDS.Business.Services
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Registered>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -298,6 +300,7 @@ namespace ValuationDS.Business.Services
                         {
                             using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -372,6 +375,7 @@ namespace ValuationDS.Business.Services
                         {
                             using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -607,6 +611,7 @@ namespace ValuationDS.Business.Services
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<Registered>)dbContext.Set<Registered>(); 
                     if (expLst.FirstOrDefault() == "All")
@@ -682,6 +687,7 @@ namespace ValuationDS.Business.Services
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Registered>();
                     if (exp == "All")
                     {
@@ -728,6 +734,7 @@ namespace ValuationDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.Set<Registered>()
@@ -831,6 +838,7 @@ namespace ValuationDS.Business.Services
             {
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<Registered>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1066,13 +1074,43 @@ namespace ValuationDS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<Registered>> GetRegisteredByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Registered> entities = await set//dbContext.xC71_Value_declaration_form.OfType<Registered>()
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
              {
                  using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1108,6 +1146,7 @@ namespace ValuationDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.Set<Registered>().Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1208,6 +1247,7 @@ namespace ValuationDS.Business.Services
              {
                  using (var dbContext = new ValuationDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

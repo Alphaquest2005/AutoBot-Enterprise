@@ -139,6 +139,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                    // {
                    //    if(AsycudaDocumentSetExs.Contains(CurrentLicenceSummary.AsycudaDocumentSetEx) == false) AsycudaDocumentSetExs.Add(CurrentLicenceSummary.AsycudaDocumentSetEx);
                     //}
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentLicenceSummary.ApplicationSettings) == false) ApplicationSettings.Add(CurrentLicenceSummary.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnLicenceSummaryChanged(object sender, NotificationEventArgs e)
         {
@@ -169,6 +173,20 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    LicenceSummary.Refresh();
+					NotifyPropertyChanged(x => this.LicenceSummary);
+				}
   
 // Filtering Each Field except IDs
  	

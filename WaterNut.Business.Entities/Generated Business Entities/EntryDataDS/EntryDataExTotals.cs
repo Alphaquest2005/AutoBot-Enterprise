@@ -171,6 +171,21 @@ namespace EntryDataDS.Business.Entities
         }
         int _asycudadocumentsetid;
         [DataMember]
+        public int Packages 
+        {
+            get
+            {
+                return _packages;
+            }
+            set
+            {
+                _packages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _packages;
+        [DataMember]
         public EntryData EntryData { get; set; }
 
  //       [DataMember]

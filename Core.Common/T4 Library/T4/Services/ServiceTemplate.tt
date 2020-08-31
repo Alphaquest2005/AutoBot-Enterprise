@@ -157,6 +157,7 @@ namespace <#=container.Name#>.Business.Services
             {
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#=entity.Name#>>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -199,6 +200,7 @@ namespace <#=container.Name#>.Business.Services
             {
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<<#=entity.Name#>>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -242,7 +244,7 @@ namespace <#=container.Name#>.Business.Services
             {
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#=entity.Name#>>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -339,6 +341,7 @@ namespace <#=container.Name#>.Business.Services
                         {
                             using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -413,6 +416,7 @@ namespace <#=container.Name#>.Business.Services
                         {
                             using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -648,6 +652,7 @@ namespace <#=container.Name#>.Business.Services
             {
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<<#=entity.Name#>>)dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>; 
                     if (expLst.FirstOrDefault() == "All")
@@ -723,6 +728,7 @@ namespace <#=container.Name#>.Business.Services
             {
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<<#=entity.Name#>>();
                     if (exp == "All")
                     {
@@ -769,6 +775,7 @@ namespace <#=container.Name#>.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>
@@ -892,6 +899,7 @@ namespace <#=container.Name#>.Business.Services
             {
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<<#=entity.Name#>>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1195,6 +1203,7 @@ namespace <#=container.Name#>.Business.Services
              {
                  using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1230,6 +1239,7 @@ namespace <#=container.Name#>.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.<#=(entity.BaseType == null?entitySet:"Set<" + entity.Name + ">()")#>.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1350,6 +1360,7 @@ namespace <#=container.Name#>.Business.Services
              {
                  using (var dbContext = new <#=container.Name#>Context(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

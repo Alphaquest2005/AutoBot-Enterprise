@@ -216,6 +216,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _HasFiles;
 
+        [DataMember]
+        public Nullable<int> OldFileTypeId
+		{ 
+		    get { return _OldFileTypeId; }
+			set
+			{
+			    if (value == _OldFileTypeId) return;
+				_OldFileTypeId = value;
+				NotifyPropertyChanged();//m => this.OldFileTypeId
+			}
+		}
+        private Nullable<int> _OldFileTypeId;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

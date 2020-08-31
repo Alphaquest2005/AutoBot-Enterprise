@@ -89,7 +89,7 @@ public string Country_of_origin_code
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Currency_Code is required")]
        
                 
                 [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]
@@ -322,6 +322,98 @@ public Nullable<int> TotalLines
 				this.todo_podocset.TotalLines = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("TotalLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> TotalPackages
+		{ 
+		    get { return this.todo_podocset.TotalPackages; }
+			set
+			{
+			    if (value == this.todo_podocset.TotalPackages) return;
+				this.todo_podocset.TotalPackages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalPackages");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalWeight
+		{ 
+		    get { return this.todo_podocset.TotalWeight; }
+			set
+			{
+			    if (value == this.todo_podocset.TotalWeight) return;
+				this.todo_podocset.TotalWeight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalWeight");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> EntryPackages
+		{ 
+		    get { return this.todo_podocset.EntryPackages; }
+			set
+			{
+			    if (value == this.todo_podocset.EntryPackages) return;
+				this.todo_podocset.EntryPackages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryPackages");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "FreightCurrencyCode is required")]
+       
+                
+                [MaxLength(3, ErrorMessage = "FreightCurrencyCode has a max length of 3 letters ")]
+public string FreightCurrencyCode
+		{ 
+		    get { return this.todo_podocset.FreightCurrencyCode; }
+			set
+			{
+			    if (value == this.todo_podocset.FreightCurrencyCode) return;
+				this.todo_podocset.FreightCurrencyCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FreightCurrencyCode");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "CurrencyRate is required")]
+       [NumberValidationAttribute]
+public double CurrencyRate
+		{ 
+		    get { return this.todo_podocset.CurrencyRate; }
+			set
+			{
+			    if (value == this.todo_podocset.CurrencyRate) return;
+				this.todo_podocset.CurrencyRate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CurrencyRate");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "FreightCurrencyRate is required")]
+       [NumberValidationAttribute]
+public double FreightCurrencyRate
+		{ 
+		    get { return this.todo_podocset.FreightCurrencyRate; }
+			set
+			{
+			    if (value == this.todo_podocset.FreightCurrencyRate) return;
+				this.todo_podocset.FreightCurrencyRate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FreightCurrencyRate");
 			}
 		}
      

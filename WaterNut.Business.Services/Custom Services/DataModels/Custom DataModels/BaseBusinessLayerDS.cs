@@ -618,7 +618,8 @@ namespace WaterNut.DataSpace
 
 
                 }
-
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_name = Exp.Consignee_name;
+                cdoc.Document.xcuda_Traders.xcuda_Consignee.Consignee_code = Exp.Consignee_code;
                 //cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_rate = Convert.ToSingle(ads.Exchange_Rate);
 
             }
@@ -661,12 +662,12 @@ namespace WaterNut.DataSpace
                 var docSet = await WaterNut.DataSpace.BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId)
                     .ConfigureAwait(false);
                 if (!IsValidDocument(docSet)) return;
-                if (perInvoice)
+                if (perInvoice && combineEntryDataInSameFile == false)
                 {
                     using (var ctx = new CoreEntitiesContext())
                     {
                         var ds = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == docSetId);
-                        if (ds.TotalInvoices.GetValueOrDefault() > ds.TotalPackages.GetValueOrDefault())
+                        if (ds.TotalInvoices.GetValueOrDefault() > ds.TotalPackages.GetValueOrDefault() )
                             perInvoice = false;
                     }
                 }
@@ -824,6 +825,8 @@ namespace WaterNut.DataSpace
                     Math.Ceiling((pod.EntryDataDetails.Count /
                                   (double) (currentAsycudaDocumentSet.MaxLines ??
                                             CurrentApplicationSettings.MaxEntryLines)));
+
+                
                 //var remLines =
                 //  pod.EntryDataDetails.Count % currentAsycudaDocumentSet.MaxLines ?? CurrentApplicationSettings.MaxEntryLines;
                 if (checkPackages)
@@ -845,12 +848,12 @@ namespace WaterNut.DataSpace
                     {
                         if (cdoc.DocumentItems.Any() && oldentryData.EntryDataId != pod.EntryData.EntryDataId)
                         {
-                            if (!combineEntryDataInSameFile || pod.EntryData.SourceFile != oldentryData.SourceFile ||
-                                perInvoice)
+                            if ((combineEntryDataInSameFile && pod.EntryData.SourceFile != oldentryData.SourceFile) ||
+                                (perInvoice && combineEntryDataInSameFile == false))
                             {
                                 SetEffectiveAssessmentDate(cdoc);
 
-                                SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
+                               // SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
 
 
                                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
@@ -897,6 +900,9 @@ namespace WaterNut.DataSpace
                 if (itm == null) continue;
                 itmcount += 1;
 
+                if(itmcount == 1 && cdoc.DocumentItems.Any() && !cdoc.DocumentItems.First().xcuda_Packages.Any())
+                    SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
+
                 if (oldentryData.EntryDataId != pod.EntryData.EntryDataId)
                 {
                    
@@ -936,7 +942,7 @@ namespace WaterNut.DataSpace
                     {
                         SetEffectiveAssessmentDate(cdoc);
                         // AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
-                        SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
+                      //  SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
                         await SaveDocumentCT(cdoc).ConfigureAwait(false);
                         docList.Add(cdoc);
                         cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
@@ -959,6 +965,7 @@ namespace WaterNut.DataSpace
             StatusModel.Timer("Saving To Database");
             if (cdoc.DocumentItems.Any())
             {
+                
                 SetEffectiveAssessmentDate(cdoc);
                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
                 docList.Add(cdoc);
@@ -968,6 +975,8 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
 
             AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId);
+
+            BaseDataModel.RenameDuplicateDocumentCodes(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
             return docList;
 
         }
@@ -984,6 +993,7 @@ namespace WaterNut.DataSpace
                     pkg = new xcuda_Packages(true)
                     {
                         Item_Id = itm.Item_Id,
+                        xcuda_Item = itm,
                         Kind_of_packages_code = "PK",
                         Marks1_of_packages = "Marks",
                         TrackingState = TrackingState.Added
@@ -3631,6 +3641,13 @@ namespace WaterNut.DataSpace
                     var entryDataId =
                         new EntryDataDSContext().EntryData.FirstOrDefault(x =>
                             al.Value.DocumentReference == x.EntryDataId);
+
+                    if(entryDataId == null) entryDataId =
+                        new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
+                            .FirstOrDefault(x => x.SupplierInvoiceNo == al.Value.DocumentReference);
+
+                        
+
                     foreach (var lic in al.Value.xLIC_Lic_item_segment)
                     {
                         var truncate = lic.Commodity_code.Truncate(8);

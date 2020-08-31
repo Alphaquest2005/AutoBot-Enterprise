@@ -133,6 +133,7 @@ namespace DocumentDS.Business.Services
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_ASYCUDA_ExtendedProperties>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace DocumentDS.Business.Services
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_ASYCUDA_ExtendedProperties>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace DocumentDS.Business.Services
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_ASYCUDA_ExtendedProperties>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -316,6 +318,7 @@ namespace DocumentDS.Business.Services
                         {
                             using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -390,6 +393,7 @@ namespace DocumentDS.Business.Services
                         {
                             using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -625,6 +629,7 @@ namespace DocumentDS.Business.Services
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<xcuda_ASYCUDA_ExtendedProperties>)dbContext.xcuda_ASYCUDA_ExtendedProperties; 
                     if (expLst.FirstOrDefault() == "All")
@@ -700,6 +705,7 @@ namespace DocumentDS.Business.Services
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_ASYCUDA_ExtendedProperties>();
                     if (exp == "All")
                     {
@@ -746,6 +752,7 @@ namespace DocumentDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.xcuda_ASYCUDA_ExtendedProperties
@@ -858,6 +865,7 @@ namespace DocumentDS.Business.Services
             {
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<xcuda_ASYCUDA_ExtendedProperties>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1234,6 +1242,7 @@ namespace DocumentDS.Business.Services
              {
                  using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1269,6 +1278,7 @@ namespace DocumentDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.xcuda_ASYCUDA_ExtendedProperties.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1378,6 +1388,7 @@ namespace DocumentDS.Business.Services
              {
                  using (var dbContext = new DocumentDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

@@ -133,6 +133,7 @@ namespace InventoryDS.Business.Services
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TariffCategoryCodeSuppUnit>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace InventoryDS.Business.Services
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TariffCategoryCodeSuppUnit>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace InventoryDS.Business.Services
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TariffCategoryCodeSuppUnit>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -298,6 +300,7 @@ namespace InventoryDS.Business.Services
                         {
                             using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -372,6 +375,7 @@ namespace InventoryDS.Business.Services
                         {
                             using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -607,6 +611,7 @@ namespace InventoryDS.Business.Services
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<TariffCategoryCodeSuppUnit>)dbContext.TariffCategoryCodeSuppUnits; 
                     if (expLst.FirstOrDefault() == "All")
@@ -682,6 +687,7 @@ namespace InventoryDS.Business.Services
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TariffCategoryCodeSuppUnit>();
                     if (exp == "All")
                     {
@@ -728,6 +734,7 @@ namespace InventoryDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.TariffCategoryCodeSuppUnits
@@ -831,6 +838,7 @@ namespace InventoryDS.Business.Services
             {
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TariffCategoryCodeSuppUnit>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1102,6 +1110,7 @@ namespace InventoryDS.Business.Services
              {
                  using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1137,6 +1146,7 @@ namespace InventoryDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.TariffCategoryCodeSuppUnits.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1237,6 +1247,7 @@ namespace InventoryDS.Business.Services
              {
                  using (var dbContext = new InventoryDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

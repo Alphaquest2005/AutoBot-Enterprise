@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<InventoryItemsEx> GetInventoryItemsExByKey(string ItemNumber, List<string> includesLst = null, bool tracking = true)
+        public async Task<InventoryItemsEx> GetInventoryItemsExByKey(string InventoryItemId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(ItemNumber))return null; 
+			   if(string.IsNullOrEmpty(InventoryItemId))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(InventoryItemId);
 				var set = AddIncludes(includesLst, dbContext);
-                InventoryItemsEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.ItemNumber == i).ConfigureAwait(continueOnCapturedContext: false);
+                InventoryItemsEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.InventoryItemId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -133,6 +133,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItemsEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemsEx>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -292,17 +294,18 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
                                 IQueryable<InventoryItemsEx> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber).Where(exp);
+                                    dset = set.OrderBy(x => x.InventoryItemId).Where(exp);
                                 }
 
                                 var lst = dset
@@ -366,18 +369,19 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
                                 IQueryable<InventoryItemsEx> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
 
                                 var lst = dset
@@ -523,15 +527,15 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInventoryItemsEx(string ItemNumber)
+        public async Task<bool> DeleteInventoryItemsEx(string InventoryItemId)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(InventoryItemId);
                 InventoryItemsEx entity = await dbContext.InventoryItemsEx
-													.SingleOrDefaultAsync(x => x.ItemNumber == i)
+													.SingleOrDefaultAsync(x => x.InventoryItemId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -601,6 +605,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<InventoryItemsEx>)dbContext.InventoryItemsEx; 
                     if (expLst.FirstOrDefault() == "All")
@@ -676,12 +681,13 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemsEx>();
                     if (exp == "All")
                     {
                         return await dbContext.InventoryItemsEx
 										.AsNoTracking()
-                                        .OrderBy(y => y.ItemNumber)
+                                        .OrderBy(y => y.InventoryItemId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -693,7 +699,7 @@ namespace EntryDataDS.Business.Services
                         return await dbContext.InventoryItemsEx
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.ItemNumber)
+										.OrderBy(y => y.InventoryItemId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -722,6 +728,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.InventoryItemsEx
@@ -738,7 +745,7 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return await dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -781,9 +788,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -802,9 +809,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -822,6 +829,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InventoryItemsEx>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -830,7 +838,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.ItemNumber)
+                                    .OrderBy(y => y.InventoryItemId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -855,8 +863,8 @@ namespace EntryDataDS.Business.Services
                     }
                     return await set//dbContext.InventoryItemsEx
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
-								.OrderBy(y => y.ItemNumber)
+                                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
+								.OrderBy(y => y.InventoryItemId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -908,9 +916,9 @@ namespace EntryDataDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.InventoryItemId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -937,9 +945,9 @@ namespace EntryDataDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.InventoryItemId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -989,7 +997,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<InventoryItemsEx>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -999,7 +1007,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1026,7 +1034,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<InventoryItemsEx>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1036,7 +1044,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1088,6 +1096,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1123,6 +1132,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.InventoryItemsEx.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1139,7 +1149,7 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return Convert.ToDecimal(dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1180,9 +1190,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1200,9 +1210,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1220,6 +1230,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

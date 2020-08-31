@@ -16,7 +16,7 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Country_of_origin_code).HasColumnName("Country_of_origin_code").HasMaxLength(3);
-              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").HasMaxLength(3);
+              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").IsRequired().HasMaxLength(3);
               this.Property(t => t.Manifest_Number).HasColumnName("Manifest_Number").HasMaxLength(50);
               this.Property(t => t.BLNumber).HasColumnName("BLNumber").HasMaxLength(50);
               this.Property(t => t.Type_of_declaration).HasColumnName("Type_of_declaration").HasMaxLength(10);
@@ -27,6 +27,8 @@
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
               this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
               this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
+              this.Property(t => t.QtyLicensesRequired).HasColumnName("QtyLicensesRequired");
+              this.Property(t => t.HasLicense).HasColumnName("HasLicense");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -256,6 +256,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _hasfiles;
         [DataMember]
+        public Nullable<int> OldFileTypeId 
+        {
+            get
+            {
+                return _oldfiletypeid;
+            }
+            set
+            {
+                _oldfiletypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _oldfiletypeid;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

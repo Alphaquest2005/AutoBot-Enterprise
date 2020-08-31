@@ -56,6 +56,7 @@
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -63,11 +64,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
             <PropertyRef Name="ApplicationSettingsId" />
+            
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
-          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="Type_of_declaration" Type="nvarchar" MaxLength="10" />
@@ -78,6 +80,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="LicenseLines" Type="int" />
           <Property Name="TotalCIF" Type="float" />
+          <Property Name="QtyLicensesRequired" Type="int" />
+          <Property Name="HasLicense" Type="int" />
         </EntityType>
         <Association Name="FK_xLIC_General_segment_xLIC_License">
           <End Role="xLIC_License" Type="Self.xLIC_License" Multiplicity="1">
@@ -141,7 +145,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
 [TODO-LICToCreate].[DocumentsCount] AS [DocumentsCount], 
 [TODO-LICToCreate].[InvoiceTotal] AS [InvoiceTotal], 
 [TODO-LICToCreate].[LicenseLines] AS [LicenseLines], 
-[TODO-LICToCreate].[TotalCIF] AS [TotalCIF]
+[TODO-LICToCreate].[TotalCIF] AS [TotalCIF], 
+[TODO-LICToCreate].[QtyLicensesRequired] AS [QtyLicensesRequired], 
+[TODO-LICToCreate].[HasLicense] AS [HasLicense]
 FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_xLIC_General_segment_xLIC_License" Association="Self.FK_xLIC_General_segment_xLIC_License">
@@ -254,6 +260,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_LICToCreate">
           <Key>
@@ -263,7 +270,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="BLNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Type_of_declaration" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
@@ -274,6 +281,8 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="LicenseLines" Type="Int32" />
           <Property Name="TotalCIF" Type="Double" />
+          <Property Name="QtyLicensesRequired" Type="Int32" />
+          <Property Name="HasLicense" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -328,6 +337,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Registered)">
               <MappingFragment StoreEntitySet="xLIC_License_Registered">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
@@ -338,6 +348,8 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <EntitySetMapping Name="TODO_LICToCreate">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LICToCreate">
               <MappingFragment StoreEntitySet="TODO-LICToCreate">
+                <ScalarProperty Name="HasLicense" ColumnName="HasLicense" />
+                <ScalarProperty Name="QtyLicensesRequired" ColumnName="QtyLicensesRequired" />
                 <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
                 <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />
                 <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />

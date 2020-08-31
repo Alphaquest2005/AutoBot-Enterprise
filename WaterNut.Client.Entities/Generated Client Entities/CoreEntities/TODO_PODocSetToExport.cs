@@ -89,7 +89,7 @@ public string Country_of_origin_code
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Currency_Code is required")]
        
                 
                 [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]
@@ -367,6 +367,53 @@ public Nullable<int> TotalLines
 				this.todo_podocsettoexport.TotalLines = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("TotalLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> EntryPackages
+		{ 
+		    get { return this.todo_podocsettoexport.EntryPackages; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.EntryPackages) return;
+				this.todo_podocsettoexport.EntryPackages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryPackages");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalWeight
+		{ 
+		    get { return this.todo_podocsettoexport.TotalWeight; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.TotalWeight) return;
+				this.todo_podocsettoexport.TotalWeight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalWeight");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "FreightCurrencyCode is required")]
+       
+                
+                [MaxLength(3, ErrorMessage = "FreightCurrencyCode has a max length of 3 letters ")]
+public string FreightCurrencyCode
+		{ 
+		    get { return this.todo_podocsettoexport.FreightCurrencyCode; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.FreightCurrencyCode) return;
+				this.todo_podocsettoexport.FreightCurrencyCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FreightCurrencyCode");
 			}
 		}
      

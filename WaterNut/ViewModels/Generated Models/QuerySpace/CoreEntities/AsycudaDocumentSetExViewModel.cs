@@ -764,6 +764,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _currencyRateFilter;
+        public Double? CurrencyRateFilter
+        {
+            get
+            {
+                return _currencyRateFilter;
+            }
+            set
+            {
+                _currencyRateFilter = value;
+				NotifyPropertyChanged(x => CurrencyRateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _freightCurrencyRateFilter;
+        public Double? FreightCurrencyRateFilter
+        {
+            get
+            {
+                return _freightCurrencyRateFilter;
+            }
+            set
+            {
+                _freightCurrencyRateFilter = value;
+				NotifyPropertyChanged(x => FreightCurrencyRateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -908,7 +944,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("QtyLicensesRequired == {0}",  QtyLicensesRequiredFilter.ToString()));				 
 
 					if(EntryPackagesFilter.HasValue)
-						res.Append(" && " + string.Format("EntryPackages == {0}",  EntryPackagesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("EntryPackages == {0}",  EntryPackagesFilter.ToString()));				 
+
+					if(CurrencyRateFilter.HasValue)
+						res.Append(" && " + string.Format("CurrencyRate == {0}",  CurrencyRateFilter.ToString()));				 
+
+					if(FreightCurrencyRateFilter.HasValue)
+						res.Append(" && " + string.Format("FreightCurrencyRate == {0}",  FreightCurrencyRateFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1009,7 +1051,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     QtyLicensesRequired = x.QtyLicensesRequired ,
                     
  
-                    EntryPackages = x.EntryPackages 
+                    EntryPackages = x.EntryPackages ,
+                    
+ 
+                    CurrencyRate = x.CurrencyRate ,
+                    
+ 
+                    FreightCurrencyRate = x.FreightCurrencyRate 
                     
                 }).ToList()
             };
@@ -1101,6 +1149,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> EntryPackages { get; set; } 
+                    
+ 
+                    public double CurrencyRate { get; set; } 
+                    
+ 
+                    public double FreightCurrencyRate { get; set; } 
                     
         }
 

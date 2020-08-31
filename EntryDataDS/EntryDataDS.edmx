@@ -79,7 +79,6 @@
           <Property Name="PONumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
-          <Property Name="WarehouseNo" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryData_Sales">
           <Key>
@@ -164,6 +163,9 @@
           <Property Name="MergeEmails" Type="bit" Nullable="false" />
           <Property Name="CopyEntryData" Type="bit" Nullable="false" />
           <Property Name="ParentFileTypeId" Type="int" />
+          <Property Name="OverwriteFiles" Type="bit" />
+          <Property Name="HasFiles" Type="bit" />
+          <Property Name="OldFileTypeId" Type="int" />
         </EntityType>
         <EntityType Name="InventoryItems">
           <Key>
@@ -208,6 +210,7 @@
         <EntityType Name="Suppliers">
           <Key>
             <PropertyRef Name="SupplierCode" />
+            <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="SupplierName" Type="nvarchar" MaxLength="510" />
@@ -217,11 +220,21 @@
           <Property Name="Country" Type="nvarchar" MaxLength="100" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="WarehouseInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="WarehouseNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Packages" Type="int" Nullable="false" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EntryDataDetailsEx">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
             
             
             
@@ -266,24 +279,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EntryDataEx">
           <Key>
             <PropertyRef Name="EntryData_Id" />
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
@@ -308,6 +310,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="TotalDeductions" Type="float" Nullable="false" />
           <Property Name="TotalFreight" Type="float" Nullable="false" />
           <Property Name="Totals" Type="float" Nullable="false" />
+          <Property Name="Packages" Type="int" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -315,8 +318,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataExTotals' does n
         <EntityType Name="EntryDataExTotals">
           <Key>
             <PropertyRef Name="EntryData_Id" />
-            
-            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -328,15 +329,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataExTotals' does n
           <Property Name="LicenseLines" Type="int" />
           <Property Name="QtyLicensesRequired" Type="int" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="Packages" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="InventoryItemsEx">
           <Key>
-            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="InventoryItemId" />
+            
             
             
           </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Category" Type="nvarchar" MaxLength="60" />
@@ -476,9 +480,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <ReferentialConstraint>
             <Principal Role="Suppliers">
               <PropertyRef Name="SupplierCode" />
+              <PropertyRef Name="ApplicationSettingsId" />
             </Principal>
             <Dependent Role="EntryData">
               <PropertyRef Name="SupplierCode" />
+              <PropertyRef Name="ApplicationSettingsId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -564,6 +570,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_WarehouseInfo_EntryData_PurchaseOrders">
+          <End Role="EntryData_PurchaseOrders" Type="Self.EntryData_PurchaseOrders" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="WarehouseInfo" Type="Self.WarehouseInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EntryData_PurchaseOrders">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="WarehouseInfo">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="AsycudaDocumentEntryData" EntityType="Self.AsycudaDocumentEntryData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AsycudaDocumentSetEntryData" EntityType="Self.AsycudaDocumentSetEntryData" Schema="dbo" store:Type="Tables" />
@@ -583,6 +603,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="InventorySources" EntityType="Self.InventorySources" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WarehouseInfo" EntityType="Self.WarehouseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [EntryDataDetailsEx].[EntryDataDetailsId] AS [EntryDataDetailsId], 
@@ -617,7 +638,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
     [EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
     [EntryDataDetailsEx].[EmailId] AS [EmailId], 
     [EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
-    [EntryDataDetailsEx].[Name] AS [Name]
+    [EntryDataDetailsEx].[Name] AS [Name], 
+    [EntryDataDetailsEx].[InventoryItemId] AS [InventoryItemId]
     FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="EntryDataEx" EntityType="Self.EntryDataEx" store:Type="Views" store:Schema="dbo">
@@ -645,6 +667,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
     [EntryDataEx].[TotalDeductions] AS [TotalDeductions], 
     [EntryDataEx].[TotalFreight] AS [TotalFreight], 
     [EntryDataEx].[Totals] AS [Totals], 
+    [EntryDataEx].[Packages] AS [Packages], 
     [EntryDataEx].[SourceFile] AS [SourceFile]
     FROM [dbo].[EntryDataEx] AS [EntryDataEx]</DefiningQuery>
           </EntitySet>
@@ -659,11 +682,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
     [EntryDataExTotals].[ClassifiedLines] AS [ClassifiedLines], 
     [EntryDataExTotals].[LicenseLines] AS [LicenseLines], 
     [EntryDataExTotals].[QtyLicensesRequired] AS [QtyLicensesRequired], 
-    [EntryDataExTotals].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId]
+    [EntryDataExTotals].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+    [EntryDataExTotals].[Packages] AS [Packages]
     FROM [dbo].[EntryDataExTotals] AS [EntryDataExTotals]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+    [InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
     [InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
     [InventoryItemsEx].[Description] AS [Description], 
     [InventoryItemsEx].[Category] AS [Category], 
@@ -738,6 +763,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="InventorySources" EntitySet="InventorySources" />
             <End Role="InventoryItemSource" EntitySet="InventoryItemSource" />
           </AssociationSet>
+          <AssociationSet Name="FK_WarehouseInfo_EntryData_PurchaseOrders" Association="Self.FK_WarehouseInfo_EntryData_PurchaseOrders">
+            <End Role="EntryData_PurchaseOrders" EntitySet="EntryData_PurchaseOrders" />
+            <End Role="WarehouseInfo" EntitySet="WarehouseInfo" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -786,10 +815,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItems_NonStock" EntitySet="InventoryItems_NonStock" />
           </AssociationSet>
-          <AssociationSet Name="FK_EntryData_Suppliers" Association="WaterNutDBModel.FK_EntryData_Suppliers">
-            <End Role="Suppliers" EntitySet="Suppliers" />
-            <End Role="EntryData" EntitySet="EntryData" />
-          </AssociationSet>
           <EntitySet Name="EntryDataExTotals" EntityType="WaterNutDBModel.EntryDataExTotals" />
           <AssociationSet Name="EntryDataEntryDataExTotals" Association="WaterNutDBModel.EntryDataEntryDataExTotals">
             <End Role="EntryData" EntitySet="EntryData" />
@@ -824,6 +849,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="InventoryItemSource" EntitySet="InventoryItemSourceSet" />
           </AssociationSet>
           <EntitySet Name="EntryDataFiles" EntityType="WaterNutDBModel.EntryDataFiles" />
+          <EntitySet Name="WarehouseInfo" EntityType="WaterNutDBModel.WarehouseInfo" />
+          <AssociationSet Name="FK_WarehouseInfo_EntryData_PurchaseOrders" Association="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders">
+            <End Role="PurchaseOrders" EntitySet="EntryData" />
+            <End Role="WarehouseInfo" EntitySet="WarehouseInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EntryData_Suppliers" Association="WaterNutDBModel.FK_EntryData_Suppliers">
+            <End Role="Suppliers" EntitySet="Suppliers" />
+            <End Role="EntryData" EntitySet="EntryData" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -849,7 +883,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="FileTypeId" Type="Int32" />
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_EntryData_FileTypes" FromRole="EntryData" ToRole="FileTypes" />
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Suppliers" Relationship="WaterNutDBModel.FK_EntryData_Suppliers" FromRole="EntryData" ToRole="Suppliers" />
           <Property Name="InvoiceTotal" Type="Double" />
           <Property Name="TotalOtherCost" Type="Double" />
           <Property Name="TotalInsurance" Type="Double" />
@@ -860,6 +893,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Packages" Type="Int32" />
+          <NavigationProperty Name="Suppliers" Relationship="WaterNutDBModel.FK_EntryData_Suppliers" FromRole="EntryData" ToRole="Suppliers" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="OpeningStock" BaseType="WaterNutDBModel.EntryData">
@@ -868,7 +902,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="PurchaseOrders" BaseType="WaterNutDBModel.EntryData">
           <Property Name="PONumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="WarehouseNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="WarehouseInfo" Relationship="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders" FromRole="PurchaseOrders" ToRole="WarehouseInfo" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -924,7 +958,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         </Association>
         <EntityType Name="InventoryItemsEx">
           <Key>
-            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="InventoryItemId" />
           </Key>
           <Property Type="String" Name="ItemNumber" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true"></Property>
           <Property Type="String" Name="Description" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true"></Property>
@@ -934,17 +968,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="SuppUnitCode2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="SuppQty" Type="Double" />
           <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="InventoryItemsExEntryDataDetails">
           <End Type="WaterNutDBModel.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="InventoryItemsEx">
-              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="InventoryItemId" />
             </Principal>
             <Dependent Role="EntryDataDetails">
-              <PropertyRef Name="ItemNumber" />
+              <PropertyRef Name="InventoryItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -986,6 +1021,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -1055,6 +1091,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="Suppliers">
           <Key>
             <PropertyRef Name="SupplierCode" />
+            <PropertyRef Name="ApplicationSettingsId" />
           </Key>
           <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="SupplierName" Type="String" MaxLength="510" FixedLength="false" Unicode="true" />
@@ -1062,8 +1099,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="City" Type="String" MaxLength="38" FixedLength="false" Unicode="true" />
           <Property Name="Country" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="EntryData" Relationship="WaterNutDBModel.FK_EntryData_Suppliers" FromRole="Suppliers" ToRole="EntryData" />
           <Property Name="CountryCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EntryData" Relationship="WaterNutDBModel.FK_EntryData_Suppliers" FromRole="Suppliers" ToRole="EntryData" />
         </EntityType>
         <EntityType Name="Adjustments" BaseType="WaterNutDBModel.EntryData">
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1088,6 +1125,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="ParentFileTypeId" Type="Int32" />
           <NavigationProperty Name="FileTypes1" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes" FromRole="FileTypes" ToRole="FileTypes1" />
           <NavigationProperty Name="FileTypes2" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes" FromRole="FileTypes1" ToRole="FileTypes" />
+          <Property Name="OverwriteFiles" Type="Boolean" />
+          <Property Name="HasFiles" Type="Boolean" />
+          <Property Name="OldFileTypeId" Type="Int32" />
         </EntityType>
         <Association Name="FK_EntryData_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
@@ -1137,18 +1177,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_EntryData_Suppliers">
-          <End Type="WaterNutDBModel.Suppliers" Role="Suppliers" Multiplicity="0..1" />
-          <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Suppliers">
-              <PropertyRef Name="SupplierCode" />
-            </Principal>
-            <Dependent Role="EntryData">
-              <PropertyRef Name="SupplierCode" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="EntryDataExTotals">
           <Key>
             <PropertyRef Name="EntryData_Id" />
@@ -1164,6 +1192,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="QtyLicensesRequired" Type="Int32" />
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="Packages" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="EntryDataEntryDataExTotals">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1" />
@@ -1206,6 +1235,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Totals" Type="Double" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Packages" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="EntryDataEntryDataEx">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1" />
@@ -1339,6 +1369,44 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="WarehouseInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="WarehouseNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="EntryData_PurchaseOrders" Relationship="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders" FromRole="WarehouseInfo" ToRole="PurchaseOrders" />
+          <Property Name="Packages" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_WarehouseInfo_EntryData_PurchaseOrders">
+          <End Type="WaterNutDBModel.PurchaseOrders" Role="PurchaseOrders" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.WarehouseInfo" Role="WarehouseInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PurchaseOrders">
+              <PropertyRef Name="EntryData_Id" />
+            </Principal>
+            <Dependent Role="WarehouseInfo">
+              <PropertyRef Name="EntryData_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_EntryData_Suppliers">
+          <End Type="WaterNutDBModel.Suppliers" Role="Suppliers" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Suppliers">
+              <PropertyRef Name="SupplierCode" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Principal>
+            <Dependent Role="EntryData">
+              <PropertyRef Name="SupplierCode" />
+              <PropertyRef Name="ApplicationSettingsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1383,7 +1451,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.PurchaseOrders)">
               <MappingFragment StoreEntitySet="EntryData_PurchaseOrders">
-                <ScalarProperty Name="WarehouseNo" ColumnName="WarehouseNo" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
                 <ScalarProperty Name="PONumber" ColumnName="PONumber" />
@@ -1439,6 +1506,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="InventoryItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemsEx">
               <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
                 <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
@@ -1453,6 +1521,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
@@ -1531,6 +1600,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
+                <ScalarProperty Name="HasFiles" ColumnName="HasFiles" />
+                <ScalarProperty Name="OverwriteFiles" ColumnName="OverwriteFiles" />
                 <ScalarProperty Name="ParentFileTypeId" ColumnName="ParentFileTypeId" />
                 <ScalarProperty Name="CopyEntryData" ColumnName="CopyEntryData" />
                 <ScalarProperty Name="MergeEmails" ColumnName="MergeEmails" />
@@ -1570,6 +1642,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataExTotals">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataExTotals">
               <MappingFragment StoreEntitySet="EntryDataExTotals">
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
                 <ScalarProperty Name="QtyLicensesRequired" ColumnName="QtyLicensesRequired" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
@@ -1586,6 +1659,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataEx">
               <MappingFragment StoreEntitySet="EntryDataEx">
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Totals" ColumnName="Totals" />
@@ -1661,6 +1735,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
                 <ScalarProperty Name="SourceRow" ColumnName="SourceRow" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WarehouseInfo">
+            <EntityTypeMapping TypeName="WaterNutDBModel.WarehouseInfo">
+              <MappingFragment StoreEntitySet="WarehouseInfo">
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
+                <ScalarProperty Name="WarehouseNo" ColumnName="WarehouseNo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

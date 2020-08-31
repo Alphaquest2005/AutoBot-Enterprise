@@ -117,6 +117,11 @@ namespace CoreEntities.Client.Services
             return  await Channel.GetLicenceSummaryByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<LicenceSummary>> GetLicenceSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            return  await Channel.GetLicenceSummaryByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);

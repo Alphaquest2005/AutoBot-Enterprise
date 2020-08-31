@@ -32,5 +32,11 @@ namespace CoreEntities
         public Nullable<double> TotalFreight { get; set; }
         public Nullable<int> ClassifiedLines { get; set; }
         public Nullable<int> TotalLines { get; set; }
+        public Nullable<int> TotalPackages { get; set; }
+        public Nullable<double> TotalWeight { get; set; }
+        public Nullable<int> EntryPackages { get; set; }
+        public string FreightCurrencyCode { get; set; }
+        public double CurrencyRate { get; set; }
+        public double FreightCurrencyRate { get; set; }
     }
 }

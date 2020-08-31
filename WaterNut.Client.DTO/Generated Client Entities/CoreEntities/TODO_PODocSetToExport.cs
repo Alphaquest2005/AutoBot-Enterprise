@@ -294,6 +294,45 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _TotalLines;
 
+        [DataMember]
+        public Nullable<int> EntryPackages
+		{ 
+		    get { return _EntryPackages; }
+			set
+			{
+			    if (value == _EntryPackages) return;
+				_EntryPackages = value;
+				NotifyPropertyChanged();//m => this.EntryPackages
+			}
+		}
+        private Nullable<int> _EntryPackages;
+
+        [DataMember]
+        public Nullable<double> TotalWeight
+		{ 
+		    get { return _TotalWeight; }
+			set
+			{
+			    if (value == _TotalWeight) return;
+				_TotalWeight = value;
+				NotifyPropertyChanged();//m => this.TotalWeight
+			}
+		}
+        private Nullable<double> _TotalWeight;
+
+        [DataMember]
+        public string FreightCurrencyCode
+		{ 
+		    get { return _FreightCurrencyCode; }
+			set
+			{
+			    if (value == _FreightCurrencyCode) return;
+				_FreightCurrencyCode = value;
+				NotifyPropertyChanged();//m => this.FreightCurrencyCode
+			}
+		}
+        private string _FreightCurrencyCode;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

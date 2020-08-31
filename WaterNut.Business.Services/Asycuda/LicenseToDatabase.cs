@@ -264,6 +264,7 @@ namespace WaterNut.DataSpace.Asycuda
                 SourceFile = file,
                 xLIC_General_segment = new xLIC_General_segment(true) { TrackingState = TrackingState.Added },
                 xLIC_Lic_item_segment = new List<xLIC_Lic_item_segment>(),
+                ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                 TrackingState = TrackingState.Added
             };
 
@@ -321,7 +322,7 @@ namespace WaterNut.DataSpace.Asycuda
                 AttachLicenseToDocSet(docSet, fileInfo, "LIC");
                 //var emailres = new FileInfo(Path.Combine(fileInfo.DirectoryName, "LICResults.txt"));
                 var results = new FileInfo(Path.Combine(fileInfo.DirectoryName, "LIC-Results.txt"));
-                if(File.Exists(results.FullName)) File.Delete(results.FullName);
+               // if(File.Exists(results.FullName)) File.Delete(results.FullName);
                 var instructions = Path.Combine(fileInfo.DirectoryName, "LIC-Instructions.txt");
                 File.AppendAllText(instructions, $"File\t{fileInfo.FullName}\r\n");
                 foreach (var itm in invoices)

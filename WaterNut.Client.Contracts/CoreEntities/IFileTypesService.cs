@@ -91,6 +91,9 @@ namespace CoreEntities.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<FileTypes>> GetFileTypesByParentFileTypeId(string ParentFileTypeId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<FileTypes>> GetFileTypesByOldFileTypeId(string OldFileTypeId, List<string> includesLst = null);
+        
   		
     }
 }

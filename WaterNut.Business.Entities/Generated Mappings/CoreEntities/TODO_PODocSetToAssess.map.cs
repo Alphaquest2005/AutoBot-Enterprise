@@ -16,7 +16,7 @@
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Country_of_origin_code).HasColumnName("Country_of_origin_code").HasMaxLength(3);
-              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").HasMaxLength(3);
+              this.Property(t => t.Currency_Code).HasColumnName("Currency_Code").IsRequired().HasMaxLength(3);
               this.Property(t => t.Manifest_Number).HasColumnName("Manifest_Number").HasMaxLength(50);
               this.Property(t => t.BLNumber).HasColumnName("BLNumber").HasMaxLength(50);
               this.Property(t => t.Type_of_declaration).HasColumnName("Type_of_declaration").HasMaxLength(10);
@@ -32,8 +32,13 @@
               this.Property(t => t.HasC71).HasColumnName("HasC71");
               this.Property(t => t.HasLicense).HasColumnName("HasLicense");
               this.Property(t => t.TotalFreight).HasColumnName("TotalFreight");
-              this.Property(t => t.classifiedlines).HasColumnName("classifiedlines");
-              this.Property(t => t.totallines).HasColumnName("totallines");
+              this.Property(t => t.ClassifiedLines).HasColumnName("ClassifiedLines");
+              this.Property(t => t.TotalLines).HasColumnName("TotalLines");
+              this.Property(t => t.GeneratedLines).HasColumnName("GeneratedLines");
+              this.Property(t => t.DocumentAttachments).HasColumnName("DocumentAttachments");
+              this.Property(t => t.AttachedDocuments).HasColumnName("AttachedDocuments");
+              this.Property(t => t.EntryDataInvoiceTotal).HasColumnName("EntryDataInvoiceTotal");
+              this.Property(t => t.GeneratedFreight).HasColumnName("GeneratedFreight");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

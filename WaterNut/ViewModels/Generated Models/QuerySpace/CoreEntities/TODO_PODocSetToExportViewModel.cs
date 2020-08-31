@@ -511,6 +511,60 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _entryPackagesFilter;
+        public Int32? EntryPackagesFilter
+        {
+            get
+            {
+                return _entryPackagesFilter;
+            }
+            set
+            {
+                _entryPackagesFilter = value;
+				NotifyPropertyChanged(x => EntryPackagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalWeightFilter;
+        public Double? TotalWeightFilter
+        {
+            get
+            {
+                return _totalWeightFilter;
+            }
+            set
+            {
+                _totalWeightFilter = value;
+				NotifyPropertyChanged(x => TotalWeightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _freightCurrencyCodeFilter;
+        public string FreightCurrencyCodeFilter
+        {
+            get
+            {
+                return _freightCurrencyCodeFilter;
+            }
+            set
+            {
+                _freightCurrencyCodeFilter = value;
+				NotifyPropertyChanged(x => FreightCurrencyCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -603,7 +657,17 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
 
 					if(TotalLinesFilter.HasValue)
-						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));				 
+
+					if(EntryPackagesFilter.HasValue)
+						res.Append(" && " + string.Format("EntryPackages == {0}",  EntryPackagesFilter.ToString()));				 
+
+					if(TotalWeightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalWeight == {0}",  TotalWeightFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(FreightCurrencyCodeFilter) == false)
+						res.Append(" && " + string.Format("FreightCurrencyCode.Contains(\"{0}\")",  FreightCurrencyCodeFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -680,7 +744,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ClassifiedLines = x.ClassifiedLines ,
                     
  
-                    TotalLines = x.TotalLines 
+                    TotalLines = x.TotalLines ,
+                    
+ 
+                    EntryPackages = x.EntryPackages ,
+                    
+ 
+                    TotalWeight = x.TotalWeight ,
+                    
+ 
+                    FreightCurrencyCode = x.FreightCurrencyCode 
                     
                 }).ToList()
             };
@@ -748,6 +821,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> TotalLines { get; set; } 
+                    
+ 
+                    public Nullable<int> EntryPackages { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalWeight { get; set; } 
+                    
+ 
+                    public string FreightCurrencyCode { get; set; } 
                     
         }
 

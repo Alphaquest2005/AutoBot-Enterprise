@@ -105,7 +105,10 @@ namespace LicenseDS.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<Registered>> GetRegisteredByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  
 
 
 

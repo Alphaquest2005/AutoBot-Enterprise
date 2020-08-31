@@ -133,6 +133,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Invoices>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<Invoices>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Invoices>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -257,12 +259,6 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Suppliers":
-                                return
-                                    await
-                                        GetWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "EntryDataTotals":
                                 return
                                     await
@@ -279,6 +275,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         GetWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Suppliers":
+                                return
+                                    await
+                                        GetWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -334,6 +336,7 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -408,6 +411,7 @@ namespace EntryDataDS.Business.Services
                         {
                             using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -643,6 +647,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<Invoices>)dbContext.Set<Invoices>(); 
                     if (expLst.FirstOrDefault() == "All")
@@ -718,6 +723,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<Invoices>();
                     if (exp == "All")
                     {
@@ -764,6 +770,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.Set<Invoices>()
@@ -787,9 +794,6 @@ namespace EntryDataDS.Business.Services
                             case "FileTypes":
                                 return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Suppliers":
-                                return await CountWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataTotals":
                                 return await CountWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -798,6 +802,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "DocumentType":
                                 return await CountWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Suppliers":
+                                return await CountWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -885,6 +892,7 @@ namespace EntryDataDS.Business.Services
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<Invoices>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -928,12 +936,6 @@ namespace EntryDataDS.Business.Services
                                         LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "Suppliers":
-                                return
-                                    await
-                                        LoadRangeWhere<Suppliers>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
                             case "EntryDataTotals":
                                 return
                                     await
@@ -950,6 +952,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<EDDocumentTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "Suppliers":
+                                return
+                                    await
+                                        LoadRangeWhere<Suppliers>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1279,6 +1287,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1314,6 +1323,7 @@ namespace EntryDataDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.Set<Invoices>().Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1337,9 +1347,6 @@ namespace EntryDataDS.Business.Services
                             case "FileTypes":
                                 return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Suppliers":
-                                return await SumWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
                             case "EntryDataTotals":
                                 return await SumWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -1348,6 +1355,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "DocumentType":
                                 return await SumWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "Suppliers":
+                                return await SumWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
@@ -1432,6 +1442,7 @@ namespace EntryDataDS.Business.Services
              {
                  using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

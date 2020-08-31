@@ -22,6 +22,19 @@ namespace CoreEntities.Client.DTO
     public partial class TODO_SubmitPOInfo : BaseEntity<TODO_SubmitPOInfo>, ITrackable, IEquatable<TODO_SubmitPOInfo>
     {
         [DataMember]
+        public int Id
+		{ 
+		    get { return _Id; }
+			set
+			{
+			    if (value == _Id) return;
+				_Id = value;
+				NotifyPropertyChanged();//m => this.Id
+			}
+		}
+        private int _Id;
+
+        [DataMember]
         public string Number
 		{ 
 		    get { return _Number; }

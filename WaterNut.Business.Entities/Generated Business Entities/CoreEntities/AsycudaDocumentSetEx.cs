@@ -495,6 +495,36 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _entrypackages;
         [DataMember]
+        public double CurrencyRate 
+        {
+            get
+            {
+                return _currencyrate;
+            }
+            set
+            {
+                _currencyrate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _currencyrate;
+        [DataMember]
+        public double FreightCurrencyRate 
+        {
+            get
+            {
+                return _freightcurrencyrate;
+            }
+            set
+            {
+                _freightcurrencyrate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _freightcurrencyrate;
+        [DataMember]
         public List<AsycudaDocument> AsycudaDocuments { get; set; }
         [DataMember]
         public List<LicenceSummary> LicenceSummary { get; set; }

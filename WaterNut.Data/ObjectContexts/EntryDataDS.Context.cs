@@ -81,6 +81,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<EntryDataFiles> EntryDataFiles { get; set; }
      
+        public DbSet<WarehouseInfo> WarehouseInfo { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -118,6 +120,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new InventoryItemSourceMap());
          
             modelBuilder.Configurations.Add(new EntryDataFilesMap());
+         
+            modelBuilder.Configurations.Add(new WarehouseInfoMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

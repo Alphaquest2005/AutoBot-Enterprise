@@ -230,6 +230,36 @@ namespace LicenseDS.Business.Entities
             }
         }
         Nullable<double> _totalcif;
+        [DataMember]
+        public Nullable<int> QtyLicensesRequired 
+        {
+            get
+            {
+                return _qtylicensesrequired;
+            }
+            set
+            {
+                _qtylicensesrequired = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _qtylicensesrequired;
+        [DataMember]
+        public Nullable<int> HasLicense 
+        {
+            get
+            {
+                return _haslicense;
+            }
+            set
+            {
+                _haslicense = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _haslicense;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

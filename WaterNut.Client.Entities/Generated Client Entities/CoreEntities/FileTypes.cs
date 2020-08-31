@@ -276,6 +276,21 @@ public Nullable<bool> HasFiles
 		}
      
 
+       
+       
+public Nullable<int> OldFileTypeId
+		{ 
+		    get { return this.filetypes.OldFileTypeId; }
+			set
+			{
+			    if (value == this.filetypes.OldFileTypeId) return;
+				this.filetypes.OldFileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("OldFileTypeId");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

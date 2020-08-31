@@ -16,6 +16,7 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(100);
               this.Property(t => t.TestMode).HasColumnName("TestMode");
+              this.Property(t => t.IsDataSpecific).HasColumnName("IsDataSpecific");
               this.HasMany(t => t.FileTypeActions).WithRequired(t => (Actions)t.Actions);
               this.HasMany(t => t.SessionActions).WithRequired(t => (Actions)t.Actions);
               this.HasMany(t => t.ActionDocSetLogs).WithRequired(t => (Actions)t.Actions);

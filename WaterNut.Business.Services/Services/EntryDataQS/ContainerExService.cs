@@ -133,6 +133,7 @@ namespace EntryDataQS.Business.Services
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ContainerEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace EntryDataQS.Business.Services
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ContainerEx>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace EntryDataQS.Business.Services
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ContainerEx>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -279,6 +281,7 @@ namespace EntryDataQS.Business.Services
                         {
                             using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -353,6 +356,7 @@ namespace EntryDataQS.Business.Services
                         {
                             using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -588,6 +592,7 @@ namespace EntryDataQS.Business.Services
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<ContainerEx>)dbContext.ContainerExes; 
                     if (expLst.FirstOrDefault() == "All")
@@ -663,6 +668,7 @@ namespace EntryDataQS.Business.Services
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ContainerEx>();
                     if (exp == "All")
                     {
@@ -709,6 +715,7 @@ namespace EntryDataQS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.ContainerExes
@@ -800,6 +807,7 @@ namespace EntryDataQS.Business.Services
             {
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ContainerEx>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1078,6 +1086,7 @@ namespace EntryDataQS.Business.Services
              {
                  using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1113,6 +1122,7 @@ namespace EntryDataQS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.ContainerExes.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1201,6 +1211,7 @@ namespace EntryDataQS.Business.Services
              {
                  using (var dbContext = new EntryDataQSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

@@ -151,6 +151,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _AsycudaDocumentSetId;
 
+        [DataMember]
+        public double CurrencyRate
+		{ 
+		    get { return _CurrencyRate; }
+			set
+			{
+			    if (value == _CurrencyRate) return;
+				_CurrencyRate = value;
+				NotifyPropertyChanged();//m => this.CurrencyRate
+			}
+		}
+        private double _CurrencyRate;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

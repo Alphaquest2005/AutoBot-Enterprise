@@ -267,6 +267,7 @@
     <Compile Include="Contracts\CoreEntities\ITODO_LicenseToXMLService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_LICToCreateService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToAssessErrorsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToAssessService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToExportService.cs" />
     <Compile Include="Contracts\CoreEntities\IToDo_POToXMLService.cs" />
@@ -277,6 +278,7 @@
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitPOInfoService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
@@ -403,6 +405,7 @@
     <Compile Include="Contracts\EntryDataDS\IPurchaseOrdersService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISalesService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IWarehouseInfoService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentSetEntryDataDetailService.cs" />
@@ -804,6 +807,7 @@
     <Compile Include="Services\CoreEntities\TODO_LicenseToXMLService.cs" />
     <Compile Include="Services\CoreEntities\TODO_LICToCreateService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_PODocSetToAssessErrorsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetToAssessService.cs" />
     <Compile Include="Services\CoreEntities\TODO_PODocSetToExportService.cs" />
     <Compile Include="Services\CoreEntities\ToDo_POToXMLService.cs" />
@@ -814,6 +818,7 @@
     <Compile Include="Services\CoreEntities\TODO_SubmitInadequatePackagesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitIncompleteEntryDataService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitIncompleteSupplierInfoService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitMissingInvoicePDFsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitPOInfoService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs" />
@@ -940,6 +945,7 @@
     <Compile Include="Services\EntryDataDS\PurchaseOrdersService.cs" />
     <Compile Include="Services\EntryDataDS\SalesService.cs" />
     <Compile Include="Services\EntryDataDS\SuppliersService.cs" />
+    <Compile Include="Services\EntryDataDS\WarehouseInfoService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentItemEntryDataDetailService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentSetEntryDataDetailService.cs" />

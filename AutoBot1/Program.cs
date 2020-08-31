@@ -31,6 +31,8 @@ namespace AutoBot
                 Console.WriteLine($"{beforeImport}");
                 using (var ctx = new CoreEntitiesContext() { })
                 {
+                    //ctx.Configuration.LazyLoadingEnabled = true;
+                    //ctx.Configuration.ProxyCreationEnabled = true;
                     var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
                         .Include("FileTypes.FileTypeContacts.Contacts")
@@ -44,11 +46,13 @@ namespace AutoBot
                         .Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
                         .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
                         .Include("FileTypes.ChildFileTypes")
-                        .Include("FileTypes.FileTypeMappings").ToList();
+                        .Include("FileTypes.FileTypeMappings")
+                        .ToList();
 
                     foreach (var appSetting in applicationSettings)
                     {
-                        appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
+                        Console.WriteLine($"{appSetting.SoftwareName} Emails Processed");
+                        if(appSetting.DataFolder != null) appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
                         if(appSetting.TestMode == null) continue;
                         // set BaseDataModel CurrentAppSettings
                         BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
@@ -72,43 +76,53 @@ namespace AutoBot
 
                         }
 
-                        //
-                        Utils.Client = new EmailDownloader.Client
+                        if (!string.IsNullOrEmpty(appSetting.Email))
                         {
-                            CompanyName = appSetting.CompanyName,
-                            DataFolder = appSetting.DataFolder,
-                            Password = appSetting.EmailPassword,
-                            Email = appSetting.Email,
-                            EmailMappings = appSetting.EmailMapping.ToList()
-                        };
-
-                        var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client,
-                            appSetting.FileTypes.Select(x => x.FilePattern).ToList())).Result;
-                        // get downloads
-                        Console.WriteLine($"{msgLst.Count} Emails Processed");
-                        foreach (var msg in msgLst)
-                        {
-                            var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1, msg.Key.Item2.EmailId.ToString());
-
-                            if (!msg.Key.Item2.EmailMapping.EmailFileTypes
-                                .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
-                                    .Any(z => msg.Value.Contains(z.Name)
-                                              && Regex.IsMatch(z.FullName, x.FileTypes.FilePattern,
-                                                  RegexOptions.IgnoreCase)
-                                              && z.LastWriteTime >= beforeImport))) continue;
-
-
-
-                            
-                            foreach (var emailFileType in msg.Key.Item2.EmailMapping.EmailFileTypes.OrderBy(x => x.FileTypes.Type == "Info"))
+                            //
+                            Utils.Client = new EmailDownloader.Client
                             {
+                                CompanyName = appSetting.CompanyName,
+                                DataFolder = appSetting.DataFolder,
+                                Password = appSetting.EmailPassword,
+                                Email = appSetting.Email,
+                                EmailMappings = appSetting.EmailMapping.ToList()
+                            };
+
+                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client,
+                                    appSetting.FileTypes.Select(x => x.FilePattern).ToList())).Result.OrderBy(x =>
+                                    x.Key.Item2.EmailMapping.EmailFileTypes.Sum(z => z.FileTypes.FileTypeActions.Count))
+                                .ToList();
+                            // get downloads
+                            Console.WriteLine($"{msgLst.Count()} Emails Processed");
+
+                            var processedFileTypes = new List<Tuple<FileTypes, FileInfo[]>>();
+
+                            foreach (var msg in msgLst)
+                            {
+                                var desFolder = Path.Combine(appSetting.DataFolder, msg.Key.Item1,
+                                    msg.Key.Item2.EmailId.ToString());
+
+                                if (!msg.Key.Item2.EmailMapping.EmailFileTypes
+                                    .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
+                                                  .Any(z => msg.Value.Contains(z.Name)
+                                                            && Regex.IsMatch(z.FullName, x.FileTypes.FilePattern,
+                                                                RegexOptions.IgnoreCase)
+                                                            && z.LastWriteTime >= beforeImport))) continue;
 
 
 
 
-                                var fileType = emailFileType.FileTypes;
-                                fileType.Data.Clear(); // because i am using emailmapping from email, its not a lookup
-                                fileType.EmailInfoMappings = msg.Key.Item2.EmailMapping.EmailInfoMappings;
+                                foreach (var emailFileType in msg.Key.Item2.EmailMapping.EmailFileTypes.OrderBy(x =>
+                                    x.FileTypes.Type == "Info"))
+                                {
+
+
+
+
+                                    var fileType = emailFileType.FileTypes;
+                                    fileType.Data
+                                        .Clear(); // because i am using emailmapping from email, its not a lookup
+                                    fileType.EmailInfoMappings = msg.Key.Item2.EmailMapping.EmailInfoMappings;
 
 
                                     var csvFiles = new DirectoryInfo(desFolder).GetFiles()
@@ -119,7 +133,7 @@ namespace AutoBot
 
                                     fileType.EmailId = msg.Key.Item3;
 
-                                    if (csvFiles.Length == 0 )
+                                    if (csvFiles.Length == 0)
                                     {
                                         if (emailFileType.IsRequired == true) break;
                                         continue;
@@ -127,7 +141,7 @@ namespace AutoBot
 
                                     //todo emailinfomapping
 
-                                   
+
                                     if (fileType.CreateDocumentSet)
                                     {
                                         var docSet =
@@ -138,12 +152,13 @@ namespace AutoBot
                                                         .CurrentApplicationSettings.ApplicationSettingsId);
                                         if (docSet == null)
                                         {
-                                            var cp = BaseDataModel.Instance.Customs_Procedures.First(x => x.CustomsOperationId == (int)CustomsOperations.Warehouse);
+                                            var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
+                                                x.CustomsOperationId == (int) CustomsOperations.Warehouse);
                                             ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
-                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{msg.Key.Item1}',{
-                                                    cp.Document_TypeId
-                                                },{cp.Customs_ProcedureId},0)");
+                                    VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{
+                                                    msg.Key.Item1
+                                                }',{cp.Document_TypeId},{cp.Customs_ProcedureId},0)");
 
                                         }
                                     }
@@ -158,47 +173,43 @@ namespace AutoBot
                                     if (ndocSet != null)
                                     {
                                         fileType.AsycudaDocumentSetId = ndocSet.AsycudaDocumentSetId;
-                                        fileType.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId", fileType.AsycudaDocumentSetId.ToString()));
-                                       // if (fileType.Type == "Info" && !Utils.TrySaveFileInfo(csvFiles,fileType).Any()) continue; // depend on FileActions
-                                        //if (fileType.Type == "Info" )
-                                        //   //Utils.SaveInfo(csvFiles, fileType, msg.Key.Item2.EmailMapping.EmailInfoMappings);
-                                        //else
-                                        //{
+                                        fileType.Data.Add(new KeyValuePair<string, string>("AsycudaDocumentSetId",
+                                            fileType.AsycudaDocumentSetId.ToString()));
 
-                                            
-                                            Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
-                                        //}
+
+                                        Utils.SaveAttachments(csvFiles, fileType, msg.Key.Item2);
+
+
+
                                     }
 
-                                    //else
-                                    //{
-                                    try
-                                    {
-                                        fileType.FileTypeActions.OrderBy(x => x.Id)
-                                            .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
-                                                        (appSetting.AssessIM7 == x.AssessIM7 ||
-                                                         appSetting.AssessEX == x.AssessEX))
-                                            .Where(x => x.Actions.TestMode ==
-                                                        (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ??
-                                                         false))
-                                            .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
-                                            .ForEach(x => { x.Invoke( fileType, csvFiles); });
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                            new[] {"Josephbartholomew@outlook.com"}, $"{e.Message}\r\n{e.StackTrace}",
-                                            Array.Empty<string>());
-                                    }
+                                    ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
 
-                                    //}
+                                    processedFileTypes.Add(new Tuple<FileTypes, FileInfo[]>(fileType, csvFiles));
 
-                                
+
+
+
+
+                                }
                             }
+
+                            var pfg = processedFileTypes
+                                .Where(x => x.Item1.FileTypeActions.Any(z =>
+                                    z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
+                                .GroupBy(x => x.Item1.AsycudaDocumentSetId).ToList();
+
+                            foreach (var docSetId in pfg)
+                            {
+                                var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
+                                foreach (var t in pf)
+                                {
+                                    ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
+                                }
+                            }
+
+
                         }
-
-                      
-
 
                         ctx.SessionActions.OrderBy(x => x.Id)
                             .Include(x => x.Actions)
@@ -267,6 +278,48 @@ namespace AutoBot
 
 
 
+            }
+        }
+        private static void ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        {
+            try
+            {
+                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
+                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
+                                (appSetting.AssessIM7 == x.AssessIM7 ||
+                                 appSetting.AssessEX == x.AssessEX))
+                    .Where(x => x.Actions.TestMode ==
+                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ??
+                                 false))
+                    .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
+                    .ForEach(x => { x.Invoke(fileType, files); });
+            }
+            catch (Exception e)
+            {
+                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                    new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}",
+                    Array.Empty<string>());
+            }
+        }
+        private static void ExecuteNonSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
+        {
+            try
+            {
+                fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == null || x.Actions.IsDataSpecific != true).OrderBy(x => x.Id)
+                    .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
+                                (appSetting.AssessIM7 == x.AssessIM7 ||
+                                 appSetting.AssessEX == x.AssessEX))
+                    .Where(x => x.Actions.TestMode ==
+                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ??
+                                 false))
+                    .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
+                    .ForEach(x => { x.Invoke(fileType, files); });
+            }
+            catch (Exception e)
+            {
+                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                    new[] {"Josephbartholomew@outlook.com"}, $"{e.Message}\r\n{e.StackTrace}",
+                    Array.Empty<string>());
             }
         }
     }

@@ -403,6 +403,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _rateFilter;
+        public Double? RateFilter
+        {
+            get
+            {
+                return _rateFilter;
+            }
+            set
+            {
+                _rateFilter = value;
+				NotifyPropertyChanged(x => RateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -477,7 +495,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("TotalCIF == {0}",  TotalCIFFilter.ToString()));				 
 
 					if(C71TotalFilter.HasValue)
-						res.Append(" && " + string.Format("C71Total == {0}",  C71TotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("C71Total == {0}",  C71TotalFilter.ToString()));				 
+
+					if(RateFilter.HasValue)
+						res.Append(" && " + string.Format("Rate == {0}",  RateFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -536,7 +557,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalCIF = x.TotalCIF ,
                     
  
-                    C71Total = x.C71Total 
+                    C71Total = x.C71Total ,
+                    
+ 
+                    Rate = x.Rate 
                     
                 }).ToList()
             };
@@ -585,7 +609,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> TotalCIF { get; set; } 
                     
  
-                    public Nullable<double> C71Total { get; set; } 
+                    public double C71Total { get; set; } 
+                    
+ 
+                    public double Rate { get; set; } 
                     
         }
 

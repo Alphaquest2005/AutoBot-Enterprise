@@ -133,6 +133,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetail>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentItemEntryDataDetail>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetail>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -304,6 +306,7 @@ namespace AdjustmentQS.Business.Services
                         {
                             using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -378,6 +381,7 @@ namespace AdjustmentQS.Business.Services
                         {
                             using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -613,6 +617,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<AsycudaDocumentItemEntryDataDetail>)dbContext.AsycudaDocumentItemEntryDataDetails; 
                     if (expLst.FirstOrDefault() == "All")
@@ -688,6 +693,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetail>();
                     if (exp == "All")
                     {
@@ -734,6 +740,7 @@ namespace AdjustmentQS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.AsycudaDocumentItemEntryDataDetails
@@ -840,6 +847,7 @@ namespace AdjustmentQS.Business.Services
             {
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AsycudaDocumentItemEntryDataDetail>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1117,6 +1125,7 @@ namespace AdjustmentQS.Business.Services
              {
                  using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1152,6 +1161,7 @@ namespace AdjustmentQS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.AsycudaDocumentItemEntryDataDetails.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1255,6 +1265,7 @@ namespace AdjustmentQS.Business.Services
              {
                  using (var dbContext = new AdjustmentQSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

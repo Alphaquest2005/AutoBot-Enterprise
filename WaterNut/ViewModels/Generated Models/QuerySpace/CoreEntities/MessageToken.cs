@@ -388,6 +388,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_PODocSetToAssessDeleted = "TODO_PODocSetToAssessDeleted";
 			public const string TODO_PODocSetToAssessCreated = "TODO_PODocSetToAssessCreated";
 			public const string TODO_PODocSetToAssessUpdated = "TODO_PODocSetToAssessUpdated";
+			public const string TODO_PODocSetToAssessErrorsFilterExpressionChanged = "TODO_PODocSetToAssessErrorsFilterExpressionChanged";
+			public const string SelectedTODO_PODocSetToAssessErrorsChanged = "SelectedTODO_PODocSetToAssessErrorsChanged";
+            public const string TODO_PODocSetToAssessErrorsChanged = "TODO_PODocSetToAssessErrorsChanged";
+			public const string TODO_PODocSetToAssessErrorsDeleted = "TODO_PODocSetToAssessErrorsDeleted";
+			public const string TODO_PODocSetToAssessErrorsCreated = "TODO_PODocSetToAssessErrorsCreated";
+			public const string TODO_PODocSetToAssessErrorsUpdated = "TODO_PODocSetToAssessErrorsUpdated";
 			public const string TODO_PODocSetToExportFilterExpressionChanged = "TODO_PODocSetToExportFilterExpressionChanged";
 			public const string SelectedTODO_PODocSetToExportChanged = "SelectedTODO_PODocSetToExportChanged";
             public const string TODO_PODocSetToExportChanged = "TODO_PODocSetToExportChanged";
@@ -442,6 +448,12 @@ namespace WaterNut.QuerySpace.CoreEntities
 			public const string TODO_SubmitIncompleteSupplierInfoDeleted = "TODO_SubmitIncompleteSupplierInfoDeleted";
 			public const string TODO_SubmitIncompleteSupplierInfoCreated = "TODO_SubmitIncompleteSupplierInfoCreated";
 			public const string TODO_SubmitIncompleteSupplierInfoUpdated = "TODO_SubmitIncompleteSupplierInfoUpdated";
+			public const string TODO_SubmitMissingInvoicePDFsFilterExpressionChanged = "TODO_SubmitMissingInvoicePDFsFilterExpressionChanged";
+			public const string SelectedTODO_SubmitMissingInvoicePDFsChanged = "SelectedTODO_SubmitMissingInvoicePDFsChanged";
+            public const string TODO_SubmitMissingInvoicePDFsChanged = "TODO_SubmitMissingInvoicePDFsChanged";
+			public const string TODO_SubmitMissingInvoicePDFsDeleted = "TODO_SubmitMissingInvoicePDFsDeleted";
+			public const string TODO_SubmitMissingInvoicePDFsCreated = "TODO_SubmitMissingInvoicePDFsCreated";
+			public const string TODO_SubmitMissingInvoicePDFsUpdated = "TODO_SubmitMissingInvoicePDFsUpdated";
 			public const string TODO_SubmitPOInfoFilterExpressionChanged = "TODO_SubmitPOInfoFilterExpressionChanged";
 			public const string SelectedTODO_SubmitPOInfoChanged = "SelectedTODO_SubmitPOInfoChanged";
             public const string TODO_SubmitPOInfoChanged = "TODO_SubmitPOInfoChanged";
@@ -549,6 +561,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_LICToCreateChanged = "TODO_LICToCreateChanged";
           // public const string TODO_PODocSetChanged = "TODO_PODocSetChanged";
           // public const string TODO_PODocSetToAssessChanged = "TODO_PODocSetToAssessChanged";
+          // public const string TODO_PODocSetToAssessErrorsChanged = "TODO_PODocSetToAssessErrorsChanged";
           // public const string TODO_PODocSetToExportChanged = "TODO_PODocSetToExportChanged";
           // public const string ToDo_POToXMLChanged = "ToDo_POToXMLChanged";
           // public const string TODO_SubmitAllXMLToCustomsChanged = "TODO_SubmitAllXMLToCustomsChanged";
@@ -558,6 +571,7 @@ namespace WaterNut.QuerySpace.CoreEntities
           // public const string TODO_SubmitInadequatePackagesChanged = "TODO_SubmitInadequatePackagesChanged";
           // public const string TODO_SubmitIncompleteEntryDataChanged = "TODO_SubmitIncompleteEntryDataChanged";
           // public const string TODO_SubmitIncompleteSupplierInfoChanged = "TODO_SubmitIncompleteSupplierInfoChanged";
+          // public const string TODO_SubmitMissingInvoicePDFsChanged = "TODO_SubmitMissingInvoicePDFsChanged";
           // public const string TODO_SubmitPOInfoChanged = "TODO_SubmitPOInfoChanged";
           // public const string TODO_SubmitUnclassifiedItemsChanged = "TODO_SubmitUnclassifiedItemsChanged";
           // public const string TODO_SubmitXMLToCustomsChanged = "TODO_SubmitXMLToCustomsChanged";
@@ -694,6 +708,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_PODocSetToAssessChanged = "CurrentTODO_PODocSetToAssessChanged";
    
+           public const string CurrentTODO_PODocSetToAssessErrorsChanged = "CurrentTODO_PODocSetToAssessErrorsChanged";
+   
            public const string CurrentTODO_PODocSetToExportChanged = "CurrentTODO_PODocSetToExportChanged";
    
            public const string CurrentToDo_POToXMLChanged = "CurrentToDo_POToXMLChanged";
@@ -711,6 +727,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_SubmitIncompleteEntryDataChanged = "CurrentTODO_SubmitIncompleteEntryDataChanged";
    
            public const string CurrentTODO_SubmitIncompleteSupplierInfoChanged = "CurrentTODO_SubmitIncompleteSupplierInfoChanged";
+   
+           public const string CurrentTODO_SubmitMissingInvoicePDFsChanged = "CurrentTODO_SubmitMissingInvoicePDFsChanged";
    
            public const string CurrentTODO_SubmitPOInfoChanged = "CurrentTODO_SubmitPOInfoChanged";
    
@@ -854,6 +872,8 @@ namespace WaterNut.QuerySpace.CoreEntities
    
            public const string CurrentTODO_PODocSetToAssessIDChanged = "OnCurrentTODO_PODocSetToAssessIDChanged";
    
+           public const string CurrentTODO_PODocSetToAssessErrorsIDChanged = "OnCurrentTODO_PODocSetToAssessErrorsIDChanged";
+   
            public const string CurrentTODO_PODocSetToExportIDChanged = "OnCurrentTODO_PODocSetToExportIDChanged";
    
            public const string CurrentToDo_POToXMLIDChanged = "OnCurrentToDo_POToXMLIDChanged";
@@ -871,6 +891,8 @@ namespace WaterNut.QuerySpace.CoreEntities
            public const string CurrentTODO_SubmitIncompleteEntryDataIDChanged = "OnCurrentTODO_SubmitIncompleteEntryDataIDChanged";
    
            public const string CurrentTODO_SubmitIncompleteSupplierInfoIDChanged = "OnCurrentTODO_SubmitIncompleteSupplierInfoIDChanged";
+   
+           public const string CurrentTODO_SubmitMissingInvoicePDFsIDChanged = "OnCurrentTODO_SubmitMissingInvoicePDFsIDChanged";
    
            public const string CurrentTODO_SubmitPOInfoIDChanged = "OnCurrentTODO_SubmitPOInfoIDChanged";
    

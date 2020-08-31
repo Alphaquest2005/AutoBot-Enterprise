@@ -54,6 +54,8 @@ namespace CoreEntities
         public string FreightCurrencyCode { get; set; }
         public Nullable<int> QtyLicensesRequired { get; set; }
         public Nullable<int> EntryPackages { get; set; }
+        public double CurrencyRate { get; set; }
+        public double FreightCurrencyRate { get; set; }
     
         public virtual ICollection<AsycudaDocument> AsycudaDocuments { get; set; }
         public virtual ICollection<LicenceSummary> LicenceSummary { get; set; }

@@ -14,6 +14,7 @@ namespace ValuationDS
     
     public partial class TODO_C71ToCreate
     {
+        public int Id { get; set; }
         public int AsycudaDocumentSetId { get; set; }
         public int ApplicationSettingsId { get; set; }
         public string Country_of_origin_code { get; set; }
@@ -29,6 +30,6 @@ namespace ValuationDS
         public Nullable<int> LicenseLines { get; set; }
         public Nullable<double> TotalCIF { get; set; }
         public double C71Total { get; set; }
-        public int Id { get; set; }
+        public double Rate { get; set; }
     }
 }

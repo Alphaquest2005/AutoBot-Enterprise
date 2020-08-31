@@ -89,7 +89,7 @@ public string Country_of_origin_code
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Currency_Code is required")]
        
                 
                 [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]

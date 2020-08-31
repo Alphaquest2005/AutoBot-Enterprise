@@ -92,6 +92,21 @@ public bool TestMode
 		}
      
 
+       
+       
+public Nullable<bool> IsDataSpecific
+		{ 
+		    get { return this.actions.IsDataSpecific; }
+			set
+			{
+			    if (value == this.actions.IsDataSpecific) return;
+				this.actions.IsDataSpecific = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsDataSpecific");
+			}
+		}
+     
+
         ObservableCollection<FileTypeActions> _FileTypeActions = null;
         public  ObservableCollection<FileTypeActions> FileTypeActions
 		{

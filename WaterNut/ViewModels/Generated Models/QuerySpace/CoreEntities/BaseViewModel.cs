@@ -116,6 +116,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LICToCreateIDChanged, OnCurrentTODO_LICToCreateIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetToAssessIDChanged, OnCurrentTODO_PODocSetToAssessIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetToAssessErrorsIDChanged, OnCurrentTODO_PODocSetToAssessErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetToExportIDChanged, OnCurrentTODO_PODocSetToExportIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentToDo_POToXMLIDChanged, OnCurrentToDo_POToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitAllXMLToCustomsIDChanged, OnCurrentTODO_SubmitAllXMLToCustomsIDChanged);
@@ -125,6 +126,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitInadequatePackagesIDChanged, OnCurrentTODO_SubmitInadequatePackagesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataIDChanged, OnCurrentTODO_SubmitIncompleteEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoIDChanged, OnCurrentTODO_SubmitIncompleteSupplierInfoIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitMissingInvoicePDFsIDChanged, OnCurrentTODO_SubmitMissingInvoicePDFsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitPOInfoIDChanged, OnCurrentTODO_SubmitPOInfoIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsIDChanged, OnCurrentTODO_SubmitUnclassifiedItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitXMLToCustomsIDChanged, OnCurrentTODO_SubmitXMLToCustomsIDChanged);
@@ -198,6 +200,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_LICToCreate>(MessageToken.CurrentTODO_LICToCreateChanged, OnCurrentTODO_LICToCreateChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
                         RegisterToReceiveMessages<TODO_PODocSetToAssess>(MessageToken.CurrentTODO_PODocSetToAssessChanged, OnCurrentTODO_PODocSetToAssessChanged);
+                        RegisterToReceiveMessages<TODO_PODocSetToAssessErrors>(MessageToken.CurrentTODO_PODocSetToAssessErrorsChanged, OnCurrentTODO_PODocSetToAssessErrorsChanged);
                         RegisterToReceiveMessages<TODO_PODocSetToExport>(MessageToken.CurrentTODO_PODocSetToExportChanged, OnCurrentTODO_PODocSetToExportChanged);
                         RegisterToReceiveMessages<ToDo_POToXML>(MessageToken.CurrentToDo_POToXMLChanged, OnCurrentToDo_POToXMLChanged);
                         RegisterToReceiveMessages<TODO_SubmitAllXMLToCustoms>(MessageToken.CurrentTODO_SubmitAllXMLToCustomsChanged, OnCurrentTODO_SubmitAllXMLToCustomsChanged);
@@ -207,6 +210,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_SubmitInadequatePackages>(MessageToken.CurrentTODO_SubmitInadequatePackagesChanged, OnCurrentTODO_SubmitInadequatePackagesChanged);
                         RegisterToReceiveMessages<TODO_SubmitIncompleteEntryData>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataChanged, OnCurrentTODO_SubmitIncompleteEntryDataChanged);
                         RegisterToReceiveMessages<TODO_SubmitIncompleteSupplierInfo>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoChanged, OnCurrentTODO_SubmitIncompleteSupplierInfoChanged);
+                        RegisterToReceiveMessages<TODO_SubmitMissingInvoicePDFs>(MessageToken.CurrentTODO_SubmitMissingInvoicePDFsChanged, OnCurrentTODO_SubmitMissingInvoicePDFsChanged);
                         RegisterToReceiveMessages<TODO_SubmitPOInfo>(MessageToken.CurrentTODO_SubmitPOInfoChanged, OnCurrentTODO_SubmitPOInfoChanged);
                         RegisterToReceiveMessages<TODO_SubmitUnclassifiedItems>(MessageToken.CurrentTODO_SubmitUnclassifiedItemsChanged, OnCurrentTODO_SubmitUnclassifiedItemsChanged);
                         RegisterToReceiveMessages<TODO_SubmitXMLToCustoms>(MessageToken.CurrentTODO_SubmitXMLToCustomsChanged, OnCurrentTODO_SubmitXMLToCustomsChanged);
@@ -1934,6 +1938,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentTODO_PODocSetToAssessErrorsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_PODocSetToAssessErrorsRepository ctx = new TODO_PODocSetToAssessErrorsRepository())
+                            {
+                                CurrentTODO_PODocSetToAssessErrors = await ctx.GetTODO_PODocSetToAssessErrors(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_PODocSetToAssessErrors);
+                        }
+
+                        private  string _currentTODO_PODocSetToAssessErrorsID = "";
+                        public string CurrentTODO_PODocSetToAssessErrorsID
+                        {
+                            get
+                            {
+                                return _currentTODO_PODocSetToAssessErrorsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_PODocSetToAssessErrorsID != value)
+                                {
+                                    _currentTODO_PODocSetToAssessErrorsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_PODocSetToAssessErrorsID)) BeginSendMessage(MessageToken.CurrentTODO_PODocSetToAssessErrorsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_PODocSetToAssessErrorsIDChanged, _currentTODO_PODocSetToAssessErrorsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_PODocSetToAssessErrorsID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentTODO_PODocSetToExportIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (TODO_PODocSetToExportRepository ctx = new TODO_PODocSetToExportRepository())
@@ -2174,6 +2205,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_SubmitIncompleteSupplierInfoID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoIDChanged, _currentTODO_SubmitIncompleteSupplierInfoID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_SubmitIncompleteSupplierInfoID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_SubmitMissingInvoicePDFsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitMissingInvoicePDFsRepository ctx = new TODO_SubmitMissingInvoicePDFsRepository())
+                            {
+                                CurrentTODO_SubmitMissingInvoicePDFs = await ctx.GetTODO_SubmitMissingInvoicePDFs(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitMissingInvoicePDFs);
+                        }
+
+                        private  string _currentTODO_SubmitMissingInvoicePDFsID = "";
+                        public string CurrentTODO_SubmitMissingInvoicePDFsID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitMissingInvoicePDFsID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitMissingInvoicePDFsID != value)
+                                {
+                                    _currentTODO_SubmitMissingInvoicePDFsID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitMissingInvoicePDFsID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitMissingInvoicePDFsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitMissingInvoicePDFsIDChanged, _currentTODO_SubmitMissingInvoicePDFsID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitMissingInvoicePDFsID);  
                                 }
                             }
                         }
@@ -5565,6 +5623,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentTODO_PODocSetToAssessErrorsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PODocSetToAssessErrors> e)
+        {
+            //CurrentTODO_PODocSetToAssessErrors = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_PODocSetToAssessErrors);
+        }
+
+        private  TODO_PODocSetToAssessErrors _currentTODO_PODocSetToAssessErrors;
+        public TODO_PODocSetToAssessErrors CurrentTODO_PODocSetToAssessErrors
+        {
+            get
+            {
+                return _currentTODO_PODocSetToAssessErrors;
+            }
+            set
+            {
+                if (_currentTODO_PODocSetToAssessErrors != value)
+                {
+                    _currentTODO_PODocSetToAssessErrors = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_PODocSetToAssessErrorsChanged,
+                                                     new NotificationEventArgs<TODO_PODocSetToAssessErrors>(MessageToken.CurrentTODO_PODocSetToAssessErrorsChanged, _currentTODO_PODocSetToAssessErrors)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_PODocSetToAssessErrors);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_PODocSetToAssessErrors> _vcurrentTODO_PODocSetToAssessErrors;
+        public VirtualListItem<TODO_PODocSetToAssessErrors> VCurrentTODO_PODocSetToAssessErrors
+        {
+            get
+            {
+                return _vcurrentTODO_PODocSetToAssessErrors;
+            }
+            set
+            {
+                if (_vcurrentTODO_PODocSetToAssessErrors != value)
+                {
+                    _vcurrentTODO_PODocSetToAssessErrors = value;
+					if(_vcurrentTODO_PODocSetToAssessErrors != null) CurrentTODO_PODocSetToAssessErrors = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_PODocSetToAssessErrors);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentTODO_PODocSetToExportChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_PODocSetToExport> e)
         {
             //CurrentTODO_PODocSetToExport = e.Data;
@@ -6006,6 +6114,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_SubmitIncompleteSupplierInfo = value;
 					if(_vcurrentTODO_SubmitIncompleteSupplierInfo != null) CurrentTODO_SubmitIncompleteSupplierInfo = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_SubmitIncompleteSupplierInfo);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitMissingInvoicePDFsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitMissingInvoicePDFs> e)
+        {
+            //CurrentTODO_SubmitMissingInvoicePDFs = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitMissingInvoicePDFs);
+        }
+
+        private  TODO_SubmitMissingInvoicePDFs _currentTODO_SubmitMissingInvoicePDFs;
+        public TODO_SubmitMissingInvoicePDFs CurrentTODO_SubmitMissingInvoicePDFs
+        {
+            get
+            {
+                return _currentTODO_SubmitMissingInvoicePDFs;
+            }
+            set
+            {
+                if (_currentTODO_SubmitMissingInvoicePDFs != value)
+                {
+                    _currentTODO_SubmitMissingInvoicePDFs = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitMissingInvoicePDFsChanged,
+                                                     new NotificationEventArgs<TODO_SubmitMissingInvoicePDFs>(MessageToken.CurrentTODO_SubmitMissingInvoicePDFsChanged, _currentTODO_SubmitMissingInvoicePDFs)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitMissingInvoicePDFs);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitMissingInvoicePDFs> _vcurrentTODO_SubmitMissingInvoicePDFs;
+        public VirtualListItem<TODO_SubmitMissingInvoicePDFs> VCurrentTODO_SubmitMissingInvoicePDFs
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitMissingInvoicePDFs;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitMissingInvoicePDFs != value)
+                {
+                    _vcurrentTODO_SubmitMissingInvoicePDFs = value;
+					if(_vcurrentTODO_SubmitMissingInvoicePDFs != null) CurrentTODO_SubmitMissingInvoicePDFs = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitMissingInvoicePDFs);                    
                 }
             }
         }

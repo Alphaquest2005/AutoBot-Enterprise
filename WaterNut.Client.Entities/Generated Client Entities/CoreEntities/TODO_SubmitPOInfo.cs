@@ -42,6 +42,21 @@ namespace CoreEntities.Client.Entities
                 todo_submitpoinfo = value;
             }
         }
+       [RequiredValidationAttribute(ErrorMessage= " is required")]
+       
+public int Id
+		{ 
+		    get { return this.todo_submitpoinfo.Id; }
+			set
+			{
+			    if (value == this.todo_submitpoinfo.Id) return;
+				this.todo_submitpoinfo.Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Id");
+			}
+		}
+     
+
        
        
                 
@@ -315,7 +330,7 @@ public double Total_CIF
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "WarehouseNo is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "WarehouseNo has a max length of 50 letters ")]

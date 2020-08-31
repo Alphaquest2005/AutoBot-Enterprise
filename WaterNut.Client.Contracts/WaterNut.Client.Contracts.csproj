@@ -173,6 +173,7 @@
     <Compile Include="CoreEntities\ITODO_LicenseToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_LICToCreateService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetService.cs" />
+    <Compile Include="CoreEntities\ITODO_PODocSetToAssessErrorsService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetToAssessService.cs" />
     <Compile Include="CoreEntities\ITODO_PODocSetToExportService.cs" />
     <Compile Include="CoreEntities\IToDo_POToXMLService.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitPOInfoService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />

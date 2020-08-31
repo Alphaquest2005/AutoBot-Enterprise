@@ -457,6 +457,114 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _totalPackagesFilter;
+        public Int32? TotalPackagesFilter
+        {
+            get
+            {
+                return _totalPackagesFilter;
+            }
+            set
+            {
+                _totalPackagesFilter = value;
+				NotifyPropertyChanged(x => TotalPackagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalWeightFilter;
+        public Double? TotalWeightFilter
+        {
+            get
+            {
+                return _totalWeightFilter;
+            }
+            set
+            {
+                _totalWeightFilter = value;
+				NotifyPropertyChanged(x => TotalWeightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _entryPackagesFilter;
+        public Int32? EntryPackagesFilter
+        {
+            get
+            {
+                return _entryPackagesFilter;
+            }
+            set
+            {
+                _entryPackagesFilter = value;
+				NotifyPropertyChanged(x => EntryPackagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _freightCurrencyCodeFilter;
+        public string FreightCurrencyCodeFilter
+        {
+            get
+            {
+                return _freightCurrencyCodeFilter;
+            }
+            set
+            {
+                _freightCurrencyCodeFilter = value;
+				NotifyPropertyChanged(x => FreightCurrencyCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _currencyRateFilter;
+        public Double? CurrencyRateFilter
+        {
+            get
+            {
+                return _currencyRateFilter;
+            }
+            set
+            {
+                _currencyRateFilter = value;
+				NotifyPropertyChanged(x => CurrencyRateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _freightCurrencyRateFilter;
+        public Double? FreightCurrencyRateFilter
+        {
+            get
+            {
+                return _freightCurrencyRateFilter;
+            }
+            set
+            {
+                _freightCurrencyRateFilter = value;
+				NotifyPropertyChanged(x => FreightCurrencyRateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -540,7 +648,26 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("ClassifiedLines == {0}",  ClassifiedLinesFilter.ToString()));				 
 
 					if(TotalLinesFilter.HasValue)
-						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("TotalLines == {0}",  TotalLinesFilter.ToString()));				 
+
+					if(TotalPackagesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalPackages == {0}",  TotalPackagesFilter.ToString()));				 
+
+					if(TotalWeightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalWeight == {0}",  TotalWeightFilter.ToString()));				 
+
+					if(EntryPackagesFilter.HasValue)
+						res.Append(" && " + string.Format("EntryPackages == {0}",  EntryPackagesFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(FreightCurrencyCodeFilter) == false)
+						res.Append(" && " + string.Format("FreightCurrencyCode.Contains(\"{0}\")",  FreightCurrencyCodeFilter));						
+ 
+
+					if(CurrencyRateFilter.HasValue)
+						res.Append(" && " + string.Format("CurrencyRate == {0}",  CurrencyRateFilter.ToString()));				 
+
+					if(FreightCurrencyRateFilter.HasValue)
+						res.Append(" && " + string.Format("FreightCurrencyRate == {0}",  FreightCurrencyRateFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -608,7 +735,25 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     ClassifiedLines = x.ClassifiedLines ,
                     
  
-                    TotalLines = x.TotalLines 
+                    TotalLines = x.TotalLines ,
+                    
+ 
+                    TotalPackages = x.TotalPackages ,
+                    
+ 
+                    TotalWeight = x.TotalWeight ,
+                    
+ 
+                    EntryPackages = x.EntryPackages ,
+                    
+ 
+                    FreightCurrencyCode = x.FreightCurrencyCode ,
+                    
+ 
+                    CurrencyRate = x.CurrencyRate ,
+                    
+ 
+                    FreightCurrencyRate = x.FreightCurrencyRate 
                     
                 }).ToList()
             };
@@ -667,6 +812,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> TotalLines { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalPackages { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalWeight { get; set; } 
+                    
+ 
+                    public Nullable<int> EntryPackages { get; set; } 
+                    
+ 
+                    public string FreightCurrencyCode { get; set; } 
+                    
+ 
+                    public double CurrencyRate { get; set; } 
+                    
+ 
+                    public double FreightCurrencyRate { get; set; } 
                     
         }
 

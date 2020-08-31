@@ -25,6 +25,8 @@ namespace CoreEntities
         public string CustomsProcedure { get; set; }
         public int Asycuda_id { get; set; }
         public string EntryDataType { get; set; }
+        public int ApplicationSettingsId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
     
         public virtual AsycudaDocumentItem AsycudaDocumentItem { get; set; }
     }

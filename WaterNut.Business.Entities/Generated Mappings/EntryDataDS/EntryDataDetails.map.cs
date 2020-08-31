@@ -42,7 +42,7 @@
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
-              this.HasRequired(t => t.InventoryItemEx).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.ItemNumber);
+              this.HasRequired(t => t.InventoryItemEx).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.InventoryItems).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
               this.HasOptional(t => t.EntryDataDetailsEx).WithRequired(t => (EntryDataDetails) t.EntryDataDetails);
              // Tracking Properties

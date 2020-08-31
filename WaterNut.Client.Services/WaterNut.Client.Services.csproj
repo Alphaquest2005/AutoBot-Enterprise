@@ -180,6 +180,7 @@
     <Compile Include="CoreEntities\TODO_LICToCreateClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetToAssessClient.cs" />
+    <Compile Include="CoreEntities\TODO_PODocSetToAssessErrorsClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetToExportClient.cs" />
     <Compile Include="CoreEntities\ToDo_POToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitAllXMLToCustomsClient.cs" />
@@ -189,6 +190,7 @@
     <Compile Include="CoreEntities\TODO_SubmitInadequatePackagesClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitIncompleteEntryDataClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitIncompleteSupplierInfoClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitMissingInvoicePDFsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitPOInfoClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitUnclassifiedItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitXMLToCustomsClient.cs" />

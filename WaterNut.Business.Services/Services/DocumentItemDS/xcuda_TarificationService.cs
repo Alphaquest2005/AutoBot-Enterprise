@@ -133,6 +133,7 @@ namespace DocumentItemDS.Business.Services
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Tarification>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
@@ -175,6 +176,7 @@ namespace DocumentItemDS.Business.Services
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
 					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xcuda_Tarification>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
@@ -218,7 +220,7 @@ namespace DocumentItemDS.Business.Services
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
-
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Tarification>();
 
                     if (exp == "All" && navExp.Count == 0)
@@ -304,6 +306,7 @@ namespace DocumentItemDS.Business.Services
                         {
                             using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -378,6 +381,7 @@ namespace DocumentItemDS.Business.Services
                         {
                             using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                             {
+                                dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
@@ -613,6 +617,7 @@ namespace DocumentItemDS.Business.Services
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
                     var set = (IQueryable<xcuda_Tarification>)dbContext.xcuda_Tarification; 
                     if (expLst.FirstOrDefault() == "All")
@@ -688,6 +693,7 @@ namespace DocumentItemDS.Business.Services
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xcuda_Tarification>();
                     if (exp == "All")
                     {
@@ -734,6 +740,7 @@ namespace DocumentItemDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
                         return await dbContext.xcuda_Tarification
@@ -840,6 +847,7 @@ namespace DocumentItemDS.Business.Services
             {
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<xcuda_Tarification>();
                     var set = AddIncludes(includeLst, dbContext);
 
@@ -1088,6 +1096,7 @@ namespace DocumentItemDS.Business.Services
              {
                  using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
@@ -1123,6 +1132,7 @@ namespace DocumentItemDS.Business.Services
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                 using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                 {
+                    dbContext.Database.CommandTimeout = 0;
                     if (!dbContext.xcuda_Tarification.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -1226,6 +1236,7 @@ namespace DocumentItemDS.Business.Services
              {
                  using (var dbContext = new DocumentItemDSContext(){StartTracking = StartTracking})
                  {
+                    dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")

@@ -217,6 +217,36 @@ public string EntryDataType
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
+       
+public int ApplicationSettingsId
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.ApplicationSettingsId) return;
+				this.asycudadocumentitementrydatadetails.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.asycudadocumentitementrydatadetails.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetails.AsycudaDocumentSetId) return;
+				this.asycudadocumentitementrydatadetails.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
        private AsycudaDocumentItem _AsycudaDocumentItem;
         public  AsycudaDocumentItem AsycudaDocumentItem
 		{

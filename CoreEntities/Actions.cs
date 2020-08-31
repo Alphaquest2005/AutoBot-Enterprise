@@ -24,6 +24,7 @@ namespace CoreEntities
         public int Id { get; set; }
         public string Name { get; set; }
         public bool TestMode { get; set; }
+        public Nullable<bool> IsDataSpecific { get; set; }
     
         public virtual ICollection<FileTypeActions> FileTypeActions { get; set; }
         public virtual ICollection<SessionActions> SessionActions { get; set; }

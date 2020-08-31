@@ -89,7 +89,7 @@ public string Country_of_origin_code
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Currency_Code is required")]
        
                 
                 [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]
@@ -266,9 +266,9 @@ public Nullable<double> TotalCIF
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "C71Total is required")]
        [NumberValidationAttribute]
-public Nullable<double> C71Total
+public double C71Total
 		{ 
 		    get { return this.todo_c71tocreate.C71Total; }
 			set
@@ -277,6 +277,36 @@ public Nullable<double> C71Total
 				this.todo_c71tocreate.C71Total = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("C71Total");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= " is required")]
+       
+public int Id
+		{ 
+		    get { return this.todo_c71tocreate.Id; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.Id) return;
+				this.todo_c71tocreate.Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Id");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Rate is required")]
+       [NumberValidationAttribute]
+public double Rate
+		{ 
+		    get { return this.todo_c71tocreate.Rate; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.Rate) return;
+				this.todo_c71tocreate.Rate = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Rate");
 			}
 		}
      

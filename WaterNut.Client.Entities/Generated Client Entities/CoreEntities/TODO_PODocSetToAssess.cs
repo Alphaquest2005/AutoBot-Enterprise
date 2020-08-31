@@ -89,7 +89,7 @@ public string Country_of_origin_code
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "Currency_Code is required")]
        
                 
                 [MaxLength(3, ErrorMessage = "Currency_Code has a max length of 3 letters ")]
@@ -343,30 +343,105 @@ public Nullable<double> TotalFreight
 
        
        [NumberValidationAttribute]
-public Nullable<int> classifiedlines
+public Nullable<int> ClassifiedLines
 		{ 
-		    get { return this.todo_podocsettoassess.classifiedlines; }
+		    get { return this.todo_podocsettoassess.ClassifiedLines; }
 			set
 			{
-			    if (value == this.todo_podocsettoassess.classifiedlines) return;
-				this.todo_podocsettoassess.classifiedlines = value;
+			    if (value == this.todo_podocsettoassess.ClassifiedLines) return;
+				this.todo_podocsettoassess.ClassifiedLines = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("classifiedlines");
+				NotifyPropertyChanged("ClassifiedLines");
 			}
 		}
      
 
        
        [NumberValidationAttribute]
-public Nullable<int> totallines
+public Nullable<int> TotalLines
 		{ 
-		    get { return this.todo_podocsettoassess.totallines; }
+		    get { return this.todo_podocsettoassess.TotalLines; }
 			set
 			{
-			    if (value == this.todo_podocsettoassess.totallines) return;
-				this.todo_podocsettoassess.totallines = value;
+			    if (value == this.todo_podocsettoassess.TotalLines) return;
+				this.todo_podocsettoassess.TotalLines = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("totallines");
+				NotifyPropertyChanged("TotalLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> GeneratedLines
+		{ 
+		    get { return this.todo_podocsettoassess.GeneratedLines; }
+			set
+			{
+			    if (value == this.todo_podocsettoassess.GeneratedLines) return;
+				this.todo_podocsettoassess.GeneratedLines = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GeneratedLines");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> DocumentAttachments
+		{ 
+		    get { return this.todo_podocsettoassess.DocumentAttachments; }
+			set
+			{
+			    if (value == this.todo_podocsettoassess.DocumentAttachments) return;
+				this.todo_podocsettoassess.DocumentAttachments = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("DocumentAttachments");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> AttachedDocuments
+		{ 
+		    get { return this.todo_podocsettoassess.AttachedDocuments; }
+			set
+			{
+			    if (value == this.todo_podocsettoassess.AttachedDocuments) return;
+				this.todo_podocsettoassess.AttachedDocuments = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AttachedDocuments");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> EntryDataInvoiceTotal
+		{ 
+		    get { return this.todo_podocsettoassess.EntryDataInvoiceTotal; }
+			set
+			{
+			    if (value == this.todo_podocsettoassess.EntryDataInvoiceTotal) return;
+				this.todo_podocsettoassess.EntryDataInvoiceTotal = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataInvoiceTotal");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> GeneratedFreight
+		{ 
+		    get { return this.todo_podocsettoassess.GeneratedFreight; }
+			set
+			{
+			    if (value == this.todo_podocsettoassess.GeneratedFreight) return;
+				this.todo_podocsettoassess.GeneratedFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GeneratedFreight");
 			}
 		}
      

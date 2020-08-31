@@ -300,6 +300,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ImportCompleteEntriesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenseToXMLViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LICToCreateViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToAssessErrorsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToAssessViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToExportViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs" />
@@ -311,6 +312,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitInadequatePackagesViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitIncompleteEntryDataViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitIncompleteSupplierInfoViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitMissingInvoicePDFsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitPOInfoViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitUnclassifiedItemsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitXMLToCustomsViewModel.cs" />
@@ -453,6 +455,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ImportCompleteEntriesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenseToXMLTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LICToCreateTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToAssessErrorsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToAssessTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToExportTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs" />
@@ -464,6 +467,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitInadequatePackagesTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitIncompleteEntryDataTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitIncompleteSupplierInfoTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitMissingInvoicePDFsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitPOInfoTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitUnclassifiedItemsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitXMLToCustomsTotals.cs" />
@@ -594,6 +598,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ImportCompleteEntriesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenseToXMLVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LICToCreateVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToAssessErrorsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToAssessVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToExportVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs" />
@@ -605,6 +610,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitInadequatePackagesVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitIncompleteEntryDataVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitIncompleteSupplierInfoVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitMissingInvoicePDFsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitPOInfoVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitUnclassifiedItemsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitXMLToCustomsVirturalListLoader.cs" />

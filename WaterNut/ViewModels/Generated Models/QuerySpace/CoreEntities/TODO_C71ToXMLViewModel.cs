@@ -327,6 +327,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _currencyRateFilter;
+        public Double? CurrencyRateFilter
+        {
+            get
+            {
+                return _currencyRateFilter;
+            }
+            set
+            {
+                _currencyRateFilter = value;
+				NotifyPropertyChanged(x => CurrencyRateFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -407,7 +425,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 
 					if(InvoiceTotalFilter.HasValue)
-						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("InvoiceTotal == {0}",  InvoiceTotalFilter.ToString()));				 
+
+					if(CurrencyRateFilter.HasValue)
+						res.Append(" && " + string.Format("CurrencyRate == {0}",  CurrencyRateFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -448,7 +469,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     SupplierCode = x.SupplierCode ,
                     
  
-                    InvoiceTotal = x.InvoiceTotal 
+                    InvoiceTotal = x.InvoiceTotal ,
+                    
+ 
+                    CurrencyRate = x.CurrencyRate 
                     
                 }).ToList()
             };
@@ -480,6 +504,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public double InvoiceTotal { get; set; } 
+                    
+ 
+                    public double CurrencyRate { get; set; } 
                     
         }
 

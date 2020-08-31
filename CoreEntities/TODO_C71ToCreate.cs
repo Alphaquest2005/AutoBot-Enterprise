@@ -28,6 +28,8 @@ namespace CoreEntities
         public Nullable<double> InvoiceTotal { get; set; }
         public Nullable<int> LicenseLines { get; set; }
         public Nullable<double> TotalCIF { get; set; }
-        public Nullable<double> C71Total { get; set; }
+        public double C71Total { get; set; }
+        public int Id { get; set; }
+        public double Rate { get; set; }
     }
 }

@@ -306,7 +306,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _totalfreight;
         [DataMember]
-        public Nullable<int> classifiedlines 
+        public Nullable<int> ClassifiedLines 
         {
             get
             {
@@ -321,7 +321,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _classifiedlines;
         [DataMember]
-        public Nullable<int> totallines 
+        public Nullable<int> TotalLines 
         {
             get
             {
@@ -335,6 +335,81 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _totallines;
+        [DataMember]
+        public Nullable<int> GeneratedLines 
+        {
+            get
+            {
+                return _generatedlines;
+            }
+            set
+            {
+                _generatedlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _generatedlines;
+        [DataMember]
+        public Nullable<int> DocumentAttachments 
+        {
+            get
+            {
+                return _documentattachments;
+            }
+            set
+            {
+                _documentattachments = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _documentattachments;
+        [DataMember]
+        public Nullable<int> AttachedDocuments 
+        {
+            get
+            {
+                return _attacheddocuments;
+            }
+            set
+            {
+                _attacheddocuments = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _attacheddocuments;
+        [DataMember]
+        public Nullable<double> EntryDataInvoiceTotal 
+        {
+            get
+            {
+                return _entrydatainvoicetotal;
+            }
+            set
+            {
+                _entrydatainvoicetotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _entrydatainvoicetotal;
+        [DataMember]
+        public Nullable<double> GeneratedFreight 
+        {
+            get
+            {
+                return _generatedfreight;
+            }
+            set
+            {
+                _generatedfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _generatedfreight;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

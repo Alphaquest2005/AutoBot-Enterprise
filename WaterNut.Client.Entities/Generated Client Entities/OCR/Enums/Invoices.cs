@@ -24,7 +24,10 @@ namespace OCR.Client.Enums
         International = 3,
 
       
-        Marineco = 4
+        Marineco = 4,
+
+      
+        Amazon = 5
   }
 }
 

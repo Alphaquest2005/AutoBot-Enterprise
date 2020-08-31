@@ -28,6 +28,7 @@
               this.Property(t => t.ParentFileTypeId).HasColumnName("ParentFileTypeId");
               this.Property(t => t.OverwriteFiles).HasColumnName("OverwriteFiles");
               this.Property(t => t.HasFiles).HasColumnName("HasFiles");
+              this.Property(t => t.OldFileTypeId).HasColumnName("OldFileTypeId");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasRequired(t => t.AsycudaDocumentSetEx).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.FileGroups).WithMany(t =>(ICollection<FileTypes>) t.FileTypes).HasForeignKey(d => d.FileGroupId);

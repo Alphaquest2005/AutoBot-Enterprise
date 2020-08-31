@@ -21,6 +21,21 @@ namespace ValuationDS.Business.Entities
     public partial class TODO_C71ToCreate : BaseEntity<TODO_C71ToCreate>, ITrackable 
     {
         [DataMember]
+        public int Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _id;
+        [DataMember]
         public int AsycudaDocumentSetId 
         {
             get
@@ -246,20 +261,20 @@ namespace ValuationDS.Business.Entities
         }
         double _c71total;
         [DataMember]
-        public int Id 
+        public double Rate 
         {
             get
             {
-                return _id;
+                return _rate;
             }
             set
             {
-                _id = value;
+                _rate = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _id;
+        double _rate;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

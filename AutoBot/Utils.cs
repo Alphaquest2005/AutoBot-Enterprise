@@ -210,6 +210,7 @@ namespace AutoBot
                 {"RenameDuplicateDocumentCodes", RenameDuplicateDocumentCodes },
                 {"ReLinkPDFs", ReLinkPDFs },
                 {"ImportAllSalesEntries", ImportAllSalesEntries },
+                {"RebuildSalesReport", RebuildSalesReport },
                 
 
             };
@@ -346,8 +347,8 @@ namespace AutoBot
                         var body =
                             $"Please see attached documents entries for {doc.z.Declarant_Reference_Number}.\r\n" +
 
-                            $"\t{"Document Type".FormatedSpace(20)}{"CNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}{"PO Number".FormatedSpace(20)}{"Supplier Invoice#".FormatedSpace(20)}{"Taxes".FormatedSpace(20)}{"CIF".FormatedSpace(20)}\r\n" +
-                            $"{doc.x.Select(current => $"\t{current.DocumentType.FormatedSpace(20)}{current.CNumber.FormatedSpace(20)}{current.Reference.FormatedSpace(20)}{current.Date.FormatedSpace(20)}{current.EntryDataId.FormatedSpace(20)}{current.SupplierInvoiceNo.FormatedSpace(20)}{current.Totals_taxes.GetValueOrDefault().ToString("C").FormatedSpace(20)}{current.Total_CIF.ToString("C").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                            $"\t{"Document Type".FormatedSpace(20)}{"CNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}{"PO Number".FormatedSpace(20)}{"Supplier Invoice#".FormatedSpace(20)}{"Taxes".FormatedSpace(20)}{"CIF".FormatedSpace(20)}{"WarehouseNo".FormatedSpace(20)}\r\n" +
+                            $"{doc.x.Select(current => $"\t{current.DocumentType.FormatedSpace(20)}{current.CNumber.FormatedSpace(20)}{current.Reference.FormatedSpace(20)}{current.Date.FormatedSpace(20)}{current.EntryDataId.FormatedSpace(20)}{current.SupplierInvoiceNo.FormatedSpace(20)}{current.Totals_taxes.GetValueOrDefault().ToString("C").FormatedSpace(20)}{current.Total_CIF.ToString("C").FormatedSpace(20)}{current.WarehouseNo.FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                             $"\t{"Total".FormatedSpace(120)}{doc.x.Sum(x => x.Totals_taxes).GetValueOrDefault().ToString("C").FormatedSpace(20)}${doc.x.Sum(x => x.Total_CIF).ToString("C").FormatedSpace(20)} \r\n" +
                             $"\r\n" +
                             $"Please open the attached email to view Email Thread.\r\n" +
@@ -570,7 +571,8 @@ namespace AutoBot
                 foreach (var doc in res)
                 {
 
-
+                    var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        doc.Declarant_Reference_Number);
                     var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         doc.Declarant_Reference_Number, "LIC-Instructions.txt");
                     if (!File.Exists(instrFile)) continue;
@@ -579,7 +581,7 @@ namespace AutoBot
                     var lcont = 0;
                     while (AssessLICComplete(instrFile, resultsFile, out lcont) == false)
                     {
-                        RunSiKuLi(doc.AsycudaDocumentSetId, "AssessLIC", lcont.ToString());
+                        RunSiKuLi(directoryName, "AssessLIC", lcont.ToString());
                     }
                 }
             }
@@ -598,7 +600,8 @@ namespace AutoBot
                 foreach (var doc in res)
                 {
 
-
+                    var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        doc.Declarant_Reference_Number);
                     var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         doc.Declarant_Reference_Number, "C71-Instructions.txt");
                     if (!File.Exists(instrFile)) continue;
@@ -607,7 +610,7 @@ namespace AutoBot
                     var lcont = 0;
                     while (AssessC71Complete(instrFile, resultsFile, out lcont) == false)
                     {
-                        RunSiKuLi(doc.AsycudaDocumentSetId, "AssessC71", lcont.ToString());
+                        RunSiKuLi(directoryName, "AssessC71", lcont.ToString());
                     }
                 }
             }
@@ -658,13 +661,13 @@ namespace AutoBot
                     if (dt.Rows.Count == 0) continue;
                     foreach (DataRow row in dt.Rows)
                     {
-                        if (string.IsNullOrEmpty(row["TariffCode"].ToString())) continue;
+                        if (string.IsNullOrEmpty(row["SupplierCode"].ToString())) continue;
                         var supplierCode = row["SupplierCode"].ToString();
                         var itm = ctx.Suppliers.First(x => x.SupplierCode == supplierCode && x.ApplicationSettingsId ==
                                                                 BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                         itm.SupplierName = row["SupplierName"].ToString();
-                        itm.SupplierName = row["SupplierAddress"].ToString();
-                        itm.SupplierName = row["CountryCode"].ToString();
+                        itm.Street = row["SupplierAddress"].ToString();
+                        itm.CountryCode = row["CountryCode"].ToString();
 
                         ctx.SaveChanges();
                     }
@@ -675,6 +678,7 @@ namespace AutoBot
 
         private static void MapUnClassifiedItems(FileTypes ft, FileInfo[] fs)
         {
+            Console.WriteLine("Mapping unclassified items");
             using (var ctx = new InventoryDSContext() { StartTracking = true })
             {
                 foreach (var file in fs)
@@ -765,8 +769,26 @@ namespace AutoBot
                         foreach (var itm in lst)
                         {
                             var fileName = Path.Combine(directoryName, $"{itm.Key.EntryDataId}-LIC.xml");
-                            if (//BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7.GetValueOrDefault() &&
-                                File.Exists(fileName)) continue;
+
+
+                            if (File.Exists(fileName))
+                            {
+
+                                var instrFile = Path.Combine(
+                                    BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                                    pO.Declarant_Reference_Number, "LIC-Instructions.txt");
+                                if (File.Exists(instrFile))
+                                {
+                                    var resultsFile = Path.Combine(
+                                        BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                                        pO.Declarant_Reference_Number, "LIC-InstructionResults.txt");
+                                    var lcont = 0;
+                                    if(AssessLICComplete(instrFile, resultsFile, out lcont) == true)
+                                        continue;
+                                }
+
+                            }
+
                             var contact = new CoreEntitiesContext().Contacts.FirstOrDefault(x =>
                                 x.Role == "Broker" && x.ApplicationSettingsId == BaseDataModel.Instance
                                     .CurrentApplicationSettings.ApplicationSettingsId);
@@ -825,6 +847,10 @@ namespace AutoBot
                         var c71results = Path.Combine(directoryName, "C71-InstructionResults.txt");
                         if (File.Exists(c71results))
                         {
+                            var c71instructions = Path.Combine(directoryName, "C71-Instructions.txt");
+                            if (AssessC71Complete(c71instructions, c71results, out int lcont) == true) continue;
+
+
                             File.Delete(c71results);
                             if (File.Exists(Path.Combine(directoryName, "C71OverView-PDF.txt"))) File.Delete(Path.Combine(directoryName, "C71OverView-PDF.txt"));
                         } 
@@ -832,7 +858,8 @@ namespace AutoBot
                             x.ApplicationSettingsId == pO.ApplicationSettingsId &&
                             x.AsycudaDocumentSetId == pO.AsycudaDocumentSetId)
                             .GroupBy(x => x.AsycudaDocumentSetId)
-                            .Where(x => (x.Sum(z => z.InvoiceTotal) > 184 && x.Any(z => z.Currency == "USD")) || (x.Sum(z => z.InvoiceTotal) > 500 && x.Any(z => z.Currency == "XCD"))).ToList();
+                            .Where(x => x.Sum(z => z.InvoiceTotal * z.CurrencyRate) > 500 ).ToList();
+                        if (!lst.Any()) continue;
                         var supplierCode = lst.SelectMany(x => x.Select(z => z.SupplierCode)).FirstOrDefault(x => !string.IsNullOrEmpty(x));
                         Suppliers supplier = new Suppliers();
                         if (supplierCode == null)
@@ -845,7 +872,7 @@ namespace AutoBot
                                 x.SupplierCode == supplierCode &&
                                 x.ApplicationSettingsId == pO.ApplicationSettingsId);
                         }
-                        if (!lst.Any()) continue;
+                        
                         var c71 = C71ToDataBase.Instance.CreateC71(supplier, lst.SelectMany(x => x.Select(z => z)).ToList(), pO.Declarant_Reference_Number);
                         ctx.xC71_Value_declaration_form.Add(c71);
                         ctx.SaveChanges();
@@ -880,25 +907,24 @@ namespace AutoBot
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                         .ToList();
-                    foreach (var pO in pOs)
-                    {
-                        var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            pO.Declarant_Reference_Number);
+
+                    if (!pOs.Any()) return;
+                        var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "LIC")); ;
                         Console.WriteLine("Download License Files");
                         var lcont = 0;
                         if (redownload)
                         {
-                            RunSiKuLi(pO.AsycudaDocumentSetId, "LIC", lcont.ToString());
+                            RunSiKuLi(directoryName, "LIC", lcont.ToString());
                         }
                         else
                         {
                             while (ImportLICComplete(directoryName, out lcont) == false)
                             {
-                                RunSiKuLi(pO.AsycudaDocumentSetId, "LIC", lcont.ToString());
+                                RunSiKuLi(directoryName, "LIC", lcont.ToString());
                             }
                         }
 
-                    }
+                   
                 }
             }
             catch (Exception e)
@@ -913,6 +939,7 @@ namespace AutoBot
             try
 
             {
+                Console.WriteLine("Attempting Download C71 Files");
                 using (var ctx = new CoreEntitiesContext())
                 {
 
@@ -920,20 +947,18 @@ namespace AutoBot
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                         .ToList();
-                    
-                    foreach (var pO in lst)
-                    {
-                        var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(
-                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                            pO.Declarant_Reference_Number));
-                        if(!Directory.GetFiles(directoryName,"C71.xml").Any()) continue;
-                        Console.WriteLine("Download C71 Files");
-                        var lcont = 0;
+
+
+                    if (!lst.Any()) return;
+                        var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports","C71"));
+
+                    Console.WriteLine("Download C71 Files");
+                    var lcont = 0;
                         while (ImportC71Complete(directoryName, out lcont) == false)
                         {
-                            RunSiKuLi(pO.AsycudaDocumentSetId, "C71", lcont.ToString());
+                            RunSiKuLi(directoryName, "C71", lcont.ToString());
                         }
-                    }
+                   
 
                 }
             }
@@ -1836,6 +1861,74 @@ namespace AutoBot
                     }
 
                 }
+                SubmitMissingInvoicePDFs(ft);
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
+
+        private static void SubmitMissingInvoicePDFs(FileTypes ft)
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Missing Invoice PDFs");
+
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                    var lst = ctx.TODO_SubmitMissingInvoicePDFs
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
+                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .ToList()
+                        .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId });
+
+                    foreach (var emailIds in lst)
+                    {
+                        if (GetDocSetActions(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoicePDFs").Any()) continue;
+
+
+                        var body = $"The {emailIds.FirstOrDefault().Declarant_Reference_Number} is missing Invoice PDF Attachments. \r\n" +
+                                   $"\t{"Invoice No.".FormatedSpace(20)}{"Source File".FormatedSpace(20)}\r\n" +
+                                   $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.SourceFile.FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"Please email CSV with Coresponding PDF to prevent this error.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"\r\n" +
+                                   $"Regards,\r\n" +
+                                   $"AutoBot";
+                        List<string> attlst = new List<string>();
+
+
+
+                        if (emailIds.Key == null)
+                        {
+                            EmailDownloader.EmailDownloader.SendEmail(Client, "", "Error:Missing Invoices PDF Attachments",
+                                contacts, body, attlst.ToArray());
+                        }
+                        else
+                        {
+                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key.EmailId), Client, "Error:Missing Invoices PDF Attachments", body, contacts, attlst.ToArray());
+                        }
+
+
+                        ctx.SaveChanges();
+
+
+                        LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoicePDFs");
+
+
+                    }
+
+                }
             }
             catch (Exception e)
             {
@@ -2474,7 +2567,7 @@ namespace AutoBot
                         var lcont = 0;
                         while (ImportPDFComplete(directoryName, out lcont) == false)
                         {
-                            RunSiKuLi(doc.z.AsycudaDocumentSetId, "IM7-PDF", lcont.ToString());
+                            RunSiKuLi(directoryName, "IM7-PDF", lcont.ToString());
                         }
                     }
                 }
@@ -2751,17 +2844,17 @@ namespace AutoBot
             try
 
             {
-                var directoryName = $@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\"; //BaseDataModel.CurrentSalesInfo().Item4;
-                var asycudaDocumentSetId =
-                    new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
-                        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
+                var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")); //$@"{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports")}\"; //BaseDataModel.CurrentSalesInfo().Item4;
+                //var asycudaDocumentSetId =
+                //    new CoreEntitiesContext().AsycudaDocumentSetExs.FirstOrDefault(x =>
+                //        x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                //        x.Declarant_Reference_Number == "Imports")?.AsycudaDocumentSetId ?? BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId;
                 Console.WriteLine("Download Entries");
                 var lcont = 0;
                 while (ImportComplete(directoryName, redownload, out lcont) == false)
                 {
                     //RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
-                    RunSiKuLi(asycudaDocumentSetId, "IM7", lcont.ToString());
+                    RunSiKuLi(directoryName, "IM7", lcont.ToString());
                 }
             }
             catch (Exception e)
@@ -2784,7 +2877,7 @@ namespace AutoBot
                 for (int i = 0; i < trytimes; i++)
                 {
                     if (ImportComplete(directoryName, false, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
-                    RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
+                    RunSiKuLi(directoryName, "IM7", lcont.ToString());
                     if (ImportComplete(directoryName, false, out lcont)) break;
                 }
 
@@ -2814,7 +2907,9 @@ namespace AutoBot
                 foreach (var doc in res)
                 {
                     if (doc.Declarant_Reference_Number == null) return;
-                    var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                        doc.Declarant_Reference_Number);
+                   var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         doc.Declarant_Reference_Number, "InstructionResults.txt");
                     var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         doc.Declarant_Reference_Number, "Instructions.txt");
@@ -2823,7 +2918,7 @@ namespace AutoBot
                     while (AssessComplete(instrFile, resultsFile, out lcont) == false)
                     {
                        // RunSiKuLi(doc.AsycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                        RunSiKuLi(doc.AsycudaDocumentSetId, "SaveIM7", lcont.ToString());
+                        RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
                     }
                 }
 
@@ -2848,13 +2943,68 @@ namespace AutoBot
 
             }
 
+            SubmitAssessPOErrors(ft);
+
+        }
+
+        private static void SubmitAssessPOErrors(FileTypes ft)
+        {
+
+            
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res = ctx.TODO_PODocSetToAssessErrors.Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                    .ToList();
+                if (!res.Any()) return;
+                Console.WriteLine("Emailing Assessment Errors - please check Mail");
+                var docSet = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId);
+                var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
+                    .Select(x => x.EmailAddress).ToArray();
+                var body =
+                    $"Please see attached documents .\r\n" +
+                    $"Please open the attached email to view Email Thread.\r\n" +
+                    $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                    $"\r\n" +
+                    $"Regards,\r\n" +
+                    $"AutoBot";
+
+
+               
+
+
+                var summaryFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,docSet.Declarant_Reference_Number, "POAssesErrors.csv");
+                if (File.Exists(summaryFile)) File.Delete(summaryFile);
+                var errRes =
+                    new ExportToCSV<TODO_PODocSetToAssessErrors, List<TODO_PODocSetToAssessErrors>>();
+                errRes.dataToPrint = res;
+                using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                {
+                    Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
+                        TaskCreationOptions.None, sta);
+                }
+
+               
+               
+                EmailDownloader.EmailDownloader.SendEmail(Client, "",
+                    $"PO Assessment Errors for Shipment: {docSet.Declarant_Reference_Number}",
+                    poContacts, body, new string[]{summaryFile});
+
+                    
+               
+            }
         }
 
         public static void AssessPOEntry(string docReference, int asycudaDocumentSetId)
         {
-            if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId)) return;
+            if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId))
+            {
+
+                return;
+            }
 
             if (docReference == null) return;
+            var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                docReference);
             var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                 docReference, "InstructionResults.txt");
             var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -2864,7 +3014,7 @@ namespace AutoBot
             while (AssessComplete(instrFile, resultsFile, out lcont) == false)
             {
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                RunSiKuLi(asycudaDocumentSetId, "SaveIM7", lcont.ToString());
+                RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
             }
         }
 
@@ -2873,6 +3023,8 @@ namespace AutoBot
             
 
             if (docReference == null) return;
+            var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                docReference);
             var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                 docReference, "InstructionResults.txt");
             var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -2882,7 +3034,7 @@ namespace AutoBot
             while (AssessComplete(instrFile, resultsFile, out lcont) == false)
             {
                 // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                RunSiKuLi(asycudaDocumentSetId, "SaveIM7", lcont.ToString());
+                RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
             }
         }
 
@@ -2892,6 +3044,8 @@ namespace AutoBot
         public static void AssessSalesEntry(string docReference, int asycudaDocumentSetId)
         {
             if (docReference == null) return;
+            var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                docReference);
             var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                 docReference, "InstructionResults.txt");
             var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
@@ -2901,7 +3055,7 @@ namespace AutoBot
             while (AssessComplete(instrFile, resultsFile, out lcont) == false)
             {
                // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                RunSiKuLi(asycudaDocumentSetId, "SaveIM7", lcont.ToString());
+                RunSiKuLi(docReference, "SaveIM7", lcont.ToString());
             }
 
 
@@ -2959,8 +3113,12 @@ namespace AutoBot
             lcont = 0;
 
             var desFolder = directoryName + "\\";
-            if (File.Exists(Path.Combine(desFolder, "C71OverView-PDF.txt")))
+            var overviewFile = Path.Combine(desFolder, "C71OverView-PDF.txt");
+            if (File.Exists(overviewFile))
             {
+
+
+                if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
                 var lines = File.ReadAllText(Path.Combine(directoryName, "C71OverView-PDF.txt"))
                     .Split(new[] { $"\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length == 0)
@@ -2969,6 +3127,11 @@ namespace AutoBot
                     return false;
                 }
 
+                if (lines.FirstOrDefault() == "No Data" && File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-0.25)) return false;
+                if (lines.FirstOrDefault() == "No Data") return true;
+
+                
+                
                 var existingfiles = 0;
 
                 foreach (var line in lines)
@@ -3172,6 +3335,27 @@ namespace AutoBot
                                 break;
                             }
 
+                            if (p[1] != r[1] && r.Length == 3 && r[2] == "Error")
+                            {
+
+                                if (r[0] == "Screenshot")
+                                {
+
+                                    SubmitScriptErrors(r[1]);
+                                    return true;
+                                }
+                                //isSuccess = true;
+                                //break;
+                            }
+
+                            if (p[1] == r[1] && r.Length == 3 && r[2] == "Error")
+                            {
+                                // email error
+                                //if (r[0] == "File") lcont = rcount - 1;
+                                //isSuccess = true;
+                                //break;
+                            }
+
                         }
 
                         if (isSuccess == true) continue;
@@ -3332,25 +3516,30 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
 
-                    var reference = declarant_Reference_Number;
-                    var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        reference);
-                    if (!Directory.Exists(directory)) return false;
+                    //var reference = declarant_Reference_Number;
+                    //var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    //    reference);
+                    //if (!Directory.Exists(directory)) return false;
+
+                    var lastdbfile =
+                        ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId && x.FileTypes.Type == "C71");
+                    var lastfiledate = lastdbfile != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
+
 
                     var ft = ctx.FileTypes.FirstOrDefault(x =>
                         x.Type == "C71" && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (ft == null) return true;
-                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                            .Declarant_Reference_Number);
-                    var lastC71 = new DirectoryInfo(desFolder).GetFiles()
-                        .LastOrDefault(x =>
-                            Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase) && x.Name != "C71.xml");
-                    if (lastC71 == null) return false;
-                    var csvFiles = new FileInfo[] {lastC71};
+                    //var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId).Declarant_Reference_Number);
+                    var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "C71");
+                    var csvFiles = new DirectoryInfo(desFolder).GetFiles()
+                        .Where(x => x.LastWriteTime.Date <= lastfiledate)
+                        .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase) && x.Name != "C71.xml")
+                        .ToList();
+                    //if (lastC71 == null) return false;
+                    //var csvFiles = new FileInfo[] {lastC71};
 
-                    if (csvFiles.Length > 0)
+                    if (csvFiles.Any())
                     {
                         BaseDataModel.Instance.ImportC71(asycudaDocumentSetId,
                             csvFiles.Select(x => x.FullName).ToList());
@@ -3390,15 +3579,20 @@ namespace AutoBot
                     reference);
                 if (!Directory.Exists(directory)) return false;
 
+                var lastdbfile =
+                    ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == asycudaDocumentSetId && x.FileTypes.Type == "LIC");
+                var lastfiledate = lastdbfile  != null ? File.GetCreationTime(lastdbfile.Attachments.FilePath) : DateTime.Today.AddDays(-1);
+
                 var ft = ctx.FileTypes.FirstOrDefault(x =>
                     x.Type == "LIC" && x.ApplicationSettingsId ==
                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                 if (ft == null) return true;
-                var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                    ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                        .Declarant_Reference_Number);
+                //var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == asycudaDocumentSetId).Declarant_Reference_Number);
+                var desFolder = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports", "LIC");
                 var csvFiles = new DirectoryInfo(desFolder).GetFiles()
-                    .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase)).ToList();
+                    .Where(x => Regex.IsMatch(x.FullName, ft.FilePattern, RegexOptions.IgnoreCase))
+                    .Where(x => x.LastWriteTime.Date <= lastfiledate)
+                    .ToList();
                 if (!csvFiles.Any()) return false;
 
                 foreach (var file in csvFiles.ToList())
@@ -3408,7 +3602,11 @@ namespace AutoBot
                     if (a.General_segment.Exporter_address.Text.Any(x => x.Contains(file.Name.Replace("-LIC.xml", ""))))
                         csvFiles.Remove(file);//the po should be different from the reference number
                     if(!ctx.AsycudaDocumentSetEntryDataEx.Any( x => x.AsycudaDocumentSetId == asycudaDocumentSetId
-                                                                 && a.General_segment.Exporter_address.Text.Any(z => z.Contains(x.EntryDataId)))) csvFiles.Remove(file);
+                                                                 && a.General_segment.Exporter_address.Text.Any(z => z.Contains(x.EntryDataId))) 
+                       && !new EntryDataDSContext().EntryData.OfType<PurchaseOrders>().Any(x => x.EntryDataEx.AsycudaDocumentSetId == asycudaDocumentSetId
+                                                                                                && a.General_segment.Exporter_address.Text.Any(z => z.Contains(x.SupplierInvoiceNo))))
+
+                        csvFiles.Remove(file);
                 }
 
                 BaseDataModel.Instance.ImportLicense(asycudaDocumentSetId,
@@ -3958,6 +4156,41 @@ namespace AutoBot
 
         }
 
+
+        public static void SubmitScriptErrors(string file)
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Script Errors");
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 0;
+                    var contacts = ctx.Contacts.Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                                                            && x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                   
+
+                            var body = $"Please see attached.\r\n" +
+                                       $"Regards,\r\n" +
+                                       $"AutoBot";
+                     
+                    var msg = EmailDownloader.EmailDownloader.CreateMessage(Client, "AutoBot Script Error", contacts, body, new string[]{file});
+                    EmailDownloader.EmailDownloader.SendEmail(Client, msg);
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+
+        }
+
         public static void SubmitDiscrepancyErrors()
         {
             try
@@ -4202,6 +4435,13 @@ namespace AutoBot
                 EmailSalesErrors();
             }
         }
+
+        public static void RebuildSalesReport()
+        {
+            Console.WriteLine("Allocations Started");
+            BuildSalesReportClass.Instance.ReBuildSalesReports();
+        }
+
 
         public static void AllocateDocSetDiscrepancies(FileTypes fileType)
         {
@@ -4916,16 +5156,15 @@ namespace AutoBot
 
 
 
-        public static void RunSiKuLi(int docSetId, string scriptName, string lastCNumber = "")
+        public static void RunSiKuLi(string directoryName, string scriptName, string lastCNumber = "")
         {
             try
             {
 
-                if (docSetId == 0) return;
+                if (string.IsNullOrEmpty(directoryName)) return;
 
                 Console.WriteLine($"Executing {scriptName}");
-                var docRef = new AsycudaDocumentSetExService().GetAsycudaDocumentSetExByKey(docSetId.ToString()).Result
-                    .Declarant_Reference_Number;
+               
 
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -4939,7 +5178,7 @@ namespace AutoBot
                             BaseDataModel.Instance.CurrentApplicationSettings.AsycudaLogin
                         } {BaseDataModel.Instance.CurrentApplicationSettings.AsycudaPassword} {
                             (string.IsNullOrEmpty(lastCNumber) ? "" : lastCNumber + " ")
-                        }""{Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docRef) + "\\"}";
+                        }""{directoryName + "\\"}";
                 startInfo.UseShellExecute = false;
                 process.StartInfo = startInfo;
                 process.Start();
@@ -4955,7 +5194,7 @@ namespace AutoBot
 
                 if (!process.HasExited) process.Kill();
 
-                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA"))
+                foreach (var process1 in Process.GetProcesses().Where(x => x.MainWindowTitle.Contains("ASYCUDA") || x.MainWindowTitle.Contains("Acrobat Reader"))
                     .ToList())
                 {
                     process1.Kill();

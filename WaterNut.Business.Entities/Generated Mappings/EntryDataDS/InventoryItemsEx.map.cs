@@ -11,7 +11,7 @@
     {
         public InventoryItemsExMap()
         {                        
-              this.HasKey(t => t.ItemNumber);        
+              this.HasKey(t => t.InventoryItemId);        
               this.ToTable("InventoryItemsEx");
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
               this.Property(t => t.Description).HasColumnName("Description").IsRequired().HasMaxLength(255);
@@ -21,6 +21,7 @@
               this.Property(t => t.SuppQty).HasColumnName("SuppQty");
               this.Property(t => t.EntryTimeStamp).HasColumnName("EntryTimeStamp");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItemsEx)t.InventoryItemEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

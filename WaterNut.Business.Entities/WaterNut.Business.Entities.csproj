@@ -265,6 +265,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSetToAssess.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitPOInfo.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
@@ -402,6 +404,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\PurchaseOrders.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Sales.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Business Entities\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
@@ -597,6 +600,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToAssess.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
@@ -606,6 +610,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitPOInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
@@ -732,6 +737,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\PurchaseOrders.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Sales.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
@@ -924,6 +930,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToAssess.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
@@ -933,6 +940,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitPOInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
@@ -1059,6 +1067,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\PurchaseOrders.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Sales.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated Constructors Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
@@ -1251,6 +1260,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToAssess.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
@@ -1260,6 +1270,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitPOInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
@@ -1386,6 +1397,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\PurchaseOrders.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Sales.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
@@ -1578,6 +1590,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssess.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToAssessErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
@@ -1587,6 +1600,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitPOInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
@@ -1713,6 +1727,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\PurchaseOrders.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Sales.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentItemEntryDataDetail.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataQS\AsycudaDocumentSetEntryData.cs" />
@@ -1915,6 +1930,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_LICToCreate.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSet.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSetToAssess.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSetToAssessErrors.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ToDo_POToXML.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs" />
@@ -1924,6 +1940,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitInadequatePackages.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitIncompleteEntryData.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitIncompleteSupplierInfo.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitMissingInvoicePDFs.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitPOInfo.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitUnclassifiedItems.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs" />
@@ -2050,6 +2067,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\PurchaseOrders.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Sales.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Suppliers.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\WarehouseInfo.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentEntryData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentItemEntryDataDetail.map.cs" />
     <Compile Include="Generated Mappings\EntryDataQS\AsycudaDocumentSetEntryData.map.cs" />

@@ -84,7 +84,7 @@ namespace WaterNut.DataSpace
             }
             catch (Exception e)
             {
-                var nex = new ApplicationException($"Error Importing File: {droppedFilePath}", e);
+                var nex = new ApplicationException($"Error Importing File: {droppedFilePath} - {e.Message}", e);
                 Console.WriteLine(nex);
                 throw nex;
             }
@@ -182,7 +182,6 @@ namespace WaterNut.DataSpace
                                 FileTypeId = fileTypeId,
                                 DocumentType = g.FirstOrDefault(x => x.DocumentType != "")?.DocumentType,
                                 SupplierInvoiceNo = g.FirstOrDefault(x => x.SupplierInvoiceNo != "")?.SupplierInvoiceNo,
-                                WarehouseNo = g.FirstOrDefault(x => x.WarehouseNo != "")?.WarehouseNo,
                                 PONumber = g.FirstOrDefault(x => x.PONumber != "")?.PONumber,
                                 SourceFile = droppedFilePath,
                                 
@@ -222,7 +221,8 @@ namespace WaterNut.DataSpace
                             TotalDeductions = x.TotalDeductions,
                             InvoiceTotal = x.InvoiceTotal,
                             Packages = x.Packages,
-                            
+                            WarehouseNo = x.WarehouseNo,
+
 
 
 
@@ -247,11 +247,20 @@ namespace WaterNut.DataSpace
                         List<EntryDataDetails> details = new List<EntryDataDetails>();
 
 
-                        // check Existing items
-                        var oldeds = await GetEntryData(item.EntryData.EntryDataId, docSet,
-                            item.EntryData.ApplicationSettingsId).ConfigureAwait(false);
-                        var olded = oldeds.FirstOrDefault();
-                        if (olded != null)
+                    // check Existing items
+                    //var oldeds = await GetEntryData(item.EntryData.EntryDataId, docSet,
+                    //    item.EntryData.ApplicationSettingsId).ConfigureAwait(false);
+
+                    var oldeds = new EntryDataDSContext().EntryData
+                            .Include("AsycudaDocumentSets")
+                            .Include("EntryDataDetails")
+                            .Where(x => x.EntryDataId == item.EntryData.EntryDataId 
+                                        && x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId ).ToList()
+                            .Where(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any())
+                            .ToList();
+
+                    var olded = overWriteExisting ? null : oldeds.FirstOrDefault();
+                        if (oldeds.Any())
                         {
                             if (overWriteExisting)
                             {
@@ -268,7 +277,7 @@ namespace WaterNut.DataSpace
 
                                 foreach (var doc in docSet)
                                 {
-
+                                    
                                     var l = 0;
                                     foreach (var nEd in item.EntryDataDetails.ToList())
                                     {
@@ -327,7 +336,7 @@ namespace WaterNut.DataSpace
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         INVNumber = item.EntryData.EntryDataId,
                                         CustomerName = item.EntryData.CustomerName,
-                                        EmailId = item.EntryData.EmailId,
+                                        EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
                                             ? null
@@ -370,7 +379,7 @@ namespace WaterNut.DataSpace
                                         Packages = item.f.Sum(x => x.Packages),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
 
-                                        EmailId = item.EntryData.EmailId,
+                                        EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
@@ -414,7 +423,7 @@ namespace WaterNut.DataSpace
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
                                         Packages = item.f.Sum(x => x.Packages),
                                         
-                                        EmailId = item.EntryData.EmailId,
+                                        EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
@@ -423,11 +432,24 @@ namespace WaterNut.DataSpace
                                         SupplierInvoiceNo = string.IsNullOrEmpty(item.EntryData.SupplierInvoiceNo)
                                             ? null
                                             : item.EntryData.SupplierInvoiceNo,
-                                        WarehouseNo = string.IsNullOrEmpty(item.EntryData.WarehouseNo)
-                                            ? null
-                                            : item.EntryData.WarehouseNo,
+                                        
 
                                     };
+                                    foreach (var warehouseNo in item.f.Where(x => !string.IsNullOrEmpty(x.WarehouseNo)))
+                                    {
+                                        //var poList = warehouseNo.WarehouseNo.Split(new string[] {"|", ","},
+                                        //    StringSplitOptions.RemoveEmptyEntries);
+                                        //foreach (var w in poList)
+                                        //{
+                                            EDpo.WarehouseInfo.Add(new WarehouseInfo()
+                                            {
+                                                WarehouseNo = warehouseNo.WarehouseNo,
+                                                Packages = warehouseNo.Packages,
+                                                EntryData_PurchaseOrders = EDpo,
+                                                TrackingState = TrackingState.Added
+                                            });
+                                        //}
+                                    }
                                     if (!string.IsNullOrEmpty(item.EntryData.DocumentType))
                                         EDpo.DocumentType = new EDDocumentTypes(true)
                                         {
@@ -453,7 +475,7 @@ namespace WaterNut.DataSpace
                                         TotalInsurance = item.f.Sum(x => x.TotalInsurance),
                                         TotalDeduction = item.f.Sum(x => x.TotalDeductions),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                        EmailId = item.EntryData.EmailId,
+                                        EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
@@ -485,7 +507,7 @@ namespace WaterNut.DataSpace
                                         TotalInsurance = item.f.Sum(x => x.TotalInsurance),
                                         TotalDeduction = item.f.Sum(x => x.TotalDeductions),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                        EmailId = item.EntryData.EmailId,
+                                        EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
@@ -518,7 +540,7 @@ namespace WaterNut.DataSpace
                                         TotalInsurance = item.f.Sum(x => x.TotalInsurance),
                                         TotalDeduction = item.f.Sum(x => x.TotalDeductions),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                        EmailId = item.EntryData.EmailId,
+                                        EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
@@ -547,7 +569,7 @@ namespace WaterNut.DataSpace
                                         TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
                                         TotalWeight = item.f.Sum(x => x.TotalWeight),
                                         InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                        EmailId = item.EntryData.EmailId,
+                                        EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
@@ -719,8 +741,8 @@ namespace WaterNut.DataSpace
         private async Task<List<EntryData>> GetEntryData(string entryDataId, List<AsycudaDocumentSet> docSet,
             int applicationSettingsId)
         {
-            if (!loadedEntryData.ContainsKey($"{entryDataId}|{applicationSettingsId}"))
-            {
+            //if (!loadedEntryData.ContainsKey($"{entryDataId}|{applicationSettingsId}"))
+            //{
                 using (var ctx = new EntryDataDSContext())
                 {
                     var entryDatas = ctx.EntryData
@@ -738,7 +760,7 @@ namespace WaterNut.DataSpace
                     loadedEntryData.AddOrUpdate($"{entryDataId}|{applicationSettingsId}", entryDatas.ToList(), (k,v) => v);
                     //eLst.FirstOrDefault(x => x.EntryDataId == item.e.EntryDataId && x.EntryDataDate != item.e.EntryDataDate);
                 }
-            }
+           // }
 
             return loadedEntryData[$"{entryDataId}|{applicationSettingsId}"].Where(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any()).ToList();
         }
@@ -752,7 +774,7 @@ namespace WaterNut.DataSpace
 
                 if (h == "") continue;
 
-                if ("INVNO|Reciept #|NUM|Invoice #|Invoice#|Order Reference".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("Invoice|INVNO|Reciept #|NUM|Invoice #|Invoice#|Order Reference".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("EntryDataId", i);
                     continue;
