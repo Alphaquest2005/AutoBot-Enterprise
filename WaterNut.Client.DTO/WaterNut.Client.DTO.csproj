@@ -187,7 +187,6 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
-    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs" />
@@ -195,6 +194,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitPOInfo.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitSalesToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
@@ -330,7 +330,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
@@ -338,6 +337,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitPOInfo.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitSalesToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />
@@ -473,7 +473,6 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
-    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
@@ -481,6 +480,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitPOInfo.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitSalesToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs" />

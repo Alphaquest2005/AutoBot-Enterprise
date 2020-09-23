@@ -97,6 +97,9 @@ namespace EntryDataQS.Client.Contracts
   		[OperationContract]
 		Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+        
   		
     }
 }

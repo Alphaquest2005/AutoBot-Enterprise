@@ -421,6 +421,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _documentReferenceFilter;
+        public string DocumentReferenceFilter
+        {
+            get
+            {
+                return _documentReferenceFilter;
+            }
+            set
+            {
+                _documentReferenceFilter = value;
+				NotifyPropertyChanged(x => DocumentReferenceFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _exporter_addressFilter;
+        public string Exporter_addressFilter
+        {
+            get
+            {
+                return _exporter_addressFilter;
+            }
+            set
+            {
+                _exporter_addressFilter = value;
+				NotifyPropertyChanged(x => Exporter_addressFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -498,7 +534,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("QtyLicensesRequired == {0}",  QtyLicensesRequiredFilter.ToString()));				 
 
 					if(HasLicenseFilter.HasValue)
-						res.Append(" && " + string.Format("HasLicense == {0}",  HasLicenseFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("HasLicense == {0}",  HasLicenseFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(DocumentReferenceFilter) == false)
+						res.Append(" && " + string.Format("DocumentReference.Contains(\"{0}\")",  DocumentReferenceFilter));						
+ 
+
+									if(string.IsNullOrEmpty(Exporter_addressFilter) == false)
+						res.Append(" && " + string.Format("Exporter_address.Contains(\"{0}\")",  Exporter_addressFilter));						
+			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -560,7 +604,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     QtyLicensesRequired = x.QtyLicensesRequired ,
                     
  
-                    HasLicense = x.HasLicense 
+                    HasLicense = x.HasLicense ,
+                    
+ 
+                    DocumentReference = x.DocumentReference ,
+                    
+ 
+                    Exporter_address = x.Exporter_address 
                     
                 }).ToList()
             };
@@ -613,6 +663,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> HasLicense { get; set; } 
+                    
+ 
+                    public string DocumentReference { get; set; } 
+                    
+ 
+                    public string Exporter_address { get; set; } 
                     
         }
 

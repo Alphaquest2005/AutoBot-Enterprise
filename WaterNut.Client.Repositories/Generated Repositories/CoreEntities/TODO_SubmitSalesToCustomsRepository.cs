@@ -32,36 +32,36 @@ using System;
 using System.ServiceModel;
 using TrackableEntities.Common;
 
-using TODO_SubmitDiscrepanciesErrorReport = CoreEntities.Client.Entities.TODO_SubmitDiscrepanciesErrorReport;
+using TODO_SubmitSalesToCustoms = CoreEntities.Client.Entities.TODO_SubmitSalesToCustoms;
 
 namespace CoreEntities.Client.Repositories 
 {
    
-    public partial class TODO_SubmitDiscrepanciesErrorReportRepository : BaseRepository<TODO_SubmitDiscrepanciesErrorReportRepository>
+    public partial class TODO_SubmitSalesToCustomsRepository : BaseRepository<TODO_SubmitSalesToCustomsRepository>
     {
 
-       private static readonly TODO_SubmitDiscrepanciesErrorReportRepository instance;
-       static TODO_SubmitDiscrepanciesErrorReportRepository()
+       private static readonly TODO_SubmitSalesToCustomsRepository instance;
+       static TODO_SubmitSalesToCustomsRepository()
         {
-            instance = new TODO_SubmitDiscrepanciesErrorReportRepository();
+            instance = new TODO_SubmitSalesToCustomsRepository();
         }
 
-       public static TODO_SubmitDiscrepanciesErrorReportRepository Instance
+       public static TODO_SubmitSalesToCustomsRepository Instance
         {
             get { return instance; }
         }
         
-        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> TODO_SubmitDiscrepanciesErrorReport(List<string> includesLst = null)
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> TODO_SubmitSalesToCustoms(List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime) return new List<TODO_SubmitSalesToCustoms>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReport(includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetTODO_SubmitSalesToCustoms(includesLst).ConfigureAwait(continueOnCapturedContext: false);
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable();
                         }
                         else
                         {
@@ -80,26 +80,26 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpression(string exp, List<string> includesLst = null)
+		 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpression(string exp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_SubmitSalesToCustoms>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                     {
-					    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+					    IEnumerable<DTO.TODO_SubmitSalesToCustoms> res = null;
                         if(exp == "All")
                         {                       
-						    res = await t.GetTODO_SubmitDiscrepanciesErrorReport(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetTODO_SubmitSalesToCustoms(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetTODO_SubmitDiscrepanciesErrorReportByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetTODO_SubmitSalesToCustomsByExpression(exp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable();
                         }
                         else
                         {
@@ -118,21 +118,21 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionLst(List<string> expLst, List<string> includesLst = null)
+		 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionLst(List<string> expLst, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitSalesToCustoms>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                     {
-					    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+					    IEnumerable<DTO.TODO_SubmitSalesToCustoms> res = null;
                        
-                        res = await t.GetTODO_SubmitDiscrepanciesErrorReportByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                        res = await t.GetTODO_SubmitSalesToCustomsByExpressionLst(expLst, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                       
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable();
                         }
                         else
                         {
@@ -152,26 +152,26 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
+		 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionNav(string exp, Dictionary<string, string> navExp, List<string> includesLst = null)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable();
+            if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None") return new List<TODO_SubmitSalesToCustoms>().AsEnumerable();
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                     {
-					    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+					    IEnumerable<DTO.TODO_SubmitSalesToCustoms> res = null;
                         if(exp == "All" && navExp.Count == 0)
                         {                       
-						    res = await t.GetTODO_SubmitDiscrepanciesErrorReport(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
+						    res = await t.GetTODO_SubmitSalesToCustoms(includesLst).ConfigureAwait(continueOnCapturedContext: false);					
                         }
                         else
                         {
-                             res = await t.GetTODO_SubmitDiscrepanciesErrorReportByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
+                             res = await t.GetTODO_SubmitSalesToCustomsByExpressionNav(exp, navExp, includesLst).ConfigureAwait(continueOnCapturedContext: false);	                         
                         }
                     
                         if (res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable();
                         }
                         else
                         {
@@ -191,16 +191,16 @@ namespace CoreEntities.Client.Repositories
         }
 
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> GetTODO_SubmitDiscrepanciesErrorReport(string id, List<string> includesLst = null)
+        public async Task<TODO_SubmitSalesToCustoms> GetTODO_SubmitSalesToCustoms(string id, List<string> includesLst = null)
         {
              try
              {   
-                 using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                 using (var t = new TODO_SubmitSalesToCustomsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReportByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetTODO_SubmitSalesToCustomsByKey(id,includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return new TODO_SubmitDiscrepanciesErrorReport(res);
+                            return new TODO_SubmitSalesToCustoms(res);
                     }
                     else
                     {
@@ -219,7 +219,7 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> UpdateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity)
+        public async Task<TODO_SubmitSalesToCustoms> UpdateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
         {
             if (entity == null) return entity;
             var entitychanges = entity.ChangeTracker.GetChanges().FirstOrDefault();
@@ -227,10 +227,10 @@ namespace CoreEntities.Client.Repositories
             {
                 try
                 {
-                    using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                    using (var t = new TODO_SubmitSalesToCustomsClient())
                     {
      
-                        var updatedEntity =  await t.UpdateTODO_SubmitDiscrepanciesErrorReport(entitychanges).ConfigureAwait(false);
+                        var updatedEntity =  await t.UpdateTODO_SubmitSalesToCustoms(entitychanges).ConfigureAwait(false);
                         entity.EntityId = updatedEntity.EntityId;
                         entity.DTO.AcceptChanges();
                          //var  = entity.;
@@ -256,13 +256,13 @@ namespace CoreEntities.Client.Repositories
 
         }
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> CreateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity)
+        public async Task<TODO_SubmitSalesToCustoms> CreateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
         {
             try
             {   
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                     {
-                        return new TODO_SubmitDiscrepanciesErrorReport(await t.CreateTODO_SubmitDiscrepanciesErrorReport(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
+                        return new TODO_SubmitSalesToCustoms(await t.CreateTODO_SubmitSalesToCustoms(entity.DTO).ConfigureAwait(continueOnCapturedContext: false));
                     }
             }
             catch (FaultException<ValidationFault> e)
@@ -276,13 +276,13 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-        public async Task<bool> DeleteTODO_SubmitDiscrepanciesErrorReport(string id)
+        public async Task<bool> DeleteTODO_SubmitSalesToCustoms(string id)
         {
             try
             {
-             using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+             using (var t = new TODO_SubmitSalesToCustomsClient())
                 {
-                    return await t.DeleteTODO_SubmitDiscrepanciesErrorReport(id).ConfigureAwait(continueOnCapturedContext: false);
+                    return await t.DeleteTODO_SubmitSalesToCustoms(id).ConfigureAwait(continueOnCapturedContext: false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -296,13 +296,13 @@ namespace CoreEntities.Client.Repositories
             }         
         }
 
-        public async Task<bool> RemoveSelectedTODO_SubmitDiscrepanciesErrorReport(IEnumerable<string> selectedTODO_SubmitDiscrepanciesErrorReport)
+        public async Task<bool> RemoveSelectedTODO_SubmitSalesToCustoms(IEnumerable<string> selectedTODO_SubmitSalesToCustoms)
         {
             try
             {
-                using (var ctx = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var ctx = new TODO_SubmitSalesToCustomsClient())
                 {
-                    return await ctx.RemoveSelectedTODO_SubmitDiscrepanciesErrorReport(selectedTODO_SubmitDiscrepanciesErrorReport).ConfigureAwait(false);
+                    return await ctx.RemoveSelectedTODO_SubmitSalesToCustoms(selectedTODO_SubmitSalesToCustoms).ConfigureAwait(false);
                 }
             }
             catch (FaultException<ValidationFault> e)
@@ -319,21 +319,21 @@ namespace CoreEntities.Client.Repositories
 
 		//Virtural List Implementation
 
-		public async Task<Tuple<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
+		public async Task<Tuple<IEnumerable<TODO_SubmitSalesToCustoms>, int>> LoadRange(int startIndex, int count, string exp, Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
 			var overallCount = 0;
             if (System.ComponentModel.LicenseManager.UsageMode == LicenseUsageMode.Designtime || exp == null || exp == "None")
             {
                 
-                return new Tuple<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>, int>(new List<TODO_SubmitDiscrepanciesErrorReport>().AsEnumerable(), overallCount);
+                return new Tuple<IEnumerable<TODO_SubmitSalesToCustoms>, int>(new List<TODO_SubmitSalesToCustoms>().AsEnumerable(), overallCount);
             }
             
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                 {
 
-                    IEnumerable<DTO.TODO_SubmitDiscrepanciesErrorReport> res = null;
+                    IEnumerable<DTO.TODO_SubmitSalesToCustoms> res = null;
                                          
 						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
@@ -342,7 +342,7 @@ namespace CoreEntities.Client.Repositories
                                 
                     if (res != null)
                     {
-                        return new Tuple<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>, int>(res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable(), overallCount);
+                        return new Tuple<IEnumerable<TODO_SubmitSalesToCustoms>, int>(res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable(), overallCount);
                     }
                     else
                     {
@@ -361,17 +361,17 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByemailId(string emailId, List<string> includesLst = null)
+	 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
-             if (emailId == "0") return null;
+             if (AsycudaDocumentSetId == "0") return null;
             try
             {
-                 using (TODO_SubmitDiscrepanciesErrorReportClient t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                 using (TODO_SubmitSalesToCustomsClient t = new TODO_SubmitSalesToCustomsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReportByemailId(emailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetTODO_SubmitSalesToCustomsByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -389,17 +389,45 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
- 	 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+ 	 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
-             if (AsycudaDocumentSetId == "0") return null;
+             if (ApplicationSettingsId == "0") return null;
             try
             {
-                 using (TODO_SubmitDiscrepanciesErrorReportClient t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                 using (TODO_SubmitSalesToCustomsClient t = new TODO_SubmitSalesToCustomsClient())
                     {
-                        var res = await t.GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                        var res = await t.GetTODO_SubmitSalesToCustomsByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
-                            return res.Select(x => new TODO_SubmitDiscrepanciesErrorReport(x)).AsEnumerable();
+                            return res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByEmailId(string EmailId, List<string> includesLst = null)
+        {
+             if (EmailId == "0") return null;
+            try
+            {
+                 using (TODO_SubmitSalesToCustomsClient t = new TODO_SubmitSalesToCustomsClient())
+                    {
+                        var res = await t.GetTODO_SubmitSalesToCustomsByEmailId(EmailId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_SubmitSalesToCustoms(x)).AsEnumerable();
 					    }                
 					    else
 					    {
@@ -422,7 +450,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                 {
                     return t.SumField(whereExp,sumExp);
                 }
@@ -443,7 +471,7 @@ namespace CoreEntities.Client.Repositories
         {
             try
             {
-                using (var t = new TODO_SubmitDiscrepanciesErrorReportClient())
+                using (var t = new TODO_SubmitSalesToCustomsClient())
                 {
                     return await t.SumNav(whereExp,navExp,sumExp).ConfigureAwait(false);
                 }

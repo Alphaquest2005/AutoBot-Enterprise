@@ -48,7 +48,7 @@ namespace EntryDataQS.Client.Entities
                         {
                             this.InventoryItemsEx = (InventoryItemsEx)new InventoryItemsEx().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.InventoryItemsEx.ItemNumber);
+							this.EntryDataDetailsId = Convert.ToInt32(this.InventoryItemsEx.InventoryItemId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddInventoryItemsEx");
                         }

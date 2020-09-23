@@ -125,6 +125,71 @@ namespace EntryDataQS.Client.DTO
 		}
         private int _EntryData_Id;
 
+        [DataMember]
+        public int ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private int _ApplicationSettingsId;
+
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
+
+        [DataMember]
+        public string CustomsProcedure
+		{ 
+		    get { return _CustomsProcedure; }
+			set
+			{
+			    if (value == _CustomsProcedure) return;
+				_CustomsProcedure = value;
+				NotifyPropertyChanged();//m => this.CustomsProcedure
+			}
+		}
+        private string _CustomsProcedure;
+
+        [DataMember]
+        public int Asycuda_id
+		{ 
+		    get { return _Asycuda_id; }
+			set
+			{
+			    if (value == _Asycuda_id) return;
+				_Asycuda_id = value;
+				NotifyPropertyChanged();//m => this.Asycuda_id
+			}
+		}
+        private int _Asycuda_id;
+
+        [DataMember]
+        public string EntryDataType
+		{ 
+		    get { return _EntryDataType; }
+			set
+			{
+			    if (value == _EntryDataType) return;
+				_EntryDataType = value;
+				NotifyPropertyChanged();//m => this.EntryDataType
+			}
+		}
+        private string _EntryDataType;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

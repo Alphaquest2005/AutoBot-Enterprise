@@ -227,6 +227,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _isSingleEmailFilter;
+        public Boolean? IsSingleEmailFilter
+        {
+            get
+            {
+                return _isSingleEmailFilter;
+            }
+            set
+            {
+                _isSingleEmailFilter = value;
+				NotifyPropertyChanged(x => IsSingleEmailFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -259,6 +277,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(PatternFilter) == false)
 						res.Append(" && " + string.Format("Pattern.Contains(\"{0}\")",  PatternFilter));						
+ 
+
+									if(IsSingleEmailFilter.HasValue)
+						res.Append(" && " + string.Format("IsSingleEmail == {0}",  IsSingleEmailFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -282,7 +304,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 dataToPrint = lst.Select(x => new EmailMappingExcelLine
                 {
  
-                    Pattern = x.Pattern 
+                    Pattern = x.Pattern ,
+                    
+ 
+                    IsSingleEmail = x.IsSingleEmail 
                     
                 }).ToList()
             };
@@ -296,6 +321,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
 		 
                     public string Pattern { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsSingleEmail { get; set; } 
                     
         }
 

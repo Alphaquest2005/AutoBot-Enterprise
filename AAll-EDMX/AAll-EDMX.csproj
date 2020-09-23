@@ -312,7 +312,6 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -320,6 +319,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -656,7 +656,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitInadequatePackages.map.cs
@@ -664,6 +663,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitIncompleteSupplierInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitMissingInvoicePDFs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitPOInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitSalesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitUnclassifiedItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_TotalAdjustmentsToProcess.map.cs
@@ -1008,7 +1008,6 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -1016,6 +1015,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -1338,7 +1338,6 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -1346,6 +1345,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -1668,7 +1668,6 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -1676,6 +1675,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -1998,7 +1998,6 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -2006,6 +2005,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -2293,7 +2293,6 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -2301,6 +2300,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -2438,7 +2438,6 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -2446,6 +2445,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -2589,7 +2589,6 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -2597,6 +2596,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -2732,7 +2732,6 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -2740,6 +2739,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -2875,7 +2875,6 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -2883,6 +2882,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -3018,7 +3018,6 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -3026,6 +3025,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -3161,7 +3161,6 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_PODocSetToExport.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ToDo_POToXML.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs
-..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitInadequatePackages.cs
@@ -3169,6 +3168,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitMissingInvoicePDFs.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitPOInfo.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitSalesToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitUnclassifiedItems.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_SubmitXMLToCustoms.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_TotalAdjustmentsToProcess.cs
@@ -3387,7 +3387,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSetToExport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ToDo_POToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesErrorReport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitInadequatePackages.map.cs
@@ -3395,6 +3394,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitIncompleteSupplierInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitMissingInvoicePDFs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitPOInfo.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitSalesToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitUnclassifiedItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_SubmitXMLToCustoms.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_TotalAdjustmentsToProcess.map.cs
@@ -3724,7 +3724,6 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_PODocSetToExportRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitAllXMLToCustomsRepository.cs
-..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesErrorReportRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitInadequatePackagesRepository.cs
@@ -3732,6 +3731,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitIncompleteSupplierInfoRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitMissingInvoicePDFsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitPOInfoRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitSalesToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitUnclassifiedItemsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_TotalAdjustmentsToProcessRepository.cs
@@ -3888,7 +3888,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ToDo_POToXMLViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitAllXMLToCustomsViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesErrorReportViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDiscrepanciesToCustomsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitInadequatePackagesViewModel.cs
@@ -3896,6 +3895,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitIncompleteSupplierInfoViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitMissingInvoicePDFsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitPOInfoViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitSalesToCustomsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitUnclassifiedItemsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_SubmitXMLToCustomsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_TotalAdjustmentsToProcessViewModel.cs
@@ -4033,7 +4033,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ToDo_POToXMLTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitAllXMLToCustomsTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesErrorReportTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDiscrepanciesToCustomsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitInadequatePackagesTotals.cs
@@ -4041,6 +4040,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitIncompleteSupplierInfoTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitMissingInvoicePDFsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitPOInfoTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitSalesToCustomsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitUnclassifiedItemsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_SubmitXMLToCustomsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_TotalAdjustmentsToProcessTotals.cs
@@ -4166,7 +4166,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ToDo_POToXMLVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitAllXMLToCustomsVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesErrorReportVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDiscrepanciesToCustomsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitInadequatePackagesVirturalListLoader.cs
@@ -4174,6 +4173,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitIncompleteSupplierInfoVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitMissingInvoicePDFsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitPOInfoVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitSalesToCustomsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitUnclassifiedItemsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_SubmitXMLToCustomsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_TotalAdjustmentsToProcessVirturalListLoader.cs
@@ -4347,7 +4347,6 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_PODocSetToExportService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs
-..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitDiscrepanciesErrorReportService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitInadequatePackagesService.cs
@@ -4355,6 +4354,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitPOInfoService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitSalesToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_TotalAdjustmentsToProcessService.cs
@@ -4677,7 +4677,6 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_PODocSetToExportService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ToDo_POToXMLService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitAllXMLToCustomsService.cs
-..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitDiscrepanciesErrorReportService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitInadequatePackagesService.cs
@@ -4685,6 +4684,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitIncompleteSupplierInfoService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitMissingInvoicePDFsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitPOInfoService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitSalesToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitUnclassifiedItemsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_TotalAdjustmentsToProcessService.cs
@@ -4965,7 +4965,6 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_PODocSetToExportService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IToDo_POToXMLService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs
-..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitDiscrepanciesErrorReportService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitInadequatePackagesService.cs
@@ -4973,6 +4972,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitPOInfoService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitSalesToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_TotalAdjustmentsToProcessService.cs
@@ -5108,7 +5108,6 @@
 ..\WaterNut.Client.Services\CoreEntities\TODO_PODocSetToExportClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ToDo_POToXMLClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitAllXMLToCustomsClient.cs
-..\WaterNut.Client.Services\CoreEntities\TODO_SubmitDiscrepanciesErrorReportClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitInadequatePackagesClient.cs
@@ -5116,6 +5115,7 @@
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitIncompleteSupplierInfoClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitMissingInvoicePDFsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitPOInfoClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_SubmitSalesToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitUnclassifiedItemsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_SubmitXMLToCustomsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_TotalAdjustmentsToProcessClient.cs

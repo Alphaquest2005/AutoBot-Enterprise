@@ -30,6 +30,8 @@
               this.Property(t => t.TotalDeduction).HasColumnName("TotalDeduction");
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.Property(t => t.Packages).HasColumnName("Packages");
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey").HasMaxLength(50);
               this.HasMany(t => t.AsycudaDocumentEntryDatas).WithRequired(t => (EntryData)t.EntryData);
               this.HasMany(t => t.AsycudaDocumentSetEntryDatas).WithRequired(t => (EntryData)t.EntryData);
              // Tracking Properties

@@ -112,9 +112,19 @@ namespace CoreEntities.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_SubmitPOInfoByEntryDataId(EntryDataId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             return  await Channel.GetTODO_SubmitPOInfoByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_SubmitPOInfoByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(false);
         }
 			 
   		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEmailId(string EmailId, List<string> includesLst = null)
@@ -125,6 +135,16 @@ namespace CoreEntities.Client.Services
   		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByFileTypeId(string FileTypeId, List<string> includesLst = null)
         {
             return  await Channel.GetTODO_SubmitPOInfoByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByNewAsycuda_Id(string NewAsycuda_Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_SubmitPOInfoByNewAsycuda_Id(NewAsycuda_Id, includesLst).ConfigureAwait(false);
+        }
+			 
+  		public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAssessedAsycuda_Id(string AssessedAsycuda_Id, List<string> includesLst = null)
+        {
+            return  await Channel.GetTODO_SubmitPOInfoByAssessedAsycuda_Id(AssessedAsycuda_Id, includesLst).ConfigureAwait(false);
         }
 			 
           public decimal SumField(string whereExp, string sumExp)

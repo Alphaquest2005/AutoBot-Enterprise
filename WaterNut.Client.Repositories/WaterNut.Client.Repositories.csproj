@@ -220,7 +220,6 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_PODocSetToExportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ToDo_POToXMLRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitAllXMLToCustomsRepository.cs" />
-    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesErrorReportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitInadequatePackagesRepository.cs" />
@@ -228,6 +227,7 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitIncompleteSupplierInfoRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitMissingInvoicePDFsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitPOInfoRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitSalesToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitUnclassifiedItemsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitXMLToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_TotalAdjustmentsToProcessRepository.cs" />

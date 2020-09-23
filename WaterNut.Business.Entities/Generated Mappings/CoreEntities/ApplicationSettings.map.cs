@@ -42,11 +42,11 @@
               this.Property(t => t.AllowCleanBond).HasColumnName("AllowCleanBond").HasMaxLength(50);
               this.Property(t => t.OrderEntriesBy).HasColumnName("OrderEntriesBy").HasMaxLength(50);
               this.Property(t => t.OpeningStockDate).HasColumnName("OpeningStockDate");
-              this.Property(t => t.DeclarantCode).HasColumnName("DeclarantCode").HasMaxLength(50);
+              this.Property(t => t.DeclarantCode).HasColumnName("DeclarantCode").IsRequired().HasMaxLength(50);
               this.Property(t => t.WeightCalculationMethod).HasColumnName("WeightCalculationMethod").HasMaxLength(50);
               this.Property(t => t.BondQuantum).HasColumnName("BondQuantum");
               this.Property(t => t.DataFolder).HasColumnName("DataFolder").HasMaxLength(999);
-              this.Property(t => t.CompanyName).HasColumnName("CompanyName").HasMaxLength(50);
+              this.Property(t => t.CompanyName).HasColumnName("CompanyName").IsRequired().HasMaxLength(50);
               this.Property(t => t.IsActive).HasColumnName("IsActive");
               this.Property(t => t.Email).HasColumnName("Email").HasMaxLength(255);
               this.Property(t => t.EmailPassword).HasColumnName("EmailPassword").HasMaxLength(50);

@@ -15,7 +15,7 @@ namespace CoreEntities
     public partial class TODO_DiscrepanciesErrors
     {
         public int Entrydatadetailsid { get; set; }
-        public Nullable<int> AsycudaDocumentSetId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
         public string Type { get; set; }
         public System.DateTime InvoiceDate { get; set; }
         public Nullable<System.DateTime> EffectiveDate { get; set; }

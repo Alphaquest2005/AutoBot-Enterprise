@@ -168,6 +168,85 @@ public int EntryData_Id
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
+       
+public int ApplicationSettingsId
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.ApplicationSettingsId) return;
+				this.asycudadocumentitementrydatadetail.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.AsycudaDocumentSetId) return;
+				this.asycudadocumentitementrydatadetail.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(11, ErrorMessage = "CustomsProcedure has a max length of 11 letters ")]
+public string CustomsProcedure
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.CustomsProcedure; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.CustomsProcedure) return;
+				this.asycudadocumentitementrydatadetail.CustomsProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("CustomsProcedure");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "Asycuda_id is required")]
+       [NumberValidationAttribute]
+public int Asycuda_id
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.Asycuda_id; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.Asycuda_id) return;
+				this.asycudadocumentitementrydatadetail.Asycuda_id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Asycuda_id");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "EntryDataType has a max length of 50 letters ")]
+public string EntryDataType
+		{ 
+		    get { return this.asycudadocumentitementrydatadetail.EntryDataType; }
+			set
+			{
+			    if (value == this.asycudadocumentitementrydatadetail.EntryDataType) return;
+				this.asycudadocumentitementrydatadetail.EntryDataType = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryDataType");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.AsycudaDocumentItemEntryDataDetail> _changeTracker;    
         public ChangeTrackingCollection<DTO.AsycudaDocumentItemEntryDataDetail> ChangeTracker

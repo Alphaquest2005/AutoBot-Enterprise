@@ -482,11 +482,12 @@
                     </DataTemplate>-->
                 </ContentControl.Resources>
             </ContentControl>
-            <ComboBox 
+            <ComboBox x:Name="CompanyLst"
                 ItemsSource="{Binding ApplicationSettings}"
                 SelectedItem="{Binding CurrentApplicationSettings}"
                 DisplayMemberPath="CompanyName"
-                HorizontalAlignment="Right" Height="39" Margin="0,31,50.436,0" VerticalAlignment="Top" Width="360"/>
+                HorizontalAlignment="Right" Height="39" Margin="0,31,50.436,0" VerticalAlignment="Top" Width="360"
+                Visibility="{Binding Source={x:Static viewModels:BaseViewModel.Instance}, Path=IsMyComputer}"/>
         </Grid>
 
     </Grid>

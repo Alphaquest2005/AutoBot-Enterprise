@@ -169,9 +169,6 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-
-        
-
         int _asycudadocumentsetid;
         [DataMember]
         public double CurrencyRate 

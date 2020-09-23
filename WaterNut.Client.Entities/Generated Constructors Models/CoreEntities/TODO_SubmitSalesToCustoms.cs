@@ -12,12 +12,12 @@ using TrackableEntities.Client;
 namespace CoreEntities.Client.Entities
 {
 
-    public partial class TODO_SubmitDiscrepanciesErrorReport 
+    public partial class TODO_SubmitSalesToCustoms 
     {
-       public TODO_SubmitDiscrepanciesErrorReport()
+       public TODO_SubmitSalesToCustoms()
         {
-            this.DTO = new DTO.TODO_SubmitDiscrepanciesErrorReport();//{TrackingState = TrackableEntities.TrackingState.Added}
-            _changeTracker = new ChangeTrackingCollection<DTO.TODO_SubmitDiscrepanciesErrorReport>(this.DTO);
+            this.DTO = new DTO.TODO_SubmitSalesToCustoms();//{TrackingState = TrackableEntities.TrackingState.Added}
+            _changeTracker = new ChangeTrackingCollection<DTO.TODO_SubmitSalesToCustoms>(this.DTO);
 
             CustomClassStartUp();
             MyNavPropStartUp();

@@ -147,7 +147,7 @@ namespace WaterNut.DataSpace
                 {"ItemNumber", "EntryDataDetails.ItemNumber"},
                 {"ItemDescription", "EntryDataDetails.ItemDescription"},
                 {"TariffCode", "EntryDataDetails.InventoryItem.TariffCode"},
-                {"pCNumber", "PreviousDocumentItem.AsycudaDocument.CNumber"},
+                {"pCNumber", "PreviousDocumentItem.AsycudaDocument.pCNumber"},
                 {"pLineNumber", "PreviousDocumentItem.LineNumber"},
                 {"PreviousItem_Id == 0", "PreviousItem_Id == null"}
             };

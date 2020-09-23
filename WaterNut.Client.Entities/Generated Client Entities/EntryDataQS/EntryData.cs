@@ -308,6 +308,38 @@ public int EntryData_Id
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> Packages
+		{ 
+		    get { return this.entrydata.Packages; }
+			set
+			{
+			    if (value == this.entrydata.Packages) return;
+				this.entrydata.Packages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Packages");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "UpgradeKey has a max length of 50 letters ")]
+public string UpgradeKey
+		{ 
+		    get { return this.entrydata.UpgradeKey; }
+			set
+			{
+			    if (value == this.entrydata.UpgradeKey) return;
+				this.entrydata.UpgradeKey = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("UpgradeKey");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentEntryData> _AsycudaDocumentEntryDatas = null;
         public  ObservableCollection<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas
 		{

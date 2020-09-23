@@ -353,6 +353,7 @@ namespace WaterNut.DataSpace.Asycuda
                         pi.Preveious_suplementary_quantity = Convert.ToSingle(ai.Prev_decl_supp_quantity_written_off);
                     pi.Previous_item_number = ai.Prev_decl_item_number;
                     pi.Previous_Packages_number = ai.Prev_decl_number_packages_written_off;
+
                     if (ai.Prev_decl_ref_value_written_off != null)
                         pi.Previous_value = (float) Math.Round(Convert.ToDouble(ai.Prev_decl_ref_value_written_off), 2);
                     if (!string.IsNullOrEmpty(ai.Prev_decl_supp_quantity))
@@ -419,7 +420,7 @@ namespace WaterNut.DataSpace.Asycuda
 
                 if (pdoc == null)
                     throw new ApplicationException(
-                        $"Please Import CNumber {ai.Prev_decl_reg_number} Year {ai.Prev_decl_reg_year} Office {ai.Prev_decl_office_code} before importing this file {a.Identification.Registration.Number}-{a.Identification.Registration.Date}");
+                        $"Please Import pCNumber {ai.Prev_decl_reg_number} Year {ai.Prev_decl_reg_year} Office {ai.Prev_decl_office_code} before importing this file {a.Identification.Registration.Number}-{a.Identification.Registration.Date}");
                 using (var ctx = new DocumentItemDSContext())
                 {
                     var itm = ctx.xcuda_Item.FirstOrDefault(

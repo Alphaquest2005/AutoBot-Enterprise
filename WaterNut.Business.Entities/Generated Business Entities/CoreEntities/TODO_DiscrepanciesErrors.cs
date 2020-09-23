@@ -36,7 +36,7 @@ namespace CoreEntities.Business.Entities
         }
         int _entrydatadetailsid;
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -49,7 +49,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public string Type 
         {

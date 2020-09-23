@@ -50,6 +50,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _customername;
+        [DataMember]
+        public Nullable<double> Tax 
+        {
+            get
+            {
+                return _tax;
+            }
+            set
+            {
+                _tax = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _tax;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

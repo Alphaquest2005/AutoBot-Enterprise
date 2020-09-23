@@ -16,6 +16,7 @@
               this.Property(t => t.xEntryItem_Id).HasColumnName("xEntryItem_Id");
               this.Property(t => t.AllocationId).HasColumnName("AllocationId");
               this.Property(t => t.xBondAllocationId).HasColumnName("xBondAllocationId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.Property(t => t.Status).HasColumnName("Status").HasMaxLength(50);
               this.HasRequired(t => t.AsycudaSalesAllocations).WithMany(t =>(ICollection<xBondAllocations>) t.xBondAllocations).HasForeignKey(d => d.AllocationId);
               this.HasRequired(t => t.xcuda_Item).WithMany(t =>(ICollection<xBondAllocations>) t.xBondAllocations).HasForeignKey(d => d.xEntryItem_Id);
              // Tracking Properties

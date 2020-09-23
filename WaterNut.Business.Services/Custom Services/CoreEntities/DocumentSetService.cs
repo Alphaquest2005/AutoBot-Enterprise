@@ -95,11 +95,22 @@ namespace CoreEntities.Business.Services
 
         public async Task<AsycudaDocumentSetEx> NewDocumentSet(int applicationSettingsId)
         {
-            var docset = await WaterNut.DataSpace.BaseDataModel.Instance.CreateAsycudaDocumentSet(applicationSettingsId).ConfigureAwait(false);
-            using (var ctx = new AsycudaDocumentSetExService())
+            try
             {
-                return await ctx.GetAsycudaDocumentSetExByKey(docset.AsycudaDocumentSetId.ToString()).ConfigureAwait(false);
+                var docset = await WaterNut.DataSpace.BaseDataModel.Instance
+                    .CreateAsycudaDocumentSet(applicationSettingsId).ConfigureAwait(false);
+                using (var ctx = new AsycudaDocumentSetExService())
+                {
+                    return await ctx.GetAsycudaDocumentSetExByKey(docset.AsycudaDocumentSetId.ToString())
+                        .ConfigureAwait(false);
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public async Task BaseDataModelInitialize()

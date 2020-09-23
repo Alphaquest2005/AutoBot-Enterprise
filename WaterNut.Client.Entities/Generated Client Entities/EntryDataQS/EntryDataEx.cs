@@ -417,6 +417,21 @@ public string SourceFile
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Packages is required")]
+       [NumberValidationAttribute]
+public int Packages
+		{ 
+		    get { return this.entrydataex.Packages; }
+			set
+			{
+			    if (value == this.entrydataex.Packages) return;
+				this.entrydataex.Packages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Packages");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEntryData> _AsycudaDocumentSets = null;
         public  ObservableCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets
 		{

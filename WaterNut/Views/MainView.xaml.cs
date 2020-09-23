@@ -28,6 +28,7 @@ namespace WaterNut.Views
                 BaseViewModel.Slider = slider;
                 //im = (MainViewModel)this.FindResource("MainViewModelDataSource");
                 // Insert code required on object creation below this point.
+                CompanyLst.Visibility = BaseViewModel.IsMyComputer ? Visibility.Visible : Visibility.Collapsed;
             }
             catch (Exception Ex)
             {

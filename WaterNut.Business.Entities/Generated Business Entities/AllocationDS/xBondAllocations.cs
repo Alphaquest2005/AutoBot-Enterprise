@@ -66,6 +66,21 @@ namespace AllocationDS.Business.Entities
         }
         int _xbondallocationid;
         [DataMember]
+        public string Status 
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _status;
+        [DataMember]
         public AsycudaSalesAllocations AsycudaSalesAllocations { get; set; }
         [DataMember]
         public xcuda_Item xcuda_Item { get; set; }

@@ -333,6 +333,19 @@ namespace EntryDataQS.Client.DTO
 		}
         private string _SourceFile;
 
+        [DataMember]
+        public int Packages
+		{ 
+		    get { return _Packages; }
+			set
+			{
+			    if (value == _Packages) return;
+				_Packages = value;
+				NotifyPropertyChanged();//m => this.Packages
+			}
+		}
+        private int _Packages;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets

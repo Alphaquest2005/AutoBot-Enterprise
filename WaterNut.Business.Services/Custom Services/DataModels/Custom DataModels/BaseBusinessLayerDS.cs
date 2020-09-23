@@ -174,7 +174,7 @@ namespace WaterNut.DataSpace
                     {
                         var doctype = BaseDataModel.Instance.Customs_Procedures
                             .Single(x => x.CustomsOperationId == (int) CustomsOperations.Warehouse 
-                                         && x.Sales == true);
+                                         && x.Sales == true && x.Discrepancy != true);
                         ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
                                     VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{
@@ -673,7 +673,7 @@ namespace WaterNut.DataSpace
                 }
 
                 var cp = BaseDataModel.Instance.Customs_Procedures.Single(x =>x.CustomsOperationId == (int)CustomsOperations.Warehouse 
-                                                                              &&  x.Sales == true);
+                                                                              &&  x.Sales == true && x.Stock != true);
                 docSet.Customs_Procedure = cp;
                 docSet.Customs_ProcedureId = cp.Customs_ProcedureId;
 
@@ -1968,7 +1968,12 @@ namespace WaterNut.DataSpace
             using (var ctx = new AsycudaDocumentSetService())
             {
                 var doc = await ctx
-                    .CreateAsycudaDocumentSet(new AsycudaDocumentSet() {ApplicationSettingsId = applicationSettingsId})
+                    .CreateAsycudaDocumentSet(new AsycudaDocumentSet()
+                    {
+                        ApplicationSettingsId = applicationSettingsId,
+                        Currency_Code = "USD",
+                        FreightCurrencyCode = "USD"
+                    })
                     .ConfigureAwait(false);
                 return doc;
             }
@@ -2159,13 +2164,13 @@ namespace WaterNut.DataSpace
         //                        if (data != null)
         //                        {
         //                            string path = Path.Combine(folder,
-        //                                !string.IsNullOrEmpty(doc.CNumber) ? doc.CNumber : doc.ReferenceNumber + ".xls");
+        //                                !string.IsNullOrEmpty(doc.pCNumber) ? doc.pCNumber : doc.ReferenceNumber + ".xls");
         //                            s.dataToPrint = data.ToList();
         //                            s.SaveReport(path);
         //                        }
         //                        else
         //                        {
-        //                            File.Create(Path.Combine(folder, doc.CNumber ?? doc.ReferenceNumber + ".xls"));
+        //                            File.Create(Path.Combine(folder, doc.pCNumber ?? doc.ReferenceNumber + ".xls"));
         //                        }
         //                        StatusModel.StatusUpdate();
         //                    }
@@ -2486,7 +2491,7 @@ namespace WaterNut.DataSpace
 
             catch (Exception Ex)
             {
-                if (!noMessages && (bool) (!Ex?.InnerException?.Message.StartsWith("Please Import CNumber")))
+                if (!noMessages && (bool) (!Ex?.InnerException?.Message.StartsWith("Please Import pCNumber")))
                     exceptions.Enqueue(
                         new ApplicationException(
                             $"Could not import file - '{f}. Error:{(Ex.InnerException ?? Ex).Message} Stacktrace:{(Ex.InnerException ?? Ex).StackTrace}"));
@@ -2694,7 +2699,7 @@ namespace WaterNut.DataSpace
                     .Where(x => x.DocumentSpecific == false
                                 && cdoc.EmailIds.Contains(x.EmailUniqueId)
                                 && cdoc.Document.AsycudaDocument_Attachments.All(z =>
-                                    z.AttachmentId != x.AttachmentId));
+                                    z.AttachmentId != x.AttachmentId)).ToList();
 
                 foreach (var att in alst)
                 {
@@ -2704,7 +2709,7 @@ namespace WaterNut.DataSpace
                         //.Select(x => x.InvoiceNo).Distinct().Aggregate((old, current) => old + "," + current)
                         cdoc.Document.AsycudaDocument_Attachments.Add(new AsycudaDocument_Attachments(true)
                         {
-                            AttachmentId = att.Id,
+                            AttachmentId = att.AttachmentId,
                             AsycudaDocumentId = cdoc.Document.ASYCUDA_Id,
                             //Attachment = att,
                             //xcuda_ASYCUDA = cdoc.Document,
@@ -3802,7 +3807,10 @@ namespace WaterNut.DataSpace
                         .Where(
                             x => /*(x.xcuda_Declarant == null && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey) ||*/
                                 (x.xcuda_Declarant != null &&
-                                 x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number)))
+                                 x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
+                                (( x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false) ||
+                                 (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == true))
+                                 ))
                         .GroupBy(x => x.xcuda_Declarant.Number)
                         .ToList();
 

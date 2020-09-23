@@ -11,7 +11,7 @@
     {
         public AsycudaDocumentItemEntryDataDetailsMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.Item_Id, t.ImportComplete, t.EntryData_Id, t.Asycuda_id});        
+              this.HasKey(t => new {t.EntryDataDetailsId, t.Item_Id, t.ImportComplete, t.EntryData_Id, t.Asycuda_id, t.ApplicationSettingsId, t.AsycudaDocumentSetId});        
               this.ToTable("AsycudaDocumentItemEntryDataDetails");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
@@ -24,6 +24,8 @@
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
               this.Property(t => t.Asycuda_id).HasColumnName("Asycuda_id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.HasRequired(t => t.EntryDataDetails).WithMany(t =>(ICollection<AsycudaDocumentItemEntryDataDetails>) t.AsycudaDocumentItemEntryDataDetails).HasForeignKey(d => d.EntryDataDetailsId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

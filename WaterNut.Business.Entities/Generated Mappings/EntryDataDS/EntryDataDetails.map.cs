@@ -41,6 +41,7 @@
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
               this.HasRequired(t => t.EntryData).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.EntryData_Id);
               this.HasRequired(t => t.InventoryItemEx).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.InventoryItems).WithMany(t =>(ICollection<EntryDataDetails>) t.EntryDataDetails).HasForeignKey(d => d.InventoryItemId);

@@ -146,6 +146,21 @@ namespace EntryDataQS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
+        [DataMember]
         public List<EntryDataDetailsEx> EntryDataDetailsExs { get; set; }
 
  //       [DataMember]

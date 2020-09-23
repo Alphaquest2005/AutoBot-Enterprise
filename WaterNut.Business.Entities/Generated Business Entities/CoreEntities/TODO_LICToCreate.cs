@@ -260,6 +260,36 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _haslicense;
+        [DataMember]
+        public string DocumentReference 
+        {
+            get
+            {
+                return _documentreference;
+            }
+            set
+            {
+                _documentreference = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _documentreference;
+        [DataMember]
+        public string Exporter_address 
+        {
+            get
+            {
+                return _exporter_address;
+            }
+            set
+            {
+                _exporter_address = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _exporter_address;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

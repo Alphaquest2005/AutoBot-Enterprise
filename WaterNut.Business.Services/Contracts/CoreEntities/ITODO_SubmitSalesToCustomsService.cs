@@ -20,54 +20,54 @@ using WaterNut.Interfaces;
 namespace CoreEntities.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface ITODO_SubmitDiscrepanciesErrorReportService : IBusinessService
+    public partial interface ITODO_SubmitSalesToCustomsService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReport(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustoms(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_SubmitDiscrepanciesErrorReport> GetTODO_SubmitDiscrepanciesErrorReportByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<TODO_SubmitSalesToCustoms> GetTODO_SubmitSalesToCustomsByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionNav(string exp,
+		Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByBatch(string exp,
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_SubmitDiscrepanciesErrorReport> UpdateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity);
+        Task<TODO_SubmitSalesToCustoms> UpdateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<TODO_SubmitDiscrepanciesErrorReport> CreateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity);
+        Task<TODO_SubmitSalesToCustoms> CreateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteTODO_SubmitDiscrepanciesErrorReport(string id);
+        Task<bool> DeleteTODO_SubmitSalesToCustoms(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedTODO_SubmitDiscrepanciesErrorReport(IEnumerable<string> selectedTODO_SubmitDiscrepanciesErrorReport);
+        Task<bool> RemoveSelectedTODO_SubmitSalesToCustoms(IEnumerable<string> selectedTODO_SubmitSalesToCustoms);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace CoreEntities.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,10 +107,13 @@ namespace CoreEntities.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByemailId(string emailId, List<string> includesLst = null);
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByEmailId(string EmailId, List<string> includesLst = null);
   
 
 

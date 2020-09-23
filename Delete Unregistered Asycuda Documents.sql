@@ -1,22 +1,16 @@
 delete from asycudasalesallocations 
 where PreviousItem_Id in 
 (select Item_Id from xcuda_Item
-where ASYCUDA_Id in (
-SELECT xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id
-FROM     xcuda_ASYCUDA_ExtendedProperties INNER JOIN
-                  xcuda_Registration ON xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id = xcuda_Registration.ASYCUDA_Id
-WHERE  (xcuda_Registration.Number IS NULL and ismanuallyassessed is null)))--
+where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where ApplicationSettingsId = 2 and ImportComplete = 0 ))
 
 delete from xcuda_Item
-where ASYCUDA_Id in (
-SELECT xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id
-FROM     xcuda_ASYCUDA_ExtendedProperties INNER JOIN
-                  xcuda_Registration ON xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id = xcuda_Registration.ASYCUDA_Id
-WHERE  (xcuda_Registration.Number IS NULL and ismanuallyassessed is null))--
+where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where ApplicationSettingsId = 2 and ImportComplete = 0)--
 
 delete from xcuda_ASYCUDA
-where ASYCUDA_Id in (
-SELECT xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id
-FROM     xcuda_ASYCUDA_ExtendedProperties INNER JOIN
-                  xcuda_Registration ON xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id = xcuda_Registration.ASYCUDA_Id
-WHERE  (xcuda_Registration.Number IS NULL  and ismanuallyassessed is null ))--
+where ASYCUDA_Id in (select ASYCUDA_Id from AsycudaDocument where ApplicationSettingsId = 2 and ImportComplete = 0)--
+
+
+DELETE FROM AsycudaDocumentSet
+FROM    AsycudaDocumentSet LEFT OUTER JOIN
+                 SystemDocumentSets ON AsycudaDocumentSet.AsycudaDocumentSetId = SystemDocumentSets.Id
+WHERE (AsycudaDocumentSet.ApplicationSettingsId = 2) AND (SystemDocumentSets.Id IS NULL)

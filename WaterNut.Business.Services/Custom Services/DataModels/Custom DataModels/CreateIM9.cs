@@ -97,7 +97,7 @@ namespace WaterNut.DataSpace
                 foreach (
                     var ditm in
                         entry.OrderByDescending(x => x.RegistrationDate).ThenBy(x => x.LineNumber))
-                    //.Where(x => x.CNumber == "24985" && x.LineNumber == 5)
+                    //.Where(x => x.pCNumber == "24985" && x.LineNumber == 5)
                 {
                     if(ditm.ItemQuantity == ditm.PiQuantity) continue;
                     if (CreateEx9Class.Instance.MaxLineCount(itmcount) || itmcount == 0)
@@ -131,7 +131,7 @@ namespace WaterNut.DataSpace
                 alst.AddRange(
                     ctx.xcuda_Item
                                 
-                                .Where(x => x.AsycudaDocument.RegistrationDate <= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate ?? DateTime.Now))
+                                .Where(x => x.AsycudaDocument.RegistrationDate <= BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate)
                                 .Where(x => x.AsycudaDocument.CustomsOperationId == (int) CustomsOperations.Warehouse)
                                 .Where(x => x.WarehouseError == null)
                                 .Where(x => x.xcuda_Tarification.Item_price > 0)

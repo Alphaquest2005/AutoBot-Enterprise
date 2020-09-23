@@ -42,9 +42,9 @@ namespace CoreEntities.Client.Entities
                 todo_importcompleteentries = value;
             }
         }
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-       
-public Nullable<int> AsycudaDocumentSetId
+public int AsycudaDocumentSetId
 		{ 
 		    get { return this.todo_importcompleteentries.AsycudaDocumentSetId; }
 			set

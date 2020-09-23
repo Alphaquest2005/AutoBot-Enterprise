@@ -57,9 +57,9 @@ public int Entrydatadetailsid
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-       
-public Nullable<int> AsycudaDocumentSetId
+public int AsycudaDocumentSetId
 		{ 
 		    get { return this.todo_discrepancieserrors.AsycudaDocumentSetId; }
 			set

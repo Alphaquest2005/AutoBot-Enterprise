@@ -229,6 +229,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _OldFileTypeId;
 
+        [DataMember]
+        public Nullable<bool> ReplicateHeaderRow
+		{ 
+		    get { return _ReplicateHeaderRow; }
+			set
+			{
+			    if (value == _ReplicateHeaderRow) return;
+				_ReplicateHeaderRow = value;
+				NotifyPropertyChanged();//m => this.ReplicateHeaderRow
+			}
+		}
+        private Nullable<bool> _ReplicateHeaderRow;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

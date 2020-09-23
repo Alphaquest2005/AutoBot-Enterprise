@@ -376,5 +376,10 @@ namespace WaterNut
         {
             await AsycudaDocumentSetsModel.Instance.CleanSelectedLines(PerIM7Chk.IsChecked.GetValueOrDefault()).ConfigureAwait(false);
         }
+
+        private async void EX9AllSales(object sender, MouseButtonEventArgs e)
+        {
+            await AllocationsModel.Instance.EX9AllSales(true).ConfigureAwait(false);
+        }
     }
 }

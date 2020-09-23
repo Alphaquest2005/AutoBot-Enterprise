@@ -313,6 +313,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _tariffCategoryCodeFilter;
+        public string TariffCategoryCodeFilter
+        {
+            get
+            {
+                return _tariffCategoryCodeFilter;
+            }
+            set
+            {
+                _tariffCategoryCodeFilter = value;
+				NotifyPropertyChanged(x => TariffCategoryCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -372,6 +390,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(sourcefileFilter) == false)
 						res.Append(" && " + string.Format("sourcefile.Contains(\"{0}\")",  sourcefileFilter));						
+ 
+
+									if(string.IsNullOrEmpty(TariffCategoryCodeFilter) == false)
+						res.Append(" && " + string.Format("TariffCategoryCode.Contains(\"{0}\")",  TariffCategoryCodeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -416,7 +438,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     LicenseDescription = x.LicenseDescription ,
                     
  
-                    sourcefile = x.sourcefile 
+                    sourcefile = x.sourcefile ,
+                    
+ 
+                    TariffCategoryCode = x.TariffCategoryCode 
                     
                 }).ToList()
             };
@@ -451,6 +476,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string sourcefile { get; set; } 
+                    
+ 
+                    public string TariffCategoryCode { get; set; } 
                     
         }
 

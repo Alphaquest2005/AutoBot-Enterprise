@@ -33,46 +33,58 @@ namespace WaterNut.DataSpace
 	            {
 	                 ctx.ExecuteStoreCommand(@"
                             
-                                    Delete from EntryData
-                                    Where EntryDataId = @INVNumber
+                                    declare @entryData_Id int
+									set @entryData_Id = (select distinct entrydata_id from entrydata where entrydataid = @INVNumber and EntryDataDate = @Date and ApplicationSettingsId = @ApplicationSettingsId)
+
+									Delete from EntryData
+                                    Where EntryData_Id = @entryData_Id
 
                                     Delete from EntryData_Sales
-                                    Where EntryDataId = @INVNumber
+                                    Where EntryData_Id = @entryData_Id
 
                                     INSERT INTO EntryData
-                                                      (EntryDataId, EntryDataDate)
-                                    SELECT INVNO, DATE
+                                                      (EntryDataId, EntryDataDate, ApplicationSettingsId)
+                                    SELECT INVNO, DATE, @ApplicationSettingsId
                                     FROM     CounterPointSales
                                     WHERE  (INVNO = @INVNumber)
 
                                     INSERT INTO AsycudaDocumentSetEntryData
-                                                      (EntryDataId, AsycudaDocumentSetId)
-                                    SELECT INVNO, @AsycudaDocumentSetId
-                                    FROM     CounterPointSales
-                                    WHERE  (INVNO = @INVNumber)
+                                                      (EntryData_Id, AsycudaDocumentSetId)
+                                    SELECT EntryData.EntryData_Id, @AsycudaDocumentSetId AS Expr1
+									FROM    CounterPointSales INNER JOIN
+													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSales.INVNO = @INVNumber)
 
                                     INSERT INTO EntryData_Sales
-                                                      (EntryDataId, INVNumber, TaxAmount,CustomerName)
-                                    SELECT distinct INVNO, INVNO AS Expr1,TAX_AMT, [CUSTOMER NAME]
-                                    FROM     CounterPointSales
-                                    WHERE  (INVNO = @INVNumber)
+                                                      (EntryData_Id, INVNumber, Tax,CustomerName)
+                                    SELECT DISTINCT EntryData.EntryDataId, CounterPointSales.INVNO, CounterPointSales.TAX_AMT, CounterPointSales.[CUSTOMER NAME]
+									FROM    CounterPointSales INNER JOIN
+													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSales.INVNO = @INVNumber)
 
                                     INSERT INTO InventoryItems
-                                                      (ItemNumber, Description)
-                                    SELECT CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.ITEM_DESCR
-                                    FROM     CounterPointSalesDetails LEFT OUTER JOIN
-                                                      InventoryItems AS InventoryItems_1 ON CounterPointSalesDetails.ITEM_NO = InventoryItems_1.ItemNumber
-                                    WHERE  (CounterPointSalesDetails.INVNO = @INVNumber) AND (InventoryItems_1.ItemNumber IS NULL) AND Left(CounterPointSalesDetails.ITEM_NO,1) <>'*'
+                                                      (ItemNumber, Description, ApplicationSettingsId)
+                                    SELECT CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.ITEM_DESCR, EntryData.ApplicationSettingsId
+									FROM    CounterPointSalesDetails INNER JOIN
+													 EntryData ON CounterPointSalesDetails.INVNO  COLLATE DATABASE_DEFAULT = EntryData.EntryDataId  COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate LEFT OUTER JOIN
+													 InventoryItems AS InventoryItems_1 ON CounterPointSalesDetails.ITEM_NO  COLLATE DATABASE_DEFAULT = InventoryItems_1.ItemNumber  COLLATE DATABASE_DEFAULT
+									WHERE (CounterPointSalesDetails.INVNO = @INVNumber and CounterPointSalesDetails.Date = @Date) AND (InventoryItems_1.ItemNumber IS NULL) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @ApplicationSettingsId)
 
                                     INSERT INTO EntryDataDetails
-                                                      (EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated)
-                                    SELECT INVNO, SEQ_NO, ITEM_NO, QUANTITY, QTY_UNIT, ITEM_DESCR, COST, isnull(UNIT_WEIGHT,0), 0
-                                    FROM     CounterPointSalesDetails
-                                    WHERE  (INVNO = @INVNumber) AND Left(CounterPointSalesDetails.ITEM_NO,1) <>'*'",
+                                                      (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated)
+                                    SELECT EntryData.EntryData_Id, CounterPointSalesDetails.INVNO, CounterPointSalesDetails.SEQ_NO, CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.QUANTITY, CounterPointSalesDetails.QTY_UNIT, 
+													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2
+									FROM    CounterPointSalesDetails INNER JOIN
+													 EntryData ON CounterPointSalesDetails.INVNO = EntryData.EntryDataId COLLATE Latin1_General_CI_AS AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
+													 (EntryData.ApplicationSettingsId = @ApplicationSettingsId)",
 
 	                    new SqlParameter("@AsycudaDocumentSetId", docSetId),
-	                    new SqlParameter("@INVNumber", c.InvoiceNo));
-	            }
+	                    new SqlParameter("@INVNumber", c.InvoiceNo),
+	                     new SqlParameter("@Date", c.Date),
+	                     new SqlParameter("@ApplicationSettingsId", BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)); 
+
+                }
 	            StatusModel.Timer("Refreshing Sales Data");
 
 
@@ -90,52 +102,60 @@ namespace WaterNut.DataSpace
                     {
                          ctx.ExecuteStoreCommand(@"
 
-                                    DELETE From EntryData
-                                    Where EntryDataId in (SELECT distinct INVNO
-                                    FROM     CounterPointSales
-                                    WHERE  (DATE >= @StartDate and DATE <= @EndDate))
+                                    DELETE FROM EntryData
+									FROM    EntryData INNER JOIN
+														 (SELECT DISTINCT INVNO, DATE
+														  FROM     CounterPointSales) AS c ON EntryData.EntryDataId COLLATE DATABASE_DEFAULT = c.INVNO COLLATE DATABASE_DEFAULT AND EntryData.EntryDataDate = c.DATE
+									WHERE (c.DATE >= @StartDate) AND (c.DATE <= @EndDate)  and EntryData.ApplicationSettingsId = @ApplicationSettingsId
             
                                     INSERT INTO EntryData
-                                                      (EntryDataId, EntryDataDate)
-                                    SELECT distinct INVNO, DATE
+                                                      (EntryDataId, EntryDataDate, ApplicationSettingsId)
+                                    SELECT distinct INVNO, DATE, @ApplicationSettingsId
                                     FROM     CounterPointSales
                                     WHERE  (DATE >= @StartDate and DATE <= @EndDate)
 
                                     INSERT INTO AsycudaDocumentSetEntryData
-                                                      (EntryDataId, AsycudaDocumentSetId)
-                                    SELECT distinct INVNO, @AsycudaDocumentSetId
-                                    FROM     CounterPointSales
-                                    WHERE  (DATE >= @StartDate and DATE <= @EndDate)
+                                                      (EntryData_Id, AsycudaDocumentSetId)
+                                    SELECT DISTINCT EntryData.EntryData_Id, @AsycudaDocumentSetId AS Expr1
+									FROM    CounterPointSales INNER JOIN
+													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSales.DATE >= @StartDate) AND (CounterPointSales.DATE <= @EndDate)
 
                                     DELETE From EntryData_Sales
-                                    Where EntryDataId in (SELECT distinct INVNO
-                                    FROM     CounterPointSales
-                                    WHERE  (DATE >= @StartDate and DATE <= @EndDate))
+                                    Where EntryData_Id in (SELECT DISTINCT EntryData.EntryData_Id
+														FROM    CounterPointSales INNER JOIN
+																		 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
+														WHERE (CounterPointSales.DATE >= @StartDate) AND (CounterPointSales.DATE <= @EndDate))
 
                                     INSERT INTO EntryData_Sales
-                                                      (EntryDataId, INVNumber, TaxAmount,CustomerName)
-                                    SELECT distinct INVNO, INVNO AS Expr1,TAX_AMT, [CUSTOMER NAME]
-                                    FROM     CounterPointSales
-                                    WHERE  (DATE >= @StartDate and DATE <= @EndDate)
+                                                      (EntryData_Id, INVNumber, Tax,CustomerName)
+                                    SELECT DISTINCT EntryData.EntryData_Id, CounterPointSales.INVNO, CounterPointSales.TAX_AMT, CounterPointSales.[CUSTOMER NAME]
+									FROM    CounterPointSales INNER JOIN
+													 EntryData ON CounterPointSales.INVNO = EntryData.EntryDataId COLLATE Latin1_General_CI_AS AND CounterPointSales.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSales.DATE >= @StartDate) AND (CounterPointSales.DATE <= @EndDate)
+
 
                                     INSERT INTO InventoryItems
-                                                      (ItemNumber, Description)
-                                    SELECT CounterPointSalesDetails.ITEM_NO, MAX(CounterPointSalesDetails.ITEM_DESCR) AS ITEM_DESCR
+                                                      (ItemNumber, Description, ApplicationSettingsId)
+                                    SELECT CounterPointSalesDetails.ITEM_NO, MAX(CounterPointSalesDetails.ITEM_DESCR) AS ITEM_DESCR, @ApplicationSettingsId
                                     FROM     CounterPointSalesDetails LEFT OUTER JOIN
-                                                      InventoryItems AS InventoryItems_1 ON CounterPointSalesDetails.ITEM_NO = InventoryItems_1.ItemNumber
+                                                      InventoryItems AS InventoryItems_1 ON CounterPointSalesDetails.ITEM_NO COLLATE DATABASE_DEFAULT = InventoryItems_1.ItemNumber COLLATE DATABASE_DEFAULT
                                     WHERE  (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (InventoryItems_1.ItemNumber IS NULL)
                                     GROUP BY CounterPointSalesDetails.ITEM_NO
                                     HAVING (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*')   
 
                                     INSERT INTO EntryDataDetails
-                                                      (EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated)
-                                    SELECT INVNO, SEQ_NO, ITEM_NO, QUANTITY, QTY_UNIT, ITEM_DESCR, COST, isnull(UNIT_WEIGHT,0),0
-                                    FROM     CounterPointSalesDetails
-                                    WHERE   (DATE >= @StartDate and DATE <= @EndDate) AND Left(CounterPointSalesDetails.ITEM_NO,1) <>'*'",
+                                                      (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated)
+                                    SELECT EntryData.EntryData_Id, CounterPointSalesDetails.INVNO, CounterPointSalesDetails.SEQ_NO, CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.QUANTITY, CounterPointSalesDetails.QTY_UNIT, 
+													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2
+									FROM    CounterPointSalesDetails INNER JOIN
+													 EntryData ON CounterPointSalesDetails.INVNO = EntryData.EntryDataId COLLATE Latin1_General_CI_AS AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate
+									WHERE (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*')",
                                                                                                                                          
                                    new SqlParameter("@AsycudaDocumentSetId", docSetId),
                                    new SqlParameter("@StartDate", startDate),
-                                   new SqlParameter("@EndDate", endDate));
+                                   new SqlParameter("@EndDate", endDate),
+                             new SqlParameter("@ApplicationSettingsId", BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId));
                     }
              
                     StatusModel.StopStatusUpdate();

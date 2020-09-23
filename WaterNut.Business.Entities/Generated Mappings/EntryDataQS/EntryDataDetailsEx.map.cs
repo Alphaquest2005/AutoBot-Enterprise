@@ -46,7 +46,8 @@
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.Name).HasColumnName("Name").HasMaxLength(50);
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
-              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.ItemNumber);
+              this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
+              this.HasRequired(t => t.InventoryItemsEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.InventoryItemId);
               this.HasRequired(t => t.EntryDataEx).WithMany(t =>(ICollection<EntryDataDetailsEx>) t.EntryDataDetailsExs).HasForeignKey(d => d.EntryData_Id);
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
              // Tracking Properties

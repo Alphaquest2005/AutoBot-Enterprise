@@ -21,7 +21,7 @@ namespace CoreEntities.Business.Entities
     public partial class TODO_ImportCompleteEntries : BaseEntity<TODO_ImportCompleteEntries>, ITrackable 
     {
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -34,7 +34,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public Nullable<int> ApplicationSettingsId 
         {

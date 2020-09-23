@@ -11,7 +11,7 @@
     {
         public AsycudaDocumentItemEntryDataDetailMap()
         {                        
-              this.HasKey(t => new {t.EntryDataDetailsId, t.Item_Id, t.ImportComplete, t.EntryData_Id});        
+              this.HasKey(t => new {t.EntryDataDetailsId, t.Item_Id, t.ImportComplete, t.EntryData_Id, t.ApplicationSettingsId, t.AsycudaDocumentSetId, t.Asycuda_id});        
               this.ToTable("AsycudaDocumentItemEntryDataDetails");
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
@@ -21,6 +21,11 @@
               this.Property(t => t.Quantity).HasColumnName("Quantity");
               this.Property(t => t.ImportComplete).HasColumnName("ImportComplete");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
+              this.Property(t => t.Asycuda_id).HasColumnName("Asycuda_id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

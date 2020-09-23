@@ -326,7 +326,7 @@ namespace AdjustmentQS.Business.Services
                         
                         doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                 slst, docSet, adjustmentType, false, itemPiSummarylst, false,
-                                false,  true, "Current", false, false, true,perInvoice, false) //ex9bucket = false because sales affect current the piquantity
+                                false,  false, "Current", false, false, true,perInvoice, false, true) //ex9bucket = false because sales affect current the piquantity
                             .ConfigureAwait(
                                 false);
                     }
@@ -334,7 +334,7 @@ namespace AdjustmentQS.Business.Services
                     {
                        doclst = await CreateEx9Class.Instance.CreateDutyFreePaidDocument(dutyFreePaid,
                                 slst, docSet, adjustmentType, false, itemPiSummarylst, true,
-                                false,  true, "Historic", true, true, true, perInvoice, false)
+                                false,  false, "Historic", true, true, true, perInvoice, false, true)
                             .ConfigureAwait(
                                 false);
                     }
@@ -475,14 +475,16 @@ namespace AdjustmentQS.Business.Services
             var res = new List<EX9SalesAllocations>();
             using (var ctx = new AllocationDSContext())
             {
-                ctx.Database.CommandTimeout = 0;
+                ctx.Database.CommandTimeout = (60*30);
                 try
                 {
                     IQueryable<AdjustmentShortAllocations> pres;
                     if (FilterExpression.Contains("xBond_Item_Id == 0"))
                     {
                         //TODO: use expirydate in asycuda document
-                        pres = ctx.AdjustmentShortAllocations.OrderBy(x => x.AllocationId)
+                        pres = ctx.AdjustmentShortAllocations
+                            
+                            .OrderBy(x => x.AllocationId)
                             .Where(x => x.pRegistrationDate == null || (DbFunctions.AddDays(((DateTime)x.pRegistrationDate), 730)) > DateTime.Now)
                             .Where(x => x.EntryDataDetails.EntryDataDetailsEx.SystemDocumentSets != null)
                             .Where(x => x.xBond_Item_Id == 0);
@@ -834,7 +836,7 @@ namespace AdjustmentQS.Business.Services
             
                 try
                 {
-                    var doc = AsycudaDocumentItemCache.FirstOrDefault(x => cNumber.Contains(x.CNumber));
+                    var doc = AsycudaDocumentItemCache.FirstOrDefault(x =>x.CNumber != null && cNumber.Contains(x.CNumber));
                     if(doc == null) return new List<AsycudaDocumentItem>();
                     var docref = doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal) > 0
                         ? doc.ReferenceNumber.Substring(0, doc.ReferenceNumber.LastIndexOf("-", StringComparison.Ordinal))

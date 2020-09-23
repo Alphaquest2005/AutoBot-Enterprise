@@ -151,6 +151,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _sourcefile;
 
+        [DataMember]
+        public string TariffCategoryCode
+		{ 
+		    get { return _TariffCategoryCode; }
+			set
+			{
+			    if (value == _TariffCategoryCode) return;
+				_TariffCategoryCode = value;
+				NotifyPropertyChanged();//m => this.TariffCategoryCode
+			}
+		}
+        private string _TariffCategoryCode;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

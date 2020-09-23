@@ -16,6 +16,7 @@
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.INVNumber).HasColumnName("INVNumber").IsRequired().HasMaxLength(50);
               this.Property(t => t.CustomerName).HasColumnName("CustomerName").HasMaxLength(255);
+              this.Property(t => t.Tax).HasColumnName("Tax");
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (Sales)t.Sales);
              // Nav Property Names
                   

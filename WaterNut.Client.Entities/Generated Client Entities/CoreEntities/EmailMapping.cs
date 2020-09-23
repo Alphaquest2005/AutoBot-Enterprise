@@ -92,6 +92,21 @@ public string Pattern
 		}
      
 
+       
+       
+public Nullable<bool> IsSingleEmail
+		{ 
+		    get { return this.emailmapping.IsSingleEmail; }
+			set
+			{
+			    if (value == this.emailmapping.IsSingleEmail) return;
+				this.emailmapping.IsSingleEmail = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsSingleEmail");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

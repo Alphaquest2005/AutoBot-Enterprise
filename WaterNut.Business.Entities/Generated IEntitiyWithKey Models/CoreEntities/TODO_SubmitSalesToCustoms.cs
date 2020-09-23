@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace CoreEntities.Business.Entities
 {
-    public partial class TODO_SubmitDiscrepanciesErrorReport: IEntityWithKey
+    public partial class TODO_SubmitSalesToCustoms: IEntityWithKey
     {
     #region "IEntityWithKey Implementation"
 

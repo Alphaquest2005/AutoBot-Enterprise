@@ -564,6 +564,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Int32? _packagesFilter;
+        public Int32? PackagesFilter
+        {
+            get
+            {
+                return _packagesFilter;
+            }
+            set
+            {
+                _packagesFilter = value;
+				NotifyPropertyChanged(x => PackagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -681,7 +699,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(SourceFileFilter) == false)
 						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(PackagesFilter.HasValue)
+						res.Append(" && " + string.Format("Packages == {0}",  PackagesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -758,7 +779,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     Totals = x.Totals ,
                     
  
-                    SourceFile = x.SourceFile 
+                    SourceFile = x.SourceFile ,
+                    
+ 
+                    Packages = x.Packages 
                     
                 }).ToList()
             };
@@ -826,6 +850,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string SourceFile { get; set; } 
+                    
+ 
+                    public int Packages { get; set; } 
                     
         }
 

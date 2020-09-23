@@ -38,11 +38,12 @@ namespace CoreEntities
         public Nullable<int> GeneratedLines { get; set; }
         public string Status { get; set; }
         public Nullable<double> TotalWeight { get; set; }
-        public Nullable<int> Attachments { get; set; }
         public Nullable<int> ExpectedAttachments { get; set; }
         public Nullable<int> EntryPackages { get; set; }
         public Nullable<double> GeneratedPackages { get; set; }
         public Nullable<double> SpecifiedCIF { get; set; }
         public Nullable<double> GeneratedCIF { get; set; }
+        public Nullable<double> SpecifiedFreight { get; set; }
+        public Nullable<double> GeneratedFreight { get; set; }
     }
 }

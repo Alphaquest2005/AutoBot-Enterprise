@@ -24,5 +24,6 @@ namespace CoreEntities
         public string EntryDataId { get; set; }
         public string LicenseDescription { get; set; }
         public string sourcefile { get; set; }
+        public string TariffCategoryCode { get; set; }
     }
 }

@@ -381,21 +381,6 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<double> _totalweight;
         [DataMember]
-        public Nullable<int> Attachments 
-        {
-            get
-            {
-                return _attachments;
-            }
-            set
-            {
-                _attachments = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _attachments;
-        [DataMember]
         public Nullable<int> ExpectedAttachments 
         {
             get
@@ -470,6 +455,36 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<double> _generatedcif;
+        [DataMember]
+        public Nullable<double> SpecifiedFreight 
+        {
+            get
+            {
+                return _specifiedfreight;
+            }
+            set
+            {
+                _specifiedfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _specifiedfreight;
+        [DataMember]
+        public Nullable<double> GeneratedFreight 
+        {
+            get
+            {
+                return _generatedfreight;
+            }
+            set
+            {
+                _generatedfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _generatedfreight;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

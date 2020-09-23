@@ -52,18 +52,32 @@ namespace WaterNut.DataSpace.Asycuda
                 var regNumber = mat.Groups[1].Captures[0].Value;
 
                 //}
-                da =  CreateNewC71(docSet, file, regNumber, adoc.id);
+                da = CreateNewC71(docSet, file, regNumber, adoc.id);
 
                 SaveValuationForm(adoc, da);
                 SaveIdentification(adoc.Identification_segment, da.xC71_Identification_segment);
                 SaveDocumentRef(da);
                 SaveItems(adoc.Item, da);
-                AttachC71ToDocset(docSet, file, da);
-                using (var ctx = new ValuationDSContext())
+                if (da.xC71_Identification_segment.xC71_Seller_segment.Address.Contains(
+                    docSet.Declarant_Reference_Number))
                 {
-                    ctx.ApplyChanges(da);
-                    ctx.SaveChanges();
+                    AttachC71ToDocset(docSet, file, da);
+                    using (var ctx = new ValuationDSContext())
+                    {
+                        ctx.ApplyChanges(da);
+                        ctx.SaveChanges();
+
+                        var existingC71 = ctx.xC71_Value_declaration_form
+                            .Where(x =>
+                                x.xC71_Identification_segment.xC71_Seller_segment.Address.Contains(
+                                    docSet.Declarant_Reference_Number)
+                                && x.Value_declaration_form_Id != da.Value_declaration_form_Id).ToList();
+                        ctx.xC71_Value_declaration_form.RemoveRange(existingC71);
+                        ctx.SaveChanges();
+
+                    }
                 }
+
 
             }
             catch (Exception)
@@ -73,7 +87,7 @@ namespace WaterNut.DataSpace.Asycuda
             }
             finally
             {
-               
+
             }
 
         }

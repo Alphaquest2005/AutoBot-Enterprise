@@ -160,7 +160,7 @@ namespace EmailDownloader
 
                     
 
-                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                 //   imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                     if (msgFiles.ContainsKey(subject))
                     {
                         msgFiles[subject].AddRange(lst);
@@ -169,7 +169,7 @@ namespace EmailDownloader
                     {
                         msgFiles.Add(subject, lst);
                     }
-                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                //    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                 }
 
                 return msgFiles;

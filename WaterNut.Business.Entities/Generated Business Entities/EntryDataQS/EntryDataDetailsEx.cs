@@ -281,7 +281,7 @@ namespace EntryDataQS.Business.Entities
         }
         Nullable<double> _total;
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -294,7 +294,7 @@ namespace EntryDataQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public Nullable<double> InvoiceQty 
         {
@@ -520,6 +520,21 @@ namespace EntryDataQS.Business.Entities
             }
         }
         int _entrydata_id;
+        [DataMember]
+        public int InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _inventoryitemid;
         [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
         [DataMember]

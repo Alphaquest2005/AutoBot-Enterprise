@@ -20,6 +20,7 @@
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(50);
               this.Property(t => t.EntryTimeStamp).HasColumnName("EntryTimeStamp");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey").HasMaxLength(20);
               this.HasOptional(t => t.InventoryItems_NonStock).WithRequired(t => (InventoryItems)t.InventoryItems);
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItems)t.InventoryItems);
               this.HasMany(t => t.InventoryItemSource).WithRequired(t => (InventoryItems)t.InventoryItems);

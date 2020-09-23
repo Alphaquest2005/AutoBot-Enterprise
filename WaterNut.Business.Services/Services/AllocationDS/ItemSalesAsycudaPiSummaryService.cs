@@ -98,16 +98,16 @@ namespace AllocationDS.Business.Services
         }
 
 
-        public async Task<ItemSalesAsycudaPiSummary> GetItemSalesAsycudaPiSummaryByKey(string PreviousItem_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<ItemSalesAsycudaPiSummary> GetItemSalesAsycudaPiSummaryByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(PreviousItem_Id))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(PreviousItem_Id);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                ItemSalesAsycudaPiSummary entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.PreviousItem_Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                ItemSalesAsycudaPiSummary entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -288,11 +288,11 @@ namespace AllocationDS.Business.Services
                                 IQueryable<ItemSalesAsycudaPiSummary> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.PreviousItem_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.PreviousItem_Id).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -363,12 +363,12 @@ namespace AllocationDS.Business.Services
                                 IQueryable<ItemSalesAsycudaPiSummary> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.PreviousItem_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.PreviousItem_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset
@@ -514,15 +514,15 @@ namespace AllocationDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteItemSalesAsycudaPiSummary(string PreviousItem_Id)
+        public async Task<bool> DeleteItemSalesAsycudaPiSummary(string Id)
         {
             try
             {
               using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(PreviousItem_Id);
+                var i = Convert.ToInt32(Id);
                 ItemSalesAsycudaPiSummary entity = await dbContext.ItemSalesAsycudaPiSummary
-													.SingleOrDefaultAsync(x => x.PreviousItem_Id == i)
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -674,7 +674,7 @@ namespace AllocationDS.Business.Services
                     {
                         return await dbContext.ItemSalesAsycudaPiSummary
 										.AsNoTracking()
-                                        .OrderBy(y => y.PreviousItem_Id)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -686,7 +686,7 @@ namespace AllocationDS.Business.Services
                         return await dbContext.ItemSalesAsycudaPiSummary
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.PreviousItem_Id)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -723,7 +723,7 @@ namespace AllocationDS.Business.Services
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.ItemSalesAsycudaPiSummary.Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                    return await dbContext.ItemSalesAsycudaPiSummary.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -766,9 +766,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemSalesAsycudaPiSummary>()
-                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("PreviousItem_Id")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -787,9 +787,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemSalesAsycudaPiSummary>()
-                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("PreviousItem_Id")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -816,7 +816,7 @@ namespace AllocationDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.PreviousItem_Id)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -825,8 +825,8 @@ namespace AllocationDS.Business.Services
                     }
                     return await set//dbContext.ItemSalesAsycudaPiSummary
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
-								.OrderBy(y => y.PreviousItem_Id)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -878,9 +878,9 @@ namespace AllocationDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.PreviousItem_Id)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -907,9 +907,9 @@ namespace AllocationDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.PreviousItem_Id)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -959,7 +959,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<ItemSalesAsycudaPiSummary>()
-							.Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -969,7 +969,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemSalesAsycudaPiSummary>()
-                .Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -996,7 +996,7 @@ namespace AllocationDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<ItemSalesAsycudaPiSummary>()
-							.Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1006,7 +1006,7 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemSalesAsycudaPiSummary>()
-                .Where(exp == "All" || exp == null?"PreviousItem_Id != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1021,7 +1021,36 @@ namespace AllocationDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<ItemSalesAsycudaPiSummary>> GetItemSalesAsycudaPiSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<ItemSalesAsycudaPiSummary>> GetItemSalesAsycudaPiSummaryByPreviousItem_Id(string PreviousItem_Id, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new AllocationDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(PreviousItem_Id);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ItemSalesAsycudaPiSummary> entities = await set//dbContext.ItemSalesAsycudaPiSummary
+                                      .AsNoTracking()
+                                        .Where(x => x.PreviousItem_Id.ToString() == PreviousItem_Id.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<ItemSalesAsycudaPiSummary>> GetItemSalesAsycudaPiSummaryByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1101,7 +1130,7 @@ namespace AllocationDS.Business.Services
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.ItemSalesAsycudaPiSummary.Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.ItemSalesAsycudaPiSummary.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1142,9 +1171,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ItemSalesAsycudaPiSummary>()
-                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("PreviousItem_Id")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1162,9 +1191,9 @@ namespace AllocationDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ItemSalesAsycudaPiSummary>()
-                .Where(exp == "All" || exp == null ? "PreviousItem_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("PreviousItem_Id")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)

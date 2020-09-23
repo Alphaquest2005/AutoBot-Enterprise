@@ -1392,7 +1392,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string OrderEntriesBy { get; set; } 
                     
  
-                    public Nullable<System.DateTime> OpeningStockDate { get; set; } 
+                    public System.DateTime OpeningStockDate { get; set; } 
                     
  
                     public string DeclarantCode { get; set; } 
@@ -1410,7 +1410,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string CompanyName { get; set; } 
                     
  
-                    public Nullable<bool> IsActive { get; set; } 
+                    public bool IsActive { get; set; } 
                     
  
                     public string Email { get; set; } 
@@ -1431,7 +1431,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<bool> AssessEX { get; set; } 
                     
  
-                    public Nullable<bool> TestMode { get; set; } 
+                    public bool TestMode { get; set; } 
                     
         }
 

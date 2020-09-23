@@ -18,11 +18,11 @@ namespace AllocationDS.Business.Entities
         {
             get
             {
-                return this.PreviousItem_Id.ToString();  // this.PreviousItem_Id == null?"0":
+                return this.Id.ToString();  // this.Id == null?"0":
             }
             set
             {
-                this.PreviousItem_Id = Convert.ToInt32(value);
+                this.Id = Convert.ToInt32(value);
             }
         }
 

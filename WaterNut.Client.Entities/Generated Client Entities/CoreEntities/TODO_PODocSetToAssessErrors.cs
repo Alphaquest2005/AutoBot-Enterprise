@@ -420,21 +420,6 @@ public Nullable<double> TotalWeight
 
        
        [NumberValidationAttribute]
-public Nullable<int> Attachments
-		{ 
-		    get { return this.todo_podocsettoassesserrors.Attachments; }
-			set
-			{
-			    if (value == this.todo_podocsettoassesserrors.Attachments) return;
-				this.todo_podocsettoassesserrors.Attachments = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Attachments");
-			}
-		}
-     
-
-       
-       [NumberValidationAttribute]
 public Nullable<int> ExpectedAttachments
 		{ 
 		    get { return this.todo_podocsettoassesserrors.ExpectedAttachments; }
@@ -504,6 +489,36 @@ public Nullable<double> GeneratedCIF
 				this.todo_podocsettoassesserrors.GeneratedCIF = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("GeneratedCIF");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> SpecifiedFreight
+		{ 
+		    get { return this.todo_podocsettoassesserrors.SpecifiedFreight; }
+			set
+			{
+			    if (value == this.todo_podocsettoassesserrors.SpecifiedFreight) return;
+				this.todo_podocsettoassesserrors.SpecifiedFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SpecifiedFreight");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> GeneratedFreight
+		{ 
+		    get { return this.todo_podocsettoassesserrors.GeneratedFreight; }
+			set
+			{
+			    if (value == this.todo_podocsettoassesserrors.GeneratedFreight) return;
+				this.todo_podocsettoassesserrors.GeneratedFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GeneratedFreight");
 			}
 		}
      

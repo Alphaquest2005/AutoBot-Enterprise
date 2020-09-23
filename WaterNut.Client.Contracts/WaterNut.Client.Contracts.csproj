@@ -178,7 +178,6 @@
     <Compile Include="CoreEntities\ITODO_PODocSetToExportService.cs" />
     <Compile Include="CoreEntities\IToDo_POToXMLService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs" />
-    <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesErrorReportService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
@@ -186,6 +185,7 @@
     <Compile Include="CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitPOInfoService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitSalesToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_TotalAdjustmentsToProcessService.cs" />

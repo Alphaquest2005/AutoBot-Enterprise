@@ -28,6 +28,7 @@ namespace WaterNut
     {
        
         public static SplashScreen2 splash = new SplashScreen2(@"coconut-water-splash.jpg");
+
         public App()
             : base()
         {
@@ -40,7 +41,7 @@ namespace WaterNut
                 Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
                 Current.Exit += Current_Exit;
                 Dispatcher.UnhandledException += OnDispatcherUnhandledException;
-                
+
 
 
                 if (Core.Common.Utils.ProcessExtentions.IsProcessOpen("AutoWaterNutServer") == null)
@@ -53,21 +54,47 @@ namespace WaterNut
                 }
                 // LoginRoutine();
 
-                ClientObjectBase.Container = MEFLoader.Init(new List<ComposablePartCatalog>()
+                try
+                {
+                    ClientObjectBase.Container = MEFLoader.Init(new List<ComposablePartCatalog>()
                     {
                         new AssemblyCatalog(Assembly.GetExecutingAssembly())
                     });
-                    
+
+
+
                     if (!SystemRepository.Instance.ValidateInstallation())
                     {
-                        MessageBox.Show("Invalid Installation","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                        MessageBox.Show("Invalid Installation", "Asycuda Toolkit", MessageBoxButton.OK,
+                            MessageBoxImage.Exclamation);
                         Current.Shutdown();
                     }
 
 
                     AsycudaDocumentSetExRepository.Instance.BaseDataModelInitialize().Wait();
 
+                }
+                catch (Exception e)
+                {
+                    var lastexception = false;
+                    var errorMessage = "Loading components";
+                    Exception exp = e;
+                    while (lastexception == false)
+                    {
+                        if (exp.InnerException == null)
+                        {
+                            lastexception = true;
+                            errorMessage +=
+                                $"An unhandled Exception occurred!: {exp.Message} "; //---- {1}, exp.StackTrace
+                            MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            //e. = true;
+                        }
 
+                        errorMessage += $"An unhandled Exception occurred!: {exp.Message}"; //---- {1}
+                        exp = exp.InnerException;
+
+                    }
+                }
 
 
             }

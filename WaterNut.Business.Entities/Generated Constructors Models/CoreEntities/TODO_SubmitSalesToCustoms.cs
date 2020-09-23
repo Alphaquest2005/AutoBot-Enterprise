@@ -5,9 +5,9 @@
 
 		namespace CoreEntities.Business.Entities
 {
-    public partial class TODO_SubmitDiscrepanciesErrorReport
+    public partial class TODO_SubmitSalesToCustoms
     {
-       public TODO_SubmitDiscrepanciesErrorReport()
+       public TODO_SubmitSalesToCustoms()
         {
             CustomClassStartUp();
             MyNavPropStartUp();
@@ -17,7 +17,7 @@
             TrackableStartUp();
         }
 
-      public TODO_SubmitDiscrepanciesErrorReport(bool start) : this()
+      public TODO_SubmitSalesToCustoms(bool start) : this()
        {
           if(start) StartTracking();
        }

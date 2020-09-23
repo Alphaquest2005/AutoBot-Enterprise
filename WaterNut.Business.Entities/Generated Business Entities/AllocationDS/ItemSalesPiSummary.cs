@@ -230,6 +230,36 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _status;
+        [DataMember]
+        public double SalesQty 
+        {
+            get
+            {
+                return _salesqty;
+            }
+            set
+            {
+                _salesqty = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _salesqty;
+        [DataMember]
+        public double SalesAllocatedQty 
+        {
+            get
+            {
+                return _salesallocatedqty;
+            }
+            set
+            {
+                _salesallocatedqty = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _salesallocatedqty;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

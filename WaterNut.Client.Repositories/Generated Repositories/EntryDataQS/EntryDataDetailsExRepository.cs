@@ -534,6 +534,34 @@ namespace EntryDataQS.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
+        {
+             if (InventoryItemId == "0") return null;
+            try
+            {
+                 using (EntryDataDetailsExClient t = new EntryDataDetailsExClient())
+                    {
+                        var res = await t.GetEntryDataDetailsExByInventoryItemId(InventoryItemId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new EntryDataDetailsEx(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

@@ -271,6 +271,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<int> _oldfiletypeid;
         [DataMember]
+        public Nullable<bool> ReplicateHeaderRow 
+        {
+            get
+            {
+                return _replicateheaderrow;
+            }
+            set
+            {
+                _replicateheaderrow = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _replicateheaderrow;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

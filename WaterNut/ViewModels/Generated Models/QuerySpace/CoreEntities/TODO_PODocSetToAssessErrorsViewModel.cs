@@ -566,24 +566,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private Int32? _attachmentsFilter;
-        public Int32? AttachmentsFilter
-        {
-            get
-            {
-                return _attachmentsFilter;
-            }
-            set
-            {
-                _attachmentsFilter = value;
-				NotifyPropertyChanged(x => AttachmentsFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private Int32? _expectedAttachmentsFilter;
         public Int32? ExpectedAttachmentsFilter
         {
@@ -667,6 +649,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _generatedCIFFilter = value;
 				NotifyPropertyChanged(x => GeneratedCIFFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _specifiedFreightFilter;
+        public Double? SpecifiedFreightFilter
+        {
+            get
+            {
+                return _specifiedFreightFilter;
+            }
+            set
+            {
+                _specifiedFreightFilter = value;
+				NotifyPropertyChanged(x => SpecifiedFreightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _generatedFreightFilter;
+        public Double? GeneratedFreightFilter
+        {
+            get
+            {
+                return _generatedFreightFilter;
+            }
+            set
+            {
+                _generatedFreightFilter = value;
+				NotifyPropertyChanged(x => GeneratedFreightFilter);
                 FilterData();
                 
             }
@@ -777,9 +795,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 					if(TotalWeightFilter.HasValue)
 						res.Append(" && " + string.Format("TotalWeight == {0}",  TotalWeightFilter.ToString()));				 
 
-					if(AttachmentsFilter.HasValue)
-						res.Append(" && " + string.Format("Attachments == {0}",  AttachmentsFilter.ToString()));				 
-
 					if(ExpectedAttachmentsFilter.HasValue)
 						res.Append(" && " + string.Format("ExpectedAttachments == {0}",  ExpectedAttachmentsFilter.ToString()));				 
 
@@ -793,7 +808,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("SpecifiedCIF == {0}",  SpecifiedCIFFilter.ToString()));				 
 
 					if(GeneratedCIFFilter.HasValue)
-						res.Append(" && " + string.Format("GeneratedCIF == {0}",  GeneratedCIFFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("GeneratedCIF == {0}",  GeneratedCIFFilter.ToString()));				 
+
+					if(SpecifiedFreightFilter.HasValue)
+						res.Append(" && " + string.Format("SpecifiedFreight == {0}",  SpecifiedFreightFilter.ToString()));				 
+
+					if(GeneratedFreightFilter.HasValue)
+						res.Append(" && " + string.Format("GeneratedFreight == {0}",  GeneratedFreightFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -882,9 +903,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalWeight = x.TotalWeight ,
                     
  
-                    Attachments = x.Attachments ,
-                    
- 
                     ExpectedAttachments = x.ExpectedAttachments ,
                     
  
@@ -897,7 +915,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     SpecifiedCIF = x.SpecifiedCIF ,
                     
  
-                    GeneratedCIF = x.GeneratedCIF 
+                    GeneratedCIF = x.GeneratedCIF ,
+                    
+ 
+                    SpecifiedFreight = x.SpecifiedFreight ,
+                    
+ 
+                    GeneratedFreight = x.GeneratedFreight 
                     
                 }).ToList()
             };
@@ -976,9 +1000,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public Nullable<double> TotalWeight { get; set; } 
                     
  
-                    public Nullable<int> Attachments { get; set; } 
-                    
- 
                     public Nullable<int> ExpectedAttachments { get; set; } 
                     
  
@@ -992,6 +1013,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> GeneratedCIF { get; set; } 
+                    
+ 
+                    public Nullable<double> SpecifiedFreight { get; set; } 
+                    
+ 
+                    public Nullable<double> GeneratedFreight { get; set; } 
                     
         }
 

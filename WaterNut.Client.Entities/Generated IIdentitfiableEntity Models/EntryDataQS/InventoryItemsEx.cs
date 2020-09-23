@@ -21,11 +21,11 @@ namespace EntryDataQS.Client.Entities
         {
             get
             {
-                return this.ItemNumber.ToString();//this.ItemNumber == null?"0":			
+                return this.InventoryItemId.ToString();//this.InventoryItemId == null?"0":			
             }
             set
             {
-                this.ItemNumber = Convert.ToString(value);
+                this.InventoryItemId = Convert.ToInt32(value);
             }
         }
         public string ApplicationSettingsEntityName

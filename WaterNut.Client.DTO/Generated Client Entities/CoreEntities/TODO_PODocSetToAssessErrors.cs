@@ -334,19 +334,6 @@ namespace CoreEntities.Client.DTO
         private Nullable<double> _TotalWeight;
 
         [DataMember]
-        public Nullable<int> Attachments
-		{ 
-		    get { return _Attachments; }
-			set
-			{
-			    if (value == _Attachments) return;
-				_Attachments = value;
-				NotifyPropertyChanged();//m => this.Attachments
-			}
-		}
-        private Nullable<int> _Attachments;
-
-        [DataMember]
         public Nullable<int> ExpectedAttachments
 		{ 
 		    get { return _ExpectedAttachments; }
@@ -410,6 +397,32 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<double> _GeneratedCIF;
+
+        [DataMember]
+        public Nullable<double> SpecifiedFreight
+		{ 
+		    get { return _SpecifiedFreight; }
+			set
+			{
+			    if (value == _SpecifiedFreight) return;
+				_SpecifiedFreight = value;
+				NotifyPropertyChanged();//m => this.SpecifiedFreight
+			}
+		}
+        private Nullable<double> _SpecifiedFreight;
+
+        [DataMember]
+        public Nullable<double> GeneratedFreight
+		{ 
+		    get { return _GeneratedFreight; }
+			set
+			{
+			    if (value == _GeneratedFreight) return;
+				_GeneratedFreight = value;
+				NotifyPropertyChanged();//m => this.GeneratedFreight
+			}
+		}
+        private Nullable<double> _GeneratedFreight;
 
        
    //     [DataMember]

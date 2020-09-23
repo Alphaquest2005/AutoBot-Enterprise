@@ -272,7 +272,6 @@
     <Compile Include="Contracts\CoreEntities\ITODO_PODocSetToExportService.cs" />
     <Compile Include="Contracts\CoreEntities\IToDo_POToXMLService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs" />
-    <Compile Include="Contracts\CoreEntities\ITODO_SubmitDiscrepanciesErrorReportService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
@@ -280,6 +279,7 @@
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitMissingInvoicePDFsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitPOInfoService.cs" />
+    <Compile Include="Contracts\CoreEntities\ITODO_SubmitSalesToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_TotalAdjustmentsToProcessService.cs" />
@@ -812,7 +812,6 @@
     <Compile Include="Services\CoreEntities\TODO_PODocSetToExportService.cs" />
     <Compile Include="Services\CoreEntities\ToDo_POToXMLService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitAllXMLToCustomsService.cs" />
-    <Compile Include="Services\CoreEntities\TODO_SubmitDiscrepanciesErrorReportService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitInadequatePackagesService.cs" />
@@ -820,6 +819,7 @@
     <Compile Include="Services\CoreEntities\TODO_SubmitIncompleteSupplierInfoService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitMissingInvoicePDFsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitPOInfoService.cs" />
+    <Compile Include="Services\CoreEntities\TODO_SubmitSalesToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitUnclassifiedItemsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_SubmitXMLToCustomsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_TotalAdjustmentsToProcessService.cs" />

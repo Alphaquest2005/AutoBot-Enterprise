@@ -33,6 +33,8 @@ namespace AutoBot
                 {
                     //ctx.Configuration.LazyLoadingEnabled = true;
                     //ctx.Configuration.ProxyCreationEnabled = true;
+                    ctx.Database.CommandTimeout = 0;
+
                     var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
                         .Include("FileTypes.FileTypeContacts.Contacts")
@@ -53,7 +55,7 @@ namespace AutoBot
                     {
                         Console.WriteLine($"{appSetting.SoftwareName} Emails Processed");
                         if(appSetting.DataFolder != null) appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
-                        if(appSetting.TestMode == null) continue;
+                       
                         // set BaseDataModel CurrentAppSettings
                         BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
                         //check emails
@@ -95,7 +97,7 @@ namespace AutoBot
                             // get downloads
                             Console.WriteLine($"{msgLst.Count()} Emails Processed");
 
-                            var processedFileTypes = new List<Tuple<FileTypes, FileInfo[]>>();
+                            var processedFileTypes = new List<Tuple<FileTypes, FileInfo[], int>>();
 
                             foreach (var msg in msgLst)
                             {
@@ -139,17 +141,24 @@ namespace AutoBot
                                         continue;
                                     }
 
+                                    var docSetLst = 
+                                            ctx.AsycudaDocumentSetExs
+                                                .Where(x =>
+                                                    x.Declarant_Reference_Number.Contains(msg.Key.Item1) &&
+                                                    x.ApplicationSettingsId == BaseDataModel.Instance
+                                                        .CurrentApplicationSettings.ApplicationSettingsId);
+
                                     //todo emailinfomapping
+                                    //var reference = msg.Key.Item2.EmailMapping.IsSingleEmail == true
+                                    //                                            ? msg.Key.Item1 + docSetLst.Count()
+                                    //                                            : msg.Key.Item1;
+                                    var reference = msg.Key.Item1;
 
 
                                     if (fileType.CreateDocumentSet)
                                     {
-                                        var docSet =
-                                            ctx.AsycudaDocumentSetExs
-                                                .FirstOrDefault(x =>
-                                                    x.Declarant_Reference_Number == msg.Key.Item1 &&
-                                                    x.ApplicationSettingsId == BaseDataModel.Instance
-                                                        .CurrentApplicationSettings.ApplicationSettingsId);
+
+                                        var docSet = docSetLst.FirstOrDefault(x => x.Declarant_Reference_Number == reference);
                                         if (docSet == null)
                                         {
                                             var cp = BaseDataModel.Instance.Customs_Procedures.First(x =>
@@ -157,7 +166,7 @@ namespace AutoBot
                                             ctx.Database.ExecuteSqlCommand($@"INSERT INTO AsycudaDocumentSet
                                         (ApplicationSettingsId, Declarant_Reference_Number, Document_TypeId, Customs_ProcedureId, Exchange_Rate)
                                     VALUES({BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId},'{
-                                                    msg.Key.Item1
+                                                    reference
                                                 }',{cp.Document_TypeId},{cp.Customs_ProcedureId},0)");
 
                                         }
@@ -166,7 +175,7 @@ namespace AutoBot
                                     var ndocSet =
                                         ctx.AsycudaDocumentSetExs
                                             .FirstOrDefault(x =>
-                                                x.Declarant_Reference_Number == msg.Key.Item1 &&
+                                                x.Declarant_Reference_Number == reference &&
                                                 x.ApplicationSettingsId ==
                                                 BaseDataModel.Instance.CurrentApplicationSettings
                                                     .ApplicationSettingsId);
@@ -185,7 +194,15 @@ namespace AutoBot
 
                                     ExecuteDataSpecificFileActions(fileType, csvFiles, appSetting);
 
-                                    processedFileTypes.Add(new Tuple<FileTypes, FileInfo[]>(fileType, csvFiles));
+                                    if (msg.Key.Item2.EmailMapping.IsSingleEmail == true)
+                                    {
+                                        ExecuteNonSpecificFileActions(fileType, csvFiles, appSetting);
+                                    }
+                                    else
+                                    {
+                                        processedFileTypes.Add(new Tuple<FileTypes, FileInfo[], int>(fileType, csvFiles, ndocSet?.AsycudaDocumentSetId??0));
+                                    }
+                                    
 
 
 
@@ -197,13 +214,14 @@ namespace AutoBot
                             var pfg = processedFileTypes
                                 .Where(x => x.Item1.FileTypeActions.Any(z =>
                                     z.Actions.IsDataSpecific == null || z.Actions.IsDataSpecific != true))
-                                .GroupBy(x => x.Item1.AsycudaDocumentSetId).ToList();
+                                .GroupBy(x => x.Item3).ToList();
 
                             foreach (var docSetId in pfg)
                             {
                                 var pf = docSetId.DistinctBy(x => x.Item1.Id).ToList();
                                 foreach (var t in pf)
                                 {
+                                    t.Item1.AsycudaDocumentSetId = docSetId.Key;
                                     ExecuteNonSpecificFileActions(t.Item1, t.Item2, appSetting);
                                 }
                             }
@@ -237,7 +255,7 @@ namespace AutoBot
                                 
                                 item.Sessions.SessionActions
                                     .Where(x => item.ActionId == null || x.ActionId == item.ActionId)
-                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))
+                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>  x.Invoke());
                             }
@@ -249,7 +267,7 @@ namespace AutoBot
                                 ctx.SessionActions.OrderBy(x => x.Id)
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessIM7").ToList()
-                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))
+                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                          x.Invoke());
@@ -258,7 +276,7 @@ namespace AutoBot
                                 ctx.SessionActions.OrderBy(x => x.Id)
                                     .Include(x => x.Actions)
                                     .Where(x => x.Sessions.Name == "AssessEX").ToList()
-                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ?? false))
+                                    .Where(x => x.Actions.TestMode == (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
                                     .Select(x => Utils.SessionActions[x.Actions.Name])
                                     .ForEach(x =>
                                         x.Invoke());
@@ -267,7 +285,10 @@ namespace AutoBot
 
                     }
                 }
-
+                //Console.WriteLine($"Press ENTER to Close...");
+                //var keyInfo = Console.ReadKey();
+                //while (keyInfo.Key != ConsoleKey.Enter)
+                //    keyInfo = Console.ReadKey();
 
                 // Application.SetSuspendState(PowerState.Suspend, true, true);
             }
@@ -289,8 +310,7 @@ namespace AutoBot
                                 (appSetting.AssessIM7 == x.AssessIM7 ||
                                  appSetting.AssessEX == x.AssessEX))
                     .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ??
-                                 false))
+                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
                     .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
                     .ForEach(x => { x.Invoke(fileType, files); });
             }
@@ -310,8 +330,7 @@ namespace AutoBot
                                 (appSetting.AssessIM7 == x.AssessIM7 ||
                                  appSetting.AssessEX == x.AssessEX))
                     .Where(x => x.Actions.TestMode ==
-                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode ??
-                                 false))
+                                (BaseDataModel.Instance.CurrentApplicationSettings.TestMode))
                     .Select(x => Utils.FileActions[x.Actions.Name]).ToList()
                     .ForEach(x => { x.Invoke(fileType, files); });
             }

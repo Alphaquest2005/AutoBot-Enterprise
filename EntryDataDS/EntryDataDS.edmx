@@ -43,6 +43,7 @@
           <Property Name="SourceFile" Type="nvarchar(max)" />
           <Property Name="EntryData_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Packages" Type="int" />
+          <Property Name="UpgradeKey" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="EntryData_Adjustments">
           <Key>
@@ -87,6 +88,7 @@
           <Property Name="INVNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="CustomerName" Type="nvarchar" MaxLength="255" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="Tax" Type="float" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -120,6 +122,7 @@
           <Property Name="LastCost" Type="float" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="FileLineNumber" Type="int" />
+          <Property Name="UpgradeKey" Type="int" />
         </EntityType>
         <EntityType Name="EntryDataFiles">
           <Key>
@@ -178,6 +181,7 @@
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UpgradeKey" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="InventoryItems-NonStock">
           <Key>
@@ -286,6 +290,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
         <EntityType Name="EntryDataEx">
           <Key>
             <PropertyRef Name="EntryData_Id" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
@@ -318,6 +335,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataExTotals' does n
         <EntityType Name="EntryDataExTotals">
           <Key>
             <PropertyRef Name="EntryData_Id" />
+            
+            
+            
           </Key>
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -862,6 +882,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
           <Property Name="CustomerName" Type="String" MaxLength="255" Unicode="true" FixedLength="false"></Property>
+          <Property Name="Tax" Type="Double" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="EntryData">
@@ -894,6 +915,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Packages" Type="Int32" />
           <NavigationProperty Name="Suppliers" Relationship="WaterNutDBModel.FK_EntryData_Suppliers" FromRole="EntryData" ToRole="Suppliers" />
+          <Property Name="UpgradeKey" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="OpeningStock" BaseType="WaterNutDBModel.EntryData">
@@ -940,6 +962,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_EntryDataDetails_InventoryItems" FromRole="EntryDataDetails" ToRole="InventoryItems" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="UpgradeKey" Type="Int32" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IEntryDataDetail</a:DomainInterfaceProperty>
         </EntityType>
         <Association Name="FK_PurchaseOrderDetails_PurchaseOrders">
@@ -1162,6 +1185,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <NavigationProperty Name="InventoryItems_NonStock" Relationship="WaterNutDBModel.FK_InventoryItems_NonStock_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItems_NonStock" />
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_InventoryItems" FromRole="InventoryItems" ToRole="EntryDataDetails" />
           <NavigationProperty Name="InventoryItemSource" Relationship="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemSource" />
+          <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_InventoryItems_NonStock_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
@@ -1416,6 +1440,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryData">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.EntryData)">
               <MappingFragment StoreEntitySet="EntryData">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
@@ -1438,6 +1463,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Sales)">
               <MappingFragment StoreEntitySet="EntryData_Sales">
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
                 <ScalarProperty Name="INVNumber" ColumnName="INVNumber" />
@@ -1472,6 +1498,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
@@ -1629,6 +1656,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="InventoryItems">
             <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItems">
               <MappingFragment StoreEntitySet="InventoryItems">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />

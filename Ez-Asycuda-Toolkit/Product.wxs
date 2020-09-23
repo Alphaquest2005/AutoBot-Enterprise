@@ -249,9 +249,9 @@
       <Component Id="DataLayer.dll" Guid="1f7f4a41-f8cb-4c75-a144-97e2332f2227">
         <File Id="DataLayer.dll" Name="DataLayer.dll" Source="$(var.DataLayer_TargetDir)DataLayer.dll" />
       </Component>
-      <Component Id="Core.Common.PDF2TXT.dll" Guid="91288d7f-faf6-4421-9ba1-c2ae76be5a41">
+      <!--<Component Id="Core.Common.PDF2TXT.dll" Guid="91288d7f-faf6-4421-9ba1-c2ae76be5a41">
         <File Id="Core.Common.PDF2TXT.dll" Name="Core.Common.PDF2TXT.dll" Source="$(var.Core.Common.PDF2TXT_TargetDir)Core.Common.PDF2TXT.dll" />
-      </Component>
+      </Component>-->
       <Component Id="commons_logging.dll" Guid="eadf19b1-456c-4570-ba31-b533fb5e5faa">
         <File Id="commons_logging.dll" Name="commons-logging.dll" Source="$(var.WaterNut_TargetDir)commons-logging.dll" />
       </Component>

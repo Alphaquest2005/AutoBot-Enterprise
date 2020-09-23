@@ -14,7 +14,7 @@ namespace CoreEntities
     
     public partial class TODO_ImportCompleteEntries
     {
-        public Nullable<int> AsycudaDocumentSetId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
         public Nullable<int> ApplicationSettingsId { get; set; }
         public Nullable<int> EmailId { get; set; }
         public Nullable<int> FileTypeId { get; set; }

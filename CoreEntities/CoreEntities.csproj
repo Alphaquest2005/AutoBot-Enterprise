@@ -318,9 +318,6 @@
     <Compile Include="TODO_SubmitAllXMLToCustoms.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
-    <Compile Include="TODO_SubmitDiscrepanciesErrorReport.cs">
-      <DependentUpon>CoreEntities.tt</DependentUpon>
-    </Compile>
     <Compile Include="TODO_SubmitDiscrepanciesToCustoms.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -340,6 +337,9 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitPOInfo.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TODO_SubmitSalesToCustoms.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_SubmitUnclassifiedItems.cs">

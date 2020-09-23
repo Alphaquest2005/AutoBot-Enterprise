@@ -10,19 +10,19 @@ using TrackableEntities.Client;
 
 		namespace CoreEntities.Business.Entities
 {
-    public partial class TODO_SubmitDiscrepanciesErrorReport
+    public partial class TODO_SubmitSalesToCustoms
     {
        
          partial void TrackableStartUp()
          {
-           // _changeTracker = new ChangeTrackingCollection<TODO_SubmitDiscrepanciesErrorReport>(this);
+           // _changeTracker = new ChangeTrackingCollection<TODO_SubmitSalesToCustoms>(this);
          }
 
-        ChangeTrackingCollection<TODO_SubmitDiscrepanciesErrorReport> _changeTracker;
+        ChangeTrackingCollection<TODO_SubmitSalesToCustoms> _changeTracker;
 
         [NotMapped]
         [IgnoreDataMember]
-        public new ChangeTrackingCollection<TODO_SubmitDiscrepanciesErrorReport> ChangeTracker
+        public new ChangeTrackingCollection<TODO_SubmitSalesToCustoms> ChangeTracker
         {
             get
             {
@@ -32,7 +32,7 @@ using TrackableEntities.Client;
 
          public new void StartTracking()
         {
-            _changeTracker = new ChangeTrackingCollection<TODO_SubmitDiscrepanciesErrorReport>(this);
+            _changeTracker = new ChangeTrackingCollection<TODO_SubmitSalesToCustoms>(this);
         }
    
     }

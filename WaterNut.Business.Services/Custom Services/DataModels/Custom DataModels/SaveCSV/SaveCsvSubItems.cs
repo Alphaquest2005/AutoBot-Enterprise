@@ -59,7 +59,7 @@ namespace WaterNut.DataSpace
                     if (xitm == null)
                     {
                         throw new ApplicationException(
-                            $"Please Ensure Item '{itm.Key.Precision_4}' on CNumber '{itm.Key.CNumber}' Date '{itm.Key.RegistrationDate.ToShortDateString()}' is imported");
+                            $"Please Ensure Item '{itm.Key.Precision_4}' on pCNumber '{itm.Key.CNumber}' Date '{itm.Key.RegistrationDate.ToShortDateString()}' is imported");
                         
                     }
                     var i = 0;
@@ -153,7 +153,7 @@ namespace WaterNut.DataSpace
                         await itmctx.GetAsycudaDocumentItemsByExpressionLst(new List<string>()
                         {
                             string.Format("ItemNumber == \"{0}\"", itm.Precision_4),
-                            string.Format("AsycudaDocument.CNumber == \"{0}\"", itm.CNumber),
+                            string.Format("AsycudaDocument.pCNumber == \"{0}\"", itm.CNumber),
                             string.Format("AsycudaDocument.RegistrationDate == \"{0}\"",
                                 itm.RegistrationDate.ToShortDateString())
                         },
@@ -255,7 +255,7 @@ namespace WaterNut.DataSpace
                     return new SubItemData()
                     {
                         Precision_4 = splits[mapping["Precision_4"]],
-                        CNumber = splits[mapping["CNumber"]],
+                        CNumber = splits[mapping["pCNumber"]],
                         RegistrationDate = DateTime.Parse(splits[mapping["RegistrationDate"]]),
                         ItemNumber = splits[mapping["ItemNumber"]],
                         ItemDescription = splits[mapping["ItemDescription"]],
@@ -285,9 +285,9 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("CNumber".ToUpper().Contains(h.ToUpper()))
+                if ("pCNumber".ToUpper().Contains(h.ToUpper()))
                 {
-                    mapping.Add("CNumber", i);
+                    mapping.Add("pCNumber", i);
                     continue;
                 }
 

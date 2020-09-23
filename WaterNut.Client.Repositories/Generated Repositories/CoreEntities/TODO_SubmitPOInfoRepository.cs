@@ -361,7 +361,35 @@ namespace CoreEntities.Client.Repositories
             }
         }
 
-	 public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+	 public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEntryDataId(string EntryDataId, List<string> includesLst = null)
+        {
+             if (EntryDataId == "0") return null;
+            try
+            {
+                 using (TODO_SubmitPOInfoClient t = new TODO_SubmitPOInfoClient())
+                    {
+                        var res = await t.GetTODO_SubmitPOInfoByEntryDataId(EntryDataId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_SubmitPOInfo(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
              if (ApplicationSettingsId == "0") return null;
             try
@@ -369,6 +397,34 @@ namespace CoreEntities.Client.Repositories
                  using (TODO_SubmitPOInfoClient t = new TODO_SubmitPOInfoClient())
                     {
                         var res = await t.GetTODO_SubmitPOInfoByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_SubmitPOInfo(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+             if (AsycudaDocumentSetId == "0") return null;
+            try
+            {
+                 using (TODO_SubmitPOInfoClient t = new TODO_SubmitPOInfoClient())
+                    {
+                        var res = await t.GetTODO_SubmitPOInfoByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new TODO_SubmitPOInfo(x)).AsEnumerable();
@@ -425,6 +481,62 @@ namespace CoreEntities.Client.Repositories
                  using (TODO_SubmitPOInfoClient t = new TODO_SubmitPOInfoClient())
                     {
                         var res = await t.GetTODO_SubmitPOInfoByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_SubmitPOInfo(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByNewAsycuda_Id(string NewAsycuda_Id, List<string> includesLst = null)
+        {
+             if (NewAsycuda_Id == "0") return null;
+            try
+            {
+                 using (TODO_SubmitPOInfoClient t = new TODO_SubmitPOInfoClient())
+                    {
+                        var res = await t.GetTODO_SubmitPOInfoByNewAsycuda_Id(NewAsycuda_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_SubmitPOInfo(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+ 	 public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAssessedAsycuda_Id(string AssessedAsycuda_Id, List<string> includesLst = null)
+        {
+             if (AssessedAsycuda_Id == "0") return null;
+            try
+            {
+                 using (TODO_SubmitPOInfoClient t = new TODO_SubmitPOInfoClient())
+                    {
+                        var res = await t.GetTODO_SubmitPOInfoByAssessedAsycuda_Id(AssessedAsycuda_Id, includesLst).ConfigureAwait(continueOnCapturedContext: false);
                          if(res != null)
                         {
                             return res.Select(x => new TODO_SubmitPOInfo(x)).AsEnumerable();

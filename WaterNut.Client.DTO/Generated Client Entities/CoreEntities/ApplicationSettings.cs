@@ -386,7 +386,7 @@ namespace CoreEntities.Client.DTO
         private string _OrderEntriesBy;
 
         [DataMember]
-        public Nullable<System.DateTime> OpeningStockDate
+        public System.DateTime OpeningStockDate
 		{ 
 		    get { return _OpeningStockDate; }
 			set
@@ -396,7 +396,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.OpeningStockDate
 			}
 		}
-        private Nullable<System.DateTime> _OpeningStockDate;
+        private System.DateTime _OpeningStockDate;
 
         [DataMember]
         public string DeclarantCode
@@ -464,7 +464,7 @@ namespace CoreEntities.Client.DTO
         private string _CompanyName;
 
         [DataMember]
-        public Nullable<bool> IsActive
+        public bool IsActive
 		{ 
 		    get { return _IsActive; }
 			set
@@ -474,7 +474,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.IsActive
 			}
 		}
-        private Nullable<bool> _IsActive;
+        private bool _IsActive;
 
         [DataMember]
         public string Email
@@ -555,7 +555,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<bool> _AssessEX;
 
         [DataMember]
-        public Nullable<bool> TestMode
+        public bool TestMode
 		{ 
 		    get { return _TestMode; }
 			set
@@ -565,7 +565,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.TestMode
 			}
 		}
-        private Nullable<bool> _TestMode;
+        private bool _TestMode;
 
         [DataMember]
         public int BondTypeId

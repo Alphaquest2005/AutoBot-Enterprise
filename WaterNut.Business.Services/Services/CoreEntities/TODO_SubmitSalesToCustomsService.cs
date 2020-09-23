@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace CoreEntities.Business.Services
 {
-   [Export (typeof(ITODO_SubmitDiscrepanciesErrorReportService))]
+   [Export (typeof(ITODO_SubmitSalesToCustomsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class TODO_SubmitDiscrepanciesErrorReportService : ITODO_SubmitDiscrepanciesErrorReportService, IDisposable
+    public partial class TODO_SubmitSalesToCustomsService : ITODO_SubmitSalesToCustomsService, IDisposable
     {
         //private readonly CoreEntitiesContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public TODO_SubmitDiscrepanciesErrorReportService()
+        public TODO_SubmitSalesToCustomsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReport(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustoms(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace CoreEntities.Business.Services
                   using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<TODO_SubmitDiscrepanciesErrorReport> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<TODO_SubmitSalesToCustoms> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> GetTODO_SubmitDiscrepanciesErrorReportByKey(string InvoiceNo, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_SubmitSalesToCustoms> GetTODO_SubmitSalesToCustomsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(InvoiceNo))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = InvoiceNo;
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                TODO_SubmitDiscrepanciesErrorReport entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.InvoiceNo == i).ConfigureAwait(continueOnCapturedContext: false);
+                TODO_SubmitSalesToCustoms entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace CoreEntities.Business.Services
         }
 
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitSalesToCustoms>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByExpressionNav(string exp,
+		public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -254,17 +254,17 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByBatch(string exp,
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<TODO_SubmitDiscrepanciesErrorReport>>();
+                var res = new ConcurrentQueue<List<TODO_SubmitSalesToCustoms>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
 
 
                 var batchSize = 500;
@@ -285,14 +285,14 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<TODO_SubmitDiscrepanciesErrorReport> dset;
+                                IQueryable<TODO_SubmitSalesToCustoms> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.InvoiceNo);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.InvoiceNo).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset
@@ -329,17 +329,17 @@ namespace CoreEntities.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<TODO_SubmitDiscrepanciesErrorReport>>();
+                var res = new ConcurrentQueue<List<TODO_SubmitSalesToCustoms>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_SubmitSalesToCustoms>();
 
 
                 var batchSize = 500;
@@ -360,15 +360,15 @@ namespace CoreEntities.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<TODO_SubmitDiscrepanciesErrorReport> dset;
+                                IQueryable<TODO_SubmitSalesToCustoms> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.InvoiceNo);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.InvoiceNo);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset
@@ -405,13 +405,13 @@ namespace CoreEntities.Business.Services
         }
 
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> UpdateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity)
+        public async Task<TODO_SubmitSalesToCustoms> UpdateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
         { 
             using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (TODO_SubmitDiscrepanciesErrorReport) entity;
+                     var res = (TODO_SubmitSalesToCustoms) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -487,14 +487,14 @@ namespace CoreEntities.Business.Services
            return entity;
         }
 
-        public async Task<TODO_SubmitDiscrepanciesErrorReport> CreateTODO_SubmitDiscrepanciesErrorReport(TODO_SubmitDiscrepanciesErrorReport entity)
+        public async Task<TODO_SubmitSalesToCustoms> CreateTODO_SubmitSalesToCustoms(TODO_SubmitSalesToCustoms entity)
         {
             try
             {
-                var res = (TODO_SubmitDiscrepanciesErrorReport) entity;
+                var res = (TODO_SubmitSalesToCustoms) entity;
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                dbContext.TODO_SubmitDiscrepanciesErrorReport.Add(res);
+                dbContext.TODO_SubmitSalesToCustoms.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -514,21 +514,21 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> DeleteTODO_SubmitDiscrepanciesErrorReport(string InvoiceNo)
+        public async Task<bool> DeleteTODO_SubmitSalesToCustoms(string Id)
         {
             try
             {
               using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = InvoiceNo;
-                TODO_SubmitDiscrepanciesErrorReport entity = await dbContext.TODO_SubmitDiscrepanciesErrorReport
-													.SingleOrDefaultAsync(x => x.InvoiceNo == i)
+                var i = Convert.ToInt32(Id);
+                TODO_SubmitSalesToCustoms entity = await dbContext.TODO_SubmitSalesToCustoms
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.TODO_SubmitDiscrepanciesErrorReport.Attach(entity);
-                    dbContext.TODO_SubmitDiscrepanciesErrorReport.Remove(entity);
+                    dbContext.TODO_SubmitSalesToCustoms.Attach(entity);
+                    dbContext.TODO_SubmitSalesToCustoms.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -547,19 +547,19 @@ namespace CoreEntities.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedTODO_SubmitDiscrepanciesErrorReport(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedTODO_SubmitSalesToCustoms(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing TODO_SubmitDiscrepanciesErrorReport", lst.Count());
+                StatusModel.StartStatusUpdate("Removing TODO_SubmitSalesToCustoms", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new TODO_SubmitDiscrepanciesErrorReportService())
+                    using (var ctx = new TODO_SubmitSalesToCustomsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteTODO_SubmitDiscrepanciesErrorReport(item).Wait();
+                            ctx.DeleteTODO_SubmitSalesToCustoms(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -594,7 +594,7 @@ namespace CoreEntities.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<TODO_SubmitDiscrepanciesErrorReport>)dbContext.TODO_SubmitDiscrepanciesErrorReport; 
+                    var set = (IQueryable<TODO_SubmitSalesToCustoms>)dbContext.TODO_SubmitSalesToCustoms; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -632,7 +632,7 @@ namespace CoreEntities.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.TODO_SubmitDiscrepanciesErrorReport
+                        return await dbContext.TODO_SubmitSalesToCustoms
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -640,7 +640,7 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.TODO_SubmitDiscrepanciesErrorReport
+                        return await dbContext.TODO_SubmitSalesToCustoms
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -662,19 +662,19 @@ namespace CoreEntities.Business.Services
             }
         }
         
-        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
                     if (exp == "All")
                     {
-                        return await dbContext.TODO_SubmitDiscrepanciesErrorReport
+                        return await dbContext.TODO_SubmitSalesToCustoms
 										.AsNoTracking()
-                                        .OrderBy(y => y.InvoiceNo)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -683,10 +683,10 @@ namespace CoreEntities.Business.Services
                     else
                     {
                         
-                        return await dbContext.TODO_SubmitDiscrepanciesErrorReport
+                        return await dbContext.TODO_SubmitSalesToCustoms
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.InvoiceNo)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -718,12 +718,12 @@ namespace CoreEntities.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.TODO_SubmitDiscrepanciesErrorReport
+                        return await dbContext.TODO_SubmitSalesToCustoms
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await dbContext.TODO_SubmitDiscrepanciesErrorReport.Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                    return await dbContext.TODO_SubmitSalesToCustoms.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -765,10 +765,10 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -786,10 +786,10 @@ namespace CoreEntities.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -800,7 +800,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -808,7 +808,7 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_SubmitDiscrepanciesErrorReport>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_SubmitSalesToCustoms>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -816,17 +816,17 @@ namespace CoreEntities.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.InvoiceNo)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    return await set//dbContext.TODO_SubmitDiscrepanciesErrorReport
+                    return await set//dbContext.TODO_SubmitSalesToCustoms
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
-								.OrderBy(y => y.InvoiceNo)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -850,7 +850,7 @@ namespace CoreEntities.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeWhere<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -865,7 +865,7 @@ namespace CoreEntities.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeSelectMany<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -873,14 +873,14 @@ namespace CoreEntities.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>();
+                .SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.InvoiceNo)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -894,7 +894,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> LoadRangeSelect<T>(int startIndex, int count,
             CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -902,14 +902,14 @@ namespace CoreEntities.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>();
+                .Select(navProp).OfType<TODO_SubmitSalesToCustoms>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.InvoiceNo)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -923,7 +923,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetWhere<T>(CoreEntitiesContext dbContext,
+        private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetWhere<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -947,7 +947,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -958,18 +958,18 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-							.Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+							.SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<TODO_SubmitDiscrepanciesErrorReport>)dbContext.Set<T>()
+			var set = (DbQuery<TODO_SubmitSalesToCustoms>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-                .Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+                .SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -984,7 +984,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
+		private static async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -995,18 +995,18 @@ namespace CoreEntities.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-							.Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+							.Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<TODO_SubmitDiscrepanciesErrorReport>)dbContext.Set<T>()
+			var set = (DbQuery<TODO_SubmitSalesToCustoms>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-                .Where(exp == "All" || exp == null?"InvoiceNo != null":exp)
+                .Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1021,17 +1021,17 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByemailId(string emailId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(emailId);
+                var i = Convert.ToInt32(AsycudaDocumentSetId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_SubmitDiscrepanciesErrorReport> entities = await set//dbContext.TODO_SubmitDiscrepanciesErrorReport
+                IEnumerable<TODO_SubmitSalesToCustoms> entities = await set//dbContext.TODO_SubmitSalesToCustoms
                                       .AsNoTracking()
-                                        .Where(x => x.emailId.ToString() == emailId.ToString())
+                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1050,17 +1050,46 @@ namespace CoreEntities.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<TODO_SubmitDiscrepanciesErrorReport>> GetTODO_SubmitDiscrepanciesErrorReportByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
+                var i = Convert.ToInt32(ApplicationSettingsId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_SubmitDiscrepanciesErrorReport> entities = await set//dbContext.TODO_SubmitDiscrepanciesErrorReport
+                IEnumerable<TODO_SubmitSalesToCustoms> entities = await set//dbContext.TODO_SubmitSalesToCustoms
                                       .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<TODO_SubmitSalesToCustoms>> GetTODO_SubmitSalesToCustomsByEmailId(string EmailId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(EmailId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_SubmitSalesToCustoms> entities = await set//dbContext.TODO_SubmitSalesToCustoms
+                                      .AsNoTracking()
+                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1091,11 +1120,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.TODO_SubmitDiscrepanciesErrorReport.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.TODO_SubmitDiscrepanciesErrorReport.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1123,14 +1152,14 @@ namespace CoreEntities.Business.Services
                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.TODO_SubmitDiscrepanciesErrorReport.Any()) return 0;
+                    if (!dbContext.TODO_SubmitSalesToCustoms.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.TODO_SubmitDiscrepanciesErrorReport
+                        return Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    return Convert.ToDecimal(dbContext.TODO_SubmitDiscrepanciesErrorReport.Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                    return Convert.ToDecimal(dbContext.TODO_SubmitSalesToCustoms.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1170,10 +1199,10 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .SelectMany(navProp).OfType<TODO_SubmitSalesToCustoms>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1190,10 +1219,10 @@ namespace CoreEntities.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<TODO_SubmitDiscrepanciesErrorReport>()
-                .Where(exp == "All" || exp == null ? "InvoiceNo != null" : exp)
+                .Select(navProp).OfType<TODO_SubmitSalesToCustoms>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("InvoiceNo")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1216,11 +1245,11 @@ namespace CoreEntities.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.TODO_SubmitDiscrepanciesErrorReport.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.TODO_SubmitSalesToCustoms.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.TODO_SubmitDiscrepanciesErrorReport.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.TODO_SubmitSalesToCustoms.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1241,12 +1270,12 @@ namespace CoreEntities.Business.Services
          }
 
 		 
-		private static IQueryable<TODO_SubmitDiscrepanciesErrorReport> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
+		private static IQueryable<TODO_SubmitSalesToCustoms> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<TODO_SubmitDiscrepanciesErrorReport>) dbContext.TODO_SubmitDiscrepanciesErrorReport; 
+			   var set =(DbQuery<TODO_SubmitSalesToCustoms>) dbContext.TODO_SubmitSalesToCustoms; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1257,7 +1286,7 @@ namespace CoreEntities.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<TODO_SubmitDiscrepanciesErrorReport> AddWheres(List<string> expLst, IQueryable<TODO_SubmitDiscrepanciesErrorReport> set)
+	   private IQueryable<TODO_SubmitSalesToCustoms> AddWheres(List<string> expLst, IQueryable<TODO_SubmitSalesToCustoms> set)
         {
             try
             {

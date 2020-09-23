@@ -88,7 +88,6 @@ namespace CoreEntities
         public DbSet<TODO_ImportCompleteEntries> TODO_ImportCompleteEntries { get; set; }
         public DbSet<TODO_AdjustmentsAlreadyXMLed> TODO_AdjustmentsAlreadyXMLed { get; set; }
         public DbSet<TODO_DiscrepancyPreExecutionReport> TODO_DiscrepancyPreExecutionReport { get; set; }
-        public DbSet<TODO_SubmitDiscrepanciesErrorReport> TODO_SubmitDiscrepanciesErrorReport { get; set; }
         public DbSet<TODO_TotalAdjustmentsToProcess> TODO_TotalAdjustmentsToProcess { get; set; }
         public DbSet<TODO_DiscrepanciesAlreadyXMLed> TODO_DiscrepanciesAlreadyXMLed { get; set; }
         public DbSet<EmailFileTypes> EmailFileTypes { get; set; }
@@ -106,5 +105,6 @@ namespace CoreEntities
         public DbSet<TODO_PODocSetToAssessErrors> TODO_PODocSetToAssessErrors { get; set; }
         public DbSet<TODO_PODocSetToAssess> TODO_PODocSetToAssess { get; set; }
         public DbSet<TODO_SubmitMissingInvoicePDFs> TODO_SubmitMissingInvoicePDFs { get; set; }
+        public DbSet<TODO_SubmitSalesToCustoms> TODO_SubmitSalesToCustoms { get; set; }
     }
 }

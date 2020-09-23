@@ -173,8 +173,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_DiscrepancyPreExecutionReport> TODO_DiscrepancyPreExecutionReport { get; set; }
      
-        public DbSet<TODO_SubmitDiscrepanciesErrorReport> TODO_SubmitDiscrepanciesErrorReport { get; set; }
-     
         public DbSet<TODO_TotalAdjustmentsToProcess> TODO_TotalAdjustmentsToProcess { get; set; }
      
         public DbSet<TODO_DiscrepanciesAlreadyXMLed> TODO_DiscrepanciesAlreadyXMLed { get; set; }
@@ -208,6 +206,8 @@ namespace CoreEntities.Business.Entities
         public DbSet<TODO_PODocSetToAssess> TODO_PODocSetToAssess { get; set; }
      
         public DbSet<TODO_SubmitMissingInvoicePDFs> TODO_SubmitMissingInvoicePDFs { get; set; }
+     
+        public DbSet<TODO_SubmitSalesToCustoms> TODO_SubmitSalesToCustoms { get; set; }
      
 
 
@@ -339,8 +339,6 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new TODO_DiscrepancyPreExecutionReportMap());
          
-            modelBuilder.Configurations.Add(new TODO_SubmitDiscrepanciesErrorReportMap());
-         
             modelBuilder.Configurations.Add(new TODO_TotalAdjustmentsToProcessMap());
          
             modelBuilder.Configurations.Add(new TODO_DiscrepanciesAlreadyXMLedMap());
@@ -374,6 +372,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_PODocSetToAssessMap());
          
             modelBuilder.Configurations.Add(new TODO_SubmitMissingInvoicePDFsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitSalesToCustomsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

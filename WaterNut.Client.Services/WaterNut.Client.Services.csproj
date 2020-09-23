@@ -184,7 +184,6 @@
     <Compile Include="CoreEntities\TODO_PODocSetToExportClient.cs" />
     <Compile Include="CoreEntities\ToDo_POToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitAllXMLToCustomsClient.cs" />
-    <Compile Include="CoreEntities\TODO_SubmitDiscrepanciesErrorReportClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDiscrepanciesToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitInadequatePackagesClient.cs" />
@@ -192,6 +191,7 @@
     <Compile Include="CoreEntities\TODO_SubmitIncompleteSupplierInfoClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitMissingInvoicePDFsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitPOInfoClient.cs" />
+    <Compile Include="CoreEntities\TODO_SubmitSalesToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitUnclassifiedItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_SubmitXMLToCustomsClient.cs" />
     <Compile Include="CoreEntities\TODO_TotalAdjustmentsToProcessClient.cs" />

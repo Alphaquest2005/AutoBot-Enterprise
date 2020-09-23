@@ -546,12 +546,11 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
                 MessageBox.Show("Please select a Document Set.");
                 return;
             }
-            await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(vloader.FilterExpression + (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $" && pRegistrationDate >= \"{CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.OpeningStockDate}\""
-                                                                             : "")
+            await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(vloader.FilterExpression + ($" && pRegistrationDate >= \"{CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"")
                   ,
                             PerIM7,
                             Process7100,
-                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId).ConfigureAwait(false);
+                            ApplyCurrentChecks, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales","Historic",true, true, true, true, true, false,true, true, true).ConfigureAwait(false);
            MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged, this, new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentSetExsChanged));
           StatusModel.StopStatusUpdate();
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
@@ -716,6 +715,67 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
 
 
             MessageBox.Show("Complete","Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+        }
+
+        public async Task EX9AllSales(bool overwrite)
+        {
+            try
+            {
+                
+
+                //var saleInfo = BaseDataModel.CurrentSalesInfo();
+                //if (saleInfo.Item3.AsycudaDocumentSetId == 0) return;
+                var res = MessageBox.Show("Ex9 All Allocated Sales?", "Ex9 All Allocated Sales", MessageBoxButton.YesNoCancel);
+                if (res == MessageBoxResult.Yes)
+                {
+                    StatusModel.Timer("Ex9 All Allocated Sales");
+                   
+                     var filterExpression = vloader.FilterExpression +
+                    // "&& (ItemNumber == \"WA99004\")" +//A002416,A002402,X35019044,AB111510
+                    // "&&  PreviousItem_Id == 388376" +
+                    " && PreviousItem_Id != null" +
+                    //"&& (xBond_Item_Id == 0)" + not relevant because it could be assigned to another sale but not exwarehoused
+                    " && (QtyAllocated != null && EntryDataDetailsId != null)" +
+                    " && (PiQuantity < pQtyAllocated)" +
+                    //"&& (pQuantity - pQtyAllocated  < 0.001)" + // prevents spill over allocations
+                    " && (Status == null || Status == \"\")" +
+                    (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowNonXEntries == "Visible"
+                        ? $" && (Invalid != true && (pExpiryDate >= \"{DateTime.Now.ToShortDateString()}\" || pExpiryDate == null) && (Status == null || Status == \"\"))"
+                        : "") +
+                    ($" && pRegistrationDate >= \"{CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"");
+
+
+
+                    await AsycudaSalesAllocationsExRepository.Instance.CreateEx9(filterExpression, false, false, false, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "Sales", "Historic", true, true, true, false, false, false, true, true, true).ConfigureAwait(false);
+
+                }
+
+                if (res == MessageBoxResult.Cancel)
+                {
+                    StatusModel.StopStatusUpdate();
+                    return;
+                }
+
+               
+                MessageBus.Default.BeginNotify(MessageToken.AsycudaSalesAllocationsExsChanged, null,
+                    new NotificationEventArgs(MessageToken.AsycudaSalesAllocationsExsChanged));
+
+                MessageBus.Default.BeginNotify(QuerySpace.CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
+                    new NotificationEventArgs(QuerySpace.CoreEntities.MessageToken.AsycudaDocumentsChanged));
+
+                MessageBus.Default.BeginNotify(QuerySpace.PreviousDocumentQS.MessageToken.PreviousDocumentItemsChanged, null,
+                    new NotificationEventArgs(QuerySpace.PreviousDocumentQS.MessageToken.PreviousDocumentItemsChanged));
+                
+
+                StatusModel.StopStatusUpdate();
+                MessageBox.Show("Complete", "Asycuda Toolkit", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
     }

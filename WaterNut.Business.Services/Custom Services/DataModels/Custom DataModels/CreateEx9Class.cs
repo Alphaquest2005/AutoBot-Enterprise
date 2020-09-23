@@ -52,7 +52,7 @@ namespace WaterNut.DataSpace
             get { return _instance; }
         }
 
-        public bool ApplyCurrentChecks { get; set; }
+        
 
 
         public bool PerIM7 { get; set; }
@@ -62,17 +62,17 @@ namespace WaterNut.DataSpace
 
 
         public async Task CreateEx9(string filterExpression, bool perIM7, bool process7100, bool applyCurrentChecks,
-            AsycudaDocumentSet docSet)
+            AsycudaDocumentSet docSet, string documentType, string ex9BucketType, bool isGrouped,
+            bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket, bool applyHistoricChecks,  bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck)
         {
             // Make CurrentChecks always on
-            applyCurrentChecks = true;
+           
             try
             {
                 PerIM7 = perIM7;
                 Process7100 = process7100;
-                ApplyCurrentChecks = applyCurrentChecks;
-
-                await ProcessEx9(docSet, filterExpression).ConfigureAwait(false);
+                
+                await ProcessEx9(docSet, filterExpression, documentType, ex9BucketType, isGrouped, checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket, applyHistoricChecks, applyCurrentChecks, perInvoice, autoAssess, overPIcheck, universalPIcheck).ConfigureAwait(continueOnCapturedContext: false);
 
             }
             catch (Exception)
@@ -84,7 +84,9 @@ namespace WaterNut.DataSpace
 
         public static List<PiSummary> DocSetPi = new List<PiSummary>();
 
-        private async Task ProcessEx9(AsycudaDocumentSet docSet, string filterExp)
+        private async Task ProcessEx9(AsycudaDocumentSet docSet, string filterExp, string documentType, string ex9BucketType, bool isGrouped,
+            bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, bool applyEx9Bucket,
+            bool applyHistoricChecks, bool applyCurrentChecks, bool perInvoice, bool autoAssess, bool overPIcheck, bool universalPIcheck)
         {
             try
             {
@@ -153,11 +155,16 @@ namespace WaterNut.DataSpace
                             itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
                                 endDate,
                                 dfp, "Sales"); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
-                            await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
+                            await CreateDutyFreePaidDocument(dfp, res, docSet, documentType, isGrouped,
                                     itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
-                                        .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
-                                    true, false, true)
+                                        .ToList(), checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,ex9BucketType, applyHistoricChecks, applyCurrentChecks,
+                                    autoAssess,perInvoice,overPIcheck, universalPIcheck)
                                 .ConfigureAwait(false);
+                            //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
+                            //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
+                            //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
+                            //        true, false, true)
+                            //    .ConfigureAwait(false);
                         }
 
                       
@@ -200,12 +207,14 @@ namespace WaterNut.DataSpace
             AllocationDSContext ctx,  string entryType)
         {
             var res = new List<ItemSalesPiSummary>();
-            var allSales = ctx.ItemSalesAsycudaPiSummary
+
+            var universalData = ctx.ItemSalesAsycudaPiSummary
                 //.Where(x => x.ItemNumber == "CB/BM35X178")
                 .Where(x => x.ApplicationSettingsId == applicationSettingsId)
-                .Where(x => x.EntryDataType == entryType || x.Type == null)
+               
                 .ToList();
-            res.AddRange(allSales
+
+            res.AddRange(universalData
                 .GroupBy(g => new
                 {
                     PreviousItem_Id = g.PreviousItem_Id,
@@ -217,11 +226,37 @@ namespace WaterNut.DataSpace
                 })
                 .Select(x => new ItemSalesPiSummary
                 {
-                    PreviousItem_Id = x.Key.PreviousItem_Id,
+                    PreviousItem_Id = (int)x.Key.PreviousItem_Id,
                     ItemNumber = x.Key.ItemNumber,
-                    QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
-                    pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
-                    PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
+                    QtyAllocated = x.DistinctBy(q => q.Id).Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
+                    pQtyAllocated = x.DistinctBy(q => new { q.DutyFreePaid, q.pQtyAllocated }).Select(z => z.pQtyAllocated).DefaultIfEmpty(0).Sum(),
+                    PiQuantity = x.DistinctBy(q => q.Id).Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
+                    pCNumber = x.Key.pCNumber,
+                    pLineNumber = (int)x.Key.pLineNumber,
+                    DutyFreePaid = "Universal",
+                    Type = "Universal",
+                    EntryDataType = "Universal",
+                }).ToList());
+
+
+            var allSales = universalData.Where(x => x.EntryDataType == entryType || x.Type == null);
+            res.AddRange(allSales 
+                .GroupBy(g => new
+                {
+                    PreviousItem_Id = g.PreviousItem_Id,
+                    pCNumber = g.pCNumber,
+                    pLineNumber = g.pLineNumber,
+                    ItemNumber = g.ItemNumber,
+
+
+                })
+                .Select(x => new ItemSalesPiSummary
+                {
+                    PreviousItem_Id = (int)x.Key.PreviousItem_Id,
+                    ItemNumber = x.Key.ItemNumber,
+                    QtyAllocated = x.DistinctBy(q => q.Id).Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
+                    pQtyAllocated = x.DistinctBy(q => new {q.DutyFreePaid, q.pQtyAllocated}).Select(z => z.pQtyAllocated).DefaultIfEmpty(0).Sum(),
+                    PiQuantity = x.DistinctBy(q => q.Id).Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
                     pCNumber = x.Key.pCNumber,
                     pLineNumber = (int) x.Key.pLineNumber,
                     DutyFreePaid = "All",
@@ -229,8 +264,8 @@ namespace WaterNut.DataSpace
                     EntryDataType = entryType
                 }).ToList());
 
-           // var test2 = allSales.Where(x => x.pCNumber == "43429" && x.pLineNumber == 18).ToList();
-           // var test = res.Where(x => x.pCNumber == "43429" && x.pLineNumber == 18).ToList();
+           // var test2 = allSales.Where(x => x.PreviousItem_Id == 490395).ToList();
+           //var test = res.Where(x => x.PreviousItem_Id == 490395).ToList();
 
 
             var allHistoricSales = allSales
@@ -250,7 +285,7 @@ namespace WaterNut.DataSpace
                 })
                 .Select(x => new ItemSalesPiSummary
                 {
-                    PreviousItem_Id = x.Key.PreviousItem_Id,
+                    PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                     ItemNumber = x.Key.ItemNumber,
                     QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
                     pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
@@ -275,7 +310,7 @@ namespace WaterNut.DataSpace
                 })
                 .Select(x => new ItemSalesPiSummary
                 {
-                    PreviousItem_Id = x.Key.PreviousItem_Id,
+                    PreviousItem_Id = (int) x.Key.PreviousItem_Id,
                     ItemNumber = x.Key.ItemNumber,
                     QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
                     pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
@@ -311,11 +346,14 @@ namespace WaterNut.DataSpace
             AsycudaDocumentSet docSet, string documentType, bool isGrouped, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, 
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
-            bool autoAssess, bool perInvoice, bool overPIcheck)
+            bool autoAssess, bool perInvoice, bool overPIcheck, bool universalPIcheck)
         {
             try
             {
-                
+               // applyHistoricChecks = false;
+               // applyEx9Bucket = false;
+                //applyCurrentChecks = false;
+
 
                 var itmcount = 0;
                 var docList = new List<DocumentCT>();
@@ -420,7 +458,7 @@ namespace WaterNut.DataSpace
 
                         var newItms = await
                             CreateEx9EntryAsync(mypod, cdoc, itmcount, dfp, monthyear.MonthYear, documentType,
-                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck)
+                                    itemSalesPiSummaryLst, checkQtyAllocatedGreaterThanPiQuantity, applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks, overPIcheck, universalPIcheck)
                                 .ConfigureAwait(false);
 
                         itmcount += newItms;
@@ -993,7 +1031,7 @@ namespace WaterNut.DataSpace
             string documentType, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity,
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
-            bool overPIcheck)
+            bool overPIcheck, bool universalPIcheck)
         {
             try
             {
@@ -1003,17 +1041,17 @@ namespace WaterNut.DataSpace
                 if (checkQtyAllocatedGreaterThanPiQuantity)
                 {
                    
-                    var psum = mypod.EntlnData.pDocumentItem.previousItems
-                        .DistinctBy(x => x.PreviousItem_Id)
-                        .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum();
-                    if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
-                    {
-                        updateXStatus(mypod.Allocations,
-                            $@"Failed QtyAllocated <= PiQuantity:: QtyAllocated: {
-                                    mypod.EntlnData.pDocumentItem.QtyAllocated
-                                } PiQuantity: {psum}");
-                        return 0;
-                    }
+                    //var psum = mypod.EntlnData.pDocumentItem.previousItems
+                    //    .DistinctBy(x => x.PreviousItem_Id)
+                    //    .Select(x => x.Suplementary_Quantity).DefaultIfEmpty(0).Sum();
+                    //if (mypod.EntlnData.pDocumentItem.QtyAllocated <= psum)
+                    //{
+                    //    updateXStatus(mypod.Allocations,
+                    //        $@"Failed QtyAllocated <= PiQuantity:: QtyAllocated: {
+                    //                mypod.EntlnData.pDocumentItem.QtyAllocated
+                    //            } PiQuantity: {psum}");
+                    //    return 0;
+                    //}
 
                    
                 }
@@ -1021,11 +1059,14 @@ namespace WaterNut.DataSpace
                 ///     Sales Cap/ Sales Bucket historic
 
                 List<ItemSalesPiSummary> salesPiAll = new List<ItemSalesPiSummary>();
-                ;
+                List<ItemSalesPiSummary> universalData = new List<ItemSalesPiSummary>(); ;
                 List<ItemSalesPiSummary> salesPiHistoric;
                 List<ItemSalesPiSummary> salesPiCurrent;
                 List<ItemSalesPiSummary> itemSalesPiHistoric = new List<ItemSalesPiSummary>();
                 List<ItemSalesPiSummary> itemSalesPiCurrent = new List<ItemSalesPiSummary>();
+
+                universalData = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
+                                                              && x.Type == "Universal").ToList();
 
                 salesPiAll = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
                                                               && x.pCNumber == mypod.EntlnData.EX9Allocation
@@ -1074,6 +1115,11 @@ namespace WaterNut.DataSpace
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
+                var universalSalesAll = universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated)
+                    .DefaultIfEmpty(0).Sum();
+                var universalPiAll = universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
+                    .DefaultIfEmpty(0).Sum();
+
                 var totalSalesAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated)
                     .DefaultIfEmpty(0).Sum();
                 var totalPiAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
@@ -1109,6 +1155,44 @@ namespace WaterNut.DataSpace
                     ? 1
                     : mypod.EntlnData.EX9Allocation.SalesFactor;
 
+
+                
+
+                if (overPIcheck)
+                    if (Math.Round(totalSalesAll, 2) <
+                        Math.Round((totalPiAll /* + docPi */+ mypod.EntlnData.Quantity) * salesFactor, 2))//
+                    {
+                        var availibleQty = Math.Round(totalSalesAll, 2) - Math.Round(totalPiAll, 2);/*+ docPi /*+ docPi  + mypod.EntlnData.Quantity -- took this out because for some strange reason totalpi includes it*/
+                        if (availibleQty <= 0)
+                        {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed All Sales Check:: Total All Sales:{Math.Round(totalSalesAll, 2)}
+                                            Total All PI: {totalPiAll}
+                                            xQuantity:{mypod.EntlnData.Quantity}");
+                            return 0;
+                        }
+
+                        Ex9Bucket(mypod, availibleQty, totalSalesAll, totalPiAll, "Total");
+                    }
+
+                if (universalPIcheck)
+                    if (Math.Round(universalSalesAll, 2) <
+                        Math.Round((universalPiAll /* + docPi */+ mypod.EntlnData.Quantity) * salesFactor, 2))//
+                    {
+                        var availibleQty = Math.Round(universalSalesAll, 2) - Math.Round(universalPiAll, 2);/*+ docPi /*+ docPi  + mypod.EntlnData.Quantity -- took this out because for some strange reason totalpi includes it*/
+                        if (availibleQty <= 0)
+                        {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed universal Sales Check:: Universal Sales:{Math.Round(universalSalesAll, 2)}
+                                            Universal PI: {universalPiAll}
+                                            xQuantity:{mypod.EntlnData.Quantity}");
+                            return 0;
+                        }
+
+                        Ex9Bucket(mypod, availibleQty, universalSalesAll, universalPiAll, "Universal");
+
+                    }
+
                 mypod.EntlnData.Quantity = Math.Round(mypod.EntlnData.Quantity, 2);
                 Debug.WriteLine($"EX9Bucket Quantity {mypod.EntlnData.ItemNumber} - {mypod.EntlnData.Quantity}");
                 if (mypod.EntlnData.Quantity <= 0)
@@ -1126,11 +1210,13 @@ namespace WaterNut.DataSpace
                                     (Math.Abs(mypod.EntlnData.EX9Allocation.SalesFactor) < 0.0001
                                         ? 1
                                         : mypod.EntlnData.EX9Allocation.SalesFactor);
+                    allocation.xStatus = "";
                 }
+
 
                 // todo: ensure allocations are marked for investigation
                 double qty = mypod.EntlnData.Quantity;
-                if (Math.Abs(qty - Math.Round(qtyAllocated, 2)) > 0.0001)
+                if (qty - Math.Round(qtyAllocated, 2) > 0.0001)
                 {
                     updateXStatus(mypod.Allocations,
                         $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}");
@@ -1152,16 +1238,7 @@ namespace WaterNut.DataSpace
                 }
 
 
-                if (overPIcheck)
-                    if (Math.Round(totalSalesAll, 2) <
-                        Math.Round((totalPiAll + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
-                    {
-                        updateXStatus(mypod.Allocations,
-                            $@"Failed All Sales Check:: Total All Sales:{Math.Round(totalSalesAll, 2)}
-                               Total All PI: {totalPiAll}
-                               xQuantity:{mypod.EntlnData.Quantity}");
-                        return 0;
-                    }
+                
 
 
                 if (applyHistoricChecks)
@@ -1179,11 +1256,13 @@ namespace WaterNut.DataSpace
                     if (Math.Round(totalSalesHistoric, 2) <
                         Math.Round((totalPiHistoric + docPi + mypod.EntlnData.Quantity) * salesFactor, 2))
                     {
-                        updateXStatus(mypod.Allocations,
-                            $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
-                               Total Historic PI: {totalPiHistoric}
-                               xQuantity:{mypod.EntlnData.Quantity}");
-                        return 0;
+                        //updateXStatus(mypod.Allocations,
+                        //    $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
+                        //       Total Historic PI: {totalPiHistoric}
+                        //       xQuantity:{mypod.EntlnData.Quantity}");
+                        //return 0;
+                        var availibleQty = totalSalesHistoric - totalPiHistoric;
+                        Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic");
                     }
                 }
                 ////////////////////////////////////////////////////////////////////////
@@ -1220,7 +1299,7 @@ namespace WaterNut.DataSpace
                 //// Cap to prevent over creation of ex9 vs Item Quantity espectially if creating Duty paid and Duty Free at same time
 
                 if (mypod.EntlnData.pDocumentItem.ItemQuantity <
-                    Math.Round((itemPiHistoric + docPi + mypod.EntlnData.Quantity), 2))
+                    Math.Round((itemPiHistoric /*+ docPi*/ + mypod.EntlnData.Quantity), 2))/*+ docPi  -- took this out because for some strange reason itemPiHistoric includes it*/
                 {
                     updateXStatus(mypod.Allocations,
                         $@"Failed ItemQuantity < ItemPIHistoric:: ItemQuantity:{
@@ -1418,6 +1497,42 @@ namespace WaterNut.DataSpace
             }
 
 
+        }
+
+        private void Ex9Bucket(MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
+            string type)
+        {
+            var totalallocations = mypod.Allocations.Count();
+            var rejects = new List<AsycudaSalesAllocations>();
+            for (int i = totalallocations - 1; i < totalallocations; i--)
+            {
+                var remainingSalesQty = mypod.Allocations.Sum(x => x.QtyAllocated);
+                if (remainingSalesQty > availibleQty && totalallocations > 1)
+                {
+                    var ssa = mypod.Allocations.ElementAt(i);
+                    var nr = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated);
+                    if (nr < availibleQty && (nr + ssa.QtyAllocated) >= availibleQty)
+                    {
+                        ssa.QtyAllocated = availibleQty - nr;
+                        mypod.EntlnData.Quantity = availibleQty;
+                        break;
+                    }
+                    else
+                    {
+                        mypod.Allocations.RemoveAt(i);
+                        rejects.Add(ssa);
+                    }
+                }
+                else
+                {
+                    updateXStatus(rejects,
+                        $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
+                                            {type} PI: {totalPiAll}
+                                            xQuantity:{mypod.EntlnData.Quantity}");
+                    mypod.EntlnData.Quantity = availibleQty;
+                    break;
+                }
+            }
         }
 
         private void updateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus)
@@ -1681,7 +1796,7 @@ namespace WaterNut.DataSpace
                 //    : previousItem.DFQtyAllocated);
                 var rw = plst.ToList().Sum(x => x.Net_weight);
 
-                if ((pod.EX9Allocation.pQuantity - (plst.Sum(x => x.Suplementary_Quantity) + pod.Quantity))  <= 0)
+                if ((pod.EX9Allocation.pQuantity - (plst.Sum(x => x.Suplementary_Quantity) + pod.Quantity))  <= 0 && pod.EX9Allocation.pQuantity > 1)
                 {
 
                     pitm.Net_weight = Math.Round(Convert.ToDouble(pw - rw), 2, MidpointRounding.ToEven);

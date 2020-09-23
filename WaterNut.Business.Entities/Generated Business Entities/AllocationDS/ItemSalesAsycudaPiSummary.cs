@@ -21,7 +21,7 @@ namespace AllocationDS.Business.Entities
     public partial class ItemSalesAsycudaPiSummary : BaseEntity<ItemSalesAsycudaPiSummary>, ITrackable 
     {
         [DataMember]
-        public int PreviousItem_Id 
+        public Nullable<int> PreviousItem_Id 
         {
             get
             {
@@ -34,7 +34,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _previousitem_id;
+        Nullable<int> _previousitem_id;
         [DataMember]
         public string ItemNumber 
         {
@@ -171,7 +171,7 @@ namespace AllocationDS.Business.Entities
         }
         string _monthyear;
         [DataMember]
-        public System.DateTime EntryDataDate 
+        public Nullable<System.DateTime> EntryDataDate 
         {
             get
             {
@@ -184,7 +184,7 @@ namespace AllocationDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _entrydatadate;
+        Nullable<System.DateTime> _entrydatadate;
         [DataMember]
         public string DutyFreePaid 
         {
@@ -215,6 +215,36 @@ namespace AllocationDS.Business.Entities
             }
         }
         string _entrydatatype;
+        [DataMember]
+        public int Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _id;
+        [DataMember]
+        public double SalesQty 
+        {
+            get
+            {
+                return _salesqty;
+            }
+            set
+            {
+                _salesqty = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        double _salesqty;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

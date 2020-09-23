@@ -170,6 +170,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _sourcefile;
+        [DataMember]
+        public string TariffCategoryCode 
+        {
+            get
+            {
+                return _tariffcategorycode;
+            }
+            set
+            {
+                _tariffcategorycode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _tariffcategorycode;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

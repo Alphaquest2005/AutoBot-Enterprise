@@ -511,9 +511,9 @@ public string OrderEntriesBy
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "OpeningStockDate is required")]
        
-       
-public Nullable<System.DateTime> OpeningStockDate
+public System.DateTime OpeningStockDate
 		{ 
 		    get { return this.applicationsettings.OpeningStockDate; }
 			set
@@ -526,7 +526,7 @@ public Nullable<System.DateTime> OpeningStockDate
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "DeclarantCode is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "DeclarantCode has a max length of 50 letters ")]
@@ -592,7 +592,7 @@ public string DataFolder
 		}
      
 
-       
+       [RequiredValidationAttribute(ErrorMessage= "CompanyName is required")]
        
                 
                 [MaxLength(50, ErrorMessage = "CompanyName has a max length of 50 letters ")]
@@ -609,9 +609,9 @@ public string CompanyName
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "IsActive is required")]
        
-       
-public Nullable<bool> IsActive
+public bool IsActive
 		{ 
 		    get { return this.applicationsettings.IsActive; }
 			set
@@ -722,9 +722,9 @@ public Nullable<bool> AssessEX
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "TestMode is required")]
        
-       
-public Nullable<bool> TestMode
+public bool TestMode
 		{ 
 		    get { return this.applicationsettings.TestMode; }
 			set

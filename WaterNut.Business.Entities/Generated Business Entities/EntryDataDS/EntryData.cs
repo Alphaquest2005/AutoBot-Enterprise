@@ -298,6 +298,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _packages;
         [DataMember]
+        public string UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _upgradekey;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
         [DataMember]
         public List<AsycudaDocumentEntryData> AsycudaDocuments { get; set; }

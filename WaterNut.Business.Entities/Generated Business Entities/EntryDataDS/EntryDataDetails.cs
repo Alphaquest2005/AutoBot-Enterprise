@@ -441,6 +441,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _filelinenumber;
         [DataMember]
+        public Nullable<int> UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _upgradekey;
+        [DataMember]
         public EntryData EntryData { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemEx { get; set; }

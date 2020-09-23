@@ -124,7 +124,7 @@ public string Declarant_Reference_Number
        
        
                 
-                [MaxLength(50, ErrorMessage = "Country_of_origin_code has a max length of 50 letters ")]
+                [MaxLength(3, ErrorMessage = "Country_of_origin_code has a max length of 3 letters ")]
 public string Country_of_origin_code
 		{ 
 		    get { return this.todo_licensetoxml.Country_of_origin_code; }
@@ -202,6 +202,23 @@ public string sourcefile
 				this.todo_licensetoxml.sourcefile = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("sourcefile");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "TariffCategoryCode has a max length of 50 letters ")]
+public string TariffCategoryCode
+		{ 
+		    get { return this.todo_licensetoxml.TariffCategoryCode; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.TariffCategoryCode) return;
+				this.todo_licensetoxml.TariffCategoryCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TariffCategoryCode");
 			}
 		}
      

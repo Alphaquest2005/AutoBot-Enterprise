@@ -257,7 +257,7 @@ namespace WaterNut.DataSpace
         //        foreach (var doc in BaseDataModel.Instance.CurrentAsycudaDocumentSet.Documents)//.Where(x => x != CurrentAsycudaDocument && x.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed != CurrentAsycudaDocument.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed))
         //        {
         //            doc.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = BaseDataModel.Instance.CurrentAsycudaDocument.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed;
-        //            doc.xcuda_ASYCUDA_ExtendedProperties.CNumber = BaseDataModel.Instance.CurrentAsycudaDocumentSet.Declarant_Reference_Number;
+        //            doc.xcuda_ASYCUDA_ExtendedProperties.pCNumber = BaseDataModel.Instance.CurrentAsycudaDocumentSet.Declarant_Reference_Number;
         //            doc.xcuda_ASYCUDA_ExtendedProperties.RegistrationDate = BaseDataModel.Instance.CurrentAsycudaDocumentSet.RegistrationDate;
         //            doc.xcuda_ASYCUDA_ExtendedProperties.ReferenceNumber = BaseDataModel.Instance.CurrentAsycudaDocumentSet.Declarant_Reference_Number + "-F" + doc.xcuda_ASYCUDA_ExtendedProperties.FileNumber.ToString(); 
         //        }

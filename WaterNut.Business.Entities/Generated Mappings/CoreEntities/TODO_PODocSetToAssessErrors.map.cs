@@ -37,12 +37,13 @@
               this.Property(t => t.GeneratedLines).HasColumnName("GeneratedLines");
               this.Property(t => t.Status).HasColumnName("Status").IsRequired().HasMaxLength(131);
               this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
-              this.Property(t => t.Attachments).HasColumnName("Attachments");
               this.Property(t => t.ExpectedAttachments).HasColumnName("ExpectedAttachments");
               this.Property(t => t.EntryPackages).HasColumnName("EntryPackages");
               this.Property(t => t.GeneratedPackages).HasColumnName("GeneratedPackages");
               this.Property(t => t.SpecifiedCIF).HasColumnName("SpecifiedCIF");
               this.Property(t => t.GeneratedCIF).HasColumnName("GeneratedCIF");
+              this.Property(t => t.SpecifiedFreight).HasColumnName("SpecifiedFreight");
+              this.Property(t => t.GeneratedFreight).HasColumnName("GeneratedFreight");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

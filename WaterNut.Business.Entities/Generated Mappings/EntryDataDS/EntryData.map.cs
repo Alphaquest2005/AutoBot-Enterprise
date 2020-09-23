@@ -31,6 +31,7 @@
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Packages).HasColumnName("Packages");
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey").HasMaxLength(50);
               this.HasOptional(t => t.FileTypes).WithMany(t =>(ICollection<EntryData>) t.EntryData).HasForeignKey(d => d.FileTypeId);
               this.HasOptional(t => t.Suppliers).WithMany(t =>(ICollection<EntryData>) t.EntryData).HasForeignKey(d => new {d.SupplierCode, d.ApplicationSettingsId});
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (EntryData)t.EntryData);

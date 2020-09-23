@@ -473,6 +473,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _replicateHeaderRowFilter;
+        public Boolean? ReplicateHeaderRowFilter
+        {
+            get
+            {
+                return _replicateHeaderRowFilter;
+            }
+            set
+            {
+                _replicateHeaderRowFilter = value;
+				NotifyPropertyChanged(x => ReplicateHeaderRowFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -541,6 +559,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(HasFilesFilter.HasValue)
 						res.Append(" && " + string.Format("HasFiles == {0}",  HasFilesFilter));						
+ 
+
+									if(ReplicateHeaderRowFilter.HasValue)
+						res.Append(" && " + string.Format("ReplicateHeaderRow == {0}",  ReplicateHeaderRowFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -591,7 +613,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     OverwriteFiles = x.OverwriteFiles ,
                     
  
-                    HasFiles = x.HasFiles 
+                    HasFiles = x.HasFiles ,
+                    
+ 
+                    ReplicateHeaderRow = x.ReplicateHeaderRow 
                     
                 }).ToList()
             };
@@ -632,6 +657,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> HasFiles { get; set; } 
+                    
+ 
+                    public Nullable<bool> ReplicateHeaderRow { get; set; } 
                     
         }
 

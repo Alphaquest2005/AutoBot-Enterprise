@@ -125,6 +125,19 @@ namespace EntryDataQS.Client.DTO
 		}
         private int _ApplicationSettingsId;
 
+        [DataMember]
+        public int InventoryItemId
+		{ 
+		    get { return _InventoryItemId; }
+			set
+			{
+			    if (value == _InventoryItemId) return;
+				_InventoryItemId = value;
+				NotifyPropertyChanged();//m => this.InventoryItemId
+			}
+		}
+        private int _InventoryItemId;
+
        
         [DataMember]
         public ChangeTrackingCollection<EntryDataDetailsEx> EntryDataDetailsExs

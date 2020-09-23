@@ -19,7 +19,7 @@ using CoreEntities.Client.Entities;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 {
-    public partial class TODO_SubmitDiscrepanciesErrorReportVirturalListLoader : IVirtualListLoader<TODO_SubmitDiscrepanciesErrorReport>
+    public partial class TODO_SubmitSalesToCustomsVirturalListLoader : IVirtualListLoader<TODO_SubmitSalesToCustoms>
 	{
         public IEnumerable<string> IncludesLst = new List<string>(){""};
 		public bool CanSort
@@ -36,8 +36,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _filterExpression = value;
-                MessageBus.Default.BeginNotify(MessageToken.TODO_SubmitDiscrepanciesErrorReportFilterExpressionChanged, null,
-                                            new NotificationEventArgs<string>(MessageToken.TODO_SubmitDiscrepanciesErrorReportFilterExpressionChanged, _filterExpression));
+                MessageBus.Default.BeginNotify(MessageToken.TODO_SubmitSalesToCustomsFilterExpressionChanged, null,
+                                            new NotificationEventArgs<string>(MessageToken.TODO_SubmitSalesToCustomsFilterExpressionChanged, _filterExpression));
             }
         }
         private string _filterExpression = "None";
@@ -67,12 +67,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             get { return navExp; }
         }
 
-        public IList<TODO_SubmitDiscrepanciesErrorReport> LoadRange(int startIndex, int count, SortDescriptionCollection sortDescriptions, out int overallCount)
+        public IList<TODO_SubmitSalesToCustoms> LoadRange(int startIndex, int count, SortDescriptionCollection sortDescriptions, out int overallCount)
         {
             try
             {
                 if (FilterExpression == null) FilterExpression = "All";
-			    using (var ctx = new TODO_SubmitDiscrepanciesErrorReportRepository())
+			    using (var ctx = new TODO_SubmitSalesToCustomsRepository())
 				{
 					var r = ctx.LoadRange(startIndex, count, FilterExpression, navExp, IncludesLst);
 				    overallCount = r.Result.Item2;
@@ -85,7 +85,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 StatusModel.Message(ex.Message);
                 overallCount = 0;
-                return new List<TODO_SubmitDiscrepanciesErrorReport>() ;
+                return new List<TODO_SubmitSalesToCustoms>() ;
             }
 			
         }

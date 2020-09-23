@@ -200,7 +200,7 @@ namespace WaterNut.DataSpace
 			var count = itemSetsValues.Count();
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-				   //.Where(x => x.Key.Contains("BM/FGCM150-50")) //.Where(x => x.Key.Contains("255100")) // 
+				 //  .Where(x => x.Key.Contains("E764349")) //.Where(x => x.Key.Contains("255100")) // 
 																		  // .Where(x => "337493".Contains(x.Key))
 																		  //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
 									 , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
@@ -276,8 +276,7 @@ namespace WaterNut.DataSpace
 									    || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
 						            && x.AsycudaDocument.Customs_Procedure.Sales == true 
 					                && x.AsycudaDocument.DoNotAllocate != true)
-						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
-																			 .OpeningStockDate ?? DateTime.MinValue.Date))
+						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
 					    .AsNoTracking()
 						.ToList();
 
@@ -287,10 +286,13 @@ namespace WaterNut.DataSpace
 
 
 				if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
-				var alst = IMAsycudaEntries.ToList();
-				if (alst.Any())
-					Parallel.ForEach(alst.Where(x => x != null 
-										&& ((x.DFQtyAllocated + x.DPQtyAllocated) > Convert.ToDouble(x.ItemQuantity)))
+				var alst = IMAsycudaEntries.Where(x => x != null 
+										&& (x.DFQtyAllocated + x.DPQtyAllocated) > Convert.ToDouble(x.ItemQuantity)).ToList();
+			    
+
+
+                if (alst.Any())
+					Parallel.ForEach(alst
 						,
 						new ParallelOptions() {MaxDegreeOfParallelism = 1}, i =>//Environment.ProcessorCount*
 						{
@@ -373,11 +375,15 @@ namespace WaterNut.DataSpace
 										}
 
 									}
+									else
+									{
+									    continue;
+									}
 
-									
 
 
-								}
+
+                                }
 
 								if(!string.IsNullOrEmpty(sql))
 													ctx.Database.ExecuteSqlCommand(TransactionalBehavior.EnsureTransaction, sql);
@@ -424,8 +430,7 @@ namespace WaterNut.DataSpace
 					                 || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
 					                && x.AsycudaDocument.Customs_Procedure.Sales == true
                                     && x.AsycudaDocument.DoNotAllocate != true)
-						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
-																			 .OpeningStockDate ?? DateTime.MinValue.Date))
+						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
                         .AsNoTracking()
 						.ToList();
 
@@ -689,8 +694,7 @@ namespace WaterNut.DataSpace
                                 && (x.AsycudaDocument.Customs_Procedure.Sales == true || x.AsycudaDocument.Customs_Procedure.Stock == true) &&
                                  (x.AsycudaDocument.Cancelled == null || x.AsycudaDocument.Cancelled == false) &&
                                  x.AsycudaDocument.DoNotAllocate != true)
-                    .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings
-									.OpeningStockDate ?? DateTime.MinValue.Date))
+                    .Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
 					.OrderBy(x => x.LineNumber)
 					.ToList();
 
@@ -698,7 +702,7 @@ namespace WaterNut.DataSpace
 
 				asycudaEntries = from s in lst.Where(x => x.ItemNumber != null)
 				   // .Where(x => x.ItemNumber == itmnumber)
-					//       .Where(x => x.AsycudaDocument.CNumber != null).AsEnumerable()
+					//       .Where(x => x.AsycudaDocument.pCNumber != null).AsEnumerable()
 					group s by s.ItemNumber.ToUpper().Trim()
 					into g
 					select
@@ -730,8 +734,8 @@ namespace WaterNut.DataSpace
 				var lst = await ctx.Getxcuda_ItemByExpressionNav(
 					"All",
 					// "xcuda_Tarification.xcuda_HScode.Precision_4 == \"1360\"",
-					new Dictionary<string, string>() { { "AsycudaDocument", (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"AssessmentDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-																				: "") + $"(CNumber != null || IsManuallyAssessed == true) " +
+					new Dictionary<string, string>() { { "AsycudaDocument", ( $"AssessmentDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
+					                                                        $"(pCNumber != null || IsManuallyAssessed == true) " +
 					                                                        $"&& (Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Import} || Customs_Procedure.CustomsOperationId == {(int)CustomsOperations.Warehouse}) " +
 					                                                        $"&& Customs_Procedure.Sales == true)" +
 					                                                        $" && DoNotAllocate != true" } }
@@ -743,7 +747,7 @@ namespace WaterNut.DataSpace
 
                 asycudaEntries = from s in lst.Where(x => x.xcuda_Tarification.xcuda_HScode.Precision_4 != null)
 					 //.Where(x => x.ItemDescription == "Hardener-Resin 'A' Slow .44Pt")
-					//       .Where(x => x.AsycudaDocument.CNumber != null).AsEnumerable()
+					//       .Where(x => x.AsycudaDocument.pCNumber != null).AsEnumerable()
 					group s by s.ItemDescription.Trim()
 					into g
 					select
@@ -778,9 +782,7 @@ namespace WaterNut.DataSpace
 
 	                    await
 	                        ctx.GetEntryDataDetailsByExpressionNav( //"ItemNumber == \"PNW/30-53700\" &&" +
-	                                (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue
-	                                    ? $"Sales.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-	                                    : "") +
+	                                ($"Sales.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
 
 	                                "QtyAllocated != Quantity " +
 	                                $"&& Sales.ApplicationSettingsId == {applicationSettingsId} " +
@@ -825,15 +827,14 @@ namespace WaterNut.DataSpace
 
 				await
 						ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"AAA/13576\" &&" +
-																(BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Adjustments.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-																	: "") +
+																($"Adjustments.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
 															   "QtyAllocated != Quantity && " +
 																$"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
 																$"(\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) && " +
-                                                                $"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have CNumber to get matched
-																"((CNumber == null && PreviousInvoiceNumber == null) ||" +
-																" ((CNumber != null || PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments
-																" && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"": "") +  ")" +
+                                                                $"Adjustments.Type == \"ADJ\" && " + /// Only Adjustments not DIS that should have pCNumber to get matched
+																"((PreviousInvoiceNumber == null) ||" +//pCNumber == null && 
+																" (( PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments//pCNumber != null ||
+																" && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + ( $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"") +  ")" +
 															   //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
 															   "&& DoNotAllocate != true", new Dictionary<string, string>()
 															   {
@@ -885,16 +886,15 @@ namespace WaterNut.DataSpace
 
 				await
 						ctx.GetEntryDataDetailsByExpressionNav(//"ItemNumber == \"AAA/13576\" &&" +
-																(BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"Adjustments.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && "
-																	: "") +
+																($"Adjustments.EntryDataDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\" && ") +
 															   "QtyAllocated != Quantity && " +
 																$"Adjustments.ApplicationSettingsId == {applicationSettingsId} && " +
 																$"(\"{lst}\" == \"\" || \"{lst}\".Contains(ItemNumber)) && " +
                                                                 $"Adjustments.Type == \"DIS\" && " + /// Only Discrepancies with Errors
 																$"Comment.StartsWith(\"DISERROR:\") && " +
-																"((CNumber == null && PreviousInvoiceNumber == null) ||" +
-																" ((CNumber != null || PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments
-																" && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate.HasValue ? $"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"" : "") + ")" +
+																"(( PreviousInvoiceNumber == null) ||" +//pCNumber == null &&
+																" (( PreviousInvoiceNumber != null) && QtyAllocated == 0))" + //trying to capture unallocated adjustments  // pCNumber != null ||
+																" && (ReceivedQty - InvoiceQty) < 0 && (EffectiveDate != null || " + ($"EffectiveDate >= \"{BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate}\"") + ")" +
 															   //"&& Cost > 0 " + --------Cost don't matter in allocations because it comes from previous doc
 															   "&& DoNotAllocate != true", new Dictionary<string, string>()
 															   {

@@ -15,7 +15,15 @@ namespace Core.Common.UI
         
         public static SliderPanel Slider { get; set; }
 
-        
+        public static bool IsMyComputer
+        {
+            get
+            {
+
+                return Environment.MachineName == "JOSEPH-PC";
+            }
+
+        }
     }
 
 }

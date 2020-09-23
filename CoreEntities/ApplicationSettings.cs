@@ -53,20 +53,20 @@ namespace CoreEntities
         public string AllowValidateTariffCodes { get; set; }
         public string AllowCleanBond { get; set; }
         public string OrderEntriesBy { get; set; }
-        public Nullable<System.DateTime> OpeningStockDate { get; set; }
+        public System.DateTime OpeningStockDate { get; set; }
         public string DeclarantCode { get; set; }
         public string WeightCalculationMethod { get; set; }
         public Nullable<double> BondQuantum { get; set; }
         public string DataFolder { get; set; }
         public string CompanyName { get; set; }
-        public Nullable<bool> IsActive { get; set; }
+        public bool IsActive { get; set; }
         public string Email { get; set; }
         public string EmailPassword { get; set; }
         public string AsycudaLogin { get; set; }
         public string AsycudaPassword { get; set; }
         public Nullable<bool> AssessIM7 { get; set; }
         public Nullable<bool> AssessEX { get; set; }
-        public Nullable<bool> TestMode { get; set; }
+        public bool TestMode { get; set; }
         public int BondTypeId { get; set; }
     
         public virtual ICollection<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }

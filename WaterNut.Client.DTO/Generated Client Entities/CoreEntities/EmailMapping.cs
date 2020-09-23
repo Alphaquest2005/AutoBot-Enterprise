@@ -60,6 +60,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _Pattern;
 
+        [DataMember]
+        public Nullable<bool> IsSingleEmail
+		{ 
+		    get { return _IsSingleEmail; }
+			set
+			{
+			    if (value == _IsSingleEmail) return;
+				_IsSingleEmail = value;
+				NotifyPropertyChanged();//m => this.IsSingleEmail
+			}
+		}
+        private Nullable<bool> _IsSingleEmail;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

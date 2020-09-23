@@ -330,7 +330,7 @@ public double Total_CIF
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "WarehouseNo is required")]
+       
        
                 
                 [MaxLength(50, ErrorMessage = "WarehouseNo has a max length of 50 letters ")]

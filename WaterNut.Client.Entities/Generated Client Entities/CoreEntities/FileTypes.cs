@@ -291,6 +291,21 @@ public Nullable<int> OldFileTypeId
 		}
      
 
+       
+       
+public Nullable<bool> ReplicateHeaderRow
+		{ 
+		    get { return this.filetypes.ReplicateHeaderRow; }
+			set
+			{
+			    if (value == this.filetypes.ReplicateHeaderRow) return;
+				this.filetypes.ReplicateHeaderRow = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ReplicateHeaderRow");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

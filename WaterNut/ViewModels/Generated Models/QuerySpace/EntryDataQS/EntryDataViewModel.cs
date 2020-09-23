@@ -456,6 +456,42 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Int32? _packagesFilter;
+        public Int32? PackagesFilter
+        {
+            get
+            {
+                return _packagesFilter;
+            }
+            set
+            {
+                _packagesFilter = value;
+				NotifyPropertyChanged(x => PackagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _upgradeKeyFilter;
+        public string UpgradeKeyFilter
+        {
+            get
+            {
+                return _upgradeKeyFilter;
+            }
+            set
+            {
+                _upgradeKeyFilter = value;
+				NotifyPropertyChanged(x => UpgradeKeyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -553,6 +589,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(SourceFileFilter) == false)
 						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
+ 
+
+					if(PackagesFilter.HasValue)
+						res.Append(" && " + string.Format("Packages == {0}",  PackagesFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(UpgradeKeyFilter) == false)
+						res.Append(" && " + string.Format("UpgradeKey.Contains(\"{0}\")",  UpgradeKeyFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -612,7 +655,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TotalDeduction = x.TotalDeduction ,
                     
  
-                    SourceFile = x.SourceFile 
+                    SourceFile = x.SourceFile ,
+                    
+ 
+                    Packages = x.Packages ,
+                    
+ 
+                    UpgradeKey = x.UpgradeKey 
                     
                 }).ToList()
             };
@@ -662,6 +711,12 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string SourceFile { get; set; } 
+                    
+ 
+                    public Nullable<int> Packages { get; set; } 
+                    
+ 
+                    public string UpgradeKey { get; set; } 
                     
         }
 

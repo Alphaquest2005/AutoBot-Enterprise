@@ -242,6 +242,32 @@ namespace EntryDataQS.Client.DTO
 		}
         private int _EntryData_Id;
 
+        [DataMember]
+        public Nullable<int> Packages
+		{ 
+		    get { return _Packages; }
+			set
+			{
+			    if (value == _Packages) return;
+				_Packages = value;
+				NotifyPropertyChanged();//m => this.Packages
+			}
+		}
+        private Nullable<int> _Packages;
+
+        [DataMember]
+        public string UpgradeKey
+		{ 
+		    get { return _UpgradeKey; }
+			set
+			{
+			    if (value == _UpgradeKey) return;
+				_UpgradeKey = value;
+				NotifyPropertyChanged();//m => this.UpgradeKey
+			}
+		}
+        private string _UpgradeKey;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentEntryData> AsycudaDocumentEntryDatas
