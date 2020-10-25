@@ -133,7 +133,7 @@ namespace WaterNut.QuerySpace.SalesDataQS.ViewModels
             if (_dutyFreeFilter || _dutyPaidFilter) res.Append("&& (");
             if (_dutyFreeFilter == true)
             {
-                res.Append("TaxAmount == 0");
+                res.Append(" TaxAmount == 0");
             }
 
 

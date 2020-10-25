@@ -38,5 +38,6 @@ namespace CoreEntities
         public Nullable<int> EntryPackages { get; set; }
         public Nullable<double> TotalWeight { get; set; }
         public string FreightCurrencyCode { get; set; }
+        public Nullable<int> ExpectedEntries { get; set; }
     }
 }

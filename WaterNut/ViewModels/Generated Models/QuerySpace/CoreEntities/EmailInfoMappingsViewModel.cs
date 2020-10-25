@@ -80,12 +80,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _EmailInfoMappings = value;
+                NotifyPropertyChanged( x => x.EmailInfoMappings);
             }
         }
 
 		 private void OnEmailInfoMappingsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			EmailInfoMappings.Refresh();
+			Task.Run(() => EmailInfoMappings.Refresh()).ConfigureAwait(false);
             SelectedEmailInfoMappings.Clear();
             NotifyPropertyChanged(x => SelectedEmailInfoMappings);
             BeginSendMessage(MessageToken.SelectedEmailInfoMappingsChanged, new NotificationEventArgs(MessageToken.SelectedEmailInfoMappingsChanged));

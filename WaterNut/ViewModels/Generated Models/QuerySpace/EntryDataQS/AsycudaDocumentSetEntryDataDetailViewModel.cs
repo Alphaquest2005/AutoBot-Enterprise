@@ -80,12 +80,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             set
             {
                 _AsycudaDocumentSetEntryDataDetails = value;
+                NotifyPropertyChanged( x => x.AsycudaDocumentSetEntryDataDetails);
             }
         }
 
 		 private void OnAsycudaDocumentSetEntryDataDetailsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AsycudaDocumentSetEntryDataDetails.Refresh();
+			Task.Run(() => AsycudaDocumentSetEntryDataDetails.Refresh()).ConfigureAwait(false);
             SelectedAsycudaDocumentSetEntryDataDetails.Clear();
             NotifyPropertyChanged(x => SelectedAsycudaDocumentSetEntryDataDetails);
             BeginSendMessage(MessageToken.SelectedAsycudaDocumentSetEntryDataDetailsChanged, new NotificationEventArgs(MessageToken.SelectedAsycudaDocumentSetEntryDataDetailsChanged));

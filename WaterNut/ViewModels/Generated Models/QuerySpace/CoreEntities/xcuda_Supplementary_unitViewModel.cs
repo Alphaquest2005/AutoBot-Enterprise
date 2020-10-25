@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _xcuda_Supplementary_unit = value;
+                NotifyPropertyChanged( x => x.xcuda_Supplementary_unit);
             }
         }
 
 		 private void Onxcuda_Supplementary_unitFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			xcuda_Supplementary_unit.Refresh();
+			Task.Run(() => xcuda_Supplementary_unit.Refresh()).ConfigureAwait(false);
             Selectedxcuda_Supplementary_unit.Clear();
             NotifyPropertyChanged(x => Selectedxcuda_Supplementary_unit);
             BeginSendMessage(MessageToken.Selectedxcuda_Supplementary_unitChanged, new NotificationEventArgs(MessageToken.Selectedxcuda_Supplementary_unitChanged));

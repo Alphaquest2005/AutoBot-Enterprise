@@ -311,6 +311,36 @@ public double Rate
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> ExpectedEntries
+		{ 
+		    get { return this.todo_c71tocreate.ExpectedEntries; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.ExpectedEntries) return;
+				this.todo_c71tocreate.ExpectedEntries = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExpectedEntries");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> GeneratedC71Total
+		{ 
+		    get { return this.todo_c71tocreate.GeneratedC71Total; }
+			set
+			{
+			    if (value == this.todo_c71tocreate.GeneratedC71Total) return;
+				this.todo_c71tocreate.GeneratedC71Total = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GeneratedC71Total");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_C71ToCreate> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_C71ToCreate> ChangeTracker

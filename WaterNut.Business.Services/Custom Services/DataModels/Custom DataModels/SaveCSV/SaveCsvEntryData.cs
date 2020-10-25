@@ -173,7 +173,7 @@ namespace WaterNut.DataSpace
                                 AsycudaDocumentSetId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ?? docSet.First().AsycudaDocumentSetId,
                                 ApplicationSettingsId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                                 CustomerName = g.Key.CustomerName,
-                                Tax = g.Sum(x => x.Tax),
+                                Tax = g.FirstOrDefault()?.Tax,
                                 Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))
                                     ? null
                                     : g.Max(x => x.SupplierCode?.ToUpper()),
@@ -339,7 +339,7 @@ namespace WaterNut.DataSpace
                                         CustomerName = item.EntryData.CustomerName,
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
-                                        Tax = item.f.Sum(x => x.TotalTax),
+                                        Tax = item.EntryData.Tax,//item.f.Sum(x => x.TotalTax),
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
                                             ? null
                                             : item.EntryData.Currency,
@@ -782,26 +782,26 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("DATE|Invoice Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("DATE|Invoice Date|Order Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("EntryDataDate", i);
                     continue;
                 }
 
-                if ("ItemNumber|ITEM-#|Item Code|Product Code".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("ItemNumber|ITEM-#|Item Code|Product Code|Order Lines/Product/Internal Reference".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("ItemNumber", i);
                     continue;
                 }
 
-                if ("DESCRIPTION|MEMO|Item Description|ItemDescription|Description 1|Product Description".ToUpper().Split('|')
+                if ("DESCRIPTION|MEMO|Item Description|ItemDescription|Description 1|Product Description|Order Lines/Product/Name".ToUpper().Split('|')
                     .Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("ItemDescription", i);
                     continue;
                 }
 
-                if ("QUANTITY|QTY|Quantity ordered".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("QUANTITY|QTY|Quantity ordered|Order Lines/Quantity".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("Quantity", i);
                     continue;
@@ -813,7 +813,7 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
-                if ("PRICE|COST|USD|Unit Price".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("PRICE|COST|USD|Unit Price|Order Lines/Unit Price".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("Cost", i);
                     continue;
@@ -1087,7 +1087,7 @@ namespace WaterNut.DataSpace
 
             var ImportActions = new Dictionary<string, Action<CSVDataSummary, Dictionary<string, int>, string[]>>()
             {
-                {"EntryDataId", (c, mapping, splits) => c.EntryDataId = splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/","")},
+                {"EntryDataId", (c, mapping, splits) => c.EntryDataId = splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/","").Replace("SHOP/GR_","")},
                 {
                     "EntryDataDate",
                     (c, mapping, splits) =>
@@ -1263,7 +1263,7 @@ namespace WaterNut.DataSpace
                 {
                     "TotalCost",
                     (c, mapping, splits) => c.Cost = !string.IsNullOrEmpty(splits[mapping["TotalCost"]])
-                        ? Convert.ToSingle(splits[mapping["TotalCost"]].Replace("$", "")) / c.Quantity
+                        ? Convert.ToSingle(splits[mapping["TotalCost"]].Replace("$", "")) / (c.Quantity?? Convert.ToSingle(splits[mapping["Quantity"]].Replace("�", "")))
                         : c.Cost
                 },
                 {
@@ -1503,6 +1503,9 @@ namespace WaterNut.DataSpace
                         inventorySource = dctx.InventorySources.First(x => x.Name == "Supplier");
                         break;
                     case "PO":
+                        inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
+                        break;
+                    case "OPS":
                         inventorySource = dctx.InventorySources.First(x => x.Name == "POS");
                         break;
                     case "ADJ":

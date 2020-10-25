@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _SessionSchedule = value;
+                NotifyPropertyChanged( x => x.SessionSchedule);
             }
         }
 
 		 private void OnSessionScheduleFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			SessionSchedule.Refresh();
+			Task.Run(() => SessionSchedule.Refresh()).ConfigureAwait(false);
             SelectedSessionSchedule.Clear();
             NotifyPropertyChanged(x => SelectedSessionSchedule);
             BeginSendMessage(MessageToken.SelectedSessionScheduleChanged, new NotificationEventArgs(MessageToken.SelectedSessionScheduleChanged));

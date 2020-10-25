@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitPOInfo = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitPOInfo);
             }
         }
 
 		 private void OnTODO_SubmitPOInfoFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitPOInfo.Refresh();
+			Task.Run(() => TODO_SubmitPOInfo.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitPOInfo.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitPOInfo);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitPOInfoChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitPOInfoChanged));

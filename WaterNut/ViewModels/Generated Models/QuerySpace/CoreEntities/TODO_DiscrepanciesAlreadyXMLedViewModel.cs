@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_DiscrepanciesAlreadyXMLed = value;
+                NotifyPropertyChanged( x => x.TODO_DiscrepanciesAlreadyXMLed);
             }
         }
 
 		 private void OnTODO_DiscrepanciesAlreadyXMLedFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_DiscrepanciesAlreadyXMLed.Refresh();
+			Task.Run(() => TODO_DiscrepanciesAlreadyXMLed.Refresh()).ConfigureAwait(false);
             SelectedTODO_DiscrepanciesAlreadyXMLed.Clear();
             NotifyPropertyChanged(x => SelectedTODO_DiscrepanciesAlreadyXMLed);
             BeginSendMessage(MessageToken.SelectedTODO_DiscrepanciesAlreadyXMLedChanged, new NotificationEventArgs(MessageToken.SelectedTODO_DiscrepanciesAlreadyXMLedChanged));

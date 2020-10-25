@@ -380,6 +380,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         double _freightcurrencyrate;
+        [DataMember]
+        public Nullable<int> ExpectedEntries 
+        {
+            get
+            {
+                return _expectedentries;
+            }
+            set
+            {
+                _expectedentries = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _expectedentries;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

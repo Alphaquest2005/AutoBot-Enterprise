@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _CustomsOperations = value;
+                NotifyPropertyChanged( x => x.CustomsOperations);
             }
         }
 
 		 private void OnCustomsOperationsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			CustomsOperations.Refresh();
+			Task.Run(() => CustomsOperations.Refresh()).ConfigureAwait(false);
             SelectedCustomsOperations.Clear();
             NotifyPropertyChanged(x => SelectedCustomsOperations);
             BeginSendMessage(MessageToken.SelectedCustomsOperationsChanged, new NotificationEventArgs(MessageToken.SelectedCustomsOperationsChanged));

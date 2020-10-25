@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _InfoMapping = value;
+                NotifyPropertyChanged( x => x.InfoMapping);
             }
         }
 
 		 private void OnInfoMappingFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			InfoMapping.Refresh();
+			Task.Run(() => InfoMapping.Refresh()).ConfigureAwait(false);
             SelectedInfoMapping.Clear();
             NotifyPropertyChanged(x => SelectedInfoMapping);
             BeginSendMessage(MessageToken.SelectedInfoMappingChanged, new NotificationEventArgs(MessageToken.SelectedInfoMappingChanged));

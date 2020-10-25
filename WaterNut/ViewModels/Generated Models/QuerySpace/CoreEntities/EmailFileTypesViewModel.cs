@@ -80,12 +80,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _EmailFileTypes = value;
+                NotifyPropertyChanged( x => x.EmailFileTypes);
             }
         }
 
 		 private void OnEmailFileTypesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			EmailFileTypes.Refresh();
+			Task.Run(() => EmailFileTypes.Refresh()).ConfigureAwait(false);
             SelectedEmailFileTypes.Clear();
             NotifyPropertyChanged(x => SelectedEmailFileTypes);
             BeginSendMessage(MessageToken.SelectedEmailFileTypesChanged, new NotificationEventArgs(MessageToken.SelectedEmailFileTypesChanged));

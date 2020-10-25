@@ -80,12 +80,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             set
             {
                 _RecuringPart = value;
+                NotifyPropertyChanged( x => x.RecuringPart);
             }
         }
 
 		 private void OnRecuringPartFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			RecuringPart.Refresh();
+			Task.Run(() => RecuringPart.Refresh()).ConfigureAwait(false);
             SelectedRecuringPart.Clear();
             NotifyPropertyChanged(x => SelectedRecuringPart);
             BeginSendMessage(MessageToken.SelectedRecuringPartChanged, new NotificationEventArgs(MessageToken.SelectedRecuringPartChanged));

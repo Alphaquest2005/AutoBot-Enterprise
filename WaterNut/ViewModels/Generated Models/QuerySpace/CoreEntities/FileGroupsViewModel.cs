@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _FileGroups = value;
+                NotifyPropertyChanged( x => x.FileGroups);
             }
         }
 
 		 private void OnFileGroupsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			FileGroups.Refresh();
+			Task.Run(() => FileGroups.Refresh()).ConfigureAwait(false);
             SelectedFileGroups.Clear();
             NotifyPropertyChanged(x => SelectedFileGroups);
             BeginSendMessage(MessageToken.SelectedFileGroupsChanged, new NotificationEventArgs(MessageToken.SelectedFileGroupsChanged));

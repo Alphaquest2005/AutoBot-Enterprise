@@ -79,12 +79,13 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             set
             {
                 _TariffCategory = value;
+                NotifyPropertyChanged( x => x.TariffCategory);
             }
         }
 
 		 private void OnTariffCategoryFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TariffCategory.Refresh();
+			Task.Run(() => TariffCategory.Refresh()).ConfigureAwait(false);
             SelectedTariffCategory.Clear();
             NotifyPropertyChanged(x => SelectedTariffCategory);
             BeginSendMessage(MessageToken.SelectedTariffCategoryChanged, new NotificationEventArgs(MessageToken.SelectedTariffCategoryChanged));

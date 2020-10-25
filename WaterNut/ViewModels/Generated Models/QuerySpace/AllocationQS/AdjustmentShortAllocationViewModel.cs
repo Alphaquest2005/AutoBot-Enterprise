@@ -79,12 +79,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             set
             {
                 _AdjustmentShortAllocations = value;
+                NotifyPropertyChanged( x => x.AdjustmentShortAllocations);
             }
         }
 
 		 private void OnAdjustmentShortAllocationsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AdjustmentShortAllocations.Refresh();
+			Task.Run(() => AdjustmentShortAllocations.Refresh()).ConfigureAwait(false);
             SelectedAdjustmentShortAllocations.Clear();
             NotifyPropertyChanged(x => SelectedAdjustmentShortAllocations);
             BeginSendMessage(MessageToken.SelectedAdjustmentShortAllocationsChanged, new NotificationEventArgs(MessageToken.SelectedAdjustmentShortAllocationsChanged));

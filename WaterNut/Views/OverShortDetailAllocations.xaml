@@ -71,7 +71,7 @@
             ScrollViewer.IsDeferredScrollingEnabled="True" 
             dataVirtualization:VirtualListLoadingIndicator.IsAttached="True"
                  SelectedItem="{Binding Source={x:Static qsv:BaseViewModel.Instance}, Path=VCurrentShortAllocation}" 
-                 ItemsSource="{Binding ShortAllocations}" ItemTemplate="{DynamicResource ShortAllocationsTemplate}" x:Name="ItemLst" HorizontalAlignment="Stretch" Height="295" Margin="0,135,0,0" VerticalAlignment="Top" Width="Auto" Style="{DynamicResource AlphaListBoxStyle}"  />
+                 ItemsSource="{Binding ShortAllocations}" ItemTemplate="{DynamicResource ShortAllocationsTemplate}" x:Name="ItemLst" HorizontalAlignment="Stretch" Height="295" Margin="0,135,0,0" VerticalAlignment="Top" Width="Auto" Style="{DynamicResource AlphaListBoxStyle}" IsEnabled="True"  />
         <TextBlock Text="{Binding ShortAllocations.Count, StringFormat=0 Filtered Results}" HorizontalAlignment="Left" Height="24" Margin="200,23,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="175" FontSize="20" TextAlignment="Right" Foreground="#FFE4E453"/>
         <TextBlock Style="{DynamicResource TextButtonStyle}"  HorizontalAlignment="Left" Height="24" Margin="511,19,0,0" TextWrapping="Wrap" Text="Send to Excel &#xE1A5;" VerticalAlignment="Top" Width="121" FontSize="16" FontFamily="Segoe UI Symbol" MouseLeftButtonDown="Send2Excel" Visibility="{Binding CurrentApplicationSettings.AllowExportToExcel}"/>
         <TextBlock HorizontalAlignment="Left" Height="23" Margin="13,74,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="117" FontSize="16" Text="Item Number" TextAlignment="Center"/>

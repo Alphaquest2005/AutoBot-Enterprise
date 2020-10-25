@@ -342,7 +342,7 @@ namespace AdjustmentQS.Client.Repositories
 
                     IEnumerable<DTO.AdjustmentEx> res = null;
                                          
-						    res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
+						    //res = await t.LoadRangeNav(startIndex, count, exp, navExp, includeLst).ConfigureAwait(continueOnCapturedContext: false);
 						    overallCount = await t.CountNav(exp, navExp).ConfigureAwait(continueOnCapturedContext: false);
                    
                    

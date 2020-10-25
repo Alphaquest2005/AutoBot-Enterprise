@@ -308,7 +308,7 @@ namespace ValuationDS.Business.Services
                                     dset = set.OrderBy(x => x.Identification_segment_Id).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -384,7 +384,7 @@ namespace ValuationDS.Business.Services
                                     dset = set.OrderBy(x => x.Identification_segment_Id);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

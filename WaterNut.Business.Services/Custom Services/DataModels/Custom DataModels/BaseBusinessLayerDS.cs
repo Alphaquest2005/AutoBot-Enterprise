@@ -1453,9 +1453,11 @@ namespace WaterNut.DataSpace
                     {
                         var t = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
                             .Select(y => y.TotalCIF).DefaultIfEmpty(0).Sum();
-
-                        docValues.Add(doc, t.GetValueOrDefault());
-                        totalfob += t.GetValueOrDefault();
+                        var f = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
+                            .Select(y => y.TotalFreight).DefaultIfEmpty(0).Sum(); // should be zero if new existing has value take away existing value
+                        var val = t.GetValueOrDefault() - f.GetValueOrDefault();
+                        docValues.Add(doc, val);
+                        totalfob += val;
                     }
 
                 }

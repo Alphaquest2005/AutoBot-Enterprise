@@ -505,6 +505,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="StartingFileCount" Type="int" />
           <Property Name="ApportionMethod" Type="nvarchar" MaxLength="50" />
           <Property Name="DocumentsCount" Type="int" />
+          <Property Name="ExpectedEntries" Type="int" />
           <Property Name="TotalCIF" Type="float" />
           <Property Name="TotalWeight" Type="float" />
           <Property Name="TotalFreight" Type="float" />
@@ -650,11 +651,13 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="DocumentsCount" Type="int" />
+          <Property Name="ExpectedEntries" Type="int" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="LicenseLines" Type="int" />
           <Property Name="TotalCIF" Type="float" />
           <Property Name="C71Total" Type="float" Nullable="false" />
           <Property Name="Rate" Type="float" Nullable="false" />
+          <Property Name="GeneratedC71Total" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1200,6 +1203,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not h
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="DocumentsCount" Type="int" />
+          <Property Name="ExpectedEntries" Type="int" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="LicenseLines" Type="int" />
           <Property Name="QtyLicensesRequired" Type="int" />
@@ -1317,6 +1321,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToExport' do
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="DocumentsCount" Type="int" />
+          <Property Name="ExpectedEntries" Type="int" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="LicenseLines" Type="int" />
           <Property Name="TotalCIF" Type="float" />
@@ -2178,6 +2183,7 @@ FROM [dbo].[AsycudaDocumentSetEntryDataEx] AS [AsycudaDocumentSetEntryDataEx]</D
 [AsycudaDocumentSetEx].[StartingFileCount] AS [StartingFileCount], 
 [AsycudaDocumentSetEx].[ApportionMethod] AS [ApportionMethod], 
 [AsycudaDocumentSetEx].[DocumentsCount] AS [DocumentsCount], 
+[AsycudaDocumentSetEx].[ExpectedEntries] AS [ExpectedEntries], 
 [AsycudaDocumentSetEx].[TotalCIF] AS [TotalCIF], 
 [AsycudaDocumentSetEx].[TotalWeight] AS [TotalWeight], 
 [AsycudaDocumentSetEx].[TotalFreight] AS [TotalFreight], 
@@ -2282,11 +2288,13 @@ FROM [dbo].[TODO-AdjustmentsAlreadyXMLed] AS [TODO-AdjustmentsAlreadyXMLed]</Def
 [TODO-C71ToCreate].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
 [TODO-C71ToCreate].[TotalInvoices] AS [TotalInvoices], 
 [TODO-C71ToCreate].[DocumentsCount] AS [DocumentsCount], 
+[TODO-C71ToCreate].[ExpectedEntries] AS [ExpectedEntries], 
 [TODO-C71ToCreate].[InvoiceTotal] AS [InvoiceTotal], 
 [TODO-C71ToCreate].[LicenseLines] AS [LicenseLines], 
 [TODO-C71ToCreate].[TotalCIF] AS [TotalCIF], 
 [TODO-C71ToCreate].[C71Total] AS [C71Total], 
-[TODO-C71ToCreate].[Rate] AS [Rate]
+[TODO-C71ToCreate].[Rate] AS [Rate], 
+[TODO-C71ToCreate].[GeneratedC71Total] AS [GeneratedC71Total]
 FROM [dbo].[TODO-C71ToCreate] AS [TODO-C71ToCreate]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-C71ToXML" EntityType="Self.TODO-C71ToXML" store:Type="Views" store:Schema="dbo">
@@ -2675,6 +2683,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
 [TODO-PODocSet].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
 [TODO-PODocSet].[TotalInvoices] AS [TotalInvoices], 
 [TODO-PODocSet].[DocumentsCount] AS [DocumentsCount], 
+[TODO-PODocSet].[ExpectedEntries] AS [ExpectedEntries], 
 [TODO-PODocSet].[InvoiceTotal] AS [InvoiceTotal], 
 [TODO-PODocSet].[LicenseLines] AS [LicenseLines], 
 [TODO-PODocSet].[QtyLicensesRequired] AS [QtyLicensesRequired], 
@@ -2769,6 +2778,7 @@ FROM [dbo].[TODO-PODocSetToAssessErrors] AS [TODO-PODocSetToAssessErrors]</Defin
 [TODO-PODocSetToExport].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
 [TODO-PODocSetToExport].[TotalInvoices] AS [TotalInvoices], 
 [TODO-PODocSetToExport].[DocumentsCount] AS [DocumentsCount], 
+[TODO-PODocSetToExport].[ExpectedEntries] AS [ExpectedEntries], 
 [TODO-PODocSetToExport].[InvoiceTotal] AS [InvoiceTotal], 
 [TODO-PODocSetToExport].[LicenseLines] AS [LicenseLines], 
 [TODO-PODocSetToExport].[TotalCIF] AS [TotalCIF], 
@@ -3644,6 +3654,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="AsycudaDocumentSetEntryDataEx" Relationship="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetEntryDataEx" FromRole="AsycudaDocumentSetEx" ToRole="AsycudaDocumentSetEntryDataEx" />
           <Property Name="CurrencyRate" Type="Double" Nullable="false" />
           <Property Name="FreightCurrencyRate" Type="Double" Nullable="false" />
+          <Property Name="ExpectedEntries" Type="Int32" />
           <a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <Association Name="AsycudaDocumentSetExAsycudaDocument">
@@ -4768,6 +4779,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="FreightCurrencyCode" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="CurrencyRate" Type="Double" Nullable="false" />
           <Property Name="FreightCurrencyRate" Type="Double" Nullable="false" />
+          <Property Name="ExpectedEntries" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_SubmitDocSetWithIncompleteInvoices">
           <Key>
@@ -4850,6 +4862,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="EntryPackages" Type="Int32" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="FreightCurrencyCode" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="ExpectedEntries" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_CreateEx9">
           <Key>
@@ -5209,6 +5222,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="C71Total" Type="Double" Nullable="false" />
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Rate" Type="Double" Nullable="false" />
+          <Property Name="ExpectedEntries" Type="Int32" />
+          <Property Name="GeneratedC71Total" Type="Double" />
         </EntityType>
         <EntityType Name="TODO_LICToCreate">
           <Key>
@@ -5693,6 +5708,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSetExs">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSetEx">
               <MappingFragment StoreEntitySet="AsycudaDocumentSetEx">
+                <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="FreightCurrencyRate" ColumnName="FreightCurrencyRate" />
                 <ScalarProperty Name="CurrencyRate" ColumnName="CurrencyRate" />
                 <ScalarProperty Name="EntryPackages" ColumnName="EntryPackages" />
@@ -6378,6 +6394,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_PODocSet">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_PODocSet">
               <MappingFragment StoreEntitySet="TODO-PODocSet">
+                <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="FreightCurrencyRate" ColumnName="FreightCurrencyRate" />
                 <ScalarProperty Name="CurrencyRate" ColumnName="CurrencyRate" />
                 <ScalarProperty Name="FreightCurrencyCode" ColumnName="FreightCurrencyCode" />
@@ -6452,6 +6469,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_PODocSetToExport">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_PODocSetToExport">
               <MappingFragment StoreEntitySet="TODO-PODocSetToExport">
+                <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="FreightCurrencyCode" ColumnName="FreightCurrencyCode" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
                 <ScalarProperty Name="EntryPackages" ColumnName="EntryPackages" />
@@ -6703,6 +6721,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_C71ToCreate">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_C71ToCreate">
               <MappingFragment StoreEntitySet="TODO-C71ToCreate">
+                <ScalarProperty Name="GeneratedC71Total" ColumnName="GeneratedC71Total" />
+                <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="Rate" ColumnName="Rate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="C71Total" ColumnName="C71Total" />

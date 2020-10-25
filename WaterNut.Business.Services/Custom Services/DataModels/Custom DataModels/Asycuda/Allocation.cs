@@ -200,7 +200,7 @@ namespace WaterNut.DataSpace
 			var count = itemSetsValues.Count();
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
-				 //  .Where(x => x.Key.Contains("E764349")) //.Where(x => x.Key.Contains("255100")) // 
+				// .Where(x => x.Key.Contains("AWL/J3809QT")) //.Where(x => x.Key.Contains("255100")) // 
 																		  // .Where(x => "337493".Contains(x.Key))
 																		  //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
 									 , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")

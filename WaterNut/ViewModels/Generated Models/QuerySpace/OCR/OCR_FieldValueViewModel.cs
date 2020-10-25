@@ -80,12 +80,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             set
             {
                 _OCR_FieldValue = value;
+                NotifyPropertyChanged( x => x.OCR_FieldValue);
             }
         }
 
 		 private void OnOCR_FieldValueFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			OCR_FieldValue.Refresh();
+			Task.Run(() => OCR_FieldValue.Refresh()).ConfigureAwait(false);
             SelectedOCR_FieldValue.Clear();
             NotifyPropertyChanged(x => SelectedOCR_FieldValue);
             BeginSendMessage(MessageToken.SelectedOCR_FieldValueChanged, new NotificationEventArgs(MessageToken.SelectedOCR_FieldValueChanged));

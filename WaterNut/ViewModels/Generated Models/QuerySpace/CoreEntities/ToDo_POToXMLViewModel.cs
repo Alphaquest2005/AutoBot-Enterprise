@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _ToDo_POToXML = value;
+                NotifyPropertyChanged( x => x.ToDo_POToXML);
             }
         }
 
 		 private void OnToDo_POToXMLFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			ToDo_POToXML.Refresh();
+			Task.Run(() => ToDo_POToXML.Refresh()).ConfigureAwait(false);
             SelectedToDo_POToXML.Clear();
             NotifyPropertyChanged(x => SelectedToDo_POToXML);
             BeginSendMessage(MessageToken.SelectedToDo_POToXMLChanged, new NotificationEventArgs(MessageToken.SelectedToDo_POToXMLChanged));

@@ -418,6 +418,21 @@ public double FreightCurrencyRate
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> ExpectedEntries
+		{ 
+		    get { return this.todo_podocset.ExpectedEntries; }
+			set
+			{
+			    if (value == this.todo_podocset.ExpectedEntries) return;
+				this.todo_podocset.ExpectedEntries = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExpectedEntries");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_PODocSet> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_PODocSet> ChangeTracker

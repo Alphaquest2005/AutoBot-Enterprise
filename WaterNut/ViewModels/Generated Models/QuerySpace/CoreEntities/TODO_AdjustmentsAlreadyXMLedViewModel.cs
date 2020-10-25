@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_AdjustmentsAlreadyXMLed = value;
+                NotifyPropertyChanged( x => x.TODO_AdjustmentsAlreadyXMLed);
             }
         }
 
 		 private void OnTODO_AdjustmentsAlreadyXMLedFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_AdjustmentsAlreadyXMLed.Refresh();
+			Task.Run(() => TODO_AdjustmentsAlreadyXMLed.Refresh()).ConfigureAwait(false);
             SelectedTODO_AdjustmentsAlreadyXMLed.Clear();
             NotifyPropertyChanged(x => SelectedTODO_AdjustmentsAlreadyXMLed);
             BeginSendMessage(MessageToken.SelectedTODO_AdjustmentsAlreadyXMLedChanged, new NotificationEventArgs(MessageToken.SelectedTODO_AdjustmentsAlreadyXMLedChanged));

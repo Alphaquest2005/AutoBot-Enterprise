@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _SystemDocumentSets = value;
+                NotifyPropertyChanged( x => x.SystemDocumentSets);
             }
         }
 
 		 private void OnSystemDocumentSetsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			SystemDocumentSets.Refresh();
+			Task.Run(() => SystemDocumentSets.Refresh()).ConfigureAwait(false);
             SelectedSystemDocumentSets.Clear();
             NotifyPropertyChanged(x => SelectedSystemDocumentSets);
             BeginSendMessage(MessageToken.SelectedSystemDocumentSetsChanged, new NotificationEventArgs(MessageToken.SelectedSystemDocumentSetsChanged));

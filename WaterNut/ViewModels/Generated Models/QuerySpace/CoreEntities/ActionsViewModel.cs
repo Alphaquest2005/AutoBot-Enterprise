@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _Actions = value;
+                NotifyPropertyChanged( x => x.Actions);
             }
         }
 
 		 private void OnActionsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Actions.Refresh();
+			Task.Run(() => Actions.Refresh()).ConfigureAwait(false);
             SelectedActions.Clear();
             NotifyPropertyChanged(x => SelectedActions);
             BeginSendMessage(MessageToken.SelectedActionsChanged, new NotificationEventArgs(MessageToken.SelectedActionsChanged));

@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_Error_IncompleteImport = value;
+                NotifyPropertyChanged( x => x.TODO_Error_IncompleteImport);
             }
         }
 
 		 private void OnTODO_Error_IncompleteImportFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_Error_IncompleteImport.Refresh();
+			Task.Run(() => TODO_Error_IncompleteImport.Refresh()).ConfigureAwait(false);
             SelectedTODO_Error_IncompleteImport.Clear();
             NotifyPropertyChanged(x => SelectedTODO_Error_IncompleteImport);
             BeginSendMessage(MessageToken.SelectedTODO_Error_IncompleteImportChanged, new NotificationEventArgs(MessageToken.SelectedTODO_Error_IncompleteImportChanged));

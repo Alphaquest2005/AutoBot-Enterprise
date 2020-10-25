@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _AsycudaDocumentItemLastItemCosts = value;
+                NotifyPropertyChanged( x => x.AsycudaDocumentItemLastItemCosts);
             }
         }
 
 		 private void OnAsycudaDocumentItemLastItemCostsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AsycudaDocumentItemLastItemCosts.Refresh();
+			Task.Run(() => AsycudaDocumentItemLastItemCosts.Refresh()).ConfigureAwait(false);
             SelectedAsycudaDocumentItemLastItemCosts.Clear();
             NotifyPropertyChanged(x => SelectedAsycudaDocumentItemLastItemCosts);
             BeginSendMessage(MessageToken.SelectedAsycudaDocumentItemLastItemCostsChanged, new NotificationEventArgs(MessageToken.SelectedAsycudaDocumentItemLastItemCostsChanged));

@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_LicenseToXML = value;
+                NotifyPropertyChanged( x => x.TODO_LicenseToXML);
             }
         }
 
 		 private void OnTODO_LicenseToXMLFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_LicenseToXML.Refresh();
+			Task.Run(() => TODO_LicenseToXML.Refresh()).ConfigureAwait(false);
             SelectedTODO_LicenseToXML.Clear();
             NotifyPropertyChanged(x => SelectedTODO_LicenseToXML);
             BeginSendMessage(MessageToken.SelectedTODO_LicenseToXMLChanged, new NotificationEventArgs(MessageToken.SelectedTODO_LicenseToXMLChanged));

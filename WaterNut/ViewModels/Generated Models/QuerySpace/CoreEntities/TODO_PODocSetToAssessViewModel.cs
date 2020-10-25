@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_PODocSetToAssess = value;
+                NotifyPropertyChanged( x => x.TODO_PODocSetToAssess);
             }
         }
 
 		 private void OnTODO_PODocSetToAssessFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_PODocSetToAssess.Refresh();
+			Task.Run(() => TODO_PODocSetToAssess.Refresh()).ConfigureAwait(false);
             SelectedTODO_PODocSetToAssess.Clear();
             NotifyPropertyChanged(x => SelectedTODO_PODocSetToAssess);
             BeginSendMessage(MessageToken.SelectedTODO_PODocSetToAssessChanged, new NotificationEventArgs(MessageToken.SelectedTODO_PODocSetToAssessChanged));

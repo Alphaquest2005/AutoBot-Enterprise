@@ -87,12 +87,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _AdjustmentDetails = value;
+                NotifyPropertyChanged( x => x.AdjustmentDetails);
             }
         }
 
 		 private void OnAdjustmentDetailsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AdjustmentDetails.Refresh();
+			Task.Run(() => AdjustmentDetails.Refresh()).ConfigureAwait(false);
             SelectedAdjustmentDetails.Clear();
             NotifyPropertyChanged(x => SelectedAdjustmentDetails);
             BeginSendMessage(MessageToken.SelectedAdjustmentDetailsChanged, new NotificationEventArgs(MessageToken.SelectedAdjustmentDetailsChanged));

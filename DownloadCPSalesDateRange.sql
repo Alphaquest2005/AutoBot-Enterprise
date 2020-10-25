@@ -29,7 +29,7 @@
                                                       (EntryData_Id, INVNumber, Tax,CustomerName)
                                     SELECT DISTINCT EntryData.EntryData_Id, CounterPointSales.INVNO, CounterPointSales.TAX_AMT, CounterPointSales.[CUSTOMER NAME]
 									FROM    CounterPointSales INNER JOIN
-													 EntryData ON CounterPointSales.INVNO = EntryData.EntryDataId COLLATE Latin1_General_CI_AS AND CounterPointSales.DATE = EntryData.EntryDataDate
+													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
 									WHERE (CounterPointSales.DATE >= @StartDate) AND (CounterPointSales.DATE <= @EndDate)
 
 
@@ -43,11 +43,12 @@
                                     HAVING (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*')   
 
                                     INSERT INTO EntryDataDetails
-                                                      (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated)
+                                                      (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated, InventoryItemId)
                                     SELECT EntryData.EntryData_Id, CounterPointSalesDetails.INVNO, CounterPointSalesDetails.SEQ_NO, CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.QUANTITY, CounterPointSalesDetails.QTY_UNIT, 
-													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2
+													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2, InventoryItems.Id
 									FROM    CounterPointSalesDetails INNER JOIN
-													 EntryData ON CounterPointSalesDetails.INVNO = EntryData.EntryDataId COLLATE Latin1_General_CI_AS AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate
+													 EntryData ON CounterPointSalesDetails.INVNO = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate INNER JOIN
+													 InventoryItems ON EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId AND CounterPointSalesDetails.ITEM_NO = InventoryItems.ItemNumber COLLATE DATABASE_DEFAULT
 									WHERE (CounterPointSalesDetails.DATE >= @StartDate) AND (CounterPointSalesDetails.DATE <= @EndDate) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*')
 
 
@@ -81,7 +82,7 @@
 
                                     INSERT INTO EntryData_Sales
                                                       (EntryData_Id, INVNumber, Tax,CustomerName)
-                                    SELECT DISTINCT EntryData.EntryDataId, CounterPointSales.INVNO, CounterPointSales.TAX_AMT, CounterPointSales.[CUSTOMER NAME]
+                                    SELECT DISTINCT EntryData.EntryData_Id, CounterPointSales.INVNO, CounterPointSales.TAX_AMT, CounterPointSales.[CUSTOMER NAME]
 									FROM    CounterPointSales INNER JOIN
 													 EntryData ON CounterPointSales.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSales.DATE = EntryData.EntryDataDate
 									WHERE (CounterPointSales.INVNO = @INVNumber)
@@ -95,11 +96,12 @@
 									WHERE (CounterPointSalesDetails.INVNO = @INVNumber and CounterPointSalesDetails.Date = @Date) AND (InventoryItems_1.ItemNumber IS NULL) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @ApplicationSettingsId)
 
                                     INSERT INTO EntryDataDetails
-                                                      (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated)
+                                                      (EntryData_Id,EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated, InventoryItemId)
                                     SELECT EntryData.EntryData_Id, CounterPointSalesDetails.INVNO, CounterPointSalesDetails.SEQ_NO, CounterPointSalesDetails.ITEM_NO, CounterPointSalesDetails.QUANTITY, CounterPointSalesDetails.QTY_UNIT, 
-													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2
+													 CounterPointSalesDetails.ITEM_DESCR, CounterPointSalesDetails.COST, ISNULL(CounterPointSalesDetails.UNIT_WEIGHT, 0) AS Expr1, 0 AS Expr2, InventoryItems.Id
 									FROM    CounterPointSalesDetails INNER JOIN
-													 EntryData ON CounterPointSalesDetails.INVNO = EntryData.EntryDataId COLLATE Latin1_General_CI_AS AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate
+													 EntryData ON CounterPointSalesDetails.INVNO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT AND CounterPointSalesDetails.DATE = EntryData.EntryDataDate INNER JOIN
+													 InventoryItems ON CounterPointSalesDetails.INVNO  COLLATE DATABASE_DEFAULT = InventoryItems.ItemNumber  COLLATE DATABASE_DEFAULT AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
 									WHERE (CounterPointSalesDetails.INVNO = @INVNumber) AND (CounterPointSalesDetails.DATE = @Date) AND (LEFT(CounterPointSalesDetails.ITEM_NO, 1) <> '*') AND 
 													 (EntryData.ApplicationSettingsId = @ApplicationSettingsId)
 
@@ -109,7 +111,7 @@
 									 declare @PONumber varchar(50)
 
 									 declare @entryData_Id int
-									set @entryData_Id = (select distinct entrydata_id from entrydata where entrydataid = @INVNumber and EntryDataDate = @Date and ApplicationSettingsId = @ApplicationSettingsId)
+									set @entryData_Id = (select distinct entrydata_id from entrydata where entrydataid = @PONumber and EntryDataDate = @Date and ApplicationSettingsId = @ApplicationSettingsId)
 
 
 									Delete from EntryData
@@ -148,9 +150,11 @@
 													 (EntryData.EntryDataDate = @Date)
 
                                     INSERT INTO EntryDataDetails
-                                                      (EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated)
-                                    SELECT EntryData.EntryData_Id, CounterPointPODetails.PO_NO, CounterPointPODetails.SEQ_NO, CounterPointPODetails.ITEM_NO, CounterPointPODetails.ORD_QTY, CounterPointPODetails.ORD_UNIT, 
-                 CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT, 0 AS Expr1
-FROM    CounterPointPODetails INNER JOIN
-                 EntryData ON CounterPointPODetails.PO_NO = EntryData.EntryDataId COLLATE Latin1_General_CI_AS
-WHERE (CounterPointPODetails.PO_NO = @PONumber) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationsettingsId) AND (EntryData.EntryDataDate = @Date)
+                                                      (EntryDataId, LineNumber, ItemNumber, Quantity, Units, ItemDescription, Cost, UnitWeight, QtyAllocated,InventoryItemId)
+									SELECT EntryData.EntryData_Id, CounterPointPODetails.PO_NO, CounterPointPODetails.SEQ_NO, CounterPointPODetails.ITEM_NO, CounterPointPODetails.ORD_QTY, CounterPointPODetails.ORD_UNIT, 
+													 CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT, 0 AS Expr1, InventoryItems.Id
+									FROM    CounterPointPODetails INNER JOIN
+													 EntryData ON CounterPointPODetails.PO_NO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT INNER JOIN
+													 InventoryItems ON CounterPointPODetails.PO_NO  COLLATE Database_Default = InventoryItems.ItemNumber  COLLATE Database_Default AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
+									WHERE (CounterPointPODetails.PO_NO = @PONumber) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationsettingsId) AND (EntryData.EntryDataDate = @Date)
+

@@ -46,6 +46,7 @@
               this.Property(t => t.EntryPackages).HasColumnName("EntryPackages");
               this.Property(t => t.CurrencyRate).HasColumnName("CurrencyRate");
               this.Property(t => t.FreightCurrencyRate).HasColumnName("FreightCurrencyRate");
+              this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<AsycudaDocumentSetEx>) t.AsycudaDocumentSetEx).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.AsycudaDocuments).WithOptional(t => t.AsycudaDocumentSetEx).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasMany(t => t.LicenceSummary).WithRequired(t => (AsycudaDocumentSetEx)t.AsycudaDocumentSetEx);

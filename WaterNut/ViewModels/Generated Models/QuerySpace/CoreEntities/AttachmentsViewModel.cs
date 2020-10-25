@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _Attachments = value;
+                NotifyPropertyChanged( x => x.Attachments);
             }
         }
 
 		 private void OnAttachmentsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Attachments.Refresh();
+			Task.Run(() => Attachments.Refresh()).ConfigureAwait(false);
             SelectedAttachments.Clear();
             NotifyPropertyChanged(x => SelectedAttachments);
             BeginSendMessage(MessageToken.SelectedAttachmentsChanged, new NotificationEventArgs(MessageToken.SelectedAttachmentsChanged));

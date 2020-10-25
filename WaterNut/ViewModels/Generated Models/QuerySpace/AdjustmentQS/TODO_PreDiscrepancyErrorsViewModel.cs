@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _TODO_PreDiscrepancyErrors = value;
+                NotifyPropertyChanged( x => x.TODO_PreDiscrepancyErrors);
             }
         }
 
 		 private void OnTODO_PreDiscrepancyErrorsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_PreDiscrepancyErrors.Refresh();
+			Task.Run(() => TODO_PreDiscrepancyErrors.Refresh()).ConfigureAwait(false);
             SelectedTODO_PreDiscrepancyErrors.Clear();
             NotifyPropertyChanged(x => SelectedTODO_PreDiscrepancyErrors);
             BeginSendMessage(MessageToken.SelectedTODO_PreDiscrepancyErrorsChanged, new NotificationEventArgs(MessageToken.SelectedTODO_PreDiscrepancyErrorsChanged));

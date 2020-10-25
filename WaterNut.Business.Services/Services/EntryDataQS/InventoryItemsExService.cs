@@ -308,7 +308,7 @@ namespace EntryDataQS.Business.Services
                                     dset = set.OrderBy(x => x.InventoryItemId).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -384,7 +384,7 @@ namespace EntryDataQS.Business.Services
                                     dset = set.OrderBy(x => x.InventoryItemId);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

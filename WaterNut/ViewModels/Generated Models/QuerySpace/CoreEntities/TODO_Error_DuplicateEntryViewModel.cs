@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_Error_DuplicateEntry = value;
+                NotifyPropertyChanged( x => x.TODO_Error_DuplicateEntry);
             }
         }
 
 		 private void OnTODO_Error_DuplicateEntryFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_Error_DuplicateEntry.Refresh();
+			Task.Run(() => TODO_Error_DuplicateEntry.Refresh()).ConfigureAwait(false);
             SelectedTODO_Error_DuplicateEntry.Clear();
             NotifyPropertyChanged(x => SelectedTODO_Error_DuplicateEntry);
             BeginSendMessage(MessageToken.SelectedTODO_Error_DuplicateEntryChanged, new NotificationEventArgs(MessageToken.SelectedTODO_Error_DuplicateEntryChanged));

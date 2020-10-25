@@ -242,6 +242,32 @@ namespace CoreEntities.Client.DTO
 		}
         private double _Rate;
 
+        [DataMember]
+        public Nullable<int> ExpectedEntries
+		{ 
+		    get { return _ExpectedEntries; }
+			set
+			{
+			    if (value == _ExpectedEntries) return;
+				_ExpectedEntries = value;
+				NotifyPropertyChanged();//m => this.ExpectedEntries
+			}
+		}
+        private Nullable<int> _ExpectedEntries;
+
+        [DataMember]
+        public Nullable<double> GeneratedC71Total
+		{ 
+		    get { return _GeneratedC71Total; }
+			set
+			{
+			    if (value == _GeneratedC71Total) return;
+				_GeneratedC71Total = value;
+				NotifyPropertyChanged();//m => this.GeneratedC71Total
+			}
+		}
+        private Nullable<double> _GeneratedC71Total;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

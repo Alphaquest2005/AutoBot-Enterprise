@@ -616,6 +616,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LastCost" Type="float" />
+          <Property Name="FileLineNumber" Type="int" />
           <Property Name="TaxAmount" Type="float" />
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
@@ -863,6 +864,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="pLineNumber" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="TotalDutyLiablity" Type="float" />
+          <Property Name="DutyLiablity" Type="float" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Role="EntryDataDetails" Type="Self.EntryDataDetails" Multiplicity="0..1">
@@ -1420,6 +1423,7 @@ FROM [dbo].[AsycudaItemPiQuantityData] AS [AsycudaItemPiQuantityData]</DefiningQ
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
 [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [EntryDataDetailsEx].[LastCost] AS [LastCost], 
+[EntryDataDetailsEx].[FileLineNumber] AS [FileLineNumber], 
 [EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
 [EntryDataDetailsEx].[EmailId] AS [EmailId], 
 [EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
@@ -1588,7 +1592,9 @@ FROM [dbo].[ItemSalesPiSummary] AS [ItemSalesPiSummary]</DefiningQuery>
 [PreviousItemsEx].[DutyFreePaid] AS [DutyFreePaid], 
 [PreviousItemsEx].[ItemNumber] AS [ItemNumber], 
 [PreviousItemsEx].[pLineNumber] AS [pLineNumber], 
-[PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
+[PreviousItemsEx].[DutyLiablity] AS [DutyLiablity]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaSalesAllocations_EntryDataDetails" Association="Self.FK_AsycudaSalesAllocations_EntryDataDetails">
@@ -2083,6 +2089,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="SystemDocumentSets" Relationship="WaterNutDBModel.SystemDocumentSetsEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="SystemDocumentSets" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="FileLineNumber" Type="Int32" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Multiplicity="1" Role="EntryDataDetails" />
@@ -2984,6 +2991,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="pLineNumber" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="TotalDutyLiablity" Type="Double" />
+          <Property Name="DutyLiablity" Type="Double" />
         </EntityType>
         <EntityType Name="InventoryItem">
           <Key>
@@ -3365,6 +3374,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -3889,6 +3899,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
+                <ScalarProperty Name="TotalDutyLiablity" ColumnName="TotalDutyLiablity" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />

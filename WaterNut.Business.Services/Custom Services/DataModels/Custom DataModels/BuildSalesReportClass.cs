@@ -57,16 +57,21 @@ namespace WaterNut.DataSpace
 			    var plst = new AllocationDSContext().xcuda_PreviousItem
 			        .Include(x => x.xcuda_Item.AsycudaDocument)
 			        .OrderBy(x => x.xcuda_Item.AsycudaDocument.AssessmentDate)
+			        .OrderBy(x => x.xcuda_Item.AsycudaDocument.CNumber)
+			        .OrderBy(x => x.xcuda_Item.LineNumber)
+                    
 			        
-                    .Where(x => x.Prev_decl_HS_spec == "A002401")
+                 //   .Where(x => x.Prev_decl_HS_spec == "INT/YBA473GL")
 
 			        .ToList();
 
 			    var alst = new AllocationDSContext().AsycudaSalesAllocations
 			        .Include(x => x.EntryDataDetails.Sales)
-			        .OrderBy(x => x.EntryDataDetails.Sales.EntryDataDate)
+			        //.OrderBy(x => x.EntryDataDetails.Sales.EntryDataDate)
+			        //.OrderBy(x => x.EntryDataDetails.Sales.EntryDataDate)
+                    .OrderBy(x => x.AllocationId)
                     .Where(x => x.EntryDataDetails.Sales != null)
-			       .Where(x => x.EntryDataDetails.ItemNumber == "A002401")
+			     //.Where(x => x.EntryDataDetails.ItemNumber == "INT/YBA473GL")
                     .ToList()
 			        .GroupBy(x => x.EntryDataDetails.ItemNumber);
 
@@ -103,7 +108,7 @@ namespace WaterNut.DataSpace
 					{
 						//var lst = alst.Where(x => x.Pi.Any(z => z.Pi.PreviousItem_Id == g.Pi.PreviousItem_Id)).Select(x => x.Allocation);   
 					   
-							SetXBondLst(g.allocations.OrderBy(x => x.AllocationId).ToList() , g.PList.OrderBy(z => z.xcuda_Item.AsycudaDocument.AssessmentDate).ThenBy(z => z.xcuda_Item.AsycudaDocument.RegistrationDate).Select(x => (Pi:x, SalesFactor: x.xcuda_Item.SalesFactor)).ToList());
+							SetXBondLst(g.allocations.OrderBy(x => x.AllocationId).ToList() , g.PList.OrderBy(z => z.xcuda_Item.AsycudaDocument.AssessmentDate).ThenBy(z => z.xcuda_Item.AsycudaDocument.RegistrationDate).ThenBy(z => z.xcuda_Item.LineNumber).Select(x => (Pi:x, SalesFactor: x.xcuda_Item.SalesFactor)).ToList());
 						
 							StatusModel.StatusUpdate();
 					  

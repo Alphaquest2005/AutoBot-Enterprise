@@ -20,7 +20,7 @@ namespace WaterNut.Views
             im = (CPSalesModel)FindResource("CPSalesModelDataSource");
 		}
 
-        private CPSalesModel im;
+	    private CPSalesModel im; //CPSalesModel.Instance;
         private async void DownloadTxt_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             await im.DownloadCPSales((SalesGrd.SelectedItem as VirtualListItem<CounterPointSales>).Data).ConfigureAwait(false);

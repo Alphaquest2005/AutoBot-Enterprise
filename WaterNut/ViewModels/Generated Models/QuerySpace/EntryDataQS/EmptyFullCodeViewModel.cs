@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             set
             {
                 _EmptyFullCodes = value;
+                NotifyPropertyChanged( x => x.EmptyFullCodes);
             }
         }
 
 		 private void OnEmptyFullCodesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			EmptyFullCodes.Refresh();
+			Task.Run(() => EmptyFullCodes.Refresh()).ConfigureAwait(false);
             SelectedEmptyFullCodes.Clear();
             NotifyPropertyChanged(x => SelectedEmptyFullCodes);
             BeginSendMessage(MessageToken.SelectedEmptyFullCodesChanged, new NotificationEventArgs(MessageToken.SelectedEmptyFullCodesChanged));

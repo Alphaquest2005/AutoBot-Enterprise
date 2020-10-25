@@ -63,7 +63,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
         internal async Task RemoveEntryData(global::EntryDataQS.Client.Entities.EntryDataEx entryDataEx)
         {
-           await EntryDataRepository.Instance.DeleteEntryData(entryDataEx.EntityId).ConfigureAwait(false);
+           await EntryDataRepository.Instance.DeleteEntryData(entryDataEx.EntryData_Id.ToString()).ConfigureAwait(false);
             
             MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
                        new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));
@@ -133,7 +133,7 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             if (res == MessageBoxResult.Yes)
             {
                 StatusModel.Timer($"Deleting Data");
-                await EntryDataRepository.Instance.RemoveSelectedEntryData(SelectedEntryDataEx.Select(x => x.InvoiceNo)).ConfigureAwait(false);
+                await EntryDataRepository.Instance.RemoveSelectedEntryData(SelectedEntryDataEx.Select(x => x.EntryData_Id.ToString())).ConfigureAwait(false);
 
                 MessageBus.Default.BeginNotify(CoreEntities.MessageToken.AsycudaDocumentsChanged, null,
                     new NotificationEventArgs(CoreEntities.MessageToken.AsycudaDocumentsChanged));

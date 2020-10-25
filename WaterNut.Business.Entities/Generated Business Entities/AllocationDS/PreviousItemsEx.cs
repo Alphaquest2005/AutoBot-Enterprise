@@ -530,6 +530,36 @@ namespace AllocationDS.Business.Entities
             }
         }
         int _applicationsettingsid;
+        [DataMember]
+        public Nullable<double> TotalDutyLiablity 
+        {
+            get
+            {
+                return _totaldutyliablity;
+            }
+            set
+            {
+                _totaldutyliablity = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totaldutyliablity;
+        [DataMember]
+        public Nullable<double> DutyLiablity 
+        {
+            get
+            {
+                return _dutyliablity;
+            }
+            set
+            {
+                _dutyliablity = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _dutyliablity;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

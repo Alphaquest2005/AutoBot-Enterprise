@@ -20,11 +20,11 @@ namespace WaterNut.QuerySpace.CounterPointQS.ViewModels
         private static readonly CPPurchaseOrdersModel instance;
         static CPPurchaseOrdersModel()
         {
-            if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint != "Visible")
-            {
-                instance = null;
-                return;
-            }
+            //if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint != "Visible")
+            //{
+            //    instance = null;
+            //    return;
+            //}
                 
             instance = new CPPurchaseOrdersModel()
             {

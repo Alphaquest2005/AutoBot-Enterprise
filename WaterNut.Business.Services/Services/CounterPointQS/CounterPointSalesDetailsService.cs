@@ -295,7 +295,7 @@ namespace CounterPointQS.Business.Services
                                     dset = set.OrderBy(x => x.INVNO).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -371,7 +371,7 @@ namespace CounterPointQS.Business.Services
                                     dset = set.OrderBy(x => x.INVNO);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

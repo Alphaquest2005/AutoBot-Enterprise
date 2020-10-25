@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _Document_Type = value;
+                NotifyPropertyChanged( x => x.Document_Type);
             }
         }
 
 		 private void OnDocument_TypeFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Document_Type.Refresh();
+			Task.Run(() => Document_Type.Refresh()).ConfigureAwait(false);
             SelectedDocument_Type.Clear();
             NotifyPropertyChanged(x => SelectedDocument_Type);
             BeginSendMessage(MessageToken.SelectedDocument_TypeChanged, new NotificationEventArgs(MessageToken.SelectedDocument_TypeChanged));

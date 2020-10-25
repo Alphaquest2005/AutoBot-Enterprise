@@ -20,6 +20,7 @@ namespace WaterNut.Views
 			InitializeComponent();
 			im = (AsycudaDocumentSetsModel)FindResource("AsycudaDocumentSetsModelDataSource");
 			// Insert code required on object creation below this point.
+
 		}
 		AsycudaDocumentSetsModel im;
 		

@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_LICToCreate = value;
+                NotifyPropertyChanged( x => x.TODO_LICToCreate);
             }
         }
 
 		 private void OnTODO_LICToCreateFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_LICToCreate.Refresh();
+			Task.Run(() => TODO_LICToCreate.Refresh()).ConfigureAwait(false);
             SelectedTODO_LICToCreate.Clear();
             NotifyPropertyChanged(x => SelectedTODO_LICToCreate);
             BeginSendMessage(MessageToken.SelectedTODO_LICToCreateChanged, new NotificationEventArgs(MessageToken.SelectedTODO_LICToCreateChanged));

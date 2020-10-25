@@ -84,12 +84,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             set
             {
                 _Parts = value;
+                NotifyPropertyChanged( x => x.Parts);
             }
         }
 
 		 private void OnPartsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Parts.Refresh();
+			Task.Run(() => Parts.Refresh()).ConfigureAwait(false);
             SelectedParts.Clear();
             NotifyPropertyChanged(x => SelectedParts);
             BeginSendMessage(MessageToken.SelectedPartsChanged, new NotificationEventArgs(MessageToken.SelectedPartsChanged));

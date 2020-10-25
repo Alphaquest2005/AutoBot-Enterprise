@@ -24,13 +24,19 @@ namespace WaterNut.QuerySpace.CounterPointQS.ViewModels
         private static readonly CPSalesModel instance;
         static CPSalesModel()
         {
-            if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint != "Visible")
-            {
-                instance = null;
-                return;
-            }
-            instance = new CPSalesModel(){DateFilter = DateTime.MinValue};
+         instance = new CPSalesModel() { DateFilter = DateTime.MinValue };
+           
         }
+
+	    //private static void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<ApplicationSettings> e)
+	    //{
+     //       if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint != "Visible")
+     //       {
+     //           instance = null;
+     //           return;
+     //       }
+            
+     //   }
 
         public static CPSalesModel Instance
         {
@@ -39,7 +45,8 @@ namespace WaterNut.QuerySpace.CounterPointQS.ViewModels
 
         private CPSalesModel()
         {
-            
+          //  RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+
         }
         
         internal async Task DownloadCPSales(global::CounterPointQS.Client.Entities.CounterPointSales counterPointSales)

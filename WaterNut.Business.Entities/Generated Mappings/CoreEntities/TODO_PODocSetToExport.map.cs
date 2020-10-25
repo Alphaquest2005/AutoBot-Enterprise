@@ -37,6 +37,7 @@
               this.Property(t => t.EntryPackages).HasColumnName("EntryPackages");
               this.Property(t => t.TotalWeight).HasColumnName("TotalWeight");
               this.Property(t => t.FreightCurrencyCode).HasColumnName("FreightCurrencyCode").IsRequired().HasMaxLength(3);
+              this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

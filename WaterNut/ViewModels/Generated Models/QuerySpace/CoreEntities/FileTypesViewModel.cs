@@ -82,12 +82,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _FileTypes = value;
+                NotifyPropertyChanged( x => x.FileTypes);
             }
         }
 
 		 private void OnFileTypesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			FileTypes.Refresh();
+			Task.Run(() => FileTypes.Refresh()).ConfigureAwait(false);
             SelectedFileTypes.Clear();
             NotifyPropertyChanged(x => SelectedFileTypes);
             BeginSendMessage(MessageToken.SelectedFileTypesChanged, new NotificationEventArgs(MessageToken.SelectedFileTypesChanged));

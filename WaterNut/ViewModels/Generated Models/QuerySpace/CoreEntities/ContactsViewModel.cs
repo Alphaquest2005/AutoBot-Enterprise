@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _Contacts = value;
+                NotifyPropertyChanged( x => x.Contacts);
             }
         }
 
 		 private void OnContactsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Contacts.Refresh();
+			Task.Run(() => Contacts.Refresh()).ConfigureAwait(false);
             SelectedContacts.Clear();
             NotifyPropertyChanged(x => SelectedContacts);
             BeginSendMessage(MessageToken.SelectedContactsChanged, new NotificationEventArgs(MessageToken.SelectedContactsChanged));

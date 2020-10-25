@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitDocSetWithIncompleteInvoices = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitDocSetWithIncompleteInvoices);
             }
         }
 
 		 private void OnTODO_SubmitDocSetWithIncompleteInvoicesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitDocSetWithIncompleteInvoices.Refresh();
+			Task.Run(() => TODO_SubmitDocSetWithIncompleteInvoices.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitDocSetWithIncompleteInvoices.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitDocSetWithIncompleteInvoices);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitDocSetWithIncompleteInvoicesChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitDocSetWithIncompleteInvoicesChanged));

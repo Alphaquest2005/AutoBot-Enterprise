@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             set
             {
                 _RegularExpressions = value;
+                NotifyPropertyChanged( x => x.RegularExpressions);
             }
         }
 
 		 private void OnRegularExpressionsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			RegularExpressions.Refresh();
+			Task.Run(() => RegularExpressions.Refresh()).ConfigureAwait(false);
             SelectedRegularExpressions.Clear();
             NotifyPropertyChanged(x => SelectedRegularExpressions);
             BeginSendMessage(MessageToken.SelectedRegularExpressionsChanged, new NotificationEventArgs(MessageToken.SelectedRegularExpressionsChanged));

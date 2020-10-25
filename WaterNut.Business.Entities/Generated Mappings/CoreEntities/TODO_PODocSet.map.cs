@@ -37,6 +37,7 @@
               this.Property(t => t.FreightCurrencyCode).HasColumnName("FreightCurrencyCode").IsRequired().HasMaxLength(3);
               this.Property(t => t.CurrencyRate).HasColumnName("CurrencyRate");
               this.Property(t => t.FreightCurrencyRate).HasColumnName("FreightCurrencyRate");
+              this.Property(t => t.ExpectedEntries).HasColumnName("ExpectedEntries");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

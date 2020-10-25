@@ -83,12 +83,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _AdjustmentShorts = value;
+                NotifyPropertyChanged( x => x.AdjustmentShorts);
             }
         }
 
 		 private void OnAdjustmentShortsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AdjustmentShorts.Refresh();
+			Task.Run(() => AdjustmentShorts.Refresh()).ConfigureAwait(false);
             SelectedAdjustmentShorts.Clear();
             NotifyPropertyChanged(x => SelectedAdjustmentShorts);
             BeginSendMessage(MessageToken.SelectedAdjustmentShortsChanged, new NotificationEventArgs(MessageToken.SelectedAdjustmentShortsChanged));

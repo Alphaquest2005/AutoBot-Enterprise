@@ -333,6 +333,19 @@ namespace CoreEntities.Client.DTO
 		}
         private double _FreightCurrencyRate;
 
+        [DataMember]
+        public Nullable<int> ExpectedEntries
+		{ 
+		    get { return _ExpectedEntries; }
+			set
+			{
+			    if (value == _ExpectedEntries) return;
+				_ExpectedEntries = value;
+				NotifyPropertyChanged();//m => this.ExpectedEntries
+			}
+		}
+        private Nullable<int> _ExpectedEntries;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

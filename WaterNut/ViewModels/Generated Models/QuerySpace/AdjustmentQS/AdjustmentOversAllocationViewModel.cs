@@ -82,12 +82,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _AdjustmentOversAllocations = value;
+                NotifyPropertyChanged( x => x.AdjustmentOversAllocations);
             }
         }
 
 		 private void OnAdjustmentOversAllocationsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AdjustmentOversAllocations.Refresh();
+			Task.Run(() => AdjustmentOversAllocations.Refresh()).ConfigureAwait(false);
             SelectedAdjustmentOversAllocations.Clear();
             NotifyPropertyChanged(x => SelectedAdjustmentOversAllocations);
             BeginSendMessage(MessageToken.SelectedAdjustmentOversAllocationsChanged, new NotificationEventArgs(MessageToken.SelectedAdjustmentOversAllocationsChanged));

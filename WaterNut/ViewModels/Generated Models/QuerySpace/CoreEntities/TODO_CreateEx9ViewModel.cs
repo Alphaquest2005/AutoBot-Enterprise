@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_CreateEx9 = value;
+                NotifyPropertyChanged( x => x.TODO_CreateEx9);
             }
         }
 
 		 private void OnTODO_CreateEx9FilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_CreateEx9.Refresh();
+			Task.Run(() => TODO_CreateEx9.Refresh()).ConfigureAwait(false);
             SelectedTODO_CreateEx9.Clear();
             NotifyPropertyChanged(x => SelectedTODO_CreateEx9);
             BeginSendMessage(MessageToken.SelectedTODO_CreateEx9Changed, new NotificationEventArgs(MessageToken.SelectedTODO_CreateEx9Changed));

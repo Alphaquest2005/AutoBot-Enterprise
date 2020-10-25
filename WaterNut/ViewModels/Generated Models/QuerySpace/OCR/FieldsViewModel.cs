@@ -82,12 +82,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             set
             {
                 _Fields = value;
+                NotifyPropertyChanged( x => x.Fields);
             }
         }
 
 		 private void OnFieldsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Fields.Refresh();
+			Task.Run(() => Fields.Refresh()).ConfigureAwait(false);
             SelectedFields.Clear();
             NotifyPropertyChanged(x => SelectedFields);
             BeginSendMessage(MessageToken.SelectedFieldsChanged, new NotificationEventArgs(MessageToken.SelectedFieldsChanged));

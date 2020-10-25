@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_DeleteDocumentSet = value;
+                NotifyPropertyChanged( x => x.TODO_DeleteDocumentSet);
             }
         }
 
 		 private void OnTODO_DeleteDocumentSetFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_DeleteDocumentSet.Refresh();
+			Task.Run(() => TODO_DeleteDocumentSet.Refresh()).ConfigureAwait(false);
             SelectedTODO_DeleteDocumentSet.Clear();
             NotifyPropertyChanged(x => SelectedTODO_DeleteDocumentSet);
             BeginSendMessage(MessageToken.SelectedTODO_DeleteDocumentSetChanged, new NotificationEventArgs(MessageToken.SelectedTODO_DeleteDocumentSetChanged));

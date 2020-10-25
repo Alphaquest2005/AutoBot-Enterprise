@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitIncompleteSupplierInfo = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitIncompleteSupplierInfo);
             }
         }
 
 		 private void OnTODO_SubmitIncompleteSupplierInfoFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitIncompleteSupplierInfo.Refresh();
+			Task.Run(() => TODO_SubmitIncompleteSupplierInfo.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitIncompleteSupplierInfo.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitIncompleteSupplierInfo);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitIncompleteSupplierInfoChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitIncompleteSupplierInfoChanged));

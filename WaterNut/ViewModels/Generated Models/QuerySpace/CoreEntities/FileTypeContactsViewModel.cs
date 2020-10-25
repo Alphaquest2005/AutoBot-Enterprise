@@ -80,12 +80,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _FileTypeContacts = value;
+                NotifyPropertyChanged( x => x.FileTypeContacts);
             }
         }
 
 		 private void OnFileTypeContactsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			FileTypeContacts.Refresh();
+			Task.Run(() => FileTypeContacts.Refresh()).ConfigureAwait(false);
             SelectedFileTypeContacts.Clear();
             NotifyPropertyChanged(x => SelectedFileTypeContacts);
             BeginSendMessage(MessageToken.SelectedFileTypeContactsChanged, new NotificationEventArgs(MessageToken.SelectedFileTypeContactsChanged));

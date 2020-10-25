@@ -34,7 +34,7 @@ namespace WaterNut.Views
             }
 			// Insert code required on object creation below this point.
 		}
-        CPPurchaseOrdersModel im; 
+        CPPurchaseOrdersModel im = CPPurchaseOrdersModel.Instance; 
         private async void DownloadTxt_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             await im.DownloadCPO((CPOGrd.SelectedItem as VirtualListItem<CounterPointPOs>).Data).ConfigureAwait(false);

@@ -79,12 +79,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _TODO_AdjustmentOversToXML = value;
+                NotifyPropertyChanged( x => x.TODO_AdjustmentOversToXML);
             }
         }
 
 		 private void OnTODO_AdjustmentOversToXMLFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_AdjustmentOversToXML.Refresh();
+			Task.Run(() => TODO_AdjustmentOversToXML.Refresh()).ConfigureAwait(false);
             SelectedTODO_AdjustmentOversToXML.Clear();
             NotifyPropertyChanged(x => SelectedTODO_AdjustmentOversToXML);
             BeginSendMessage(MessageToken.SelectedTODO_AdjustmentOversToXMLChanged, new NotificationEventArgs(MessageToken.SelectedTODO_AdjustmentOversToXMLChanged));

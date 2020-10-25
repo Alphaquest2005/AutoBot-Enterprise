@@ -84,12 +84,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _AsycudaDocumentSet_Attachments = value;
+                NotifyPropertyChanged( x => x.AsycudaDocumentSet_Attachments);
             }
         }
 
 		 private void OnAsycudaDocumentSet_AttachmentsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AsycudaDocumentSet_Attachments.Refresh();
+			Task.Run(() => AsycudaDocumentSet_Attachments.Refresh()).ConfigureAwait(false);
             SelectedAsycudaDocumentSet_Attachments.Clear();
             NotifyPropertyChanged(x => SelectedAsycudaDocumentSet_Attachments);
             BeginSendMessage(MessageToken.SelectedAsycudaDocumentSet_AttachmentsChanged, new NotificationEventArgs(MessageToken.SelectedAsycudaDocumentSet_AttachmentsChanged));

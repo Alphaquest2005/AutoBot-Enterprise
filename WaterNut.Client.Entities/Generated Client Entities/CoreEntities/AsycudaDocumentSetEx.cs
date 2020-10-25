@@ -558,6 +558,21 @@ public double FreightCurrencyRate
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> ExpectedEntries
+		{ 
+		    get { return this.asycudadocumentsetex.ExpectedEntries; }
+			set
+			{
+			    if (value == this.asycudadocumentsetex.ExpectedEntries) return;
+				this.asycudadocumentsetex.ExpectedEntries = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExpectedEntries");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocument> _AsycudaDocuments = null;
         public  ObservableCollection<AsycudaDocument> AsycudaDocuments
 		{

@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _EntryPreviousItems = value;
+                NotifyPropertyChanged( x => x.EntryPreviousItems);
             }
         }
 
 		 private void OnEntryPreviousItemsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			EntryPreviousItems.Refresh();
+			Task.Run(() => EntryPreviousItems.Refresh()).ConfigureAwait(false);
             SelectedEntryPreviousItems.Clear();
             NotifyPropertyChanged(x => SelectedEntryPreviousItems);
             BeginSendMessage(MessageToken.SelectedEntryPreviousItemsChanged, new NotificationEventArgs(MessageToken.SelectedEntryPreviousItemsChanged));

@@ -601,6 +601,8 @@ namespace AutoBot
                 ctx.Database.CommandTimeout = 0;
                 var res = ctx.TODO_C71ToCreate
                     .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                    .OrderByDescending(x => x.Id)
+                    .Take(1)
                     .ToList();
 
                 foreach (var doc in res)
@@ -856,12 +858,12 @@ namespace AutoBot
                         var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                             pO.Declarant_Reference_Number);
                         var fileName = Path.Combine(directoryName, "C71.xml");
-                        if (File.Exists(fileName) && Math.Abs(pO.TotalCIF.GetValueOrDefault() - pO.C71Total) <= 0.01) continue;
+                        if (File.Exists(fileName) && (pO.TotalCIF.HasValue && Math.Abs(pO.TotalCIF.GetValueOrDefault() - pO.C71Total) <= 0.01)) continue;
                         var c71results = Path.Combine(directoryName, "C71-InstructionResults.txt");
                         if (File.Exists(c71results))
                         {
                             var c71instructions = Path.Combine(directoryName, "C71-Instructions.txt");
-                            if (AssessC71Complete(c71instructions, c71results, out int lcont) == true) continue;
+                            //if (AssessC71Complete(c71instructions, c71results, out int lcont) == true) continue;
 
 
                             File.Delete(c71results);
@@ -960,6 +962,8 @@ namespace AutoBot
                     var lst = ctx.TODO_C71ToCreate
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId) 
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .OrderByDescending(x => x.Id)
+                        .Take(1)
                         .ToList();
 
 
@@ -1561,7 +1565,7 @@ namespace AutoBot
                                             $"Regards,\r\n" +
                                             $"AutoBot";
 
-                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(fileType.EmailId), Client, "Error Found Assessing Shipping Discrepancy Entries", errorBody, contacts, attachments.ToArray());
+                        EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(fileType.EmailId), Client, "Error Found Assessing Shipping Discrepancy Entries", errorBody,contacts ,attachments.ToArray() );
                     }
 
                     if (goodadj.Any())
@@ -1614,7 +1618,7 @@ namespace AutoBot
                 using (var ctx = new CoreEntitiesContext())
                 {
                     ctx.Database.CommandTimeout = 60;
-                    var cnumberList = ft.Data.Where(z => z.Key == "pCNumber").Select(x => x.Value).ToList();
+                    var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
                    
                     IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
                     lst = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
@@ -1715,6 +1719,11 @@ namespace AutoBot
                         {
                             
                             var res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
+                            if (!res.Any())
+                            {
+                                LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
+                                res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
+                            }
                             pdfs.AddRange(res);
                         }
 
@@ -3734,7 +3743,7 @@ namespace AutoBot
                     $"&& (InvoiceDate >= \"{saleInfo.Item1:MM/01/yyyy}\" " +
                     $" && InvoiceDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\")" +
                     //  $"&& (AllocationErrors == null)" +// || (AllocationErrors.EntryDataDate  >= \"{saleInfo.Item1:MM/01/yyyy}\" &&  AllocationErrors.EntryDataDate <= \"{saleInfo.Item2:MM/dd/yyyy HH:mm:ss}\"))" +
-                    "&& (TaxAmount == 0 || TaxAmount != 0)" +
+                    "&& ( TaxAmount == 0 ||  TaxAmount != 0)" +
                     "&& PreviousItem_Id != null" +
                     "&& (xBond_Item_Id == 0 )" +
                     "&& (QtyAllocated != null && EntryDataDetailsId != null)" +
@@ -5493,7 +5502,7 @@ namespace AutoBot
                 {"CurrentDate", (dt)=> DateTime.Now.Date.ToShortDateString() },
                 { "DIS-Reference", (dt) => disReference},
                 { "ADJ-Reference", (dt) => adjReference},
-                {"Quantity", (dt) => Convert.ToString(Math.Abs(Convert.ToDouble(dt["Received Quantity"].Replace("\"","")) - Convert.ToDouble(dt["Invoice Quantity"].Replace("\"",""))), CultureInfo.CurrentCulture) },
+                {"Quantity", (dt) => dt.ContainsKey("Received Quantity") && dt.ContainsKey("Invoice Quantity")? Convert.ToString(Math.Abs(Convert.ToDouble(dt["Received Quantity"].Replace("\"","")) - Convert.ToDouble(dt["Invoice Quantity"].Replace("\"",""))), CultureInfo.CurrentCulture) : Convert.ToDouble(dt["Quantity"].Replace("\"","")).ToString(CultureInfo.CurrentCulture) },
                 {"ZeroCost", (x) => "0" },
                 {"ABS-Added", (dt) => Math.Abs(Convert.ToDouble(dt["{Added}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
                 {"ABS-Removed", (dt) => Math.Abs(Convert.ToDouble(dt["{Removed}"].Replace("\"",""))).ToString(CultureInfo.CurrentCulture) },
@@ -5676,7 +5685,7 @@ namespace AutoBot
                 }
 
                 var mappingMailSent = false;
-                Parallel.ForEach(dRows, new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 },
+                Parallel.ForEach(dRows, new ParallelOptions() { MaxDegreeOfParallelism =  1 },//Environment.ProcessorCount *
             drow =>
             {
                 var row = new System.Collections.Generic.Dictionary<string, string>();
@@ -5693,10 +5702,10 @@ namespace AutoBot
                             if (mapping.Required)
                             {
                                 if (mappingMailSent) return;
-                                EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                    new[] { "Josephbartholomew@outlook.com" },
+                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),Utils.Client, $"Bug Found",
                                     $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
-                                    Array.Empty<string>());
+                                   new[] { "Josephbartholomew@outlook.com" } ,Array.Empty<string>()
+                                    );
                                 mappingMailSent = true;
                                 return;
                             }
@@ -5713,7 +5722,7 @@ namespace AutoBot
                         else
                         {
                                     //if (string.IsNullOrEmpty(dt.Rows[row_no][map].ToString())) continue;
-                                    if (dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
+                                    if (map.Contains("{") && dic.ContainsKey(map.Replace("{", "").Replace("}", "")) )
                             {
 
                                 val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row);
@@ -5749,10 +5758,13 @@ namespace AutoBot
                             }
                             else
                             {
-                                        //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                        //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-
-                                        break;
+                                //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
+                                    $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.",
+                                    new[] { "Josephbartholomew@outlook.com" },Array.Empty<string>()
+                                    );
+                                return;
                             }
 
                         }
@@ -5762,9 +5774,13 @@ namespace AutoBot
                             if (string.IsNullOrEmpty(val)) val = "0";
                             if (val.ToCharArray().All(x => !char.IsDigit(x)))
                             {
-                                        //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                        //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                                        break;
+                                //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
+                                    $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has Value ='{val}' cannot be converted to Number.",
+                                    new[] { "Josephbartholomew@outlook.com" },Array.Empty<string>()
+                                    );
+                                return;
                                         //val = "";
                                     }
                         }
@@ -5772,9 +5788,13 @@ namespace AutoBot
                         {
                             if (DateTime.TryParse(val, out var tmp) == false)
                             {
-                                        //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                        //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                                        break;
+                                //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
+                                    $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has Value ='{val}' cannot be converted to date.",
+                                    new[] { "Josephbartholomew@outlook.com" },Array.Empty<string>()
+                                    );
+                                return;
                                         //  val = "";
                                     }
                         }

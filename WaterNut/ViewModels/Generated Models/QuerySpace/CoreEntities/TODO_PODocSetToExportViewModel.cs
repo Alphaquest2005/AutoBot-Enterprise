@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_PODocSetToExport = value;
+                NotifyPropertyChanged( x => x.TODO_PODocSetToExport);
             }
         }
 
 		 private void OnTODO_PODocSetToExportFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_PODocSetToExport.Refresh();
+			Task.Run(() => TODO_PODocSetToExport.Refresh()).ConfigureAwait(false);
             SelectedTODO_PODocSetToExport.Clear();
             NotifyPropertyChanged(x => SelectedTODO_PODocSetToExport);
             BeginSendMessage(MessageToken.SelectedTODO_PODocSetToExportChanged, new NotificationEventArgs(MessageToken.SelectedTODO_PODocSetToExportChanged));
@@ -565,6 +566,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _expectedEntriesFilter;
+        public Int32? ExpectedEntriesFilter
+        {
+            get
+            {
+                return _expectedEntriesFilter;
+            }
+            set
+            {
+                _expectedEntriesFilter = value;
+				NotifyPropertyChanged(x => ExpectedEntriesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -667,7 +686,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(FreightCurrencyCodeFilter) == false)
 						res.Append(" && " + string.Format("FreightCurrencyCode.Contains(\"{0}\")",  FreightCurrencyCodeFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(ExpectedEntriesFilter.HasValue)
+						res.Append(" && " + string.Format("ExpectedEntries == {0}",  ExpectedEntriesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -753,7 +775,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TotalWeight = x.TotalWeight ,
                     
  
-                    FreightCurrencyCode = x.FreightCurrencyCode 
+                    FreightCurrencyCode = x.FreightCurrencyCode ,
+                    
+ 
+                    ExpectedEntries = x.ExpectedEntries 
                     
                 }).ToList()
             };
@@ -830,6 +855,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string FreightCurrencyCode { get; set; } 
+                    
+ 
+                    public Nullable<int> ExpectedEntries { get; set; } 
                     
         }
 

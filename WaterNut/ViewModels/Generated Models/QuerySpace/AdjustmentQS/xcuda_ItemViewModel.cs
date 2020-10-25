@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _xcuda_Item = value;
+                NotifyPropertyChanged( x => x.xcuda_Item);
             }
         }
 
 		 private void Onxcuda_ItemFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			xcuda_Item.Refresh();
+			Task.Run(() => xcuda_Item.Refresh()).ConfigureAwait(false);
             Selectedxcuda_Item.Clear();
             NotifyPropertyChanged(x => Selectedxcuda_Item);
             BeginSendMessage(MessageToken.Selectedxcuda_ItemChanged, new NotificationEventArgs(MessageToken.Selectedxcuda_ItemChanged));

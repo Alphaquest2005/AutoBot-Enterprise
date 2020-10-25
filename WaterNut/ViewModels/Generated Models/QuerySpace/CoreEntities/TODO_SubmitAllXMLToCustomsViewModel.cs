@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitAllXMLToCustoms = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitAllXMLToCustoms);
             }
         }
 
 		 private void OnTODO_SubmitAllXMLToCustomsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitAllXMLToCustoms.Refresh();
+			Task.Run(() => TODO_SubmitAllXMLToCustoms.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitAllXMLToCustoms.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitAllXMLToCustoms);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitAllXMLToCustomsChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitAllXMLToCustomsChanged));

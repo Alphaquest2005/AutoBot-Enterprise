@@ -314,7 +314,7 @@ namespace LicenseDS.Business.Services
                                     dset = set.OrderBy(x => x.LicenseId).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -390,7 +390,7 @@ namespace LicenseDS.Business.Services
                                     dset = set.OrderBy(x => x.LicenseId);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

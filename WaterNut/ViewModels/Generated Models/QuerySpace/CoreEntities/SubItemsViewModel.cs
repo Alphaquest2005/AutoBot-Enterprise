@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _SubItems = value;
+                NotifyPropertyChanged( x => x.SubItems);
             }
         }
 
 		 private void OnSubItemsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			SubItems.Refresh();
+			Task.Run(() => SubItems.Refresh()).ConfigureAwait(false);
             SelectedSubItems.Clear();
             NotifyPropertyChanged(x => SelectedSubItems);
             BeginSendMessage(MessageToken.SelectedSubItemsChanged, new NotificationEventArgs(MessageToken.SelectedSubItemsChanged));

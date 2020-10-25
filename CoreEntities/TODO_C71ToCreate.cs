@@ -31,5 +31,7 @@ namespace CoreEntities
         public double C71Total { get; set; }
         public int Id { get; set; }
         public double Rate { get; set; }
+        public Nullable<int> ExpectedEntries { get; set; }
+        public Nullable<double> GeneratedC71Total { get; set; }
     }
 }

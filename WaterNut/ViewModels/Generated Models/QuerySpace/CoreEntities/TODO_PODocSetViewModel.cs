@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_PODocSet = value;
+                NotifyPropertyChanged( x => x.TODO_PODocSet);
             }
         }
 
 		 private void OnTODO_PODocSetFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_PODocSet.Refresh();
+			Task.Run(() => TODO_PODocSet.Refresh()).ConfigureAwait(false);
             SelectedTODO_PODocSet.Clear();
             NotifyPropertyChanged(x => SelectedTODO_PODocSet);
             BeginSendMessage(MessageToken.SelectedTODO_PODocSetChanged, new NotificationEventArgs(MessageToken.SelectedTODO_PODocSetChanged));
@@ -565,6 +566,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _expectedEntriesFilter;
+        public Int32? ExpectedEntriesFilter
+        {
+            get
+            {
+                return _expectedEntriesFilter;
+            }
+            set
+            {
+                _expectedEntriesFilter = value;
+				NotifyPropertyChanged(x => ExpectedEntriesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -667,7 +686,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("CurrencyRate == {0}",  CurrencyRateFilter.ToString()));				 
 
 					if(FreightCurrencyRateFilter.HasValue)
-						res.Append(" && " + string.Format("FreightCurrencyRate == {0}",  FreightCurrencyRateFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("FreightCurrencyRate == {0}",  FreightCurrencyRateFilter.ToString()));				 
+
+					if(ExpectedEntriesFilter.HasValue)
+						res.Append(" && " + string.Format("ExpectedEntries == {0}",  ExpectedEntriesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -753,7 +775,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     CurrencyRate = x.CurrencyRate ,
                     
  
-                    FreightCurrencyRate = x.FreightCurrencyRate 
+                    FreightCurrencyRate = x.FreightCurrencyRate ,
+                    
+ 
+                    ExpectedEntries = x.ExpectedEntries 
                     
                 }).ToList()
             };
@@ -830,6 +855,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public double FreightCurrencyRate { get; set; } 
+                    
+ 
+                    public Nullable<int> ExpectedEntries { get; set; } 
                     
         }
 

@@ -314,7 +314,7 @@ namespace InventoryQS.Business.Services
                                     dset = set.OrderBy(x => x.TariffCode).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -390,7 +390,7 @@ namespace InventoryQS.Business.Services
                                     dset = set.OrderBy(x => x.TariffCode);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

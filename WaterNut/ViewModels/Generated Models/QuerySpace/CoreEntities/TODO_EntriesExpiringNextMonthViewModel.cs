@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_EntriesExpiringNextMonth = value;
+                NotifyPropertyChanged( x => x.TODO_EntriesExpiringNextMonth);
             }
         }
 
 		 private void OnTODO_EntriesExpiringNextMonthFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_EntriesExpiringNextMonth.Refresh();
+			Task.Run(() => TODO_EntriesExpiringNextMonth.Refresh()).ConfigureAwait(false);
             SelectedTODO_EntriesExpiringNextMonth.Clear();
             NotifyPropertyChanged(x => SelectedTODO_EntriesExpiringNextMonth);
             BeginSendMessage(MessageToken.SelectedTODO_EntriesExpiringNextMonthChanged, new NotificationEventArgs(MessageToken.SelectedTODO_EntriesExpiringNextMonthChanged));

@@ -184,12 +184,13 @@ namespace <#=projectName #>.QuerySpace.<#=conTextName #>.ViewModels
             set
             {
                 _<#=mainEntitySet#> = value;
+                NotifyPropertyChanged( x => x.<#=mainEntitySet#>);
             }
         }
 
 		 private void On<#=mainEntitySet#>FilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			<#=mainEntitySet#>.Refresh();
+			Task.Run(() => <#=mainEntitySet#>.Refresh()).ConfigureAwait(false);
             Selected<#=mainEntitySet#>.Clear();
             NotifyPropertyChanged(x => Selected<#=mainEntitySet#>);
             BeginSendMessage(MessageToken.Selected<#=mainEntitySet#>Changed, new NotificationEventArgs(MessageToken.Selected<#=mainEntitySet#>Changed));

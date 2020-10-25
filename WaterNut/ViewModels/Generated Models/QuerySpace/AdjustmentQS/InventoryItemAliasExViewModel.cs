@@ -81,12 +81,13 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             set
             {
                 _InventoryItemAliasExes = value;
+                NotifyPropertyChanged( x => x.InventoryItemAliasExes);
             }
         }
 
 		 private void OnInventoryItemAliasExesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			InventoryItemAliasExes.Refresh();
+			Task.Run(() => InventoryItemAliasExes.Refresh()).ConfigureAwait(false);
             SelectedInventoryItemAliasExes.Clear();
             NotifyPropertyChanged(x => SelectedInventoryItemAliasExes);
             BeginSendMessage(MessageToken.SelectedInventoryItemAliasExesChanged, new NotificationEventArgs(MessageToken.SelectedInventoryItemAliasExesChanged));

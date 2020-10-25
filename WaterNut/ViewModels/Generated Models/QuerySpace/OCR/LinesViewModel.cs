@@ -82,12 +82,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             set
             {
                 _Lines = value;
+                NotifyPropertyChanged( x => x.Lines);
             }
         }
 
 		 private void OnLinesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Lines.Refresh();
+			Task.Run(() => Lines.Refresh()).ConfigureAwait(false);
             SelectedLines.Clear();
             NotifyPropertyChanged(x => SelectedLines);
             BeginSendMessage(MessageToken.SelectedLinesChanged, new NotificationEventArgs(MessageToken.SelectedLinesChanged));

@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _FileTypeMappings = value;
+                NotifyPropertyChanged( x => x.FileTypeMappings);
             }
         }
 
 		 private void OnFileTypeMappingsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			FileTypeMappings.Refresh();
+			Task.Run(() => FileTypeMappings.Refresh()).ConfigureAwait(false);
             SelectedFileTypeMappings.Clear();
             NotifyPropertyChanged(x => SelectedFileTypeMappings);
             BeginSendMessage(MessageToken.SelectedFileTypeMappingsChanged, new NotificationEventArgs(MessageToken.SelectedFileTypeMappingsChanged));

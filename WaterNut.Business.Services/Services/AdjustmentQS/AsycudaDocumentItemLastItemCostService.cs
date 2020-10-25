@@ -295,7 +295,7 @@ namespace AdjustmentQS.Business.Services
                                     dset = set.OrderBy(x => x.applicationsettingsid).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -371,7 +371,7 @@ namespace AdjustmentQS.Business.Services
                                     dset = set.OrderBy(x => x.applicationsettingsid);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

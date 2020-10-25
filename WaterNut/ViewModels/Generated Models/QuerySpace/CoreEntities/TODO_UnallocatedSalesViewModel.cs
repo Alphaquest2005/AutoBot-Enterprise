@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_UnallocatedSales = value;
+                NotifyPropertyChanged( x => x.TODO_UnallocatedSales);
             }
         }
 
 		 private void OnTODO_UnallocatedSalesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_UnallocatedSales.Refresh();
+			Task.Run(() => TODO_UnallocatedSales.Refresh()).ConfigureAwait(false);
             SelectedTODO_UnallocatedSales.Clear();
             NotifyPropertyChanged(x => SelectedTODO_UnallocatedSales);
             BeginSendMessage(MessageToken.SelectedTODO_UnallocatedSalesChanged, new NotificationEventArgs(MessageToken.SelectedTODO_UnallocatedSalesChanged));

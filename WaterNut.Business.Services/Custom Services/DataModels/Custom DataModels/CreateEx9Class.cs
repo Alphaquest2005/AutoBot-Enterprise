@@ -156,7 +156,7 @@ namespace WaterNut.DataSpace
                                 endDate,
                                 dfp, "Sales"); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
                             await CreateDutyFreePaidDocument(dfp, res, docSet, documentType, isGrouped,
-                                    itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
+                                    itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All" || x.DutyFreePaid == "Universal")
                                         .ToList(), checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,ex9BucketType, applyHistoricChecks, applyCurrentChecks,
                                     autoAssess,perInvoice,overPIcheck, universalPIcheck)
                                 .ConfigureAwait(false);
@@ -209,7 +209,7 @@ namespace WaterNut.DataSpace
             var res = new List<ItemSalesPiSummary>();
 
             var universalData = ctx.ItemSalesAsycudaPiSummary
-                //.Where(x => x.ItemNumber == "CB/BM35X178")
+               // .Where(x => x.ItemNumber == "A001221")
                 .Where(x => x.ApplicationSettingsId == applicationSettingsId)
                
                 .ToList();
@@ -710,7 +710,7 @@ namespace WaterNut.DataSpace
 
             }
 
-            return res;
+            return res.OrderBy(x => x.AllocationId);
         }
 
        
@@ -1035,6 +1035,8 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                // clear all xstatus so know what happened
+                updateXStatus(mypod.Allocations,null);
 
                 /////////////// QtyAllocated >= piQuantity cap
                 /// 
@@ -1115,22 +1117,21 @@ namespace WaterNut.DataSpace
                     .Select(x => x.TotalQuantity)
                     .DefaultIfEmpty(0).Sum();
 
-                var universalSalesAll = universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated)
-                    .DefaultIfEmpty(0).Sum();
-                var universalPiAll = universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
-                    .DefaultIfEmpty(0).Sum();
+                var universalSalesAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated)
+                    .DefaultIfEmpty(0.0).Sum();
+                var universalPiAll = (double) universalData.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
+                    .DefaultIfEmpty(0.0).Sum();
 
-                var totalSalesAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().pQtyAllocated)
-                    .DefaultIfEmpty(0).Sum();
-                var totalPiAll = salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
-                    .DefaultIfEmpty(0).Sum();
-                var totalSalesHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id)
-                    .Select(x => x.First().pQtyAllocated).DefaultIfEmpty(0).Sum();
-                var totalPiHistoric = salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
-                    .DefaultIfEmpty(0).Sum();
-                var totalSalesCurrent = salesPiCurrent.Select(x => x.QtyAllocated).DefaultIfEmpty(0).Sum();
-                var totalPiCurrent = salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.First().PiQuantity)
-                    .DefaultIfEmpty(0).Sum();
+                var totalSalesAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated)
+                    .DefaultIfEmpty(0.0).Sum();
+                var totalPiAll = (double) salesPiAll.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
+                    .DefaultIfEmpty(0.0).Sum();
+                var totalSalesHistoric = (double) salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.pQtyAllocated > 0)?.pQtyAllocated).DefaultIfEmpty(0.0).Sum();
+                var totalPiHistoric = (double) salesPiHistoric.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
+                    .DefaultIfEmpty(0.0).Sum();
+                var totalSalesCurrent = (double) salesPiCurrent.Select(x => x.QtyAllocated).DefaultIfEmpty(0.0).Sum();
+                var totalPiCurrent = (double) salesPiCurrent.GroupBy(x => x.PreviousItem_Id).Select(x => x.FirstOrDefault(q => q.PiQuantity > 0)?.PiQuantity)
+                    .DefaultIfEmpty(0.0).Sum();
 
 
                 var preEx9Bucket = mypod.EntlnData.Quantity;
@@ -1159,7 +1160,7 @@ namespace WaterNut.DataSpace
                 
 
                 if (overPIcheck)
-                    if (Math.Round(totalSalesAll, 2) <
+                    if (Math.Round( totalSalesAll, 2) <
                         Math.Round((totalPiAll /* + docPi */+ mypod.EntlnData.Quantity) * salesFactor, 2))//
                     {
                         var availibleQty = Math.Round(totalSalesAll, 2) - Math.Round(totalPiAll, 2);/*+ docPi /*+ docPi  + mypod.EntlnData.Quantity -- took this out because for some strange reason totalpi includes it*/
@@ -1263,6 +1264,14 @@ namespace WaterNut.DataSpace
                         //return 0;
                         var availibleQty = totalSalesHistoric - totalPiHistoric;
                         Ex9Bucket(mypod, availibleQty, totalSalesHistoric, totalPiHistoric, "Historic");
+                        if (mypod.EntlnData.Quantity == 0)
+                        {
+                            updateXStatus(mypod.Allocations,
+                                $@"Failed Historical Check:: Total Historic Sales:{Math.Round(totalSalesHistoric, 2)}
+                                   Total Historic PI: {totalPiHistoric}
+                                   xQuantity:{mypod.EntlnData.Quantity}");
+                            return 0;
+                        }
                     }
                 }
                 ////////////////////////////////////////////////////////////////////////
@@ -1502,37 +1511,55 @@ namespace WaterNut.DataSpace
         private void Ex9Bucket(MyPodData mypod, double availibleQty, double totalSalesAll, double totalPiAll,
             string type)
         {
-            var totalallocations = mypod.Allocations.Count();
-            var rejects = new List<AsycudaSalesAllocations>();
-            for (int i = totalallocations - 1; i < totalallocations; i--)
+            try
             {
-                var remainingSalesQty = mypod.Allocations.Sum(x => x.QtyAllocated);
-                if (remainingSalesQty > availibleQty && totalallocations > 1)
+                var totalallocations = mypod.Allocations.Count();
+                var rejects = new List<AsycudaSalesAllocations>();
+                for (int i = totalallocations - 1; i < totalallocations; i--)
                 {
-                    var ssa = mypod.Allocations.ElementAt(i);
-                    var nr = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated);
-                    if (nr < availibleQty && (nr + ssa.QtyAllocated) >= availibleQty)
+                    var remainingSalesQty = mypod.Allocations.Sum(x => x.QtyAllocated);
+                    if (remainingSalesQty > availibleQty && totalallocations > 1)
                     {
-                        ssa.QtyAllocated = availibleQty - nr;
-                        mypod.EntlnData.Quantity = availibleQty;
-                        break;
+                        if (i == -1)
+                        {
+                            updateXStatus(rejects,
+                                $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
+                                            {type} PI: {totalPiAll}
+                                            xQuantity:{mypod.EntlnData.Quantity}");
+                            mypod.EntlnData.Quantity = 0;
+                            break;
+                        }
+                        var ssa = mypod.Allocations.ElementAt(i);
+                        var nr = mypod.Allocations.Take(i).Sum(x => x.QtyAllocated);
+                        if (nr < availibleQty && (nr + ssa.QtyAllocated) >= availibleQty)
+                        {
+                            ssa.QtyAllocated = availibleQty - nr;
+                            mypod.EntlnData.Quantity = availibleQty;
+                            break;
+                        }
+                        else
+                        {
+                            mypod.Allocations.RemoveAt(i);
+                            rejects.Add(ssa);
+                        }
                     }
                     else
                     {
-                        mypod.Allocations.RemoveAt(i);
-                        rejects.Add(ssa);
-                    }
-                }
-                else
-                {
-                    updateXStatus(rejects,
-                        $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
+                        updateXStatus(rejects,
+                            $@"Failed All Sales Check:: {type} Sales:{Math.Round(totalSalesAll, 2)}
                                             {type} PI: {totalPiAll}
                                             xQuantity:{mypod.EntlnData.Quantity}");
-                    mypod.EntlnData.Quantity = availibleQty;
-                    break;
+                        mypod.EntlnData.Quantity = availibleQty;
+                        break;
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         private void updateXStatus(List<AsycudaSalesAllocations> allocations, string xstatus)
@@ -1863,7 +1890,8 @@ namespace WaterNut.DataSpace
                         Exp.Destination_country_code;
                     cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_region =
                         Exp.Trading_country;
-                    if(string.IsNullOrEmpty(ads.Currency_Code)) cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
+                    //if(string.IsNullOrEmpty(ads.Currency_Code)) --- only use template
+                        cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code = Exp.Gs_Invoice_Currency_code;
                     if (string.IsNullOrEmpty(ads.Country_of_origin_code))
                     {
                         cdoc.Document.xcuda_General_information.xcuda_Country.Trading_country = Exp.Trading_country;

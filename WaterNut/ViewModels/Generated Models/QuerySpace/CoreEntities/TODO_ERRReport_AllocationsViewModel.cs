@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_ERRReport_Allocations = value;
+                NotifyPropertyChanged( x => x.TODO_ERRReport_Allocations);
             }
         }
 
 		 private void OnTODO_ERRReport_AllocationsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_ERRReport_Allocations.Refresh();
+			Task.Run(() => TODO_ERRReport_Allocations.Refresh()).ConfigureAwait(false);
             SelectedTODO_ERRReport_Allocations.Clear();
             NotifyPropertyChanged(x => SelectedTODO_ERRReport_Allocations);
             BeginSendMessage(MessageToken.SelectedTODO_ERRReport_AllocationsChanged, new NotificationEventArgs(MessageToken.SelectedTODO_ERRReport_AllocationsChanged));

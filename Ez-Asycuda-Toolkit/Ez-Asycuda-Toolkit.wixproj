@@ -64,9 +64,9 @@
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
-    <ProjectReference Include="..\Core.Common.PDF2TXT\Core.Common.PDF2TXT.csproj">
-      <Name>Core.Common.PDF2TXT</Name>
-      <Project>{917d4053-ae15-44b2-a434-4411af44b9a6}</Project>
+    <ProjectReference Include="..\AutoBot\AutoBotUtilities.csproj">
+      <Name>AutoBotUtilities</Name>
+      <Project>{93bd2ec8-c215-47bf-8a8e-34a27bd55e67}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

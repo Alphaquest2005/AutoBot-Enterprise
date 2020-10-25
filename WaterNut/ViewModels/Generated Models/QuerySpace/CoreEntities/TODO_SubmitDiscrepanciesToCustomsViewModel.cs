@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitDiscrepanciesToCustoms = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitDiscrepanciesToCustoms);
             }
         }
 
 		 private void OnTODO_SubmitDiscrepanciesToCustomsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitDiscrepanciesToCustoms.Refresh();
+			Task.Run(() => TODO_SubmitDiscrepanciesToCustoms.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitDiscrepanciesToCustoms.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitDiscrepanciesToCustoms);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitDiscrepanciesToCustomsChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitDiscrepanciesToCustomsChanged));

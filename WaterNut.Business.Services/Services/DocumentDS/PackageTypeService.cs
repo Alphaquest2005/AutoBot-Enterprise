@@ -295,7 +295,7 @@ namespace DocumentDS.Business.Services
                                     dset = set.OrderBy(x => x.PackageType1).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -371,7 +371,7 @@ namespace DocumentDS.Business.Services
                                     dset = set.OrderBy(x => x.PackageType1);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

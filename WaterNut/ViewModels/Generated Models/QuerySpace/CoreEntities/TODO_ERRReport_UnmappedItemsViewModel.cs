@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_ERRReport_UnmappedItems = value;
+                NotifyPropertyChanged( x => x.TODO_ERRReport_UnmappedItems);
             }
         }
 
 		 private void OnTODO_ERRReport_UnmappedItemsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_ERRReport_UnmappedItems.Refresh();
+			Task.Run(() => TODO_ERRReport_UnmappedItems.Refresh()).ConfigureAwait(false);
             SelectedTODO_ERRReport_UnmappedItems.Clear();
             NotifyPropertyChanged(x => SelectedTODO_ERRReport_UnmappedItems);
             BeginSendMessage(MessageToken.SelectedTODO_ERRReport_UnmappedItemsChanged, new NotificationEventArgs(MessageToken.SelectedTODO_ERRReport_UnmappedItemsChanged));

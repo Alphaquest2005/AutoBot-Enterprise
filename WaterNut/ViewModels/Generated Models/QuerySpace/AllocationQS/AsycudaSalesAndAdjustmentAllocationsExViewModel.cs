@@ -79,12 +79,13 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             set
             {
                 _AsycudaSalesAndAdjustmentAllocationsExes = value;
+                NotifyPropertyChanged( x => x.AsycudaSalesAndAdjustmentAllocationsExes);
             }
         }
 
 		 private void OnAsycudaSalesAndAdjustmentAllocationsExesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AsycudaSalesAndAdjustmentAllocationsExes.Refresh();
+			Task.Run(() => AsycudaSalesAndAdjustmentAllocationsExes.Refresh()).ConfigureAwait(false);
             SelectedAsycudaSalesAndAdjustmentAllocationsExes.Clear();
             NotifyPropertyChanged(x => SelectedAsycudaSalesAndAdjustmentAllocationsExes);
             BeginSendMessage(MessageToken.SelectedAsycudaSalesAndAdjustmentAllocationsExesChanged, new NotificationEventArgs(MessageToken.SelectedAsycudaSalesAndAdjustmentAllocationsExesChanged));

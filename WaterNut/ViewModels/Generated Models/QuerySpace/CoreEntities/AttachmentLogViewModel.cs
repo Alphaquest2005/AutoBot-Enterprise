@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _AttachmentLog = value;
+                NotifyPropertyChanged( x => x.AttachmentLog);
             }
         }
 
 		 private void OnAttachmentLogFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			AttachmentLog.Refresh();
+			Task.Run(() => AttachmentLog.Refresh()).ConfigureAwait(false);
             SelectedAttachmentLog.Clear();
             NotifyPropertyChanged(x => SelectedAttachmentLog);
             BeginSendMessage(MessageToken.SelectedAttachmentLogChanged, new NotificationEventArgs(MessageToken.SelectedAttachmentLogChanged));

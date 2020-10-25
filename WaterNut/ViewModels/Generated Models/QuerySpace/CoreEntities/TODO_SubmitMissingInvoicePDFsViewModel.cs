@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitMissingInvoicePDFs = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitMissingInvoicePDFs);
             }
         }
 
 		 private void OnTODO_SubmitMissingInvoicePDFsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitMissingInvoicePDFs.Refresh();
+			Task.Run(() => TODO_SubmitMissingInvoicePDFs.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitMissingInvoicePDFs.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitMissingInvoicePDFs);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitMissingInvoicePDFsChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitMissingInvoicePDFsChanged));

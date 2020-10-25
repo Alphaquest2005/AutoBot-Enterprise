@@ -314,7 +314,7 @@ namespace SalesDataQS.Business.Services
                                     dset = set.OrderBy(x => x.EntryDataDetailsId).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -390,7 +390,7 @@ namespace SalesDataQS.Business.Services
                                     dset = set.OrderBy(x => x.EntryDataDetailsId);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

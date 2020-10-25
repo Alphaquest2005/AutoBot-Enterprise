@@ -112,6 +112,7 @@ namespace WaterNut.QuerySpace.AllocationQS.ViewModels
             set
             {
                 AsycudaSalesAndAdjustmentAllocationsExes = value;
+                NotifyPropertyChanged(x => x.AsycudaSalesAndAdjustmentAllocationsExes);
             }
         }
 

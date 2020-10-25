@@ -47,6 +47,8 @@
               this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").HasMaxLength(20);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.TotalDutyLiablity).HasColumnName("TotalDutyLiablity");
+              this.Property(t => t.DutyLiablity).HasColumnName("DutyLiablity");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

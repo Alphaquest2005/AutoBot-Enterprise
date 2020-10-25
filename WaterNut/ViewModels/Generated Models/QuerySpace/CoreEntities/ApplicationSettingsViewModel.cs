@@ -77,12 +77,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _ApplicationSettings = value;
+                NotifyPropertyChanged( x => x.ApplicationSettings);
             }
         }
 
 		 private void OnApplicationSettingsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			ApplicationSettings.Refresh();
+			Task.Run(() => ApplicationSettings.Refresh()).ConfigureAwait(false);
             SelectedApplicationSettings.Clear();
             NotifyPropertyChanged(x => SelectedApplicationSettings);
             BeginSendMessage(MessageToken.SelectedApplicationSettingsChanged, new NotificationEventArgs(MessageToken.SelectedApplicationSettingsChanged));

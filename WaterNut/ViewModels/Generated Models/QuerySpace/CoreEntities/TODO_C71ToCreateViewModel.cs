@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_C71ToCreate = value;
+                NotifyPropertyChanged( x => x.TODO_C71ToCreate);
             }
         }
 
 		 private void OnTODO_C71ToCreateFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_C71ToCreate.Refresh();
+			Task.Run(() => TODO_C71ToCreate.Refresh()).ConfigureAwait(false);
             SelectedTODO_C71ToCreate.Clear();
             NotifyPropertyChanged(x => SelectedTODO_C71ToCreate);
             BeginSendMessage(MessageToken.SelectedTODO_C71ToCreateChanged, new NotificationEventArgs(MessageToken.SelectedTODO_C71ToCreateChanged));
@@ -421,6 +422,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _expectedEntriesFilter;
+        public Int32? ExpectedEntriesFilter
+        {
+            get
+            {
+                return _expectedEntriesFilter;
+            }
+            set
+            {
+                _expectedEntriesFilter = value;
+				NotifyPropertyChanged(x => ExpectedEntriesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _generatedC71TotalFilter;
+        public Double? GeneratedC71TotalFilter
+        {
+            get
+            {
+                return _generatedC71TotalFilter;
+            }
+            set
+            {
+                _generatedC71TotalFilter = value;
+				NotifyPropertyChanged(x => GeneratedC71TotalFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -498,7 +535,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("C71Total == {0}",  C71TotalFilter.ToString()));				 
 
 					if(RateFilter.HasValue)
-						res.Append(" && " + string.Format("Rate == {0}",  RateFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Rate == {0}",  RateFilter.ToString()));				 
+
+					if(ExpectedEntriesFilter.HasValue)
+						res.Append(" && " + string.Format("ExpectedEntries == {0}",  ExpectedEntriesFilter.ToString()));				 
+
+					if(GeneratedC71TotalFilter.HasValue)
+						res.Append(" && " + string.Format("GeneratedC71Total == {0}",  GeneratedC71TotalFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -560,7 +603,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     C71Total = x.C71Total ,
                     
  
-                    Rate = x.Rate 
+                    Rate = x.Rate ,
+                    
+ 
+                    ExpectedEntries = x.ExpectedEntries ,
+                    
+ 
+                    GeneratedC71Total = x.GeneratedC71Total 
                     
                 }).ToList()
             };
@@ -613,6 +662,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public double Rate { get; set; } 
+                    
+ 
+                    public Nullable<int> ExpectedEntries { get; set; } 
+                    
+ 
+                    public Nullable<double> GeneratedC71Total { get; set; } 
                     
         }
 

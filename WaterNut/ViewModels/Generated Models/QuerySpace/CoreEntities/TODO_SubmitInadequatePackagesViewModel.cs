@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitInadequatePackages = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitInadequatePackages);
             }
         }
 
 		 private void OnTODO_SubmitInadequatePackagesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitInadequatePackages.Refresh();
+			Task.Run(() => TODO_SubmitInadequatePackages.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitInadequatePackages.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitInadequatePackages);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitInadequatePackagesChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitInadequatePackagesChanged));

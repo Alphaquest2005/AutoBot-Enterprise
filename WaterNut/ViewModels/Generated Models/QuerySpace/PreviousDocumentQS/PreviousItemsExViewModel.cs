@@ -83,12 +83,13 @@ namespace WaterNut.QuerySpace.PreviousDocumentQS.ViewModels
             set
             {
                 _PreviousItemsExes = value;
+                NotifyPropertyChanged( x => x.PreviousItemsExes);
             }
         }
 
 		 private void OnPreviousItemsExesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			PreviousItemsExes.Refresh();
+			Task.Run(() => PreviousItemsExes.Refresh()).ConfigureAwait(false);
             SelectedPreviousItemsExes.Clear();
             NotifyPropertyChanged(x => SelectedPreviousItemsExes);
             BeginSendMessage(MessageToken.SelectedPreviousItemsExesChanged, new NotificationEventArgs(MessageToken.SelectedPreviousItemsExesChanged));

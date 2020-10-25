@@ -313,8 +313,8 @@ namespace EmailDownloader
             lst.Add(fileName);
         }
 
-        public static bool ForwardMsg(int uID, Client clientDetails, string subject, string body, string[] attachments,
-            string[] contacts)
+        public static bool ForwardMsg(int uID, Client clientDetails, string subject, string body,string[] contacts ,string[] attachments
+            )
         {
             try
             {
@@ -327,7 +327,7 @@ namespace EmailDownloader
                 imapClient.Disconnect(true);
                 if (msg != null)
                 {
-                    ForwardMsg(msg, clientDetails,subject, body, contacts, attachments);
+                    ForwardMsg(msg, clientDetails,subject, body, contacts ,attachments);
                 }
                 else
                 {
@@ -345,14 +345,14 @@ namespace EmailDownloader
 
         }
 
-        private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body, string[] attachments, string[] contacts)
+        private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body,string[] contacts , string[] attachments)
         {
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
             
-            foreach (var recipent in contacts)
+            foreach (var recipent in contacts.Distinct())
             {
                 message.To.Add(MailboxAddress.Parse(recipent));
             }

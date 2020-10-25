@@ -56,6 +56,7 @@ namespace CoreEntities
         public Nullable<int> EntryPackages { get; set; }
         public double CurrencyRate { get; set; }
         public double FreightCurrencyRate { get; set; }
+        public Nullable<int> ExpectedEntries { get; set; }
     
         public virtual ICollection<AsycudaDocument> AsycudaDocuments { get; set; }
         public virtual ICollection<LicenceSummary> LicenceSummary { get; set; }

@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _LicenceSummary = value;
+                NotifyPropertyChanged( x => x.LicenceSummary);
             }
         }
 
 		 private void OnLicenceSummaryFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			LicenceSummary.Refresh();
+			Task.Run(() => LicenceSummary.Refresh()).ConfigureAwait(false);
             SelectedLicenceSummary.Clear();
             NotifyPropertyChanged(x => SelectedLicenceSummary);
             BeginSendMessage(MessageToken.SelectedLicenceSummaryChanged, new NotificationEventArgs(MessageToken.SelectedLicenceSummaryChanged));

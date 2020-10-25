@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 using System.Windows.Data;
 
 namespace Core.Common.UI.DataVirtualization
@@ -74,13 +75,12 @@ namespace Core.Common.UI.DataVirtualization
                 _pageRequests.Clear();
         }
 
-        public void Refresh()
+        public async void Refresh()
         {
             ThrowIfDeferred();
             _list = null;
            SetCurrent(null, -1);
-           // LoadAsync(0);
-            LoadRange(0, _pageSize);
+          await Task.Run(() => LoadRange(0, _pageSize)).ConfigureAwait(false) ;
      
 
         }

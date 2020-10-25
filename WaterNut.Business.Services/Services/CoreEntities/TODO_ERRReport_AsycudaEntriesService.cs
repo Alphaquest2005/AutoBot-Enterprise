@@ -295,7 +295,7 @@ namespace CoreEntities.Business.Services
                                     dset = set.OrderBy(x => x.Error).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -371,7 +371,7 @@ namespace CoreEntities.Business.Services
                                     dset = set.OrderBy(x => x.Error);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

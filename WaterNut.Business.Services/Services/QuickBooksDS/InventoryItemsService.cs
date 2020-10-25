@@ -295,7 +295,7 @@ namespace QuickBooksDS.Business.Services
                                     dset = set.OrderBy(x => x.ItemNumber).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -371,7 +371,7 @@ namespace QuickBooksDS.Business.Services
                                     dset = set.OrderBy(x => x.ItemNumber);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

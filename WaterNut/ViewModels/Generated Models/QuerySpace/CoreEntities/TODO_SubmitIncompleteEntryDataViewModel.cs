@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitIncompleteEntryData = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitIncompleteEntryData);
             }
         }
 
 		 private void OnTODO_SubmitIncompleteEntryDataFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitIncompleteEntryData.Refresh();
+			Task.Run(() => TODO_SubmitIncompleteEntryData.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitIncompleteEntryData.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitIncompleteEntryData);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitIncompleteEntryDataChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitIncompleteEntryDataChanged));

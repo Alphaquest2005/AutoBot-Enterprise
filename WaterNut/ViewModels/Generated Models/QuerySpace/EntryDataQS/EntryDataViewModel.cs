@@ -79,12 +79,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             set
             {
                 _EntryDatas = value;
+                NotifyPropertyChanged( x => x.EntryDatas);
             }
         }
 
 		 private void OnEntryDatasFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			EntryDatas.Refresh();
+			Task.Run(() => EntryDatas.Refresh()).ConfigureAwait(false);
             SelectedEntryDatas.Clear();
             NotifyPropertyChanged(x => SelectedEntryDatas);
             BeginSendMessage(MessageToken.SelectedEntryDatasChanged, new NotificationEventArgs(MessageToken.SelectedEntryDatasChanged));

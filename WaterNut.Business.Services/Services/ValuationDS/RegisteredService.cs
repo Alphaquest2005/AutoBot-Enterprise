@@ -314,7 +314,7 @@ namespace ValuationDS.Business.Services
                                     dset = set.OrderBy(x => x.Value_declaration_form_Id).Where(exp);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();
@@ -390,7 +390,7 @@ namespace ValuationDS.Business.Services
                                     dset = set.OrderBy(x => x.Value_declaration_form_Id);
                                 }
 
-                                var lst = dset
+                                var lst = dset.AsNoTracking()
                                     .Skip(bat * batchSize)
                                     .Take(batchSize)
                                     .ToList();

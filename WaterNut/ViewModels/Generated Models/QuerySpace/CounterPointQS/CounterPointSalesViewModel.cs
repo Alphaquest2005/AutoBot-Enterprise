@@ -54,27 +54,36 @@ namespace WaterNut.QuerySpace.CounterPointQS.ViewModels
 			RegisterToReceiveMessages(MessageToken.CounterPointSalesFilterExpressionChanged, OnCounterPointSalesFilterExpressionChanged);
 
 
- 			// Recieve messages for Core Current Entities Changed
- 
+            // Recieve messages for Core Current Entities Changed
 
-			CounterPointSales = new VirtualList<CounterPointSales>(vloader);
-			CounterPointSales.LoadingStateChanged += CounterPointSales_LoadingStateChanged;
+            // RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
+
+
+            CounterPointSales = new VirtualList<CounterPointSales>(vloader);
+            CounterPointSales.LoadingStateChanged += CounterPointSales_LoadingStateChanged;
             BindingOperations.EnableCollectionSynchronization(CounterPointSales, lockObject);
-			
+
             OnCreated();        
             OnTotals();
         }
 
-        partial void OnCreated();
+	    //private void OnCurrentApplicationSettingsChanged(object sender, NotificationEventArgs<ApplicationSettings> e)
+	    //{
+	    //    if (CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.AllowCounterPoint !=
+	    //        "Visible") return;
+
+	    //    CounterPointSales = new VirtualList<CounterPointSales>(vloader);
+	    //    CounterPointSales.LoadingStateChanged += CounterPointSales_LoadingStateChanged;
+	    //    BindingOperations.EnableCollectionSynchronization(CounterPointSales, lockObject);
+     //   }
+
+	    partial void OnCreated();
         partial void OnTotals();
 
 		private VirtualList<CounterPointSales> _CounterPointSales = null;
         public VirtualList<CounterPointSales> CounterPointSales
         {
-            get
-            {
-                return _CounterPointSales;
-            }
+            get { return _CounterPointSales; }
             set
             {
                 _CounterPointSales = value;

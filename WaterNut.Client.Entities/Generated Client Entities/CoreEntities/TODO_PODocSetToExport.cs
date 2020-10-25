@@ -418,6 +418,21 @@ public string FreightCurrencyCode
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> ExpectedEntries
+		{ 
+		    get { return this.todo_podocsettoexport.ExpectedEntries; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.ExpectedEntries) return;
+				this.todo_podocsettoexport.ExpectedEntries = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ExpectedEntries");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_PODocSetToExport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_PODocSetToExport> ChangeTracker

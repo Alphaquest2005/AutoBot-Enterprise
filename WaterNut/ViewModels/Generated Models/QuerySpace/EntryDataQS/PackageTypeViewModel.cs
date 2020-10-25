@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
             set
             {
                 _PackageTypes = value;
+                NotifyPropertyChanged( x => x.PackageTypes);
             }
         }
 
 		 private void OnPackageTypesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			PackageTypes.Refresh();
+			Task.Run(() => PackageTypes.Refresh()).ConfigureAwait(false);
             SelectedPackageTypes.Clear();
             NotifyPropertyChanged(x => SelectedPackageTypes);
             BeginSendMessage(MessageToken.SelectedPackageTypesChanged, new NotificationEventArgs(MessageToken.SelectedPackageTypesChanged));

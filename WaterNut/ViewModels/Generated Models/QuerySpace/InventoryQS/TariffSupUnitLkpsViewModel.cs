@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
             set
             {
                 _TariffSupUnitLkps = value;
+                NotifyPropertyChanged( x => x.TariffSupUnitLkps);
             }
         }
 
 		 private void OnTariffSupUnitLkpsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TariffSupUnitLkps.Refresh();
+			Task.Run(() => TariffSupUnitLkps.Refresh()).ConfigureAwait(false);
             SelectedTariffSupUnitLkps.Clear();
             NotifyPropertyChanged(x => SelectedTariffSupUnitLkps);
             BeginSendMessage(MessageToken.SelectedTariffSupUnitLkpsChanged, new NotificationEventArgs(MessageToken.SelectedTariffSupUnitLkpsChanged));

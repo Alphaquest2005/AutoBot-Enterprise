@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_TotalAdjustmentsToProcess = value;
+                NotifyPropertyChanged( x => x.TODO_TotalAdjustmentsToProcess);
             }
         }
 
 		 private void OnTODO_TotalAdjustmentsToProcessFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_TotalAdjustmentsToProcess.Refresh();
+			Task.Run(() => TODO_TotalAdjustmentsToProcess.Refresh()).ConfigureAwait(false);
             SelectedTODO_TotalAdjustmentsToProcess.Clear();
             NotifyPropertyChanged(x => SelectedTODO_TotalAdjustmentsToProcess);
             BeginSendMessage(MessageToken.SelectedTODO_TotalAdjustmentsToProcessChanged, new NotificationEventArgs(MessageToken.SelectedTODO_TotalAdjustmentsToProcessChanged));

@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_ImportCompleteEntries = value;
+                NotifyPropertyChanged( x => x.TODO_ImportCompleteEntries);
             }
         }
 
 		 private void OnTODO_ImportCompleteEntriesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_ImportCompleteEntries.Refresh();
+			Task.Run(() => TODO_ImportCompleteEntries.Refresh()).ConfigureAwait(false);
             SelectedTODO_ImportCompleteEntries.Clear();
             NotifyPropertyChanged(x => SelectedTODO_ImportCompleteEntries);
             BeginSendMessage(MessageToken.SelectedTODO_ImportCompleteEntriesChanged, new NotificationEventArgs(MessageToken.SelectedTODO_ImportCompleteEntriesChanged));

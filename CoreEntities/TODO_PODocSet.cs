@@ -38,5 +38,6 @@ namespace CoreEntities
         public string FreightCurrencyCode { get; set; }
         public double CurrencyRate { get; set; }
         public double FreightCurrencyRate { get; set; }
+        public Nullable<int> ExpectedEntries { get; set; }
     }
 }

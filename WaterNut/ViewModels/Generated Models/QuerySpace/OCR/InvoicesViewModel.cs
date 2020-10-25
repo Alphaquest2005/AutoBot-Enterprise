@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             set
             {
                 _Invoices = value;
+                NotifyPropertyChanged( x => x.Invoices);
             }
         }
 
 		 private void OnInvoicesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			Invoices.Refresh();
+			Task.Run(() => Invoices.Refresh()).ConfigureAwait(false);
             SelectedInvoices.Clear();
             NotifyPropertyChanged(x => SelectedInvoices);
             BeginSendMessage(MessageToken.SelectedInvoicesChanged, new NotificationEventArgs(MessageToken.SelectedInvoicesChanged));

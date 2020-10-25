@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_CreateDiscrepancyEntries = value;
+                NotifyPropertyChanged( x => x.TODO_CreateDiscrepancyEntries);
             }
         }
 
 		 private void OnTODO_CreateDiscrepancyEntriesFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_CreateDiscrepancyEntries.Refresh();
+			Task.Run(() => TODO_CreateDiscrepancyEntries.Refresh()).ConfigureAwait(false);
             SelectedTODO_CreateDiscrepancyEntries.Clear();
             NotifyPropertyChanged(x => SelectedTODO_CreateDiscrepancyEntries);
             BeginSendMessage(MessageToken.SelectedTODO_CreateDiscrepancyEntriesChanged, new NotificationEventArgs(MessageToken.SelectedTODO_CreateDiscrepancyEntriesChanged));

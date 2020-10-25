@@ -76,12 +76,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _TODO_SubmitUnclassifiedItems = value;
+                NotifyPropertyChanged( x => x.TODO_SubmitUnclassifiedItems);
             }
         }
 
 		 private void OnTODO_SubmitUnclassifiedItemsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			TODO_SubmitUnclassifiedItems.Refresh();
+			Task.Run(() => TODO_SubmitUnclassifiedItems.Refresh()).ConfigureAwait(false);
             SelectedTODO_SubmitUnclassifiedItems.Clear();
             NotifyPropertyChanged(x => SelectedTODO_SubmitUnclassifiedItems);
             BeginSendMessage(MessageToken.SelectedTODO_SubmitUnclassifiedItemsChanged, new NotificationEventArgs(MessageToken.SelectedTODO_SubmitUnclassifiedItemsChanged));

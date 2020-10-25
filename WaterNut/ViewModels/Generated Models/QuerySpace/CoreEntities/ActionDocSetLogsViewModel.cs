@@ -78,12 +78,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             set
             {
                 _ActionDocSetLogs = value;
+                NotifyPropertyChanged( x => x.ActionDocSetLogs);
             }
         }
 
 		 private void OnActionDocSetLogsFilterExpressionChanged(object sender, NotificationEventArgs e)
         {
-			ActionDocSetLogs.Refresh();
+			Task.Run(() => ActionDocSetLogs.Refresh()).ConfigureAwait(false);
             SelectedActionDocSetLogs.Clear();
             NotifyPropertyChanged(x => SelectedActionDocSetLogs);
             BeginSendMessage(MessageToken.SelectedActionDocSetLogsChanged, new NotificationEventArgs(MessageToken.SelectedActionDocSetLogsChanged));
