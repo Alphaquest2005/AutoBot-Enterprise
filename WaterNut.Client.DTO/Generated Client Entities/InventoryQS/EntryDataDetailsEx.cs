@@ -243,7 +243,7 @@ namespace InventoryQS.Client.DTO
         private Nullable<float> _Total;
 
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId
+        public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -253,7 +253,7 @@ namespace InventoryQS.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private Nullable<int> _AsycudaDocumentSetId;
+        private int _AsycudaDocumentSetId;
 
         [DataMember]
         public Nullable<double> InvoiceQty
@@ -449,6 +449,32 @@ namespace InventoryQS.Client.DTO
 			}
 		}
         private string _Name;
+
+        [DataMember]
+        public Nullable<int> FileLineNumber
+		{ 
+		    get { return _FileLineNumber; }
+			set
+			{
+			    if (value == _FileLineNumber) return;
+				_FileLineNumber = value;
+				NotifyPropertyChanged();//m => this.FileLineNumber
+			}
+		}
+        private Nullable<int> _FileLineNumber;
+
+        [DataMember]
+        public int InventoryItemId
+		{ 
+		    get { return _InventoryItemId; }
+			set
+			{
+			    if (value == _InventoryItemId) return;
+				_InventoryItemId = value;
+				NotifyPropertyChanged();//m => this.InventoryItemId
+			}
+		}
+        private int _InventoryItemId;
 
        
         [DataMember]

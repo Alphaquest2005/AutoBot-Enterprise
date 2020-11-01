@@ -233,7 +233,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
 
 
-        internal async Task AssignTariffToItms(IEnumerable<string> list)
+        internal async Task AssignTariffToItms(List<int> list)
         {
             StatusModel.Timer("Assign Tariff to Items");
             await InventoryItemsExRepository.Instance.AssignTariffToItms(list,

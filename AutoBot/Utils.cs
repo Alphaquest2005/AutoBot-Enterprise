@@ -356,7 +356,7 @@ namespace AutoBot
                             $"\t{"Total".FormatedSpace(120)}{doc.x.Sum(x => x.Totals_taxes).GetValueOrDefault().ToString("C").FormatedSpace(20)}${doc.x.Sum(x => x.Total_CIF).ToString("C").FormatedSpace(20)} \r\n" +
                             $"\r\n" +
                             $"Please open the attached email to view Email Thread.\r\n" +
-                            $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                            $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                             $"\r\n" +
                             $"Regards,\r\n" +
                             $"AutoBot";
@@ -1094,7 +1094,7 @@ namespace AutoBot
                                    "\tCNumber\t\tReference\t\tAssessmentDate\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.CNumber}\t\t{current.ReferenceNumber}\t\t{current.RegistrationDate.Value:yyyy-MM-dd} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"\r\n" +
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -1251,7 +1251,7 @@ namespace AutoBot
                                    $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"\r\n" +
                                    $"Please open the attached email to view Email Thread.\r\n" +
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -1438,7 +1438,7 @@ namespace AutoBot
                             $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(20)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n" +
                             $"\r\n" +
                             $"Please see attached for list of Errors and Executions details.\r\n" +
-                            $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                            $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                             $"\r\n" +
                             $"Regards,\r\n" +
                             $"AutoBot";
@@ -1560,7 +1560,7 @@ namespace AutoBot
                         }
                         attachments.Add(errorfile);
                         var errorBody = "The Attached File contains details of errors found trying to assessed the attached email's Shipping Discrepancies \r\n" +
-                                        $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                        $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                             $"\r\n" +
                                             $"Regards,\r\n" +
                                             $"AutoBot";
@@ -1593,7 +1593,7 @@ namespace AutoBot
                             $"\t{"Executions".FormatedSpace(40)}{goodadj.Count.ToString().FormatedSpace(20)}{(Math.Round((double)(((double)goodadj.Count() / (double)totaladjustments.Count()) * 100), 0)).ToString().FormatedSpace(20)}% \r\n" +
                             $"\r\n" +
                             $"Please see attached for list of Errors and Executions details.\r\n" +
-                            $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                            $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                             $"\r\n" +
                             $"Regards,\r\n" +
                             $"AutoBot";
@@ -1735,7 +1735,7 @@ namespace AutoBot
                                    $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"\r\n" +
                                    $"Please open the attached email to view Email Thread.\r\n" +
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -1829,7 +1829,7 @@ namespace AutoBot
                                    $"\t{"Invoice No.".FormatedSpace(20)}{"Supplier Code".FormatedSpace(20)}{"Invoice Total".FormatedSpace(20)}{"Imported Total".FormatedSpace(20)}\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.SupplierCode.FormatedSpace(20)}{current.InvoiceTotal.Value.ToString("C").FormatedSpace(20)}{current.ImportedTotal.Value.ToString("C").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please Check CSVs or Document Set Total Invoices\r\n" +
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -1890,7 +1890,7 @@ namespace AutoBot
                                    $"\t{"Invoice No.".FormatedSpace(20)}{"Invoice Date".FormatedSpace(20)}{"Invoice Value".FormatedSpace(20)}\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.InvoiceDate.ToShortDateString().FormatedSpace(20)}{current.InvoiceTotal.Value.ToString().FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please Check CSVs or Document Set Total Invoices\r\n" +
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -1958,7 +1958,7 @@ namespace AutoBot
                                    $"\t{"Invoice No.".FormatedSpace(20)}{"Source File".FormatedSpace(20)}\r\n" +
                                    $"{emailIds.Select(current => $"\t{current.InvoiceNo.FormatedSpace(20)}{current.SourceFile.FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"Please email CSV with Coresponding PDF to prevent this error.\r\n" +
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -2216,7 +2216,7 @@ namespace AutoBot
                                    $"The minium required packages is {docSet.RequiredPackages}\r\n" +
                                    $"Please increase the Maxlines using \"MaxLines:\"\r\n" +
                                    $"Please note the System will automatically switch from \"Entry per Invoice\" to \"Group Invoices per Entry\", if there are not enough packages per invoice. \r\n" +
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -2292,7 +2292,7 @@ namespace AutoBot
                                    $"The Following Comments Classification(DutyFree Or Duty Paid) are Unknown.\r\n" +
                                    $"{docSet.MaxEntryLines}.\r\n" +
 
-                                   $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                    $"\r\n" +
                                    $"Regards,\r\n" +
                                    $"AutoBot";
@@ -2396,7 +2396,7 @@ namespace AutoBot
                                $"\r\n" +
                                $"{Client.CompanyName} is kindly requesting these Entries be extended an additional 730 days to facilitate ex-warehousing. \r\n" +
                                $"\r\n" +
-                               $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                               $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                $"\r\n" +
                                $"Regards,\r\n" +
                                $"AutoBot";
@@ -2440,7 +2440,7 @@ namespace AutoBot
 
                                $"{Client.CompanyName} is kindly requesting Technical Assistance in resolving these issues to facilitate Ex-Warehousing. \r\n" +
                                $"\r\n" +
-                               $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                               $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                                $"\r\n" +
                                $"Regards,\r\n" +
                                $"AutoBot";
@@ -3029,7 +3029,7 @@ namespace AutoBot
                 var body =
                     $"Please see attached documents .\r\n" +
                     $"Please open the attached email to view Email Thread.\r\n" +
-                    $"Any questions or concerns please contact Joseph Bartholomew at josephBartholomew@outlook.com.\r\n" +
+                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
                     $"\r\n" +
                     $"Regards,\r\n" +
                     $"AutoBot";
@@ -3456,7 +3456,7 @@ namespace AutoBot
 
                     var lastdbfile =
                         ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).OrderByDescending(x => x.AttachmentId).FirstOrDefault(x => x.AsycudaDocumentSetId == docSetId);
-                    var lastfiledate = lastdbfile == null?File.GetCreationTime(lastdbfile.Attachments.FilePath):DateTime.Today.AddDays(-1);
+                    var lastfiledate = lastdbfile != null?File.GetCreationTime(lastdbfile.Attachments.FilePath):DateTime.Today.AddDays(-1);
                     var ft = ctx.FileTypes.FirstOrDefault(x =>
                         x.Type == "XML" && x.ApplicationSettingsId ==
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
@@ -5678,7 +5678,7 @@ namespace AutoBot
                 if (missingMaps.Any())
                 {
                     EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                        new[] { "Josephbartholomew@outlook.com" },
+                        new[] { "Joseph@auto-brokerage.com" },
                         $"Required Field - '{missingMaps.Select(x => x.Key).Aggregate((o, n) => o + "," + n)}' in File: {file.Name} dose not exists.",
                         Array.Empty<string>());
                     return; // not right file type
@@ -5704,7 +5704,7 @@ namespace AutoBot
                                 if (mappingMailSent) return;
                                 EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),Utils.Client, $"Bug Found",
                                     $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
-                                   new[] { "Josephbartholomew@outlook.com" } ,Array.Empty<string>()
+                                   new[] { "Joseph@auto-brokerage.com" } ,Array.Empty<string>()
                                     );
                                 mappingMailSent = true;
                                 return;
@@ -5759,10 +5759,10 @@ namespace AutoBot
                             else
                             {
                                 //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                                 EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
                                     $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.",
-                                    new[] { "Josephbartholomew@outlook.com" },Array.Empty<string>()
+                                    new[] { "Joseph@auto-brokerage.com" },Array.Empty<string>()
                                     );
                                 return;
                             }
@@ -5775,10 +5775,10 @@ namespace AutoBot
                             if (val.ToCharArray().All(x => !char.IsDigit(x)))
                             {
                                 //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                                 EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
                                     $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has Value ='{val}' cannot be converted to Number.",
-                                    new[] { "Josephbartholomew@outlook.com" },Array.Empty<string>()
+                                    new[] { "Joseph@auto-brokerage.com" },Array.Empty<string>()
                                     );
                                 return;
                                         //val = "";
@@ -5789,10 +5789,10 @@ namespace AutoBot
                             if (DateTime.TryParse(val, out var tmp) == false)
                             {
                                 //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                //    new[] { "Josephbartholomew@outlook.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
                                 EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
                                     $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has Value ='{val}' cannot be converted to date.",
-                                    new[] { "Josephbartholomew@outlook.com" },Array.Empty<string>()
+                                    new[] { "Joseph@auto-brokerage.com" },Array.Empty<string>()
                                     );
                                 return;
                                         //  val = "";

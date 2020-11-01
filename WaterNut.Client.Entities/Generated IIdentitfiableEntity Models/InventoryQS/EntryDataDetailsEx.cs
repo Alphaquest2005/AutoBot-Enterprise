@@ -48,7 +48,7 @@ namespace InventoryQS.Client.Entities
                         {
                             this.InventoryItemsEx = (InventoryItemsEx)new InventoryItemsEx().CreateEntityFromString(value);
 							
-							this.EntryDataDetailsId = Convert.ToInt32(this.InventoryItemsEx.ItemNumber);
+							this.EntryDataDetailsId = Convert.ToInt32(this.InventoryItemsEx.InventoryItemId);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddInventoryItemsEx");
                         }
@@ -56,6 +56,46 @@ namespace InventoryQS.Client.Entities
                         {
                             var obj = new InventoryItemsEx(dto);
                            if (this.InventoryItemsEx == null || this.InventoryItemsEx.EntityId != obj.EntityId) this.InventoryItemsEx = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string ApplicationSettingsEntityName
+        {
+            get
+            {
+ 
+                if(this.ApplicationSettings == null) UpdateApplicationSettings();
+                return this.ApplicationSettings == null ? "" : this.ApplicationSettings.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ApplicationSettingsClient ctx = new ApplicationSettingsClient())
+                    {
+                        var dto = ctx.GetApplicationSettings().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
+							
+							this.ApplicationSettingsId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddApplicationSettings");
+                        }
+                        else
+                        {
+                            var obj = new ApplicationSettings(dto);
+                           if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
                            
                         }
                          

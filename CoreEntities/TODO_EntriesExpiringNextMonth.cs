@@ -21,5 +21,6 @@ namespace CoreEntities
         public Nullable<System.DateTime> RegistrationDate { get; set; }
         public string Reference { get; set; }
         public int ApplicationSettingsId { get; set; }
+        public int ASYCUDA_Id { get; set; }
     }
 }

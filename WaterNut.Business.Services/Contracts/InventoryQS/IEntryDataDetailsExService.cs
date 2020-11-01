@@ -123,6 +123,9 @@ namespace InventoryQS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<EntryDataDetailsEx>> GetEntryDataDetailsExByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
   
 
 

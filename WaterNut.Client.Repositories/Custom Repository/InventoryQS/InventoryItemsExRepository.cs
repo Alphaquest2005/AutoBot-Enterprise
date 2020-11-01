@@ -11,7 +11,7 @@ namespace InventoryQS.Client.Repositories
 
     public partial class InventoryItemsExRepository
     {
-        public async Task AssignTariffToItms(IEnumerable<string> list, string tariffCodes)
+        public async Task AssignTariffToItms(List<int> list, string tariffCodes)
         {
             using (var ctx = new InventoryItemsExClient())
             {

@@ -926,9 +926,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DocumentsToDelete' d
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-EntriesExpiringNextMonth' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-EntriesExpiringNextMonth">
           <Key>
+            <PropertyRef Name="ASYCUDA_Id" />
             <PropertyRef Name="Type" />
             <PropertyRef Name="ApplicationSettingsId" />
           </Key>
+          <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="Type" Type="varchar" MaxLength="13" Nullable="false" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
@@ -2476,6 +2478,7 @@ FROM [dbo].[TODO-DocumentsToDelete] AS [TODO-DocumentsToDelete]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-EntriesExpiringNextMonth" EntityType="Self.TODO-EntriesExpiringNextMonth" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+[TODO-EntriesExpiringNextMonth].[ASYCUDA_Id] AS [ASYCUDA_Id], 
 [TODO-EntriesExpiringNextMonth].[ExpiryDate] AS [ExpiryDate], 
 [TODO-EntriesExpiringNextMonth].[Type] AS [Type], 
 [TODO-EntriesExpiringNextMonth].[DocumentType] AS [DocumentType], 
@@ -4659,6 +4662,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Key>
             <PropertyRef Name="Type" />
             <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="ASYCUDA_Id" />
           </Key>
           <Property Name="ExpiryDate" Type="DateTime" Precision="7" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="13" FixedLength="false" Unicode="false" />
@@ -4667,6 +4671,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="RegistrationDate" Type="DateTime" Precision="7" />
           <Property Name="Reference" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_ERRReport_SubmitWarehouseErrors">
           <Key>
@@ -6310,6 +6315,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_EntriesExpiringNextMonth">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_EntriesExpiringNextMonth">
               <MappingFragment StoreEntitySet="TODO-EntriesExpiringNextMonth">
+                <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />

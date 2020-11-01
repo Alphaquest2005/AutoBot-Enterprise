@@ -11,7 +11,7 @@ namespace InventoryQS.Business.Services
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task AssignTariffToItms(IEnumerable<string> list, string tariffCodes);
+        Task AssignTariffToItms(List<int> list, string tariffCodes);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]

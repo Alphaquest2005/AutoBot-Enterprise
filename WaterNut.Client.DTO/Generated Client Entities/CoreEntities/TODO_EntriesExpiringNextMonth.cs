@@ -112,6 +112,19 @@ namespace CoreEntities.Client.DTO
 		}
         private int _ApplicationSettingsId;
 
+        [DataMember]
+        public int ASYCUDA_Id
+		{ 
+		    get { return _ASYCUDA_Id; }
+			set
+			{
+			    if (value == _ASYCUDA_Id) return;
+				_ASYCUDA_Id = value;
+				NotifyPropertyChanged();//m => this.ASYCUDA_Id
+			}
+		}
+        private int _ASYCUDA_Id;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

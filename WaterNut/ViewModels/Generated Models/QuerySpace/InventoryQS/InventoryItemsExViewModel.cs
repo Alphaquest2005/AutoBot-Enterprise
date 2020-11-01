@@ -57,6 +57,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 			RegisterToReceiveMessages<TariffCodes>(MessageToken.CurrentTariffCodesChanged, OnCurrentTariffCodesChanged);
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			InventoryItemsEx = new VirtualList<InventoryItemsEx>(vloader);
@@ -143,6 +144,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                    // {
                    //    if(TariffCodes.Contains(CurrentInventoryItemsEx.TariffCodes) == false) TariffCodes.Add(CurrentInventoryItemsEx.TariffCodes);
                     //}
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentInventoryItemsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentInventoryItemsEx.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnInventoryItemsExChanged(object sender, NotificationEventArgs e)
         {
@@ -174,6 +179,20 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    InventoryItemsEx.Refresh();
+					NotifyPropertyChanged(x => this.InventoryItemsEx);
+				}
   
 // Filtering Each Field except IDs
  	
