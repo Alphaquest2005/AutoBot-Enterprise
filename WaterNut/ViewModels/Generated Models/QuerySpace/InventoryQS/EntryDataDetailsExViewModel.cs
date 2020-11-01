@@ -57,6 +57,7 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 			RegisterToReceiveMessages<InventoryItemsEx>(MessageToken.CurrentInventoryItemsExChanged, OnCurrentInventoryItemsExChanged);
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			EntryDataDetailsEx = new VirtualList<EntryDataDetailsEx>(vloader);
@@ -142,6 +143,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                    // {
                    //    if(InventoryItemsEx.Contains(CurrentEntryDataDetailsEx.InventoryItemsEx) == false) InventoryItemsEx.Add(CurrentEntryDataDetailsEx.InventoryItemsEx);
                     //}
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentEntryDataDetailsEx.ApplicationSettings) == false) ApplicationSettings.Add(CurrentEntryDataDetailsEx.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnEntryDataDetailsExChanged(object sender, NotificationEventArgs e)
         {
@@ -154,15 +159,14 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 		 internal virtual void OnCurrentInventoryItemsExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<InventoryItemsEx> e)
 			{
 			if(ViewCurrentInventoryItemsEx == false) return;
-			if (e.Data == null || e.Data.ItemNumber == null)
+			if (e.Data == null || e.Data.InventoryItemId == null)
                 {
                     vloader.FilterExpression = "None";
                 }
                 else
                 {
-				
-				vloader.FilterExpression = string.Format("ItemNumber == \"{0}\"", e.Data.ItemNumber.ToString());
-                }
+				vloader.FilterExpression = string.Format("InventoryItemId == {0}", e.Data.InventoryItemId.ToString());
+                 }
 
 				EntryDataDetailsEx.Refresh();
 				NotifyPropertyChanged(x => this.EntryDataDetailsEx);
@@ -173,6 +177,20 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    EntryDataDetailsEx.Refresh();
+					NotifyPropertyChanged(x => this.EntryDataDetailsEx);
+				}
   
 // Filtering Each Field except IDs
  	
@@ -731,6 +749,24 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
         }	
 
  
+
+		private Int32? _fileLineNumberFilter;
+        public Int32? FileLineNumberFilter
+        {
+            get
+            {
+                return _fileLineNumberFilter;
+            }
+            set
+            {
+                _fileLineNumberFilter = value;
+				NotifyPropertyChanged(x => FileLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -881,7 +917,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(FileLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -982,7 +1021,10 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     TaxAmount = x.TaxAmount ,
                     
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    FileLineNumber = x.FileLineNumber 
                     
                 }).ToList()
             };
@@ -1074,6 +1116,9 @@ namespace WaterNut.QuerySpace.InventoryQS.ViewModels
                     
  
                     public string Name { get; set; } 
+                    
+ 
+                    public Nullable<int> FileLineNumber { get; set; } 
                     
         }
 

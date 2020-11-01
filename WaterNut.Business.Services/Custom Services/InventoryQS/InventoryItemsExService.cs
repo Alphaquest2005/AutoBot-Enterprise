@@ -11,7 +11,7 @@ namespace InventoryQS.Business.Services
    
     public partial class InventoryItemsExService 
     {
-        public async Task AssignTariffToItms(IEnumerable<string> list, string tariffCodes)
+        public async Task AssignTariffToItms(List<int> list, string tariffCodes)
         {
             await
                 WaterNut.DataSpace.NullTarifInventoryItemsModel.Instance.AssignTariffToItms(list, tariffCodes)
@@ -31,7 +31,7 @@ namespace InventoryQS.Business.Services
 
         public async Task SaveInventoryItemsEx(InventoryItemsEx olditm)
         {
-            var itm = new InventoryDSContext().InventoryItems.First(x => x.ItemNumber == olditm.ItemNumber && x.ApplicationSettingsId == olditm.ApplicationSettingsId);
+            var itm = new InventoryDSContext().InventoryItems.First(x => x.Id == olditm.InventoryItemId && x.ApplicationSettingsId == olditm.ApplicationSettingsId);
             //itm.ApplicationSettingsId = olditm.ApplicationSettingsId;
             itm.TariffCode = olditm.TariffCode;
 

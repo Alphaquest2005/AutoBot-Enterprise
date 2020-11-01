@@ -26,7 +26,7 @@ namespace WaterNut.DataSpace
             get { return instance; }
         }
 
-         public async Task AssignTariffToItms(IEnumerable<string> lst, string tariffCode)
+         public async Task AssignTariffToItms(List<int> lst, string tariffCode)
          {
              if (tariffCode == null)
              {
@@ -35,9 +35,9 @@ namespace WaterNut.DataSpace
 
              using (var ctx = new InventoryItemService())
              {
-                 foreach (string item in lst)
+                 foreach (int item in lst)
                  {
-                     var itm = (await ctx.GetInventoryItemsByExpression($"ItemNumber == \"{item}\"").ConfigureAwait(false)).FirstOrDefault();
+                     var itm = (await ctx.GetInventoryItemsByExpression($"Id == \"{item}\"").ConfigureAwait(false)).FirstOrDefault();
                      itm.TariffCode = tariffCode;
                      await ctx.UpdateInventoryItem(itm).ConfigureAwait(false);
                  }

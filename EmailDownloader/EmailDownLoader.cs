@@ -23,7 +23,7 @@ namespace EmailDownloader
             {
                 if(string.IsNullOrEmpty(client.Email)) return new Dictionary<Tuple<string, Email, string>, List<string>>();
                             var imapClient = new ImapClient();
-                            imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
+                            imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
                             imapClient.Authenticate(client.Email, client.Password);
                             var dataFolder = client.DataFolder;
                             imapClient.Inbox.Open(FolderAccess.ReadWrite);
@@ -107,7 +107,7 @@ namespace EmailDownloader
                         {
                             imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                             var errTxt = "Hey,\r\n\r\n The System is not configured for this message.\r\n" +
-                                         "Check the Subject again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
+                                         "Check the Subject again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
                                          "Thanks\r\n" +
                                          "Ez-Asycuda-Toolkit";
                             SendBackMsg(msg, client, errTxt);
@@ -124,16 +124,16 @@ namespace EmailDownloader
                         {
 
                             SendEmail(client, null, $"Bug Found",
-                                new[] {"Josephbartholomew@outlook.com"},
+                                new[] {"Joseph@auto-brokerage.com"},
                                 $"Subject not configured for Regex: '{msg.Subject}'", Array.Empty<string>());
                         }
 
                         imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                         continue;
                     }
-                        
+
                     var desFolder = Path.Combine(dataFolder, subject.Item1, uid.ToString());
-                    if(Directory.Exists(desFolder)) Directory.Delete(desFolder, true);
+                    if (Directory.Exists(desFolder)) Directory.Delete(desFolder, true);
                     Directory.CreateDirectory(desFolder);
                     foreach (var a in msg.Attachments.Where(x => x.ContentType.MediaType != "message"))
                     {
@@ -148,19 +148,19 @@ namespace EmailDownloader
                         {
                             var errTxt =
                                 "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
-                                "Check the file Name of attachments again or Check Joseph Bartholomew at josephbartholomew@outlook.com to make the necessary changes.\r\n" +
+                                "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
                                 "Thanks\r\n" +
                                 "Ez-Asycuda-Toolkit";
                             SendBackMsg(msg, client, errTxt);
                         }
                     }
 
-                    
+
                     SaveBodyPart(desFolder, msg, lst);
 
-                    
 
-                 //   imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+
+                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                     if (msgFiles.ContainsKey(subject))
                     {
                         msgFiles[subject].AddRange(lst);
@@ -169,7 +169,8 @@ namespace EmailDownloader
                     {
                         msgFiles.Add(subject, lst);
                     }
-                //    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+
+                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                 }
 
                 return msgFiles;

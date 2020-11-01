@@ -98,16 +98,16 @@ namespace InventoryQS.Business.Services
         }
 
 
-        public async Task<InventoryItemsEx> GetInventoryItemsExByKey(string ItemNumber, List<string> includesLst = null, bool tracking = true)
+        public async Task<InventoryItemsEx> GetInventoryItemsExByKey(string InventoryItemId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(ItemNumber))return null; 
+			   if(string.IsNullOrEmpty(InventoryItemId))return null; 
               using ( var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(InventoryItemId);
 				var set = AddIncludes(includesLst, dbContext);
-                InventoryItemsEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.ItemNumber == i).ConfigureAwait(continueOnCapturedContext: false);
+                InventoryItemsEx entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.InventoryItemId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -307,11 +307,11 @@ namespace InventoryQS.Business.Services
                                 IQueryable<InventoryItemsEx> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber).Where(exp);
+                                    dset = set.OrderBy(x => x.InventoryItemId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -382,12 +382,12 @@ namespace InventoryQS.Business.Services
                                 IQueryable<InventoryItemsEx> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.ItemNumber);
+                                    dset = set.OrderBy(x => x.InventoryItemId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -533,15 +533,15 @@ namespace InventoryQS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInventoryItemsEx(string ItemNumber)
+        public async Task<bool> DeleteInventoryItemsEx(string InventoryItemId)
         {
             try
             {
               using ( var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
               {
-                var i = ItemNumber;
+                var i = Convert.ToInt32(InventoryItemId);
                 InventoryItemsEx entity = await dbContext.InventoryItemsEx
-													.SingleOrDefaultAsync(x => x.ItemNumber == i)
+													.SingleOrDefaultAsync(x => x.InventoryItemId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -693,7 +693,7 @@ namespace InventoryQS.Business.Services
                     {
                         return await dbContext.InventoryItemsEx
 										.AsNoTracking()
-                                        .OrderBy(y => y.ItemNumber)
+                                        .OrderBy(y => y.InventoryItemId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -705,7 +705,7 @@ namespace InventoryQS.Business.Services
                         return await dbContext.InventoryItemsEx
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.ItemNumber)
+										.OrderBy(y => y.InventoryItemId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -754,7 +754,7 @@ namespace InventoryQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return await dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -797,9 +797,9 @@ namespace InventoryQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -818,9 +818,9 @@ namespace InventoryQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -847,7 +847,7 @@ namespace InventoryQS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.ItemNumber)
+                                    .OrderBy(y => y.InventoryItemId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -878,8 +878,8 @@ namespace InventoryQS.Business.Services
                     }
                     return await set//dbContext.InventoryItemsEx
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
-								.OrderBy(y => y.ItemNumber)
+                                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
+								.OrderBy(y => y.InventoryItemId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -931,9 +931,9 @@ namespace InventoryQS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.InventoryItemId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -960,9 +960,9 @@ namespace InventoryQS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.ItemNumber)
+                .OrderBy(y => y.InventoryItemId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1012,7 +1012,7 @@ namespace InventoryQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<InventoryItemsEx>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1022,7 +1022,7 @@ namespace InventoryQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1049,7 +1049,7 @@ namespace InventoryQS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<InventoryItemsEx>()
-							.Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+							.Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1059,7 +1059,7 @@ namespace InventoryQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null?"ItemNumber != null":exp)
+                .Where(exp == "All" || exp == null?"InventoryItemId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1074,7 +1074,37 @@ namespace InventoryQS.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<InventoryItemsEx>> GetInventoryItemsExByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new InventoryQSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<InventoryItemsEx> entities = await set//dbContext.InventoryItemsEx
+                                                    // .Include(x => x.EntryDataDetailsEx)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1137,7 +1167,7 @@ namespace InventoryQS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                    return Convert.ToDecimal(dbContext.InventoryItemsEx.Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1178,9 +1208,9 @@ namespace InventoryQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1198,9 +1228,9 @@ namespace InventoryQS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<InventoryItemsEx>()
-                .Where(exp == "All" || exp == null ? "ItemNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "InventoryItemId != null" : exp)
                 .Distinct()
-                .OrderBy("ItemNumber")
+                .OrderBy("InventoryItemId")
                 .Sum(field));
 			}
 			catch (Exception)

@@ -82,43 +82,57 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private async Task CreateIM9Entries(AsycudaDocumentSet docSet, bool PerIM7, IEnumerable<AsycudaDocumentItemIM9> alst)
+        private async Task CreateIM9Entries(AsycudaDocumentSet docSet, bool PerIM7,
+            IEnumerable<AsycudaDocumentItemIM9> alst)
         {
-            var elst = alst.OrderByDescending(x => x.RegistrationDate).GroupBy(x => x.AsycudaDocumentId);
-
-            var itmcount = 0;
-
-            DocumentCT cdoc = null;
-            foreach (var entry in elst)
+            try
             {
-                if (PerIM7) cdoc = await SaveAndCreateIM9Doc(docSet, cdoc).ConfigureAwait(false);
 
-                //create new document
-                foreach (
-                    var ditm in
-                        entry.OrderByDescending(x => x.RegistrationDate).ThenBy(x => x.LineNumber))
-                    //.Where(x => x.pCNumber == "24985" && x.LineNumber == 5)
+
+                var elst = alst.OrderByDescending(x => x.RegistrationDate).GroupBy(x => x.AsycudaDocumentId);
+
+                var itmcount = 0;
+
+                DocumentCT cdoc = null;
+                foreach (var entry in elst)
                 {
-                    if(ditm.ItemQuantity == ditm.PiQuantity) continue;
-                    if (CreateEx9Class.Instance.MaxLineCount(itmcount) || itmcount == 0)
-                    {
-                        cdoc = await SaveAndCreateIM9Doc(docSet, cdoc).ConfigureAwait(false);
-                    }
+                    if (PerIM7) cdoc = await SaveAndCreateIM9Doc(docSet, cdoc).ConfigureAwait(false);
 
-                    if (itmcount == 0)
+                    //create new document
+                    foreach (
+                            var ditm in
+                            entry.OrderByDescending(x => x.RegistrationDate).ThenBy(x => x.LineNumber))
+                        //.Where(x => x.pCNumber == "24985" && x.LineNumber == 5)
                     {
-                        cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code =
-                            ditm.Country_of_origin_code;
-                        cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination.Destination_country_code
-                            = "GD";
-                    }
-                    var itm = CreateIM9Line(ditm, itmcount, cdoc);
+                        if (ditm.ItemQuantity == ditm.PiQuantity) continue;
+                        if (CreateEx9Class.Instance.MaxLineCount(itmcount) || itmcount == 0)
+                        {
+                            cdoc = await SaveAndCreateIM9Doc(docSet, cdoc).ConfigureAwait(false);
+                        }
 
-                    cdoc.DocumentItems.Add(itm);
-                    itmcount += 1;
+                        if (itmcount == 0)
+                        {
+                            cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Export.Export_country_code =
+                                ditm.Country_of_origin_code;
+                            cdoc.Document.xcuda_General_information.xcuda_Country.xcuda_Destination
+                                    .Destination_country_code
+                                = "GD";
+                        }
+
+                        var itm = CreateIM9Line(ditm, itmcount, cdoc);
+
+                        cdoc.DocumentItems.Add(itm);
+                        itmcount += 1;
+                    }
                 }
+
+                await SaveAndCreateIM9Doc(docSet, cdoc).ConfigureAwait(false);
             }
-            await SaveAndCreateIM9Doc(docSet, cdoc).ConfigureAwait(false);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static async Task<List<AsycudaDocumentItemIM9>> GetAllIM9Data()
@@ -197,14 +211,14 @@ namespace WaterNut.DataSpace
                 using (var ctx = new AllocationDSContext())
                 {
                     
-                    var str = res.ToString();
+                    var str = "," + res.ToString();
 
 
                     var alst =
 
                         ctx.xcuda_Item
                             .Where(x => x.xcuda_Tarification.xcuda_Supplementary_unit.Any())
-                            .Where(x => str.Contains(x.AsycudaDocument.ASYCUDA_Id.ToString()) && x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
+                            .Where(x =>  str.Contains("," + x.AsycudaDocument.ASYCUDA_Id.ToString() + ",") && x.AsycudaDocument.ApplicationSettingsId == applicationSettingsId)
                             .Select(x => new AsycudaDocumentItemIM9()
                             {
                                 ItemNumber = x.xcuda_Tarification.xcuda_HScode.Precision_4,
@@ -330,37 +344,47 @@ namespace WaterNut.DataSpace
 
         private async Task<DocumentCT> SaveAndCreateIM9Doc(AsycudaDocumentSet docSet, DocumentCT cdoc)
         {
-            int itmcount;
-            if (cdoc != null && cdoc.Document != null && cdoc.DocumentItems.Any())
+            try
             {
-                await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
-                itmcount = 0;
+                int itmcount;
+                if (cdoc != null && cdoc.Document != null && cdoc.DocumentItems.Any())
+                {
+                    await BaseDataModel.Instance.SaveDocumentCT(cdoc).ConfigureAwait(false);
+                    itmcount = 0;
+                }
+
+                var cp = BaseDataModel.Instance.Customs_Procedures.Single(x =>
+                    x.CustomsOperationId == (int) CustomsOperations.Exwarehouse && x.Stock == true);
+
+                var Exp = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(y =>
+                    y.Customs_Procedure == cp.CustomsProcedure);
+                if (Exp.Customs_Procedure == null || string.IsNullOrEmpty(Exp.Customs_Procedure))
+                {
+                    throw new ApplicationException(
+                        $"Export Template default Customs Procedures not Configured for {cp.CustomsProcedure}");
+                }
+
+                docSet.Customs_Procedure = cp;
+
+                BaseDataModel.ConfigureDocSet(docSet, Exp);
+
+                cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
+                BaseDataModel.Instance.IntCdoc(cdoc, docSet);
+
+
+
+                cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = $"{cp.Document_Type.DisplayName} Entries";
+
+
+                BaseDataModel.Instance.AttachCustomProcedure(cdoc, cp);
+                return cdoc;
             }
-
-            var cp = BaseDataModel.Instance.Customs_Procedures.Single(x =>
-                x.CustomsOperationId == (int) CustomsOperations.Exwarehouse && x.Stock == true);
-
-            var Exp = BaseDataModel.Instance.ExportTemplates.FirstOrDefault(y => y.Customs_Procedure == cp.CustomsProcedure);
-            if (Exp.Customs_Procedure == null || string.IsNullOrEmpty(Exp.Customs_Procedure))
+            catch (Exception e)
             {
-                throw new ApplicationException($"Export Template default Customs Procedures not Configured for {cp.CustomsProcedure}");
+                Console.WriteLine(e);
+                throw;
             }
-
-            docSet.Customs_Procedure = cp;
-
-            BaseDataModel.ConfigureDocSet(docSet,Exp);
-
-            cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
-            BaseDataModel.Instance.IntCdoc(cdoc, docSet);
-
-
-            
-            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.Description = $"{cp.Document_Type.DisplayName} Entries";
-
-
-            BaseDataModel.Instance.AttachCustomProcedure(cdoc, cp);
-            return cdoc;
         }
 
         private xcuda_Item CreateIM9Line(AsycudaDocumentItemIM9 ditm, int itmcount, DocumentCT cdoc)

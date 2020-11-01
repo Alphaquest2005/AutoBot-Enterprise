@@ -74,7 +74,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 if (FilterExpression == null) FilterExpression = "All";
 			    using (var ctx = new AsycudaDocumentSetExRepository())
 				{
-					var r =  ctx.LoadRange(startIndex, count, FilterExpression, navExp, IncludesLst);
+					var r = ctx.LoadRange(startIndex, count, FilterExpression, navExp, IncludesLst);
 				    overallCount = r.Result.Item2;
 
 					return r.Result.Item1.ToList();

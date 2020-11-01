@@ -17,7 +17,7 @@ namespace InventoryQS.Client.Services
     public partial class InventoryItemsExClient 
     {
 
-        public async Task AssignTariffToItms(IEnumerable<string> list, string tariffCodes)
+        public async Task AssignTariffToItms(List<int> list, string tariffCodes)
         {
             await Channel.AssignTariffToItms(list, tariffCodes).ConfigureAwait(false);
         }

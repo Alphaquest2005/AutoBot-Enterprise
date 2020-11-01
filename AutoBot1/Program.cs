@@ -295,7 +295,7 @@ namespace AutoBot
             catch (Exception e)
             {
                 EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
+                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}", Array.Empty<string>());
 
 
 
@@ -317,7 +317,7 @@ namespace AutoBot
             catch (Exception e)
             {
                 EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] { "Josephbartholomew@outlook.com" }, $"{e.Message}\r\n{e.StackTrace}",
+                    new[] { "Joseph@auto-brokerage.com" }, $"{e.Message}\r\n{e.StackTrace}",
                     Array.Empty<string>());
             }
         }
@@ -337,7 +337,7 @@ namespace AutoBot
             catch (Exception e)
             {
                 EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                    new[] {"Josephbartholomew@outlook.com"}, $"{e.Message}\r\n{e.StackTrace}",
+                    new[] {"Joseph@auto-brokerage.com"}, $"{e.Message}\r\n{e.StackTrace}",
                     Array.Empty<string>());
             }
         }

@@ -155,6 +155,21 @@ public int ApplicationSettingsId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ASYCUDA_ is required")]
+       
+public int ASYCUDA_Id
+		{ 
+		    get { return this.todo_entriesexpiringnextmonth.ASYCUDA_Id; }
+			set
+			{
+			    if (value == this.todo_entriesexpiringnextmonth.ASYCUDA_Id) return;
+				this.todo_entriesexpiringnextmonth.ASYCUDA_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ASYCUDA_Id");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_EntriesExpiringNextMonth> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_EntriesExpiringNextMonth> ChangeTracker

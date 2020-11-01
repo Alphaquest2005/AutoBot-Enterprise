@@ -13,7 +13,7 @@ namespace InventoryQS.Client.Contracts
     public partial interface IInventoryItemsExService
     {
         [OperationContract]
-        Task AssignTariffToItms(IEnumerable<string> list, string tariffCodes);
+        Task AssignTariffToItms(List<int> list, string tariffCodes);
 
         [OperationContract]
         Task ValidateExistingTariffCodes(int docSetId);

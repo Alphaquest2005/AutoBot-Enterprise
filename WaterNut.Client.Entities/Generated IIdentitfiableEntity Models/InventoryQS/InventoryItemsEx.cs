@@ -21,11 +21,11 @@ namespace InventoryQS.Client.Entities
         {
             get
             {
-                return this.ItemNumber.ToString();//this.ItemNumber == null?"0":			
+                return this.InventoryItemId.ToString();//this.InventoryItemId == null?"0":			
             }
             set
             {
-                this.ItemNumber = Convert.ToString(value);
+                this.InventoryItemId = Convert.ToInt32(value);
             }
         }
         public string TariffCodesEntityName
@@ -48,7 +48,7 @@ namespace InventoryQS.Client.Entities
                         {
                             this.TariffCodes = (TariffCodes)new TariffCodes().CreateEntityFromString(value);
 							
-							this.ItemNumber = Convert.ToString(this.TariffCodes.TariffCode);
+							this.InventoryItemId = Convert.ToInt32(this.TariffCodes.TariffCode);
                             this.TrackingState=TrackableEntities.TrackingState.Modified;
                            NotifyPropertyChanged("AddTariffCodes");
                         }
@@ -56,6 +56,46 @@ namespace InventoryQS.Client.Entities
                         {
                             var obj = new TariffCodes(dto);
                            if (this.TariffCodes == null || this.TariffCodes.EntityId != obj.EntityId) this.TariffCodes = obj;
+                           
+                        }
+                         
+
+
+                    }
+            
+            }
+
+      }
+        public string ApplicationSettingsEntityName
+        {
+            get
+            {
+ 
+                if(this.ApplicationSettings == null) UpdateApplicationSettings();
+                return this.ApplicationSettings == null ? "" : this.ApplicationSettings.EntityName;
+            }
+            set
+            {
+                                if (string.IsNullOrEmpty(value)) return;
+                string[] vals = value.Split(',');
+               
+                    using (ApplicationSettingsClient ctx = new ApplicationSettingsClient())
+                    {
+                        var dto = ctx.GetApplicationSettings().Result.AsEnumerable().FirstOrDefault(x => x.EntityName == value);
+                        
+
+                        if ( dto == null)
+                        {
+                            this.ApplicationSettings = (ApplicationSettings)new ApplicationSettings().CreateEntityFromString(value);
+							
+							this.ApplicationSettingsId = Convert.ToInt32(this.ApplicationSettings.ApplicationSettingsId);
+                            this.TrackingState=TrackableEntities.TrackingState.Modified;
+                           NotifyPropertyChanged("AddApplicationSettings");
+                        }
+                        else
+                        {
+                            var obj = new ApplicationSettings(dto);
+                           if (this.ApplicationSettings == null || this.ApplicationSettings.EntityId != obj.EntityId) this.ApplicationSettings = obj;
                            
                         }
                          

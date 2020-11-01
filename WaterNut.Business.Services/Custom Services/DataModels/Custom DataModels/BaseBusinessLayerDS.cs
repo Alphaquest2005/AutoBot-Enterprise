@@ -3152,19 +3152,20 @@ namespace WaterNut.DataSpace
             var i = await GetDocument(asycudaDocument.ASYCUDA_Id, new List<string>()
             {
                 "xcuda_ASYCUDA_ExtendedProperties",
-                "xcuda_Identification",
-                "xcuda_Valuation.xcuda_Gs_Invoice",
-                "xcuda_Declarant",
-                "xcuda_General_information.xcuda_Country",
-                "xcuda_Property"
+                //"xcuda_Identification",
+                //"xcuda_Valuation.xcuda_Gs_Invoice",
+                //"xcuda_Declarant",
+                //"xcuda_General_information.xcuda_Country",
+                //"xcuda_Property"
             }).ConfigureAwait(false);
             i.StartTracking();
             // null for now cuz there are no navigation properties involved.
-            i.InjectFrom(asycudaDocument);
+            //i.InjectFrom(asycudaDocument);
             i.xcuda_ASYCUDA_ExtendedProperties.StartTracking();
-            i.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = asycudaDocument.EffectiveRegistrationDate;
-            i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = asycudaDocument.DoNotAllocate;
-            await Save_xcuda_ASYCUDA(i).ConfigureAwait(false);
+            if(i.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate != asycudaDocument.EffectiveRegistrationDate) i.xcuda_ASYCUDA_ExtendedProperties.EffectiveRegistrationDate = asycudaDocument.EffectiveRegistrationDate;
+            if(i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate != asycudaDocument.DoNotAllocate) i.xcuda_ASYCUDA_ExtendedProperties.DoNotAllocate = asycudaDocument.DoNotAllocate;
+            if( i.xcuda_ASYCUDA_ExtendedProperties.ModifiedProperties != null) await Save_xcuda_ASYCUDA(i).ConfigureAwait(false);
+            
         }
 
         private async Task Save_xcuda_ASYCUDA(xcuda_ASYCUDA i)

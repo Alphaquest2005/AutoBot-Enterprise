@@ -55,14 +55,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
         <EntityType Name="EntryDataDetailsEx">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            
-            
-            
-            
-            
-            
-            
-            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -82,7 +74,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="Downloaded" Type="bit" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
           <Property Name="Total" Type="float" />
-          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -93,19 +85,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LastCost" Type="float" />
+          <Property Name="FileLineNumber" Type="int" />
           <Property Name="TaxAmount" Type="float" />
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="InventoryItemsEx">
           <Key>
-            <PropertyRef Name="ItemNumber" />
-            
-            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="InventoryItemId" />
           </Key>
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Category" Type="nvarchar" MaxLength="60" />
@@ -191,14 +184,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
 [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
 [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [EntryDataDetailsEx].[LastCost] AS [LastCost], 
+[EntryDataDetailsEx].[FileLineNumber] AS [FileLineNumber], 
 [EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
 [EntryDataDetailsEx].[EmailId] AS [EmailId], 
 [EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
-[EntryDataDetailsEx].[Name] AS [Name]
+[EntryDataDetailsEx].[Name] AS [Name], 
+[EntryDataDetailsEx].[InventoryItemId] AS [InventoryItemId]
 FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemsEx" EntityType="Self.InventoryItemsEx" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+[InventoryItemsEx].[InventoryItemId] AS [InventoryItemId], 
 [InventoryItemsEx].[ItemNumber] AS [ItemNumber], 
 [InventoryItemsEx].[Description] AS [Description], 
 [InventoryItemsEx].[Category] AS [Category], 
@@ -310,8 +306,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
         </Association>
         <EntityType Name="InventoryItemsEx">
           <Key>
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="InventoryItemId" />
           </Key>
           <Property Type="String" Name="ItemNumber" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Description" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -323,6 +318,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="SuppQty" Type="Double" />
           <Property Name="EntryTimeStamp" Type="DateTime" Precision="7" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <Association Name="TariffCodesInventoryItemsEx">
@@ -359,7 +355,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="DutyFreePaid" Type="String" MaxLength="9" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Total" Type="Single" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.InventoryItemsExEntryDataDetailsEx" FromRole="EntryDataDetailsEx" ToRole="InventoryItemsEx" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -375,18 +371,18 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <Property Name="EmailId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="InventoryItemsExEntryDataDetailsEx">
           <End Type="WaterNutDBModel.InventoryItemsEx" Role="InventoryItemsEx" Multiplicity="1" />
           <End Type="WaterNutDBModel.EntryDataDetailsEx" Role="EntryDataDetailsEx" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="InventoryItemsEx">
-              <PropertyRef Name="ItemNumber" />
-              <PropertyRef Name="ApplicationSettingsId" />
+              <PropertyRef Name="InventoryItemId" />
             </Principal>
             <Dependent Role="EntryDataDetailsEx">
-              <PropertyRef Name="ItemNumber" />
-              <PropertyRef Name="ApplicationSettingsId" />
+              <PropertyRef Name="InventoryItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -477,6 +473,7 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="InventoryItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemsEx">
               <MappingFragment StoreEntitySet="InventoryItemsEx">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
                 <ScalarProperty Name="SuppQty" ColumnName="SuppQty" />
@@ -491,6 +488,8 @@ FROM [dbo].[InventoryItemsEx] AS [InventoryItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="EmailId" ColumnName="EmailId" />

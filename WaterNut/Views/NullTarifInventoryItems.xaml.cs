@@ -36,7 +36,7 @@ namespace WaterNut.Views
             {
                 result.Load();
             }
-            await im.AssignTariffToItms(lst.Select(x => x.Data.ItemNumber)).ConfigureAwait(false);
+            await im.AssignTariffToItms(lst.Select(x => x.Data.InventoryItemId).ToList()).ConfigureAwait(false);
         }
 
         private async void Send2Excel(object sender, MouseButtonEventArgs e)

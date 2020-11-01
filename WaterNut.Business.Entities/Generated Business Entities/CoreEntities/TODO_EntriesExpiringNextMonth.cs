@@ -125,6 +125,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         int _applicationsettingsid;
+        [DataMember]
+        public int ASYCUDA_Id 
+        {
+            get
+            {
+                return _asycuda_id;
+            }
+            set
+            {
+                _asycuda_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycuda_id;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
