@@ -131,9 +131,9 @@ namespace EmailDownloader
                         imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                         continue;
                     }
-                        
+
                     var desFolder = Path.Combine(dataFolder, subject.Item1, uid.ToString());
-                    if(Directory.Exists(desFolder)) Directory.Delete(desFolder, true);
+                    if (Directory.Exists(desFolder)) Directory.Delete(desFolder, true);
                     Directory.CreateDirectory(desFolder);
                     foreach (var a in msg.Attachments.Where(x => x.ContentType.MediaType != "message"))
                     {
@@ -155,10 +155,10 @@ namespace EmailDownloader
                         }
                     }
 
-                    
+
                     SaveBodyPart(desFolder, msg, lst);
 
-                    
+
 
                     imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                     if (msgFiles.ContainsKey(subject))
@@ -169,7 +169,8 @@ namespace EmailDownloader
                     {
                         msgFiles.Add(subject, lst);
                     }
-                   imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+
+                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                 }
 
                 return msgFiles;

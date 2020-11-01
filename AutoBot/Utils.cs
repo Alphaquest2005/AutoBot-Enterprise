@@ -1912,7 +1912,7 @@ namespace AutoBot
                         ctx.SaveChanges();
 
 
-                        LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoices");
+                        //LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoices");
 
 
                     }
@@ -1980,7 +1980,7 @@ namespace AutoBot
                         ctx.SaveChanges();
 
 
-                        LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoicePDFs");
+                        //LogDocSetAction(emailIds.Key.AsycudaDocumentSetId, "SubmitMissingInvoicePDFs");
 
 
                     }
@@ -2048,7 +2048,7 @@ namespace AutoBot
                                 contacts.Select(x => x.EmailAddress).ToArray(),
                                 new string[] { errorfile });
 
-                        LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
+                       // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 
 
                     }
@@ -2112,7 +2112,7 @@ namespace AutoBot
                                 contacts.Select(x => x.EmailAddress).ToArray(),
                                 new string[] { errorfile });
 
-                        LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
+                       // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
 
 
                     }
@@ -2176,7 +2176,7 @@ namespace AutoBot
                             "Please Fill out the attached Supplier Info and resend CSV...",
                             new string[] { errorfile });
 
-                    LogDocSetAction(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers");
+                    //LogDocSetAction(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers");
 
                 }
             }
@@ -2224,7 +2224,7 @@ namespace AutoBot
                         EmailDownloader.EmailDownloader.SendEmail(Client, "", $"Shipment: {docSet.Declarant_Reference_Number}",
                             contacts, body, attlst.ToArray());
 
-                        LogDocSetAction(docSet.AsycudaDocumentSetId, "SubmitInadequatePackages");
+                        //LogDocSetAction(docSet.AsycudaDocumentSetId, "SubmitInadequatePackages");
 
 
 
