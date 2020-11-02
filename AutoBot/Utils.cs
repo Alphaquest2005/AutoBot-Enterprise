@@ -1874,6 +1874,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
+                    ctx.Database.CommandTimeout = 0;
                     var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
                     var lst = ctx.TODO_SubmitDocSetWithIncompleteInvoices
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
