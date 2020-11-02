@@ -3037,10 +3037,10 @@ namespace AutoBot
                     $"AutoBot";
 
 
-               
 
+                var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSet.Declarant_Reference_Number);
 
-                var summaryFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,docSet.Declarant_Reference_Number, "POAssesErrors.csv");
+                var summaryFile = Path.Combine(directory, "POAssesErrors.csv");
                 if (File.Exists(summaryFile)) File.Delete(summaryFile);
                 var errRes =
                     new ExportToCSV<TODO_PODocSetToAssessErrors, List<TODO_PODocSetToAssessErrors>>();
@@ -3053,7 +3053,7 @@ namespace AutoBot
 
                
                
-                EmailDownloader.EmailDownloader.SendEmail(Client, "",
+                EmailDownloader.EmailDownloader.SendEmail(Client, directory,
                     $"PO Assessment Errors for Shipment: {docSet.Declarant_Reference_Number}",
                     poContacts, body, new string[]{summaryFile});
 
