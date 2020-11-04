@@ -638,13 +638,13 @@ namespace Asycuda421
                     var filePath = att.Attachments.FilePath;
                     if (string.IsNullOrEmpty(filePath))
                     {
-                        File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\tBlank File\r\n");
+                        File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\tBlank File\r\n");
                     }
                     else
                     {
                       var fileinfo = new FileInfo(filePath);
                     if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"Attachment\t{fileinfo.FullName}\r\n");  
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{fileinfo.FullName}\r\n");  
                     }
                     
                 }
