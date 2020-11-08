@@ -12,7 +12,7 @@ using Microsoft.Win32;
 using SimpleMvvmToolkit;
 using CoreEntities.Client.Entities;
 using WaterNut.QuerySpace.AllocationQS.ViewModels;
-
+using System.ServiceModel.ComIntegration;
 
 namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 {
@@ -224,8 +224,17 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         if (directoryInfo != null)
                         {
                             var dir = directoryInfo.FullName;
-                             await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
+                            // WAS SLOWER I FIND CONFLICTING I FEEL
+                            //var t1 =  AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir);
+                            //var t2 = SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir);
+                            //await Task.WhenAll(t1, t2).ConfigureAwait(false);
+
+                            await AsycudaDocumentSetExRepository.Instance.ExportDocSet(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
                             await SalesReportModel.Instance.ExportDocSetSalesReport(docSet.AsycudaDocumentSetId, dir).ConfigureAwait(false);
+
+
+
+
                         }
                     }
                 }
