@@ -315,7 +315,7 @@ namespace AutoBot
 
                     var lst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.FileTypeId != null)
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.FileTypeId != null )
                         .ToList()
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .Join(ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments"),
@@ -326,9 +326,10 @@ namespace AutoBot
                     {
 
                         var pdfs = doc.z.AsycudaDocumentSet_Attachments
-                            .Select(x => x.Attachments.FilePath)
+                            .Select(x => x.Attachments.FilePath).Distinct()
                             .Where(x => x.ToLower().EndsWith(".pdf"))
                             .ToList();
+
 
                         var docpdfs = new List<string>();
 
@@ -336,12 +337,19 @@ namespace AutoBot
 
                         foreach (var itm in doc.x)
                         {
-                            docpdfs.AddRange(ctx.AsycudaDocument_Attachments
+                            var res  = ctx.AsycudaDocument_Attachments
                                 .Where(x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id)
-                                .Select(x => x.Attachments.FilePath)
+                                .Select(x => x.Attachments.FilePath).Distinct()
                                 .Where(x => x.ToLower().EndsWith(".pdf"))
-                                .ToList());
+                                .ToList();
 
+                            
+                            if (!res.Any())
+                            {
+                                LinkPDFs(new List<int>() { itm.AssessedAsycuda_Id });
+                                res.AddRange(ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id).Select(x => x.Attachments.FilePath).ToList());
+                            }
+                            docpdfs.AddRange(res);
 
                         }
 
@@ -3396,9 +3404,10 @@ namespace AutoBot
                         {
                             var r = rline.Split('\t');
 
+
                             if ( p[1] == r[1] && r.Length == 3 && r[2] == "Success")
                             {
-                               if(r[0] == "File") lcont = rcount-1;
+                                if (r[0] == "File") lcont = rcount-1;
                                 isSuccess = true;
                                 break;
                             }
@@ -3423,6 +3432,14 @@ namespace AutoBot
                                 //isSuccess = true;
                                 //break;
                             }
+
+                            if(p[1] == "Attachment" && p[2] == r[2] && r[3] == "Success")
+                            {
+                                isSuccess = true;
+                                break;
+                            }
+
+                           
 
                         }
 
