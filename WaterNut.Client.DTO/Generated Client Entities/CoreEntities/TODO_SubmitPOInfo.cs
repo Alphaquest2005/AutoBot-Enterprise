@@ -281,6 +281,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _BillingLine;
 
+        [DataMember]
+        public Nullable<bool> IsSubmitted
+		{ 
+		    get { return _IsSubmitted; }
+			set
+			{
+			    if (value == _IsSubmitted) return;
+				_IsSubmitted = value;
+				NotifyPropertyChanged();//m => this.IsSubmitted
+			}
+		}
+        private Nullable<bool> _IsSubmitted;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

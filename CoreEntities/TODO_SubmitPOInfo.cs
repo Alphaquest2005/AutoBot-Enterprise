@@ -34,5 +34,6 @@ namespace CoreEntities
         public double Total_CIF { get; set; }
         public string WarehouseNo { get; set; }
         public string BillingLine { get; set; }
+        public Nullable<bool> IsSubmitted { get; set; }
     }
 }

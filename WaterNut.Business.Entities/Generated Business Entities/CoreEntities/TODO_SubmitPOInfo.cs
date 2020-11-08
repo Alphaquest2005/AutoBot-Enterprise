@@ -320,6 +320,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _billingline;
+        [DataMember]
+        public Nullable<bool> IsSubmitted 
+        {
+            get
+            {
+                return _issubmitted;
+            }
+            set
+            {
+                _issubmitted = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _issubmitted;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

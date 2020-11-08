@@ -80,25 +80,13 @@ namespace CoreEntities.Client.Contracts
 		string MinField(string whereExp, string field);
 
 				[OperationContract]
-		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEntryDataId(string EntryDataId, List<string> includesLst = null);
-        
-  		[OperationContract]
 		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
-        
-  		[OperationContract]
-		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null);
         
   		[OperationContract]
 		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEmailId(string EmailId, List<string> includesLst = null);
         
   		[OperationContract]
 		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByFileTypeId(string FileTypeId, List<string> includesLst = null);
-        
-  		[OperationContract]
-		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByNewAsycuda_Id(string NewAsycuda_Id, List<string> includesLst = null);
-        
-  		[OperationContract]
-		Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAssessedAsycuda_Id(string AssessedAsycuda_Id, List<string> includesLst = null);
         
   		
     }

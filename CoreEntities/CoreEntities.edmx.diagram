@@ -125,11 +125,11 @@
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitAllXMLToCustoms" Width="1.5" PointX="29.375" PointY="6.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEntryDataEx" Width="2.625" PointX="16.875" PointY="1.125" />
         <AssociationConnector Association="WaterNutDBModel.AsycudaDocumentSetExAsycudaDocumentSetEntryDataEx" />
-        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitPOInfo" Width="2.125" PointX="29.375" PointY="0.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSetToAssessErrors" Width="1.5" PointX="14.375" PointY="30.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_PODocSetToAssess" Width="1.5" PointX="28.375" PointY="30.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitMissingInvoicePDFs" Width="1.5" PointX="30.375" PointY="30.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitSalesToCustoms" Width="1.5" PointX="31.375" PointY="6.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_SubmitPOInfo" Width="2.875" PointX="29.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

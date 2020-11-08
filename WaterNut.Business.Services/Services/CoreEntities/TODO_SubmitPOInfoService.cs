@@ -1021,36 +1021,7 @@ namespace CoreEntities.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByEntryDataId(string EntryDataId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = EntryDataId;
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
-                                      .AsNoTracking()
-                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
         {
             try
             {
@@ -1061,35 +1032,6 @@ namespace CoreEntities.Business.Services
                 IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(AsycudaDocumentSetId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
-                                      .AsNoTracking()
-                                        .Where(x => x.AsycudaDocumentSetId.ToString() == AsycudaDocumentSetId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1148,64 +1090,6 @@ namespace CoreEntities.Business.Services
                 IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByNewAsycuda_Id(string NewAsycuda_Id, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(NewAsycuda_Id);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
-                                      .AsNoTracking()
-                                        .Where(x => x.NewAsycuda_Id.ToString() == NewAsycuda_Id.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAssessedAsycuda_Id(string AssessedAsycuda_Id, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(AssessedAsycuda_Id);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<TODO_SubmitPOInfo> entities = await set//dbContext.TODO_SubmitPOInfo
-                                      .AsNoTracking()
-                                        .Where(x => x.AssessedAsycuda_Id.ToString() == AssessedAsycuda_Id.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;

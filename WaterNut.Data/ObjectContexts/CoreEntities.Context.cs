@@ -199,8 +199,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx { get; set; }
      
-        public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
-     
         public DbSet<TODO_PODocSetToAssessErrors> TODO_PODocSetToAssessErrors { get; set; }
      
         public DbSet<TODO_PODocSetToAssess> TODO_PODocSetToAssess { get; set; }
@@ -208,6 +206,8 @@ namespace CoreEntities.Business.Entities
         public DbSet<TODO_SubmitMissingInvoicePDFs> TODO_SubmitMissingInvoicePDFs { get; set; }
      
         public DbSet<TODO_SubmitSalesToCustoms> TODO_SubmitSalesToCustoms { get; set; }
+     
+        public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
      
 
 
@@ -365,8 +365,6 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new AsycudaDocumentSetEntryDataExMap());
          
-            modelBuilder.Configurations.Add(new TODO_SubmitPOInfoMap());
-         
             modelBuilder.Configurations.Add(new TODO_PODocSetToAssessErrorsMap());
          
             modelBuilder.Configurations.Add(new TODO_PODocSetToAssessMap());
@@ -374,6 +372,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_SubmitMissingInvoicePDFsMap());
          
             modelBuilder.Configurations.Add(new TODO_SubmitSalesToCustomsMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitPOInfoMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

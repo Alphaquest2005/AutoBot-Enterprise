@@ -317,6 +317,7 @@ namespace AutoBot
                     var lst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.FileTypeId != null)
+                        .Where (x => x.IsSubmitted == false)
                         .ToList()
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .Join(ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments"),

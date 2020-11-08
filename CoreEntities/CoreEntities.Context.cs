@@ -101,10 +101,10 @@ namespace CoreEntities
         public DbSet<EmailInfoMappings> EmailInfoMappings { get; set; }
         public DbSet<TODO_SubmitAllXMLToCustoms> TODO_SubmitAllXMLToCustoms { get; set; }
         public DbSet<AsycudaDocumentSetEntryDataEx> AsycudaDocumentSetEntryDataEx { get; set; }
-        public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
         public DbSet<TODO_PODocSetToAssessErrors> TODO_PODocSetToAssessErrors { get; set; }
         public DbSet<TODO_PODocSetToAssess> TODO_PODocSetToAssess { get; set; }
         public DbSet<TODO_SubmitMissingInvoicePDFs> TODO_SubmitMissingInvoicePDFs { get; set; }
         public DbSet<TODO_SubmitSalesToCustoms> TODO_SubmitSalesToCustoms { get; set; }
+        public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
     }
 }

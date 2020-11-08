@@ -422,6 +422,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _isSubmittedFilter;
+        public Boolean? IsSubmittedFilter
+        {
+            get
+            {
+                return _isSubmittedFilter;
+            }
+            set
+            {
+                _isSubmittedFilter = value;
+				NotifyPropertyChanged(x => IsSubmittedFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -500,6 +518,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(BillingLineFilter) == false)
 						res.Append(" && " + string.Format("BillingLine.Contains(\"{0}\")",  BillingLineFilter));						
+ 
+
+									if(IsSubmittedFilter.HasValue)
+						res.Append(" && " + string.Format("IsSubmitted == {0}",  IsSubmittedFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -559,7 +581,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     WarehouseNo = x.WarehouseNo ,
                     
  
-                    BillingLine = x.BillingLine 
+                    BillingLine = x.BillingLine ,
+                    
+ 
+                    IsSubmitted = x.IsSubmitted 
                     
                 }).ToList()
             };
@@ -609,6 +634,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string BillingLine { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsSubmitted { get; set; } 
                     
         }
 

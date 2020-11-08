@@ -364,6 +364,21 @@ public string BillingLine
 		}
      
 
+       
+       
+public Nullable<bool> IsSubmitted
+		{ 
+		    get { return this.todo_submitpoinfo.IsSubmitted; }
+			set
+			{
+			    if (value == this.todo_submitpoinfo.IsSubmitted) return;
+				this.todo_submitpoinfo.IsSubmitted = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsSubmitted");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_SubmitPOInfo> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_SubmitPOInfo> ChangeTracker
