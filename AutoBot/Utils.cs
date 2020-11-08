@@ -351,7 +351,7 @@ namespace AutoBot
 
                 using (var ctx = new CoreEntitiesContext())
                 {
-                    var poList = ft.Data.Where(z => z.Key == "PONumber").Select(x => x.Value).ToList();
+                    var poList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
 
                     var contacts = ctx.Contacts.Where(x => x.Role == "PDF Entries" || x.Role == "Developer")
                         .Select(x => x.EmailAddress).ToArray();
@@ -361,13 +361,12 @@ namespace AutoBot
 
                     var lst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
-                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
-                                    x.FileTypeId != null)
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                         .ToList();
                     if (poList.Any())
                     {
-                        lst = lst.Where(x => poList.Contains(x.EntryDataId) || poList.Contains(x.SupplierInvoiceNo))
+                        lst = lst.Where(x => poList.Contains(x.CNumber))
                             .ToList();
                     }
 
@@ -398,25 +397,46 @@ namespace AutoBot
             {
                 try
                 {
-                    var pdfs = Enumerable
-                        .Select<AsycudaDocumentSet_Attachments, string>(docSet.AsycudaDocumentSet_Attachments,
-                            x => x.Attachments.FilePath)
-                        .Where(x => x.ToLower().EndsWith(".pdf"))
-                        .ToList();
+                    //var pdfs = Enumerable
+                    //    .Select<AsycudaDocumentSet_Attachments, string>(docSet.AsycudaDocumentSet_Attachments,
+                    //        x => x.Attachments.FilePath)
+                    //    .Where(x => x.ToLower().EndsWith(".pdf"))
+                    //    .ToList();
 
-                    var docpdfs = new List<string>();
+                    var Assessedpdfs = new List<string>();
+
+                    var pdfs = new List<string>();
 
                     var poInfo = CurrentPOInfo(docSet.AsycudaDocumentSetId).FirstOrDefault();
 
                     foreach (var itm in pOs)
                     {
-                        docpdfs.AddRange(Queryable
-                            .Where(ctx.AsycudaDocument_Attachments, x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id)
+                        
+                        var ndp = ctx.AsycudaDocument_Attachments
+                            .Where( x => x.AsycudaDocumentId == itm.NewAsycuda_Id)
                             .Select(x => x.Attachments.FilePath)
                             .Where(x => x.ToLower().EndsWith(".pdf"))
-                            .ToList());
+                            .ToList();
+
+                        var adp = ctx.AsycudaDocument_Attachments
+                            .Where(x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id)
+                            .Select(x => x.Attachments.FilePath)
+                            .Where(x => x.ToLower().EndsWith(".pdf"))
+                            .ToList();
+
+                        if(!adp.Any())
+                        {
+                            LinkPDFs(new List<int>() { itm.AssessedAsycuda_Id });
+                            adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id).Select(x => x.Attachments.FilePath).ToList();
+                        }
+
+                        pdfs.AddRange(ndp);
+                        pdfs.AddRange(adp);
+                        Assessedpdfs.AddRange(adp);
                     }
 
+                    pdfs = pdfs.Distinct().ToList();
+                    Assessedpdfs = Assessedpdfs.Distinct().ToList();
 
                     var body =
                         $"Please see attached documents entries for {docSet.Declarant_Reference_Number}.\r\n" +
@@ -454,12 +474,11 @@ namespace AutoBot
                             TaskCreationOptions.None, sta);
                     }
 
-                    docpdfs.Add(summaryFile);
+                    pdfs.Add(summaryFile);
+                    Assessedpdfs.Add(summaryFile);
 
 
-                    pdfs.AddRange(docpdfs);
-
-
+                    
                     var emailIds = Enumerable.Min<TODO_SubmitPOInfo>(pOs, x => x.EmailId);
 
                     if (emailIds == null)
@@ -470,7 +489,7 @@ namespace AutoBot
 
                         EmailDownloader.EmailDownloader.SendEmail(Client, "",
                             $"Assessed Entries for {docSet.Declarant_Reference_Number}",
-                            poContacts, body, docpdfs.ToArray());
+                            poContacts, body, Assessedpdfs.ToArray());
                     }
                     else
                     {
@@ -480,7 +499,7 @@ namespace AutoBot
 
                         EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds), Client,
                             $"Assessed Entries for {docSet.Declarant_Reference_Number}", body, poContacts,
-                            docpdfs.ToArray());
+                            Assessedpdfs.ToArray());
                     }
 
                     foreach (var item in pOs)
@@ -5219,70 +5238,85 @@ namespace AutoBot
 
         public static FileInfo[] TrySaveFileInfo(FileInfo[] csvFiles, FileTypes fileType)
         {
-            var res = new List<FileInfo>();
-            foreach (var file in csvFiles)
+            try
             {
-                var fileTxt = File.ReadAllLines(file.FullName);
-                string dbStatement = "";
-                foreach (var line in fileTxt)
+
+                var res = new List<FileInfo>();
+                foreach (var file in csvFiles)
                 {
-                    var im = fileType.EmailInfoMappings.SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z => new
+                    var fileTxt = File.ReadAllLines(file.FullName);
+                    string dbStatement = "";
+                    foreach (var line in fileTxt)
+                    {
+                        var im = fileType.EmailInfoMappings.SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z => new
                         {
                             Em = x,
                             Rx = z,
                             Key = Regex.Match(line, z.KeyRegX, RegexOptions.IgnoreCase),
                             Field = Regex.Match(line, z.FieldRx, RegexOptions.IgnoreCase)
                         }))
-                        .Where(z => z.Key.Success && z.Field.Success).ToList();
+                            .Where(z => z.Key.Success && z.Field.Success).ToList();
 
-                    if (!im.Any()) continue;
-                    if(!res.Contains(file)) res.Add(file);
-                    
-                    im.ForEach(x =>
-                    {
-                        var key = string.IsNullOrEmpty(x.Key.Groups["Key"].Value.Trim())
-                            ? x.Rx.InfoMapping.Key
-                            : x.Rx.KeyReplaceRx == null
-                                ? x.Key.Groups["Key"].Value.Trim()
-                                : Regex.Match(
-                                        Regex.Replace(line, x.Rx.KeyRegX, x.Rx.KeyReplaceRx,
-                                            RegexOptions.IgnoreCase), x.Rx.KeyRegX,
-                                        RegexOptions.IgnoreCase)
-                                    .Value.Trim();
+                        if (!im.Any()) continue;
+                        if (!res.Contains(file)) res.Add(file);
 
-                        var value = string.IsNullOrEmpty(x.Field.Groups["Value"].Value.Trim())
-                            ? x.Field.Groups[0].Value.Trim()
-                            : x.Rx.FieldReplaceRx == null
-                                ? x.Field.Groups["Value"].Value.Trim()
-                                : Regex.Match(
-                                        Regex.Replace(line, x.Rx.FieldRx, x.Rx.FieldReplaceRx,
-                                            RegexOptions.IgnoreCase), x.Rx.FieldRx,
-                                        RegexOptions.IgnoreCase)
-                                    .Value.Trim();
-                        fileType.Data.Add(
-                            new KeyValuePair<string, string>(key, value));
-
-                        if (x.Em.UpdateDatabase == true)
+                        im.ForEach(x =>
                         {
-                            dbStatement +=
-                                $@" Update {x.Rx.InfoMapping.EntityType} Set {x.Rx.InfoMapping.Field} = '{
-                                        ReplaceSpecialChar(value,
-                                            "")
-                                    }' Where {x.Rx.InfoMapping.EntityKeyField} = '{
-                                        fileType.Data.First(z => z.Key == x.Rx.InfoMapping.EntityKeyField).Value}';";
+                            try
+                            {
+                               var key = string.IsNullOrEmpty(x.Key.Groups["Key"].Value.Trim())
+                                    ? x.Rx.InfoMapping.Key
+                                    : x.Rx.KeyReplaceRx == null
+                                        ? x.Key.Groups["Key"].Value.Trim()
+                                        : Regex.Match(
+                                                Regex.Replace(line, x.Rx.KeyRegX, x.Rx.KeyReplaceRx,
+                                                    RegexOptions.IgnoreCase), x.Rx.KeyRegX,
+                                                RegexOptions.IgnoreCase)
+                                            .Value.Trim();
+
+                                var value = string.IsNullOrEmpty(x.Field.Groups["Value"].Value.Trim())
+                                    ? x.Field.Groups[0].Value.Trim()
+                                    : x.Rx.FieldReplaceRx == null
+                                        ? x.Field.Groups["Value"].Value.Trim()
+                                        : Regex.Match(
+                                                Regex.Replace(line, x.Rx.FieldRx, x.Rx.FieldReplaceRx,
+                                                    RegexOptions.IgnoreCase), x.Rx.FieldRx,
+                                                RegexOptions.IgnoreCase)
+                                            .Value.Trim();
+                                fileType.Data.Add(
+                                    new KeyValuePair<string, string>(key, value));
+
+                                if (x.Em.UpdateDatabase == true)
+                                {
+                                    dbStatement +=
+                                        $@" Update {x.Rx.InfoMapping.EntityType} Set {x.Rx.InfoMapping.Field} = '{
+                                                ReplaceSpecialChar(value,
+                                                    "")
+                                            }' Where {x.Rx.InfoMapping.EntityKeyField} = '{
+                                                fileType.Data.First(z => z.Key == x.Rx.InfoMapping.EntityKeyField).Value}';";
+                                }
+                            }
+                            catch (Exception)
+                            {
+
+                                throw;
+                            }
+                        });
 
 
-                        }
-                    });
+                    }
 
-
+                    if (!string.IsNullOrEmpty(dbStatement))
+                        new CoreEntitiesContext().Database.ExecuteSqlCommand(dbStatement);
                 }
 
-                if (!string.IsNullOrEmpty(dbStatement))
-                    new CoreEntitiesContext().Database.ExecuteSqlCommand(dbStatement);
+                return res.ToArray();
             }
+            catch (Exception)
+            {
 
-            return res.ToArray();
+                throw;
+            }
         }
 
         //public static void SaveInfo(FileInfo[] csvFiles, FileTypes fileType, List<EmailInfoMappings> emailMappings)
