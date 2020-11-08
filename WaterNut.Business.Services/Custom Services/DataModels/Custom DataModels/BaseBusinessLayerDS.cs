@@ -3533,14 +3533,15 @@ namespace WaterNut.DataSpace
                 pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
                         x.Attachment.FilePath.ToLower().EndsWith("pdf") && (x.FileType.Type != "INV" &&  (x.FileType.Type != "PO")) &&
                         x.AsycudaDocumentSetId == asycudaDocumentSetId )
-                    .Select(x => x.Attachment).AsEnumerable().DistinctBy(x => x.FilePath).Where(x => File.Exists(x.FilePath)).ToList();
+                    .Select(x => x.Attachment).AsEnumerable().OrderByDescending(x => x.Id).Where(x => File.Exists(x.FilePath)).DistinctBy(x => new FileInfo(x.FilePath).Name).ToList();
 
                 var nonpdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
                         (!x.Attachment.FilePath.ToLower().EndsWith("pdf") 
-                         && !x.Attachment.FilePath.ToLower().Contains("xml")) 
+                         && !x.Attachment.FilePath.ToLower().Contains("xml")
+                         && !x.Attachment.FilePath.ToLower().Contains("Info.txt".ToLower())) 
                          && ((x.FileType.Type != "INV") && (x.FileType.Type != "PO")) &&
                         x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Select(x => x.Attachment).AsEnumerable().DistinctBy(x => x.FilePath).Where(x => File.Exists(x.FilePath)).ToList();
+                    .Select(x => x.Attachment).AsEnumerable().OrderByDescending(x => x.Id).Where(x => File.Exists(x.FilePath)).DistinctBy(x => new FileInfo( x.FilePath).Name).ToList();
 
                 pdfs.AddRange(nonpdfs);
 
