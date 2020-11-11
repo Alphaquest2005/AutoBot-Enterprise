@@ -20,7 +20,7 @@ namespace Core.Common.UI
             get
             {
 
-                return Environment.MachineName == "JOSEPH-PC";
+                return  "JOSEPH-PC|AUTOBROKER-PC".Contains(Environment.MachineName);
             }
 
         }

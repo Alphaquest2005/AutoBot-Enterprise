@@ -776,7 +776,7 @@ namespace WaterNut.DataSpace
 
                 if (h == "") continue;
 
-                if ("Invoice|INVNO|Reciept #|NUM|Invoice #|Invoice#|Order Reference|Order Ref".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                if ("Invoice|INVNO|Reciept #|NUM|Invoice #|Invoice#|Order Reference|Order Ref|Invoice Number".ToUpper().Split('|').Any(x => x == h.ToUpper()))
                 {
                     mapping.Add("EntryDataId", i);
                     continue;

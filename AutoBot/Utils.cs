@@ -3404,7 +3404,7 @@ namespace AutoBot
                 foreach (var inline in instructions)
                 {
                     var p = inline.Split('\t');
-                    if (lcont >= res.Length) return false;
+                    if (lcont >= res.Length) return true;
                     if (string.IsNullOrEmpty(res[lcont])) return false;
                     var isSuccess = false;
                     foreach (var rline in res)

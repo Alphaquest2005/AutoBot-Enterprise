@@ -95,7 +95,7 @@ namespace AdjustmentQS.Business.Services
                         BaseDataModel.AttachEmailPDF(asycudaDocumentSetId, emailId);
                         BaseDataModel.AttachBlankC71(docList);
                     }
-
+                    BaseDataModel.SetInvoicePerline(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
                     BaseDataModel.RenameDuplicateDocumentCodes(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
                     ConvertFirstInvoicetoWarehouseCode(docList);
 

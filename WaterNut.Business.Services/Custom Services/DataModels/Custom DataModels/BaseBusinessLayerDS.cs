@@ -975,7 +975,7 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
 
             AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId);
-
+            BaseDataModel.SetInvoicePerline(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
             BaseDataModel.RenameDuplicateDocumentCodes(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
             return docList;
 
@@ -3746,6 +3746,61 @@ namespace WaterNut.DataSpace
             }
         }
 
+
+        public static void SetInvoicePerline(List<int> docList)
+        {
+            try
+            {
+               
+                using (var ctx = new DocumentItemDSContext() { StartTracking = true })
+                {
+                    foreach (var doc in docList)
+                    {
+                        var mItms = ctx.xcuda_Item
+                            .Include(x => x.xcuda_Attached_documents)
+                            .Where(x => x.ASYCUDA_Id == doc &&
+                                        x.xcuda_Attached_documents.Count(z => z.Attached_document_code == "IV05") > 1)
+                            .SelectMany(x => x.xcuda_Attached_documents)
+                            .Where(x => x.Attached_document_code == "IV05")
+                            .ToList()
+                            .GroupBy(x => x.Item_Id);
+
+                        var sItms = ctx.xcuda_Item
+                            .Include(x => x.xcuda_Attached_documents)
+                            .Where(x => x.ASYCUDA_Id == doc &&
+                                        x.xcuda_Attached_documents.Count(z => z.Attached_document_code == "IV05") == 0)
+                            .ToList();
+                           
+
+
+                        var i = 0;
+                        foreach (var item in mItms)
+                        {
+                           
+                            foreach (var att in item)
+                            {
+                                if (i > sItms.Count()) break;
+                                var sitm = sItms[i];
+                                att.Item_Id = sitm.Item_Id;
+                                //sitm.xcuda_Attached_documents.Add(att);
+                                ctx.Database.ExecuteSqlCommand($@"update xcuda_Attached_documents
+                                                                    set Item_Id = {sitm.Item_Id}
+                                                                    where Attached_documents_Id = {att.Attached_documents_Id} ");
+                                i += 1;
+                            }
+                        }
+
+
+                      // ctx.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
         public static void RenameDuplicateDocumentCodes(List<int> docList)
         {
