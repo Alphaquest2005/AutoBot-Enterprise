@@ -363,6 +363,7 @@ namespace AutoBot
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+
                         .ToList();
                     if (poList.Any())
                     {
@@ -391,12 +392,23 @@ namespace AutoBot
         private static void SubmitPOs(AsycudaDocumentSetEx docSet, List<TODO_SubmitPOInfo> pOs, string[] contacts,
             string[] poContacts)
         {
+            if (!pOs.Any())
+            {
+                EmailDownloader.EmailDownloader.SendEmail(Client, "",
+                    $"Document Package for {docSet.Declarant_Reference_Number}",
+                    contacts, "No Entries imported", Array.Empty<string>());
 
+                EmailDownloader.EmailDownloader.SendEmail(Client, "",
+                    $"Assessed Entries for {docSet.Declarant_Reference_Number}",
+                    poContacts, "No Entries imported", Array.Empty<string>());
+                return;
+            }
 
             using (var ctx = new CoreEntitiesContext())
             {
                 try
                 {
+
                     //var pdfs = Enumerable
                     //    .Select<AsycudaDocumentSet_Attachments, string>(docSet.AsycudaDocumentSet_Attachments,
                     //        x => x.Attachments.FilePath)
