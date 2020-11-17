@@ -43,6 +43,7 @@ namespace AdjustmentQS
         public string PreviousInvoiceLineNumber { get; set; }
         public string PreviousInvoiceItemNumber { get; set; }
         public string EntryDataType { get; set; }
+        public Nullable<int> UpgradeKey { get; set; }
     
         public virtual ICollection<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         public virtual ICollection<AdjustmentOversAllocation> AdjustmentOversAllocations { get; set; }

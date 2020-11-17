@@ -692,6 +692,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Int32? _upgradeKeyFilter;
+        public Int32? UpgradeKeyFilter
+        {
+            get
+            {
+                return _upgradeKeyFilter;
+            }
+            set
+            {
+                _upgradeKeyFilter = value;
+				NotifyPropertyChanged(x => UpgradeKeyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -831,7 +849,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 						res.Append(" && " + string.Format("TotalCost == {0}",  TotalCostFilter.ToString()));				 
 
 					if(FileLineNumberFilter.HasValue)
-						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));				 
+
+					if(UpgradeKeyFilter.HasValue)
+						res.Append(" && " + string.Format("UpgradeKey == {0}",  UpgradeKeyFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -926,7 +947,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     TotalCost = x.TotalCost ,
                     
  
-                    FileLineNumber = x.FileLineNumber 
+                    FileLineNumber = x.FileLineNumber ,
+                    
+ 
+                    UpgradeKey = x.UpgradeKey 
                     
                 }).ToList()
             };
@@ -1012,6 +1036,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public Nullable<int> FileLineNumber { get; set; } 
+                    
+ 
+                    public Nullable<int> UpgradeKey { get; set; } 
                     
         }
 

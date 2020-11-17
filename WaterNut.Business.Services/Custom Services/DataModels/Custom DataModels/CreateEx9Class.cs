@@ -150,21 +150,30 @@ namespace WaterNut.DataSpace
 
                         if (slst != null && slst.ToList().Any())
                         {
-                            var res = slst.Where(x => x.DutyFreePaid == dfp);
-                            List<ItemSalesPiSummary> itemSalesPiSummarylst;
-                            itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
-                                endDate,
-                                dfp, "Sales"); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
-                            await CreateDutyFreePaidDocument(dfp, res, docSet, documentType, isGrouped,
-                                    itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All" || x.DutyFreePaid == "Universal")
-                                        .ToList(), checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths, applyEx9Bucket,ex9BucketType, applyHistoricChecks, applyCurrentChecks,
-                                    autoAssess,perInvoice,overPIcheck, universalPIcheck)
-                                .ConfigureAwait(false);
-                            //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
-                            //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
-                            //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
-                            //        true, false, true)
-                            //    .ConfigureAwait(false);
+                            var types = slst.GroupBy(x => x.Type).ToList();
+                            foreach (var entrytype in types)
+                            {
+
+
+                                var res = entrytype.Where(x => x.DutyFreePaid == dfp);
+                                List<ItemSalesPiSummary> itemSalesPiSummarylst;
+                                itemSalesPiSummarylst = GetItemSalesPiSummary(docSet.ApplicationSettingsId, startDate,
+                                    endDate,
+                                    dfp, entrytype.Key); //res.SelectMany(x => x.Allocations).Select(z => z.AllocationId).ToList(), 
+                                await CreateDutyFreePaidDocument(dfp, res, docSet, documentType, isGrouped,
+                                        itemSalesPiSummarylst.Where(x =>
+                                                x.DutyFreePaid == dfp || x.DutyFreePaid == "All" ||
+                                                x.DutyFreePaid == "Universal")
+                                            .ToList(), checkQtyAllocatedGreaterThanPiQuantity, checkForMultipleMonths,
+                                        applyEx9Bucket, ex9BucketType, applyHistoricChecks, applyCurrentChecks,
+                                        autoAssess, perInvoice, overPIcheck, universalPIcheck)
+                                    .ConfigureAwait(false);
+                                //await CreateDutyFreePaidDocument(dfp, res, docSet, "Sales", true,
+                                //        itemSalesPiSummarylst.Where(x => x.DutyFreePaid == dfp || x.DutyFreePaid == "All")
+                                //            .ToList(), true, true, true, "Historic", true, ApplyCurrentChecks,
+                                //        true, false, true)
+                                //    .ConfigureAwait(false);
+                            }
                         }
 
                       
@@ -627,7 +636,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private IEnumerable<EX9SalesAllocations> GetEX9Data(string FilterExpression)
+        private IEnumerable<EX9Allocations> GetEX9Data(string FilterExpression)
         {
             FilterExpression =
                 FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\" || pExpiryDate == null)", "");
@@ -640,15 +649,16 @@ namespace WaterNut.DataSpace
                                 //"&& AllocationErrors == null" +
                                 "&& WarehouseError == null " +
                                 $"&& (CustomsOperationId == { (int)CustomsOperations.Warehouse})";
-            var res = new List<EX9SalesAllocations>();
+            var res = new List<EX9Allocations>();
             using (var ctx = new AllocationDSContext())
             {
                 ctx.Database.CommandTimeout = 0;
                 res = ctx.EX9AsycudaSalesAllocations
                       .AsNoTracking()
                       .Where(FilterExpression)
-                      .Select(x => new EX9SalesAllocations
+                      .Select(x => new EX9Allocations
                       {
+                          Type = x.Type,
                           AllocationId = x.AllocationId,
                           EntryData_Id = x.EntryData_Id,
                           Commercial_Description = x.Commercial_Description,
@@ -716,7 +726,7 @@ namespace WaterNut.DataSpace
        
 
         private IEnumerable<AllocationDataBlock> CreateWholeAllocationDataBlocks(
-            IEnumerable<EX9SalesAllocations> slstSource)
+            IEnumerable<EX9Allocations> slstSource)
         {
             IEnumerable<AllocationDataBlock> slst;
             if (PerIM7 == true)
@@ -731,7 +741,7 @@ namespace WaterNut.DataSpace
         }
 
         private IEnumerable<AllocationDataBlock> CreateWholeNonIM7AllocationDataBlocks(
-            IEnumerable<EX9SalesAllocations> slstSource)
+            IEnumerable<EX9Allocations> slstSource)
         {
             try
             {
@@ -740,10 +750,11 @@ namespace WaterNut.DataSpace
                 var source = slstSource.OrderBy(x => x.pTariffCode).ToList();
 
                 slst = from s in source
-                    group s by new {s.DutyFreePaid, MonthYear = "NoMTY"}
+                    group s by new {s.DutyFreePaid, s.Type, MonthYear = "NoMTY"}
                     into g
                     select new AllocationDataBlock
                     {
+                        Type = g.Key.Type,
                         MonthYear = g.Key.MonthYear,
                         DutyFreePaid = g.Key.DutyFreePaid,
                         Allocations = g.ToList(),
@@ -758,7 +769,7 @@ namespace WaterNut.DataSpace
         }
 
         private IEnumerable<AllocationDataBlock> CreateWholeIM7AllocationDataBlocks(
-            IEnumerable<EX9SalesAllocations> slstSource)
+            IEnumerable<EX9Allocations> slstSource)
         {
             try
             {
@@ -768,12 +779,14 @@ namespace WaterNut.DataSpace
                         new
                         {
                             s.DutyFreePaid,
+                            s.Type,
                             MonthYear = "NoMTY",
                             CNumber = s.pCNumber
                         }
                     into g
                     select new AllocationDataBlock
                     {
+                        Type = g.Key.Type,
                         MonthYear = g.Key.MonthYear,
                         DutyFreePaid = g.Key.DutyFreePaid,
                         Allocations = g.ToList(),
@@ -2011,7 +2024,7 @@ namespace WaterNut.DataSpace
     }
 
 
-    public class EX9SalesAllocations
+    public class EX9Allocations
     {
         public string pItemDescription;
         public string pTariffCode { get; set; }
@@ -2054,14 +2067,16 @@ namespace WaterNut.DataSpace
         public int? EmailId { get; set; }
         public int EntryData_Id { get; set; }
         public string Comment { get; set; }
+        public string Type { get; set; }
     }
 
     public class AllocationDataBlock
     {
         public string MonthYear { get; set; }
         public string DutyFreePaid { get; set; }
-        public List<EX9SalesAllocations> Allocations { get; set; }
+        public List<EX9Allocations> Allocations { get; set; }
         public string CNumber { get; set; }
+        public string Type { get; set; }
     }
 
     public class MyPodData

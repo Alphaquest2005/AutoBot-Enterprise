@@ -83,6 +83,7 @@
           </Key>
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="Tax" Type="float" />
         </EntityType>
         <EntityType Name="EntryData_Sales">
           <Key>
@@ -623,37 +624,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+     
         <EntityType Name="EX9AsycudaSalesAllocations">
           <Key>
             <PropertyRef Name="AllocationId" />
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
           </Key>
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -716,6 +690,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocation
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="Customs_ProcedureId" Type="int" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="Type" Type="varchar" MaxLength="5" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1493,7 +1468,8 @@ FROM [dbo].[EntryDataDetailsEx] AS [EntryDataDetailsEx]</DefiningQuery>
 [EX9AsycudaSalesAllocations].[xStatus] AS [xStatus], 
 [EX9AsycudaSalesAllocations].[Comment] AS [Comment], 
 [EX9AsycudaSalesAllocations].[Customs_ProcedureId] AS [Customs_ProcedureId], 
-[EX9AsycudaSalesAllocations].[InventoryItemId] AS [InventoryItemId]
+[EX9AsycudaSalesAllocations].[InventoryItemId] AS [InventoryItemId], 
+[EX9AsycudaSalesAllocations].[Type] AS [Type]
 FROM [dbo].[EX9AsycudaSalesAllocations] AS [EX9AsycudaSalesAllocations]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="InventoryItemAliasEx" EntityType="Self.InventoryItemAliasEx" store:Type="Views" store:Schema="dbo">
@@ -2682,6 +2658,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="CustomsOperationId" Type="Int32" />
           <Property Name="Customs_ProcedureId" Type="Int32" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="xcuda_ItemEX9AsycudaSalesAllocations">
           <End Type="WaterNutDBModel.xcuda_Item" Role="xcuda_Item" Multiplicity="1" />
@@ -2858,6 +2835,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
         <EntityType Name="Adjustments" BaseType="WaterNutDBModel.EntryData">
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.EntryData_AdjustmentsEntryDataDetails" FromRole="EntryData_Adjustments" ToRole="EntryDataDetails" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Tax" Type="Double" />
         </EntityType>
         <Association Name="EntryData_AdjustmentsEntryDataDetails">
           <End Type="WaterNutDBModel.Adjustments" Role="EntryData_Adjustments" Multiplicity="1" />
@@ -3446,6 +3424,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Adjustments)">
               <MappingFragment StoreEntitySet="EntryData_Adjustments">
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
               </MappingFragment>
@@ -3703,6 +3682,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="EX9AsycudaSalesAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.EX9AsycudaSalesAllocations">
               <MappingFragment StoreEntitySet="EX9AsycudaSalesAllocations">
+                <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="Customs_ProcedureId" ColumnName="Customs_ProcedureId" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />

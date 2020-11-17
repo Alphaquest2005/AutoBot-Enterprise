@@ -5080,7 +5080,7 @@ namespace AutoBot
 
                                 xQuantity = Convert.ToDouble(s.xQuantity), // Convert.ToDouble(s.QtyAllocated),
                                 Price = Convert.ToDouble(s.Cost),
-                                SalesType = "Duty Free",
+                                SalesType = s.DutyFreePaid,
                                 GrossSales = Convert.ToDouble(s.TotalValue),
                                 PreviousCNumber = s.pCNumber,
                                 PreviousLineNumber = s.pLineNumber.ToString(),

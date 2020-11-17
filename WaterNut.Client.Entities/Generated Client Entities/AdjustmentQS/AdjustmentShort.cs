@@ -282,9 +282,9 @@ public Nullable<bool> Downloaded
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
        
-       
-public Nullable<int> AsycudaDocumentSetId
+public int AsycudaDocumentSetId
 		{ 
 		    get { return this.adjustmentshort.AsycudaDocumentSetId; }
 			set
@@ -521,7 +521,7 @@ public System.DateTime InvoiceDate
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "Subject is required")]
+       
        
                 
                 
@@ -538,9 +538,9 @@ public string Subject
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "EmailDate is required")]
        
-public System.DateTime EmailDate
+       
+public Nullable<System.DateTime> EmailDate
 		{ 
 		    get { return this.adjustmentshort.EmailDate; }
 			set

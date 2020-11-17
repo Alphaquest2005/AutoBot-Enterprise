@@ -41,6 +41,21 @@ namespace AllocationDS.Business.Entities
         }
         string _type;
         [DataMember]
+        public Nullable<double> Tax 
+        {
+            get
+            {
+                return _tax;
+            }
+            set
+            {
+                _tax = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _tax;
+        [DataMember]
         public List<EntryDataDetails> EntryDataDetails { get; set; }
 
  //       [DataMember]

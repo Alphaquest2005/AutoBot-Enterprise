@@ -395,6 +395,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _expectedentries;
+        [DataMember]
+        public Nullable<int> TotalPackages 
+        {
+            get
+            {
+                return _totalpackages;
+            }
+            set
+            {
+                _totalpackages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _totalpackages;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

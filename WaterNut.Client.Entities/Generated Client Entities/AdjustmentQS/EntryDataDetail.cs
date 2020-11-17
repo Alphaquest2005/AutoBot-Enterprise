@@ -481,6 +481,21 @@ public Nullable<int> FileLineNumber
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> UpgradeKey
+		{ 
+		    get { return this.entrydatadetail.UpgradeKey; }
+			set
+			{
+			    if (value == this.entrydatadetail.UpgradeKey) return;
+				this.entrydatadetail.UpgradeKey = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("UpgradeKey");
+			}
+		}
+     
+
         ObservableCollection<AsycudaSalesAllocation> _AsycudaSalesAllocations = null;
         public  ObservableCollection<AsycudaSalesAllocation> AsycudaSalesAllocations
 		{

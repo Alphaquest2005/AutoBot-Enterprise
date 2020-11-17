@@ -346,6 +346,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _ExpectedEntries;
 
+        [DataMember]
+        public Nullable<int> TotalPackages
+		{ 
+		    get { return _TotalPackages; }
+			set
+			{
+			    if (value == _TotalPackages) return;
+				_TotalPackages = value;
+				NotifyPropertyChanged();//m => this.TotalPackages
+			}
+		}
+        private Nullable<int> _TotalPackages;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

@@ -25,6 +25,8 @@ namespace AdjustmentQS
         public string CustomsProcedure { get; set; }
         public int Asycuda_id { get; set; }
         public string EntryDataType { get; set; }
+        public int ApplicationSettingsId { get; set; }
+        public int AsycudaDocumentSetId { get; set; }
     
         public virtual AdjustmentOver AdjustmentOver { get; set; }
         public virtual AdjustmentShort AdjustmentShort { get; set; }

@@ -149,6 +149,21 @@ public int AssessedAsycuda_Id
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "EntryData_ is required")]
+       
+public int EntryData_Id
+		{ 
+		    get { return this.todo_importcompleteentries.EntryData_Id; }
+			set
+			{
+			    if (value == this.todo_importcompleteentries.EntryData_Id) return;
+				this.todo_importcompleteentries.EntryData_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EntryData_Id");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_ImportCompleteEntries> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_ImportCompleteEntries> ChangeTracker

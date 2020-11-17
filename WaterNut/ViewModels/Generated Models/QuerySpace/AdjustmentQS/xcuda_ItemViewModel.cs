@@ -564,6 +564,24 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
         }	
 
  
+
+		private Int32? _upgradeKeyFilter;
+        public Int32? UpgradeKeyFilter
+        {
+            get
+            {
+                return _upgradeKeyFilter;
+            }
+            set
+            {
+                _upgradeKeyFilter = value;
+				NotifyPropertyChanged(x => UpgradeKeyFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -693,7 +711,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 
 									if(string.IsNullOrEmpty(EntryDataTypeFilter) == false)
 						res.Append(" && " + string.Format("EntryDataType.Contains(\"{0}\")",  EntryDataTypeFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(UpgradeKeyFilter.HasValue)
+						res.Append(" && " + string.Format("UpgradeKey == {0}",  UpgradeKeyFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -773,7 +794,10 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     PreviousInvoiceItemNumber = x.PreviousInvoiceItemNumber ,
                     
  
-                    EntryDataType = x.EntryDataType 
+                    EntryDataType = x.EntryDataType ,
+                    
+ 
+                    UpgradeKey = x.UpgradeKey 
                     
                 }).ToList()
             };
@@ -844,6 +868,9 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     
  
                     public string EntryDataType { get; set; } 
+                    
+ 
+                    public Nullable<int> UpgradeKey { get; set; } 
                     
         }
 

@@ -17,7 +17,7 @@
               this.Property(t => t.Quantity_deducted_from_licence).HasColumnName("Quantity_deducted_from_licence").HasMaxLength(4);
               this.Property(t => t.Item_Id).HasColumnName("Item_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
-              this.Property(t => t.Licence_number).HasColumnName("Licence_number").HasMaxLength(6);
+              this.Property(t => t.Licence_number).HasColumnName("Licence_number").HasMaxLength(50);
               this.Property(t => t.Free_text_1).HasColumnName("Free_text_1").HasMaxLength(35);
               this.Property(t => t.Free_text_2).HasColumnName("Free_text_2").HasMaxLength(30);
               this.Property(t => t.EntryDataDetailsId).HasColumnName("EntryDataDetailsId");
@@ -36,6 +36,7 @@
               this.Property(t => t.PreviousInvoiceLineNumber).HasColumnName("PreviousInvoiceLineNumber").HasMaxLength(50);
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
               this.HasMany(t => t.AsycudaSalesAllocations).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.PreviousItem_Id);
               this.HasMany(t => t.AdjustmentOversAllocations).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.PreviousItem_Id);
              // Tracking Properties

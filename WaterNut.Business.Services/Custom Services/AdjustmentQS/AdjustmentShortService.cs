@@ -378,7 +378,7 @@ namespace AdjustmentQS.Business.Services
         }
 
         private IEnumerable<AllocationDataBlock> CreateWholeAllocationDataBlocks(bool perInvoice,
-            IEnumerable<EX9SalesAllocations> slstSource)
+            IEnumerable<EX9Allocations> slstSource)
         {
             IEnumerable<AllocationDataBlock> slst;
             if (perInvoice == true)
@@ -392,7 +392,7 @@ namespace AdjustmentQS.Business.Services
             return slst;
         }
 
-        private IEnumerable<AllocationDataBlock> CreateNonPerInvoiceAllocationDataBlocks(IEnumerable<EX9SalesAllocations> slstSource)
+        private IEnumerable<AllocationDataBlock> CreateNonPerInvoiceAllocationDataBlocks(IEnumerable<EX9Allocations> slstSource)
         {
             try
             {
@@ -420,7 +420,7 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        private IEnumerable<AllocationDataBlock> CreatePerInvoiceAllocationDataBlocks(IEnumerable<EX9SalesAllocations> slstSource)
+        private IEnumerable<AllocationDataBlock> CreatePerInvoiceAllocationDataBlocks(IEnumerable<EX9Allocations> slstSource)
         {
             try
             {
@@ -450,7 +450,7 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        private async  Task<List<EX9SalesAllocations>> GetIM9Data(string FilterExpression, List<int> entryDataDetailsIds)
+        private async  Task<List<EX9Allocations>> GetIM9Data(string FilterExpression, List<int> entryDataDetailsIds)
         {
             FilterExpression =
                 FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\")", "");
@@ -473,7 +473,7 @@ namespace AdjustmentQS.Business.Services
 
             };
             var exp = map.Aggregate(exp1, (current, m) => current.Replace(m.Key, m.Value));
-            var res = new List<EX9SalesAllocations>();
+            var res = new List<EX9Allocations>();
             using (var ctx = new AllocationDSContext())
             {
                 ctx.Database.CommandTimeout = (60*30);
@@ -516,7 +516,7 @@ namespace AdjustmentQS.Business.Services
                         // took this out to allow creating entries on is manually assessed entries 
                         //.Where(g => g.x.pCNumber != null) 
                         .Where(g => g.w.Any())
-                        .Select(c => new EX9SalesAllocations
+                        .Select(c => new EX9Allocations
                         {
                             AllocationId = c.x.AllocationId,
                             EntryData_Id = c.x.EntryDataDetails.EntryData_Id,

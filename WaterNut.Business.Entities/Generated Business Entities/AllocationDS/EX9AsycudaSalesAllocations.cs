@@ -936,6 +936,21 @@ namespace AllocationDS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
+        public string Type 
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _type;
+        [DataMember]
         public xcuda_Item PreviousDocumentItem { get; set; }
         [DataMember]
         public InventoryItem InventoryItemsEx { get; set; }

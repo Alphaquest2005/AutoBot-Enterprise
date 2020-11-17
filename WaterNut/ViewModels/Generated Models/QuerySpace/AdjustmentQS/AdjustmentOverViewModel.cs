@@ -1279,7 +1279,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
                     public string Subject { get; set; } 
                     
  
-                    public System.DateTime EmailDate { get; set; } 
+                    public Nullable<System.DateTime> EmailDate { get; set; } 
                     
  
                     public Nullable<bool> IsReconciled { get; set; } 

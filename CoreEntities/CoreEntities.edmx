@@ -871,9 +871,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepancyPreExecut
             
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="DutyFreePaid" />
             <PropertyRef Name="Subject" />
             <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -1125,12 +1125,14 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ImportCompleteEntrie
           <Key>
             
             
+            <PropertyRef Name="EntryData_Id" />
             <PropertyRef Name="NewAsycuda_Id" />
             <PropertyRef Name="AssessedAsycuda_Id" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="NewAsycuda_Id" Type="int" Nullable="false" />
@@ -1336,6 +1338,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToExport' do
           <Property Name="TotalLines" Type="int" />
           <Property Name="EntryPackages" Type="int" />
           <Property Name="TotalWeight" Type="float" />
+          <Property Name="TotalPackages" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1598,9 +1601,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-TotalAdjustmentsToPr
             
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="InvoiceDate" />
+            <PropertyRef Name="DutyFreePaid" />
             <PropertyRef Name="Subject" />
             <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -2631,6 +2634,7 @@ FROM [dbo].[TODO-ERRReport-UnmappedItems] AS [TODO-ERRReport-UnmappedItems]</Def
 [TODO-ImportCompleteEntries].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [TODO-ImportCompleteEntries].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [TODO-ImportCompleteEntries].[EntryDataId] AS [EntryDataId], 
+[TODO-ImportCompleteEntries].[EntryData_Id] AS [EntryData_Id], 
 [TODO-ImportCompleteEntries].[EmailId] AS [EmailId], 
 [TODO-ImportCompleteEntries].[FileTypeId] AS [FileTypeId], 
 [TODO-ImportCompleteEntries].[NewAsycuda_Id] AS [NewAsycuda_Id], 
@@ -2794,7 +2798,8 @@ FROM [dbo].[TODO-PODocSetToAssessErrors] AS [TODO-PODocSetToAssessErrors]</Defin
 [TODO-PODocSetToExport].[ClassifiedLines] AS [ClassifiedLines], 
 [TODO-PODocSetToExport].[TotalLines] AS [TotalLines], 
 [TODO-PODocSetToExport].[EntryPackages] AS [EntryPackages], 
-[TODO-PODocSetToExport].[TotalWeight] AS [TotalWeight]
+[TODO-PODocSetToExport].[TotalWeight] AS [TotalWeight], 
+[TODO-PODocSetToExport].[TotalPackages] AS [TotalPackages]
 FROM [dbo].[TODO-PODocSetToExport] AS [TODO-PODocSetToExport]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="ToDo-POToXML" EntityType="Self.ToDo-POToXML" store:Type="Views" store:Schema="dbo">
@@ -4870,6 +4875,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="FreightCurrencyCode" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="true" />
           <Property Name="ExpectedEntries" Type="Int32" />
+          <Property Name="TotalPackages" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_CreateEx9">
           <Key>
@@ -4886,6 +4892,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Key>
             <PropertyRef Name="NewAsycuda_Id" />
             <PropertyRef Name="AssessedAsycuda_Id" />
+            <PropertyRef Name="EntryData_Id" />
           </Key>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" />
@@ -4894,6 +4901,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="EntryDataId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="NewAsycuda_Id" Type="Int32" Nullable="false" />
           <Property Name="AssessedAsycuda_Id" Type="Int32" Nullable="false" />
+          <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_AdjustmentsAlreadyXMLed">
           <Key>
@@ -6484,6 +6492,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_PODocSetToExport">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_PODocSetToExport">
               <MappingFragment StoreEntitySet="TODO-PODocSetToExport">
+                <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
                 <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
                 <ScalarProperty Name="FreightCurrencyCode" ColumnName="FreightCurrencyCode" />
                 <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
@@ -6526,6 +6535,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_ImportCompleteEntries">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_ImportCompleteEntries">
               <MappingFragment StoreEntitySet="TODO-ImportCompleteEntries">
+                <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="AssessedAsycuda_Id" ColumnName="AssessedAsycuda_Id" />
                 <ScalarProperty Name="NewAsycuda_Id" ColumnName="NewAsycuda_Id" />
                 <ScalarProperty Name="EntryDataId" ColumnName="EntryDataId" />

@@ -447,6 +447,21 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<int> _filelinenumber;
         [DataMember]
+        public Nullable<int> UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _upgradekey;
+        [DataMember]
         public List<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }

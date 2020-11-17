@@ -43,7 +43,7 @@
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.InvoiceDate).HasColumnName("InvoiceDate");
-              this.Property(t => t.Subject).HasColumnName("Subject").IsRequired();
+              this.Property(t => t.Subject).HasColumnName("Subject");
               this.Property(t => t.EmailDate).HasColumnName("EmailDate");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.Property(t => t.IsReconciled).HasColumnName("IsReconciled");

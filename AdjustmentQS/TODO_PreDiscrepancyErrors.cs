@@ -48,7 +48,7 @@ namespace AdjustmentQS
         public string Declarant_Reference_Number { get; set; }
         public System.DateTime InvoiceDate { get; set; }
         public string Subject { get; set; }
-        public System.DateTime EmailDate { get; set; }
+        public Nullable<System.DateTime> EmailDate { get; set; }
         public Nullable<double> PiQuantity { get; set; }
         public Nullable<double> ItemQuantity { get; set; }
     }

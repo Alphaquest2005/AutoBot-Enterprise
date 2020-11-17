@@ -265,7 +265,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
          }
 		public void ViewAll()
         {
-		vloader.FilterExpression = "All";
+			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
 
 
 

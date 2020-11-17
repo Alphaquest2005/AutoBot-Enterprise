@@ -49,7 +49,7 @@ namespace AdjustmentQS
         public Nullable<int> FileTypeId { get; set; }
         public System.DateTime InvoiceDate { get; set; }
         public string Subject { get; set; }
-        public System.DateTime EmailDate { get; set; }
+        public Nullable<System.DateTime> EmailDate { get; set; }
         public int EntryData_Id { get; set; }
         public Nullable<bool> IsReconciled { get; set; }
         public int InventoryItemId { get; set; }

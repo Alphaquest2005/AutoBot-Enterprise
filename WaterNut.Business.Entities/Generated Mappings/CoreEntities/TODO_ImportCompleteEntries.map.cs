@@ -11,7 +11,7 @@
     {
         public TODO_ImportCompleteEntriesMap()
         {                        
-              this.HasKey(t => new {t.NewAsycuda_Id, t.AssessedAsycuda_Id});        
+              this.HasKey(t => new {t.NewAsycuda_Id, t.AssessedAsycuda_Id, t.EntryData_Id});        
               this.ToTable("TODO-ImportCompleteEntries");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
@@ -20,6 +20,7 @@
               this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.NewAsycuda_Id).HasColumnName("NewAsycuda_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.AssessedAsycuda_Id).HasColumnName("AssessedAsycuda_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

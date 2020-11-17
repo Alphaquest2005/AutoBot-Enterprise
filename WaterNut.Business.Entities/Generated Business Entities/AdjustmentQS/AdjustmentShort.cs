@@ -252,7 +252,7 @@ namespace AdjustmentQS.Business.Entities
         }
         Nullable<bool> _downloaded;
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId 
+        public int AsycudaDocumentSetId 
         {
             get
             {
@@ -265,7 +265,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _asycudadocumentsetid;
+        int _asycudadocumentsetid;
         [DataMember]
         public Nullable<double> InvoiceQty 
         {
@@ -492,7 +492,7 @@ namespace AdjustmentQS.Business.Entities
         }
         string _subject;
         [DataMember]
-        public System.DateTime EmailDate 
+        public Nullable<System.DateTime> EmailDate 
         {
             get
             {
@@ -505,7 +505,7 @@ namespace AdjustmentQS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _emaildate;
+        Nullable<System.DateTime> _emaildate;
         [DataMember]
         public int EntryData_Id 
         {

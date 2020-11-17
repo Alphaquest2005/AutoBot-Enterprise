@@ -112,7 +112,7 @@ public int ASYCUDA_Id
        
        
                 
-                [MaxLength(6, ErrorMessage = "Licence_number has a max length of 6 letters ")]
+                [MaxLength(50, ErrorMessage = "Licence_number has a max length of 50 letters ")]
 public string Licence_number
 		{ 
 		    get { return this.xcuda_item.Licence_number; }
@@ -406,6 +406,21 @@ public string EntryDataType
 				this.xcuda_item.EntryDataType = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("EntryDataType");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> UpgradeKey
+		{ 
+		    get { return this.xcuda_item.UpgradeKey; }
+			set
+			{
+			    if (value == this.xcuda_item.UpgradeKey) return;
+				this.xcuda_item.UpgradeKey = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("UpgradeKey");
 			}
 		}
      

@@ -217,7 +217,7 @@ namespace AdjustmentQS.Client.DTO
         private Nullable<bool> _Downloaded;
 
         [DataMember]
-        public Nullable<int> AsycudaDocumentSetId
+        public int AsycudaDocumentSetId
 		{ 
 		    get { return _AsycudaDocumentSetId; }
 			set
@@ -227,7 +227,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
 			}
 		}
-        private Nullable<int> _AsycudaDocumentSetId;
+        private int _AsycudaDocumentSetId;
 
         [DataMember]
         public Nullable<double> InvoiceQty
@@ -425,7 +425,7 @@ namespace AdjustmentQS.Client.DTO
         private string _Subject;
 
         [DataMember]
-        public System.DateTime EmailDate
+        public Nullable<System.DateTime> EmailDate
 		{ 
 		    get { return _EmailDate; }
 			set
@@ -435,7 +435,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailDate
 			}
 		}
-        private System.DateTime _EmailDate;
+        private Nullable<System.DateTime> _EmailDate;
 
         [DataMember]
         public int EntryData_Id

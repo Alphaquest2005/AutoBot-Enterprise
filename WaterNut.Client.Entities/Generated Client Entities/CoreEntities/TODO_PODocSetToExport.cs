@@ -433,6 +433,21 @@ public Nullable<int> ExpectedEntries
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> TotalPackages
+		{ 
+		    get { return this.todo_podocsettoexport.TotalPackages; }
+			set
+			{
+			    if (value == this.todo_podocsettoexport.TotalPackages) return;
+				this.todo_podocsettoexport.TotalPackages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalPackages");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_PODocSetToExport> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_PODocSetToExport> ChangeTracker

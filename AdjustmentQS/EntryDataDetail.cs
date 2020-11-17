@@ -48,6 +48,7 @@ namespace AdjustmentQS
         public int InventoryItemId { get; set; }
         public int EntryData_Id { get; set; }
         public Nullable<int> FileLineNumber { get; set; }
+        public Nullable<int> UpgradeKey { get; set; }
     
         public virtual ICollection<AsycudaSalesAllocation> AsycudaSalesAllocations { get; set; }
         public virtual InventoryItemsEx InventoryItemsEx { get; set; }

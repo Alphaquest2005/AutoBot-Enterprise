@@ -222,7 +222,7 @@ namespace EmailDownloader
             try
             {
                 var imapClient = new ImapClient();
-                imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
+                imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
                 imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
                 var dataFolder = clientDetails.DataFolder;
                 imapClient.Inbox.Open(FolderAccess.ReadWrite);
@@ -271,7 +271,7 @@ namespace EmailDownloader
         {
             using (var client = new SmtpClient())
             {
-                client.Connect("ez-brokerage-services.com", 465, true);
+                client.Connect("auto-brokerage.com", 465, true);
                 client.Authenticate(clientDetails.Email, clientDetails.Password);
 
                 client.Send(message);
@@ -320,7 +320,7 @@ namespace EmailDownloader
             try
             {
                 var imapClient = new ImapClient();
-                imapClient.Connect("ez-brokerage-services.com", 993, SecureSocketOptions.SslOnConnect);
+                imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
                 imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
                 var dataFolder = clientDetails.DataFolder;
                 imapClient.Inbox.Open(FolderAccess.ReadWrite);

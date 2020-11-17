@@ -200,10 +200,11 @@ namespace WaterNut.DataSpace
 			var count = itemSetsValues.Count();
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
+               //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("harry")))
 				// .Where(x => x.Key.Contains("AWL/J3809QT")) //.Where(x => x.Key.Contains("255100")) // 
 																		  // .Where(x => "337493".Contains(x.Key))
 																		  //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
-									 , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount *  1 }, itm => //.Where(x => x.ItemNumber == "AT18547")
+									 , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, itm => //.Where(x => x.ItemNumber == "AT18547")  
 			 {
 			//     foreach (var itm in itemSets.Values)//.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))
 			//{
@@ -863,6 +864,7 @@ namespace WaterNut.DataSpace
 				   EntryDataId = x.Adjustments.EntryDataId,
 				   EntryDataDate = Convert.ToDateTime(x.EffectiveDate),
 				   INVNumber = x.Adjustments.EntryDataId,
+                   Tax = x.Adjustments.Tax
 			   };
 			   x.Comment = "Adjustment";
 		   });

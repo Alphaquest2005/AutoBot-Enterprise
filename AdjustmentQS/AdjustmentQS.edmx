@@ -78,6 +78,7 @@
           <Property Name="LastCost" Type="float" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="FileLineNumber" Type="int" />
+          <Property Name="UpgradeKey" Type="int" />
         </EntityType>
         <EntityType Name="SystemDocumentSets">
           <Key>
@@ -93,7 +94,7 @@
           <Property Name="Quantity_deducted_from_licence" Type="nvarchar" MaxLength="4" />
           <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Licence_number" Type="nvarchar" MaxLength="6" />
+          <Property Name="Licence_number" Type="nvarchar" MaxLength="50" />
           <Property Name="Free_text_1" Type="nvarchar" MaxLength="35" />
           <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
           <Property Name="EntryDataDetailsId" Type="int" />
@@ -112,12 +113,26 @@
           <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpgradeKey" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AdjustmentDetails">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -152,8 +167,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentDetails' does n
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="EmailDate" Type="datetime" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -185,6 +200,19 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
         <EntityType Name="AdjustmentOvers">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -217,8 +245,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentOvers' does not
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="EmailDate" Type="datetime" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -315,7 +343,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
             
             
             
-            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -331,7 +358,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
           <Property Name="DoNotAllocate" Type="bit" />
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="Total" Type="float" />
-          <Property Name="AsycudaDocumentSetId" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="InvoiceQty" Type="float" />
           <Property Name="ReceivedQty" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
@@ -350,13 +377,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AdjustmentShorts' does no
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="EmailDate" Type="datetime" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
           <Key>
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
             <PropertyRef Name="EntryDataDetailsId" />
             
             <PropertyRef Name="Item_Id" />
@@ -364,6 +393,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
             
             <PropertyRef Name="Asycuda_id" />
           </Key>
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
@@ -482,8 +513,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors
             
             <PropertyRef Name="ApplicationSettingsId" />
             
-            
-            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -518,8 +547,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PreDiscrepancyErrors
           <Property Name="EmailId" Type="int" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="Subject" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="EmailDate" Type="datetime" Nullable="false" />
+          <Property Name="Subject" Type="nvarchar(max)" />
+          <Property Name="EmailDate" Type="datetime" />
           <Property Name="PiQuantity" Type="float" />
           <Property Name="ItemQuantity" Type="float" />
         </EntityType>
@@ -776,6 +805,8 @@ FROM [dbo].[AdjustmentShorts] AS [AdjustmentShorts]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
+[AsycudaDocumentItemEntryDataDetails].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentItemEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
 [AsycudaDocumentItemEntryDataDetails].[EntryDataDetailsId] AS [EntryDataDetailsId], 
 [AsycudaDocumentItemEntryDataDetails].[EntryData_Id] AS [EntryData_Id], 
 [AsycudaDocumentItemEntryDataDetails].[Item_Id] AS [Item_Id], 
@@ -1138,8 +1169,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EmailId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="IsReconciled" Type="Boolean" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
@@ -1163,7 +1194,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CLineNumber" Type="Int32" />
           <Property Name="Downloaded" Type="Boolean" />
-          <Property Name="AsycudaDocumentSetId" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="InvoiceQty" Type="Double" />
           <Property Name="ReceivedQty" Type="Double" />
           <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -1182,8 +1213,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="IsReconciled" Type="Boolean" />
         </EntityType>
@@ -1246,6 +1277,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="UpgradeKey" Type="Int32" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_EntryDataDetails">
           <End Type="Model.EntryDataDetail" Role="EntryDataDetail" Multiplicity="0..1">
@@ -1341,7 +1373,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="Quantity_deducted_from_licence" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ASYCUDA_Id" Type="Int32" Nullable="false" />
-          <Property Name="Licence_number" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="Licence_number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Free_text_1" Type="String" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Name="Free_text_2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataDetailsId" Type="Int32" />
@@ -1362,6 +1394,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AdjustmentOversAllocations" Relationship="Model.FK_AdjustmentOversAllocations_xcuda_Item" FromRole="xcuda_Item" ToRole="AdjustmentOversAllocation" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpgradeKey" Type="Int32" />
         </EntityType>
         <Association Name="FK_AsycudaSalesAllocations_xcuda_Item">
           <End Type="Model.xcuda_Item" Role="xcuda_Item" Multiplicity="0..1" />
@@ -1416,8 +1449,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EmailId" Type="Int32" />
           <Property Name="FileTypeId" Type="Int32" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
           <NavigationProperty Name="SystemDocumentSet" Relationship="Model.SystemDocumentSetAdjustmentDetail" FromRole="AdjustmentDetail" ToRole="SystemDocumentSet" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
@@ -1439,6 +1472,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
             <PropertyRef Name="EntryDataDetailsId" />
             <PropertyRef Name="Item_Id" />
             <PropertyRef Name="Asycuda_id" />
+            <PropertyRef Name="ApplicationSettingsId" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="Int32" Nullable="false" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
@@ -1454,6 +1489,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="CustomsProcedure" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
           <Property Name="Asycuda_id" Type="Int32" Nullable="false" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="AdjustmentOverAsycudaDocumentItemEntryDataDetail">
           <End Type="Model.AdjustmentOver" Role="AdjustmentOver" Multiplicity="1" />
@@ -1698,8 +1735,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <Property Name="EmailId" Type="Int32" />
           <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="Subject" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="EmailDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Subject" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="EmailDate" Type="DateTime" Precision="3" />
           <Property Name="PiQuantity" Type="Double" />
           <Property Name="ItemQuantity" Type="Double" />
         </EntityType>
@@ -1885,6 +1922,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="Model.EntryDataDetail">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
@@ -1978,6 +2016,7 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="Model.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
                 <ScalarProperty Name="PreviousInvoiceLineNumber" ColumnName="PreviousInvoiceLineNumber" />
@@ -2049,6 +2088,8 @@ FROM [dbo].[TODO-PreDiscrepancyErrors] AS [TODO-PreDiscrepancyErrors]</DefiningQ
           <EntitySetMapping Name="AsycudaDocumentItemEntryDataDetails">
             <EntityTypeMapping TypeName="Model.AsycudaDocumentItemEntryDataDetail">
               <MappingFragment StoreEntitySet="AsycudaDocumentItemEntryDataDetails">
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="Asycuda_id" ColumnName="Asycuda_id" />
                 <ScalarProperty Name="CustomsProcedure" ColumnName="CustomsProcedure" />

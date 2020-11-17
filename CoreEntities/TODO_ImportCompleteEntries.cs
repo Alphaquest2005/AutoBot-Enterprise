@@ -21,5 +21,6 @@ namespace CoreEntities
         public string EntryDataId { get; set; }
         public int NewAsycuda_Id { get; set; }
         public int AssessedAsycuda_Id { get; set; }
+        public int EntryData_Id { get; set; }
     }
 }

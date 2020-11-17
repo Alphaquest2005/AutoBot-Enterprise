@@ -320,6 +320,19 @@ namespace AdjustmentQS.Client.DTO
 		}
         private string _EntryDataType;
 
+        [DataMember]
+        public Nullable<int> UpgradeKey
+		{ 
+		    get { return _UpgradeKey; }
+			set
+			{
+			    if (value == _UpgradeKey) return;
+				_UpgradeKey = value;
+				NotifyPropertyChanged();//m => this.UpgradeKey
+			}
+		}
+        private Nullable<int> _UpgradeKey;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaSalesAllocation> AsycudaSalesAllocations

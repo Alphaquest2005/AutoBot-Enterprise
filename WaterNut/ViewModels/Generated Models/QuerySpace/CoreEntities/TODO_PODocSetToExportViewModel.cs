@@ -584,6 +584,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _totalPackagesFilter;
+        public Int32? TotalPackagesFilter
+        {
+            get
+            {
+                return _totalPackagesFilter;
+            }
+            set
+            {
+                _totalPackagesFilter = value;
+				NotifyPropertyChanged(x => TotalPackagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -689,7 +707,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
  
 
 					if(ExpectedEntriesFilter.HasValue)
-						res.Append(" && " + string.Format("ExpectedEntries == {0}",  ExpectedEntriesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("ExpectedEntries == {0}",  ExpectedEntriesFilter.ToString()));				 
+
+					if(TotalPackagesFilter.HasValue)
+						res.Append(" && " + string.Format("TotalPackages == {0}",  TotalPackagesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -778,7 +799,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     FreightCurrencyCode = x.FreightCurrencyCode ,
                     
  
-                    ExpectedEntries = x.ExpectedEntries 
+                    ExpectedEntries = x.ExpectedEntries ,
+                    
+ 
+                    TotalPackages = x.TotalPackages 
                     
                 }).ToList()
             };
@@ -858,6 +882,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<int> ExpectedEntries { get; set; } 
+                    
+ 
+                    public Nullable<int> TotalPackages { get; set; } 
                     
         }
 

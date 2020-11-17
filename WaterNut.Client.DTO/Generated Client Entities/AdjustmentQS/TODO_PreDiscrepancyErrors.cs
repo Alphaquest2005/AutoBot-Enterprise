@@ -464,7 +464,7 @@ namespace AdjustmentQS.Client.DTO
         private string _Subject;
 
         [DataMember]
-        public System.DateTime EmailDate
+        public Nullable<System.DateTime> EmailDate
 		{ 
 		    get { return _EmailDate; }
 			set
@@ -474,7 +474,7 @@ namespace AdjustmentQS.Client.DTO
 				NotifyPropertyChanged();//m => this.EmailDate
 			}
 		}
-        private System.DateTime _EmailDate;
+        private Nullable<System.DateTime> _EmailDate;
 
         [DataMember]
         public Nullable<double> PiQuantity
