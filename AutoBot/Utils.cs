@@ -3122,10 +3122,7 @@ namespace AutoBot
 
         public static void AssessPOEntries(FileTypes ft)
         {
-            try
-            {
-
-        
+            
                 
             Console.WriteLine("Assessing PO Entries");
             using (var ctx = new CoreEntitiesContext())
@@ -3141,67 +3138,53 @@ namespace AutoBot
             }
 
             SubmitAssessPOErrors(ft);
-            }
-            catch (Exception)
-            {
 
-                throw;
-            }
         }
 
         private static void SubmitAssessPOErrors(FileTypes ft)
         {
-            try
+
+            
+            using (var ctx = new CoreEntitiesContext())
             {
+                var res = ctx.TODO_PODocSetToAssessErrors.Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                    .ToList();
+                if (!res.Any()) return;
+                Console.WriteLine("Emailing Assessment Errors - please check Mail");
+                var docSet = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId);
+                var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
+                    .Select(x => x.EmailAddress).ToArray();
+                var body =
+                    $"Please see attached documents .\r\n" +
+                    $"Please open the attached email to view Email Thread.\r\n" +
+                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
+                    $"\r\n" +
+                    $"Regards,\r\n" +
+                    $"AutoBot";
 
 
-                using (var ctx = new CoreEntitiesContext())
+
+                var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSet.Declarant_Reference_Number);
+
+                var summaryFile = Path.Combine(directory, "POAssesErrors.csv");
+                if (File.Exists(summaryFile)) File.Delete(summaryFile);
+                var errRes =
+                    new ExportToCSV<TODO_PODocSetToAssessErrors, List<TODO_PODocSetToAssessErrors>>();
+                errRes.dataToPrint = res;
+                using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                 {
-                    var res = ctx.TODO_PODocSetToAssessErrors.Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
-                        .ToList();
-                    if (!res.Any()) return;
-                    Console.WriteLine("Emailing Assessment Errors - please check Mail");
-                    var docSet = ctx.AsycudaDocumentSetExs.First(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId);
-                    var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
-                        .Select(x => x.EmailAddress).ToArray();
-                    var body =
-                        $"Please see attached documents .\r\n" +
-                        $"Please open the attached email to view Email Thread.\r\n" +
-                        $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
-                        $"\r\n" +
-                        $"Regards,\r\n" +
-                        $"AutoBot";
-
-
-
-                    var directory = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, docSet.Declarant_Reference_Number);
-
-                    var summaryFile = Path.Combine(directory, "POAssesErrors.csv");
-                    if (File.Exists(summaryFile)) File.Delete(summaryFile);
-                    var errRes =
-                        new ExportToCSV<TODO_PODocSetToAssessErrors, List<TODO_PODocSetToAssessErrors>>();
-                    errRes.dataToPrint = res;
-                    using (var sta = new StaTaskScheduler(numberOfThreads: 1))
-                    {
-                        Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
-                            TaskCreationOptions.None, sta);
-                    }
-
-
-
-                    EmailDownloader.EmailDownloader.SendEmail(Client, directory,
-                        $"PO Assessment Errors for Shipment: {docSet.Declarant_Reference_Number}",
-                        poContacts, body, new string[] { summaryFile });
-
-
-
+                    Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
+                        TaskCreationOptions.None, sta);
                 }
 
-            }
-            catch (Exception)
-            {
+               
+               
+                EmailDownloader.EmailDownloader.SendEmail(Client, directory,
+                    $"PO Assessment Errors for Shipment: {docSet.Declarant_Reference_Number}",
+                    poContacts, body, new string[]{summaryFile});
 
-                throw;
+                    
+               
             }
         }
 
@@ -3457,7 +3440,6 @@ namespace AutoBot
                     }
 
                     if (isSuccess == true) continue;
-                    if (p[0] == "Attach") continue;
                     return false;
                 }
 

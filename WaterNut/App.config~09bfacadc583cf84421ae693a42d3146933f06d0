@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    
+  <!-- For more information on Entity Framework configuration, visit http://go.microsoft.com/fwlink/?LinkID=237468 -->
+  <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false"/>
+  </configSections>
+  <startup>
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7"/>
+  </startup>
+
+
+  <!--<connectionStrings>
+    <add name="WaterNutDBEntities" connectionString="metadata=res://*/WaterNutDB.csdl|res://*/WaterNutDB.ssdl|res://*/WaterNutDB.msl;provider=System.Data.SqlClient;provider connection string='data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;MultipleActiveResultSets=True;App=EntityFramework'" providerName="System.Data.EntityClient"/>
+    <add name="AllocationDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="AllocationQS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="CoreEntities" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="OCR" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="CounterPointQS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="DocumentDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="DocumentItemDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="EntryDataDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="EntryDataQS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="InventoryQS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="InventoryDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="AdjustmentQS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="PreviousDocumentQS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="PreviousDocumentDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="QuickBooksDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="SalesDataQS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="ValuationDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="LicenseDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=AutoBot-EnterpriseDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+  </connectionStrings>-->
+  
+  <connectionStrings>
+
+    <add name="WaterNutDBEntities" connectionString="metadata=res://*/WaterNutDB.csdl|res://*/WaterNutDB.ssdl|res://*/WaterNutDB.msl;provider=System.Data.SqlClient;provider connection string='data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;MultipleActiveResultSets=True;App=EntityFramework'" providerName="System.Data.EntityClient"/>
+    <add name="AllocationDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="AllocationQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="CoreEntities" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="OCR" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="CounterPointQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="DocumentDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="DocumentItemDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+
+    <add name="EntryDataDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="EntryDataQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="InventoryQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="InventoryDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="AdjustmentQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="PreviousDocumentQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="PreviousDocumentDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="QuickBooksDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="SalesDataQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="ValuationDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="LicenseDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=IWW-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+  </connectionStrings>
+
+ <!--<connectionStrings>
+
+    <add name="WaterNutDBEntities" connectionString="metadata=res://*/WaterNutDB.csdl|res://*/WaterNutDB.ssdl|res://*/WaterNutDB.msl;provider=System.Data.SqlClient;provider connection string='data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;MultipleActiveResultSets=True;App=EntityFramework'" providerName="System.Data.EntityClient"/>
+    <add name="AllocationDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="AllocationQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="CoreEntities" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="OCR" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="CounterPointQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="DocumentDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="DocumentItemDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+
+    <add name="EntryDataDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="EntryDataQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="InventoryQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="InventoryDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="AdjustmentQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="PreviousDocumentQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="PreviousDocumentDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="QuickBooksDS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="SalesDataQS" connectionString="data source = Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="ValuationDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+    <add name="LicenseDS" connectionString="data source=Joseph-PC\SQLDEVELOPER2017;initial catalog=Rouge-DiscoveryDB;Integrated Security=true;Connect Timeout=30" providerName="System.Data.SqlClient"/>
+  </connectionStrings>-->
+
+  <!--<entityFramework>
+    <defaultConnectionFactory type="System.Data.Entity.Infrastructure.LocalDbConnectionFactory, EntityFramework">
+      <parameters>
+        <parameter value="v11.0" />
+      </parameters>
+    </defaultConnectionFactory>
+    <providers>
+      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+    </providers>
+  </entityFramework>-->
+  <!--<system.diagnostics>
+    <sources>
+      <source propagateActivity="true" name="System.ServiceModel" switchValue="Error,ActivityTracing">
+        <listeners>
+          <add type="System.Diagnostics.DefaultTraceListener" name="Default">
+            <filter type="" />
+          </add>
+          <add initializeData="C:\Users\josep\OneDrive\AutoBot-Enterprise\Clientlogclient.svclog" type="System.Diagnostics.XmlWriterTraceListener" name="sdt" traceOutputOptions="LogicalOperationStack, DateTime">
+            <filter type="" />
+          </add>
+        </listeners>
+      </source>
+      <source name="System.ServiceModel.MessageLogging" switchValue="Error,ActivityTracing">
+        <listeners>
+          <add type="System.Diagnostics.DefaultTraceListener" name="Default">
+            <filter type="" />
+          </add>
+          <add name="ServiceModelMessageLoggingListener">
+            <filter type="" />
+          </add>
+        </listeners>
+      </source>
+    </sources>
+    <sharedListeners>
+      <add initializeData="C:\Users\josep\OneDrive\AutoBot-Enterprise\Clientapp_messages.svclog" type="System.Diagnostics.XmlWriterTraceListener, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" name="ServiceModelMessageLoggingListener" traceOutputOptions="Timestamp">
+        <filter type="" />
+      </add>
+    </sharedListeners>
+    <trace autoflush="true" />
+  </system.diagnostics>-->
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="EntityFramework" publicKeyToken="b77a5c561934e089" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-5.0.0.0" newVersion="5.0.0.0"/>
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Data" publicKeyToken="b77a5c561934e089" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0"/>
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System" publicKeyToken="b77a5c561934e089" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0"/>
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Core" publicKeyToken="b77a5c561934e089" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0"/>
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="Newtonsoft.Json" publicKeyToken="30ad4fe6b2a6aeed" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-12.0.0.0" newVersion="12.0.0.0"/>
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Xml" publicKeyToken="b77a5c561934e089" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-4.0.0.0" newVersion="4.0.0.0"/>
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.ValueTuple" publicKeyToken="cc7b13ffcd2ddd51" culture="neutral"/>
+        <bindingRedirect oldVersion="0.0.0.0-4.0.3.0" newVersion="4.0.3.0"/>
+      </dependentAssembly>
+    </assemblyBinding>
+    <gcWorkstation enabled="true"/>
+  </runtime>
+  <system.serviceModel>
+    <diagnostics>
+      <messageLogging logEntireMessage="true" logMalformedMessages="false" logMessagesAtServiceLevel="false" logMessagesAtTransportLevel="false"/>
+      <endToEndTracing propagateActivity="true" activityTracing="true" messageFlowTracing="true"/>
+    </diagnostics>
+  </system.serviceModel>
+  <entityFramework>
+    <providers>
+      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer"/>
+    </providers>
+    <defaultConnectionFactory type="System.Data.Entity.Infrastructure.LocalDbConnectionFactory, EntityFramework">
+      <parameters>
+        <parameter value="mssqllocaldb"/>
+      </parameters>
+    </defaultConnectionFactory>
+  </entityFramework>
+</configuration>

@@ -2246,7 +2246,7 @@ namespace WaterNut.DataSpace
 
         internal void DocToXML(xcuda_ASYCUDA doc, FileInfo f)
         {
-            
+            File.AppendAllText(Path.Combine(f.DirectoryName, "Instructions.txt"), $"File\t{f.FullName}\r\n");
             var a = new Asycuda421.ASYCUDA();
             a.LoadFromDataBase(doc.ASYCUDA_Id, a, f);
             a.SaveToFile(f.FullName);
