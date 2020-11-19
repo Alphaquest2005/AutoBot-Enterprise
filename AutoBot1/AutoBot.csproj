@@ -115,6 +115,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="tessdata\eng.traineddata">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -134,7 +135,6 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="App.config" />
     <Content Include="Asycuda421.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
