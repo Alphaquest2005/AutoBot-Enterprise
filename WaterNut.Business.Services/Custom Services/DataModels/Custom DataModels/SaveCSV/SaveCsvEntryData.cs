@@ -174,7 +174,6 @@ namespace WaterNut.DataSpace
                                 ApplicationSettingsId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                                 CustomerName = g.Key.CustomerName,
                                 Tax = g.FirstOrDefault()?.Tax,
-                                Packages = g.Sum(x => x.Packages),
                                 Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))
                                     ? null
                                     : g.Max(x => x.SupplierCode?.ToUpper()),
@@ -222,7 +221,7 @@ namespace WaterNut.DataSpace
                             TotalDeductions = x.TotalDeductions,
                             InvoiceTotal = x.InvoiceTotal,
                             TotalTax = x.TotalTax,
-                            
+                            Packages = x.Packages,
                             WarehouseNo = x.WarehouseNo,
 
 
