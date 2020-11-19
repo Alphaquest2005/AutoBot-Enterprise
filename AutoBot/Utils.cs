@@ -66,7 +66,9 @@ namespace AutoBot
             public List<Action<FileTypes, FileInfo[]>> Actions { get; set; } =
                 new List<Action<FileTypes, FileInfo[]>>();
         }
-
+        /// <summary>
+        /// fsrh
+        /// </summary>
         public static Dictionary<string, Action<FileTypes, FileInfo[]>> FileActions =>
             new Dictionary<string, Action<FileTypes, FileInfo[]>>
             {
