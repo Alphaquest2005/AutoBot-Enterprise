@@ -174,6 +174,7 @@ namespace WaterNut.DataSpace
                                 ApplicationSettingsId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                                 CustomerName = g.Key.CustomerName,
                                 Tax = g.FirstOrDefault()?.Tax,
+                                
                                 Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))
                                     ? null
                                     : g.Max(x => x.SupplierCode?.ToUpper()),
