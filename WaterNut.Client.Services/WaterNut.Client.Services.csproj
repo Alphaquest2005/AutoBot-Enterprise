@@ -178,6 +178,7 @@
     <Compile Include="CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsClient.cs" />
     <Compile Include="CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs" />
     <Compile Include="CoreEntities\TODO_ImportCompleteEntriesClient.cs" />
+    <Compile Include="CoreEntities\TODO_LicenceAvailableQtyClient.cs" />
     <Compile Include="CoreEntities\TODO_LicenseToXMLClient.cs" />
     <Compile Include="CoreEntities\TODO_LICToCreateClient.cs" />
     <Compile Include="CoreEntities\TODO_PODocSetClient.cs" />

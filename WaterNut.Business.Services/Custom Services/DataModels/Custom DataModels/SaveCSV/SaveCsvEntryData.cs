@@ -1580,6 +1580,7 @@ namespace WaterNut.DataSpace
                         {
                             if (ImportChecks.ContainsKey(key))
                             {
+                                if (string.IsNullOrEmpty(splits[map[key]])) return null;
                                 var err = ImportChecks[key].Invoke(res, map, splits);
                                 if (err.Item1) throw new ApplicationException(err.Item2);
                             }

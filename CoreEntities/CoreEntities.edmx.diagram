@@ -132,6 +132,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentBasicInfo" Width="1.5" PointX="31.375" PointY="11.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaItemBasicInfo" Width="2.375" PointX="30.5" PointY="16.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.ExpiredEntriesLst" Width="1.5" PointX="17.375" PointY="19.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="31.375" PointY="20.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

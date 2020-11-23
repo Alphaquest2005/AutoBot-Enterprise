@@ -306,6 +306,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_PODocSet.cs
@@ -652,6 +653,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_UnmappedItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ImportCompleteEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenceAvailableQty.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenseToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LICToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
@@ -1006,6 +1008,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_PODocSet.cs
@@ -1338,6 +1341,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSet.cs
@@ -1670,6 +1674,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_PODocSet.cs
@@ -2002,6 +2007,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
@@ -2299,6 +2305,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
@@ -2446,6 +2453,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_PODocSet.cs
@@ -2599,6 +2607,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
@@ -2744,6 +2753,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs
@@ -2889,6 +2899,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_PODocSet.cs
@@ -3034,6 +3045,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_PODocSet.cs
@@ -3179,6 +3191,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ERRReport_UnmappedItems.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_ImportCompleteEntries.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_LicenseToXML.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_LICToCreate.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_PODocSet.cs
@@ -3407,6 +3420,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_SubmitWarehouseErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ERRReport_UnmappedItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_ImportCompleteEntries.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenceAvailableQty.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LicenseToXML.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_LICToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_PODocSet.map.cs
@@ -3746,6 +3760,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ERRReport_UnmappedItemsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_ImportCompleteEntriesRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_LicenceAvailableQtyRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_LicenseToXMLRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_LICToCreateRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_PODocSetRepository.cs
@@ -3912,6 +3927,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ERRReport_UnmappedItemsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_ImportCompleteEntriesViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenceAvailableQtyViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LicenseToXMLViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_LICToCreateViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_PODocSetToAssessErrorsViewModel.cs
@@ -4059,6 +4075,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ERRReport_UnmappedItemsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_ImportCompleteEntriesTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenceAvailableQtyTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LicenseToXMLTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_LICToCreateTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_PODocSetToAssessErrorsTotals.cs
@@ -4194,6 +4211,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ERRReport_UnmappedItemsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_ImportCompleteEntriesVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenceAvailableQtyVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LicenseToXMLVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_LICToCreateVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_PODocSetToAssessErrorsVirturalListLoader.cs
@@ -4377,6 +4395,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_ImportCompleteEntriesService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_LicenceAvailableQtyService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_LicenseToXMLService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_LICToCreateService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_PODocSetService.cs
@@ -4709,6 +4728,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_ERRReport_UnmappedItemsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_ImportCompleteEntriesService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\TODO_LicenceAvailableQtyService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_LicenseToXMLService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_LICToCreateService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_PODocSetService.cs
@@ -4999,6 +5019,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_SubmitWarehouseErrorsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_ERRReport_UnmappedItemsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_ImportCompleteEntriesService.cs
+..\WaterNut.Client.Contracts\CoreEntities\ITODO_LicenceAvailableQtyService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_LicenseToXMLService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_LICToCreateService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_PODocSetService.cs
@@ -5144,6 +5165,7 @@
 ..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_SubmitWarehouseErrorsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_ERRReport_UnmappedItemsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_ImportCompleteEntriesClient.cs
+..\WaterNut.Client.Services\CoreEntities\TODO_LicenceAvailableQtyClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_LicenseToXMLClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_LICToCreateClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_PODocSetClient.cs

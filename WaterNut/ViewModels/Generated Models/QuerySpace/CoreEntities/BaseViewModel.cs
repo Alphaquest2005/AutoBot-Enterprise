@@ -114,6 +114,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsIDChanged, OnCurrentTODO_ERRReport_UnmappedItemsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged, OnCurrentTODO_ImportCompleteEntriesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenceAvailableQtyIDChanged, OnCurrentTODO_LicenceAvailableQtyIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LicenseToXMLIDChanged, OnCurrentTODO_LicenseToXMLIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_LICToCreateIDChanged, OnCurrentTODO_LICToCreateIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_PODocSetIDChanged, OnCurrentTODO_PODocSetIDChanged);
@@ -200,6 +201,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_ERRReport_SubmitWarehouseErrors>(MessageToken.CurrentTODO_ERRReport_SubmitWarehouseErrorsChanged, OnCurrentTODO_ERRReport_SubmitWarehouseErrorsChanged);
                         RegisterToReceiveMessages<TODO_ERRReport_UnmappedItems>(MessageToken.CurrentTODO_ERRReport_UnmappedItemsChanged, OnCurrentTODO_ERRReport_UnmappedItemsChanged);
                         RegisterToReceiveMessages<TODO_ImportCompleteEntries>(MessageToken.CurrentTODO_ImportCompleteEntriesChanged, OnCurrentTODO_ImportCompleteEntriesChanged);
+                        RegisterToReceiveMessages<TODO_LicenceAvailableQty>(MessageToken.CurrentTODO_LicenceAvailableQtyChanged, OnCurrentTODO_LicenceAvailableQtyChanged);
                         RegisterToReceiveMessages<TODO_LicenseToXML>(MessageToken.CurrentTODO_LicenseToXMLChanged, OnCurrentTODO_LicenseToXMLChanged);
                         RegisterToReceiveMessages<TODO_LICToCreate>(MessageToken.CurrentTODO_LICToCreateChanged, OnCurrentTODO_LICToCreateChanged);
                         RegisterToReceiveMessages<TODO_PODocSet>(MessageToken.CurrentTODO_PODocSetChanged, OnCurrentTODO_PODocSetChanged);
@@ -1885,6 +1887,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_ImportCompleteEntriesID)) BeginSendMessage(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_ImportCompleteEntriesIDChanged, _currentTODO_ImportCompleteEntriesID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_ImportCompleteEntriesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_LicenceAvailableQtyIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_LicenceAvailableQtyRepository ctx = new TODO_LicenceAvailableQtyRepository())
+                            {
+                                CurrentTODO_LicenceAvailableQty = await ctx.GetTODO_LicenceAvailableQty(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_LicenceAvailableQty);
+                        }
+
+                        private  string _currentTODO_LicenceAvailableQtyID = "";
+                        public string CurrentTODO_LicenceAvailableQtyID
+                        {
+                            get
+                            {
+                                return _currentTODO_LicenceAvailableQtyID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_LicenceAvailableQtyID != value)
+                                {
+                                    _currentTODO_LicenceAvailableQtyID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_LicenceAvailableQtyID)) BeginSendMessage(MessageToken.CurrentTODO_LicenceAvailableQtyIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_LicenceAvailableQtyIDChanged, _currentTODO_LicenceAvailableQtyID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_LicenceAvailableQtyID);  
                                 }
                             }
                         }
@@ -5572,6 +5601,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_ImportCompleteEntries = value;
 					if(_vcurrentTODO_ImportCompleteEntries != null) CurrentTODO_ImportCompleteEntries = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_ImportCompleteEntries);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_LicenceAvailableQtyChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_LicenceAvailableQty> e)
+        {
+            //CurrentTODO_LicenceAvailableQty = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_LicenceAvailableQty);
+        }
+
+        private  TODO_LicenceAvailableQty _currentTODO_LicenceAvailableQty;
+        public TODO_LicenceAvailableQty CurrentTODO_LicenceAvailableQty
+        {
+            get
+            {
+                return _currentTODO_LicenceAvailableQty;
+            }
+            set
+            {
+                if (_currentTODO_LicenceAvailableQty != value)
+                {
+                    _currentTODO_LicenceAvailableQty = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_LicenceAvailableQtyChanged,
+                                                     new NotificationEventArgs<TODO_LicenceAvailableQty>(MessageToken.CurrentTODO_LicenceAvailableQtyChanged, _currentTODO_LicenceAvailableQty)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_LicenceAvailableQty);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_LicenceAvailableQty> _vcurrentTODO_LicenceAvailableQty;
+        public VirtualListItem<TODO_LicenceAvailableQty> VCurrentTODO_LicenceAvailableQty
+        {
+            get
+            {
+                return _vcurrentTODO_LicenceAvailableQty;
+            }
+            set
+            {
+                if (_vcurrentTODO_LicenceAvailableQty != value)
+                {
+                    _vcurrentTODO_LicenceAvailableQty = value;
+					if(_vcurrentTODO_LicenceAvailableQty != null) CurrentTODO_LicenceAvailableQty = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_LicenceAvailableQty);                    
                 }
             }
         }

@@ -300,6 +300,9 @@
     <Compile Include="TODO_ImportCompleteEntries.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_LicenceAvailableQty.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_LicenseToXML.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>

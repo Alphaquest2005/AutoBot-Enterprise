@@ -1178,6 +1178,26 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ImportCompleteEntrie
           <Property Name="NewAsycuda_Id" Type="int" Nullable="false" />
           <Property Name="AssessedAsycuda_Id" Type="int" Nullable="false" />
         </EntityType>
+   
+        <EntityType Name="TODO-LicenceAvailableQty">
+          <Key>
+            
+            <PropertyRef Name="LicenseId" />
+           
+          </Key>
+          <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="8" />
+          <Property Name="Origin" Type="nvarchar" MaxLength="255" />
+          <Property Name="Quantity_requested" Type="int" Nullable="false" />
+          <Property Name="Application_date" Type="date" />
+          <Property Name="Importation_date" Type="date" />
+          <Property Name="Key" Type="nvarchar" MaxLength="55" />
+          <Property Name="Balance" Type="int" />
+          <Property Name="LicenseId" Type="int" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+        </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-LicenseToXML">
@@ -2696,6 +2716,22 @@ FROM [dbo].[TODO-ERRReport-UnmappedItems] AS [TODO-ERRReport-UnmappedItems]</Def
 [TODO-ImportCompleteEntries].[AssessedAsycuda_Id] AS [AssessedAsycuda_Id]
 FROM [dbo].[TODO-ImportCompleteEntries] AS [TODO-ImportCompleteEntries]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-LicenceAvailableQty" EntityType="Self.TODO-LicenceAvailableQty" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-LicenceAvailableQty].[RegistrationNumber] AS [RegistrationNumber], 
+[TODO-LicenceAvailableQty].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LicenceAvailableQty].[TariffCode] AS [TariffCode], 
+[TODO-LicenceAvailableQty].[Origin] AS [Origin], 
+[TODO-LicenceAvailableQty].[Quantity_requested] AS [Quantity_requested], 
+[TODO-LicenceAvailableQty].[Application_date] AS [Application_date], 
+[TODO-LicenceAvailableQty].[Importation_date] AS [Importation_date], 
+[TODO-LicenceAvailableQty].[Key] AS [Key], 
+[TODO-LicenceAvailableQty].[Balance] AS [Balance], 
+[TODO-LicenceAvailableQty].[LicenseId] AS [LicenseId], 
+[TODO-LicenceAvailableQty].[SourceFile] AS [SourceFile], 
+[TODO-LicenceAvailableQty].[DocumentReference] AS [DocumentReference]
+FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-LicenseToXML" EntityType="Self.TODO-LicenseToXML" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-LicenseToXML].[TariffCode] AS [TariffCode], 
@@ -3462,6 +3498,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="AsycudaDocumentBasicInfo" EntityType="WaterNutDBModel.AsycudaDocumentBasicInfo" />
           <EntitySet Name="AsycudaItemBasicInfo" EntityType="WaterNutDBModel.AsycudaItemBasicInfo" />
           <EntitySet Name="ExpiredEntriesLst" EntityType="WaterNutDBModel.ExpiredEntriesLst" />
+          <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -5625,10 +5662,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Office" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="GeneraProcedure" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationSerial" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationNumber" Type="String" Nullable="false" />
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="8" Unicode="true" FixedLength="false" />
           <Property Name="RegistrationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AssessmentSerial" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="AssessmentNumber" Type="String" Nullable="false" />
+          <Property Name="AssessmentNumber" Type="String" Nullable="false" MaxLength="8" Unicode="true" FixedLength="false" />
           <Property Name="AssessmentDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DeclarantCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="DeclarantReference" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -5636,6 +5673,23 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="Consignee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Expiration" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TODO_LicenceAvailableQty">
+          <Key>
+            <PropertyRef Name="LicenseId" />
+          </Key>
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="TariffCode" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="Origin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity_requested" Type="Int32" Nullable="false" />
+          <Property Name="Application_date" Type="DateTime" Precision="0" />
+          <Property Name="Importation_date" Type="DateTime" Precision="0" />
+          <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Name="Balance" Type="Int32" />
+          <Property Name="LicenseId" Type="Int32" Nullable="false" />
+          <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -7120,6 +7174,24 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="GeneraProcedure" ColumnName="GeneraProcedure" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_LicenceAvailableQty">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenceAvailableQty">
+              <MappingFragment StoreEntitySet="TODO-LicenceAvailableQty">
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Importation_date" ColumnName="Importation_date" />
+                <ScalarProperty Name="Application_date" ColumnName="Application_date" />
+                <ScalarProperty Name="Quantity_requested" ColumnName="Quantity_requested" />
+                <ScalarProperty Name="Origin" ColumnName="Origin" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

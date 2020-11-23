@@ -17,10 +17,10 @@
               this.Property(t => t.Office).HasColumnName("Office").IsRequired().HasMaxLength(50);
               this.Property(t => t.GeneraProcedure).HasColumnName("GeneraProcedure").IsRequired().HasMaxLength(1);
               this.Property(t => t.RegistrationSerial).HasColumnName("RegistrationSerial").IsRequired().HasMaxLength(1);
-              this.Property(t => t.RegistrationNumber).HasColumnName("RegistrationNumber").IsRequired();
+              this.Property(t => t.RegistrationNumber).HasColumnName("RegistrationNumber").IsRequired().HasMaxLength(8);
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate").IsRequired().HasMaxLength(50);
               this.Property(t => t.AssessmentSerial).HasColumnName("AssessmentSerial").IsRequired().HasMaxLength(1);
-              this.Property(t => t.AssessmentNumber).HasColumnName("AssessmentNumber").IsRequired();
+              this.Property(t => t.AssessmentNumber).HasColumnName("AssessmentNumber").IsRequired().HasMaxLength(8);
               this.Property(t => t.AssessmentDate).HasColumnName("AssessmentDate").IsRequired().HasMaxLength(50);
               this.Property(t => t.DeclarantCode).HasColumnName("DeclarantCode").IsRequired().HasMaxLength(50);
               this.Property(t => t.DeclarantReference).HasColumnName("DeclarantReference").IsRequired().HasMaxLength(50);

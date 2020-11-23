@@ -3661,10 +3661,30 @@ namespace WaterNut.DataSpace
                     .Where(x => x.TariffCodeLicenseRequired == true
                                 && x.AsycudaDocument.AsycudaDocumentSetId ==
                                 asycudaDocumentSetId).ToList();
-                var licAtt = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result;
+
+                ///// Scape any remaining license because i preapply and will still apply for new license when creating docset
+
+                var licAtt = new List<Attachments>();
+
+                //Add available license
+                var availableLic = ctx.TODO_LicenceAvailableQty.Where(x =>
+                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
+                    && x.Origin == docSet.Country_of_origin_code).ToList();
+                foreach (var lic in availableLic)
+                {
+                      licAtt.AddRange(ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                        x.FileTypes.Type == "LIC" && x.Attachments.FilePath == lic.SourceFile)
+                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath)
+                    .Where(x => x.Reference != "LIC").ToList());
+                }
+              
+
+                //Add docSet license
+                licAtt.AddRange( ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
                         x.FileTypes.Type == "LIC" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
                     .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath)
-                    .Where(x => x.Reference != "LIC").ToList();
+                    .Where(x => x.Reference != "LIC").ToList());
 
                 var res = new Dictionary<Attachments, Registered>();
                 foreach (var i in licAtt)

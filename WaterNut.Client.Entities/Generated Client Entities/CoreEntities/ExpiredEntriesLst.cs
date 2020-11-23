@@ -111,7 +111,7 @@ public string RegistrationSerial
        [RequiredValidationAttribute(ErrorMessage= "RegistrationNumber is required")]
        
                 
-                
+                [MaxLength(8, ErrorMessage = "RegistrationNumber has a max length of 8 letters ")]
 public string RegistrationNumber
 		{ 
 		    get { return this.expiredentrieslst.RegistrationNumber; }
@@ -162,7 +162,7 @@ public string AssessmentSerial
        [RequiredValidationAttribute(ErrorMessage= "AssessmentNumber is required")]
        
                 
-                
+                [MaxLength(8, ErrorMessage = "AssessmentNumber has a max length of 8 letters ")]
 public string AssessmentNumber
 		{ 
 		    get { return this.expiredentrieslst.AssessmentNumber; }
