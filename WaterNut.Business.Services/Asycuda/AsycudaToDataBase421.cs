@@ -618,9 +618,9 @@ namespace WaterNut.DataSpace.Asycuda
                     di.LineNumber = i + 1;
                     di.SalesFactor = 1;
 
-                    if (ai.Licence_number.Text.Count > 0)
+                    if (!string.IsNullOrEmpty(ai.Quantity_deducted_from_licence))
                     {
-                        di.Licence_number = ai.Licence_number.Text[0];
+                        if(ai.Licence_number.Text.Any()) di.Licence_number = ai.Licence_number.Text[0];
                         di.Amount_deducted_from_licence = ai.Amount_deducted_from_licence;
                         di.Quantity_deducted_from_licence = ai.Quantity_deducted_from_licence;
                     }
@@ -1742,6 +1742,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             SaveOfficeSegment(di);
             SaveRegistration(di);
             SaveAssessment(di);
+            SaveReceipt(di);
             await SaveType(di).ConfigureAwait(false);
 
             //await DBaseDataModel.Instance.Savexcuda_Identification(di).ConfigureAwait(false);
@@ -1854,6 +1855,22 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 r.Date = a.Identification.Assessment.Date;
             if (a.Identification.Assessment.Number != "")
                 r.Number = a.Identification.Assessment.Number;
+
+        }
+
+        private void SaveReceipt(xcuda_Identification di)
+        {
+            var r = di.xcuda_receipt;
+            if (r == null)
+            {
+                r = new xcuda_receipt(true) { ASYCUDA_Id = di.ASYCUDA_Id, TrackingState = TrackingState.Added };
+                di.xcuda_receipt = r;
+                // di.xcuda_Registration.Add(r);
+            }
+            if (a.Identification.receipt.Date != "1/1/0001")
+                r.Date = a.Identification.receipt.Date;
+            if (a.Identification.receipt.Number != "")
+                r.Number = a.Identification.receipt.Number;
 
         }
     }
