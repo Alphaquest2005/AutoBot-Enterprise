@@ -3697,13 +3697,13 @@ namespace WaterNut.DataSpace
 
                 foreach (var al in res)
                 {
-                    var entryDataId =
-                        new EntryDataDSContext().EntryData.FirstOrDefault(x =>
-                            al.Value.DocumentReference == x.EntryDataId);
+                    EntryData entryDataId = null;
+                    //    new EntryDataDSContext().EntryData.FirstOrDefault(x =>
+                    //        al.Value.DocumentReference == x.EntryDataId);
 
-                    if(entryDataId == null) entryDataId =
-                        new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
-                            .FirstOrDefault(x => x.SupplierInvoiceNo == al.Value.DocumentReference);
+                    //if(entryDataId == null) entryDataId =
+                    //    new EntryDataDSContext().EntryData.OfType<PurchaseOrders>()
+                    //        .FirstOrDefault(x => x.SupplierInvoiceNo == al.Value.DocumentReference);
 
                         
 
