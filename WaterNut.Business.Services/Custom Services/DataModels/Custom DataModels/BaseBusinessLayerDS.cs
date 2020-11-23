@@ -3670,21 +3670,21 @@ namespace WaterNut.DataSpace
                 //Add available license
                 var availableLic = ctx.TODO_LicenceAvailableQty.Where(x =>
                     x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                    && x.Origin == docSet.Country_of_origin_code).ToList();
+                    && x.Origin == docSet.Country_of_origin_code).OrderBy(x => x.Application_date).ToList();
                 foreach (var lic in availableLic)
                 {
-                      licAtt.AddRange(ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        x.FileTypes.Type == "LIC" && x.Attachments.FilePath == lic.SourceFile)
-                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath)
+                      licAtt.AddRange(ctx.Attachments.Where(x =>
+                        x.DocumentCode == "LC02" && x.FilePath == lic.SourceFile)
+                    .DistinctBy(x => x.FilePath)
                     .Where(x => x.Reference != "LIC").ToList());
                 }
               
 
                 //Add docSet license
-                licAtt.AddRange( ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        x.FileTypes.Type == "LIC" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath)
-                    .Where(x => x.Reference != "LIC").ToList());
+                //licAtt.AddRange( ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                //        x.FileTypes.Type == "LIC" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                //    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath)
+                //    .Where(x => x.Reference != "LIC").ToList());
 
                 var res = new Dictionary<Attachments, Registered>();
                 foreach (var i in licAtt)
