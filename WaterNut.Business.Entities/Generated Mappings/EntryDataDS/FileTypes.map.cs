@@ -29,6 +29,7 @@
               this.Property(t => t.OverwriteFiles).HasColumnName("OverwriteFiles");
               this.Property(t => t.HasFiles).HasColumnName("HasFiles");
               this.Property(t => t.OldFileTypeId).HasColumnName("OldFileTypeId");
+              this.Property(t => t.ReplicateHeaderRow).HasColumnName("ReplicateHeaderRow");
               this.HasOptional(t => t.FileTypes2).WithMany(t =>(ICollection<FileTypes>) t.FileTypes1).HasForeignKey(d => d.ParentFileTypeId);
               this.HasMany(t => t.EntryData).WithOptional(t => t.FileTypes).HasForeignKey(d => d.FileTypeId);
               this.HasMany(t => t.FileTypes1).WithOptional(t => t.FileTypes2).HasForeignKey(d => d.ParentFileTypeId);

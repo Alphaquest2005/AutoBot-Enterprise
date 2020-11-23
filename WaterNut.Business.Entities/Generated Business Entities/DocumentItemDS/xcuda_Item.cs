@@ -378,6 +378,21 @@ namespace DocumentItemDS.Business.Entities
         }
         string _entrydatatype;
         [DataMember]
+        public Nullable<int> UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _upgradekey;
+        [DataMember]
         public List<SubItems> SubItems { get; set; }
         [DataMember]
         public List<xBondAllocations> xBondAllocations { get; set; }

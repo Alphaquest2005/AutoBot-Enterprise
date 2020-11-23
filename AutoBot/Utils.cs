@@ -217,10 +217,45 @@ namespace AutoBot
                 {"ImportAllSalesEntries", ImportAllSalesEntries },
                 {"RebuildSalesReport", RebuildSalesReport },
                 {"Ex9AllAllocatedSales",() => Ex9AllAllocatedSales(true) },
-                {"SubmitSalesToCustoms", SubmitSalesToCustoms }
+                {"SubmitSalesToCustoms", SubmitSalesToCustoms },
+                {"ImportExpiredEntires", ImportExpiredEntires }
 
 
             };
+
+        public static void ImportExpiredEntires()
+        {
+
+            try
+            {
+                var docSet = BaseDataModel.CurrentSalesInfo();
+                var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    docSet.Item3.Declarant_Reference_Number);
+                var expFile = Path.Combine(directoryName, "ExpiredEntries.csv");
+                if (File.Exists(expFile)) File.Delete(expFile);
+
+                while (!File.Exists(expFile))
+                {
+                    RunSiKuLi(directoryName, "ExpiredEntries", "0");
+                }
+                ImportExpiredEntires(expFile);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public static void ImportExpiredEntires(string expFile)
+        {
+            
+            var fileType = new CoreEntitiesContext().FileTypes.First(x =>
+                x.ApplicationSettingsId ==
+                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId &&
+                x.Type == "ExpiredEntries");
+            SaveCsv(new FileInfo[] {new FileInfo(expFile)}, fileType);
+        }
 
         private static void RenameDuplicateDocumentCodes()
         {
@@ -565,6 +600,8 @@ namespace AutoBot
                 ImportPDF(files, fileType);
             }
         }
+
+
 
 
         private static void ImportPDF(FileInfo[] csvFiles, FileTypes fileType)

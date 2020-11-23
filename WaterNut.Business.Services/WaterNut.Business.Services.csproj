@@ -208,6 +208,7 @@
     <Compile Include="Contracts\CoreEntities\IActionDocSetLogsService.cs" />
     <Compile Include="Contracts\CoreEntities\IActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\IApplicationSettingsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentBasicInfoService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentService.cs" />
@@ -215,6 +216,7 @@
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetExService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="Contracts\CoreEntities\IAttachmentsService.cs" />
     <Compile Include="Contracts\CoreEntities\IContactsService.cs" />
@@ -226,6 +228,7 @@
     <Compile Include="Contracts\CoreEntities\IEmailMappingService.cs" />
     <Compile Include="Contracts\CoreEntities\IEmailsService.cs" />
     <Compile Include="Contracts\CoreEntities\IEntryPreviousItemsService.cs" />
+    <Compile Include="Contracts\CoreEntities\IExpiredEntriesLstService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileGroupsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeActionsService.cs" />
     <Compile Include="Contracts\CoreEntities\IFileTypeContactsService.cs" />
@@ -249,7 +252,6 @@
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesErrorsService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
-    <Compile Include="Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs" />
     <Compile Include="Contracts\CoreEntities\ITODO_EntriesExpiringNextMonthService.cs" />
@@ -748,6 +750,7 @@
     <Compile Include="Services\CoreEntities\ActionDocSetLogsService.cs" />
     <Compile Include="Services\CoreEntities\ActionsService.cs" />
     <Compile Include="Services\CoreEntities\ApplicationSettingsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentBasicInfoService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentItemService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentService.cs" />
@@ -755,6 +758,7 @@
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetExService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSet_AttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaItemBasicInfoService.cs" />
     <Compile Include="Services\CoreEntities\AttachmentLogService.cs" />
     <Compile Include="Services\CoreEntities\AttachmentsService.cs" />
     <Compile Include="Services\CoreEntities\ContactsService.cs" />
@@ -766,6 +770,7 @@
     <Compile Include="Services\CoreEntities\EmailMappingService.cs" />
     <Compile Include="Services\CoreEntities\EmailsService.cs" />
     <Compile Include="Services\CoreEntities\EntryPreviousItemsService.cs" />
+    <Compile Include="Services\CoreEntities\ExpiredEntriesLstService.cs" />
     <Compile Include="Services\CoreEntities\FileGroupsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeActionsService.cs" />
     <Compile Include="Services\CoreEntities\FileTypeContactsService.cs" />
@@ -789,7 +794,6 @@
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesAlreadyXMLedService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesErrorsService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs" />
-    <Compile Include="Services\CoreEntities\TODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DiscrepancyPreExecutionReportService.cs" />
     <Compile Include="Services\CoreEntities\TODO_DocumentsToDeleteService.cs" />
     <Compile Include="Services\CoreEntities\TODO_EntriesExpiringNextMonthService.cs" />

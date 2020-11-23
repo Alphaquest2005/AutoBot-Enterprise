@@ -240,6 +240,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ActionsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsSummaryListViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentBasicInfoViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetEntryDataExViewModel.cs" />
@@ -247,6 +248,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSet_AttachmentsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocument_AttachmentsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaItemBasicInfoViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentLogViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs" />
@@ -259,6 +261,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EmailsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\ExpiredEntriesLstViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileGroupsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeActionsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeContactsViewModel.cs" />
@@ -283,7 +286,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesAlreadyXMLedViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesErrorsViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToSubmitViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepancyPreExecutionReportViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_EntriesExpiringNextMonthViewModel.cs" />
@@ -397,6 +399,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionDocSetLogsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ApplicationSettingsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentBasicInfoTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetEntryDataExTotals.cs" />
@@ -404,6 +407,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSet_AttachmentsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocument_AttachmentsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaItemBasicInfoTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs" />
@@ -415,6 +419,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ExpiredEntriesLstTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileGroupsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeActionsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeContactsTotals.cs" />
@@ -438,7 +443,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesAlreadyXMLedTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesErrorsTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToSubmitTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepancyPreExecutionReportTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_EntriesExpiringNextMonthTotals.cs" />
@@ -540,6 +544,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionDocSetLogsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ApplicationSettingsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentBasicInfoVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetEntryDataExVirturalListLoader.cs" />
@@ -547,6 +552,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSet_AttachmentsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocument_AttachmentsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaItemBasicInfoVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs" />
@@ -558,6 +564,7 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs" />
+    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ExpiredEntriesLstVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileGroupsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeActionsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeContactsVirturalListLoader.cs" />
@@ -581,7 +588,6 @@
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesAlreadyXMLedVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesErrorsVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs" />
-    <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToSubmitVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepancyPreExecutionReportVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs" />
     <Compile Include="ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_EntriesExpiringNextMonthVirturalListLoader.cs" />

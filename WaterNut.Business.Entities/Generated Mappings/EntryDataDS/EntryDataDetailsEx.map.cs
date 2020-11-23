@@ -47,6 +47,7 @@
               this.Property(t => t.Name).HasColumnName("Name").HasMaxLength(50);
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
+              this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.HasRequired(t => t.EntryDataDetails).WithOptional(t => (EntryDataDetailsEx)t.EntryDataDetailsEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

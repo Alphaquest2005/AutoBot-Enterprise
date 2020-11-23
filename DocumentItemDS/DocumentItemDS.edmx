@@ -41,6 +41,7 @@
           <Property Name="xEntryItem_Id" Type="int" Nullable="false" />
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="xBondAllocationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
@@ -114,6 +115,7 @@
           <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpgradeKey" Type="int" />
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
           <Key>
@@ -201,6 +203,8 @@
           </Key>
           <Property Name="Summary_declaration" Type="nvarchar" MaxLength="255" />
           <Property Name="Item_Id" Type="int" Nullable="false" />
+          <Property Name="Previous_document_reference" Type="nvarchar" MaxLength="50" />
+          <Property Name="Previous_warehouse_code" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="xcuda_PreviousItem">
           <Key>
@@ -353,6 +357,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="pLineNumber" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="TotalDutyLiablity" Type="float" />
+          <Property Name="DutyLiablity" Type="float" />
         </EntityType>
         <Association Name="FK_EntryPreviousItems_xcuda_Item">
           <End Role="xcuda_Item" Type="Self.xcuda_Item" Multiplicity="1">
@@ -781,7 +787,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.PreviousItemsEx' does not
 [PreviousItemsEx].[DutyFreePaid] AS [DutyFreePaid], 
 [PreviousItemsEx].[ItemNumber] AS [ItemNumber], 
 [PreviousItemsEx].[pLineNumber] AS [pLineNumber], 
-[PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId]
+[PreviousItemsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[PreviousItemsEx].[TotalDutyLiablity] AS [TotalDutyLiablity], 
+[PreviousItemsEx].[DutyLiablity] AS [DutyLiablity]
 FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_EntryPreviousItems_xcuda_Item" Association="Self.FK_EntryPreviousItems_xcuda_Item">
@@ -933,6 +941,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpgradeKey" Type="Int32" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocumentItem,IWeightItem</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="xcuda_item_deduction">
@@ -1163,6 +1172,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="AllocationId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDBModel.FK_xBondAllocations_xcuda_Item" FromRole="xBondAllocations" ToRole="xcuda_Item" />
           <Property Name="xBondAllocationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_Attached_documents">
           <Key>
@@ -1227,6 +1237,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Summary_declaration" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Item" Relationship="WaterNutDBModel.FK_Item_Previous_doc" FromRole="xcuda_Previous_doc" ToRole="xcuda_Item" />
+          <Property Name="Previous_document_reference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Previous_warehouse_code" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="xcuda_PreviousItem">
           <Key>
@@ -1703,6 +1715,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="DutyFreePaid" Type="String" Nullable="false" MaxLength="9" FixedLength="false" Unicode="false" />
           <Property Name="pLineNumber" Type="Int32" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="TotalDutyLiablity" Type="Double" />
+          <Property Name="DutyLiablity" Type="Double" />
         </EntityType>
         <Association Name="xcuda_PreviousItemPreviousItemsEx">
           <End Type="WaterNutDBModel.xcuda_PreviousItem" Role="xcuda_PreviousItem" Multiplicity="1" />
@@ -1824,6 +1838,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Item">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Item">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
                 <ScalarProperty Name="PreviousInvoiceLineNumber" ColumnName="PreviousInvoiceLineNumber" />
@@ -1931,6 +1946,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="xBondAllocations">
             <EntityTypeMapping TypeName="WaterNutDBModel.xBondAllocations">
               <MappingFragment StoreEntitySet="xBondAllocations">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="xBondAllocationId" ColumnName="xBondAllocationId" />
                 <ScalarProperty Name="AllocationId" ColumnName="AllocationId" />
                 <ScalarProperty Name="xEntryItem_Id" ColumnName="xEntryItem_Id" />
@@ -1994,6 +2010,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_Previous_doc">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_Previous_doc">
               <MappingFragment StoreEntitySet="xcuda_Previous_doc">
+                <ScalarProperty Name="Previous_warehouse_code" ColumnName="Previous_warehouse_code" />
+                <ScalarProperty Name="Previous_document_reference" ColumnName="Previous_document_reference" />
                 <ScalarProperty Name="Item_Id" ColumnName="Item_Id" />
                 <ScalarProperty Name="Summary_declaration" ColumnName="Summary_declaration" />
               </MappingFragment>
@@ -2118,6 +2136,8 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="PreviousItemsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousItemsEx">
               <MappingFragment StoreEntitySet="PreviousItemsEx">
+                <ScalarProperty Name="DutyLiablity" ColumnName="DutyLiablity" />
+                <ScalarProperty Name="TotalDutyLiablity" ColumnName="TotalDutyLiablity" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="pLineNumber" ColumnName="pLineNumber" />
                 <ScalarProperty Name="DutyFreePaid" ColumnName="DutyFreePaid" />

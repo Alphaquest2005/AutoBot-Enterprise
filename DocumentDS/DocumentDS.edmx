@@ -31,7 +31,7 @@
           <Property Name="Exchange_Rate" Type="float" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" />
           <Property Name="Country_of_origin_code" Type="nvarchar" MaxLength="3" />
-          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" />
+          <Property Name="Currency_Code" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="Document_TypeId" Type="int" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" />
           <Property Name="Manifest_Number" Type="nvarchar" MaxLength="50" />
@@ -46,8 +46,10 @@
           <Property Name="TotalInvoices" Type="int" />
           <Property Name="MaxLines" Type="int" />
           <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="50" />
-          <Property Name="FreightCurrencyCode" Type="nvarchar" MaxLength="3" />
+          <Property Name="FreightCurrencyCode" Type="nvarchar" MaxLength="3" Nullable="false" />
           <Property Name="Office" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpgradeKey" Type="int" />
+          <Property Name="ExpectedEntries" Type="int" />
         </EntityType>
         <EntityType Name="AsycudaDocumentSet_Attachments">
           <Key>
@@ -182,6 +184,8 @@
           <Property Name="ParentFileTypeId" Type="int" />
           <Property Name="OverwriteFiles" Type="bit" />
           <Property Name="HasFiles" Type="bit" />
+          <Property Name="OldFileTypeId" Type="int" />
+          <Property Name="ReplicateHeaderRow" Type="bit" />
         </EntityType>
         <EntityType Name="PackageTypes">
           <Key>
@@ -218,6 +222,7 @@
           <Property Name="id" Type="nvarchar" MaxLength="10" />
           <Property Name="ASYCUDA_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" StoreGeneratedPattern="Computed" />
+          <Property Name="UpgradeKey" Type="int" />
         </EntityType>
         <EntityType Name="xcuda_ASYCUDA_ExtendedProperties">
           <Key>
@@ -2316,7 +2321,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="Exchange_Rate" Type="Double" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="Int32" />
           <Property Name="Country_of_origin_code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
-          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="Currency_Code" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Document_TypeId" Type="Int32" />
           <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Manifest_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -2340,8 +2345,10 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <Property Name="LocationOfGoods" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Container" Relationship="WaterNutDBModel.FK_Container_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="Container" />
           <NavigationProperty Name="SystemDocumentSet" Relationship="WaterNutDBModel.FK_SystemDocumentSets_AsycudaDocumentSet" FromRole="AsycudaDocumentSet" ToRole="SystemDocumentSet" />
-          <Property Name="FreightCurrencyCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="FreightCurrencyCode" Type="String" MaxLength="3" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Office" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpgradeKey" Type="Int32" />
+          <Property Name="ExpectedEntries" Type="Int32" />
         </EntityType>
         <EntityType Name="Customs_Procedure">
           <Key>
@@ -2455,7 +2462,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="Ex" Relationship="WaterNutDBModel.xcuda_ASYCUDAxcuda_ASYCUDAEx" FromRole="xcuda_ASYCUDA" ToRole="xcuda_ASYCUDAEx" />
           <NavigationProperty Name="AsycudaDocumentEntryDatas" Relationship="WaterNutDBModel.FK_AsycudaDocumentEntryData_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="AsycudaDocumentEntryData" />
           <NavigationProperty Name="AsycudaDocument_Attachments" Relationship="WaterNutDBModel.FK_AsycudaDocument_Attachments_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="AsycudaDocument_Attachments" />
-          <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="xcuda_ASYCUDA_ExtendedProperties" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
+          <NavigationProperty Name="xcuda_ASYCUDA_ExtendedProperties" Relationship="WaterNutDBModel.FK_xcuda_ExtendedProperty_inherits_xcuda_ASYCUDA" FromRole="xcuda_ASYCUDA" ToRole="xcuda_ASYCUDA_ExtendedProperties" />
+          <Property Name="UpgradeKey" Type="Int32" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="xcuda_Border_information">
           <Key>
@@ -3937,6 +3945,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <NavigationProperty Name="FileType1" Relationship="WaterNutDBModel.FK_FileTypes_FileTypes" FromRole="FileType1" ToRole="FileType" />
           <Property Name="OverwriteFiles" Type="Boolean" />
           <Property Name="HasFiles" Type="Boolean" />
+          <Property Name="OldFileTypeId" Type="Int32" />
+          <Property Name="ReplicateHeaderRow" Type="Boolean" />
         </EntityType>
         <Association Name="FK_FileTypes_AsycudaDocumentSet">
           <End Type="WaterNutDBModel.AsycudaDocumentSet" Role="AsycudaDocumentSet" Multiplicity="1">
@@ -4075,6 +4085,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocumentSets">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSet">
               <MappingFragment StoreEntitySet="AsycudaDocumentSet">
+                <ScalarProperty Name="ExpectedEntries" ColumnName="ExpectedEntries" />
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
                 <ScalarProperty Name="FreightCurrencyCode" ColumnName="FreightCurrencyCode" />
                 <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
@@ -4186,6 +4198,7 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="xcuda_ASYCUDA">
             <EntityTypeMapping TypeName="WaterNutDBModel.xcuda_ASYCUDA">
               <MappingFragment StoreEntitySet="xcuda_ASYCUDA">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="EntryTimeStamp" ColumnName="EntryTimeStamp" />
                 <ScalarProperty Name="ASYCUDA_Id" ColumnName="ASYCUDA_Id" />
                 <ScalarProperty Name="id" ColumnName="id" />
@@ -4757,6 +4770,8 @@ FROM [dbo].[xcuda_ASYCUDAEx] AS [xcuda_ASYCUDAEx]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileType">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
+                <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
                 <ScalarProperty Name="HasFiles" ColumnName="HasFiles" />
                 <ScalarProperty Name="OverwriteFiles" ColumnName="OverwriteFiles" />
                 <ScalarProperty Name="ParentFileTypeId" ColumnName="ParentFileTypeId" />

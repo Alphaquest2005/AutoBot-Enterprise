@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Core.Common.CSV;
 using Core.Common.Utils;
+using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
@@ -35,7 +36,7 @@ namespace WaterNut.DataSpace
             get { return instance; }
         }
 
-        public async Task<bool> ExtractEntryData(string fileType, string[] lines, string[] headings, string csvType,
+        public async Task<bool> ExtractEntryData(string fileType, string[] lines, string[] headings, 
             List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId,
             string droppedFilePath)
         {
@@ -61,13 +62,7 @@ namespace WaterNut.DataSpace
                 if (eslst == null) return true;
 
 
-                if (csvType == "QB9")
-                {
-                    foreach (var item in eslst)
-                    {
-                        item.ItemNumber = item.ItemNumber.Split(':').Last();
-                    }
-                }
+                
 
                 var i = Array.IndexOf(headings,"Instructions");
                 List<string> instructions = new List<string>();
@@ -79,6 +74,22 @@ namespace WaterNut.DataSpace
                 if (instructions.Contains("Append")) overWriteExisting = false;
                 if (instructions.Contains("Replace")) overWriteExisting = true;
 
+
+                if (fileType == "Rider")
+                {
+                    ProcessCsvRider(fileType, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+                if (fileType == "ExpiredEntries")
+                {
+                    ProcessCsvExpiredEntries(fileType, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+
                 return await ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, fileTypeId,
                     droppedFilePath, eslst).ConfigureAwait(false);
             }
@@ -89,6 +100,53 @@ namespace WaterNut.DataSpace
                 throw nex;
             }
         }
+
+        private void ProcessCsvRider(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath, List<CSVDataSummary> eslst)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ProcessCsvExpiredEntries(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath, List<CSVDataSummary> eslst)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                ctx.Database.ExecuteSqlCommand("delete from ExpiredEntriesLst");
+                foreach (var itm in eslst)
+                {
+                    ctx.ExpiredEntriesLst.Add(new ExpiredEntriesLst(true)
+                    {
+                        Office = itm.Office,
+                        GeneraProcedure = itm.GeneralProcedure,
+                        ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                        AssessmentDate = itm.AssessmentDate,
+                        AssessmentNumber = itm.AssessmentNumber,
+                        AssessmentSerial = itm.AssessmentSerial,
+                        RegistrationDate = itm.RegistrationDate,
+                        RegistrationNumber = itm.RegistrationNumber,
+                        RegistrationSerial = itm.RegistrationSerial,
+                        Consignee = itm.Consignee,
+                        Exporter = itm.Exporter,
+                        DeclarantCode = itm.DeclarantCode,
+                        DeclarantReference = itm.DeclarantReference,
+                        Expiration = itm.ExpirationDate,
+                        TrackingState = TrackingState.Added
+                    });
+
+                }
+
+                ctx.SaveChanges();
+                ctx.Database.ExecuteSqlCommand($@"UPDATE xcuda_ASYCUDA_ExtendedProperties
+                                                    SET         EffectiveExpiryDate = exp.Expiration
+                                                    FROM    (SELECT AsycudaDocument.ASYCUDA_Id, AsycudaDocument.CNumber, AsycudaDocument.RegistrationDate, AsycudaDocument.ReferenceNumber, AsycudaDocument.Customs_clearance_office_code, 
+                                                                                      CAST(ExpiredEntriesLst.Expiration AS datetime) AS Expiration
+                                                                     FROM     ExpiredEntriesLst INNER JOIN
+                                                                                      AsycudaDocument ON ExpiredEntriesLst.Office = AsycudaDocument.Customs_clearance_office_code AND ExpiredEntriesLst.RegistrationDate = AsycudaDocument.RegistrationDate AND 
+                                                                                      ExpiredEntriesLst.RegistrationNumber = AsycudaDocument.CNumber AND ExpiredEntriesLst.DeclarantReference = AsycudaDocument.ReferenceNumber) AS exp INNER JOIN
+                                                                     xcuda_ASYCUDA_ExtendedProperties ON exp.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id");
+            }
+        }
+
+        
 
         public async Task<bool> ProcessCsvSummaryData(string fileType, List<AsycudaDocumentSet> docSet,
             bool overWriteExisting, int? emailId,
@@ -160,6 +218,8 @@ namespace WaterNut.DataSpace
                 var ndocSet = new List<AsycudaDocumentSet>();
                 if (overWriteExisting == true) ndocSet = docSet;
 
+                
+
                 var ed = (from es in eslst
                     group es by new {es.EntryDataId, es.EntryDataDate, es.CustomerName}//, es.Currency
                     into g
@@ -183,6 +243,9 @@ namespace WaterNut.DataSpace
                                 FileTypeId = fileTypeId,
                                 DocumentType = g.FirstOrDefault(x => x.DocumentType != "")?.DocumentType,
                                 SupplierInvoiceNo = g.FirstOrDefault(x => x.SupplierInvoiceNo != "")?.SupplierInvoiceNo,
+                                PreviousCNumber = g.FirstOrDefault(x => x.PreviousCNumber != "")?.PreviousCNumber,
+                                FinancialInformation = g.FirstOrDefault(x => x.FinancialInformation != "")?.FinancialInformation,
+
                                 PONumber = g.FirstOrDefault(x => x.PONumber != "")?.PONumber,
                                 SourceFile = droppedFilePath,
                                 
@@ -435,7 +498,13 @@ namespace WaterNut.DataSpace
                                         SupplierInvoiceNo = string.IsNullOrEmpty(item.EntryData.SupplierInvoiceNo)
                                             ? null
                                             : item.EntryData.SupplierInvoiceNo,
-                                        
+                                        FinancialInformation = string.IsNullOrEmpty(item.EntryData.FinancialInformation)
+                                            ? null
+                                            : item.EntryData.FinancialInformation,
+                                        PreviousCNumber = string.IsNullOrEmpty(item.EntryData.PreviousCNumber)
+                                            ? null
+                                            : item.EntryData.PreviousCNumber,
+
 
                                     };
                                     foreach (var warehouseNo in item.f.Where(x => !string.IsNullOrEmpty(x.WarehouseNo)))
@@ -1031,6 +1100,86 @@ namespace WaterNut.DataSpace
                     continue;
                 }
 
+                if ("Previous Declaration".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("PreviousCNumber", i);
+                    continue;
+                }
+
+                if ("Financial Information".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("FinancialInformation", i);
+                    continue;
+                }
+
+                //////////////////////////// Expired Entries
+                /// //Gen. Proc.,Reg. Serial,Reg. Nber,Reg. Date,Ast. Serial,Ast. Nber,Ast. Date,Declarant Code,Declarant Ref.,Exporter,Consignee,Expiration
+               
+              
+                if ("Office".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("Office", i);
+                    continue;
+                }
+
+                if ("Gen. Proc.".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("GeneralProcedure", i);
+                    continue;
+                }
+
+                if ("Reg. Serial".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("RegistrationSerial", i);
+                    continue;
+                }
+
+                if ("Reg. Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("RegistrationDate", i);
+                    continue;
+                }
+                if ("Reg. Nber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("RegistrationNumber", i);
+                    continue;
+                }
+                if ("Ast. Serial".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("AssessmentSerial", i);
+                    continue;
+                }
+                if ("Ast. Nber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("AssessmentNumber", i);
+                    continue;
+                }
+                if ("Ast. Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("AssessmentDate", i);
+                    continue;
+                }
+                if ("Declarant Code".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("DeclarantCode", i);
+                    continue;
+                }
+                if ("Declarant Ref.".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("DeclarantReference", i);
+                    continue;
+                }
+                if ("Exporter".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("Exporter", i);
+                    continue;
+                }
+                if ("Expiration".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                {
+                    mapping.Add("ExpirationDate", i);
+                    continue;
+                }
+
             }
         }
 
@@ -1318,21 +1467,111 @@ namespace WaterNut.DataSpace
                         ? splits[mapping["WarehouseNo"]]
                         : ""
                 },
+                {
+                    "FinancialInformation",
+                    (c, mapping, splits) => c.FinancialInformation = mapping.ContainsKey("FinancialInformation")
+                        ? splits[mapping["FinancialInformation"]]
+                        : ""
+                },
+                {
+                    "PreviousCNumber",
+                    (c, mapping, splits) => c.PreviousCNumber = mapping.ContainsKey("PreviousCNumber")
+                        ? splits[mapping["PreviousCNumber"]]
+                        : ""
+                },
+                {
+                    "Office",
+                    (c, mapping, splits) => c.Office = mapping.ContainsKey("Office")
+                        ? splits[mapping["Office"]]
+                        : ""
+                },
+                {
+                    "GeneralProcedure",
+                    (c, mapping, splits) => c.GeneralProcedure = mapping.ContainsKey("GeneralProcedure")
+                        ? splits[mapping["GeneralProcedure"]]
+                        : ""
+                },
+                {
+                    "AssessmentDate",
+                    (c, mapping, splits) => c.AssessmentDate = mapping.ContainsKey("AssessmentDate")
+                        ? splits[mapping["AssessmentDate"]]
+                        : ""
+                },
+                {
+                    "AssessmentNumber",
+                    (c, mapping, splits) => c.AssessmentNumber = mapping.ContainsKey("AssessmentNumber")
+                        ? splits[mapping["AssessmentNumber"]]
+                        : ""
+                },
+                {
+                    "AssessmentSerial",
+                    (c, mapping, splits) => c.AssessmentSerial = mapping.ContainsKey("AssessmentSerial")
+                        ? splits[mapping["AssessmentSerial"]]
+                        : ""
+                },
+                {
+                    "RegistrationDate",
+                    (c, mapping, splits) => c.RegistrationDate = mapping.ContainsKey("RegistrationDate")
+                        ? splits[mapping["RegistrationDate"]]
+                        : ""
+                },
+                {
+                    "RegistrationNumber",
+                    (c, mapping, splits) => c.RegistrationNumber = mapping.ContainsKey("RegistrationNumber")
+                        ? splits[mapping["RegistrationNumber"]]
+                        : ""
+                },
+                {
+                    "RegistrationSerial",
+                    (c, mapping, splits) => c.RegistrationSerial = mapping.ContainsKey("RegistrationSerial")
+                        ? splits[mapping["RegistrationSerial"]]
+                        : ""
+                },
+                {
+                    "Consignee",
+                    (c, mapping, splits) => c.Consignee = mapping.ContainsKey("Consignee")
+                        ? splits[mapping["Consignee"]]
+                        : ""
+                },
+                {
+                    "Exporter",
+                    (c, mapping, splits) => c.Exporter = mapping.ContainsKey("Exporter")
+                        ? splits[mapping["Exporter"]]
+                        : ""
+                },
+                {
+                    "DeclarantCode",
+                    (c, mapping, splits) => c.DeclarantCode = mapping.ContainsKey("DeclarantCode")
+                        ? splits[mapping["DeclarantCode"]]
+                        : ""
+                },
+                {
+                    "DeclarantReference",
+                    (c, mapping, splits) => c.DeclarantReference = mapping.ContainsKey("DeclarantReference")
+                        ? splits[mapping["DeclarantReference"]]
+                        : ""
+                },
+                {
+                    "ExpirationDate",
+                    (c, mapping, splits) => c.ExpirationDate = mapping.ContainsKey("ExpirationDate")
+                        ? splits[mapping["ExpirationDate"]]
+                        : ""
+                },
 
             };
-
+            
             try
             {
                 if (string.IsNullOrEmpty(line)) return null;
                 var splits = line.CsvSplit().Select(x => x.Trim()).ToArray();
                 if (splits.Length < headings.Length) return null;
-                if (!map.Keys.Contains("EntryDataId"))
-                    throw new ApplicationException("Invoice# not Mapped");
-                if (!map.Keys.Contains("ItemNumber"))
-                    throw new ApplicationException("ItemNumber not Mapped");
+                //if (!map.Keys.Contains("EntryDataId"))
+                //    throw new ApplicationException("Invoice# not Mapped");
+                //if (!map.Keys.Contains("ItemNumber"))
+                //    throw new ApplicationException("ItemNumber not Mapped");
 
-                if (splits[map["EntryDataId"]] != "" && splits[map["ItemNumber"]] != "")
-                {
+                //if (splits[map["EntryDataId"]] != "" && splits[map["ItemNumber"]] != "")
+                //{
                     var res = new CSVDataSummary();
                     res.SourceRow = line;
                     foreach (var key in map.Keys)
@@ -1359,7 +1598,7 @@ namespace WaterNut.DataSpace
                     }
 
                     return res;
-                }
+               // }
             }
             catch (Exception ex)
             {
@@ -1430,6 +1669,21 @@ namespace WaterNut.DataSpace
             public string WarehouseNo { get; set; }
 
             public double? TotalTax { get; set; }
+            public string PreviousCNumber { get; set; }
+            public string FinancialInformation { get; set; }
+            public string Office { get; set; }
+            public string GeneralProcedure { get; set; }
+            public string AssessmentDate { get; set; }
+            public string AssessmentNumber { get; set; }
+            public string AssessmentSerial { get; set; }
+            public string RegistrationDate { get; set; }
+            public string RegistrationNumber { get; set; }
+            public string RegistrationSerial { get; set; }
+            public string Consignee { get; set; }
+            public string Exporter { get; set; }
+            public string DeclarantReference { get; set; }
+            public string DeclarantCode { get; set; }
+            public string ExpirationDate { get; set; }
         }
 
         private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)

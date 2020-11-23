@@ -30,3 +30,6 @@ select  xcuda_Registration.Date,       EffectiveExpiryDate = DATEADD(DAY,cast(De
 FROM    xcuda_Registration INNER JOIN
                  xcuda_Warehouse ON xcuda_Registration.ASYCUDA_Id = xcuda_Warehouse.ASYCUDA_Id INNER JOIN
                  xcuda_ASYCUDA_ExtendedProperties ON xcuda_Registration.ASYCUDA_Id = xcuda_ASYCUDA_ExtendedProperties.ASYCUDA_Id
+
+
+delete from ExpiredEntriesLst

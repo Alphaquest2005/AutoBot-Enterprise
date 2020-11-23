@@ -15,6 +15,7 @@
               this.ToTable("EntryData_Adjustments");
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
+              this.Property(t => t.Tax).HasColumnName("Tax");
              // Nav Property Names
                   
     

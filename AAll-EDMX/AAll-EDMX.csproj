@@ -250,11 +250,13 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Contacts.cs
@@ -266,6 +268,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileGroups.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\FileTypeContacts.cs
@@ -289,7 +292,6 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -594,11 +596,13 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AttachmentLog.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
@@ -610,6 +614,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Emails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileGroups.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
@@ -633,7 +638,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepancyPreExecutionReport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_EntriesExpiringNextMonth.map.cs
@@ -946,11 +950,13 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Contacts.cs
@@ -962,6 +968,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\FileTypeContacts.cs
@@ -985,7 +992,6 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -1276,11 +1282,13 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Contacts.cs
@@ -1292,6 +1300,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\FileTypeContacts.cs
@@ -1315,7 +1324,6 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -1606,11 +1614,13 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs
@@ -1622,6 +1632,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\FileTypeContacts.cs
@@ -1645,7 +1656,6 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -1936,11 +1946,13 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
@@ -1952,6 +1964,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
@@ -1975,7 +1988,6 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -2231,11 +2243,13 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Attachments.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Contacts.cs
@@ -2247,6 +2261,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\Emails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\FileTypeContacts.cs
@@ -2270,7 +2285,6 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -2374,11 +2388,13 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Contacts.cs
@@ -2392,6 +2408,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\EntryPreviousItems.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\CustomsOperations.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\Enums\FileGroups.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\FileTypeContacts.cs
@@ -2415,7 +2432,6 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -2527,11 +2543,13 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
@@ -2543,6 +2561,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
@@ -2566,7 +2585,6 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -2670,11 +2688,13 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Contacts.cs
@@ -2686,6 +2706,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs
@@ -2709,7 +2730,6 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -2813,11 +2833,13 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Contacts.cs
@@ -2829,6 +2851,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\FileTypeContacts.cs
@@ -2852,7 +2875,6 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -2956,11 +2978,13 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs
@@ -2972,6 +2996,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs
@@ -2995,7 +3020,6 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -3099,11 +3123,13 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ApplicationSettings.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocument.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocument_Attachments.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEx.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaItemBasicInfo.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AttachmentLog.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Attachments.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Contacts.cs
@@ -3115,6 +3141,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EmailMapping.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\Emails.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\EntryPreviousItems.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\ExpiredEntriesLst.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileGroups.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeActions.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs
@@ -3138,7 +3165,6 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesErrors.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToAssess.cs
-..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_DocumentsToDelete.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs
@@ -3325,11 +3351,13 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ApplicationSettings.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocument_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AttachmentLog.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Attachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Contacts.map.cs
@@ -3341,6 +3369,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EmailMapping.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\Emails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\EntryPreviousItems.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileGroups.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeActions.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\FileTypeContacts.map.cs
@@ -3364,7 +3393,6 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesErrors.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DiscrepancyPreExecutionReport.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\TODO_EntriesExpiringNextMonth.map.cs
@@ -3661,12 +3689,14 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ActionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ApplicationSettingsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocument_AttachmentsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentBasicInfoRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentItemEntryDataDetailsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentItemRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSet_AttachmentsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetEntryDataExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetExRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaItemBasicInfoRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentLogRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AttachmentsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ContactsRepository.cs
@@ -3678,6 +3708,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailMappingRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EmailsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\ExpiredEntriesLstRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileGroupsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeActionsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\FileTypeContactsRepository.cs
@@ -3701,7 +3732,6 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesAlreadyXMLedRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesErrorsRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs
-..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepanciesToSubmitRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DiscrepancyPreExecutionReportRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\TODO_EntriesExpiringNextMonthRepository.cs
@@ -3823,12 +3853,14 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsSummaryListViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ApplicationSettingsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocument_AttachmentsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentBasicInfoViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSet_AttachmentsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetEntryDataExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaItemBasicInfoViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentLogViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AttachmentsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\BaseViewModel.cs
@@ -3841,6 +3873,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailMappingViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EmailsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\EntryPreviousItemsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\ExpiredEntriesLstViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileGroupsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeActionsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\FileTypeContactsViewModel.cs
@@ -3865,7 +3898,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesAlreadyXMLedViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesErrorsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToAssessViewModel.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepanciesToSubmitViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DiscrepancyPreExecutionReportViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_DocumentsToDeleteViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\TODO_EntriesExpiringNextMonthViewModel.cs
@@ -3970,12 +4002,14 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ActionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ApplicationSettingsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocument_AttachmentsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentBasicInfoTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSet_AttachmentsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetEntryDataExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaItemBasicInfoTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentLogTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AttachmentsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ContactsTotals.cs
@@ -3987,6 +4021,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailMappingTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EmailsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\EntryPreviousItemsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\ExpiredEntriesLstTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileGroupsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeActionsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\FileTypeContactsTotals.cs
@@ -4010,7 +4045,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesAlreadyXMLedTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesErrorsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToAssessTotals.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepanciesToSubmitTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DiscrepancyPreExecutionReportTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_DocumentsToDeleteTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\TODO_EntriesExpiringNextMonthTotals.cs
@@ -4103,12 +4137,14 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ActionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ApplicationSettingsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocument_AttachmentsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentBasicInfoVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSet_AttachmentsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetEntryDataExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaItemBasicInfoVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentLogVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AttachmentsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ContactsVirturalListLoader.cs
@@ -4120,6 +4156,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailMappingVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EmailsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\EntryPreviousItemsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\ExpiredEntriesLstVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileGroupsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeActionsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\FileTypeContactsVirturalListLoader.cs
@@ -4143,7 +4180,6 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesAlreadyXMLedVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesErrorsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToAssessVirturalListLoader.cs
-..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepanciesToSubmitVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DiscrepancyPreExecutionReportVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_DocumentsToDeleteVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\TODO_EntriesExpiringNextMonthVirturalListLoader.cs
@@ -4284,12 +4320,14 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IActionsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IApplicationSettingsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocument_AttachmentsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentBasicInfoService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentItemService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetExService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAttachmentLogService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAttachmentsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IContactsService.cs
@@ -4301,6 +4339,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEmailsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IEntryPreviousItemsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IExpiredEntriesLstService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileGroupsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeActionsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IFileTypeContactsService.cs
@@ -4324,7 +4363,6 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesErrorsService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs
-..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\ITODO_EntriesExpiringNextMonthService.cs
@@ -4614,12 +4652,14 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\ActionsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ApplicationSettingsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocument_AttachmentsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentBasicInfoService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentItemService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSet_AttachmentsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetExService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\AsycudaItemBasicInfoService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AttachmentLogService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AttachmentsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\ContactsService.cs
@@ -4631,6 +4671,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailMappingService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EmailsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\EntryPreviousItemsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\ExpiredEntriesLstService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileGroupsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypeActionsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\FileTypeContactsService.cs
@@ -4654,7 +4695,6 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesAlreadyXMLedService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesErrorsService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesToAssessService.cs
-..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DiscrepancyPreExecutionReportService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_DocumentsToDeleteService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\TODO_EntriesExpiringNextMonthService.cs
@@ -4902,12 +4942,14 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IActionsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IApplicationSettingsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocument_AttachmentsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentBasicInfoService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentItemService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetExService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAttachmentLogService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAttachmentsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IContactsService.cs
@@ -4919,6 +4961,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailMappingService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEmailsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IEntryPreviousItemsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IExpiredEntriesLstService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileGroupsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypeActionsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IFileTypeContactsService.cs
@@ -4942,7 +4985,6 @@
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesErrorsService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesToAssessService.cs
-..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepanciesToSubmitService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_DocumentsToDeleteService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\ITODO_EntriesExpiringNextMonthService.cs
@@ -5045,12 +5087,14 @@
 ..\WaterNut.Client.Services\CoreEntities\ActionsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ApplicationSettingsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocument_AttachmentsClient.cs
+..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentBasicInfoClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentItemClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetEntryDataExClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetExClient.cs
+..\WaterNut.Client.Services\CoreEntities\AsycudaItemBasicInfoClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AttachmentLogClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AttachmentsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\ContactsClient.cs
@@ -5062,6 +5106,7 @@
 ..\WaterNut.Client.Services\CoreEntities\EmailMappingClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EmailsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\EntryPreviousItemsClient.cs
+..\WaterNut.Client.Services\CoreEntities\ExpiredEntriesLstClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileGroupsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypeActionsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\FileTypeContactsClient.cs
@@ -5085,7 +5130,6 @@
 ..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesAlreadyXMLedClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesErrorsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesToAssessClient.cs
-..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepanciesToSubmitClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DiscrepancyPreExecutionReportClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_DocumentsToDeleteClient.cs
 ..\WaterNut.Client.Services\CoreEntities\TODO_EntriesExpiringNextMonthClient.cs

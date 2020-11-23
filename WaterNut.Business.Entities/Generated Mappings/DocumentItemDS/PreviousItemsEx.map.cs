@@ -47,6 +47,8 @@
               this.Property(t => t.DutyFreePaid).HasColumnName("DutyFreePaid").IsRequired().IsUnicode(false).HasMaxLength(9);
               this.Property(t => t.pLineNumber).HasColumnName("pLineNumber");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.TotalDutyLiablity).HasColumnName("TotalDutyLiablity");
+              this.Property(t => t.DutyLiablity).HasColumnName("DutyLiablity");
               this.HasRequired(t => t.xcuda_PreviousItem).WithOptional(t => (PreviousItemsEx)t.Ex);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

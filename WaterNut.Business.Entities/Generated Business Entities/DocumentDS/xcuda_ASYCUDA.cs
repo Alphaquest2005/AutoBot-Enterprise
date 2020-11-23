@@ -81,6 +81,21 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<System.DateTime> _entrytimestamp;
         [DataMember]
+        public Nullable<int> UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _upgradekey;
+        [DataMember]
         public List<xcuda_Assessment_notice> xcuda_Assessment_notice { get; set; }
         [DataMember]
         public List<xcuda_Container> xcuda_Container { get; set; }

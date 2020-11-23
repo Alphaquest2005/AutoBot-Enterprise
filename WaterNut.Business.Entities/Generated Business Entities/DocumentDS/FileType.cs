@@ -252,6 +252,36 @@ namespace DocumentDS.Business.Entities
         }
         Nullable<bool> _hasfiles;
         [DataMember]
+        public Nullable<int> OldFileTypeId 
+        {
+            get
+            {
+                return _oldfiletypeid;
+            }
+            set
+            {
+                _oldfiletypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _oldfiletypeid;
+        [DataMember]
+        public Nullable<bool> ReplicateHeaderRow 
+        {
+            get
+            {
+                return _replicateheaderrow;
+            }
+            set
+            {
+                _replicateheaderrow = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _replicateheaderrow;
+        [DataMember]
         public AsycudaDocumentSet AsycudaDocumentSet { get; set; }
         [DataMember]
         public List<AsycudaDocumentSet_Attachments> AsycudaDocumentSet_Attachments { get; set; }

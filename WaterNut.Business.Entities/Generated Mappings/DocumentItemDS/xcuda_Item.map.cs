@@ -36,6 +36,7 @@
               this.Property(t => t.PreviousInvoiceLineNumber).HasColumnName("PreviousInvoiceLineNumber").HasMaxLength(50);
               this.Property(t => t.PreviousInvoiceItemNumber).HasColumnName("PreviousInvoiceItemNumber").HasMaxLength(50);
               this.Property(t => t.EntryDataType).HasColumnName("EntryDataType").HasMaxLength(50);
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
               this.HasMany(t => t.SubItems).WithRequired(t => (xcuda_Item)t.xcuda_Item);
               this.HasMany(t => t.xBondAllocations).WithRequired(t => (xcuda_Item)t.xcuda_Item);
               this.HasMany(t => t.xcuda_Attached_documents).WithOptional(t => t.xcuda_Item).HasForeignKey(d => d.Item_Id);

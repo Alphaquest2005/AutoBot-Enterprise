@@ -204,12 +204,14 @@
     <Compile Include="Generated Business Entities\CoreEntities\Actions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Attachments.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Contacts.cs" />
@@ -223,6 +225,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\EntryPreviousItems.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Enums\CustomsOperations.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\Enums\FileGroups.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\FileTypeContacts.cs" />
@@ -246,7 +249,6 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesErrors.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
-    <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
@@ -541,12 +543,14 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Contacts.cs" />
@@ -558,6 +562,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\FileTypeContacts.cs" />
@@ -581,7 +586,6 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
-    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
@@ -871,12 +875,14 @@
     <Compile Include="Generated Constructors Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Contacts.cs" />
@@ -888,6 +894,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\FileTypeContacts.cs" />
@@ -911,7 +918,6 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
-    <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
@@ -1201,12 +1207,14 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Contacts.cs" />
@@ -1218,6 +1226,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\FileTypeContacts.cs" />
@@ -1241,7 +1250,6 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
-    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
@@ -1531,12 +1539,14 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Actions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ApplicationSettings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocument_Attachments.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AttachmentLog.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Attachments.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Contacts.cs" />
@@ -1548,6 +1558,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EmailMapping.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\Emails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\EntryPreviousItems.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\ExpiredEntriesLst.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
@@ -1571,7 +1582,6 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesErrors.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToAssess.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepanciesToSubmit.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DiscrepancyPreExecutionReport.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_DocumentsToDelete.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_EntriesExpiringNextMonth.cs" />
@@ -1871,12 +1881,14 @@
     <Compile Include="Generated Mappings\CoreEntities\Actions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\ApplicationSettings.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocument.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocument_Attachments.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AttachmentLog.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Attachments.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Contacts.map.cs" />
@@ -1888,6 +1900,7 @@
     <Compile Include="Generated Mappings\CoreEntities\EmailMapping.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\Emails.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\EntryPreviousItems.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\ExpiredEntriesLst.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileGroups.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeActions.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\FileTypeContacts.map.cs" />
@@ -1911,7 +1924,6 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesAlreadyXMLed.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesErrors.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesToAssess.map.cs" />
-    <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepanciesToSubmit.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DiscrepancyPreExecutionReport.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_DocumentsToDelete.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_EntriesExpiringNextMonth.map.cs" />
