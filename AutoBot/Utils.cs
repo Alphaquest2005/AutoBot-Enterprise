@@ -66,9 +66,7 @@ namespace AutoBot
             public List<Action<FileTypes, FileInfo[]>> Actions { get; set; } =
                 new List<Action<FileTypes, FileInfo[]>>();
         }
-        /// <summary>
-        /// fsrh
-        /// </summary>
+
         public static Dictionary<string, Action<FileTypes, FileInfo[]>> FileActions =>
             new Dictionary<string, Action<FileTypes, FileInfo[]>>
             {
@@ -3531,6 +3529,13 @@ namespace AutoBot
                                 break;
                             }
 
+                            if (p[2] == r[2] && r.Length == 4 && r[3] == "Success") // for file
+                            {
+                                lcont += 1;
+                                isSuccess = true;
+                                break;
+                            }
+
                             if (p[1] != r[1] && r.Length == 3 && r[2] == "Error")
                             {
 
@@ -4256,6 +4261,7 @@ namespace AutoBot
             {
                 foreach (var doc in lst.Select(x => x.Key).Distinct<int>())
                 {
+                   
                     BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
                     BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                 }
