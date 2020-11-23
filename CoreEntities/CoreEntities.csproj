@@ -103,6 +103,9 @@
     <Compile Include="AsycudaDocument.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="AsycudaDocumentBasicInfo.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="AsycudaDocumentItem.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
@@ -119,6 +122,9 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="AsycudaDocument_Attachments.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="AsycudaItemBasicInfo.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="AttachmentLog.cs">
@@ -162,6 +168,9 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="EntryPreviousItems.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ExpiredEntriesLst.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="FileGroups.cs">
@@ -247,9 +256,6 @@
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_DiscrepanciesToAssess.cs">
-      <DependentUpon>CoreEntities.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TODO_DiscrepanciesToSubmit.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
     <Compile Include="TODO_DiscrepancyPreExecutionReport.cs">

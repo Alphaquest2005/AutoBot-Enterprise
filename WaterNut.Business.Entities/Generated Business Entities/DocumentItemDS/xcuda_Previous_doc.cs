@@ -51,6 +51,36 @@ namespace DocumentItemDS.Business.Entities
         }
         int _item_id;
         [DataMember]
+        public string Previous_document_reference 
+        {
+            get
+            {
+                return _previous_document_reference;
+            }
+            set
+            {
+                _previous_document_reference = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _previous_document_reference;
+        [DataMember]
+        public string Previous_warehouse_code 
+        {
+            get
+            {
+                return _previous_warehouse_code;
+            }
+            set
+            {
+                _previous_warehouse_code = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _previous_warehouse_code;
+        [DataMember]
         public xcuda_Item xcuda_Item { get; set; }
 
  //       [DataMember]

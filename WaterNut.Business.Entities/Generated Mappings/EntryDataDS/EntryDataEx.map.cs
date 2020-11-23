@@ -38,6 +38,8 @@
               this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.Property(t => t.Packages).HasColumnName("Packages");
+              this.Property(t => t.SupplierInvoiceNo).HasColumnName("SupplierInvoiceNo").HasMaxLength(50);
+              this.Property(t => t.Tax).HasColumnName("Tax");
               this.HasRequired(t => t.EntryData).WithOptional(t => (EntryDataEx)t.EntryDataEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

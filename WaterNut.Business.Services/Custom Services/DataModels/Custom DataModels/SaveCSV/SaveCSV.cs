@@ -124,8 +124,7 @@ namespace WaterNut.DataSpace
                     var lines = fixedtxt.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 // identify header
                 var headerline = lines.FirstOrDefault();
-
-                var csvType = GetFileType(headerline);
+               
 
                 
                 if (headerline != null)
@@ -135,11 +134,11 @@ namespace WaterNut.DataSpace
 
                     if (fileType.Type == "SI")
                     {
-                        await SaveCsvSubItems.Instance.ExtractSubItems(fileType.Type, lines, headings, csvType).ConfigureAwait(false);
+                        await SaveCsvSubItems.Instance.ExtractSubItems(fileType.Type, lines, headings).ConfigureAwait(false);
                         return;
                     }
 
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType.Type, lines, headings, csvType, docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath).ConfigureAwait(false)) return;
+                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType.Type, lines, headings,  docSet, overWriteExisting, emailId, fileTypeId, droppedFilePath).ConfigureAwait(false)) return;
                 }
             }
             catch (Exception Ex)
@@ -148,22 +147,7 @@ namespace WaterNut.DataSpace
             }
         }
      
-        private  string GetFileType(string headerline)
-        {
-            if (headerline == "INVNO,SEQ,ITEM-#,DESCRIPTION,QUANTITY,UNIT, PRICE , Amount ,DATE,TYPE")
-                return "Standard";
 
-            if (headerline == ",,,,Type,,Date,,Num,,Memo,,Item,,Qty,,Sales Price,,Amount,,Balance")
-                return "QB9";
-
-            if (headerline == "Type,,Date,,Num,,Memo,,Item,,Qty,,Sales Price,,Amount,,Balance")
-                return "QB9";
-
-            if (headerline == "Precision_4,Number,Date,ItemNumber,ItemDescription,Quantity,QtyAllocated")
-                return "SubItems";
-
-            return null;
-        }
 
     }
 }

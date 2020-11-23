@@ -374,6 +374,36 @@ namespace DocumentDS.Business.Entities
         }
         string _office;
         [DataMember]
+        public Nullable<int> UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _upgradekey;
+        [DataMember]
+        public Nullable<int> ExpectedEntries 
+        {
+            get
+            {
+                return _expectedentries;
+            }
+            set
+            {
+                _expectedentries = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _expectedentries;
+        [DataMember]
         public Customs_Procedure Customs_Procedure { get; set; }
         [DataMember]
         public Document_Type Document_Type { get; set; }

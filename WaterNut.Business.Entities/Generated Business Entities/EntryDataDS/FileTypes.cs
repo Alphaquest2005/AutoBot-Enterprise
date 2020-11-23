@@ -267,6 +267,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _oldfiletypeid;
         [DataMember]
+        public Nullable<bool> ReplicateHeaderRow 
+        {
+            get
+            {
+                return _replicateheaderrow;
+            }
+            set
+            {
+                _replicateheaderrow = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _replicateheaderrow;
+        [DataMember]
         public List<EntryData> EntryData { get; set; }
         [DataMember]
         public List<FileTypes> FileTypes1 { get; set; }

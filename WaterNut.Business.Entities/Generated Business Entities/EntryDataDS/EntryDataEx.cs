@@ -396,6 +396,36 @@ namespace EntryDataDS.Business.Entities
         }
         int _packages;
         [DataMember]
+        public string SupplierInvoiceNo 
+        {
+            get
+            {
+                return _supplierinvoiceno;
+            }
+            set
+            {
+                _supplierinvoiceno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _supplierinvoiceno;
+        [DataMember]
+        public Nullable<double> Tax 
+        {
+            get
+            {
+                return _tax;
+            }
+            set
+            {
+                _tax = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _tax;
+        [DataMember]
         public EntryData EntryData { get; set; }
 
  //       [DataMember]

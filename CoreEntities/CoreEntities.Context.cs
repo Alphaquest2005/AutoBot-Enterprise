@@ -58,7 +58,6 @@ namespace CoreEntities
         public DbSet<TODO_CreateDiscrepancyEntries> TODO_CreateDiscrepancyEntries { get; set; }
         public DbSet<Emails> Emails { get; set; }
         public DbSet<FileGroups> FileGroups { get; set; }
-        public DbSet<TODO_DiscrepanciesToSubmit> TODO_DiscrepanciesToSubmit { get; set; }
         public DbSet<SessionSchedule> SessionSchedule { get; set; }
         public DbSet<TODO_SubmitXMLToCustoms> TODO_SubmitXMLToCustoms { get; set; }
         public DbSet<TODO_DiscrepanciesToAssess> TODO_DiscrepanciesToAssess { get; set; }
@@ -106,5 +105,8 @@ namespace CoreEntities
         public DbSet<TODO_SubmitMissingInvoicePDFs> TODO_SubmitMissingInvoicePDFs { get; set; }
         public DbSet<TODO_SubmitSalesToCustoms> TODO_SubmitSalesToCustoms { get; set; }
         public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
+        public DbSet<AsycudaDocumentBasicInfo> AsycudaDocumentBasicInfo { get; set; }
+        public DbSet<AsycudaItemBasicInfo> AsycudaItemBasicInfo { get; set; }
+        public DbSet<ExpiredEntriesLst> ExpiredEntriesLst { get; set; }
     }
 }

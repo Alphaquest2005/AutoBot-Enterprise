@@ -113,8 +113,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<FileGroups> FileGroups { get; set; }
      
-        public DbSet<TODO_DiscrepanciesToSubmit> TODO_DiscrepanciesToSubmit { get; set; }
-     
         public DbSet<SessionSchedule> SessionSchedule { get; set; }
      
         public DbSet<TODO_SubmitXMLToCustoms> TODO_SubmitXMLToCustoms { get; set; }
@@ -209,6 +207,12 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_SubmitPOInfo> TODO_SubmitPOInfo { get; set; }
      
+        public DbSet<AsycudaDocumentBasicInfo> AsycudaDocumentBasicInfo { get; set; }
+     
+        public DbSet<AsycudaItemBasicInfo> AsycudaItemBasicInfo { get; set; }
+     
+        public DbSet<ExpiredEntriesLst> ExpiredEntriesLst { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -278,8 +282,6 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new EmailsMap());
          
             modelBuilder.Configurations.Add(new FileGroupsMap());
-         
-            modelBuilder.Configurations.Add(new TODO_DiscrepanciesToSubmitMap());
          
             modelBuilder.Configurations.Add(new SessionScheduleMap());
          
@@ -374,6 +376,12 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_SubmitSalesToCustomsMap());
          
             modelBuilder.Configurations.Add(new TODO_SubmitPOInfoMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaDocumentBasicInfoMap());
+         
+            modelBuilder.Configurations.Add(new AsycudaItemBasicInfoMap());
+         
+            modelBuilder.Configurations.Add(new ExpiredEntriesLstMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

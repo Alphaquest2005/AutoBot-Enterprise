@@ -114,6 +114,7 @@
     <Compile Include="CoreEntities\IActionDocSetLogsService.cs" />
     <Compile Include="CoreEntities\IActionsService.cs" />
     <Compile Include="CoreEntities\IApplicationSettingsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentBasicInfoService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentItemService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentService.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="CoreEntities\IAsycudaDocumentSetExService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocument_AttachmentsService.cs" />
+    <Compile Include="CoreEntities\IAsycudaItemBasicInfoService.cs" />
     <Compile Include="CoreEntities\IAttachmentLogService.cs" />
     <Compile Include="CoreEntities\IAttachmentsService.cs" />
     <Compile Include="CoreEntities\IContactsService.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="CoreEntities\IEmailMappingService.cs" />
     <Compile Include="CoreEntities\IEmailsService.cs" />
     <Compile Include="CoreEntities\IEntryPreviousItemsService.cs" />
+    <Compile Include="CoreEntities\IExpiredEntriesLstService.cs" />
     <Compile Include="CoreEntities\IFileGroupsService.cs" />
     <Compile Include="CoreEntities\IFileTypeActionsService.cs" />
     <Compile Include="CoreEntities\IFileTypeContactsService.cs" />
@@ -155,7 +158,6 @@
     <Compile Include="CoreEntities\ITODO_DiscrepanciesAlreadyXMLedService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesErrorsService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepanciesToAssessService.cs" />
-    <Compile Include="CoreEntities\ITODO_DiscrepanciesToSubmitService.cs" />
     <Compile Include="CoreEntities\ITODO_DiscrepancyPreExecutionReportService.cs" />
     <Compile Include="CoreEntities\ITODO_DocumentsToDeleteService.cs" />
     <Compile Include="CoreEntities\ITODO_EntriesExpiringNextMonthService.cs" />

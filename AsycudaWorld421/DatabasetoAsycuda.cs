@@ -144,13 +144,14 @@ namespace Asycuda421
                 }
                 if (da.xcuda_Traders.xcuda_Exporter != null)
                 {
+                    
                     if (da.xcuda_Traders.xcuda_Exporter.Exporter_code != null)
                         t.Exporter.Exporter_code.Text.Add(da.xcuda_Traders.xcuda_Exporter.Exporter_code);
                     if (da.xcuda_Traders.xcuda_Exporter.Exporter_name != null)
                         t.Exporter.Exporter_name.Text.Add(da.xcuda_Traders.xcuda_Exporter.Exporter_name);
                 }
 
-                if (da.xcuda_Traders.xcuda_Traders_Financial != null && da.xcuda_Traders.xcuda_Traders_Financial.Financial_code != null)
+                if (da.xcuda_Traders.xcuda_Traders_Financial != null )
                 {
                     if (da.xcuda_Traders.xcuda_Traders_Financial.Financial_code != null)
                         t.Financial.Financial_code.Text.Add(da.xcuda_Traders.xcuda_Traders_Financial.Financial_code);
@@ -580,7 +581,7 @@ namespace Asycuda421
                 ai.Packages.Marks1_of_packages.Text.Clear();
                 ai.Packages.Marks1_of_packages.Text.Add(pk.Marks1_of_packages);
                 ai.Packages.Kind_of_packages_code.Text.Clear();
-                ai.Packages.Kind_of_packages_code.Text.Add(pk.Kind_of_packages_code);
+                ai.Packages.Kind_of_packages_code.Text.Add(string.IsNullOrEmpty(pk.Kind_of_packages_code)? "PK":pk.Kind_of_packages_code);
             }
             else
             {
@@ -601,6 +602,10 @@ namespace Asycuda421
             {
                 if (item.xcuda_Previous_doc.Summary_declaration != null)
                     ai.Previous_doc.Summary_declaration.Text.Add(item.xcuda_Previous_doc.Summary_declaration);
+                if (item.xcuda_Previous_doc.Previous_document_reference != null)
+                    ai.Previous_doc.Previous_document_reference.Text.Add(item.xcuda_Previous_doc.Previous_document_reference);
+                if (item.xcuda_Previous_doc.Previous_warehouse_code != null)
+                    ai.Previous_doc.Previous_warehouse_code.Text.Add(item.xcuda_Previous_doc.Previous_warehouse_code);
             }
             else
             {
@@ -644,7 +649,7 @@ namespace Asycuda421
                     {
                       var fileinfo = new FileInfo(filePath);
                     if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{fileinfo.FullName}\r\n");  
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name)}\r\n");  
                     }
                     
                 }

@@ -16,6 +16,7 @@
               this.Property(t => t.id).HasColumnName("id").HasMaxLength(10);
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.EntryTimeStamp).HasColumnName("EntryTimeStamp").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Computed));
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
               this.HasMany(t => t.xcuda_Assessment_notice).WithOptional(t => t.xcuda_ASYCUDA).HasForeignKey(d => d.ASYCUDA_Id);
               this.HasMany(t => t.xcuda_Container).WithOptional(t => t.xcuda_ASYCUDA).HasForeignKey(d => d.ASYCUDA_Id);
               this.HasOptional(t => t.xcuda_Declarant).WithRequired(t => (xcuda_ASYCUDA)t.xcuda_ASYCUDA);

@@ -56,6 +56,36 @@ namespace EntryDataDS.Business.Entities
         }
         string _supplierinvoiceno;
         [DataMember]
+        public string PreviousCNumber 
+        {
+            get
+            {
+                return _previouscnumber;
+            }
+            set
+            {
+                _previouscnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _previouscnumber;
+        [DataMember]
+        public string FinancialInformation 
+        {
+            get
+            {
+                return _financialinformation;
+            }
+            set
+            {
+                _financialinformation = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _financialinformation;
+        [DataMember]
         public List<WarehouseInfo> WarehouseInfo { get; set; }
 
  //       [DataMember]

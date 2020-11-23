@@ -156,6 +156,7 @@
     <Compile Include="Generated Repositories\CoreEntities\ActionDocSetLogsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ApplicationSettingsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentBasicInfoRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentItemEntryDataDetailsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentItemRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentRepository.cs" />
@@ -163,6 +164,7 @@
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSetExRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocumentSet_AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AsycudaDocument_AttachmentsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\AsycudaItemBasicInfoRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AttachmentLogRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\AttachmentsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\ContactsRepository.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Generated Repositories\CoreEntities\EmailMappingRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EmailsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\EntryPreviousItemsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\ExpiredEntriesLstRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileGroupsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeContactsRepository.cs" />
@@ -197,7 +200,6 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesAlreadyXMLedRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesErrorsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToAssessRepository.cs" />
-    <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepanciesToSubmitRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DiscrepancyPreExecutionReportRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_DocumentsToDeleteRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_EntriesExpiringNextMonthRepository.cs" />

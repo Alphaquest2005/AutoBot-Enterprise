@@ -51,6 +51,7 @@
           </Key>
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="Tax" Type="float" />
         </EntityType>
         <EntityType Name="EntryData_DocumentType">
           <Key>
@@ -80,6 +81,8 @@
           <Property Name="PONumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
+          <Property Name="PreviousCNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="FinancialInformation" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="EntryData_Sales">
           <Key>
@@ -169,6 +172,7 @@
           <Property Name="OverwriteFiles" Type="bit" />
           <Property Name="HasFiles" Type="bit" />
           <Property Name="OldFileTypeId" Type="int" />
+          <Property Name="ReplicateHeaderRow" Type="bit" />
         </EntityType>
         <EntityType Name="InventoryItems">
           <Key>
@@ -279,6 +283,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="IsReconciled" Type="bit" />
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="LastCost" Type="float" />
+          <Property Name="FileLineNumber" Type="int" />
           <Property Name="TaxAmount" Type="float" />
           <Property Name="EmailId" Type="int" />
           <Property Name="FileTypeId" Type="int" />
@@ -309,6 +314,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataEx' does not hav
           <Property Name="Type" Type="nvarchar" MaxLength="50" />
           <Property Name="ImportedTotal" Type="float" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Tax" Type="float" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
           <Property Name="TotalLines" Type="int" />
@@ -655,6 +662,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
     [EntryDataDetailsEx].[IsReconciled] AS [IsReconciled], 
     [EntryDataDetailsEx].[ApplicationSettingsId] AS [ApplicationSettingsId], 
     [EntryDataDetailsEx].[LastCost] AS [LastCost], 
+    [EntryDataDetailsEx].[FileLineNumber] AS [FileLineNumber], 
     [EntryDataDetailsEx].[TaxAmount] AS [TaxAmount], 
     [EntryDataDetailsEx].[EmailId] AS [EmailId], 
     [EntryDataDetailsEx].[FileTypeId] AS [FileTypeId], 
@@ -669,6 +677,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
     [EntryDataEx].[Type] AS [Type], 
     [EntryDataEx].[ImportedTotal] AS [ImportedTotal], 
     [EntryDataEx].[InvoiceNo] AS [InvoiceNo], 
+    [EntryDataEx].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
+    [EntryDataEx].[Tax] AS [Tax], 
     [EntryDataEx].[InvoiceTotal] AS [InvoiceTotal], 
     [EntryDataEx].[ImportedLines] AS [ImportedLines], 
     [EntryDataEx].[TotalLines] AS [TotalLines], 
@@ -925,6 +935,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="PONumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
           <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="WarehouseInfo" Relationship="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders" FromRole="PurchaseOrders" ToRole="WarehouseInfo" />
+          <Property Name="PreviousCNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FinancialInformation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="EntryDataDetails">
           <Key>
@@ -1045,6 +1057,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="FileLineNumber" Type="Int32" />
         </EntityType>
         <Association Name="EntryDataDetailsEntryDataDetailsEx">
           <End Type="WaterNutDBModel.EntryDataDetails" Role="EntryDataDetails" Multiplicity="1" />
@@ -1127,6 +1140,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         </EntityType>
         <EntityType Name="Adjustments" BaseType="WaterNutDBModel.EntryData">
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Tax" Type="Double" />
         </EntityType>
         <EntityType Name="FileTypes">
           <Key>
@@ -1151,6 +1165,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="OverwriteFiles" Type="Boolean" />
           <Property Name="HasFiles" Type="Boolean" />
           <Property Name="OldFileTypeId" Type="Int32" />
+          <Property Name="ReplicateHeaderRow" Type="Boolean" />
         </EntityType>
         <Association Name="FK_EntryData_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="0..1" />
@@ -1260,6 +1275,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="EntryData_Id" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Packages" Type="Int32" Nullable="false" />
+          <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Tax" Type="Double" />
         </EntityType>
         <Association Name="EntryDataEntryDataEx">
           <End Type="WaterNutDBModel.EntryData" Role="EntryData" Multiplicity="1" />
@@ -1477,6 +1494,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.PurchaseOrders)">
               <MappingFragment StoreEntitySet="EntryData_PurchaseOrders">
+                <ScalarProperty Name="FinancialInformation" ColumnName="FinancialInformation" />
+                <ScalarProperty Name="PreviousCNumber" ColumnName="PreviousCNumber" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
                 <ScalarProperty Name="PONumber" ColumnName="PONumber" />
@@ -1484,6 +1503,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </EntityTypeMapping>
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.Adjustments)">
               <MappingFragment StoreEntitySet="EntryData_Adjustments">
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
               </MappingFragment>
@@ -1548,6 +1568,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataDetailsEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetailsEx">
               <MappingFragment StoreEntitySet="EntryDataDetailsEx">
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -1627,6 +1648,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
                 <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
                 <ScalarProperty Name="HasFiles" ColumnName="HasFiles" />
                 <ScalarProperty Name="OverwriteFiles" ColumnName="OverwriteFiles" />
@@ -1687,6 +1709,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySetMapping Name="EntryDataEx">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataEx">
               <MappingFragment StoreEntitySet="EntryDataEx">
+                <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
                 <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />

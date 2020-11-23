@@ -58,11 +58,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentApplicationSettingsIDChanged, OnCurrentApplicationSettingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentIDChanged, OnCurrentAsycudaDocumentIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocument_AttachmentsIDChanged, OnCurrentAsycudaDocument_AttachmentsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentBasicInfoIDChanged, OnCurrentAsycudaDocumentBasicInfoIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemIDChanged, OnCurrentAsycudaDocumentItemIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, OnCurrentAsycudaDocumentSet_AttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataExIDChanged, OnCurrentAsycudaDocumentSetEntryDataExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, OnCurrentAsycudaDocumentSetExIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaItemBasicInfoIDChanged, OnCurrentAsycudaItemBasicInfoIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAttachmentLogIDChanged, OnCurrentAttachmentLogIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAttachmentsIDChanged, OnCurrentAttachmentsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentContactsIDChanged, OnCurrentContactsIDChanged);
@@ -74,6 +76,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailMappingIDChanged, OnCurrentEmailMappingIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEmailsIDChanged, OnCurrentEmailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, OnCurrentEntryPreviousItemsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentExpiredEntriesLstIDChanged, OnCurrentExpiredEntriesLstIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileGroupsIDChanged, OnCurrentFileGroupsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeActionsIDChanged, OnCurrentFileTypeActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeContactsIDChanged, OnCurrentFileTypeContactsIDChanged);
@@ -97,7 +100,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesAlreadyXMLedIDChanged, OnCurrentTODO_DiscrepanciesAlreadyXMLedIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesErrorsIDChanged, OnCurrentTODO_DiscrepanciesErrorsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesToAssessIDChanged, OnCurrentTODO_DiscrepanciesToAssessIDChanged);
-                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepanciesToSubmitIDChanged, OnCurrentTODO_DiscrepanciesToSubmitIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DiscrepancyPreExecutionReportIDChanged, OnCurrentTODO_DiscrepancyPreExecutionReportIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_DocumentsToDeleteIDChanged, OnCurrentTODO_DocumentsToDeleteIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_EntriesExpiringNextMonthIDChanged, OnCurrentTODO_EntriesExpiringNextMonthIDChanged);
@@ -142,11 +144,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<ApplicationSettings>(MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
                         RegisterToReceiveMessages<AsycudaDocument>(MessageToken.CurrentAsycudaDocumentChanged, OnCurrentAsycudaDocumentChanged);
                         RegisterToReceiveMessages<AsycudaDocument_Attachments>(MessageToken.CurrentAsycudaDocument_AttachmentsChanged, OnCurrentAsycudaDocument_AttachmentsChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentBasicInfo>(MessageToken.CurrentAsycudaDocumentBasicInfoChanged, OnCurrentAsycudaDocumentBasicInfoChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItem>(MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetails>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryDataEx>(MessageToken.CurrentAsycudaDocumentSetEntryDataExChanged, OnCurrentAsycudaDocumentSetEntryDataExChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
+                        RegisterToReceiveMessages<AsycudaItemBasicInfo>(MessageToken.CurrentAsycudaItemBasicInfoChanged, OnCurrentAsycudaItemBasicInfoChanged);
                         RegisterToReceiveMessages<AttachmentLog>(MessageToken.CurrentAttachmentLogChanged, OnCurrentAttachmentLogChanged);
                         RegisterToReceiveMessages<Attachments>(MessageToken.CurrentAttachmentsChanged, OnCurrentAttachmentsChanged);
                         RegisterToReceiveMessages<Contacts>(MessageToken.CurrentContactsChanged, OnCurrentContactsChanged);
@@ -158,6 +162,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<EmailMapping>(MessageToken.CurrentEmailMappingChanged, OnCurrentEmailMappingChanged);
                         RegisterToReceiveMessages<Emails>(MessageToken.CurrentEmailsChanged, OnCurrentEmailsChanged);
                         RegisterToReceiveMessages<EntryPreviousItems>(MessageToken.CurrentEntryPreviousItemsChanged, OnCurrentEntryPreviousItemsChanged);
+                        RegisterToReceiveMessages<ExpiredEntriesLst>(MessageToken.CurrentExpiredEntriesLstChanged, OnCurrentExpiredEntriesLstChanged);
                         RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
                         RegisterToReceiveMessages<FileTypeActions>(MessageToken.CurrentFileTypeActionsChanged, OnCurrentFileTypeActionsChanged);
                         RegisterToReceiveMessages<FileTypeContacts>(MessageToken.CurrentFileTypeContactsChanged, OnCurrentFileTypeContactsChanged);
@@ -181,7 +186,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_DiscrepanciesAlreadyXMLed>(MessageToken.CurrentTODO_DiscrepanciesAlreadyXMLedChanged, OnCurrentTODO_DiscrepanciesAlreadyXMLedChanged);
                         RegisterToReceiveMessages<TODO_DiscrepanciesErrors>(MessageToken.CurrentTODO_DiscrepanciesErrorsChanged, OnCurrentTODO_DiscrepanciesErrorsChanged);
                         RegisterToReceiveMessages<TODO_DiscrepanciesToAssess>(MessageToken.CurrentTODO_DiscrepanciesToAssessChanged, OnCurrentTODO_DiscrepanciesToAssessChanged);
-                        RegisterToReceiveMessages<TODO_DiscrepanciesToSubmit>(MessageToken.CurrentTODO_DiscrepanciesToSubmitChanged, OnCurrentTODO_DiscrepanciesToSubmitChanged);
                         RegisterToReceiveMessages<TODO_DiscrepancyPreExecutionReport>(MessageToken.CurrentTODO_DiscrepancyPreExecutionReportChanged, OnCurrentTODO_DiscrepancyPreExecutionReportChanged);
                         RegisterToReceiveMessages<TODO_DocumentsToDelete>(MessageToken.CurrentTODO_DocumentsToDeleteChanged, OnCurrentTODO_DocumentsToDeleteChanged);
                         RegisterToReceiveMessages<TODO_EntriesExpiringNextMonth>(MessageToken.CurrentTODO_EntriesExpiringNextMonthChanged, OnCurrentTODO_EntriesExpiringNextMonthChanged);
@@ -372,6 +376,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                 }
                             }
                         }
+                        internal async void OnCurrentAsycudaDocumentBasicInfoIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaDocumentBasicInfoRepository ctx = new AsycudaDocumentBasicInfoRepository())
+                            {
+                                CurrentAsycudaDocumentBasicInfo = await ctx.GetAsycudaDocumentBasicInfo(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaDocumentBasicInfo);
+                        }
+
+                        private  string _currentAsycudaDocumentBasicInfoID = "";
+                        public string CurrentAsycudaDocumentBasicInfoID
+                        {
+                            get
+                            {
+                                return _currentAsycudaDocumentBasicInfoID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaDocumentBasicInfoID != value)
+                                {
+                                    _currentAsycudaDocumentBasicInfoID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaDocumentBasicInfoID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentBasicInfoIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentBasicInfoIDChanged, _currentAsycudaDocumentBasicInfoID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentBasicInfoID);  
+                                }
+                            }
+                        }
                         internal async void OnCurrentAsycudaDocumentItemIDChanged(object sender, NotificationEventArgs<string> e)
                         {
                             using (AsycudaDocumentItemRepository ctx = new AsycudaDocumentItemRepository())
@@ -504,6 +535,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAsycudaDocumentSetExID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSetExIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, _currentAsycudaDocumentSetExID));
                                     NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetExID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAsycudaItemBasicInfoIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaItemBasicInfoRepository ctx = new AsycudaItemBasicInfoRepository())
+                            {
+                                CurrentAsycudaItemBasicInfo = await ctx.GetAsycudaItemBasicInfo(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaItemBasicInfo);
+                        }
+
+                        private  string _currentAsycudaItemBasicInfoID = "";
+                        public string CurrentAsycudaItemBasicInfoID
+                        {
+                            get
+                            {
+                                return _currentAsycudaItemBasicInfoID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaItemBasicInfoID != value)
+                                {
+                                    _currentAsycudaItemBasicInfoID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaItemBasicInfoID)) BeginSendMessage(MessageToken.CurrentAsycudaItemBasicInfoIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaItemBasicInfoIDChanged, _currentAsycudaItemBasicInfoID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaItemBasicInfoID);  
                                 }
                             }
                         }
@@ -801,6 +859,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentEntryPreviousItemsID)) BeginSendMessage(MessageToken.CurrentEntryPreviousItemsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentEntryPreviousItemsIDChanged, _currentEntryPreviousItemsID));
                                     NotifyPropertyChanged(x => this.CurrentEntryPreviousItemsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentExpiredEntriesLstIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (ExpiredEntriesLstRepository ctx = new ExpiredEntriesLstRepository())
+                            {
+                                CurrentExpiredEntriesLst = await ctx.GetExpiredEntriesLst(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentExpiredEntriesLst);
+                        }
+
+                        private  string _currentExpiredEntriesLstID = "";
+                        public string CurrentExpiredEntriesLstID
+                        {
+                            get
+                            {
+                                return _currentExpiredEntriesLstID;
+                            }
+                            set
+                            {
+                                if (_currentExpiredEntriesLstID != value)
+                                {
+                                    _currentExpiredEntriesLstID = value;
+                                    if (!string.IsNullOrEmpty(_currentExpiredEntriesLstID)) BeginSendMessage(MessageToken.CurrentExpiredEntriesLstIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentExpiredEntriesLstIDChanged, _currentExpiredEntriesLstID));
+                                    NotifyPropertyChanged(x => this.CurrentExpiredEntriesLstID);  
                                 }
                             }
                         }
@@ -1422,33 +1507,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_DiscrepanciesToAssessID)) BeginSendMessage(MessageToken.CurrentTODO_DiscrepanciesToAssessIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_DiscrepanciesToAssessIDChanged, _currentTODO_DiscrepanciesToAssessID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_DiscrepanciesToAssessID);  
-                                }
-                            }
-                        }
-                        internal async void OnCurrentTODO_DiscrepanciesToSubmitIDChanged(object sender, NotificationEventArgs<string> e)
-                        {
-                            using (TODO_DiscrepanciesToSubmitRepository ctx = new TODO_DiscrepanciesToSubmitRepository())
-                            {
-                                CurrentTODO_DiscrepanciesToSubmit = await ctx.GetTODO_DiscrepanciesToSubmit(e.Data).ConfigureAwait(continueOnCapturedContext: false);
-                            }
-                            NotifyPropertyChanged(m => CurrentTODO_DiscrepanciesToSubmit);
-                        }
-
-                        private  string _currentTODO_DiscrepanciesToSubmitID = "";
-                        public string CurrentTODO_DiscrepanciesToSubmitID
-                        {
-                            get
-                            {
-                                return _currentTODO_DiscrepanciesToSubmitID;
-                            }
-                            set
-                            {
-                                if (_currentTODO_DiscrepanciesToSubmitID != value)
-                                {
-                                    _currentTODO_DiscrepanciesToSubmitID = value;
-                                    if (!string.IsNullOrEmpty(_currentTODO_DiscrepanciesToSubmitID)) BeginSendMessage(MessageToken.CurrentTODO_DiscrepanciesToSubmitIDChanged,
-                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_DiscrepanciesToSubmitIDChanged, _currentTODO_DiscrepanciesToSubmitID));
-                                    NotifyPropertyChanged(x => this.CurrentTODO_DiscrepanciesToSubmitID);  
                                 }
                             }
                         }
@@ -2692,6 +2750,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentAsycudaDocumentBasicInfoChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentBasicInfo> e)
+        {
+            //CurrentAsycudaDocumentBasicInfo = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaDocumentBasicInfo);
+        }
+
+        private  AsycudaDocumentBasicInfo _currentAsycudaDocumentBasicInfo;
+        public AsycudaDocumentBasicInfo CurrentAsycudaDocumentBasicInfo
+        {
+            get
+            {
+                return _currentAsycudaDocumentBasicInfo;
+            }
+            set
+            {
+                if (_currentAsycudaDocumentBasicInfo != value)
+                {
+                    _currentAsycudaDocumentBasicInfo = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaDocumentBasicInfoChanged,
+                                                     new NotificationEventArgs<AsycudaDocumentBasicInfo>(MessageToken.CurrentAsycudaDocumentBasicInfoChanged, _currentAsycudaDocumentBasicInfo)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentBasicInfo);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaDocumentBasicInfo> _vcurrentAsycudaDocumentBasicInfo;
+        public VirtualListItem<AsycudaDocumentBasicInfo> VCurrentAsycudaDocumentBasicInfo
+        {
+            get
+            {
+                return _vcurrentAsycudaDocumentBasicInfo;
+            }
+            set
+            {
+                if (_vcurrentAsycudaDocumentBasicInfo != value)
+                {
+                    _vcurrentAsycudaDocumentBasicInfo = value;
+					if(_vcurrentAsycudaDocumentBasicInfo != null) CurrentAsycudaDocumentBasicInfo = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentBasicInfo);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentAsycudaDocumentItemChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentItem> e)
         {
             //CurrentAsycudaDocumentItem = e.Data;
@@ -2943,6 +3051,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentAsycudaDocumentSetEx = value;
 					if(_vcurrentAsycudaDocumentSetEx != null) CurrentAsycudaDocumentSetEx = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentSetEx);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentAsycudaItemBasicInfoChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaItemBasicInfo> e)
+        {
+            //CurrentAsycudaItemBasicInfo = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaItemBasicInfo);
+        }
+
+        private  AsycudaItemBasicInfo _currentAsycudaItemBasicInfo;
+        public AsycudaItemBasicInfo CurrentAsycudaItemBasicInfo
+        {
+            get
+            {
+                return _currentAsycudaItemBasicInfo;
+            }
+            set
+            {
+                if (_currentAsycudaItemBasicInfo != value)
+                {
+                    _currentAsycudaItemBasicInfo = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaItemBasicInfoChanged,
+                                                     new NotificationEventArgs<AsycudaItemBasicInfo>(MessageToken.CurrentAsycudaItemBasicInfoChanged, _currentAsycudaItemBasicInfo)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaItemBasicInfo);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaItemBasicInfo> _vcurrentAsycudaItemBasicInfo;
+        public VirtualListItem<AsycudaItemBasicInfo> VCurrentAsycudaItemBasicInfo
+        {
+            get
+            {
+                return _vcurrentAsycudaItemBasicInfo;
+            }
+            set
+            {
+                if (_vcurrentAsycudaItemBasicInfo != value)
+                {
+                    _vcurrentAsycudaItemBasicInfo = value;
+					if(_vcurrentAsycudaItemBasicInfo != null) CurrentAsycudaItemBasicInfo = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaItemBasicInfo);                    
                 }
             }
         }
@@ -3502,6 +3660,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentEntryPreviousItems = value;
 					if(_vcurrentEntryPreviousItems != null) CurrentEntryPreviousItems = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentEntryPreviousItems);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentExpiredEntriesLstChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ExpiredEntriesLst> e)
+        {
+            //CurrentExpiredEntriesLst = e.Data;
+            NotifyPropertyChanged(m => this.CurrentExpiredEntriesLst);
+        }
+
+        private  ExpiredEntriesLst _currentExpiredEntriesLst;
+        public ExpiredEntriesLst CurrentExpiredEntriesLst
+        {
+            get
+            {
+                return _currentExpiredEntriesLst;
+            }
+            set
+            {
+                if (_currentExpiredEntriesLst != value)
+                {
+                    _currentExpiredEntriesLst = value;
+                    BeginSendMessage(MessageToken.CurrentExpiredEntriesLstChanged,
+                                                     new NotificationEventArgs<ExpiredEntriesLst>(MessageToken.CurrentExpiredEntriesLstChanged, _currentExpiredEntriesLst)); 
+                    NotifyPropertyChanged(x => this.CurrentExpiredEntriesLst);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<ExpiredEntriesLst> _vcurrentExpiredEntriesLst;
+        public VirtualListItem<ExpiredEntriesLst> VCurrentExpiredEntriesLst
+        {
+            get
+            {
+                return _vcurrentExpiredEntriesLst;
+            }
+            set
+            {
+                if (_vcurrentExpiredEntriesLst != value)
+                {
+                    _vcurrentExpiredEntriesLst = value;
+					if(_vcurrentExpiredEntriesLst != null) CurrentExpiredEntriesLst = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentExpiredEntriesLst);                    
                 }
             }
         }
@@ -4664,56 +4872,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_DiscrepanciesToAssess = value;
 					if(_vcurrentTODO_DiscrepanciesToAssess != null) CurrentTODO_DiscrepanciesToAssess = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_DiscrepanciesToAssess);                    
-                }
-            }
-        }
-
-
-
-                     
-       
-
-        internal void OnCurrentTODO_DiscrepanciesToSubmitChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_DiscrepanciesToSubmit> e)
-        {
-            //CurrentTODO_DiscrepanciesToSubmit = e.Data;
-            NotifyPropertyChanged(m => this.CurrentTODO_DiscrepanciesToSubmit);
-        }
-
-        private  TODO_DiscrepanciesToSubmit _currentTODO_DiscrepanciesToSubmit;
-        public TODO_DiscrepanciesToSubmit CurrentTODO_DiscrepanciesToSubmit
-        {
-            get
-            {
-                return _currentTODO_DiscrepanciesToSubmit;
-            }
-            set
-            {
-                if (_currentTODO_DiscrepanciesToSubmit != value)
-                {
-                    _currentTODO_DiscrepanciesToSubmit = value;
-                    BeginSendMessage(MessageToken.CurrentTODO_DiscrepanciesToSubmitChanged,
-                                                     new NotificationEventArgs<TODO_DiscrepanciesToSubmit>(MessageToken.CurrentTODO_DiscrepanciesToSubmitChanged, _currentTODO_DiscrepanciesToSubmit)); 
-                    NotifyPropertyChanged(x => this.CurrentTODO_DiscrepanciesToSubmit);    
-                    // all current navigation properties = null
-   
-                }
-            }
-        }
-
-		VirtualListItem<TODO_DiscrepanciesToSubmit> _vcurrentTODO_DiscrepanciesToSubmit;
-        public VirtualListItem<TODO_DiscrepanciesToSubmit> VCurrentTODO_DiscrepanciesToSubmit
-        {
-            get
-            {
-                return _vcurrentTODO_DiscrepanciesToSubmit;
-            }
-            set
-            {
-                if (_vcurrentTODO_DiscrepanciesToSubmit != value)
-                {
-                    _vcurrentTODO_DiscrepanciesToSubmit = value;
-					if(_vcurrentTODO_DiscrepanciesToSubmit != null) CurrentTODO_DiscrepanciesToSubmit = value.Data;
-                    NotifyPropertyChanged(x => this.VCurrentTODO_DiscrepanciesToSubmit);                    
                 }
             }
         }

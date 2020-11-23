@@ -46,6 +46,7 @@ using ValuationDS.Business.Entities;
 using WaterNut.Business.Entities;
 using WaterNut.DataSpace.Asycuda;
 using WaterNut.Interfaces;
+using ApplicationException = System.ApplicationException;
 using AsycudaDocument = CoreEntities.Business.Entities.AsycudaDocument;
 using AsycudaDocumentEntryData = DocumentDS.Business.Entities.AsycudaDocumentEntryData;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
@@ -853,8 +854,8 @@ namespace WaterNut.DataSpace
                             {
                                 SetEffectiveAssessmentDate(cdoc);
 
-                               // SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
-
+                                // SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
+                                LinkPreviousDocuments(pod, cdoc);
 
                                 await SaveDocumentCT(cdoc).ConfigureAwait(false);
                                 docList.Add(cdoc);
@@ -879,23 +880,27 @@ namespace WaterNut.DataSpace
 
                 }
 
-                //invoice dictates currency to prevent currencies mismatch
-                //if (curLst.Any() && cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code != curLst.First())
-                //{
+               
                 cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code =
                     pod.EntryData.Currency ?? currentAsycudaDocumentSet.Currency_Code; //curLst.First();
-                //}
-
-                // if (entryData == null || entryData.EntryDataId != pod.EntryData.EntryDataId)
-                //{
-
-                //entryData = pod.EntryData;
-                //}
 
 
+               
 
                 var itm = CreateItemFromEntryDataDetail(pod, cdoc);
 
+                if ( (pod.EntryData is PurchaseOrders p))
+                {
+                    
+                    if (itmcount == 0 && p.FinancialInformation != null)
+                    {
+                        cdoc.Document.xcuda_Traders.xcuda_Traders_Financial = new xcuda_Traders_Financial()
+                        {
+                            Financial_name = p.FinancialInformation
+                            
+                        };
+                    }
+                }
 
                 if (itm == null) continue;
                 itmcount += 1;
@@ -943,6 +948,7 @@ namespace WaterNut.DataSpace
                         SetEffectiveAssessmentDate(cdoc);
                         // AttachDocSetDocumentsToDocuments(currentAsycudaDocumentSet, pod, cdoc);
                       //  SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
+                        LinkPreviousDocuments(pod, cdoc);
                         await SaveDocumentCT(cdoc).ConfigureAwait(false);
                         docList.Add(cdoc);
                         cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
@@ -957,9 +963,11 @@ namespace WaterNut.DataSpace
                     }
                 }
 
+                LinkPreviousDocuments(pod, cdoc);
 
                 StatusModel.StatusUpdate();
                 //System.Windows.Forms.MessageBox.
+               
             }
 
             StatusModel.Timer("Saving To Database");
@@ -977,8 +985,29 @@ namespace WaterNut.DataSpace
             AttachToExistingDocuments(currentAsycudaDocumentSet.AsycudaDocumentSetId);
             BaseDataModel.SetInvoicePerline(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
             BaseDataModel.RenameDuplicateDocumentCodes(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
+
             return docList;
 
+        }
+
+        private void LinkPreviousDocuments(EntryLineData pod, DocumentCT cdoc)
+        {
+            if ((pod.EntryData is PurchaseOrders p))
+            {
+                if (p.PreviousCNumber != null)
+                {
+                    var pitms = new CoreEntitiesContext()
+                        .AsycudaItemBasicInfo.Where(x =>
+                            x.CNumber == p.PreviousCNumber).OrderByDescending(x => x.ASYCUDA_Id).ToList();
+                    foreach (var itm in cdoc.DocumentItems)
+                    {
+                        var pitm = pitms.FirstOrDefault(x => x.ItemNumber == itm.PreviousInvoiceItemNumber);
+                        if(pitm != null)
+                        itm.xcuda_Previous_doc.Previous_document_reference = $@"C# {p.PreviousCNumber} - Line:{pitm.LineNumber}";
+                    }
+                    
+                }
+            }
         }
 
         private static void SetPackages(ref int remainingPackages, ref double possibleEntries, EntryLineData pod,

@@ -120,6 +120,7 @@
     <Compile Include="CoreEntities\ActionDocSetLogsClient.cs" />
     <Compile Include="CoreEntities\ActionsClient.cs" />
     <Compile Include="CoreEntities\ApplicationSettingsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaDocumentBasicInfoClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentItemClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="CoreEntities\AsycudaDocumentSetExClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs" />
     <Compile Include="CoreEntities\AsycudaDocument_AttachmentsClient.cs" />
+    <Compile Include="CoreEntities\AsycudaItemBasicInfoClient.cs" />
     <Compile Include="CoreEntities\AttachmentLogClient.cs" />
     <Compile Include="CoreEntities\AttachmentsClient.cs" />
     <Compile Include="CoreEntities\ContactsClient.cs" />
@@ -138,6 +140,7 @@
     <Compile Include="CoreEntities\EmailMappingClient.cs" />
     <Compile Include="CoreEntities\EmailsClient.cs" />
     <Compile Include="CoreEntities\EntryPreviousItemsClient.cs" />
+    <Compile Include="CoreEntities\ExpiredEntriesLstClient.cs" />
     <Compile Include="CoreEntities\FileGroupsClient.cs" />
     <Compile Include="CoreEntities\FileTypeActionsClient.cs" />
     <Compile Include="CoreEntities\FileTypeContactsClient.cs" />
@@ -161,7 +164,6 @@
     <Compile Include="CoreEntities\TODO_DiscrepanciesAlreadyXMLedClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepanciesErrorsClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepanciesToAssessClient.cs" />
-    <Compile Include="CoreEntities\TODO_DiscrepanciesToSubmitClient.cs" />
     <Compile Include="CoreEntities\TODO_DiscrepancyPreExecutionReportClient.cs" />
     <Compile Include="CoreEntities\TODO_DocumentsToDeleteClient.cs" />
     <Compile Include="CoreEntities\TODO_EntriesExpiringNextMonthClient.cs" />

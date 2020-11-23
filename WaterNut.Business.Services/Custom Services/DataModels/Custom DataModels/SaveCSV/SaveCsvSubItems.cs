@@ -30,7 +30,7 @@ namespace WaterNut.DataSpace
 
 
 
-        internal async Task<bool> ExtractSubItems(string fileType, string[] lines, string[] headings, string csvType)
+        internal async Task<bool> ExtractSubItems(string fileType, string[] lines, string[] headings)
         {
             var mapping = new Dictionary<string, int>();
             GetMappings(mapping, headings);

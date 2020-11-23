@@ -1741,6 +1741,7 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
             SaveManifestReferenceNumber(di);
             SaveOfficeSegment(di);
             SaveRegistration(di);
+            SaveAssessment(di);
             await SaveType(di).ConfigureAwait(false);
 
             //await DBaseDataModel.Instance.Savexcuda_Identification(di).ConfigureAwait(false);
@@ -1837,6 +1838,22 @@ private void Update_TarrifCodes(ASYCUDAItem ai)
                 r.Date = a.Identification.Registration.Date;
             if (a.Identification.Registration.Number != "")
                 r.Number = a.Identification.Registration.Number;
+
+        }
+
+        private void SaveAssessment(xcuda_Identification di)
+        {
+            var r = di.xcuda_Assessment;
+            if (r == null)
+            {
+                r = new xcuda_Assessment(true) { ASYCUDA_Id = di.ASYCUDA_Id, TrackingState = TrackingState.Added };
+                di.xcuda_Assessment = r;
+                // di.xcuda_Registration.Add(r);
+            }
+            if (a.Identification.Assessment.Date != "1/1/0001")
+                r.Date = a.Identification.Assessment.Date;
+            if (a.Identification.Assessment.Number != "")
+                r.Number = a.Identification.Assessment.Number;
 
         }
     }
