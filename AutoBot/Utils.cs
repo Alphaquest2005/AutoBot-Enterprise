@@ -625,18 +625,27 @@ namespace AutoBot
 
         private static void ExportPOEntries()
         {
-            
-               
-            Console.WriteLine("Export PO Entries");
-            using (var ctx = new CoreEntitiesContext())
+
+            try
             {
-                foreach (var docset in 
-                    ctx.TODO_PODocSetToExport
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                Console.WriteLine("Export PO Entries");
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    ExportPOEntries(docset.AsycudaDocumentSetId);
+                    foreach (var docset in
+                        ctx.TODO_PODocSetToExport
+                            .Where(x => x.ApplicationSettingsId ==
+                                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId))
+                    {
+                        ExportPOEntries(docset.AsycudaDocumentSetId);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         private static void ExportLatestPOEntries()
