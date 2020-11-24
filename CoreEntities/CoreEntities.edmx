@@ -1178,12 +1178,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ImportCompleteEntrie
           <Property Name="NewAsycuda_Id" Type="int" Nullable="false" />
           <Property Name="AssessedAsycuda_Id" Type="int" Nullable="false" />
         </EntityType>
-   
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-LicenceAvailableQty">
           <Key>
             
+            
+            
             <PropertyRef Name="LicenseId" />
-           
+            
           </Key>
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -1474,6 +1477,27 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDocSetWithInco
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitEntryCIF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-SubmitEntryCIF">
+          <Key>
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="WarehouseNo" />
+            <PropertyRef Name="Packages" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SupplierInvoiceNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="WarehouseNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Packages" Type="int" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
+          <Property Name="TotalPackages" Type="int" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitInadequatePackages' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2949,6 +2973,20 @@ FROM [dbo].[TODO-SubmitDiscrepanciesToCustoms] AS [TODO-SubmitDiscrepanciesToCus
 [TODO-SubmitDocSetWithIncompleteInvoices].[EmailId] AS [EmailId]
 FROM [dbo].[TODO-SubmitDocSetWithIncompleteInvoices] AS [TODO-SubmitDocSetWithIncompleteInvoices]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="TODO-SubmitEntryCIF" EntityType="Self.TODO-SubmitEntryCIF" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-SubmitEntryCIF].[Type] AS [Type], 
+[TODO-SubmitEntryCIF].[InvoiceNo] AS [InvoiceNo], 
+[TODO-SubmitEntryCIF].[SupplierInvoiceNo] AS [SupplierInvoiceNo], 
+[TODO-SubmitEntryCIF].[InvoiceTotal] AS [InvoiceTotal], 
+[TODO-SubmitEntryCIF].[WarehouseNo] AS [WarehouseNo], 
+[TODO-SubmitEntryCIF].[Packages] AS [Packages], 
+[TODO-SubmitEntryCIF].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
+[TODO-SubmitEntryCIF].[TotalPackages] AS [TotalPackages], 
+[TODO-SubmitEntryCIF].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[TODO-SubmitEntryCIF].[ApplicationSettingsId] AS [ApplicationSettingsId]
+FROM [dbo].[TODO-SubmitEntryCIF] AS [TODO-SubmitEntryCIF]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-SubmitInadequatePackages" EntityType="Self.TODO-SubmitInadequatePackages" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-SubmitInadequatePackages].[Declarant_Reference_Number] AS [Declarant_Reference_Number], 
@@ -3499,6 +3537,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="AsycudaItemBasicInfo" EntityType="WaterNutDBModel.AsycudaItemBasicInfo" />
           <EntitySet Name="ExpiredEntriesLst" EntityType="WaterNutDBModel.ExpiredEntriesLst" />
           <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
+          <EntitySet Name="TODO_SubmitEntryCIF" EntityType="WaterNutDBModel.TODO_SubmitEntryCIF" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -5691,6 +5730,25 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="TODO_SubmitEntryCIF">
+          <Key>
+            <PropertyRef Name="InvoiceNo" />
+            <PropertyRef Name="WarehouseNo" />
+            <PropertyRef Name="Packages" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="ApplicationSettingsId" />
+          </Key>
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierInvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="WarehouseNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Packages" Type="Int32" Nullable="false" />
+          <Property Name="Declarant_Reference_Number" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPackages" Type="Int32" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7192,6 +7250,22 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_SubmitEntryCIF">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_SubmitEntryCIF">
+              <MappingFragment StoreEntitySet="TODO-SubmitEntryCIF">
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="TotalPackages" ColumnName="TotalPackages" />
+                <ScalarProperty Name="Declarant_Reference_Number" ColumnName="Declarant_Reference_Number" />
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
+                <ScalarProperty Name="WarehouseNo" ColumnName="WarehouseNo" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

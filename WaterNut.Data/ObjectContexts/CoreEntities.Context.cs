@@ -215,6 +215,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_LicenceAvailableQty> TODO_LicenceAvailableQty { get; set; }
      
+        public DbSet<TODO_SubmitEntryCIF> TODO_SubmitEntryCIF { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -386,6 +388,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new ExpiredEntriesLstMap());
          
             modelBuilder.Configurations.Add(new TODO_LicenceAvailableQtyMap());
+         
+            modelBuilder.Configurations.Add(new TODO_SubmitEntryCIFMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

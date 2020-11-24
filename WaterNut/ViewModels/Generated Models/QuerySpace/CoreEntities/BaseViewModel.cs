@@ -125,6 +125,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitAllXMLToCustomsIDChanged, OnCurrentTODO_SubmitAllXMLToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsIDChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitEntryCIFIDChanged, OnCurrentTODO_SubmitEntryCIFIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitInadequatePackagesIDChanged, OnCurrentTODO_SubmitInadequatePackagesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataIDChanged, OnCurrentTODO_SubmitIncompleteEntryDataIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoIDChanged, OnCurrentTODO_SubmitIncompleteSupplierInfoIDChanged);
@@ -212,6 +213,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<TODO_SubmitAllXMLToCustoms>(MessageToken.CurrentTODO_SubmitAllXMLToCustomsChanged, OnCurrentTODO_SubmitAllXMLToCustomsChanged);
                         RegisterToReceiveMessages<TODO_SubmitDiscrepanciesToCustoms>(MessageToken.CurrentTODO_SubmitDiscrepanciesToCustomsChanged, OnCurrentTODO_SubmitDiscrepanciesToCustomsChanged);
                         RegisterToReceiveMessages<TODO_SubmitDocSetWithIncompleteInvoices>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged, OnCurrentTODO_SubmitDocSetWithIncompleteInvoicesChanged);
+                        RegisterToReceiveMessages<TODO_SubmitEntryCIF>(MessageToken.CurrentTODO_SubmitEntryCIFChanged, OnCurrentTODO_SubmitEntryCIFChanged);
                         RegisterToReceiveMessages<TODO_SubmitInadequatePackages>(MessageToken.CurrentTODO_SubmitInadequatePackagesChanged, OnCurrentTODO_SubmitInadequatePackagesChanged);
                         RegisterToReceiveMessages<TODO_SubmitIncompleteEntryData>(MessageToken.CurrentTODO_SubmitIncompleteEntryDataChanged, OnCurrentTODO_SubmitIncompleteEntryDataChanged);
                         RegisterToReceiveMessages<TODO_SubmitIncompleteSupplierInfo>(MessageToken.CurrentTODO_SubmitIncompleteSupplierInfoChanged, OnCurrentTODO_SubmitIncompleteSupplierInfoChanged);
@@ -2184,6 +2186,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentTODO_SubmitDocSetWithIncompleteInvoicesID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitDocSetWithIncompleteInvoicesIDChanged, _currentTODO_SubmitDocSetWithIncompleteInvoicesID));
                                     NotifyPropertyChanged(x => this.CurrentTODO_SubmitDocSetWithIncompleteInvoicesID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentTODO_SubmitEntryCIFIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (TODO_SubmitEntryCIFRepository ctx = new TODO_SubmitEntryCIFRepository())
+                            {
+                                CurrentTODO_SubmitEntryCIF = await ctx.GetTODO_SubmitEntryCIF(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentTODO_SubmitEntryCIF);
+                        }
+
+                        private  string _currentTODO_SubmitEntryCIFID = "";
+                        public string CurrentTODO_SubmitEntryCIFID
+                        {
+                            get
+                            {
+                                return _currentTODO_SubmitEntryCIFID;
+                            }
+                            set
+                            {
+                                if (_currentTODO_SubmitEntryCIFID != value)
+                                {
+                                    _currentTODO_SubmitEntryCIFID = value;
+                                    if (!string.IsNullOrEmpty(_currentTODO_SubmitEntryCIFID)) BeginSendMessage(MessageToken.CurrentTODO_SubmitEntryCIFIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentTODO_SubmitEntryCIFIDChanged, _currentTODO_SubmitEntryCIFID));
+                                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitEntryCIFID);  
                                 }
                             }
                         }
@@ -6151,6 +6180,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentTODO_SubmitDocSetWithIncompleteInvoices = value;
 					if(_vcurrentTODO_SubmitDocSetWithIncompleteInvoices != null) CurrentTODO_SubmitDocSetWithIncompleteInvoices = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentTODO_SubmitDocSetWithIncompleteInvoices);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentTODO_SubmitEntryCIFChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<TODO_SubmitEntryCIF> e)
+        {
+            //CurrentTODO_SubmitEntryCIF = e.Data;
+            NotifyPropertyChanged(m => this.CurrentTODO_SubmitEntryCIF);
+        }
+
+        private  TODO_SubmitEntryCIF _currentTODO_SubmitEntryCIF;
+        public TODO_SubmitEntryCIF CurrentTODO_SubmitEntryCIF
+        {
+            get
+            {
+                return _currentTODO_SubmitEntryCIF;
+            }
+            set
+            {
+                if (_currentTODO_SubmitEntryCIF != value)
+                {
+                    _currentTODO_SubmitEntryCIF = value;
+                    BeginSendMessage(MessageToken.CurrentTODO_SubmitEntryCIFChanged,
+                                                     new NotificationEventArgs<TODO_SubmitEntryCIF>(MessageToken.CurrentTODO_SubmitEntryCIFChanged, _currentTODO_SubmitEntryCIF)); 
+                    NotifyPropertyChanged(x => this.CurrentTODO_SubmitEntryCIF);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<TODO_SubmitEntryCIF> _vcurrentTODO_SubmitEntryCIF;
+        public VirtualListItem<TODO_SubmitEntryCIF> VCurrentTODO_SubmitEntryCIF
+        {
+            get
+            {
+                return _vcurrentTODO_SubmitEntryCIF;
+            }
+            set
+            {
+                if (_vcurrentTODO_SubmitEntryCIF != value)
+                {
+                    _vcurrentTODO_SubmitEntryCIF = value;
+					if(_vcurrentTODO_SubmitEntryCIF != null) CurrentTODO_SubmitEntryCIF = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentTODO_SubmitEntryCIF);                    
                 }
             }
         }

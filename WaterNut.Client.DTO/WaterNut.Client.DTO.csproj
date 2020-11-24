@@ -192,6 +192,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
@@ -338,6 +339,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
@@ -484,6 +486,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
