@@ -2205,10 +2205,23 @@ namespace AutoBot
                                    $"Regards,\r\n" +
                                    $"AutoBot";
                         List<string> attlst = new List<string>();
+                    var poInfo = CurrentPOInfo(ft.AsycudaDocumentSetId).FirstOrDefault();
 
+                    var summaryFile = Path.Combine(poInfo.Item2, "CIFValues.csv");
+                    if (File.Exists(summaryFile)) File.Delete(summaryFile);
+                    var errRes =
+                        new ExportToCSV<TODO_SubmitEntryCIF, List<TODO_SubmitEntryCIF>>();
+                    errRes.dataToPrint = lst;
+                    using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                    {
+                        Task.Factory.StartNew(() => errRes.SaveReport(summaryFile), CancellationToken.None,
+                            TaskCreationOptions.None, sta);
+                    }
 
+                    attlst.Add(summaryFile);
+                  
 
-                         EmailDownloader.EmailDownloader.SendEmail(Client, "", $"CIF Values for Shipment: {lst.First().Declarant_Reference_Number}",
+                    EmailDownloader.EmailDownloader.SendEmail(Client, "", $"CIF Values for Shipment: {lst.First().Declarant_Reference_Number}",
                                 contacts, body, attlst.ToArray());
                      
 
