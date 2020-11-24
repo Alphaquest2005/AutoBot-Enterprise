@@ -751,7 +751,8 @@ namespace AutoBot
                     var lcont = 0;
                     while (AssessC71Complete(instrFile, resultsFile, out lcont) == false)
                     {
-                         RunSiKuLi(directoryName, "AssessC71", lcont.ToString());
+                         
+                        RunSiKuLi(directoryName, "AssessC71", lcont.ToString());
                     }
                 }
             }
