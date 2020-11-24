@@ -109,5 +109,6 @@ namespace CoreEntities
         public DbSet<AsycudaItemBasicInfo> AsycudaItemBasicInfo { get; set; }
         public DbSet<ExpiredEntriesLst> ExpiredEntriesLst { get; set; }
         public DbSet<TODO_LicenceAvailableQty> TODO_LicenceAvailableQty { get; set; }
+        public DbSet<TODO_SubmitEntryCIF> TODO_SubmitEntryCIF { get; set; }
     }
 }

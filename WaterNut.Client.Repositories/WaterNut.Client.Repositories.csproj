@@ -225,6 +225,7 @@
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitAllXMLToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDiscrepanciesToCustomsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoicesRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitEntryCIFRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitInadequatePackagesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitIncompleteEntryDataRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\TODO_SubmitIncompleteSupplierInfoRepository.cs" />

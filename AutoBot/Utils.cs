@@ -128,6 +128,7 @@ namespace AutoBot
                 {"AssessDiscpancyEntries", AssessDiscpancyEntries },
                 {"DeletePONumber", DeletePONumber },
                 { "SubmitPOs", SubmitPOs },
+                {"SubmitEntryCIF", SubmitEntryCIF }
 
             };
 
@@ -2150,6 +2151,63 @@ namespace AutoBot
 
 
                     }
+
+                }
+            }
+            catch (Exception e)
+            {
+
+                throw e;
+            }
+        }
+
+        private static void SubmitEntryCIF(FileTypes ft, FileInfo[] fs)
+        {
+            try
+            {
+
+
+                Console.WriteLine("Submit Shipment CIF");
+
+
+                // var saleInfo = CurrentSalesInfo();
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    ctx.Database.CommandTimeout = 0;
+                    var contacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer").Select(x => x.EmailAddress).ToArray();
+                    var lst = ctx.TODO_SubmitEntryCIF
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId).ToList()
+                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .ToList();
+                    if (!lst.Any()) return;
+                    if (GetDocSetActions(ft.AsycudaDocumentSetId, "SubmitEntryCIF").Any()) return;
+
+                   
+                        
+
+
+                        var body = $"Please see attached CIF for Shipment: {lst.First().Declarant_Reference_Number} . \r\n" +
+                                 
+                                   $"Please double check against your shipment rider.\r\n" +
+                                   $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
+                                   $"\r\n" +
+                                   $"Regards,\r\n" +
+                                   $"AutoBot";
+                        List<string> attlst = new List<string>();
+
+
+
+                         EmailDownloader.EmailDownloader.SendEmail(Client, "", $"CIF Values for Shipment: {lst.First().Declarant_Reference_Number}",
+                                contacts, body, attlst.ToArray());
+                     
+
+
+                        LogDocSetAction(ft.AsycudaDocumentSetId, "SubmitEntryCIF");
+
+
+                  
 
                 }
             }

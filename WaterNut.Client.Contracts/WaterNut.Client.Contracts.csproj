@@ -183,6 +183,7 @@
     <Compile Include="CoreEntities\ITODO_SubmitAllXMLToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDiscrepanciesToCustomsService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitDocSetWithIncompleteInvoicesService.cs" />
+    <Compile Include="CoreEntities\ITODO_SubmitEntryCIFService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitInadequatePackagesService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitIncompleteEntryDataService.cs" />
     <Compile Include="CoreEntities\ITODO_SubmitIncompleteSupplierInfoService.cs" />

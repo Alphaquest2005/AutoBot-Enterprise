@@ -274,6 +274,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
@@ -612,6 +613,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
@@ -945,6 +947,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
@@ -1278,6 +1281,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
@@ -1611,6 +1615,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitAllXMLToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitEntryCIF.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitInadequatePackages.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteEntryData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\TODO_SubmitIncompleteSupplierInfo.cs" />
@@ -1954,6 +1959,7 @@
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitAllXMLToCustoms.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitDiscrepanciesToCustoms.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitDocSetWithIncompleteInvoices.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitEntryCIF.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitInadequatePackages.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitIncompleteEntryData.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\TODO_SubmitIncompleteSupplierInfo.map.cs" />

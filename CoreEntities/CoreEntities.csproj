@@ -333,6 +333,9 @@
     <Compile Include="TODO_SubmitDocSetWithIncompleteInvoices.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="TODO_SubmitEntryCIF.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="TODO_SubmitInadequatePackages.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
