@@ -649,7 +649,7 @@ namespace Asycuda421
                     {
                       var fileinfo = new FileInfo(filePath);
                     if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name)}\r\n");  
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{fileinfo.FullName}\r\n");  
                     }
                     
                 }

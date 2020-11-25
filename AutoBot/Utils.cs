@@ -394,25 +394,28 @@ namespace AutoBot
 
                     var poContacts = ctx.Contacts.Where(x => x.Role == "PO Clerk" || x.Role == "Developer")
                         .Select(x => x.EmailAddress).ToArray();
-
-                    var lst = ctx.TODO_SubmitPOInfo
+                    var docSet = ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments")
+                                           .FirstOrDefault(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId);
+                    if (docSet == null)
+                    {
+                        throw new ApplicationException($"Asycuda Document Set not Found: {ft.AsycudaDocumentSetId}");
+                    }
+                    var rlst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
 
                         .ToList();
+                   var lst = rlst.Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number))
+                        .ToList();
+
                     if (poList.Any())
                     {
                         lst = lst.Where(x => poList.Contains(x.CNumber))
                             .ToList();
                     }
 
-                    var docSet = ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments")
-                        .FirstOrDefault(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId);
-                    if (docSet == null)
-                    {
-                        throw new ApplicationException($"Asycuda Document Set not Found: {ft.AsycudaDocumentSetId}");
-                    }
+
 
                     SubmitPOs(docSet, lst, contacts, poContacts);
 
@@ -462,14 +465,19 @@ namespace AutoBot
                         
                         var ndp = ctx.AsycudaDocument_Attachments
                             .Where( x => x.AsycudaDocumentId == itm.NewAsycuda_Id)
+                            .GroupBy(x => x.Attachments.Reference)
+                            .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
                             .Select(x => x.Attachments.FilePath)
                             .Where(x => x.ToLower().EndsWith(".pdf"))
                             .ToList();
 
                         var adp = ctx.AsycudaDocument_Attachments
                             .Where(x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id)
+                            .GroupBy(x => x.Attachments.Reference)
+                            .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
                             .Select(x => x.Attachments.FilePath)
                             .Where(x => x.ToLower().EndsWith(".pdf"))
+                            
                             .ToList();
 
                         if(!adp.Any())
