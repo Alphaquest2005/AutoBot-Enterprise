@@ -29,6 +29,8 @@
               this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
               this.Property(t => t.QtyLicensesRequired).HasColumnName("QtyLicensesRequired");
               this.Property(t => t.HasLicense).HasColumnName("HasLicense");
+              this.Property(t => t.DocumentReference).HasColumnName("DocumentReference").HasMaxLength(50);
+              this.Property(t => t.Exporter_address).HasColumnName("Exporter_address").HasMaxLength(255);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -62,6 +62,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemIDChanged, OnCurrentAsycudaDocumentItemIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsIDChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, OnCurrentAsycudaDocumentSet_AttachmentsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetC71IDChanged, OnCurrentAsycudaDocumentSetC71IDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetEntryDataExIDChanged, OnCurrentAsycudaDocumentSetEntryDataExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaDocumentSetExIDChanged, OnCurrentAsycudaDocumentSetExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentAsycudaItemBasicInfoIDChanged, OnCurrentAsycudaItemBasicInfoIDChanged);
@@ -150,6 +151,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<AsycudaDocumentItem>(MessageToken.CurrentAsycudaDocumentItemChanged, OnCurrentAsycudaDocumentItemChanged);
                         RegisterToReceiveMessages<AsycudaDocumentItemEntryDataDetails>(MessageToken.CurrentAsycudaDocumentItemEntryDataDetailsChanged, OnCurrentAsycudaDocumentItemEntryDataDetailsChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSet_Attachments>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsChanged, OnCurrentAsycudaDocumentSet_AttachmentsChanged);
+                        RegisterToReceiveMessages<AsycudaDocumentSetC71>(MessageToken.CurrentAsycudaDocumentSetC71Changed, OnCurrentAsycudaDocumentSetC71Changed);
                         RegisterToReceiveMessages<AsycudaDocumentSetEntryDataEx>(MessageToken.CurrentAsycudaDocumentSetEntryDataExChanged, OnCurrentAsycudaDocumentSetEntryDataExChanged);
                         RegisterToReceiveMessages<AsycudaDocumentSetEx>(MessageToken.CurrentAsycudaDocumentSetExChanged, OnCurrentAsycudaDocumentSetExChanged);
                         RegisterToReceiveMessages<AsycudaItemBasicInfo>(MessageToken.CurrentAsycudaItemBasicInfoChanged, OnCurrentAsycudaItemBasicInfoChanged);
@@ -485,6 +487,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentAsycudaDocumentSet_AttachmentsID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSet_AttachmentsIDChanged, _currentAsycudaDocumentSet_AttachmentsID));
                                     NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSet_AttachmentsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentAsycudaDocumentSetC71IDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (AsycudaDocumentSetC71Repository ctx = new AsycudaDocumentSetC71Repository())
+                            {
+                                CurrentAsycudaDocumentSetC71 = await ctx.GetAsycudaDocumentSetC71(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentAsycudaDocumentSetC71);
+                        }
+
+                        private  string _currentAsycudaDocumentSetC71ID = "";
+                        public string CurrentAsycudaDocumentSetC71ID
+                        {
+                            get
+                            {
+                                return _currentAsycudaDocumentSetC71ID;
+                            }
+                            set
+                            {
+                                if (_currentAsycudaDocumentSetC71ID != value)
+                                {
+                                    _currentAsycudaDocumentSetC71ID = value;
+                                    if (!string.IsNullOrEmpty(_currentAsycudaDocumentSetC71ID)) BeginSendMessage(MessageToken.CurrentAsycudaDocumentSetC71IDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentAsycudaDocumentSetC71IDChanged, _currentAsycudaDocumentSetC71ID));
+                                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetC71ID);  
                                 }
                             }
                         }
@@ -3004,6 +3033,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     _vcurrentAsycudaDocumentSet_Attachments = value;
 					if(_vcurrentAsycudaDocumentSet_Attachments != null) CurrentAsycudaDocumentSet_Attachments = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentSet_Attachments);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentAsycudaDocumentSetC71Changed(object sender, SimpleMvvmToolkit.NotificationEventArgs<AsycudaDocumentSetC71> e)
+        {
+            //CurrentAsycudaDocumentSetC71 = e.Data;
+            NotifyPropertyChanged(m => this.CurrentAsycudaDocumentSetC71);
+        }
+
+        private  AsycudaDocumentSetC71 _currentAsycudaDocumentSetC71;
+        public AsycudaDocumentSetC71 CurrentAsycudaDocumentSetC71
+        {
+            get
+            {
+                return _currentAsycudaDocumentSetC71;
+            }
+            set
+            {
+                if (_currentAsycudaDocumentSetC71 != value)
+                {
+                    _currentAsycudaDocumentSetC71 = value;
+                    BeginSendMessage(MessageToken.CurrentAsycudaDocumentSetC71Changed,
+                                                     new NotificationEventArgs<AsycudaDocumentSetC71>(MessageToken.CurrentAsycudaDocumentSetC71Changed, _currentAsycudaDocumentSetC71)); 
+                    NotifyPropertyChanged(x => this.CurrentAsycudaDocumentSetC71);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<AsycudaDocumentSetC71> _vcurrentAsycudaDocumentSetC71;
+        public VirtualListItem<AsycudaDocumentSetC71> VCurrentAsycudaDocumentSetC71
+        {
+            get
+            {
+                return _vcurrentAsycudaDocumentSetC71;
+            }
+            set
+            {
+                if (_vcurrentAsycudaDocumentSetC71 != value)
+                {
+                    _vcurrentAsycudaDocumentSetC71 = value;
+					if(_vcurrentAsycudaDocumentSetC71 != null) CurrentAsycudaDocumentSetC71 = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentAsycudaDocumentSetC71);                    
                 }
             }
         }

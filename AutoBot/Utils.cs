@@ -916,8 +916,7 @@ namespace AutoBot
                     var pOs = ctx.TODO_LICToCreate
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
-
-                        .ToList();
+                       .ToList();
                     foreach (var pO in pOs)
                     {
                         //if (pO.Item1.Declarant_Reference_Number != "30-15936") continue;
@@ -930,7 +929,10 @@ namespace AutoBot
                             .SqlQuery<TODO_LicenseToXML>(
                                 $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId}").ToList();
 
-                            var lst = llst.GroupBy(x => new {x.EntryDataId, x.TariffCategoryCode, x.SourceFile})
+                            var lst = llst
+                                .GroupBy(x => x.EntryDataId)
+                                .Select(x => x.OrderByDescending(z => z.SourceFile).FirstOrDefault())
+                                .GroupBy(x => new {x.EntryDataId, x.TariffCategoryCode, x.SourceFile})
                             .ToList();
                         foreach (var itm in lst)
                         {
@@ -971,7 +973,8 @@ namespace AutoBot
 
                             var lic = LicenseToDataBase.Instance.CreateLicense(new List<TODO_LicenseToXML>(itm) , contact, supplier,
                                 itm.Key.EntryDataId);
-                            var invoices = itm.Select(x => new Tuple<string, string>(x.EntryDataId, x.SourceFile.Replace(".csv", ".pdf"))).Distinct().ToList();
+                            var invoices = itm.Select(x => new Tuple<string, string>(x.EntryDataId, x.SourceFile.Replace(".csv", ".pdf"))).Where(x => File.Exists(x.Item2)).Distinct().ToList();
+                            if(!invoices.Any()) continue;
                             ctx.xLIC_License.Add(lic);
                             ctx.SaveChanges();
                             LicenseToDataBase.Instance.ExportLicense(pO.AsycudaDocumentSetId, lic, fileName,
@@ -3629,7 +3632,7 @@ namespace AutoBot
                 {
                     if (!File.Exists(resultsFile)) return false;
                     var lines = File.ReadAllLines(instrFile);
-                    var res = File.ReadAllLines(resultsFile);
+                    var res = File.ReadAllLines(resultsFile).Where(x => x.Contains("File")).ToArray();
                     if (res.Length == 0)
                     {
 
@@ -3637,7 +3640,7 @@ namespace AutoBot
                     }
 
 
-                    foreach (var line in lines)
+                    foreach (var line in lines.Where(x => x.Contains("File")))
                     {
                         var p = line.Split('\t');
                         if (lcont >= res.Length) return false;

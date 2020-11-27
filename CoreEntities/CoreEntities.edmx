@@ -501,6 +501,24 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AsycudaDocumentSetC71">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="FilePath" />
+            <PropertyRef Name="AttachmentId" />
+            <PropertyRef Name="RegNumber" />
+          </Key>
+          <Property Name="Address" Type="nvarchar" MaxLength="255" />
+          <Property Name="Value_declaration_form_Id" Type="int" Nullable="false" />
+          <Property Name="Total" Type="float" />
+          <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
+          <Property Name="FilePath" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="AttachmentId" Type="int" Nullable="false" />
+          <Property Name="RegNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentSetEntryDataDetails">
           <Key>
@@ -2261,6 +2279,17 @@ FROM [dbo].[AsycudaDocumentItem] AS [AsycudaDocumentItem]</DefiningQuery>
 [AsycudaDocumentItemEntryDataDetails].[EntryDataType] AS [EntryDataType]
 FROM [dbo].[AsycudaDocumentItemEntryDataDetails] AS [AsycudaDocumentItemEntryDataDetails]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="AsycudaDocumentSetC71" EntityType="Self.AsycudaDocumentSetC71" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[AsycudaDocumentSetC71].[Address] AS [Address], 
+[AsycudaDocumentSetC71].[Value_declaration_form_Id] AS [Value_declaration_form_Id], 
+[AsycudaDocumentSetC71].[Total] AS [Total], 
+[AsycudaDocumentSetC71].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
+[AsycudaDocumentSetC71].[FilePath] AS [FilePath], 
+[AsycudaDocumentSetC71].[AttachmentId] AS [AttachmentId], 
+[AsycudaDocumentSetC71].[RegNumber] AS [RegNumber]
+FROM [dbo].[AsycudaDocumentSetC71] AS [AsycudaDocumentSetC71]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="AsycudaDocumentSetEntryDataDetails" EntityType="Self.AsycudaDocumentSetEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [AsycudaDocumentSetEntryDataDetails].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
@@ -3538,6 +3567,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="ExpiredEntriesLst" EntityType="WaterNutDBModel.ExpiredEntriesLst" />
           <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
           <EntitySet Name="TODO_SubmitEntryCIF" EntityType="WaterNutDBModel.TODO_SubmitEntryCIF" />
+          <EntitySet Name="AsycudaDocumentSetC71" EntityType="WaterNutDBModel.AsycudaDocumentSetC71" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -5749,6 +5779,22 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="AsycudaDocumentSetC71">
+          <Key>
+            <PropertyRef Name="Value_declaration_form_Id" />
+            <PropertyRef Name="AsycudaDocumentSetId" />
+            <PropertyRef Name="FilePath" />
+            <PropertyRef Name="AttachmentId" />
+            <PropertyRef Name="RegNumber" />
+          </Key>
+          <Property Name="Address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Value_declaration_form_Id" Type="Int32" Nullable="false" />
+          <Property Name="Total" Type="Double" />
+          <Property Name="AsycudaDocumentSetId" Type="Int32" Nullable="false" />
+          <Property Name="FilePath" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AttachmentId" Type="Int32" Nullable="false" />
+          <Property Name="RegNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7266,6 +7312,19 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="SupplierInvoiceNo" ColumnName="SupplierInvoiceNo" />
                 <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AsycudaDocumentSetC71">
+            <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocumentSetC71">
+              <MappingFragment StoreEntitySet="AsycudaDocumentSetC71">
+                <ScalarProperty Name="RegNumber" ColumnName="RegNumber" />
+                <ScalarProperty Name="AttachmentId" ColumnName="AttachmentId" />
+                <ScalarProperty Name="FilePath" ColumnName="FilePath" />
+                <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Value_declaration_form_Id" ColumnName="Value_declaration_form_Id" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

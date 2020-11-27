@@ -59,6 +59,27 @@
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TODO-LicenceAvailableQty">
+          <Key>
+            
+            <PropertyRef Name="SegmentId" />
+          </Key>
+          <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="8" />
+          <Property Name="Origin" Type="nvarchar" MaxLength="255" />
+          <Property Name="Quantity_requested" Type="int" Nullable="false" />
+          <Property Name="Application_date" Type="date" />
+          <Property Name="Importation_date" Type="date" />
+          <Property Name="Key" Type="nvarchar" MaxLength="55" />
+          <Property Name="Balance" Type="int" />
+          <Property Name="LicenseId" Type="int" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="SegmentId" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="TODO-LICToCreate">
           <Key>
@@ -82,6 +103,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
           <Property Name="TotalCIF" Type="float" />
           <Property Name="QtyLicensesRequired" Type="int" />
           <Property Name="HasLicense" Type="int" />
+          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="Exporter_address" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <Association Name="FK_xLIC_General_segment_xLIC_License">
           <End Role="xLIC_License" Type="Self.xLIC_License" Multiplicity="1">
@@ -130,6 +153,23 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
           <EntitySet Name="xLIC_Lic_item_segment" EntityType="Self.xLIC_Lic_item_segment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xLIC_License" EntityType="Self.xLIC_License" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="xLIC_License_Registered" EntityType="Self.xLIC_License_Registered" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TODO-LicenceAvailableQty" EntityType="Self.TODO-LicenceAvailableQty" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[TODO-LicenceAvailableQty].[RegistrationNumber] AS [RegistrationNumber], 
+[TODO-LicenceAvailableQty].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[TODO-LicenceAvailableQty].[TariffCode] AS [TariffCode], 
+[TODO-LicenceAvailableQty].[Origin] AS [Origin], 
+[TODO-LicenceAvailableQty].[Quantity_requested] AS [Quantity_requested], 
+[TODO-LicenceAvailableQty].[Application_date] AS [Application_date], 
+[TODO-LicenceAvailableQty].[Importation_date] AS [Importation_date], 
+[TODO-LicenceAvailableQty].[Key] AS [Key], 
+[TODO-LicenceAvailableQty].[Balance] AS [Balance], 
+[TODO-LicenceAvailableQty].[LicenseId] AS [LicenseId], 
+[TODO-LicenceAvailableQty].[SourceFile] AS [SourceFile], 
+[TODO-LicenceAvailableQty].[DocumentReference] AS [DocumentReference], 
+[TODO-LicenceAvailableQty].[SegmentId] AS [SegmentId]
+FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="TODO-LICToCreate" EntityType="Self.TODO-LICToCreate" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
 [TODO-LICToCreate].[AsycudaDocumentSetId] AS [AsycudaDocumentSetId], 
@@ -147,7 +187,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
 [TODO-LICToCreate].[LicenseLines] AS [LicenseLines], 
 [TODO-LICToCreate].[TotalCIF] AS [TotalCIF], 
 [TODO-LICToCreate].[QtyLicensesRequired] AS [QtyLicensesRequired], 
-[TODO-LICToCreate].[HasLicense] AS [HasLicense]
+[TODO-LICToCreate].[HasLicense] AS [HasLicense], 
+[TODO-LICToCreate].[DocumentReference] AS [DocumentReference], 
+[TODO-LICToCreate].[Exporter_address] AS [Exporter_address]
 FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_xLIC_General_segment_xLIC_License" Association="Self.FK_xLIC_General_segment_xLIC_License">
@@ -180,6 +222,11 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
             <End Role="xLIC_Lic_item_segment" EntitySet="xLIC_Lic_item_segment" />
           </AssociationSet>
           <EntitySet Name="TODO_LICToCreate" EntityType="WaterNutDBModel.TODO_LICToCreate" />
+          <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
+          <AssociationSet Name="xLIC_Lic_item_segmentTODO_LicenceAvailableQty" Association="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty">
+            <End Role="xLIC_Lic_item_segment" EntitySet="xLIC_Lic_item_segment" />
+            <End Role="TODO_LicenceAvailableQty" EntitySet="TODO_LicenceAvailableQty" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="xLIC_General_segment">
           <Key>
@@ -219,6 +266,7 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="LicenseId" Type="Int32" Nullable="false" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="xLIC_License" Relationship="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" FromRole="xLIC_Lic_item_segment" ToRole="xLIC_License" />
+          <NavigationProperty Name="TODO_LicenceAvailableQty" Relationship="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" FromRole="xLIC_Lic_item_segment" ToRole="TODO_LicenceAvailableQty" />
         </EntityType>
         <EntityType Name="xLIC_License">
           <Key>
@@ -283,7 +331,40 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="QtyLicensesRequired" Type="Int32" />
           <Property Name="HasLicense" Type="Int32" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter_address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="TODO_LicenceAvailableQty">
+          <Key>
+            <PropertyRef Name="SegmentId" />
+          </Key>
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="TariffCode" Type="String" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="Origin" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity_requested" Type="Int32" Nullable="false" />
+          <Property Name="Application_date" Type="DateTime" Precision="0" />
+          <Property Name="Importation_date" Type="DateTime" Precision="0" />
+          <Property Name="Key" Type="String" MaxLength="55" FixedLength="false" Unicode="true" />
+          <Property Name="Balance" Type="Int32" />
+          <Property Name="LicenseId" Type="Int32" Nullable="false" />
+          <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xLIC_Lic_item_segment" Relationship="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" FromRole="TODO_LicenceAvailableQty" ToRole="xLIC_Lic_item_segment" />
+          <Property Name="SegmentId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <Association Name="xLIC_Lic_item_segmentTODO_LicenceAvailableQty">
+          <End Type="WaterNutDBModel.xLIC_Lic_item_segment" Role="xLIC_Lic_item_segment" Multiplicity="1" />
+          <End Type="WaterNutDBModel.TODO_LicenceAvailableQty" Role="TODO_LicenceAvailableQty" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="xLIC_Lic_item_segment">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="TODO_LicenceAvailableQty">
+              <PropertyRef Name="SegmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -348,6 +429,8 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <EntitySetMapping Name="TODO_LICToCreate">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LICToCreate">
               <MappingFragment StoreEntitySet="TODO-LICToCreate">
+                <ScalarProperty Name="Exporter_address" ColumnName="Exporter_address" />
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
                 <ScalarProperty Name="HasLicense" ColumnName="HasLicense" />
                 <ScalarProperty Name="QtyLicensesRequired" ColumnName="QtyLicensesRequired" />
                 <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
@@ -364,6 +447,25 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TODO_LicenceAvailableQty">
+            <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenceAvailableQty">
+              <MappingFragment StoreEntitySet="TODO-LicenceAvailableQty">
+                <ScalarProperty Name="SegmentId" ColumnName="SegmentId" />
+                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+                <ScalarProperty Name="Key" ColumnName="Key" />
+                <ScalarProperty Name="Importation_date" ColumnName="Importation_date" />
+                <ScalarProperty Name="Application_date" ColumnName="Application_date" />
+                <ScalarProperty Name="Quantity_requested" ColumnName="Quantity_requested" />
+                <ScalarProperty Name="Origin" ColumnName="Origin" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

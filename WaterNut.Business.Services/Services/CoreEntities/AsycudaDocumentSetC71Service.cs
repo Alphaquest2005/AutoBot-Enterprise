@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 using System.Linq.Dynamic;
 using System.ComponentModel.Composition;
-using LicenseDS.Business.Entities;
+using CoreEntities.Business.Entities;
 using Core.Common.Contracts;
 using Core.Common.Business.Services;
 using Core.Common.UI;
@@ -30,25 +30,25 @@ using TrackableEntities.Common;
 using TrackableEntities.EF6;
 using WaterNut.Interfaces;
 
-namespace LicenseDS.Business.Services
+namespace CoreEntities.Business.Services
 {
-   [Export (typeof(IxLIC_Lic_item_segmentService))]
+   [Export (typeof(IAsycudaDocumentSetC71Service))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class xLIC_Lic_item_segmentService : IxLIC_Lic_item_segmentService, IDisposable
+    public partial class AsycudaDocumentSetC71Service : IAsycudaDocumentSetC71Service, IDisposable
     {
-        //private readonly LicenseDSContext dbContext;
+        //private readonly CoreEntitiesContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public xLIC_Lic_item_segmentService()
+        public AsycudaDocumentSetC71Service()
         {
             try
             {
-                // dbContext = new LicenseDSContext(){StartTracking = StartTracking};
+                // dbContext = new CoreEntitiesContext(){StartTracking = StartTracking};
                 StartTracking = false;
              }
             catch (Exception updateEx)
@@ -65,17 +65,17 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segment(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
             //using (var scope = new TransactionScope(TransactionScopeOption.Required,
                                    //new TransactionOptions() {IsolationLevel = IsolationLevel.ReadUncommitted}))
                // {
-                  using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                  using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xLIC_Lic_item_segment> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<AsycudaDocumentSetC71> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public async Task<xLIC_Lic_item_segment> GetxLIC_Lic_item_segmentByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<AsycudaDocumentSetC71> GetAsycudaDocumentSetC71ByKey(string Value_declaration_form_Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
-              using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+			   if(string.IsNullOrEmpty(Value_declaration_form_Id))return null; 
+              using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(Value_declaration_form_Id);
 				var set = AddIncludes(includesLst, dbContext);
-                xLIC_Lic_item_segment entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                AsycudaDocumentSetC71 entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Value_declaration_form_Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace LicenseDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xLIC_Lic_item_segment>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentSetC71>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,16 +212,16 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpressionNav(string exp,
+		public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -230,25 +230,6 @@ namespace LicenseDS.Business.Services
 												.ConfigureAwait(continueOnCapturedContext: false);
                         if(tracking) aentities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
                         return aentities; 
-                    }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "xLIC_License":
-                                return
-                                    await
-                                        GetWhere<xLIC_License>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "TODO_LicenceAvailableQty":
-                                return
-                                    await
-                                        GetWhere<TODO_LicenceAvailableQty>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                        }
-
                     }
 					var set = AddIncludes(includesLst, dbContext);
                     var entities = await set.AsNoTracking().Where(exp)
@@ -273,17 +254,17 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatch(string exp,
+        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xLIC_Lic_item_segment>>();
+                var res = new ConcurrentQueue<List<AsycudaDocumentSetC71>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
 
 
                 var batchSize = 500;
@@ -298,20 +279,20 @@ namespace LicenseDS.Business.Services
                     {
                         try
                         {
-                            using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                            using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xLIC_Lic_item_segment> dset;
+                                IQueryable<AsycudaDocumentSetC71> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Value_declaration_form_Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.Value_declaration_form_Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -348,17 +329,17 @@ namespace LicenseDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<AsycudaDocumentSetC71>> GetAsycudaDocumentSetC71ByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xLIC_Lic_item_segment>>();
+                var res = new ConcurrentQueue<List<AsycudaDocumentSetC71>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xLIC_Lic_item_segment>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<AsycudaDocumentSetC71>();
 
 
                 var batchSize = 500;
@@ -373,21 +354,21 @@ namespace LicenseDS.Business.Services
                     {
                         try
                         {
-                            using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                            using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                             {
                                 dbContext.Database.CommandTimeout = 0;
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xLIC_Lic_item_segment> dset;
+                                IQueryable<AsycudaDocumentSetC71> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Value_declaration_form_Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.Value_declaration_form_Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -424,13 +405,13 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public async Task<xLIC_Lic_item_segment> UpdatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
+        public async Task<AsycudaDocumentSetC71> UpdateAsycudaDocumentSetC71(AsycudaDocumentSetC71 entity)
         { 
-            using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+            using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (xLIC_Lic_item_segment) entity;
+                     var res = (AsycudaDocumentSetC71) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -506,14 +487,14 @@ namespace LicenseDS.Business.Services
            return entity;
         }
 
-        public async Task<xLIC_Lic_item_segment> CreatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
+        public async Task<AsycudaDocumentSetC71> CreateAsycudaDocumentSetC71(AsycudaDocumentSetC71 entity)
         {
             try
             {
-                var res = (xLIC_Lic_item_segment) entity;
-              using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                var res = (AsycudaDocumentSetC71) entity;
+              using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                dbContext.xLIC_Lic_item_segment.Add(res);
+                dbContext.AsycudaDocumentSetC71.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -533,21 +514,21 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<bool> DeletexLIC_Lic_item_segment(string Id)
+        public async Task<bool> DeleteAsycudaDocumentSetC71(string Value_declaration_form_Id)
         {
             try
             {
-              using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+              using ( var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
-                xLIC_Lic_item_segment entity = await dbContext.xLIC_Lic_item_segment
-													.SingleOrDefaultAsync(x => x.Id == i)
+                var i = Convert.ToInt32(Value_declaration_form_Id);
+                AsycudaDocumentSetC71 entity = await dbContext.AsycudaDocumentSetC71
+													.SingleOrDefaultAsync(x => x.Value_declaration_form_Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.xLIC_Lic_item_segment.Attach(entity);
-                    dbContext.xLIC_Lic_item_segment.Remove(entity);
+                    dbContext.AsycudaDocumentSetC71.Attach(entity);
+                    dbContext.AsycudaDocumentSetC71.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -566,19 +547,19 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedxLIC_Lic_item_segment(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedAsycudaDocumentSetC71(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing xLIC_Lic_item_segment", lst.Count());
+                StatusModel.StartStatusUpdate("Removing AsycudaDocumentSetC71", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new xLIC_Lic_item_segmentService())
+                    using (var ctx = new AsycudaDocumentSetC71Service())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeletexLIC_Lic_item_segment(item).Wait();
+                            ctx.DeleteAsycudaDocumentSetC71(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -609,11 +590,11 @@ namespace LicenseDS.Business.Services
         {
             try
             {
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<xLIC_Lic_item_segment>)dbContext.xLIC_Lic_item_segment; 
+                    var set = (IQueryable<AsycudaDocumentSetC71>)dbContext.AsycudaDocumentSetC71; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -646,12 +627,12 @@ namespace LicenseDS.Business.Services
         {
             try
             {
-                using (LicenseDSContext dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (CoreEntitiesContext dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.AsycudaDocumentSetC71
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -659,7 +640,7 @@ namespace LicenseDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.AsycudaDocumentSetC71
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -681,19 +662,19 @@ namespace LicenseDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<AsycudaDocumentSetC71>();
                     if (exp == "All")
                     {
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.AsycudaDocumentSetC71
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.Value_declaration_form_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -702,10 +683,10 @@ namespace LicenseDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.AsycudaDocumentSetC71
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.Value_declaration_form_Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -732,29 +713,17 @@ namespace LicenseDS.Business.Services
             try
             {
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.AsycudaDocumentSetC71
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "xLIC_License":
-                                return await CountWhere<xLIC_License>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TODO_LicenceAvailableQty":
-                                return await CountWhere<TODO_LicenceAvailableQty>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
-                    }
-                    return await dbContext.xLIC_Lic_item_segment.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.AsycudaDocumentSetC71.Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -775,7 +744,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		private static async Task<int> CountWhere<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string rel) where T : class
+		private static async Task<int> CountWhere<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel) where T : class
         {
               switch (rel)
 		    {
@@ -789,17 +758,17 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static async Task<int> CountWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+                .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Value_declaration_form_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -810,17 +779,17 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<int> CountWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp) where T : class
+		private static async Task<int> CountWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp) where T : class
         {
 			try
 			{
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<AsycudaDocumentSetC71>()
+                .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Value_declaration_form_Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -831,15 +800,15 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
             {
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<AsycudaDocumentSetC71>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -847,39 +816,17 @@ namespace LicenseDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.Value_declaration_form_Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
 									.ToListAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "xLIC_License":
-                                return
-                                    await
-                                        LoadRangeWhere<xLIC_License>(startIndex, count, dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "TODO_LicenceAvailableQty":
-                                return
-                                    await
-                                        LoadRangeWhere<TODO_LicenceAvailableQty>(startIndex, count, dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                          
-							default:
-                                throw new ArgumentException("No Navigation property found for " + itm.Key);
-						}
-
-                    }
-                    return await set//dbContext.xLIC_Lic_item_segment
+                    return await set//dbContext.AsycudaDocumentSetC71
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
+								.OrderBy(y => y.Value_declaration_form_Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -903,8 +850,8 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeWhere<T>(int startIndex, int count,
-            LicenseDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeWhere<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
 		    {
@@ -918,22 +865,22 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelectMany<T>(int startIndex, int count,
-            LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeSelectMany<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>();
+                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.Value_declaration_form_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -947,22 +894,22 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelect<T>(int startIndex, int count,
-            LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
+		private static async Task<IEnumerable<AsycudaDocumentSetC71>> LoadRangeSelect<T>(int startIndex, int count,
+            CoreEntitiesContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
 			{
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>();
+                .Select(navProp).OfType<AsycudaDocumentSetC71>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.Value_declaration_form_Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -976,7 +923,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhere<T>(LicenseDSContext dbContext,
+        private static async Task<IEnumerable<AsycudaDocumentSetC71>> GetWhere<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1000,7 +947,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelectMany<T>(LicenseDSContext dbContext,
+		private static async Task<IEnumerable<AsycudaDocumentSetC71>> GetWhereSelectMany<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1011,18 +958,18 @@ namespace LicenseDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+							.Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<xLIC_Lic_item_segment>)dbContext.Set<T>()
+			var set = (DbQuery<AsycudaDocumentSetC71>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+                .Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1037,7 +984,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelect<T>(LicenseDSContext dbContext,
+		private static async Task<IEnumerable<AsycudaDocumentSetC71>> GetWhereSelect<T>(CoreEntitiesContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1048,18 +995,18 @@ namespace LicenseDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<xLIC_Lic_item_segment>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Select(navProp).OfType<AsycudaDocumentSetC71>()
+							.Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<xLIC_Lic_item_segment>)dbContext.Set<T>()
+			var set = (DbQuery<AsycudaDocumentSetC71>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Select(navProp).OfType<AsycudaDocumentSetC71>()
+                .Where(exp == "All" || exp == null?"Value_declaration_form_Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1074,52 +1021,23 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByLicenseId(string LicenseId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(LicenseId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<xLIC_Lic_item_segment> entities = await set//dbContext.xLIC_Lic_item_segment
-                                      .AsNoTracking()
-                                        .Where(x => x.LicenseId.ToString() == LicenseId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 
+		
 		public decimal SumField(string whereExp, string field)
          {
              try
              {
-                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                  {
                     dbContext.Database.CommandTimeout = 0;
 					decimal res = 0;
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.xLIC_Lic_item_segment.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.AsycudaDocumentSetC71.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.xLIC_Lic_item_segment.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.AsycudaDocumentSetC71.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1144,29 +1062,17 @@ namespace LicenseDS.Business.Services
             try
             {
                 if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
-                using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.xLIC_Lic_item_segment.Any()) return 0;
+                    if (!dbContext.AsycudaDocumentSetC71.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.xLIC_Lic_item_segment
+                        return Convert.ToDecimal(dbContext.AsycudaDocumentSetC71
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
-                    foreach (var itm in navExp)
-                    {
-                        switch (itm.Key)
-                        {
-                            case "xLIC_License":
-                                return await SumWhere<xLIC_License>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TODO_LicenceAvailableQty":
-                                return await SumWhere<TODO_LicenceAvailableQty>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-						}
-                    }
-                    return Convert.ToDecimal(dbContext.xLIC_Lic_item_segment.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.AsycudaDocumentSetC71.Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1186,7 +1092,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		private static async Task<decimal> SumWhere<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field, string rel) where T : class
+		private static async Task<decimal> SumWhere<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field, string rel) where T : class
         {
               switch (rel)
 		    {
@@ -1199,17 +1105,17 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static async Task<decimal> SumWhereSelectMany<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelectMany<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<AsycudaDocumentSetC71>()
+                .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Value_declaration_form_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1219,17 +1125,17 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<decimal> SumWhereSelect<T>(LicenseDSContext dbContext, string exp, string navExp, string navProp, string field) where T : class
+		private static async Task<decimal> SumWhereSelect<T>(CoreEntitiesContext dbContext, string exp, string navExp, string navProp, string field) where T : class
         {
 			try
 			{
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<AsycudaDocumentSetC71>()
+                .Where(exp == "All" || exp == null ? "Value_declaration_form_Id != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("Value_declaration_form_Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1245,18 +1151,18 @@ namespace LicenseDS.Business.Services
          {
              try
              {
-                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+                 using (var dbContext = new CoreEntitiesContext(){StartTracking = StartTracking})
                  {
                     dbContext.Database.CommandTimeout = 0;
 					string res = "";
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.xLIC_Lic_item_segment.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.AsycudaDocumentSetC71.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.xLIC_Lic_item_segment.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.AsycudaDocumentSetC71.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1277,12 +1183,12 @@ namespace LicenseDS.Business.Services
          }
 
 		 
-		private static IQueryable<xLIC_Lic_item_segment> AddIncludes(IEnumerable<string> includesLst, LicenseDSContext dbContext)
+		private static IQueryable<AsycudaDocumentSetC71> AddIncludes(IEnumerable<string> includesLst, CoreEntitiesContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<xLIC_Lic_item_segment>) dbContext.xLIC_Lic_item_segment; 
+			   var set =(DbQuery<AsycudaDocumentSetC71>) dbContext.AsycudaDocumentSetC71; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1293,7 +1199,7 @@ namespace LicenseDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<xLIC_Lic_item_segment> AddWheres(List<string> expLst, IQueryable<xLIC_Lic_item_segment> set)
+	   private IQueryable<AsycudaDocumentSetC71> AddWheres(List<string> expLst, IQueryable<AsycudaDocumentSetC71> set)
         {
             try
             {

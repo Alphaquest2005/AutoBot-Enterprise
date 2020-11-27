@@ -112,6 +112,9 @@
     <Compile Include="AsycudaDocumentItemEntryDataDetails.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="AsycudaDocumentSetC71.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="AsycudaDocumentSetEntryDataEx.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>

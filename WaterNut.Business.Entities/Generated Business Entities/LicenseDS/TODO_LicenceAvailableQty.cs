@@ -18,23 +18,23 @@ namespace LicenseDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class TODO_LICToCreate : BaseEntity<TODO_LICToCreate>, ITrackable 
+    public partial class TODO_LicenceAvailableQty : BaseEntity<TODO_LicenceAvailableQty>, ITrackable 
     {
         [DataMember]
-        public int AsycudaDocumentSetId 
+        public string RegistrationNumber 
         {
             get
             {
-                return _asycudadocumentsetid;
+                return _registrationnumber;
             }
             set
             {
-                _asycudadocumentsetid = value;
+                _registrationnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _asycudadocumentsetid;
+        string _registrationnumber;
         [DataMember]
         public int ApplicationSettingsId 
         {
@@ -51,215 +51,140 @@ namespace LicenseDS.Business.Entities
         }
         int _applicationsettingsid;
         [DataMember]
-        public string Country_of_origin_code 
+        public string TariffCode 
         {
             get
             {
-                return _country_of_origin_code;
+                return _tariffcode;
             }
             set
             {
-                _country_of_origin_code = value;
+                _tariffcode = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _country_of_origin_code;
+        string _tariffcode;
         [DataMember]
-        public string Currency_Code 
+        public string Origin 
         {
             get
             {
-                return _currency_code;
+                return _origin;
             }
             set
             {
-                _currency_code = value;
+                _origin = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _currency_code;
+        string _origin;
         [DataMember]
-        public string Manifest_Number 
+        public int Quantity_requested 
         {
             get
             {
-                return _manifest_number;
+                return _quantity_requested;
             }
             set
             {
-                _manifest_number = value;
+                _quantity_requested = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _manifest_number;
+        int _quantity_requested;
         [DataMember]
-        public string BLNumber 
+        public Nullable<System.DateTime> Application_date 
         {
             get
             {
-                return _blnumber;
+                return _application_date;
             }
             set
             {
-                _blnumber = value;
+                _application_date = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _blnumber;
+        Nullable<System.DateTime> _application_date;
         [DataMember]
-        public string Type_of_declaration 
+        public Nullable<System.DateTime> Importation_date 
         {
             get
             {
-                return _type_of_declaration;
+                return _importation_date;
             }
             set
             {
-                _type_of_declaration = value;
+                _importation_date = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _type_of_declaration;
+        Nullable<System.DateTime> _importation_date;
         [DataMember]
-        public string Declaration_gen_procedure_code 
+        public string Key 
         {
             get
             {
-                return _declaration_gen_procedure_code;
+                return _key;
             }
             set
             {
-                _declaration_gen_procedure_code = value;
+                _key = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _declaration_gen_procedure_code;
+        string _key;
         [DataMember]
-        public string Declarant_Reference_Number 
+        public Nullable<int> Balance 
         {
             get
             {
-                return _declarant_reference_number;
+                return _balance;
             }
             set
             {
-                _declarant_reference_number = value;
+                _balance = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _declarant_reference_number;
+        Nullable<int> _balance;
         [DataMember]
-        public Nullable<int> TotalInvoices 
+        public int LicenseId 
         {
             get
             {
-                return _totalinvoices;
+                return _licenseid;
             }
             set
             {
-                _totalinvoices = value;
+                _licenseid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _totalinvoices;
+        int _licenseid;
         [DataMember]
-        public Nullable<int> DocumentsCount 
+        public string SourceFile 
         {
             get
             {
-                return _documentscount;
+                return _sourcefile;
             }
             set
             {
-                _documentscount = value;
+                _sourcefile = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _documentscount;
-        [DataMember]
-        public Nullable<double> InvoiceTotal 
-        {
-            get
-            {
-                return _invoicetotal;
-            }
-            set
-            {
-                _invoicetotal = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _invoicetotal;
-        [DataMember]
-        public Nullable<int> LicenseLines 
-        {
-            get
-            {
-                return _licenselines;
-            }
-            set
-            {
-                _licenselines = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _licenselines;
-        [DataMember]
-        public Nullable<double> TotalCIF 
-        {
-            get
-            {
-                return _totalcif;
-            }
-            set
-            {
-                _totalcif = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<double> _totalcif;
-        [DataMember]
-        public Nullable<int> QtyLicensesRequired 
-        {
-            get
-            {
-                return _qtylicensesrequired;
-            }
-            set
-            {
-                _qtylicensesrequired = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _qtylicensesrequired;
-        [DataMember]
-        public Nullable<int> HasLicense 
-        {
-            get
-            {
-                return _haslicense;
-            }
-            set
-            {
-                _haslicense = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _haslicense;
+        string _sourcefile;
         [DataMember]
         public string DocumentReference 
         {
@@ -276,20 +201,22 @@ namespace LicenseDS.Business.Entities
         }
         string _documentreference;
         [DataMember]
-        public string Exporter_address 
+        public int SegmentId 
         {
             get
             {
-                return _exporter_address;
+                return _segmentid;
             }
             set
             {
-                _exporter_address = value;
+                _segmentid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _exporter_address;
+        int _segmentid;
+        [DataMember]
+        public xLIC_Lic_item_segment xLIC_Lic_item_segment { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -118,6 +118,7 @@
     <Compile Include="CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentItemService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentService.cs" />
+    <Compile Include="CoreEntities\IAsycudaDocumentSetC71Service.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentSetEntryDataExService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentSetExService.cs" />
     <Compile Include="CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />

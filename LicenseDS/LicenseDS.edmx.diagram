@@ -6,13 +6,15 @@
     <edmx:Diagrams>
       <Diagram DiagramId="37d3883e552a40d2b8cc3514eaf230fd" Name="Diagram1">
         <EntityTypeShape EntityType="WaterNutDBModel.xLIC_General_segment" Width="1.5" PointX="3" PointY="1.25" />
-        <EntityTypeShape EntityType="WaterNutDBModel.xLIC_Lic_item_segment" Width="1.5" PointX="3" PointY="6.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.xLIC_Lic_item_segment" Width="2.375" PointX="3" PointY="6.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.xLIC_License" Width="1.5" PointX="0.75" PointY="4.625" />
         <AssociationConnector Association="WaterNutDBModel.FK_xLIC_General_segment_xLIC_License" />
         <AssociationConnector Association="WaterNutDBModel.FK_xLIC_Lic_item_segment_xLIC_License" />
         <EntityTypeShape EntityType="WaterNutDBModel.Registered" Width="4" PointX="3" PointY="10.75" />
         <InheritanceConnector EntityType="WaterNutDBModel.Registered" />
         <EntityTypeShape EntityType="WaterNutDBModel.TODO_LICToCreate" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" Width="1.5" PointX="8" PointY="1.125" />
+        <AssociationConnector Association="WaterNutDBModel.xLIC_Lic_item_segmentTODO_LicenceAvailableQty" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

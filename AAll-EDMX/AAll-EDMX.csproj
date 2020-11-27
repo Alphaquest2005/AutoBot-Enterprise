@@ -254,6 +254,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\CoreEntities\AsycudaItemBasicInfo.cs
@@ -476,6 +477,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryQS\TariffCodes.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\InventoryQS\TariffSupUnitLkps.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\LicenseDS\Registered.cs
+..\WaterNut.Business.Entities\Generated Business Entities\LicenseDS\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\LicenseDS\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\LicenseDS\xLIC_General_segment.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\LicenseDS\xLIC_Lic_item_segment.cs
@@ -602,6 +604,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
@@ -824,6 +827,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCodes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffSupUnitLkps.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\Registered.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LicenceAvailableQty.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LICToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_General_segment.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_Lic_item_segment.map.cs
@@ -958,6 +962,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -1180,6 +1185,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryQS\TariffCodes.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\InventoryQS\TariffSupUnitLkps.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\LicenseDS\Registered.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\LicenseDS\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\LicenseDS\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\LicenseDS\xLIC_General_segment.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\LicenseDS\xLIC_Lic_item_segment.cs
@@ -1292,6 +1298,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -1514,6 +1521,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryQS\TariffCodes.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\InventoryQS\TariffSupUnitLkps.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\LicenseDS\Registered.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\LicenseDS\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\LicenseDS\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\LicenseDS\xLIC_General_segment.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\LicenseDS\xLIC_Lic_item_segment.cs
@@ -1626,6 +1634,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -1848,6 +1857,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryQS\TariffCodes.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\InventoryQS\TariffSupUnitLkps.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\LicenseDS\Registered.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\LicenseDS\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\LicenseDS\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\LicenseDS\xLIC_General_segment.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\LicenseDS\xLIC_Lic_item_segment.cs
@@ -1960,6 +1970,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -2182,6 +2193,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryQS\TariffCodes.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\InventoryQS\TariffSupUnitLkps.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\LicenseDS\Registered.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\LicenseDS\TODO_LicenceAvailableQty.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\LicenseDS\TODO_LICToCreate.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\LicenseDS\xLIC_General_segment.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\LicenseDS\xLIC_Lic_item_segment.cs
@@ -2259,6 +2271,7 @@
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Client.DTO\Generated Client Entities\CoreEntities\AsycudaItemBasicInfo.cs
@@ -2406,6 +2419,7 @@
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Client.Entities\Generated Client Entities\CoreEntities\AsycudaItemBasicInfo.cs
@@ -2563,6 +2577,7 @@
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Client.DTO\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -2710,6 +2725,7 @@
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Client.DTO\Generated MyNavProp Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -2857,6 +2873,7 @@
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Client.Entities\Generated Constructors Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -3004,6 +3021,7 @@
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Client.Entities\Generated IIdentitfiableEntity Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -3151,6 +3169,7 @@
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSet_Attachments.cs
+..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetC71.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaDocumentSetEx.cs
 ..\WaterNut.Client.Entities\Generated MyNavProp Models\CoreEntities\AsycudaItemBasicInfo.cs
@@ -3381,6 +3400,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\CoreEntities\AsycudaItemBasicInfo.map.cs
@@ -3603,6 +3623,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffCodes.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\InventoryQS\TariffSupUnitLkps.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\Registered.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LicenceAvailableQty.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\TODO_LICToCreate.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_General_segment.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\LicenseDS\xLIC_Lic_item_segment.map.cs
@@ -3722,6 +3743,7 @@
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentItemRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSet_AttachmentsRepository.cs
+..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetC71Repository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetEntryDataExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaDocumentSetExRepository.cs
 ..\WaterNut.Client.Repositories\Generated Repositories\CoreEntities\AsycudaItemBasicInfoRepository.cs
@@ -3887,6 +3909,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemEntryDataDetailsViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentItemViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSet_AttachmentsViewModel.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetC71ViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetEntryDataExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentSetExViewModel.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\CoreEntities\AsycudaDocumentViewModel.cs
@@ -4038,6 +4061,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemEntryDataDetailsTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentItemTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSet_AttachmentsTotals.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetC71Totals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetEntryDataExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentSetExTotals.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\Totals\CoreEntities\AsycudaDocumentTotals.cs
@@ -4175,6 +4199,7 @@
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemEntryDataDetailsVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentItemVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSet_AttachmentsVirturalListLoader.cs
+..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetC71VirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetEntryDataExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentSetExVirturalListLoader.cs
 ..\WaterNut\ViewModels\Generated Models\QuerySpace\VirturalListLoaders\CoreEntities\AsycudaDocumentVirturalListLoader.cs
@@ -4361,6 +4386,7 @@
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentItemService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs
+..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetC71Service.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaDocumentSetExService.cs
 ..\WaterNut.Business.Services\Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
@@ -4583,6 +4609,7 @@
 ..\WaterNut.Business.Services\Contracts\InventoryQS\ITariffCodesService.cs
 ..\WaterNut.Business.Services\Contracts\InventoryQS\ITariffSupUnitLkpsService.cs
 ..\WaterNut.Business.Services\Contracts\LicenseDS\IRegisteredService.cs
+..\WaterNut.Business.Services\Contracts\LicenseDS\ITODO_LicenceAvailableQtyService.cs
 ..\WaterNut.Business.Services\Contracts\LicenseDS\ITODO_LICToCreateService.cs
 ..\WaterNut.Business.Services\Contracts\LicenseDS\IxLIC_General_segmentService.cs
 ..\WaterNut.Business.Services\Contracts\LicenseDS\IxLIC_Lic_item_segmentService.cs
@@ -4695,6 +4722,7 @@
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentItemService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSet_AttachmentsService.cs
+..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetC71Service.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaDocumentSetExService.cs
 ..\WaterNut.Business.Services\Services\CoreEntities\AsycudaItemBasicInfoService.cs
@@ -4917,6 +4945,7 @@
 ..\WaterNut.Business.Services\Services\InventoryQS\TariffCodesService.cs
 ..\WaterNut.Business.Services\Services\InventoryQS\TariffSupUnitLkpsService.cs
 ..\WaterNut.Business.Services\Services\LicenseDS\RegisteredService.cs
+..\WaterNut.Business.Services\Services\LicenseDS\TODO_LicenceAvailableQtyService.cs
 ..\WaterNut.Business.Services\Services\LicenseDS\TODO_LICToCreateService.cs
 ..\WaterNut.Business.Services\Services\LicenseDS\xLIC_General_segmentService.cs
 ..\WaterNut.Business.Services\Services\LicenseDS\xLIC_Lic_item_segmentService.cs
@@ -4987,6 +5016,7 @@
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentItemService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs
+..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetC71Service.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaDocumentSetExService.cs
 ..\WaterNut.Client.Contracts\CoreEntities\IAsycudaItemBasicInfoService.cs
@@ -5134,6 +5164,7 @@
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentItemClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSet_AttachmentsClient.cs
+..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetC71Client.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetEntryDataExClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaDocumentSetExClient.cs
 ..\WaterNut.Client.Services\CoreEntities\AsycudaItemBasicInfoClient.cs

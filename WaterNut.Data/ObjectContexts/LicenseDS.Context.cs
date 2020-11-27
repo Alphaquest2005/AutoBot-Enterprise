@@ -55,6 +55,8 @@ namespace LicenseDS.Business.Entities
      
         public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
      
+        public DbSet<TODO_LicenceAvailableQty> TODO_LicenceAvailableQty { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -66,6 +68,8 @@ namespace LicenseDS.Business.Entities
             modelBuilder.Configurations.Add(new xLIC_LicenseMap());
          
             modelBuilder.Configurations.Add(new TODO_LICToCreateMap());
+         
+            modelBuilder.Configurations.Add(new TODO_LicenceAvailableQtyMap());
          
             modelBuilder.Configurations.Add(new RegisteredMap());
       

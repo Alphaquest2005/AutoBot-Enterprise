@@ -3673,10 +3673,21 @@ namespace WaterNut.DataSpace
                     && x.Origin == docSet.Country_of_origin_code).OrderBy(x => x.Application_date).ToList();
                 foreach (var lic in availableLic)
                 {
-                      licAtt.AddRange(ctx.Attachments.Where(x =>
-                        x.DocumentCode == "LC02" && x.FilePath == lic.SourceFile)
-                    .DistinctBy(x => x.FilePath)
-                    .Where(x => x.Reference != "LIC").ToList());
+                    var attlst = ctx.Attachments.Where(x =>
+                            x.DocumentCode == "LC02" && x.FilePath == lic.SourceFile)
+                        .DistinctBy(x => x.FilePath)
+                        .Where(x => x.Reference != "LIC").ToList();
+                    licAtt.AddRange(attlst);
+                    foreach (var att in attlst)
+                    {
+                        ctx.AsycudaDocumentSet_Attachments.Add(new AsycudaDocumentSet_Attachments(true)
+                        {
+                            AsycudaDocumentSetId = asycudaDocumentSetId,
+                            AttachmentId = att.Id,
+                        });
+                    }
+                    ctx.SaveChanges();
+
                 }
               
 
@@ -3690,8 +3701,9 @@ namespace WaterNut.DataSpace
                 foreach (var i in licAtt)
                 {
                     Registered xLicLicense = new LicenseDSContext().xLIC_License.OfType<Registered>()
-                        .Include(x => x.xLIC_Lic_item_segment)
-                        .Include(x => x.xLIC_General_segment).FirstOrDefault(x => x.SourceFile == i.FilePath);
+                        .Include("xLIC_Lic_item_segment.TODO_LicenceAvailableQty")
+                        .Include(x => x.xLIC_General_segment)
+                        .FirstOrDefault(x => x.SourceFile == i.FilePath);
                     if (xLicLicense != null) res.Add(i, xLicLicense);
                 }
 
@@ -3718,7 +3730,10 @@ namespace WaterNut.DataSpace
                                         z.key.Contains(entryDataId.EntryDataId)))
                                 .ToList();
 
-                        double rtotal = 0;
+                        double rtotal = lic.TODO_LicenceAvailableQty == null?0: lic.Quantity_to_approve - lic.TODO_LicenceAvailableQty.Balance.GetValueOrDefault();
+
+                        
+
                         foreach (var itm in itms)
                         {
                             if (allocatedItms.Any(z => z.Item_Id == itm.Item_Id)) continue;
@@ -3741,45 +3756,77 @@ namespace WaterNut.DataSpace
 
         private static void AttachC71(int asycudaDocumentSetId)
         {
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
-                var lst = ctx.AsycudaDocumentItems
-                    .Include(x => x.AsycudaDocumentItemEntryDataDetails)
-                    .Where(x => x.LineNumber == "1"
-                                && x.AsycudaDocument.AsycudaDocumentSetId ==
-                                asycudaDocumentSetId).ToList();
-                var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
-                        x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
-                    .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).Where(x =>
-                        new FileInfo(x.FilePath).Name != "C71.xml" && x.Reference != "C71").ToList();
 
-                var res = new Dictionary<Attachments, ValuationDS.Business.Entities.Registered>();
-                foreach (var i in c71Att)
-                {
-                    var c71 = new ValuationDSContext().xC71_Value_declaration_form
-                        .OfType<ValuationDS.Business.Entities.Registered>()
-                        .Include(x => x.xC71_Item)
-                        .Include(x => x.xC71_Identification_segment)
-                        .FirstOrDefault(x => x.SourceFile == i.FilePath);
-                    if (c71 != null) res.Add(i, c71);
-                }
 
-                foreach (var al in res)
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    foreach (var c71Item in al.Value.xC71_Item)
+                    var lst = ctx.AsycudaDocumentItems
+                        .Include(x => x.AsycudaDocumentItemEntryDataDetails)
+                        .Where(x => x.LineNumber == "1"
+                                    && x.AsycudaDocument.AsycudaDocumentSetId ==
+                                    asycudaDocumentSetId).ToList();
+                    var c71Att = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachments).Where(x =>
+                            x.FileTypes.Type == "C71" && x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                        .Select(x => x.Attachments).AsEnumerable().DistinctBy(x => x.FilePath).Where(x =>
+                            new FileInfo(x.FilePath).Name != "C71.xml" && x.Reference != "C71").ToList();
+
+                    if (!c71Att.Any())
                     {
-                        var itms = lst.Where(x =>
-                            x.AsycudaDocumentItemEntryDataDetails.Any(z => z.key.Contains(c71Item.Invoice_Number)) &&
-                            x.LineNumber == "1").ToList();
-
-                        foreach (var itm in itms)
+                        var eC71 = ctx.AsycudaDocumentSetC71.FirstOrDefault(x =>
+                            x.AsycudaDocumentSetId == asycudaDocumentSetId);
+                        if (eC71 != null)
                         {
-                            AttachToDocument(new List<int>() {al.Key.Id},
-                                itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+                            var att = ctx.Attachments.First(x => x.Id == eC71.AttachmentId);
+                            c71Att = new List<Attachments>() {att};
+
+                            ctx.AsycudaDocumentSet_Attachments.Add(new AsycudaDocumentSet_Attachments(true)
+                            {
+                                AsycudaDocumentSetId = asycudaDocumentSetId,
+                                AttachmentId = att.Id,
+                            });
+                            ctx.SaveChanges();
 
                         }
                     }
+
+
+
+                    var res = new Dictionary<Attachments, ValuationDS.Business.Entities.Registered>();
+                    foreach (var i in c71Att)
+                    {
+                        var c71 = new ValuationDSContext().xC71_Value_declaration_form
+                            .OfType<ValuationDS.Business.Entities.Registered>()
+                            .Include(x => x.xC71_Item)
+                            .Include(x => x.xC71_Identification_segment)
+                            .FirstOrDefault(x => x.SourceFile == i.FilePath);
+                        if (c71 != null) res.Add(i, c71);
+                    }
+
+                    foreach (var al in res)
+                    {
+                        foreach (var c71Item in al.Value.xC71_Item)
+                        {
+                            var itms = lst.Where(x =>
+                                x.AsycudaDocumentItemEntryDataDetails.Any(z =>
+                                    z.key.Contains(c71Item.Invoice_Number)) &&
+                                x.LineNumber == "1").ToList();
+
+                            foreach (var itm in itms)
+                            {
+                                AttachToDocument(new List<int>() {al.Key.Id},
+                                    itm.AsycudaDocumentId.GetValueOrDefault(), itm.Item_Id);
+
+                            }
+                        }
+                    }
                 }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
 

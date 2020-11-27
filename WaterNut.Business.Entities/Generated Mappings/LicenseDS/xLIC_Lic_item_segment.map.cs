@@ -22,6 +22,7 @@
               this.Property(t => t.LicenseId).HasColumnName("LicenseId");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.HasRequired(t => t.xLIC_License).WithMany(t =>(ICollection<xLIC_Lic_item_segment>) t.xLIC_Lic_item_segment).HasForeignKey(d => d.LicenseId);
+              this.HasOptional(t => t.TODO_LicenceAvailableQty).WithRequired(t => (xLIC_Lic_item_segment)t.xLIC_Lic_item_segment);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

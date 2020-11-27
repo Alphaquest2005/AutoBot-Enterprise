@@ -207,6 +207,7 @@
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated Business Entities\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
@@ -436,6 +437,7 @@
     <Compile Include="Generated Business Entities\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated Business Entities\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated Business Entities\LicenseDS\Registered.cs" />
+    <Compile Include="Generated Business Entities\LicenseDS\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated Business Entities\LicenseDS\TODO_LICToCreate.cs" />
     <Compile Include="Generated Business Entities\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated Business Entities\LicenseDS\xLIC_License.cs" />
@@ -548,6 +550,7 @@
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated ChangeTracking Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
@@ -772,6 +775,7 @@
     <Compile Include="Generated ChangeTracking Models\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated ChangeTracking Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated ChangeTracking Models\LicenseDS\Registered.cs" />
+    <Compile Include="Generated ChangeTracking Models\LicenseDS\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated ChangeTracking Models\LicenseDS\TODO_LICToCreate.cs" />
     <Compile Include="Generated ChangeTracking Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated ChangeTracking Models\LicenseDS\xLIC_License.cs" />
@@ -882,6 +886,7 @@
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated Constructors Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
@@ -1106,6 +1111,7 @@
     <Compile Include="Generated Constructors Models\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated Constructors Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated Constructors Models\LicenseDS\Registered.cs" />
+    <Compile Include="Generated Constructors Models\LicenseDS\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated Constructors Models\LicenseDS\TODO_LICToCreate.cs" />
     <Compile Include="Generated Constructors Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated Constructors Models\LicenseDS\xLIC_License.cs" />
@@ -1216,6 +1222,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
@@ -1440,6 +1447,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\Registered.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\TODO_LICToCreate.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\LicenseDS\xLIC_License.cs" />
@@ -1550,6 +1558,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentBasicInfo.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItem.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentItemEntryDataDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetC71.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEntryDataEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSetEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\AsycudaDocumentSet_Attachments.cs" />
@@ -1774,6 +1783,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffCodes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\Registered.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\TODO_LicenceAvailableQty.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\TODO_LICToCreate.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\xLIC_General_segment.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\LicenseDS\xLIC_License.cs" />
@@ -1894,6 +1904,7 @@
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentBasicInfo.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentItem.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentItemEntryDataDetails.map.cs" />
+    <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetC71.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetEntryDataEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSetEx.map.cs" />
     <Compile Include="Generated Mappings\CoreEntities\AsycudaDocumentSet_Attachments.map.cs" />
@@ -2118,6 +2129,7 @@
     <Compile Include="Generated Mappings\InventoryQS\TariffCodes.map.cs" />
     <Compile Include="Generated Mappings\InventoryQS\TariffSupUnitLkps.map.cs" />
     <Compile Include="Generated Mappings\LicenseDS\Registered.map.cs" />
+    <Compile Include="Generated Mappings\LicenseDS\TODO_LicenceAvailableQty.map.cs" />
     <Compile Include="Generated Mappings\LicenseDS\TODO_LICToCreate.map.cs" />
     <Compile Include="Generated Mappings\LicenseDS\xLIC_General_segment.map.cs" />
     <Compile Include="Generated Mappings\LicenseDS\xLIC_License.map.cs" />

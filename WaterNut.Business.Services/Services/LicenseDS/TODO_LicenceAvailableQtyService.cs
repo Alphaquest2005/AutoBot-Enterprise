@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace LicenseDS.Business.Services
 {
-   [Export (typeof(IxLIC_Lic_item_segmentService))]
+   [Export (typeof(ITODO_LicenceAvailableQtyService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class xLIC_Lic_item_segmentService : IxLIC_Lic_item_segmentService, IDisposable
+    public partial class TODO_LicenceAvailableQtyService : ITODO_LicenceAvailableQtyService, IDisposable
     {
         //private readonly LicenseDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public xLIC_Lic_item_segmentService()
+        public TODO_LicenceAvailableQtyService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segment(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQty(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace LicenseDS.Business.Services
                   using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<xLIC_Lic_item_segment> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<TODO_LicenceAvailableQty> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public async Task<xLIC_Lic_item_segment> GetxLIC_Lic_item_segmentByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<TODO_LicenceAvailableQty> GetTODO_LicenceAvailableQtyByKey(string SegmentId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(SegmentId))return null; 
               using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(SegmentId);
 				var set = AddIncludes(includesLst, dbContext);
-                xLIC_Lic_item_segment entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                TODO_LicenceAvailableQty entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.SegmentId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace LicenseDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_LicenceAvailableQty>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xLIC_Lic_item_segment>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_LicenceAvailableQty>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByExpressionNav(string exp,
+		public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace LicenseDS.Business.Services
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_LicenceAvailableQty>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,16 +235,10 @@ namespace LicenseDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xLIC_License":
+                            case "xLIC_Lic_item_segment":
                                 return
                                     await
-                                        GetWhere<xLIC_License>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "TODO_LicenceAvailableQty":
-                                return
-                                    await
-                                        GetWhere<TODO_LicenceAvailableQty>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany", includesLst)
+                                        GetWhere<xLIC_Lic_item_segment>(dbContext, exp, itm.Value, "TODO_LicenceAvailableQty", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -273,17 +267,17 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatch(string exp,
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xLIC_Lic_item_segment>>();
+                var res = new ConcurrentQueue<List<TODO_LicenceAvailableQty>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_LicenceAvailableQty>();
 
 
                 var batchSize = 500;
@@ -304,14 +298,14 @@ namespace LicenseDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xLIC_Lic_item_segment> dset;
+                                IQueryable<TODO_LicenceAvailableQty> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.SegmentId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.SegmentId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -348,17 +342,17 @@ namespace LicenseDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<xLIC_Lic_item_segment>>();
+                var res = new ConcurrentQueue<List<TODO_LicenceAvailableQty>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<xLIC_Lic_item_segment>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<TODO_LicenceAvailableQty>();
 
 
                 var batchSize = 500;
@@ -379,15 +373,15 @@ namespace LicenseDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<xLIC_Lic_item_segment> dset;
+                                IQueryable<TODO_LicenceAvailableQty> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.SegmentId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.SegmentId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -424,13 +418,13 @@ namespace LicenseDS.Business.Services
         }
 
 
-        public async Task<xLIC_Lic_item_segment> UpdatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
+        public async Task<TODO_LicenceAvailableQty> UpdateTODO_LicenceAvailableQty(TODO_LicenceAvailableQty entity)
         { 
             using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (xLIC_Lic_item_segment) entity;
+                     var res = (TODO_LicenceAvailableQty) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -506,14 +500,14 @@ namespace LicenseDS.Business.Services
            return entity;
         }
 
-        public async Task<xLIC_Lic_item_segment> CreatexLIC_Lic_item_segment(xLIC_Lic_item_segment entity)
+        public async Task<TODO_LicenceAvailableQty> CreateTODO_LicenceAvailableQty(TODO_LicenceAvailableQty entity)
         {
             try
             {
-                var res = (xLIC_Lic_item_segment) entity;
+                var res = (TODO_LicenceAvailableQty) entity;
               using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
-                dbContext.xLIC_Lic_item_segment.Add(res);
+                dbContext.TODO_LicenceAvailableQty.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -533,21 +527,21 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<bool> DeletexLIC_Lic_item_segment(string Id)
+        public async Task<bool> DeleteTODO_LicenceAvailableQty(string SegmentId)
         {
             try
             {
               using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
-                xLIC_Lic_item_segment entity = await dbContext.xLIC_Lic_item_segment
-													.SingleOrDefaultAsync(x => x.Id == i)
+                var i = Convert.ToInt32(SegmentId);
+                TODO_LicenceAvailableQty entity = await dbContext.TODO_LicenceAvailableQty
+													.SingleOrDefaultAsync(x => x.SegmentId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.xLIC_Lic_item_segment.Attach(entity);
-                    dbContext.xLIC_Lic_item_segment.Remove(entity);
+                    dbContext.TODO_LicenceAvailableQty.Attach(entity);
+                    dbContext.TODO_LicenceAvailableQty.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -566,19 +560,19 @@ namespace LicenseDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedxLIC_Lic_item_segment(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedTODO_LicenceAvailableQty(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing xLIC_Lic_item_segment", lst.Count());
+                StatusModel.StartStatusUpdate("Removing TODO_LicenceAvailableQty", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new xLIC_Lic_item_segmentService())
+                    using (var ctx = new TODO_LicenceAvailableQtyService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeletexLIC_Lic_item_segment(item).Wait();
+                            ctx.DeleteTODO_LicenceAvailableQty(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -613,7 +607,7 @@ namespace LicenseDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<xLIC_Lic_item_segment>)dbContext.xLIC_Lic_item_segment; 
+                    var set = (IQueryable<TODO_LicenceAvailableQty>)dbContext.TODO_LicenceAvailableQty; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -651,7 +645,7 @@ namespace LicenseDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.TODO_LicenceAvailableQty
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -659,7 +653,7 @@ namespace LicenseDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.TODO_LicenceAvailableQty
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -681,19 +675,19 @@ namespace LicenseDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<TODO_LicenceAvailableQty>();
                     if (exp == "All")
                     {
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.TODO_LicenceAvailableQty
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.SegmentId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -702,10 +696,10 @@ namespace LicenseDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.TODO_LicenceAvailableQty
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.SegmentId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -737,7 +731,7 @@ namespace LicenseDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.xLIC_Lic_item_segment
+                        return await dbContext.TODO_LicenceAvailableQty
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -746,15 +740,12 @@ namespace LicenseDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xLIC_License":
-                                return await CountWhere<xLIC_License>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TODO_LicenceAvailableQty":
-                                return await CountWhere<TODO_LicenceAvailableQty>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
+                            case "xLIC_Lic_item_segment":
+                                return await CountWhere<xLIC_Lic_item_segment>(dbContext, exp, itm.Value, "TODO_LicenceAvailableQty", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.xLIC_Lic_item_segment.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.TODO_LicenceAvailableQty.Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -796,10 +787,10 @@ namespace LicenseDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
+                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("SegmentId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -817,10 +808,10 @@ namespace LicenseDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<TODO_LicenceAvailableQty>()
+                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("SegmentId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -831,7 +822,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -839,7 +830,7 @@ namespace LicenseDS.Business.Services
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<xLIC_Lic_item_segment>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<TODO_LicenceAvailableQty>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -847,7 +838,7 @@ namespace LicenseDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.SegmentId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -858,16 +849,10 @@ namespace LicenseDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xLIC_License":
+                            case "xLIC_Lic_item_segment":
                                 return
                                     await
-                                        LoadRangeWhere<xLIC_License>(startIndex, count, dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "TODO_LicenceAvailableQty":
-                                return
-                                    await
-                                        LoadRangeWhere<TODO_LicenceAvailableQty>(startIndex, count, dbContext, exp, itm.Value, "xLIC_Lic_item_segment", "SelectMany")
+                                        LoadRangeWhere<xLIC_Lic_item_segment>(startIndex, count, dbContext, exp, itm.Value, "TODO_LicenceAvailableQty", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -876,10 +861,10 @@ namespace LicenseDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.xLIC_Lic_item_segment
+                    return await set//dbContext.TODO_LicenceAvailableQty
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
+								.OrderBy(y => y.SegmentId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -903,7 +888,7 @@ namespace LicenseDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeWhere<T>(int startIndex, int count,
             LicenseDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -918,7 +903,7 @@ namespace LicenseDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeSelectMany<T>(int startIndex, int count,
             LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -926,14 +911,14 @@ namespace LicenseDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>();
+                .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.SegmentId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -947,7 +932,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> LoadRangeSelect<T>(int startIndex, int count,
             LicenseDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -955,14 +940,14 @@ namespace LicenseDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>();
+                .Select(navProp).OfType<TODO_LicenceAvailableQty>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.SegmentId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -976,7 +961,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhere<T>(LicenseDSContext dbContext,
+        private static async Task<IEnumerable<TODO_LicenceAvailableQty>> GetWhere<T>(LicenseDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1000,7 +985,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelectMany<T>(LicenseDSContext dbContext,
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> GetWhereSelectMany<T>(LicenseDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1011,18 +996,18 @@ namespace LicenseDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
+							.Where(exp == "All" || exp == null?"SegmentId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<xLIC_Lic_item_segment>)dbContext.Set<T>()
+			var set = (DbQuery<TODO_LicenceAvailableQty>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
+                .Where(exp == "All" || exp == null?"SegmentId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1037,7 +1022,7 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<xLIC_Lic_item_segment>> GetWhereSelect<T>(LicenseDSContext dbContext,
+		private static async Task<IEnumerable<TODO_LicenceAvailableQty>> GetWhereSelect<T>(LicenseDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1048,18 +1033,18 @@ namespace LicenseDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<xLIC_Lic_item_segment>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Select(navProp).OfType<TODO_LicenceAvailableQty>()
+							.Where(exp == "All" || exp == null?"SegmentId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<xLIC_Lic_item_segment>)dbContext.Set<T>()
+			var set = (DbQuery<TODO_LicenceAvailableQty>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Select(navProp).OfType<TODO_LicenceAvailableQty>()
+                .Where(exp == "All" || exp == null?"SegmentId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1074,7 +1059,36 @@ namespace LicenseDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<xLIC_Lic_item_segment>> GetxLIC_Lic_item_segmentByLicenseId(string LicenseId, List<string> includesLst = null)
+			        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<TODO_LicenceAvailableQty> entities = await set//dbContext.TODO_LicenceAvailableQty
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<TODO_LicenceAvailableQty>> GetTODO_LicenceAvailableQtyByLicenseId(string LicenseId, List<string> includesLst = null)
         {
             try
             {
@@ -1082,7 +1096,7 @@ namespace LicenseDS.Business.Services
               {
                 var i = Convert.ToInt32(LicenseId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<xLIC_Lic_item_segment> entities = await set//dbContext.xLIC_Lic_item_segment
+                IEnumerable<TODO_LicenceAvailableQty> entities = await set//dbContext.TODO_LicenceAvailableQty
                                       .AsNoTracking()
                                         .Where(x => x.LicenseId.ToString() == LicenseId.ToString())
 										.ToListAsync()
@@ -1115,11 +1129,11 @@ namespace LicenseDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.xLIC_Lic_item_segment.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.TODO_LicenceAvailableQty.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.xLIC_Lic_item_segment.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.TODO_LicenceAvailableQty.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1147,10 +1161,10 @@ namespace LicenseDS.Business.Services
                 using (var dbContext = new LicenseDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.xLIC_Lic_item_segment.Any()) return 0;
+                    if (!dbContext.TODO_LicenceAvailableQty.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.xLIC_Lic_item_segment
+                        return Convert.ToDecimal(dbContext.TODO_LicenceAvailableQty
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1158,15 +1172,12 @@ namespace LicenseDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "xLIC_License":
-                                return await SumWhere<xLIC_License>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "TODO_LicenceAvailableQty":
-                                return await SumWhere<TODO_LicenceAvailableQty>(dbContext, exp, itm.Value, "xLIC_Lic_item_segment", field, "SelectMany")
+                            case "xLIC_Lic_item_segment":
+                                return await SumWhere<xLIC_Lic_item_segment>(dbContext, exp, itm.Value, "TODO_LicenceAvailableQty", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.xLIC_Lic_item_segment.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.TODO_LicenceAvailableQty.Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1206,10 +1217,10 @@ namespace LicenseDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<TODO_LicenceAvailableQty>()
+                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("SegmentId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1226,10 +1237,10 @@ namespace LicenseDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<xLIC_Lic_item_segment>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<TODO_LicenceAvailableQty>()
+                .Where(exp == "All" || exp == null ? "SegmentId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("SegmentId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1252,11 +1263,11 @@ namespace LicenseDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.xLIC_Lic_item_segment.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.TODO_LicenceAvailableQty.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.xLIC_Lic_item_segment.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.TODO_LicenceAvailableQty.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1277,12 +1288,12 @@ namespace LicenseDS.Business.Services
          }
 
 		 
-		private static IQueryable<xLIC_Lic_item_segment> AddIncludes(IEnumerable<string> includesLst, LicenseDSContext dbContext)
+		private static IQueryable<TODO_LicenceAvailableQty> AddIncludes(IEnumerable<string> includesLst, LicenseDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<xLIC_Lic_item_segment>) dbContext.xLIC_Lic_item_segment; 
+			   var set =(DbQuery<TODO_LicenceAvailableQty>) dbContext.TODO_LicenceAvailableQty; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1293,7 +1304,7 @@ namespace LicenseDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<xLIC_Lic_item_segment> AddWheres(List<string> expLst, IQueryable<xLIC_Lic_item_segment> set)
+	   private IQueryable<TODO_LicenceAvailableQty> AddWheres(List<string> expLst, IQueryable<TODO_LicenceAvailableQty> set)
         {
             try
             {

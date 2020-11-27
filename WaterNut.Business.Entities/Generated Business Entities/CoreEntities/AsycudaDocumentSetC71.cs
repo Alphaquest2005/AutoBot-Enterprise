@@ -13,137 +13,118 @@ using Core.Common.Business.Entities;
 using WaterNut.Interfaces;
 using TrackableEntities;
 
-namespace LicenseDS.Business.Entities
+namespace CoreEntities.Business.Entities
 {
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class xLIC_Lic_item_segment : BaseEntity<xLIC_Lic_item_segment>, ITrackable 
+    public partial class AsycudaDocumentSetC71 : BaseEntity<AsycudaDocumentSetC71>, ITrackable 
     {
         [DataMember]
-        public string Description 
+        public string Address 
         {
             get
             {
-                return _description;
+                return _address;
             }
             set
             {
-                _description = value;
+                _address = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _description;
+        string _address;
         [DataMember]
-        public string Commodity_code 
+        public int Value_declaration_form_Id 
         {
             get
             {
-                return _commodity_code;
+                return _value_declaration_form_id;
             }
             set
             {
-                _commodity_code = value;
+                _value_declaration_form_id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _commodity_code;
+        int _value_declaration_form_id;
         [DataMember]
-        public int Quantity_requested 
+        public Nullable<double> Total 
         {
             get
             {
-                return _quantity_requested;
+                return _total;
             }
             set
             {
-                _quantity_requested = value;
+                _total = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _quantity_requested;
+        Nullable<double> _total;
         [DataMember]
-        public string Origin 
+        public int AsycudaDocumentSetId 
         {
             get
             {
-                return _origin;
+                return _asycudadocumentsetid;
             }
             set
             {
-                _origin = value;
+                _asycudadocumentsetid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _origin;
+        int _asycudadocumentsetid;
         [DataMember]
-        public string Unit_of_measurement 
+        public string FilePath 
         {
             get
             {
-                return _unit_of_measurement;
+                return _filepath;
             }
             set
             {
-                _unit_of_measurement = value;
+                _filepath = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _unit_of_measurement;
+        string _filepath;
         [DataMember]
-        public int Quantity_to_approve 
+        public int AttachmentId 
         {
             get
             {
-                return _quantity_to_approve;
+                return _attachmentid;
             }
             set
             {
-                _quantity_to_approve = value;
+                _attachmentid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _quantity_to_approve;
+        int _attachmentid;
         [DataMember]
-        public int LicenseId 
+        public string RegNumber 
         {
             get
             {
-                return _licenseid;
+                return _regnumber;
             }
             set
             {
-                _licenseid = value;
+                _regnumber = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        int _licenseid;
-        [DataMember]
-        public int Id 
-        {
-            get
-            {
-                return _id;
-            }
-            set
-            {
-                _id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _id;
-        [DataMember]
-        public xLIC_License xLIC_License { get; set; }
-        [DataMember]
-        public TODO_LicenceAvailableQty TODO_LicenceAvailableQty { get; set; }
+        string _regnumber;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

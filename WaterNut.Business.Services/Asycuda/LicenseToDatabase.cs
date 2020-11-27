@@ -317,8 +317,12 @@ namespace WaterNut.DataSpace.Asycuda
             {
                 var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(docSetId).Result;
                 var adoc = DatabaseToLicence(lic);
-                adoc.SaveToFile(fileName);
+
                 var fileInfo = new FileInfo(fileName);
+                if (!Directory.Exists(fileInfo.DirectoryName)) return false;
+                adoc.SaveToFile(fileName);
+                
+                
                 AttachLicenseToDocSet(docSet, fileInfo, "LIC");
                 //var emailres = new FileInfo(Path.Combine(fileInfo.DirectoryName, "LICResults.txt"));
                 var results = new FileInfo(Path.Combine(fileInfo.DirectoryName, "LIC-Results.txt"));

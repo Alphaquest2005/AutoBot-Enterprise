@@ -212,6 +212,7 @@
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentItemService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentService.cs" />
+    <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetC71Service.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetEntryDataExService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSetExService.cs" />
     <Compile Include="Contracts\CoreEntities\IAsycudaDocumentSet_AttachmentsService.cs" />
@@ -436,6 +437,7 @@
     <Compile Include="Contracts\InventoryQS\ITariffCodesService.cs" />
     <Compile Include="Contracts\InventoryQS\ITariffSupUnitLkpsService.cs" />
     <Compile Include="Contracts\LicenseDS\IRegisteredService.cs" />
+    <Compile Include="Contracts\LicenseDS\ITODO_LicenceAvailableQtyService.cs" />
     <Compile Include="Contracts\LicenseDS\ITODO_LICToCreateService.cs" />
     <Compile Include="Contracts\LicenseDS\IxLIC_General_segmentService.cs" />
     <Compile Include="Contracts\LicenseDS\IxLIC_LicenseService.cs" />
@@ -756,6 +758,7 @@
     <Compile Include="Services\CoreEntities\AsycudaDocumentItemEntryDataDetailsService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentItemService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentService.cs" />
+    <Compile Include="Services\CoreEntities\AsycudaDocumentSetC71Service.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetEntryDataExService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSetExService.cs" />
     <Compile Include="Services\CoreEntities\AsycudaDocumentSet_AttachmentsService.cs" />
@@ -980,6 +983,7 @@
     <Compile Include="Services\InventoryQS\TariffCodesService.cs" />
     <Compile Include="Services\InventoryQS\TariffSupUnitLkpsService.cs" />
     <Compile Include="Services\LicenseDS\RegisteredService.cs" />
+    <Compile Include="Services\LicenseDS\TODO_LicenceAvailableQtyService.cs" />
     <Compile Include="Services\LicenseDS\TODO_LICToCreateService.cs" />
     <Compile Include="Services\LicenseDS\xLIC_General_segmentService.cs" />
     <Compile Include="Services\LicenseDS\xLIC_LicenseService.cs" />
