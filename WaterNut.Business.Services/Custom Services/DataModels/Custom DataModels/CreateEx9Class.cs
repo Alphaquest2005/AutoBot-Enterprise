@@ -1230,7 +1230,7 @@ namespace WaterNut.DataSpace
 
                 // todo: ensure allocations are marked for investigation
                 double qty = mypod.EntlnData.Quantity;
-                if (qty - Math.Round(qtyAllocated, 2) > 0.0001)
+                if ((qty - Math.Round(qtyAllocated, 2))  > 0.0001)
                 {
                     updateXStatus(mypod.Allocations,
                         $@"Failed Quantity vs QtyAllocated:: Qty: {qty} QtyAllocated: {qtyAllocated}");
@@ -1324,10 +1324,22 @@ namespace WaterNut.DataSpace
                     Math.Round((itemPiHistoric /*+ docPi*/ + mypod.EntlnData.Quantity), 2))/*+ docPi  -- took this out because for some strange reason itemPiHistoric includes it*/
                 {
                     updateXStatus(mypod.Allocations,
-                        $@"Failed ItemQuantity < ItemPIHistoric:: ItemQuantity:{
+                        $@"Failed ItemQuantity < ItemPIHistoric & ItemQuantity:{
                                 mypod.EntlnData.pDocumentItem.ItemQuantity
                             }
                                Item Historic PI: {itemPiHistoric}
+                               xQuantity:{mypod.EntlnData.Quantity}");
+                    return 0;
+                }
+
+                if (mypod.EntlnData.pDocumentItem.ItemQuantity <
+                    Math.Round((totalPiAll /*+ docPi*/ + mypod.EntlnData.Quantity), 2))
+                {
+                    updateXStatus(mypod.Allocations,
+                        $@"Failed ItemQuantity < totalPiAll & ItemQuantity:{
+                                mypod.EntlnData.pDocumentItem.ItemQuantity
+                            }
+                               totalPiAll PI: {totalPiAll}
                                xQuantity:{mypod.EntlnData.Quantity}");
                     return 0;
                 }

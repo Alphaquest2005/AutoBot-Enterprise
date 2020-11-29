@@ -201,7 +201,7 @@ namespace WaterNut.DataSpace
 			Parallel.ForEach(itemSetsValues.OrderBy(x => x.Key)
 
                //.Where(x => x.SalesList.Any(z => z.EntryDataId.ToLower().Contains("harry")))
-				// .Where(x => x.Key.Contains("AWL/J3809QT")) //.Where(x => x.Key.Contains("255100")) // 
+				// .Where(x => x.Key.Contains("VET/FTR132063")) //.Where(x => x.Key.Contains("255100")) // 
 																		  // .Where(x => "337493".Contains(x.Key))
 																		  //.Where(x => "FAA/SCPI18X112".Contains(x.ItemNumber))//SND/IVF1010MPSF,BRG/NAVICOTE-GL,
 									 , new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount * 1 }, itm => //.Where(x => x.ItemNumber == "AT18547")  
@@ -275,7 +275,7 @@ namespace WaterNut.DataSpace
 						.Where(x => (x.AsycudaDocument.CNumber != null || x.AsycudaDocument.IsManuallyAssessed == true) &&
 									(x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Import 
 									    || x.AsycudaDocument.Customs_Procedure.CustomsOperationId == (int)CustomsOperations.Warehouse)
-						            && x.AsycudaDocument.Customs_Procedure.Sales == true 
+						            //&& x.AsycudaDocument.Customs_Procedure.Sales == true 
 					                && x.AsycudaDocument.DoNotAllocate != true)
 						.Where(x => x.AsycudaDocument.AssessmentDate >= (BaseDataModel.Instance.CurrentApplicationSettings.OpeningStockDate))
 					    .AsNoTracking()
@@ -289,13 +289,14 @@ namespace WaterNut.DataSpace
 				if (IMAsycudaEntries == null || !IMAsycudaEntries.Any()) return;
 				var alst = IMAsycudaEntries.Where(x => x != null 
 										&& (x.DFQtyAllocated + x.DPQtyAllocated) > Convert.ToDouble(x.ItemQuantity)).ToList();
-			    
+
+				//var test = IMAsycudaEntries.Where(x => x.Item_Id == 27018).ToList();
 
 
-                if (alst.Any())
+				if (alst.Any())
 					Parallel.ForEach(alst
 						,
-						new ParallelOptions() {MaxDegreeOfParallelism = 1}, i =>//Environment.ProcessorCount*
+						new ParallelOptions() {MaxDegreeOfParallelism = Environment.ProcessorCount*1}, i =>//
 						{
 							using (var ctx = new AllocationDSContext() {StartTracking = false})
 							{

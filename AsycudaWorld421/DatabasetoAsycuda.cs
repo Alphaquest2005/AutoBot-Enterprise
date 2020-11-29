@@ -21,10 +21,12 @@ namespace Asycuda421
         //easier to do this so because of the deep layers rather than calling each one
          WaterNutDBEntities db = new WaterNutDBEntities();
         private FileInfo _destinatonFile;
+        string DocSetPath;
 
-        public void LoadFromDataBase(int ASYCUDA_Id, ASYCUDA a, FileInfo fileInfo)
+        public void LoadFromDataBase(string docSetPath, int ASYCUDA_Id, ASYCUDA a, FileInfo fileInfo)
         {
             _destinatonFile = fileInfo;
+            DocSetPath = docSetPath;
             var doc = db.xcuda_ASYCUDA.FirstOrDefault(x => x.ASYCUDA_Id == ASYCUDA_Id);
             LoadFromDataBase(doc,a);
 
@@ -649,7 +651,10 @@ namespace Asycuda421
                     {
                       var fileinfo = new FileInfo(filePath);
                     if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
-                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{fileinfo.FullName}\r\n");  
+                        var desFile = DocSetPath != _destinatonFile.DirectoryName? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName): _destinatonFile.DirectoryName;
+                       // var desFile = Path.Combine(desPath, fileinfo.Name);
+
+                    File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");  
                     }
                     
                 }

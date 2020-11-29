@@ -2171,7 +2171,8 @@ namespace WaterNut.DataSpace
 
             if (currentDocument != null)
             {
-                DocToXML(currentDocument, new FileInfo(f));
+                var docSetPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, BaseDataModel.Instance._currentAsycudaDocumentSet.Declarant_Reference_Number);
+                DocToXML(docSetPath,currentDocument, new FileInfo(f));
                 // ExportDocumentToExcel(currentDocument, f);
             }
             else
@@ -2273,11 +2274,11 @@ namespace WaterNut.DataSpace
         //}
 
 
-        internal void DocToXML(xcuda_ASYCUDA doc, FileInfo f)
+        internal void DocToXML(string docSetPath, xcuda_ASYCUDA doc, FileInfo f)
         {
             File.AppendAllText(Path.Combine(f.DirectoryName, "Instructions.txt"), $"File\t{f.FullName}\r\n");
             var a = new Asycuda421.ASYCUDA();
-            a.LoadFromDataBase(doc.ASYCUDA_Id, a, f);
+            a.LoadFromDataBase(docSetPath,doc.ASYCUDA_Id, a, f);
             a.SaveToFile(f.FullName);
             File.AppendAllText(Path.Combine(f.DirectoryName, "Instructions.txt"), $"File\t{f.FullName}\r\n");
         }
@@ -2799,7 +2800,7 @@ namespace WaterNut.DataSpace
                     if (overWrite == true || !File.Exists(fileInfo.FullName))
                     {
 
-                        Instance.DocToXML(doc, fileInfo);
+                        Instance.DocToXML(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,docSet.Declarant_Reference_Number),doc, fileInfo);
                     }
 
 
@@ -3661,6 +3662,7 @@ namespace WaterNut.DataSpace
                     .Where(x => x.TariffCodeLicenseRequired == true
                                 && x.AsycudaDocument.AsycudaDocumentSetId ==
                                 asycudaDocumentSetId).ToList();
+                if (!lst.Any()) return;
                 var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(asycudaDocumentSetId).Result;
 
                 ///// Scape any remaining license because i preapply and will still apply for new license when creating docset

@@ -3319,25 +3319,35 @@ namespace AutoBot
 
         public static void AssessPOEntry(string docReference, int asycudaDocumentSetId)
         {
-            if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId))
+            try
             {
 
-                return;
+
+                if (new CoreEntitiesContext().TODO_PODocSetToExport.All(x => x.AsycudaDocumentSetId != asycudaDocumentSetId))
+                {
+
+                    return;
+                }
+
+                if (docReference == null) return;
+                var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    docReference);
+                var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    docReference, "InstructionResults.txt");
+                var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    docReference, "Instructions.txt");
+
+                var lcont = 0;
+                while (AssessComplete(instrFile, resultsFile, out lcont) == false)
+                {
+                    // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
+                    RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
+                }
             }
-
-            if (docReference == null) return;
-            var directoryName = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference);
-            var resultsFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference, "InstructionResults.txt");
-            var instrFile = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                docReference, "Instructions.txt");
-
-            var lcont = 0;
-            while (AssessComplete(instrFile, resultsFile, out lcont) == false)
+            catch (Exception)
             {
-                // RunSiKuLi(asycudaDocumentSetId, "AssessIM7", lcont.ToString());
-                RunSiKuLi(directoryName, "SaveIM7", lcont.ToString());
+
+                throw;
             }
         }
 
@@ -3631,7 +3641,7 @@ namespace AutoBot
                 if (File.Exists(instrFile))
                 {
                     if (!File.Exists(resultsFile)) return false;
-                    var lines = File.ReadAllLines(instrFile);
+                    var lines = File.ReadAllLines(instrFile).Where(x => x.Contains("File")).ToArray();
                     var res = File.ReadAllLines(resultsFile).Where(x => x.Contains("File")).ToArray();
                     if (res.Length == 0)
                     {
@@ -3640,7 +3650,7 @@ namespace AutoBot
                     }
 
 
-                    foreach (var line in lines.Where(x => x.Contains("File")))
+                    foreach (var line in lines)
                     {
                         var p = line.Split('\t');
                         if (lcont >= res.Length) return false;
@@ -3651,21 +3661,21 @@ namespace AutoBot
                         {
                             var r = rline.Split('\t');
 
-                            if ( p[1] == r[1] && r.Length == 3 && r[2] == "Success")
+                            if ( r.Length == 3 && p[1] == r[1] && r[2] == "Success")
                             {
                                if(r[0] == "File") lcont = rcount-1;
                                 isSuccess = true;
                                 break;
                             }
 
-                            if (p[2] == r[2] && r.Length == 4 && r[3] == "Success") // for file
+                            if ( r.Length == 4  && p[2] == r[2] && r[3] == "Success") // for file
                             {
                                 lcont += 1;
                                 isSuccess = true;
                                 break;
                             }
 
-                            if (p[1] != r[1] && r.Length == 3 && r[2] == "Error")
+                            if (r.Length == 3 && p[1] != r[1] && r[2] == "Error")
                             {
 
                                 if (r[0] == "Screenshot")
@@ -3678,7 +3688,7 @@ namespace AutoBot
                                 //break;
                             }
 
-                            if (p[1] == r[1] && r.Length == 3 && r[2] == "Error")
+                            if (r.Length == 3 && p[1] == r[1] && r[2] == "Error")
                             {
                                 // email error
                                 //if (r[0] == "File") lcont = rcount - 1;
