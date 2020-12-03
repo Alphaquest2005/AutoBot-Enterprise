@@ -2171,7 +2171,7 @@ namespace WaterNut.DataSpace
 
             if (currentDocument != null)
             {
-                var docSetPath = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, BaseDataModel.Instance._currentAsycudaDocumentSet.Declarant_Reference_Number);
+                var docSetPath = BaseDataModel.Instance._currentAsycudaDocumentSet == null? null : Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, BaseDataModel.Instance._currentAsycudaDocumentSet.Declarant_Reference_Number);
                 DocToXML(docSetPath,currentDocument, new FileInfo(f));
                 // ExportDocumentToExcel(currentDocument, f);
             }
