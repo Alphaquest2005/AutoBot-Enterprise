@@ -1806,12 +1806,26 @@ namespace AutoBot
                     var cnumberList = ft.Data.Where(z => z.Key == "CNumber").Select(x => x.Value).ToList();
                    
                     IEnumerable<IGrouping<int?, TODO_SubmitDiscrepanciesToCustoms>> lst;
-                    lst = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
-                            x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
-                                .ApplicationSettingsId && cnumberList.Contains(x.CNumber))
+                    List<TODO_SubmitAllXMLToCustoms> res;
+                    if (cnumberList.Any())
+                    {
+                        res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
+                                                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                                        .ApplicationSettingsId && cnumberList.Contains(x.CNumber))
 
-                        .ToList()
-                        .Select(x => new TODO_SubmitDiscrepanciesToCustoms()
+                                                .ToList();
+                    }
+                    else
+                    {
+                        var docSet = BaseDataModel.Instance.GetAsycudaDocumentSet(ft.AsycudaDocumentSetId).Result;
+                        res = ctx.TODO_SubmitAllXMLToCustoms.Where(x =>
+                                                    x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings
+                                                        .ApplicationSettingsId && x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number))
+
+                                                .ToList();
+                    }
+                    
+                     lst = res.Select(x => new TODO_SubmitDiscrepanciesToCustoms()
                         {
                             CNumber = x.CNumber,
                             ApplicationSettingsId = x.ApplicationSettingsId,
@@ -1826,6 +1840,9 @@ namespace AutoBot
                             Status = x.Status
                         })
                         .GroupBy(x => x.EmailId);
+
+
+
                     SubmitSalesToCustoms(lst);
 
                 }
@@ -5084,7 +5101,7 @@ namespace AutoBot
                 var i = BaseDataModel.CurrentSalesInfo();
                 BaseDataModel.Instance.ExportDocSet(i.Item3.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                        i.Item3.Declarant_Reference_Number), false).Wait();
+                        i.Item3.Declarant_Reference_Number), true).Wait();
                 ExportDocSetSalesReport(i.Item3.AsycudaDocumentSetId,
                     Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
                         i.Item3.Declarant_Reference_Number)).Wait();
