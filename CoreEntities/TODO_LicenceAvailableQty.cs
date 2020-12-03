@@ -26,5 +26,6 @@ namespace CoreEntities
         public int LicenseId { get; set; }
         public string SourceFile { get; set; }
         public string DocumentReference { get; set; }
+        public int SegmentId { get; set; }
     }
 }

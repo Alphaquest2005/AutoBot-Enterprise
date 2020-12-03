@@ -45,5 +45,6 @@ namespace CoreEntities
         public Nullable<double> GeneratedCIF { get; set; }
         public Nullable<double> SpecifiedFreight { get; set; }
         public Nullable<double> GeneratedFreight { get; set; }
+        public Nullable<int> GeneratedAttachments { get; set; }
     }
 }

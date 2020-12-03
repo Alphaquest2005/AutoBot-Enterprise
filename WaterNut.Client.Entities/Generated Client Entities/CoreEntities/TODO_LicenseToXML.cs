@@ -223,6 +223,70 @@ public string TariffCategoryCode
 		}
      
 
+       
+       
+public Nullable<int> EmailId
+		{ 
+		    get { return this.todo_licensetoxml.EmailId; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.EmailId) return;
+				this.todo_licensetoxml.EmailId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("EmailId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ItemNumber is required")]
+       
+                
+                [MaxLength(20, ErrorMessage = "ItemNumber has a max length of 20 letters ")]
+public string ItemNumber
+		{ 
+		    get { return this.todo_licensetoxml.ItemNumber; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.ItemNumber) return;
+				this.todo_licensetoxml.ItemNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ItemNumber");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ItemDescription is required")]
+       
+                
+                [MaxLength(255, ErrorMessage = "ItemDescription has a max length of 255 letters ")]
+public string ItemDescription
+		{ 
+		    get { return this.todo_licensetoxml.ItemDescription; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.ItemDescription) return;
+				this.todo_licensetoxml.ItemDescription = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ItemDescription");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> LineNumber
+		{ 
+		    get { return this.todo_licensetoxml.LineNumber; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.LineNumber) return;
+				this.todo_licensetoxml.LineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LineNumber");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_LicenseToXML> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_LicenseToXML> ChangeTracker

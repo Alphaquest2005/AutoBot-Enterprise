@@ -185,6 +185,66 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _tariffcategorycode;
+        [DataMember]
+        public Nullable<int> EmailId 
+        {
+            get
+            {
+                return _emailid;
+            }
+            set
+            {
+                _emailid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _emailid;
+        [DataMember]
+        public string ItemNumber 
+        {
+            get
+            {
+                return _itemnumber;
+            }
+            set
+            {
+                _itemnumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _itemnumber;
+        [DataMember]
+        public string ItemDescription 
+        {
+            get
+            {
+                return _itemdescription;
+            }
+            set
+            {
+                _itemdescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _itemdescription;
+        [DataMember]
+        public Nullable<int> LineNumber 
+        {
+            get
+            {
+                return _linenumber;
+            }
+            set
+            {
+                _linenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _linenumber;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

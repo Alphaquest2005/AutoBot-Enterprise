@@ -234,6 +234,21 @@ public string DocumentReference
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "Segment is required")]
+       
+public int SegmentId
+		{ 
+		    get { return this.todo_licenceavailableqty.SegmentId; }
+			set
+			{
+			    if (value == this.todo_licenceavailableqty.SegmentId) return;
+				this.todo_licenceavailableqty.SegmentId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SegmentId");
+			}
+		}
+     
+
 
         ChangeTrackingCollection<DTO.TODO_LicenceAvailableQty> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_LicenceAvailableQty> ChangeTracker

@@ -25,5 +25,9 @@ namespace CoreEntities
         public string LicenseDescription { get; set; }
         public string sourcefile { get; set; }
         public string TariffCategoryCode { get; set; }
+        public Nullable<int> EmailId { get; set; }
+        public string ItemNumber { get; set; }
+        public string ItemDescription { get; set; }
+        public Nullable<int> LineNumber { get; set; }
     }
 }

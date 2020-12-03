@@ -332,6 +332,60 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _itemNumberFilter;
+        public string ItemNumberFilter
+        {
+            get
+            {
+                return _itemNumberFilter;
+            }
+            set
+            {
+                _itemNumberFilter = value;
+				NotifyPropertyChanged(x => ItemNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _itemDescriptionFilter;
+        public string ItemDescriptionFilter
+        {
+            get
+            {
+                return _itemDescriptionFilter;
+            }
+            set
+            {
+                _itemDescriptionFilter = value;
+				NotifyPropertyChanged(x => ItemDescriptionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Int32? _lineNumberFilter;
+        public Int32? LineNumberFilter
+        {
+            get
+            {
+                return _lineNumberFilter;
+            }
+            set
+            {
+                _lineNumberFilter = value;
+				NotifyPropertyChanged(x => LineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -395,7 +449,18 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(TariffCategoryCodeFilter) == false)
 						res.Append(" && " + string.Format("TariffCategoryCode.Contains(\"{0}\")",  TariffCategoryCodeFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+									if(string.IsNullOrEmpty(ItemNumberFilter) == false)
+						res.Append(" && " + string.Format("ItemNumber.Contains(\"{0}\")",  ItemNumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(ItemDescriptionFilter) == false)
+						res.Append(" && " + string.Format("ItemDescription.Contains(\"{0}\")",  ItemDescriptionFilter));						
+ 
+
+					if(LineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("LineNumber == {0}",  LineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -442,7 +507,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     sourcefile = x.sourcefile ,
                     
  
-                    TariffCategoryCode = x.TariffCategoryCode 
+                    TariffCategoryCode = x.TariffCategoryCode ,
+                    
+ 
+                    ItemNumber = x.ItemNumber ,
+                    
+ 
+                    ItemDescription = x.ItemDescription ,
+                    
+ 
+                    LineNumber = x.LineNumber 
                     
                 }).ToList()
             };
@@ -480,6 +554,15 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string TariffCategoryCode { get; set; } 
+                    
+ 
+                    public string ItemNumber { get; set; } 
+                    
+ 
+                    public string ItemDescription { get; set; } 
+                    
+ 
+                    public Nullable<int> LineNumber { get; set; } 
                     
         }
 

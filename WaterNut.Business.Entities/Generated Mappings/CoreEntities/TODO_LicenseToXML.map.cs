@@ -11,7 +11,7 @@
     {
         public TODO_LicenseToXMLMap()
         {                        
-              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId, t.EntryDataId});        
+              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId, t.EntryDataId, t.ItemNumber, t.ItemDescription});        
               this.ToTable("TODO-LicenseToXML");
               this.Property(t => t.TariffCode).HasColumnName("TariffCode").HasMaxLength(52);
               this.Property(t => t.Quantity).HasColumnName("Quantity");
@@ -24,6 +24,10 @@
               this.Property(t => t.LicenseDescription).HasColumnName("LicenseDescription").HasMaxLength(50);
               this.Property(t => t.sourcefile).HasColumnName("sourcefile");
               this.Property(t => t.TariffCategoryCode).HasColumnName("TariffCategoryCode").HasMaxLength(50);
+              this.Property(t => t.EmailId).HasColumnName("EmailId");
+              this.Property(t => t.ItemNumber).HasColumnName("ItemNumber").IsRequired().HasMaxLength(20);
+              this.Property(t => t.ItemDescription).HasColumnName("ItemDescription").IsRequired().HasMaxLength(255);
+              this.Property(t => t.LineNumber).HasColumnName("LineNumber");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -485,6 +485,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<double> _generatedfreight;
+        [DataMember]
+        public Nullable<int> GeneratedAttachments 
+        {
+            get
+            {
+                return _generatedattachments;
+            }
+            set
+            {
+                _generatedattachments = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _generatedattachments;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

@@ -79,7 +79,10 @@ namespace CoreEntities.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<TODO_LicenseToXML>> GetTODO_LicenseToXMLByEmailId(string EmailId, List<string> includesLst = null);
+        
+  		
     }
 }
 

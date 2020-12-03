@@ -1205,6 +1205,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty'
             
             <PropertyRef Name="LicenseId" />
             
+            <PropertyRef Name="SegmentId" />
           </Key>
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
@@ -1218,6 +1219,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty'
           <Property Name="LicenseId" Type="int" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar" MaxLength="300" Nullable="false" />
           <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
+          <Property Name="SegmentId" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1226,6 +1228,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does n
             <PropertyRef Name="AsycudaDocumentSetId" />
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ItemDescription" />
           </Key>
           <Property Name="TariffCode" Type="nvarchar" MaxLength="52" />
           <Property Name="TariffCategoryCode" Type="nvarchar" MaxLength="50" />
@@ -1238,6 +1242,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does n
           <Property Name="UOM" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryDataId" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="sourcefile" Type="nvarchar(max)" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1378,10 +1386,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToAssessErro
           <Property Name="SpecifiedFreight" Type="float" />
           <Property Name="GeneratedFreight" Type="float" />
           <Property Name="ExpectedAttachments" Type="int" />
+          <Property Name="GeneratedAttachments" Type="int" />
           <Property Name="GeneratedLines" Type="int" />
           <Property Name="EntryPackages" Type="int" />
           <Property Name="GeneratedPackages" Type="float" />
-          <Property Name="Status" Type="nvarchar" MaxLength="131" Nullable="false" />
+          <Property Name="Status" Type="nvarchar" MaxLength="137" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToExport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -2782,7 +2791,8 @@ FROM [dbo].[TODO-ImportCompleteEntries] AS [TODO-ImportCompleteEntries]</Definin
 [TODO-LicenceAvailableQty].[Balance] AS [Balance], 
 [TODO-LicenceAvailableQty].[LicenseId] AS [LicenseId], 
 [TODO-LicenceAvailableQty].[SourceFile] AS [SourceFile], 
-[TODO-LicenceAvailableQty].[DocumentReference] AS [DocumentReference]
+[TODO-LicenceAvailableQty].[DocumentReference] AS [DocumentReference], 
+[TODO-LicenceAvailableQty].[SegmentId] AS [SegmentId]
 FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-LicenseToXML" EntityType="Self.TODO-LicenseToXML" store:Type="Views" store:Schema="dbo">
@@ -2797,7 +2807,11 @@ FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQue
 [TODO-LicenseToXML].[Country_of_origin_code] AS [Country_of_origin_code], 
 [TODO-LicenseToXML].[UOM] AS [UOM], 
 [TODO-LicenseToXML].[EntryDataId] AS [EntryDataId], 
-[TODO-LicenseToXML].[sourcefile] AS [sourcefile]
+[TODO-LicenseToXML].[sourcefile] AS [sourcefile], 
+[TODO-LicenseToXML].[EmailId] AS [EmailId], 
+[TODO-LicenseToXML].[ItemNumber] AS [ItemNumber], 
+[TODO-LicenseToXML].[ItemDescription] AS [ItemDescription], 
+[TODO-LicenseToXML].[LineNumber] AS [LineNumber]
 FROM [dbo].[TODO-LicenseToXML] AS [TODO-LicenseToXML]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="TODO-LICToCreate" EntityType="Self.TODO-LICToCreate" store:Type="Views" store:Schema="dbo">
@@ -2910,6 +2924,7 @@ FROM [dbo].[TODO-PODocSetToAssess] AS [TODO-PODocSetToAssess]</DefiningQuery>
 [TODO-PODocSetToAssessErrors].[SpecifiedFreight] AS [SpecifiedFreight], 
 [TODO-PODocSetToAssessErrors].[GeneratedFreight] AS [GeneratedFreight], 
 [TODO-PODocSetToAssessErrors].[ExpectedAttachments] AS [ExpectedAttachments], 
+[TODO-PODocSetToAssessErrors].[GeneratedAttachments] AS [GeneratedAttachments], 
 [TODO-PODocSetToAssessErrors].[GeneratedLines] AS [GeneratedLines], 
 [TODO-PODocSetToAssessErrors].[EntryPackages] AS [EntryPackages], 
 [TODO-PODocSetToAssessErrors].[GeneratedPackages] AS [GeneratedPackages], 
@@ -4862,6 +4877,8 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <PropertyRef Name="AsycudaDocumentSetId" />
             <PropertyRef Name="ApplicationSettingsId" />
             <PropertyRef Name="EntryDataId" />
+            <PropertyRef Name="ItemNumber" />
+            <PropertyRef Name="ItemDescription" />
           </Key>
           <Property Name="TariffCode" Type="String" MaxLength="52" FixedLength="false" Unicode="true" />
           <Property Name="Quantity" Type="Double" />
@@ -4874,6 +4891,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="sourcefile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="TariffCategoryCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_SubmitIncompleteEntryData">
           <Key>
@@ -5577,7 +5598,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="ClassifiedLines" Type="Int32" />
           <Property Name="TotalLines" Type="Int32" />
           <Property Name="GeneratedLines" Type="Int32" />
-          <Property Name="Status" Type="String" Nullable="false" MaxLength="131" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" Nullable="false" MaxLength="137" FixedLength="false" Unicode="true" />
           <Property Name="TotalWeight" Type="Double" />
           <Property Name="ExpectedAttachments" Type="Int32" />
           <Property Name="EntryPackages" Type="Int32" />
@@ -5586,6 +5607,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="GeneratedCIF" Type="Double" />
           <Property Name="SpecifiedFreight" Type="Double" />
           <Property Name="GeneratedFreight" Type="Double" />
+          <Property Name="GeneratedAttachments" Type="Int32" />
         </EntityType>
         <EntityType Name="TODO_PODocSetToAssess">
           <Key>
@@ -5746,6 +5768,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>
             <PropertyRef Name="LicenseId" />
+            <PropertyRef Name="SegmentId" />
           </Key>
           <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
@@ -5759,6 +5782,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="LicenseId" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SegmentId" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="TODO_SubmitEntryCIF">
           <Key>
@@ -6604,6 +6628,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_LicenseToXML">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenseToXML">
               <MappingFragment StoreEntitySet="TODO-LicenseToXML">
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
                 <ScalarProperty Name="TariffCategoryCode" ColumnName="TariffCategoryCode" />
                 <ScalarProperty Name="sourcefile" ColumnName="sourcefile" />
                 <ScalarProperty Name="LicenseDescription" ColumnName="LicenseDescription" />
@@ -7098,6 +7126,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_PODocSetToAssessErrors">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_PODocSetToAssessErrors">
               <MappingFragment StoreEntitySet="TODO-PODocSetToAssessErrors">
+                <ScalarProperty Name="GeneratedAttachments" ColumnName="GeneratedAttachments" />
                 <ScalarProperty Name="GeneratedFreight" ColumnName="GeneratedFreight" />
                 <ScalarProperty Name="SpecifiedFreight" ColumnName="SpecifiedFreight" />
                 <ScalarProperty Name="GeneratedCIF" ColumnName="GeneratedCIF" />
@@ -7284,6 +7313,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="TODO_LicenceAvailableQty">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenceAvailableQty">
               <MappingFragment StoreEntitySet="TODO-LicenceAvailableQty">
+                <ScalarProperty Name="SegmentId" ColumnName="SegmentId" />
                 <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
                 <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
                 <ScalarProperty Name="LicenseId" ColumnName="LicenseId" />
