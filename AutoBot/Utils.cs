@@ -128,7 +128,8 @@ namespace AutoBot
                 {"AssessDiscpancyEntries", AssessDiscpancyEntries },
                 {"DeletePONumber", DeletePONumber },
                 { "SubmitPOs", SubmitPOs },
-                {"SubmitEntryCIF", SubmitEntryCIF }
+                {"SubmitEntryCIF", SubmitEntryCIF },
+                {"SubmitBlankLicenses", (ft,fs) => SubmitBlankLicenses(ft) }
 
             };
 
@@ -927,13 +928,20 @@ namespace AutoBot
 
                         var llst = new CoreEntitiesContext().Database
                             .SqlQuery<TODO_LicenseToXML>(
-                                $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId}").ToList();
+                                $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId} where LicenseDescription is not null").ToList();
 
                             var lst = llst
+                                .Where(x => !string.IsNullOrEmpty(x.LicenseDescription))
                                 .GroupBy(x => x.EntryDataId)
                                 .Select(x => x.OrderByDescending(z => z.SourceFile).FirstOrDefault())
                                 .GroupBy(x => new {x.EntryDataId, x.TariffCategoryCode, x.SourceFile})
                             .ToList();
+
+                        var blst = llst
+                            .Where(x => string.IsNullOrEmpty(x.LicenseDescription)).ToList();
+
+                       
+
                         foreach (var itm in lst)
                         {
                             var fileName = Path.Combine(directoryName, $"{itm.Key.EntryDataId}-LIC.xml");
@@ -991,6 +999,75 @@ namespace AutoBot
             }
         }
 
+        private static void SubmitBlankLicenses( FileTypes ft)
+        {
+            try
+            {
+                var info = BaseDataModel.CurrentSalesInfo();
+                var directory = info.Item4;
+
+
+
+
+                using (var ctx = new CoreEntitiesContext())
+                {
+
+                    var llst = new CoreEntitiesContext().Database
+                        .SqlQuery<TODO_LicenseToXML>(
+                            $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {ft.AsycudaDocumentSetId}").ToList();
+
+                    var emails = llst
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.EmailId != null)
+                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .GroupBy(x => new { x.EmailId, x.AsycudaDocumentSetId }).ToList();
+                    foreach (var email in emails)
+                    {
+
+                        //if (GetDocSetActions(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems").Any()) continue;
+
+
+                        var errorfile = Path.Combine(directory, $"BlankLicenseDescription-{email.Key.EmailId}.csv");
+                        var errors = email.Select(x => new BlankLicenseDescription()
+                        {
+                            InvoiceNo = x.EntryDataId,
+                            ItemNumber = x.ItemNumber,
+                            LineNumber = x.LineNumber.GetValueOrDefault(),
+                            ItemDescription = x.ItemDescription,
+                            TariffCode = x.TariffCode,
+                            LicenseDescription = x.LicenseDescription
+                        }).ToList();
+
+
+                        var res =
+                            new ExportToCSV<BlankLicenseDescription,
+                                List<BlankLicenseDescription>>();
+                        res.dataToPrint = errors;
+                        using (var sta = new StaTaskScheduler(numberOfThreads: 1))
+                        {
+                            Task.Factory.StartNew(() => res.SaveReport(errorfile), CancellationToken.None,
+                                TaskCreationOptions.None, sta);
+                        }
+
+                        var contacts = ctx.Contacts.Where(x => x.Role == "Broker").ToList();
+                        if (File.Exists(errorfile))
+                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(email.Key.EmailId), Client,
+                                $"Error:Blank License Description",
+                                "Please Fill out the attached License Description and resend CSV...",
+                                contacts.Select(x => x.EmailAddress).ToArray(),
+                                new string[] { errorfile });
+
+                        // LogDocSetAction(email.Key.AsycudaDocumentSetId, "SubmitUnclassifiedItems");
+
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
 
 
         private static void CreateC71(FileTypes ft)
@@ -5204,6 +5281,17 @@ namespace AutoBot
             public string ItemNumber { get; set; }
             public string ItemDescription { get; set; }
             public string TariffCode { get; set; }
+
+        }
+
+        public class BlankLicenseDescription
+        {
+            public string InvoiceNo { get; set; }
+            public int LineNumber { get; set; }
+            public string ItemNumber { get; set; }
+            public string ItemDescription { get; set; }
+            public string TariffCode { get; set; }
+            public string LicenseDescription { get; set; }
 
         }
 

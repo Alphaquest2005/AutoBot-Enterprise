@@ -11,7 +11,7 @@
     {
         public TODO_LicenceAvailableQtyMap()
         {                        
-              this.HasKey(t => t.LicenseId);        
+              this.HasKey(t => new {t.LicenseId, t.SegmentId});        
               this.ToTable("TODO-LicenceAvailableQty");
               this.Property(t => t.RegistrationNumber).HasColumnName("RegistrationNumber").IsRequired().HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
@@ -25,6 +25,7 @@
               this.Property(t => t.LicenseId).HasColumnName("LicenseId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired().HasMaxLength(300);
               this.Property(t => t.DocumentReference).HasColumnName("DocumentReference").HasMaxLength(50);
+              this.Property(t => t.SegmentId).HasColumnName("SegmentId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

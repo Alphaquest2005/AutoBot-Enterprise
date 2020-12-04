@@ -200,6 +200,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _documentreference;
+        [DataMember]
+        public int SegmentId 
+        {
+            get
+            {
+                return _segmentid;
+            }
+            set
+            {
+                _segmentid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _segmentid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

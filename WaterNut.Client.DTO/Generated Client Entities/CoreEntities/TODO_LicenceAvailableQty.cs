@@ -177,6 +177,19 @@ namespace CoreEntities.Client.DTO
 		}
         private string _DocumentReference;
 
+        [DataMember]
+        public int SegmentId
+		{ 
+		    get { return _SegmentId; }
+			set
+			{
+			    if (value == _SegmentId) return;
+				_SegmentId = value;
+				NotifyPropertyChanged();//m => this.SegmentId
+			}
+		}
+        private int _SegmentId;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

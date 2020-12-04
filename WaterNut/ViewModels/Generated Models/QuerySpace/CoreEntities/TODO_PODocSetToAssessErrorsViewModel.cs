@@ -692,6 +692,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Int32? _generatedAttachmentsFilter;
+        public Int32? GeneratedAttachmentsFilter
+        {
+            get
+            {
+                return _generatedAttachmentsFilter;
+            }
+            set
+            {
+                _generatedAttachmentsFilter = value;
+				NotifyPropertyChanged(x => GeneratedAttachmentsFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -815,7 +833,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("SpecifiedFreight == {0}",  SpecifiedFreightFilter.ToString()));				 
 
 					if(GeneratedFreightFilter.HasValue)
-						res.Append(" && " + string.Format("GeneratedFreight == {0}",  GeneratedFreightFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("GeneratedFreight == {0}",  GeneratedFreightFilter.ToString()));				 
+
+					if(GeneratedAttachmentsFilter.HasValue)
+						res.Append(" && " + string.Format("GeneratedAttachments == {0}",  GeneratedAttachmentsFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -922,7 +943,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     SpecifiedFreight = x.SpecifiedFreight ,
                     
  
-                    GeneratedFreight = x.GeneratedFreight 
+                    GeneratedFreight = x.GeneratedFreight ,
+                    
+ 
+                    GeneratedAttachments = x.GeneratedAttachments 
                     
                 }).ToList()
             };
@@ -1020,6 +1044,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<double> GeneratedFreight { get; set; } 
+                    
+ 
+                    public Nullable<int> GeneratedAttachments { get; set; } 
                     
         }
 

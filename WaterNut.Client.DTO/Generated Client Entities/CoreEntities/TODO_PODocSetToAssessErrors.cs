@@ -424,6 +424,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<double> _GeneratedFreight;
 
+        [DataMember]
+        public Nullable<int> GeneratedAttachments
+		{ 
+		    get { return _GeneratedAttachments; }
+			set
+			{
+			    if (value == _GeneratedAttachments) return;
+				_GeneratedAttachments = value;
+				NotifyPropertyChanged();//m => this.GeneratedAttachments
+			}
+		}
+        private Nullable<int> _GeneratedAttachments;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

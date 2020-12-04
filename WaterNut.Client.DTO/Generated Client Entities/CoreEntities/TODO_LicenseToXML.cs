@@ -164,6 +164,58 @@ namespace CoreEntities.Client.DTO
 		}
         private string _TariffCategoryCode;
 
+        [DataMember]
+        public Nullable<int> EmailId
+		{ 
+		    get { return _EmailId; }
+			set
+			{
+			    if (value == _EmailId) return;
+				_EmailId = value;
+				NotifyPropertyChanged();//m => this.EmailId
+			}
+		}
+        private Nullable<int> _EmailId;
+
+        [DataMember]
+        public string ItemNumber
+		{ 
+		    get { return _ItemNumber; }
+			set
+			{
+			    if (value == _ItemNumber) return;
+				_ItemNumber = value;
+				NotifyPropertyChanged();//m => this.ItemNumber
+			}
+		}
+        private string _ItemNumber;
+
+        [DataMember]
+        public string ItemDescription
+		{ 
+		    get { return _ItemDescription; }
+			set
+			{
+			    if (value == _ItemDescription) return;
+				_ItemDescription = value;
+				NotifyPropertyChanged();//m => this.ItemDescription
+			}
+		}
+        private string _ItemDescription;
+
+        [DataMember]
+        public Nullable<int> LineNumber
+		{ 
+		    get { return _LineNumber; }
+			set
+			{
+			    if (value == _LineNumber) return;
+				_LineNumber = value;
+				NotifyPropertyChanged();//m => this.LineNumber
+			}
+		}
+        private Nullable<int> _LineNumber;
+
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

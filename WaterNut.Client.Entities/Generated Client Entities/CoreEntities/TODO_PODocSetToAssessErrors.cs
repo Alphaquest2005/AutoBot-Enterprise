@@ -389,7 +389,7 @@ public Nullable<int> GeneratedLines
        [RequiredValidationAttribute(ErrorMessage= "Status is required")]
        
                 
-                [MaxLength(131, ErrorMessage = "Status has a max length of 131 letters ")]
+                [MaxLength(137, ErrorMessage = "Status has a max length of 137 letters ")]
 public string Status
 		{ 
 		    get { return this.todo_podocsettoassesserrors.Status; }
@@ -519,6 +519,21 @@ public Nullable<double> GeneratedFreight
 				this.todo_podocsettoassesserrors.GeneratedFreight = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("GeneratedFreight");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<int> GeneratedAttachments
+		{ 
+		    get { return this.todo_podocsettoassesserrors.GeneratedAttachments; }
+			set
+			{
+			    if (value == this.todo_podocsettoassesserrors.GeneratedAttachments) return;
+				this.todo_podocsettoassesserrors.GeneratedAttachments = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GeneratedAttachments");
 			}
 		}
      
