@@ -3878,7 +3878,7 @@ namespace WaterNut.DataSpace
                            
                             foreach (var att in item)
                             {
-                                if (i > sItms.Count()) break;
+                                if (i >= sItms.Count()) break;
                                 var sitm = sItms[i];
                                 att.Item_Id = sitm.Item_Id;
                                 //sitm.xcuda_Attached_documents.Add(att);

@@ -652,8 +652,8 @@ namespace Asycuda421
                       var fileinfo = new FileInfo(filePath);
                     if (fileinfo.Extension != ".pdf") fileinfo = Change2Pdf(fileinfo);
                         var desFile = DocSetPath != _destinatonFile.DirectoryName && DocSetPath != null? fileinfo.FullName.Replace($"{DocSetPath}", _destinatonFile.DirectoryName): Path.Combine(_destinatonFile.DirectoryName, fileinfo.Name);
-                       // var desFile = Path.Combine(desPath, fileinfo.Name);
-
+                        // var desFile = Path.Combine(desPath, fileinfo.Name);
+                        if (!File.Exists(desFile)) desFile = fileinfo.FullName;
                     File.AppendAllText(Path.Combine(_destinatonFile.DirectoryName, "Instructions.txt"), $"{doc.Attached_documents_Id}\tAttachment\t{desFile}\r\n");  
                     }
                     

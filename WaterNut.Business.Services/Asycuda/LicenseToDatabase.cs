@@ -333,6 +333,7 @@ namespace WaterNut.DataSpace.Asycuda
                 {
                     File.AppendAllText(instructions, $"Attach\t{itm.Item2}\t{itm.Item1}\t{"IV05"}\r\n");
                 }
+                File.AppendAllText(instructions, $"File\t{fileInfo.FullName}\r\n");
                 return true;
             }
             catch (Exception e)
