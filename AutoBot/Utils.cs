@@ -979,7 +979,7 @@ namespace AutoBot
 
                             var lic = LicenseToDataBase.Instance.CreateLicense(new List<TODO_LicenseToXML>(itm) , contact, supplier,
                                 itm.Key.EntryDataId);
-                            var invoices = itm.Select(x => new Tuple<string, string>(x.EntryDataId, x.SourceFile.Replace(".csv", ".pdf"))).Where(x => File.Exists(x.Item2)).Distinct().ToList();
+                            var invoices = itm.Select(x => new Tuple<string, string>(x.EntryDataId, Path.Combine(new FileInfo(x.SourceFile).DirectoryName, $"{x.EntryDataId}.pdf"))).Where(x => File.Exists(x.Item2)).Distinct().ToList();
                             if(!invoices.Any()) continue;
                             ctx.xLIC_License.Add(lic);
                             ctx.SaveChanges();
