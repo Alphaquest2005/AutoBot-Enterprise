@@ -281,55 +281,6 @@ public Nullable<int> QtyLicensesRequired
 		}
      
 
-       
-       [NumberValidationAttribute]
-public Nullable<int> HasLicense
-		{ 
-		    get { return this.todo_lictocreate.HasLicense; }
-			set
-			{
-			    if (value == this.todo_lictocreate.HasLicense) return;
-				this.todo_lictocreate.HasLicense = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("HasLicense");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(50, ErrorMessage = "DocumentReference has a max length of 50 letters ")]
-public string DocumentReference
-		{ 
-		    get { return this.todo_lictocreate.DocumentReference; }
-			set
-			{
-			    if (value == this.todo_lictocreate.DocumentReference) return;
-				this.todo_lictocreate.DocumentReference = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("DocumentReference");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(255, ErrorMessage = "Exporter_address has a max length of 255 letters ")]
-public string Exporter_address
-		{ 
-		    get { return this.todo_lictocreate.Exporter_address; }
-			set
-			{
-			    if (value == this.todo_lictocreate.Exporter_address) return;
-				this.todo_lictocreate.Exporter_address = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("Exporter_address");
-			}
-		}
-     
-
 
         ChangeTrackingCollection<DTO.TODO_LICToCreate> _changeTracker;    
         public ChangeTrackingCollection<DTO.TODO_LICToCreate> ChangeTracker

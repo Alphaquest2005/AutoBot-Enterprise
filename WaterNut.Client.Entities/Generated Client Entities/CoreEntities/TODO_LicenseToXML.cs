@@ -60,6 +60,23 @@ public string TariffCode
      
 
        
+       
+                
+                [MaxLength(50, ErrorMessage = "TariffCategoryCode has a max length of 50 letters ")]
+public string TariffCategoryCode
+		{ 
+		    get { return this.todo_licensetoxml.TariffCategoryCode; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.TariffCategoryCode) return;
+				this.todo_licensetoxml.TariffCategoryCode = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TariffCategoryCode");
+			}
+		}
+     
+
+       
        [NumberValidationAttribute]
 public Nullable<double> Quantity
 		{ 
@@ -70,6 +87,23 @@ public Nullable<double> Quantity
 				this.todo_licensetoxml.Quantity = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("Quantity");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "LicenseDescription has a max length of 50 letters ")]
+public string LicenseDescription
+		{ 
+		    get { return this.todo_licensetoxml.LicenseDescription; }
+			set
+			{
+			    if (value == this.todo_licensetoxml.LicenseDescription) return;
+				this.todo_licensetoxml.LicenseDescription = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("LicenseDescription");
 			}
 		}
      
@@ -175,50 +209,16 @@ public string EntryDataId
        
        
                 
-                [MaxLength(50, ErrorMessage = "LicenseDescription has a max length of 50 letters ")]
-public string LicenseDescription
+                
+public string SourceFile
 		{ 
-		    get { return this.todo_licensetoxml.LicenseDescription; }
+		    get { return this.todo_licensetoxml.SourceFile; }
 			set
 			{
-			    if (value == this.todo_licensetoxml.LicenseDescription) return;
-				this.todo_licensetoxml.LicenseDescription = value;
+			    if (value == this.todo_licensetoxml.SourceFile) return;
+				this.todo_licensetoxml.SourceFile = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("LicenseDescription");
-			}
-		}
-     
-
-       
-       
-                
-                
-public string sourcefile
-		{ 
-		    get { return this.todo_licensetoxml.sourcefile; }
-			set
-			{
-			    if (value == this.todo_licensetoxml.sourcefile) return;
-				this.todo_licensetoxml.sourcefile = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("sourcefile");
-			}
-		}
-     
-
-       
-       
-                
-                [MaxLength(50, ErrorMessage = "TariffCategoryCode has a max length of 50 letters ")]
-public string TariffCategoryCode
-		{ 
-		    get { return this.todo_licensetoxml.TariffCategoryCode; }
-			set
-			{
-			    if (value == this.todo_licensetoxml.TariffCategoryCode) return;
-				this.todo_licensetoxml.TariffCategoryCode = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("TariffCategoryCode");
+				NotifyPropertyChanged("SourceFile");
 			}
 		}
      

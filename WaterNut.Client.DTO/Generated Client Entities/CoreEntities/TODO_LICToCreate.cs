@@ -216,45 +216,6 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<int> _QtyLicensesRequired;
 
-        [DataMember]
-        public Nullable<int> HasLicense
-		{ 
-		    get { return _HasLicense; }
-			set
-			{
-			    if (value == _HasLicense) return;
-				_HasLicense = value;
-				NotifyPropertyChanged();//m => this.HasLicense
-			}
-		}
-        private Nullable<int> _HasLicense;
-
-        [DataMember]
-        public string DocumentReference
-		{ 
-		    get { return _DocumentReference; }
-			set
-			{
-			    if (value == _DocumentReference) return;
-				_DocumentReference = value;
-				NotifyPropertyChanged();//m => this.DocumentReference
-			}
-		}
-        private string _DocumentReference;
-
-        [DataMember]
-        public string Exporter_address
-		{ 
-		    get { return _Exporter_address; }
-			set
-			{
-			    if (value == _Exporter_address) return;
-				_Exporter_address = value;
-				NotifyPropertyChanged();//m => this.Exporter_address
-			}
-		}
-        private string _Exporter_address;
-
        
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

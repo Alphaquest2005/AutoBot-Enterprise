@@ -29,8 +29,5 @@ namespace CoreEntities
         public Nullable<int> LicenseLines { get; set; }
         public Nullable<double> TotalCIF { get; set; }
         public Nullable<int> QtyLicensesRequired { get; set; }
-        public Nullable<int> HasLicense { get; set; }
-        public string DocumentReference { get; set; }
-        public string Exporter_address { get; set; }
     }
 }

@@ -189,6 +189,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
+		private string _tariffCategoryCodeFilter;
+        public string TariffCategoryCodeFilter
+        {
+            get
+            {
+                return _tariffCategoryCodeFilter;
+            }
+            set
+            {
+                _tariffCategoryCodeFilter = value;
+				NotifyPropertyChanged(x => TariffCategoryCodeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
 		private Double? _quantityFilter;
         public Double? QuantityFilter
         {
@@ -200,6 +218,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 _quantityFilter = value;
 				NotifyPropertyChanged(x => QuantityFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _licenseDescriptionFilter;
+        public string LicenseDescriptionFilter
+        {
+            get
+            {
+                return _licenseDescriptionFilter;
+            }
+            set
+            {
+                _licenseDescriptionFilter = value;
+				NotifyPropertyChanged(x => LicenseDescriptionFilter);
                 FilterData();
                 
             }
@@ -279,53 +315,17 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _licenseDescriptionFilter;
-        public string LicenseDescriptionFilter
+		private string _sourceFileFilter;
+        public string SourceFileFilter
         {
             get
             {
-                return _licenseDescriptionFilter;
+                return _sourceFileFilter;
             }
             set
             {
-                _licenseDescriptionFilter = value;
-				NotifyPropertyChanged(x => LicenseDescriptionFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _sourcefileFilter;
-        public string sourcefileFilter
-        {
-            get
-            {
-                return _sourcefileFilter;
-            }
-            set
-            {
-                _sourcefileFilter = value;
-				NotifyPropertyChanged(x => sourcefileFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
-		private string _tariffCategoryCodeFilter;
-        public string TariffCategoryCodeFilter
-        {
-            get
-            {
-                return _tariffCategoryCodeFilter;
-            }
-            set
-            {
-                _tariffCategoryCodeFilter = value;
-				NotifyPropertyChanged(x => TariffCategoryCodeFilter);
+                _sourceFileFilter = value;
+				NotifyPropertyChanged(x => SourceFileFilter);
                 FilterData();
                 
             }
@@ -420,8 +420,16 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("TariffCode.Contains(\"{0}\")",  TariffCodeFilter));						
  
 
+									if(string.IsNullOrEmpty(TariffCategoryCodeFilter) == false)
+						res.Append(" && " + string.Format("TariffCategoryCode.Contains(\"{0}\")",  TariffCategoryCodeFilter));						
+ 
+
 					if(QuantityFilter.HasValue)
 						res.Append(" && " + string.Format("Quantity == {0}",  QuantityFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(LicenseDescriptionFilter) == false)
+						res.Append(" && " + string.Format("LicenseDescription.Contains(\"{0}\")",  LicenseDescriptionFilter));						
+ 
 
 									if(string.IsNullOrEmpty(Declarant_Reference_NumberFilter) == false)
 						res.Append(" && " + string.Format("Declarant_Reference_Number.Contains(\"{0}\")",  Declarant_Reference_NumberFilter));						
@@ -439,16 +447,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 						res.Append(" && " + string.Format("EntryDataId.Contains(\"{0}\")",  EntryDataIdFilter));						
  
 
-									if(string.IsNullOrEmpty(LicenseDescriptionFilter) == false)
-						res.Append(" && " + string.Format("LicenseDescription.Contains(\"{0}\")",  LicenseDescriptionFilter));						
- 
-
-									if(string.IsNullOrEmpty(sourcefileFilter) == false)
-						res.Append(" && " + string.Format("sourcefile.Contains(\"{0}\")",  sourcefileFilter));						
- 
-
-									if(string.IsNullOrEmpty(TariffCategoryCodeFilter) == false)
-						res.Append(" && " + string.Format("TariffCategoryCode.Contains(\"{0}\")",  TariffCategoryCodeFilter));						
+									if(string.IsNullOrEmpty(SourceFileFilter) == false)
+						res.Append(" && " + string.Format("SourceFile.Contains(\"{0}\")",  SourceFileFilter));						
  
 
 									if(string.IsNullOrEmpty(ItemNumberFilter) == false)
@@ -486,7 +486,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     TariffCode = x.TariffCode ,
                     
  
+                    TariffCategoryCode = x.TariffCategoryCode ,
+                    
+ 
                     Quantity = x.Quantity ,
+                    
+ 
+                    LicenseDescription = x.LicenseDescription ,
                     
  
                     Declarant_Reference_Number = x.Declarant_Reference_Number ,
@@ -501,13 +507,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     EntryDataId = x.EntryDataId ,
                     
  
-                    LicenseDescription = x.LicenseDescription ,
-                    
- 
-                    sourcefile = x.sourcefile ,
-                    
- 
-                    TariffCategoryCode = x.TariffCategoryCode ,
+                    SourceFile = x.SourceFile ,
                     
  
                     ItemNumber = x.ItemNumber ,
@@ -532,7 +532,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string TariffCode { get; set; } 
                     
  
+                    public string TariffCategoryCode { get; set; } 
+                    
+ 
                     public Nullable<double> Quantity { get; set; } 
+                    
+ 
+                    public string LicenseDescription { get; set; } 
                     
  
                     public string Declarant_Reference_Number { get; set; } 
@@ -547,13 +553,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     public string EntryDataId { get; set; } 
                     
  
-                    public string LicenseDescription { get; set; } 
-                    
- 
-                    public string sourcefile { get; set; } 
-                    
- 
-                    public string TariffCategoryCode { get; set; } 
+                    public string SourceFile { get; set; } 
                     
  
                     public string ItemNumber { get; set; } 

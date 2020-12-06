@@ -63,6 +63,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty'
         <EntityType Name="TODO-LicenceAvailableQty">
           <Key>
             
+            
+            
+            
+            
             <PropertyRef Name="SegmentId" />
           </Key>
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -102,9 +106,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
           <Property Name="LicenseLines" Type="int" />
           <Property Name="TotalCIF" Type="float" />
           <Property Name="QtyLicensesRequired" Type="int" />
-          <Property Name="HasLicense" Type="int" />
-          <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
-          <Property Name="Exporter_address" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <Association Name="FK_xLIC_General_segment_xLIC_License">
           <End Role="xLIC_License" Type="Self.xLIC_License" Multiplicity="1">
@@ -186,10 +187,7 @@ FROM [dbo].[TODO-LicenceAvailableQty] AS [TODO-LicenceAvailableQty]</DefiningQue
 [TODO-LICToCreate].[InvoiceTotal] AS [InvoiceTotal], 
 [TODO-LICToCreate].[LicenseLines] AS [LicenseLines], 
 [TODO-LICToCreate].[TotalCIF] AS [TotalCIF], 
-[TODO-LICToCreate].[QtyLicensesRequired] AS [QtyLicensesRequired], 
-[TODO-LICToCreate].[HasLicense] AS [HasLicense], 
-[TODO-LICToCreate].[DocumentReference] AS [DocumentReference], 
-[TODO-LICToCreate].[Exporter_address] AS [Exporter_address]
+[TODO-LICToCreate].[QtyLicensesRequired] AS [QtyLicensesRequired]
 FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_xLIC_General_segment_xLIC_License" Association="Self.FK_xLIC_General_segment_xLIC_License">
@@ -330,9 +328,6 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <Property Name="LicenseLines" Type="Int32" />
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="QtyLicensesRequired" Type="Int32" />
-          <Property Name="HasLicense" Type="Int32" />
-          <Property Name="DocumentReference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Exporter_address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>
@@ -429,9 +424,6 @@ FROM [dbo].[TODO-LICToCreate] AS [TODO-LICToCreate]</DefiningQuery>
           <EntitySetMapping Name="TODO_LICToCreate">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LICToCreate">
               <MappingFragment StoreEntitySet="TODO-LICToCreate">
-                <ScalarProperty Name="Exporter_address" ColumnName="Exporter_address" />
-                <ScalarProperty Name="DocumentReference" ColumnName="DocumentReference" />
-                <ScalarProperty Name="HasLicense" ColumnName="HasLicense" />
                 <ScalarProperty Name="QtyLicensesRequired" ColumnName="QtyLicensesRequired" />
                 <ScalarProperty Name="TotalCIF" ColumnName="TotalCIF" />
                 <ScalarProperty Name="LicenseLines" ColumnName="LicenseLines" />

@@ -149,8 +149,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_C71ToXML> TODO_C71ToXML { get; set; }
      
-        public DbSet<TODO_LicenseToXML> TODO_LicenseToXML { get; set; }
-     
         public DbSet<TODO_SubmitIncompleteEntryData> TODO_SubmitIncompleteEntryData { get; set; }
      
         public DbSet<TODO_PODocSet> TODO_PODocSet { get; set; }
@@ -185,8 +183,6 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_C71ToCreate> TODO_C71ToCreate { get; set; }
      
-        public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
-     
         public DbSet<TODO_DiscrepanciesErrors> TODO_DiscrepanciesErrors { get; set; }
      
         public DbSet<CustomsOperations> CustomsOperations { get; set; }
@@ -218,6 +214,10 @@ namespace CoreEntities.Business.Entities
         public DbSet<TODO_SubmitEntryCIF> TODO_SubmitEntryCIF { get; set; }
      
         public DbSet<AsycudaDocumentSetC71> AsycudaDocumentSetC71 { get; set; }
+     
+        public DbSet<TODO_LicenseToXML> TODO_LicenseToXML { get; set; }
+     
+        public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
      
 
 
@@ -325,8 +325,6 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new TODO_C71ToXMLMap());
          
-            modelBuilder.Configurations.Add(new TODO_LicenseToXMLMap());
-         
             modelBuilder.Configurations.Add(new TODO_SubmitIncompleteEntryDataMap());
          
             modelBuilder.Configurations.Add(new TODO_PODocSetMap());
@@ -361,8 +359,6 @@ namespace CoreEntities.Business.Entities
          
             modelBuilder.Configurations.Add(new TODO_C71ToCreateMap());
          
-            modelBuilder.Configurations.Add(new TODO_LICToCreateMap());
-         
             modelBuilder.Configurations.Add(new TODO_DiscrepanciesErrorsMap());
          
             modelBuilder.Configurations.Add(new CustomsOperationsMap());
@@ -394,6 +390,10 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_SubmitEntryCIFMap());
          
             modelBuilder.Configurations.Add(new AsycudaDocumentSetC71Map());
+         
+            modelBuilder.Configurations.Add(new TODO_LicenseToXMLMap());
+         
+            modelBuilder.Configurations.Add(new TODO_LICToCreateMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

@@ -36,6 +36,21 @@ namespace CoreEntities.Business.Entities
         }
         string _tariffcode;
         [DataMember]
+        public string TariffCategoryCode 
+        {
+            get
+            {
+                return _tariffcategorycode;
+            }
+            set
+            {
+                _tariffcategorycode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _tariffcategorycode;
+        [DataMember]
         public Nullable<double> Quantity 
         {
             get
@@ -50,6 +65,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<double> _quantity;
+        [DataMember]
+        public string LicenseDescription 
+        {
+            get
+            {
+                return _licensedescription;
+            }
+            set
+            {
+                _licensedescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _licensedescription;
         [DataMember]
         public int AsycudaDocumentSetId 
         {
@@ -141,22 +171,7 @@ namespace CoreEntities.Business.Entities
         }
         string _entrydataid;
         [DataMember]
-        public string LicenseDescription 
-        {
-            get
-            {
-                return _licensedescription;
-            }
-            set
-            {
-                _licensedescription = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _licensedescription;
-        [DataMember]
-        public string sourcefile 
+        public string SourceFile 
         {
             get
             {
@@ -170,21 +185,6 @@ namespace CoreEntities.Business.Entities
             }
         }
         string _sourcefile;
-        [DataMember]
-        public string TariffCategoryCode 
-        {
-            get
-            {
-                return _tariffcategorycode;
-            }
-            set
-            {
-                _tariffcategorycode = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _tariffcategorycode;
         [DataMember]
         public Nullable<int> EmailId 
         {

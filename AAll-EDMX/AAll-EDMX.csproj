@@ -111,7 +111,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AllClientModels.tt</DependentUpon>
     </Compile>
-    <Compile Include="AllDomainInterface1.cs">
+    <Compile Include="AllDomainInterface.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AllDomainInterface.tt</DependentUpon>
@@ -3291,7 +3291,6 @@
     </Content>
     <Content Include="AllDomainInterface.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AllDomainInterface1.cs</LastGenOutput>
       <LastOutputs>
 ..\DomainInterfaces\Generated Interfaces\IDocument.cs
 ..\DomainInterfaces\Generated Interfaces\IDocumentItem.cs
@@ -3315,6 +3314,7 @@
 ..\WaterNut.Client.Entities\Generated Interface Implementation\CoreEntities\IWeightItem\AsycudaDocumentItem.cs
 ..\WaterNut.Client.Entities\Generated Interface Implementation\EntryDataQS\IEntryDataDetail\EntryDataDetailsEx.cs
 </LastOutputs>
+      <LastGenOutput>AllDomainInterface.cs</LastGenOutput>
     </Content>
     <Content Include="AllMapping.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

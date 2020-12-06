@@ -11,7 +11,7 @@
     {
         public TODO_LICToCreateMap()
         {                        
-              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId});        
+              this.HasKey(t => new {t.AsycudaDocumentSetId, t.ApplicationSettingsId, t.Currency_Code});        
               this.ToTable("TODO-LICToCreate");
               this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
@@ -28,9 +28,6 @@
               this.Property(t => t.LicenseLines).HasColumnName("LicenseLines");
               this.Property(t => t.TotalCIF).HasColumnName("TotalCIF");
               this.Property(t => t.QtyLicensesRequired).HasColumnName("QtyLicensesRequired");
-              this.Property(t => t.HasLicense).HasColumnName("HasLicense");
-              this.Property(t => t.DocumentReference).HasColumnName("DocumentReference").HasMaxLength(50);
-              this.Property(t => t.Exporter_address).HasColumnName("Exporter_address").HasMaxLength(255);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

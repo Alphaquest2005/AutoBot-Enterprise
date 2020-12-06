@@ -35,6 +35,19 @@ namespace CoreEntities.Client.DTO
         private string _TariffCode;
 
         [DataMember]
+        public string TariffCategoryCode
+		{ 
+		    get { return _TariffCategoryCode; }
+			set
+			{
+			    if (value == _TariffCategoryCode) return;
+				_TariffCategoryCode = value;
+				NotifyPropertyChanged();//m => this.TariffCategoryCode
+			}
+		}
+        private string _TariffCategoryCode;
+
+        [DataMember]
         public Nullable<double> Quantity
 		{ 
 		    get { return _Quantity; }
@@ -46,6 +59,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<double> _Quantity;
+
+        [DataMember]
+        public string LicenseDescription
+		{ 
+		    get { return _LicenseDescription; }
+			set
+			{
+			    if (value == _LicenseDescription) return;
+				_LicenseDescription = value;
+				NotifyPropertyChanged();//m => this.LicenseDescription
+			}
+		}
+        private string _LicenseDescription;
 
         [DataMember]
         public int AsycudaDocumentSetId
@@ -126,43 +152,17 @@ namespace CoreEntities.Client.DTO
         private string _EntryDataId;
 
         [DataMember]
-        public string LicenseDescription
+        public string SourceFile
 		{ 
-		    get { return _LicenseDescription; }
+		    get { return _SourceFile; }
 			set
 			{
-			    if (value == _LicenseDescription) return;
-				_LicenseDescription = value;
-				NotifyPropertyChanged();//m => this.LicenseDescription
+			    if (value == _SourceFile) return;
+				_SourceFile = value;
+				NotifyPropertyChanged();//m => this.SourceFile
 			}
 		}
-        private string _LicenseDescription;
-
-        [DataMember]
-        public string sourcefile
-		{ 
-		    get { return _sourcefile; }
-			set
-			{
-			    if (value == _sourcefile) return;
-				_sourcefile = value;
-				NotifyPropertyChanged();//m => this.sourcefile
-			}
-		}
-        private string _sourcefile;
-
-        [DataMember]
-        public string TariffCategoryCode
-		{ 
-		    get { return _TariffCategoryCode; }
-			set
-			{
-			    if (value == _TariffCategoryCode) return;
-				_TariffCategoryCode = value;
-				NotifyPropertyChanged();//m => this.TariffCategoryCode
-			}
-		}
-        private string _TariffCategoryCode;
+        private string _SourceFile;
 
         [DataMember]
         public Nullable<int> EmailId

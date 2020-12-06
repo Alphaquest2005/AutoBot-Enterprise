@@ -928,7 +928,7 @@ namespace AutoBot
 
                         var llst = new CoreEntitiesContext().Database
                             .SqlQuery<TODO_LicenseToXML>(
-                                $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId} where LicenseDescription is not null").ToList();
+                                $"select * from [TODO-LicenseToXML]  where asycudadocumentsetid = {pO.AsycudaDocumentSetId} and LicenseDescription is not null").ToList();
 
                             var lst = llst
                                 .Where(x => !string.IsNullOrEmpty(x.LicenseDescription))
@@ -937,9 +937,7 @@ namespace AutoBot
                                 .GroupBy(x => new {x.EntryDataId, x.TariffCategoryCode, x.SourceFile})
                             .ToList();
 
-                        var blst = llst
-                            .Where(x => string.IsNullOrEmpty(x.LicenseDescription)).ToList();
-
+                        
                        
 
                         foreach (var itm in lst)
@@ -3632,58 +3630,67 @@ namespace AutoBot
         public static bool AssessLICComplete(string instrFile, string resultsFile, out int lcont)
         {
             lcont = 0;
-
-
-            if (File.Exists(instrFile))
+            try
             {
-                if (!File.Exists(resultsFile)) return false;
-                var instructions = File.ReadAllLines(instrFile);
-                var res = File.ReadAllLines(resultsFile);
-                if (res.Length == 0)
+                if (File.Exists(instrFile))
                 {
-
-                    return false;
-                }
-
-
-                foreach (var inline in instructions)
-                {
-                    var p = inline.Split('\t');
-                    if (lcont >= res.Length) return true;
-                    if (string.IsNullOrEmpty(res[lcont])) return false;
-                    var isSuccess = false;
-                    foreach (var rline in res)
+                    if (!File.Exists(resultsFile)) return false;
+                    var instructions = File.ReadAllLines(instrFile);
+                    var res = File.ReadAllLines(resultsFile);
+                    if (res.Length == 0)
                     {
-                        var r = rline.Split('\t');
 
-                        if (p[1] == r[1] && r.Length == 5 && r[4] == "Success") //for attachment
-                        {
-                            lcont += 1;
-                            isSuccess = true;
-                            break ;
-                        }
-
-                        if (p[1] == r[1] && r.Length == 3 && r[2] == "Success") // for file
-                        {
-                            lcont += 1;
-                            isSuccess = true;
-                            break;
-                        }
-
+                        return false;
                     }
 
-                    if (isSuccess == true) continue;
-                    return false;
+
+                    foreach (var inline in instructions)
+                    {
+                        var p = inline.Split('\t');
+                        if (lcont >= res.Length) return true;
+                        if (string.IsNullOrEmpty(res[lcont])) return false;
+                        var isSuccess = false;
+                        foreach (var rline in res)
+                        {
+                            var r = rline.Split('\t');
+
+                            if (r.Length == 5 && p[1] == r[1] && r[4] == "Success") //for attachment
+                            {
+                                lcont += 1;
+                                isSuccess = true;
+                                break;
+                            }
+
+                            if ( r.Length == 3 && p[1] == r[1] && r[2] == "Success") // for file
+                            {
+                                lcont += 1;
+                                isSuccess = true;
+                                break;
+                            }
+
+                        }
+
+                        if (isSuccess == true) continue;
+                        return false;
+                    }
+
+                    return true;
                 }
+                else
+                {
 
-                return true;
+                    return true;
+                }
             }
-            else
+            catch (Exception e)
             {
-
-                return true;
+                Console.WriteLine(e);
+                throw;
             }
+
+
         }
+
         public static bool AssessC71Complete(string instrFile, string resultsFile, out int lcont)
         {
             lcont = 0;

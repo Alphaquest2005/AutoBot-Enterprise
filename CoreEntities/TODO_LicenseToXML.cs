@@ -15,16 +15,16 @@ namespace CoreEntities
     public partial class TODO_LicenseToXML
     {
         public string TariffCode { get; set; }
+        public string TariffCategoryCode { get; set; }
         public Nullable<double> Quantity { get; set; }
+        public string LicenseDescription { get; set; }
         public int AsycudaDocumentSetId { get; set; }
         public int ApplicationSettingsId { get; set; }
         public string Declarant_Reference_Number { get; set; }
         public string Country_of_origin_code { get; set; }
         public string UOM { get; set; }
         public string EntryDataId { get; set; }
-        public string LicenseDescription { get; set; }
-        public string sourcefile { get; set; }
-        public string TariffCategoryCode { get; set; }
+        public string SourceFile { get; set; }
         public Nullable<int> EmailId { get; set; }
         public string ItemNumber { get; set; }
         public string ItemDescription { get; set; }

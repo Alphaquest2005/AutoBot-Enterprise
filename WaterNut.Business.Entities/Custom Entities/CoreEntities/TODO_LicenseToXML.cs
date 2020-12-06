@@ -18,21 +18,7 @@ namespace CoreEntities.Business.Entities
 
     public partial class TODO_LicenseToXML 
     {
-        [DataMember]
-        public string SourceFile 
-        {
-            get
-            {
-                return _sourceFile;
-            }
-            set
-            {
-                _sourceFile = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _sourceFile;
+
      
     }
 }
