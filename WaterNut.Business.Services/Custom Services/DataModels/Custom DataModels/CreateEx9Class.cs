@@ -1438,13 +1438,11 @@ namespace WaterNut.DataSpace
                                     Attachments = new Attachments(true)
                                     {
                                         FilePath = Path.Combine(
-                                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
-                                            cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet
-                                                .Declarant_Reference_Number,
-                                            cdoc.Document.ReferenceNumber + ".csv.pdf"),
+                                            BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null? cdoc.Document.ReferenceNumber + ".csv.pdf":
+                                                $"{BaseDataModel.Instance.CurrentApplicationSettings.DataFolder}\\{cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSet.Declarant_Reference_Number}\\{cdoc.Document.ReferenceNumber}.csv.pdf"),
                                         TrackingState = TrackingState.Added,
                                         DocumentCode = "DFS1",
-                                        EmailId = lineData.EmailId.ToString(),
+                                        EmailId = lineData.EmailId?.ToString(),
                                         Reference = cdoc.Document.ReferenceNumber,
                                     },
 
