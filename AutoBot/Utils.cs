@@ -4012,6 +4012,7 @@ namespace AutoBot
                         BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                     .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
                     .ToList();
+                
                 foreach (var poInfo in docSets)
                 {
                     ImportLicense(poInfo.Declarant_Reference_Number, poInfo.AsycudaDocumentSetId);
