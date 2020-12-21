@@ -874,6 +874,7 @@ namespace WaterNut.DataSpace
                             }
                             else
                             {
+                                SetPackages(ref remainingPackages, ref possibleEntries, pod, cdoc);
                             }
                         }
                     }
@@ -1004,6 +1005,8 @@ namespace WaterNut.DataSpace
                         var pitm = pitms.FirstOrDefault(x => x.ItemNumber == itm.PreviousInvoiceItemNumber);
                         if(pitm != null)
                         itm.xcuda_Previous_doc.Previous_document_reference = $@"C# {p.PreviousCNumber} - Line:{pitm.LineNumber}";
+                        else
+                            itm.xcuda_Previous_doc.Previous_document_reference = $@"C# {p.PreviousCNumber}";
                     }
                     
                 }

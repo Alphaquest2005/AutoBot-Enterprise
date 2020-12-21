@@ -34,6 +34,7 @@ namespace EmailDownloader
             }
             catch (Exception e)
             {
+                
                 Console.WriteLine(e);
                 return new Dictionary<Tuple<string, Email, string>, List<string>>();
             }
