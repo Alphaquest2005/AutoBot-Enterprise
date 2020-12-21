@@ -2803,7 +2803,7 @@ namespace WaterNut.DataSpace
                     if (overWrite == true || !File.Exists(fileInfo.FullName))
                     {
 
-                        Instance.DocToXML(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,docSet.Declarant_Reference_Number),doc, fileInfo);
+                        Instance.DocToXML(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder == null? fileInfo.DirectoryName : Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,docSet.Declarant_Reference_Number),doc, fileInfo);
                     }
 
 
