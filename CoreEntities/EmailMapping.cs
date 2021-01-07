@@ -24,6 +24,7 @@ namespace CoreEntities
         public int ApplicationSettingsId { get; set; }
         public string Pattern { get; set; }
         public Nullable<bool> IsSingleEmail { get; set; }
+        public string ReplacementValue { get; set; }
     
         public virtual ApplicationSettings ApplicationSettings { get; set; }
         public virtual ICollection<EmailFileTypes> EmailFileTypes { get; set; }

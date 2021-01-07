@@ -60,7 +60,7 @@ namespace EntryDataQS.Business.Services
                 }
 
                 dfileType.AsycudaDocumentSetId = docSetId;
-               InvoiceReader.Import(droppedFilePath, fileTypeId, emailId, overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType.Type);
+               InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId.GetValueOrDefault(), overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType);
             }
             
         }

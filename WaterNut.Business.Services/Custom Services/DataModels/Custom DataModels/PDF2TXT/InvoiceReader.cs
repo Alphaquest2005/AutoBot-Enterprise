@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -13,55 +15,71 @@ using OCR.Business.Entities;
 using pdf_ocr;
 using SimpleMvvmToolkit.ModelExtensions;
 using WaterNut.DataSpace;
+using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using Invoices = OCR.Business.Entities.Invoices;
 
 namespace WaterNut.DataSpace
 {
     public class InvoiceReader
     {
-        public static void Import(string file, int? fileTypeId, int? emailId, bool overWriteExisting,
-            List<AsycudaDocumentSet> docSet, string fileType)
+        public static void Import(string file, int fileTypeId, int emailId, bool overWriteExisting,
+            List<AsycudaDocumentSet> docSet, FileTypes fileType)
         {
             //Get Text
-
-            var pdftxt = PdfOcr.Ocr(file);
-
-            //Get Template
-            using (var ctx = new OCRContext())
+            try
             {
-                var templates = ctx.Invoices
-                    .Include(x => x.Parts)
-                    .Include("Parts.RecuringPart")
-                    .Include("Parts.Start.RegularExpressions")
-                    .Include("Parts.End.RegularExpressions")
-                    .Include("Parts.PartTypes")
-                    .Include("Parts.ChildParts.ParentPart.Start.RegularExpressions")
-                    .Include("Parts.ParentParts.ChildPart.Start.RegularExpressions")
-                    .Include("Parts.Lines.RegularExpressions")
-                    .Include("Parts.Lines.Fields.FieldValue")
-                    .Where(x => BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true || x.Id == 4)
-                    .ToList()
-                    .Select(x => new Invoice(x));
 
-                foreach (var tmp in templates)
+
+                var pdftxt = PdfOcr.Ocr(file);
+
+                //Get Template
+                using (var ctx = new OCRContext())
                 {
-                    try
-                    {
-                        var csvLines = tmp.Read(pdftxt.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)
-                            .ToList());
-                        if (csvLines.Count <= 1) continue;
-                        SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId,
-                            fileTypeId, file, csvLines).Wait();
-                        break;
-                    }
-                    catch (Exception e)
-                    {
-                        var ex = new ApplicationException($"Problem importing file:{file} --- {e.Message}", e);
-                        Console.WriteLine(ex);
-                        throw ex;
-                    }
+                    var templates = ctx.Invoices
+                        .Include(x => x.Parts)
+                        .Include("OCR_InvoiceRegEx.RegEx")
+                        .Include("OCR_InvoiceRegEx.ReplacementRegEx")
+                        .Include("Parts.RecuringPart")
+                        .Include("Parts.Start.RegularExpressions")
+                        .Include("Parts.End.RegularExpressions")
+                        .Include("Parts.PartTypes")
+                        .Include("Parts.ChildParts.ChildPart.Start.RegularExpressions")
+                        .Include("Parts.ParentParts.ParentPart.Start.RegularExpressions")
+                        .Include("Parts.Lines.RegularExpressions")
+                        .Include("Parts.Lines.Fields.FieldValue")
+                        .Where(x => x.Id == 10) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
+                        .ToList()
+                        .Select(x => new Invoice(x));
 
+                    foreach (var tmp in templates)
+                    {
+                        try
+                        {
+                            List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt));
+                            if (csvLines.Count < 1) continue;
+                            if (fileType.Id != tmp.OcrInvoices.FileTypeId && tmp.OcrInvoices.FileTypeId.HasValue)
+                                fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId.Value);
+
+                            SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
+                                emailId,
+                                fileType.Id, file, csvLines).Wait();
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                            var ex = new ApplicationException($"Problem importing file:{file} --- {e.Message}", e);
+                            Console.WriteLine(ex);
+                            throw ex;
+                        }
+
+                    }
                 }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
 
@@ -71,7 +89,7 @@ namespace WaterNut.DataSpace
     public class Invoice
     {
         private EntryData EntryData { get; } = new EntryData();
-        private Invoices OcrInvoices { get; }
+        public Invoices OcrInvoices { get; }
         private List<Part> Parts { get; set; }
         public bool Success => Parts.All(x => x.Success);
         public List<Line> Lines => Parts.SelectMany(x => x.AllLines).ToList();
@@ -80,121 +98,37 @@ namespace WaterNut.DataSpace
         {
             OcrInvoices = ocrInvoices;
             Parts = ocrInvoices.Parts
-                .Where(x => (x.ParentParts.Any() && !x.ChildParts.Any()) || (!x.ParentParts.Any() && !x.ChildParts.Any()))
+                .Where(x => (x.ParentParts.Any() && !x.ChildParts.Any()) ||
+                            (!x.ParentParts.Any() && !x.ChildParts.Any()))
                 //.Where(x => x.Id == 7)
                 .Select(z => new Part(z)).ToList();
         }
 
-        public List<SaveCsvEntryData.CSVDataSummary> Read(List<string> text)
+        public List<dynamic> Read(List<string> text)
         {
             try
             {
 
-           
-            var lineCount = 0;
-            foreach (var line in text)
-            {
-                lineCount += 1;
-                var iLine = new InvoiceLine(line, lineCount);
-                Parts.ForEach(x => x.Read(iLine));
-            }
 
-            if (!Success) return new List<SaveCsvEntryData.CSVDataSummary>();
-
-                var headerRow = new SaveCsvEntryData.CSVDataSummary()
+                var lineCount = 0;
+                foreach (var line in text)
                 {
-                    EntryDataId = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.EntryDataId)),
-                    TotalCost = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.TotalCost)),
-                    Cost = GetValue( nameof(SaveCsvEntryData.CSVDataSummary.Cost)),
-                    Quantity = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.Quantity)),
-                    ItemDescription = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.ItemDescription)),
-                    TotalDeductions = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.TotalDeductions)),
-                    TotalFreight = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.TotalFreight)),
-                    TotalInsurance = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.TotalInsurance)),
-                    TotalInternalFreight = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.TotalInternalFreight)),
-                    TotalOtherCost = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.TotalOtherCost)),
-                    InvoiceTotal = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.InvoiceTotal)),
-                    Currency = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.Currency)),
-                    EntryDataDate = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.EntryDataDate)),
-                    ItemAlias = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.ItemAlias)),
-                    SupplierAddress = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.SupplierAddress)),
-                    SupplierCode = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.SupplierCode)),
-                    SupplierCountryCode = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.SupplierCountryCode)),
-                    SupplierInvoiceNo = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.SupplierInvoiceNo)),
-                    SupplierName = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.SupplierName)),
-                    Units = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.Units)),
-                    ItemNumber = GetValue(nameof(SaveCsvEntryData.CSVDataSummary.ItemNumber)),
-                    
-                    //Weight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
+                    lineCount += 1;
+                    var iLine = new InvoiceLine(line, lineCount);
+                    Parts.ForEach(x => x.Read(iLine));
+                }
 
-                    //OtherCost = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //PreviousInvoiceNumber = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //ReceivedQuantity = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Freight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Insurance = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //InternalFreight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //InvoiceQuantity = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //CustomerName = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Deductions = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //EffectiveDate = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //DocumentType = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //pCNumber = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Comment = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //TotalWeight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Tax = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //TariffCode = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TariffCode)),
-                };
+                if (!Success) return new List<dynamic>();
 
-            var res = Lines.Where(x => x.OCR_Lines.Parts.RecuringPart != null)
-                .SelectMany(x => x.Values.Select(z => new SaveCsvEntryData.CSVDataSummary()
-                {
-                    EntryDataId = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.EntryDataId))?? headerRow.EntryDataId,
-                    TotalCost = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalCost)),
-                    Cost = /*GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalCost)) < Convert.ToDouble(GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Cost))) ? */
-                          /*Math.Round(*/Convert.ToDouble(GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalCost))) / Convert.ToDouble(GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Quantity)))/*,2) */
-                          /*: GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Cost))*/,
-                    Quantity = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Quantity)),
-                    ItemDescription = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.ItemDescription)),
-                    TotalDeductions = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalDeductions)),
-                    TotalFreight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalFreight)),
-                    TotalInsurance = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalInsurance)),
-                    TotalInternalFreight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalInternalFreight)),
-                    TotalOtherCost = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TotalOtherCost)),
-                    InvoiceTotal = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.InvoiceTotal)),
-                    Currency = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Currency)) ?? headerRow.Currency,
-                    EntryDataDate = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.EntryDataDate)) ?? headerRow.EntryDataDate,
-                    ItemAlias = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.ItemAlias)),
-                    SupplierAddress = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.SupplierAddress)),
-                    SupplierCode = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.SupplierCode)),
-                    SupplierCountryCode = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.SupplierCountryCode)),
-                    SupplierInvoiceNo = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.SupplierInvoiceNo)),
-                    SupplierName = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.SupplierName)),
-                    Units = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Units)),
-                    ItemNumber = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.ItemNumber)),
-                    LineNumber = z.Key,
-                    //Weight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
+                var ores = Parts.Select(x =>
+                    {
 
-                    //OtherCost = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //PreviousInvoiceNumber = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //ReceivedQuantity = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Freight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Insurance = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //InternalFreight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //InvoiceQuantity = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //CustomerName = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Deductions = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //EffectiveDate = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //DocumentType = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //pCNumber = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Comment = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //TotalWeight = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //Tax = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.Tax)),
-                    //TariffCode = GetValue(z, nameof(SaveCsvEntryData.CSVDataSummary.TariffCode)),
-                })).ToList();
+                        var lst = SetPartLineValues(x);
+                        return lst;
+                    }
+                ).ToList();
 
-            res.Add(headerRow);
-
-            return res;
+                return new List<dynamic> {ores.SelectMany(x => x.ToList()).ToList()};
             }
             catch (Exception e)
             {
@@ -203,12 +137,54 @@ namespace WaterNut.DataSpace
             }
         }
 
+        private List<IDictionary<string, object>> SetPartLineValues(Part x)
+        {
+            var lst = new List<IDictionary<string, object>>();
+            var itm = new ExpandoObject();
+            foreach (var line in x.Lines)
+            {
+
+                foreach (var value in line.Values)
+                {
+                    if (x.OCR_Part.RecuringPart != null && x.OCR_Part.RecuringPart.IsComposite == false)
+                        itm = new ExpandoObject();
+                    ((IDictionary<string, object>) itm)["FileLineNumber"] = value.Key + 1;
+                    foreach (var field in value.Value)
+                    {
+                        ((IDictionary<string, object>) itm)[field.Key.Field] = GetValue(value, field.Key.Field);
+                    }
+
+                    if (x.OCR_Part.RecuringPart != null && x.OCR_Part.RecuringPart.IsComposite == false) lst.Add(itm);
+                }
+
+            }
+
+            foreach (var childPart in x.ChildParts)
+            {
+                if (!childPart.Lines.Any()) continue;
+                var childItms = SetPartLineValues(childPart);
+                var fieldname = childPart.Lines.First().OCR_Lines.Fields.First().EntityType;
+                if (childPart.OCR_Part.RecuringPart != null)
+                {
+                    ((IDictionary<string, object>) itm)[fieldname] = childItms;
+                }
+                else
+                {
+                    ((IDictionary<string, object>) itm)[fieldname] = childItms.FirstOrDefault();
+                }
+
+            }
+
+            if (x.OCR_Part.RecuringPart == null || x.OCR_Part.RecuringPart.IsComposite) lst.Add(itm);
+            return lst;
+        }
+
         private dynamic GetValue(KeyValuePair<int, Dictionary<Fields, string>> z, string field)
         {
             try
             {
                 var f = z.Value.FirstOrDefault(q => q.Key.Field == field);
-                            return f.Key == null ? null : GetValue(f);
+                return f.Key == null ? null : GetValue(f);
             }
             catch (Exception e)
             {
@@ -216,12 +192,13 @@ namespace WaterNut.DataSpace
                 Console.WriteLine(ex);
                 throw ex;
             }
-            
+
         }
 
         private dynamic GetValue(string field)
         {
-            var f = Lines.Where(x => x.OCR_Lines.Parts.RecuringPart == null).SelectMany(x => x.Values.Values).SelectMany(x => x).FirstOrDefault(x => x.Key.Field == field);
+            var f = Lines.Where(x => x.OCR_Lines.Parts.RecuringPart == null).SelectMany(x => x.Values.Values)
+                .SelectMany(x => x).FirstOrDefault(x => x.Key.Field == field);
             return f.Key == null ? null : GetValue(f);
         }
 
@@ -233,20 +210,50 @@ namespace WaterNut.DataSpace
                 case "String":
                     return f.Value;
                 case "Numeric":
+                case "Number":
                     var val = f.Value.Replace("$", "");
-                    if(double.TryParse(val, out double num))
+                    if (double.TryParse(val, out double num))
                         return num;
                     else
-                        throw new ApplicationException($"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
-                    
+                        throw new ApplicationException(
+                            $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+
                 case "Date":
                     if (DateTime.TryParse(f.Value, out DateTime date))
                         return date;
                     else
-                        throw new ApplicationException($"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                        throw new ApplicationException(
+                            $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                case "English Date":
+                    if (DateTime.TryParseExact(f.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
+                        out DateTime edate))
+                        return edate;
+                    else
+                        throw new ApplicationException(
+                            $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                 default:
                     return f.Value;
             }
+        }
+
+        public List<string> Format(string pdftxt)
+        {
+            try
+            {
+                foreach (var reg in OcrInvoices.OCR_InvoiceRegEx)
+                {
+                    pdftxt = Regex.Replace(pdftxt, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
+                }
+
+                return pdftxt.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None).ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
     }
 
@@ -285,10 +292,10 @@ namespace WaterNut.DataSpace
 
         private int StartCount { get; }
 
-        public bool Success => Lines.All(x => !x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired == true && string.IsNullOrEmpty(z.Value.ToString())) 
-                               /*|| !x.Values.Any()*/) 
+        public bool Success => Lines.All(x => (x.OCR_Lines.Fields.Any(z => z.IsRequired) && !x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString()))) 
+                               || !x.OCR_Lines.Fields.Any(z => z.IsRequired)) 
                                && ChildParts.All(x => x.Success == true);
-        public List<Line> FailedLines => Lines.Where(x => !x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired == true && string.IsNullOrEmpty(z.Value.ToString()))).ToList()
+        public List<Line> FailedLines => Lines.Where(x =>  x.OCR_Lines.Fields.Any(z => z.IsRequired) && !x.Values.Any()).ToList()
                                          .Union(ChildParts.SelectMany(x =>x.FailedLines)).ToList();
 
         public List<Line> AllLines => Lines.Union(ChildParts.SelectMany(x => x.AllLines)).ToList();
@@ -296,7 +303,7 @@ namespace WaterNut.DataSpace
         public void Read(InvoiceLine line)
         {
             if ((_endlines.Count == EndCount && EndCount > 0) 
-                || (EndCount == 0 && _startlines.Count == StartCount && StartCount > 0))//attempting to do start to start
+                || (EndCount == 0 && _startlines.Count > StartCount && StartCount > 0))//attempting to do start to start
             {
                 if (OCR_Part.RecuringPart != null)
                 {

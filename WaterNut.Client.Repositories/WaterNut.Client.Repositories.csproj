@@ -181,6 +181,7 @@
     <Compile Include="Generated Repositories\CoreEntities\FileGroupsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeActionsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeContactsRepository.cs" />
+    <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingRegExsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypeMappingsRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\FileTypesRepository.cs" />
     <Compile Include="Generated Repositories\CoreEntities\InfoMappingRegExRepository.cs" />
@@ -272,6 +273,7 @@
     <Compile Include="Generated Repositories\OCR\InvoicesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\LinesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\OCR_FieldValueRepository.cs" />
+    <Compile Include="Generated Repositories\OCR\OCR_InvoiceRegExRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartsRepository.cs" />
     <Compile Include="Generated Repositories\OCR\PartTypesRepository.cs" />
     <Compile Include="Generated Repositories\OCR\RecuringPartRepository.cs" />

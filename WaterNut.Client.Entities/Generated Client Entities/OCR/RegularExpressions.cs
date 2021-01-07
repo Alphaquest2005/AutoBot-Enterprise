@@ -239,6 +239,114 @@ public string RegEx
             }
         }
 
+        ObservableCollection<OCR_InvoiceRegEx> _OCR_InvoiceRegEx = null;
+        public  ObservableCollection<OCR_InvoiceRegEx> OCR_InvoiceRegEx
+		{
+            
+		    get 
+				{ 
+					if(_OCR_InvoiceRegEx != null) return _OCR_InvoiceRegEx;
+					//if (this.regularexpressions.OCR_InvoiceRegEx == null) Debugger.Break();
+					if(this.regularexpressions.OCR_InvoiceRegEx != null)
+					{
+						_OCR_InvoiceRegEx = new ObservableCollection<OCR_InvoiceRegEx>(this.regularexpressions.OCR_InvoiceRegEx.Select(x => new OCR_InvoiceRegEx(x)));
+					}
+					
+						_OCR_InvoiceRegEx.CollectionChanged += OCR_InvoiceRegEx_CollectionChanged; 
+					
+					return _OCR_InvoiceRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _OCR_InvoiceRegEx)) return;
+				if (value != null)
+					this.regularexpressions.OCR_InvoiceRegEx = new ChangeTrackingCollection<DTO.OCR_InvoiceRegEx>(value.Select(x => x.DTO).ToList());
+                _OCR_InvoiceRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_OCR_InvoiceRegEx != null)
+				_OCR_InvoiceRegEx.CollectionChanged += OCR_InvoiceRegEx_CollectionChanged;               
+				NotifyPropertyChanged("OCR_InvoiceRegEx");
+			}
+		}
+        
+        void OCR_InvoiceRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (OCR_InvoiceRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.OCR_InvoiceRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (OCR_InvoiceRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.OCR_InvoiceRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<OCR_InvoiceRegEx> _OCR_InvoiceRegEx1 = null;
+        public  ObservableCollection<OCR_InvoiceRegEx> OCR_InvoiceRegEx1
+		{
+            
+		    get 
+				{ 
+					if(_OCR_InvoiceRegEx1 != null) return _OCR_InvoiceRegEx1;
+					//if (this.regularexpressions.OCR_InvoiceRegEx1 == null) Debugger.Break();
+					if(this.regularexpressions.OCR_InvoiceRegEx1 != null)
+					{
+						_OCR_InvoiceRegEx1 = new ObservableCollection<OCR_InvoiceRegEx>(this.regularexpressions.OCR_InvoiceRegEx1.Select(x => new OCR_InvoiceRegEx(x)));
+					}
+					
+						_OCR_InvoiceRegEx1.CollectionChanged += OCR_InvoiceRegEx1_CollectionChanged; 
+					
+					return _OCR_InvoiceRegEx1; 
+				}
+			set
+			{
+			    if (Equals(value, _OCR_InvoiceRegEx1)) return;
+				if (value != null)
+					this.regularexpressions.OCR_InvoiceRegEx1 = new ChangeTrackingCollection<DTO.OCR_InvoiceRegEx>(value.Select(x => x.DTO).ToList());
+                _OCR_InvoiceRegEx1 = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_OCR_InvoiceRegEx1 != null)
+				_OCR_InvoiceRegEx1.CollectionChanged += OCR_InvoiceRegEx1_CollectionChanged;               
+				NotifyPropertyChanged("OCR_InvoiceRegEx1");
+			}
+		}
+        
+        void OCR_InvoiceRegEx1_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (OCR_InvoiceRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.OCR_InvoiceRegEx1.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (OCR_InvoiceRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.OCR_InvoiceRegEx1.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.RegularExpressions> _changeTracker;    
         public ChangeTrackingCollection<DTO.RegularExpressions> ChangeTracker

@@ -37,22 +37,26 @@ namespace AutoBot
 
                     var applicationSettings = ctx.ApplicationSettings.AsNoTracking()
                         .Include(x => x.FileTypes)
-                        .Include("FileTypes.FileTypeContacts.Contacts")
-                        .Include("FileTypes.FileTypeActions.Actions")
-                        .Include("FileTypes.AsycudaDocumentSetEx")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeActions.Actions")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeContacts.Contacts")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes.AsycudaDocumentSetEx")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeMappings")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
-                        .Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
+                        //.Include("FileTypes.FileTypeContacts.Contacts")
+                        //.Include("FileTypes.FileTypeActions.Actions")
+                        //.Include("FileTypes.AsycudaDocumentSetEx")
+                        //.Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeActions.Actions")
+                        //.Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeContacts.Contacts")
+                        //.Include("EmailMapping.EmailFileTypes.FileTypes.AsycudaDocumentSetEx")
+                        //.Include("EmailMapping.EmailFileTypes.FileTypes.FileTypeMappings")
+                        //.Include("EmailMapping.EmailFileTypes.FileTypes.ChildFileTypes")
+                        .Include("EmailMapping.EmailFileTypes.FileTypes")
                         .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
-                        .Include("FileTypes.ChildFileTypes")
-                        .Include("FileTypes.FileTypeMappings")
+                        //.Include("FileTypes.ChildFileTypes")
+                        //.Include("FileTypes.FileTypeMappings")
                         .ToList();
+
+                  
 
                     foreach (var appSetting in applicationSettings)
                     {
+                        
+
                         Console.WriteLine($"{appSetting.SoftwareName} Emails Processed");
                         if(appSetting.DataFolder != null) appSetting.DataFolder = StringExtensions.UpdateToCurrentUser(appSetting.DataFolder);
                        
@@ -90,9 +94,8 @@ namespace AutoBot
                                 EmailMappings = appSetting.EmailMapping.ToList()
                             };
 
-                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client,
-                                    appSetting.FileTypes.Select(x => x.FilePattern).ToList())).Result.OrderBy(x =>
-                                    x.Key.Item2.EmailMapping.EmailFileTypes.Sum(z => z.FileTypes.FileTypeActions.Count))
+                            var msgLst = Task.Run(() => EmailDownloader.EmailDownloader.CheckEmails(Utils.Client)).Result/*.OrderBy(x =>
+                                    x.Key.Item2.EmailMapping.EmailFileTypes.Sum(z => z.FileTypes.FileTypeActions.Count))*/
                                 .ToList();
                             // get downloads
                             Console.WriteLine($"{msgLst.Count()} Emails Processed");
@@ -106,22 +109,22 @@ namespace AutoBot
 
                                 if (!msg.Key.Item2.EmailMapping.EmailFileTypes
                                     .All(x => x.IsRequired != true || new DirectoryInfo(desFolder).GetFiles()
-                                                  .Any(z => msg.Value.Contains(z.Name)
-                                                            && Regex.IsMatch(z.FullName, x.FileTypes.FilePattern,
-                                                                RegexOptions.IgnoreCase)
-                                                            && z.LastWriteTime >= beforeImport))) continue;
+                                                  .Any(z => Regex.IsMatch(z.FullName,
+                                                      x.FileTypes.FilePattern,
+                                                      RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
 
 
+                                
+                              
 
-
-                                foreach (var emailFileType in msg.Key.Item2.EmailMapping.EmailFileTypes.OrderBy(x =>
-                                    x.FileTypes.Type == "Info"))
+                                foreach (var emailFileType in msg.Key.Item2.FileTypes.OrderBy(x =>
+                                    x.Type == "Info"))
                                 {
 
 
 
 
-                                    var fileType = emailFileType.FileTypes;
+                                    var fileType = BaseDataModel.GetFileType(emailFileType);
                                     fileType.Data
                                         .Clear(); // because i am using emailmapping from email, its not a lookup
                                     fileType.EmailInfoMappings = msg.Key.Item2.EmailMapping.EmailInfoMappings;
@@ -137,7 +140,7 @@ namespace AutoBot
 
                                     if (csvFiles.Length == 0)
                                     {
-                                        if (emailFileType.IsRequired == true) break;
+                                       // if (emailFileType.IsRequired == true) break;
                                         continue;
                                     }
 
@@ -301,10 +304,22 @@ namespace AutoBot
 
             }
         }
+
+
+
         private static void ExecuteDataSpecificFileActions(FileTypes fileType, FileInfo[] files, ApplicationSettings appSetting)
         {
             try
             {
+                var missingActions = fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true
+                                                    && !Utils.FileActions.ContainsKey(x.Actions.Name)).ToList();
+
+                if (missingActions.Any())
+                {
+                    throw new ApplicationException(
+                        $"The following actions were missing: {missingActions.Select(x => x.Actions.Name).Aggregate((old, current) => old + ", " + current)}");
+                }
+
                 fileType.FileTypeActions.Where(x => x.Actions.IsDataSpecific == true).OrderBy(x => x.Id)
                     .Where(x => (x.AssessIM7.Equals(null) && x.AssessEX.Equals(null)) ||
                                 (appSetting.AssessIM7 == x.AssessIM7 ||

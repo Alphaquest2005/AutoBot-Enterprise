@@ -27,7 +27,16 @@ namespace OCR.Business.Enums
         Invoicelines = 4,
 
       
-        Invoiceline = 10
+        Invoiceline = 10,
+
+      
+        Waybill = 11,
+
+      
+        Details = 12,
+
+      
+        Extrainfo = 13
   }
 }
 

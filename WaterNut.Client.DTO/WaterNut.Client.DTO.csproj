@@ -148,6 +148,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\InfoMapping.cs" />
@@ -233,6 +234,7 @@
     <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Client Entities\OCR\Lines.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated Client Entities\OCR\OCR_InvoiceRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Parts.cs" />
     <Compile Include="Generated Client Entities\OCR\PartTypes.cs" />
     <Compile Include="Generated Client Entities\OCR\RecuringPart.cs" />
@@ -296,6 +298,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
@@ -381,6 +384,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
@@ -444,6 +448,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\InfoMapping.cs" />
@@ -529,6 +534,7 @@
     <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldValue.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\OCR_InvoiceRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Parts.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\PartTypes.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\RecuringPart.cs" />

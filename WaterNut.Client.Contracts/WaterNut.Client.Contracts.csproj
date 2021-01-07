@@ -139,6 +139,7 @@
     <Compile Include="CoreEntities\IFileGroupsService.cs" />
     <Compile Include="CoreEntities\IFileTypeActionsService.cs" />
     <Compile Include="CoreEntities\IFileTypeContactsService.cs" />
+    <Compile Include="CoreEntities\IFileTypeMappingRegExsService.cs" />
     <Compile Include="CoreEntities\IFileTypeMappingsService.cs" />
     <Compile Include="CoreEntities\IFileTypesService.cs" />
     <Compile Include="CoreEntities\IInfoMappingRegExService.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="OCR\IInvoicesService.cs" />
     <Compile Include="OCR\ILinesService.cs" />
     <Compile Include="OCR\IOCR_FieldValueService.cs" />
+    <Compile Include="OCR\IOCR_InvoiceRegExService.cs" />
     <Compile Include="OCR\IPartsService.cs" />
     <Compile Include="OCR\IPartTypesService.cs" />
     <Compile Include="OCR\IRecuringPartService.cs" />

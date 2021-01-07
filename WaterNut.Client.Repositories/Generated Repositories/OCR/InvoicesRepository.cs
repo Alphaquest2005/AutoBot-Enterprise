@@ -202,7 +202,8 @@ namespace OCR.Client.Repositories
                         {
                             return new Invoices(res)
                     {
-                     // Parts = new System.Collections.ObjectModel.ObservableCollection<Parts>(res.Parts.Select(y => new Parts(y)))    
+                     // Parts = new System.Collections.ObjectModel.ObservableCollection<Parts>(res.Parts.Select(y => new Parts(y))),    
+                     // OCR_InvoiceRegEx = new System.Collections.ObjectModel.ObservableCollection<OCR_InvoiceRegEx>(res.OCR_InvoiceRegEx.Select(y => new OCR_InvoiceRegEx(y)))    
                   };
                     }
                     else
@@ -364,7 +365,35 @@ namespace OCR.Client.Repositories
             }
         }
 
-        
+	 public async Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+             if (FileTypeId == "0") return null;
+            try
+            {
+                 using (InvoicesClient t = new InvoicesClient())
+                    {
+                        var res = await t.GetInvoicesByFileTypeId(FileTypeId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Invoices(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
+         
 		public decimal SumField(string whereExp, string sumExp)
         {
             try

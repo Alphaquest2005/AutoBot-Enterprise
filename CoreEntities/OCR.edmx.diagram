@@ -29,6 +29,10 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_RegularExpressions" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCR_InvoiceRegEx" Width="4.125" PointX="6" PointY="11.25" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

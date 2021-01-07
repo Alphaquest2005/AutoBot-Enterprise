@@ -46,6 +46,12 @@ namespace WaterNut.QuerySpace.OCR
 			public const string OCR_FieldValueDeleted = "OCR_FieldValueDeleted";
 			public const string OCR_FieldValueCreated = "OCR_FieldValueCreated";
 			public const string OCR_FieldValueUpdated = "OCR_FieldValueUpdated";
+			public const string OCR_InvoiceRegExFilterExpressionChanged = "OCR_InvoiceRegExFilterExpressionChanged";
+			public const string SelectedOCR_InvoiceRegExChanged = "SelectedOCR_InvoiceRegExChanged";
+            public const string OCR_InvoiceRegExChanged = "OCR_InvoiceRegExChanged";
+			public const string OCR_InvoiceRegExDeleted = "OCR_InvoiceRegExDeleted";
+			public const string OCR_InvoiceRegExCreated = "OCR_InvoiceRegExCreated";
+			public const string OCR_InvoiceRegExUpdated = "OCR_InvoiceRegExUpdated";
 			public const string PartsFilterExpressionChanged = "PartsFilterExpressionChanged";
 			public const string SelectedPartsChanged = "SelectedPartsChanged";
             public const string PartsChanged = "PartsChanged";
@@ -84,6 +90,7 @@ namespace WaterNut.QuerySpace.OCR
           // public const string InvoicesChanged = "InvoicesChanged";
           // public const string LinesChanged = "LinesChanged";
           // public const string OCR_FieldValueChanged = "OCR_FieldValueChanged";
+          // public const string OCR_InvoiceRegExChanged = "OCR_InvoiceRegExChanged";
           // public const string PartsChanged = "PartsChanged";
           // public const string PartTypesChanged = "PartTypesChanged";
           // public const string RecuringPartChanged = "RecuringPartChanged";
@@ -103,6 +110,8 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentLinesChanged = "CurrentLinesChanged";
    
            public const string CurrentOCR_FieldValueChanged = "CurrentOCR_FieldValueChanged";
+   
+           public const string CurrentOCR_InvoiceRegExChanged = "CurrentOCR_InvoiceRegExChanged";
    
            public const string CurrentPartsChanged = "CurrentPartsChanged";
    
@@ -127,6 +136,8 @@ namespace WaterNut.QuerySpace.OCR
            public const string CurrentLinesIDChanged = "OnCurrentLinesIDChanged";
    
            public const string CurrentOCR_FieldValueIDChanged = "OnCurrentOCR_FieldValueIDChanged";
+   
+           public const string CurrentOCR_InvoiceRegExIDChanged = "OnCurrentOCR_InvoiceRegExIDChanged";
    
            public const string CurrentPartsIDChanged = "OnCurrentPartsIDChanged";
    

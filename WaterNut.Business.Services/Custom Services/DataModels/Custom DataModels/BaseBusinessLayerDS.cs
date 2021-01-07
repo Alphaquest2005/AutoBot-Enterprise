@@ -157,6 +157,20 @@ namespace WaterNut.DataSpace
             get { return BaseDataModel._document_TypeCache; }
         }
 
+        public static FileTypes GetFileType(FileTypes fileTypes)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                return ctx.FileTypes
+                    .Include("FileTypeContacts.Contacts")
+                    .Include("FileTypeActions.Actions")
+                    .Include("AsycudaDocumentSetEx")
+                    .Include("ChildFileTypes")
+                    .Include("FileTypeMappings.FileTypeMappingRegExs")
+                    .First(x => x.Id == fileTypes.Id);
+            }
+        }
+
         public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
         {
             try
@@ -3963,15 +3977,15 @@ namespace WaterNut.DataSpace
                     //    .ToList();
 
 
-
-                    var res = ctx.xcuda_ASYCUDA
+                    var xcudaAsycudas = ctx.xcuda_ASYCUDA.Include(x => x.xcuda_Declarant)
                         .Where(
-                            x => /*(x.xcuda_Declarant == null && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey) ||*/
+                            x => x != null &&/*(x.xcuda_Declarant == null && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey) ||*/
                                 (x.xcuda_Declarant != null &&
                                  x.xcuda_Declarant.Number.Contains(docSet.Declarant_Reference_Number) &&
-                                (( x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false) ||
-                                 (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == true))
-                                 ))
+                                 (( x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false) ||
+                                  (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == true))
+                                )).ToList();
+                    var res = xcudaAsycudas
                         .GroupBy(x => x.xcuda_Declarant.Number)
                         .ToList();
 
@@ -4066,6 +4080,15 @@ namespace WaterNut.DataSpace
                 throw;
             }
 
+        }
+
+        public static FileTypes GetFileType(int ocrInvoicesFileTypeId)
+        {
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var fileType = ctx.FileTypes.FirstOrDefault(x => x.Id == ocrInvoicesFileTypeId);
+                return fileType != null ? BaseDataModel.GetFileType(fileType) : null;
+            }
         }
     }
 

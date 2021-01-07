@@ -83,6 +83,30 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<WarehouseInfo> WarehouseInfo { get; set; }
      
+        public DbSet<ShimentBLCharges> ShimentBLCharges { get; set; }
+     
+        public DbSet<ShipmentBL> ShipmentBL { get; set; }
+     
+        public DbSet<ShipmentBLDetails> ShipmentBLDetails { get; set; }
+     
+        public DbSet<ShipmentManifest> ShipmentManifest { get; set; }
+     
+        public DbSet<ShipmentManifestDetails> ShipmentManifestDetails { get; set; }
+     
+        public DbSet<ShipmentRider> ShipmentRider { get; set; }
+     
+        public DbSet<ShipmentFreight> ShipmentFreight { get; set; }
+     
+        public DbSet<ShipmentRiderDetails> ShipmentRiderDetails { get; set; }
+     
+        public DbSet<ShipmentFreightDetails> ShipmentFreightDetails { get; set; }
+     
+        public DbSet<ShipmentInvoice> ShipmentInvoice { get; set; }
+     
+        public DbSet<InvoiceDetails> ShipmentInvoiceDetails { get; set; }
+     
+        public DbSet<InvoiceExtraInfo> ShipmentInvoiceExtraInfo { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -122,6 +146,30 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new EntryDataFilesMap());
          
             modelBuilder.Configurations.Add(new WarehouseInfoMap());
+         
+            modelBuilder.Configurations.Add(new ShimentBLChargesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentBLMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentBLDetailsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentManifestMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentManifestDetailsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentRiderMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentFreightMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentRiderDetailsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentFreightDetailsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoiceMap());
+         
+            modelBuilder.Configurations.Add(new InvoiceDetailsMap());
+         
+            modelBuilder.Configurations.Add(new InvoiceExtraInfoMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

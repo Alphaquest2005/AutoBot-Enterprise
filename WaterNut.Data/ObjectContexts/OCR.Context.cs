@@ -69,6 +69,8 @@ namespace OCR.Business.Entities
      
         public DbSet<OCR_FieldValue> OCR_FieldValue { get; set; }
      
+        public DbSet<OCR_InvoiceRegEx> OCR_InvoiceRegEx { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -94,6 +96,8 @@ namespace OCR.Business.Entities
             modelBuilder.Configurations.Add(new ChildPartsMap());
          
             modelBuilder.Configurations.Add(new OCR_FieldValueMap());
+         
+            modelBuilder.Configurations.Add(new OCR_InvoiceRegExMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

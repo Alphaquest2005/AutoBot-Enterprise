@@ -185,6 +185,9 @@
     <Compile Include="FileTypeContacts.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>
+    <Compile Include="FileTypeMappingRegExs.cs">
+      <DependentUpon>CoreEntities.tt</DependentUpon>
+    </Compile>
     <Compile Include="FileTypeMappings.cs">
       <DependentUpon>CoreEntities.tt</DependentUpon>
     </Compile>

@@ -25,6 +25,8 @@ namespace OCR.Business.Entities
             this.End = new List<End>();
             this.Lines = new List<Lines>();
             this.Start = new List<Start>();
+            this.OCR_InvoiceRegEx = new List<OCR_InvoiceRegEx>();
+            this.OCR_InvoiceRegEx1 = new List<OCR_InvoiceRegEx>();
         }
 
         [DataMember]
@@ -63,6 +65,10 @@ namespace OCR.Business.Entities
         public List<Lines> Lines { get; set; }
         [DataMember]
         public List<Start> Start { get; set; }
+        [DataMember]
+        public List<OCR_InvoiceRegEx> OCR_InvoiceRegEx { get; set; }
+        [DataMember]
+        public List<OCR_InvoiceRegEx> OCR_InvoiceRegEx1 { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

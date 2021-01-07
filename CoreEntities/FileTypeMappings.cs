@@ -14,6 +14,11 @@ namespace CoreEntities
     
     public partial class FileTypeMappings
     {
+        public FileTypeMappings()
+        {
+            this.FileTypeMappingRegExs = new HashSet<FileTypeMappingRegExs>();
+        }
+    
         public int Id { get; set; }
         public int FileTypeId { get; set; }
         public string OriginalName { get; set; }
@@ -22,5 +27,6 @@ namespace CoreEntities
         public bool Required { get; set; }
     
         public virtual FileTypes FileTypes { get; set; }
+        public virtual ICollection<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Core.Common.CSV;
@@ -18,6 +21,7 @@ using MoreLinq;
 using TrackableEntities;
 using TrackableEntities.EF6;
 using AsycudaDocumentSetEntryData = EntryDataDS.Business.Entities.AsycudaDocumentSetEntryData;
+using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using InventoryItemSource = InventoryDS.Business.Entities.InventoryItemSource;
 
 namespace WaterNut.DataSpace
@@ -36,8 +40,8 @@ namespace WaterNut.DataSpace
             get { return instance; }
         }
 
-        public async Task<bool> ExtractEntryData(string fileType, string[] lines, string[] headings, 
-            List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId,
+        public async Task<bool> ExtractEntryData(FileTypes fileType, string[] lines, string[] headings, 
+            List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId,
             string droppedFilePath)
         {
             try
@@ -49,46 +53,23 @@ namespace WaterNut.DataSpace
                     throw new ApplicationException("Please select Document Set before proceding!");
 
                 }
+                var mappingFileType = GetHeadingFileType(headings);
+                if (mappingFileType.Id != fileType.Id) fileType = mappingFileType;
 
-                var mapping = new Dictionary<string, int>();
-                GetMappings(mapping, headings);
+                var mapping = new Dictionary<FileTypeMappings, int>();
+                GetMappings(mapping, headings, fileType);
 
-                if (fileType == "Sales" && (!mapping.ContainsKey("Tax") && !mapping.ContainsKey("TotalTax")) )
+                if (fileType.Type == "Sales" && mapping.Keys.Any(x => x.DestinationName == "Tax" || x.DestinationName == "TotalTax"))
                     throw new ApplicationException("Sales file dose not contain Tax");
+
+
+                
 
 
                 var eslst = GetCSVDataSummayList(lines, mapping, headings);
 
                 if (eslst == null) return true;
-
-
                 
-
-                var i = Array.IndexOf(headings,"Instructions");
-                List<string> instructions = new List<string>();
-                if (i > 0)
-                {
-                    instructions = lines.Select(x => x.Split(',')[i]).Where(x => !string.IsNullOrEmpty(x)).ToList();
-                }
-
-                if (instructions.Contains("Append")) overWriteExisting = false;
-                if (instructions.Contains("Replace")) overWriteExisting = true;
-
-
-                if (fileType == "Rider")
-                {
-                    ProcessCsvRider(fileType, docSet, overWriteExisting, emailId, fileTypeId,
-                        droppedFilePath, eslst);
-                    return true;
-                }
-
-                if (fileType == "ExpiredEntries")
-                {
-                    ProcessCsvExpiredEntries(fileType, docSet, overWriteExisting, emailId, fileTypeId,
-                        droppedFilePath, eslst);
-                    return true;
-                }
-
 
                 return await ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, fileTypeId,
                     droppedFilePath, eslst).ConfigureAwait(false);
@@ -101,12 +82,142 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void ProcessCsvRider(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath, List<CSVDataSummary> eslst)
+        private FileTypes GetHeadingFileType(string[] heading)
         {
-            throw new NotImplementedException();
+           
+            using (var ctx = new CoreEntitiesContext())
+            {
+                var res =
+                    ctx.FileTypes.Where(x => x.FileTypeMappings.All(z => heading.Contains(z.OriginalName))).OrderByDescending(x => x.FileTypeMappings.Count).FirstOrDefault();
+                return res != null ? BaseDataModel.GetFileType(res) : null;
+            }
+
+           
         }
 
-        private void ProcessCsvExpiredEntries(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath, List<CSVDataSummary> eslst)
+        private void ProcessCsvRider(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting,
+            int? emailId, int? fileTypeId, string droppedFilePath, List<dynamic> eslst)
+        {
+            try
+            {
+                const double kg = 0.453592;
+
+                var rawRiders = eslst.Select(x => ((IDictionary<string, object>) x))
+                    .GroupBy(x => new {ETA = x["ETA"], Date = x["Date"]})
+                    .Select(x => new{
+                        ETA = x.Key.Date,
+                        DocumentDate = x.Key.Date,
+                        ShipmentRiderDetails = x.Select(z => new 
+                        {
+                            Consignee = z["Consignee"].ToString(),
+                            Code = z["Code"].ToString(),
+                            Shipper = z["Shipper"].ToString(),
+                            TrackingNumber = z["TrackingNumber"].ToString(),
+                            Pieces =  Convert.ToInt32(z["Pieces"].ToString()),
+                            WarehouseCode = z["WarehouseCode"].ToString(),
+                            InvoiceNumber = z["InvoiceNumber"].ToString(),
+                            InvoiceTotal = z["InvoiceTotal"].ToString(),
+                            GrossWeightLB = Convert.ToDouble(z["GrossWeightLB"].ToString()),
+                            CubicFeet = Convert.ToDouble(z["VolumeCF"].ToString())
+                           
+
+                        }).ToList()
+
+                    }).ToList();
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    foreach (var rawRider in rawRiders)
+                    {
+                        DateTime eta = (DateTime) rawRider.ETA;
+                        var existingRider = ctx.ShipmentRider.FirstOrDefault(x => x.ETA == eta);
+                        if (existingRider != null) ctx.ShipmentRider.Remove(existingRider);
+                        
+                        var invoiceLst = rawRider.ShipmentRiderDetails.Select(x => new
+                            {
+                                Totalpkgs = x.Pieces,
+                                totalKgs = x.GrossWeightLB * kg,
+                                totalCF = x.CubicFeet,
+                                Number = x.InvoiceNumber.Contains(',') ? x.InvoiceNumber.Split(',') : x.InvoiceNumber.Split('/'),
+                                Total =  x.InvoiceTotal.Contains(',') ? x.InvoiceTotal.Split(',') : x.InvoiceTotal.Split('/'),
+                                
+                        })
+                            .ToList();
+                        var riderDetails = new List<ShipmentRiderDetails>();
+                        foreach (var i in invoiceLst)
+                        {
+                            var totalst = i.Total.Select(x => Convert.ToDouble(string.IsNullOrEmpty(x)?"1":x.Replace("$","").Trim())).ToList();
+                            var totalSum = totalst.Sum();
+                            var usedPieces = 0;
+                            var usedKgs = 0.0;
+                            var usedCF = 0.0;
+                            for (int j = 0; j < i.Number.Length; j++)
+                            {
+                                
+                                var rate = totalst[j] / totalSum;
+                                var pkgs = j == i.Number.Length - 1
+                                    ? i.Totalpkgs - usedPieces
+                                    : Convert.ToInt32(i.Totalpkgs * rate);
+                                var kgs = j == i.Number.Length - 1
+                                    ? i.totalKgs - usedKgs
+                                    : Convert.ToDouble(i.totalKgs * rate);
+                                var cf = j == i.Number.Length - 1
+                                    ? i.totalCF - usedCF
+                                    : Convert.ToDouble(i.totalCF * rate);
+                                var res = rawRider.ShipmentRiderDetails
+                                    .Where(x => x.InvoiceNumber.Contains(i.Number[j])).Select(
+                                        z =>
+                                            new ShipmentRiderDetails()
+                                            {
+                                                Consignee = z.Consignee,
+                                                Code = z.Code,
+                                                Shipper = z.Shipper,
+                                                TrackingNumber = z.TrackingNumber,
+                                                Pieces = pkgs,
+                                                WarehouseCode = z.WarehouseCode,
+                                                InvoiceNumber = i.Number[j],
+                                                InvoiceTotal = totalst[j],
+                                                GrossWeightKg = kgs,
+                                                CubicFeet = cf,
+                                                TrackingState = TrackingState.Added
+
+                                            });
+                                usedCF += cf;
+                                usedKgs += kgs;
+                                usedPieces += pkgs;
+                                riderDetails.AddRange(res);
+                                if (i.Number.Length != i.Total.Length) break;
+                            }
+
+                        }
+
+
+
+                        ctx.ShipmentRider.Add(new ShipmentRider()
+                        {
+                            ETA = (DateTime)rawRider.ETA,
+                            DocumentDate = (DateTime)rawRider.DocumentDate,
+                            FileTypeId = fileTypeId,
+                            EmailId = emailId,
+                            SourceFile = droppedFilePath,
+                            TrackingState = TrackingState.Added,
+                            ShipmentRiderDetails = riderDetails
+                        });
+                    }
+
+                    ctx.SaveChanges();
+
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private void ProcessCsvExpiredEntries(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath, List<dynamic> eslst)
         {
             using (var ctx = new CoreEntitiesContext())
             {
@@ -148,12 +259,71 @@ namespace WaterNut.DataSpace
 
         
 
-        public async Task<bool> ProcessCsvSummaryData(string fileType, List<AsycudaDocumentSet> docSet,
-            bool overWriteExisting, int? emailId,
-            int? fileTypeId, string droppedFilePath, List<CSVDataSummary> eslst)
+        public async Task<bool> ProcessCsvSummaryData(FileTypes fileType, List<AsycudaDocumentSet> docSet,
+            bool overWriteExisting, int emailId,
+            int fileTypeId, string droppedFilePath, List<dynamic> eslst)
         {
             try
             {
+               
+                var instructionslst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList())
+                    .Where(x => x.ContainsKey("Instructions"))
+                                            .Select(x =>x["Instructions"].ToString()).ToList();
+                List<string> instructions = new List<string>();
+                if (instructionslst.Any())
+                {
+                    instructions = instructionslst.SelectMany(x => x.Split(',')).Where(x => !string.IsNullOrEmpty(x)).ToList();
+                }
+
+                if (instructions.Contains("Append")) overWriteExisting = false;
+                if (instructions.Contains("Replace")) overWriteExisting = true;
+
+
+                if (fileType.Type == "Rider")
+                {
+                    ProcessCsvRider(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+                if (fileType.Type == "Manifest")
+                {
+                    ProcessManifest(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+                if (fileType.Type == "BL")
+                {
+                    ProcessBL(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+                if (fileType.Type == "Freight")
+                {
+                    ProcessFreight(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+                if (fileType.Type == "Shipment Invoice")
+                {
+                    ProcessShipmentInvoice(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+                if (fileType.Type == "ExpiredEntries")
+                {
+                    ProcessCsvExpiredEntries(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                        droppedFilePath, eslst);
+                    return true;
+                }
+
+
+
+
                 await ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                 await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                 await ImportEntryDataFile(fileType, eslst.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(),
@@ -171,7 +341,274 @@ namespace WaterNut.DataSpace
 
         }
 
-        private async Task ImportEntryDataFile(string fileType, List<CSVDataSummary> eslst, int? emailId,
+        private void ProcessShipmentInvoice(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        {
+            try
+            {
+                var itms = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).ToList();
+                var lst = itms.Select(x => ((IDictionary<string, object>)x))
+                    .Select(x => new ShipmentInvoice()
+                    {
+
+
+                        InvoiceNo = x["InvoiceNo"].ToString(),
+                        InvoiceDate = DateTime.Parse(x["InvoiceDate"].ToString()),
+                        InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null,//Because of MPI not 
+                        SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null,
+                        ImportedLines = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count,
+                        SupplierCode = x.ContainsKey("SupplierCode") ? x["SupplierCode"].ToString() : null,
+                        FileLineNumber = itms.IndexOf(x) + 1,
+                        Currency = x.ContainsKey("Currency") ? x["Currency"].ToString() : null,
+                        TotalInternalFreight = x.ContainsKey("TotalInternalFreight") ? Convert.ToDouble(x["TotalInternalFreight"].ToString()) : (double?)null,
+                        TotalOtherCost = x.ContainsKey("TotalOtherCost")? Convert.ToDouble(x["TotalOtherCost"].ToString()): (double?) null,
+                        TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null,
+                        TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null,
+                        InvoiceDetails = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
+                                                .Select(z => new InvoiceDetails()
+                                                {
+                                                    Quantity = Convert.ToDouble(z["Quantity"].ToString()),
+                                                    ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString(): null,
+                                                    ItemDescription = z["ItemDescription"].ToString(),
+                                                    Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
+                                                    Cost = Convert.ToDouble(z["Cost"].ToString()),
+                                                    TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
+                                                    LineNumber = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1,
+                                                    FileLineNumber = Convert.ToInt32(z["FileLineNumber"].ToString()),
+                                                    TrackingState = TrackingState.Added,
+
+                                                }).ToList(),
+                        InvoiceExtraInfo = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
+                            .Select(z => new InvoiceExtraInfo()
+                            {
+                                Info = z["Quantity"].ToString(),
+                                Value = z["ItemNumber"].ToString(),
+                                TrackingState = TrackingState.Added,
+                            }).ToList(),
+
+                        EmailId = emailId,
+                        SourceFile = droppedFilePath,
+                        FileTypeId = fileTypeId,
+                        TrackingState = TrackingState.Added,
+
+                    }).ToList();
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    foreach (var manifest in lst)
+                    {
+                        var existingManifest =
+                            ctx.ShipmentInvoice.FirstOrDefault(
+                                x => x.InvoiceNo == manifest.InvoiceNo);
+                        if (existingManifest != null)
+                            ctx.ShipmentInvoice.Remove(existingManifest);
+                        ctx.ShipmentInvoice.Add(manifest);
+
+                    }
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private void ProcessFreight(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        {
+            try
+            {
+                var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
+                    .Select(x => new ShipmentFreight()
+                    {
+
+                        
+                        InvoiceNumber = x["InvoiceNumber"].ToString(),
+                        Consignee = x["Consignee"].ToString(),
+                        InvoiceDate = DateTime.ParseExact(x["ETA"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        DueDate =  DateTime.ParseExact(x["DueDate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        ETA = DateTime.ParseExact(x["ETA"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        BLNumber = x["BLNumber"].ToString(),
+                        InvoiceTotal = Convert.ToDouble(x["InvoiceTotal"].ToString()),
+                        ShipmentFreightDetails = ((List<IDictionary<string, object>>)x["ShipmentFreightDetails"])
+                                                .Select(z => new ShipmentFreightDetails()
+                                                {
+                                                    Quantity = Convert.ToDouble(z["Quantity"].ToString()),
+                                                    Description = z["Description"].ToString(),
+                                                    WarehouseCode = z["WarehouseCode"].ToString(),
+                                                    Rate = Convert.ToDouble(z["Rate"].ToString()),
+                                                    Total = Convert.ToDouble(z["Amount"].ToString()),
+                                                    TrackingState = TrackingState.Added,
+
+                                                }).ToList(),
+
+                        EmailId = emailId,
+                        SourceFile = droppedFilePath,
+                        FileTypeId = fileTypeId,
+                        TrackingState = TrackingState.Added,
+
+                    }).ToList();
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    foreach (var manifest in lst)
+                    {
+                        var existingManifest =
+                            ctx.ShipmentFreight.FirstOrDefault(
+                                x => x.InvoiceNumber == manifest.InvoiceNumber);
+                        if (existingManifest != null)
+                            ctx.ShipmentFreight.Remove(existingManifest);
+                        ctx.ShipmentFreight.Add(manifest);
+
+                    }
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private void ProcessBL(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        {
+            try
+            {
+                var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
+                    .Select(x => new ShipmentBL()
+                    {
+                        
+                        //RegistrationNumber = x["RegistrationNumber"].ToString(),
+                        Reference = x["Reference"].ToString(),
+                        Voyage = x["Voyage"].ToString(),
+                        //ETD = DateTime.ParseExact(x["ETD"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        //ETA = DateTime.ParseExact(x["ETA"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        Vessel = x["Vessel"].ToString(),
+                        BLNumber = x["BLNumber"].ToString(),
+                        //LineNumber = Convert.ToInt32(x["LineNumber"].ToString()),
+                        Container = x["Container"].ToString(),
+                        Seals = x["Seals"].ToString(),
+                        Type = x["Type"].ToString(),
+                        //CargoReporter = x["CargoReporter"].ToString(),
+                        //Exporter = x["Exporter"].ToString(),
+                        //Consignee = x["Consignee"].ToString(),
+                        //Notify = x["Notify"].ToString(),
+                        PackagesNo = Convert.ToInt32(x["PackagesNo"].ToString()),
+                        PackagesType = x["PackagesType"].ToString(),
+                        WeightKG = Convert.ToDouble(x["WeightKG"].ToString()),
+                        VolumeM3 = Convert.ToDouble(x["VolumeM3"].ToString()),
+                        //Freight = Convert.ToDouble(x["Freight"].ToString()),
+                        //LocationOfGoods = x["LocationOfGoods"].ToString(),
+                        //Goods = x["Goods"].ToString(),
+                        //Marks = x["Marks"].ToString(),
+                        //Containers = Convert.ToInt32(x["Containers"].ToString()),
+                        ShipmentBLDetails = ((List<IDictionary<string, object>>)x["ShipmentBLDetails"])
+                                                .Select(z => new ShipmentBLDetails()
+                                                                {
+                                                                    Quantity = Convert.ToInt32(z["Quantity"].ToString()),
+                                                                    BLNumber = x["BLNumber"].ToString(),
+                                                                    Marks = z["Marks"].ToString(),
+                                                                    PackageType = z["PackageType"].ToString(),
+                                                                    TrackingState = TrackingState.Added,
+                                                               
+                                                            }).ToList(),
+
+                        EmailId = emailId,
+                        SourceFile = droppedFilePath,
+                        FileTypeId = fileTypeId,
+                        TrackingState = TrackingState.Added,
+
+                    }).ToList();
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    foreach (var manifest in lst)
+                    {
+                        var existingManifest =
+                            ctx.ShipmentBL.FirstOrDefault(
+                                x => x.BLNumber == manifest.BLNumber);
+                        if (existingManifest != null)
+                            ctx.ShipmentBL.Remove(existingManifest);
+                        ctx.ShipmentBL.Add(manifest);
+
+                    }
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private void ProcessManifest(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        {
+            try
+            {
+                var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>) x))
+                    .Select(x => new ShipmentManifest()
+                    {
+                        RegistrationDate = DateTime.ParseExact(x["RegistrationDate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        RegistrationNumber = x["RegistrationNumber"].ToString(),
+                        CustomsOffice = x["CustomsOffice"].ToString(),
+                        Voyage = x["Voyage"].ToString(),
+                        ETD = DateTime.ParseExact(x["ETD"].ToString(),"dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        ETA = DateTime.ParseExact(x["ETA"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        Vessel = x["Vessel"].ToString(),
+                        WayBill = x["WayBill"].ToString(),
+                        LineNumber = Convert.ToInt32(x["LineNumber"].ToString()),
+                        LoadingPort = x["LoadingPort"].ToString(),
+                        ModeOfTransport = x["ModeOfTransport"].ToString(),
+                        TypeOfBL = x["TypeOfBL"].ToString(),
+                        //CargoReporter = x["CargoReporter"].ToString(),
+                        //Exporter = x["Exporter"].ToString(),
+                        //Consignee = x["Consignee"].ToString(),
+                        //Notify = x["Notify"].ToString(),
+                        Packages = Convert.ToInt32(x["Packages"].ToString()),
+                        PackageType = x["PackageType"].ToString(),
+                        GrossWeightKG = Convert.ToDouble(x["GrossWeightKG"].ToString()),
+                        Volume = Convert.ToDouble(x["Volume"].ToString()),
+                        //Freight = Convert.ToDouble(x["Freight"].ToString()),
+                        LocationOfGoods = x["LocationOfGoods"].ToString(),
+                        Goods = x["Goods"].ToString(),
+                        Marks = x["Marks"].ToString(),
+                        //Containers = Convert.ToInt32(x["Containers"].ToString()),
+                        EmailId = emailId,
+                        SourceFile = droppedFilePath,
+                        FileTypeId = fileTypeId,
+                        TrackingState = TrackingState.Added,
+
+                    }).ToList();
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    foreach (var manifest in lst)
+                    {
+                        var existingManifest =
+                            ctx.ShipmentManifest.FirstOrDefault(
+                                x => x.RegistrationNumber == manifest.RegistrationNumber);
+                        if (existingManifest != null)
+                            ctx.ShipmentManifest.Remove(existingManifest);
+                        ctx.ShipmentManifest.Add(manifest);
+
+                    }
+
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        private async Task ImportEntryDataFile(FileTypes fileType, List<dynamic> eslst, int? emailId,
             int? fileTypeId, string droppedFilePath, int applicationSettingsId)
         {
             using (var ctx = new EntryDataDSContext())
@@ -186,7 +623,7 @@ namespace WaterNut.DataSpace
                         SourceFile = droppedFilePath,
                         ApplicationSettingsId = applicationSettingsId,
                         SourceRow = line.SourceRow,
-                        FileType = fileType,
+                        FileType = fileType.Type,
                         EmailId = emailId,
                         FileTypeId = fileTypeId,
                         EntryDataId = line.EntryDataId,
@@ -209,7 +646,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private async Task<bool> ImportEntryData(string fileType, List<CSVDataSummary> eslst,
+        private async Task<bool> ImportEntryData(FileTypes fileType, List<dynamic> eslst,
             List<AsycudaDocumentSet> docSet,
             bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath)
         {
@@ -306,8 +743,9 @@ namespace WaterNut.DataSpace
                     foreach (var item in ed)
 
                     {
+                        string entryDataId = item.EntryData.EntryDataId;
                         if (!item.EntryDataDetails.Any())
-                            throw new ApplicationException(item.EntryData.EntryDataId + " has no details");
+                            throw new ApplicationException(entryDataId + " has no details");
 
                         List<EntryDataDetails> details = new List<EntryDataDetails>();
 
@@ -316,11 +754,12 @@ namespace WaterNut.DataSpace
                     //var oldeds = await GetEntryData(item.EntryData.EntryDataId, docSet,
                     //    item.EntryData.ApplicationSettingsId).ConfigureAwait(false);
 
-                    var oldeds = new EntryDataDSContext().EntryData
+                        int applicationSettingsId = item.EntryData.ApplicationSettingsId;
+                        var oldeds = new EntryDataDSContext().EntryData
                             .Include("AsycudaDocumentSets")
                             .Include("EntryDataDetails")
-                            .Where(x => x.EntryDataId == item.EntryData.EntryDataId 
-                                        && x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId ).ToList()
+                            .Where(x => x.EntryDataId == entryDataId 
+                                        && x.ApplicationSettingsId == applicationSettingsId ).ToList()
                             .Where(x => !docSet.Select(z => z.AsycudaDocumentSetId).Except(x.AsycudaDocumentSets.Select(z => z.AsycudaDocumentSetId)).Any())
                             .ToList();
 
@@ -390,16 +829,16 @@ namespace WaterNut.DataSpace
 
 
 
-                            switch (fileType)
+                            switch (fileType.Type)
                             {
                                 case "Sales":
 
                                     var EDsale = new Sales(true)
                                     {
-                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                        EntryDataId = item.EntryData.EntryDataId,
+                                        ApplicationSettingsId = applicationSettingsId,
+                                        EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                        INVNumber = item.EntryData.EntryDataId,
+                                        INVNumber = entryDataId,
                                         CustomerName = item.EntryData.CustomerName,
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
@@ -428,11 +867,11 @@ namespace WaterNut.DataSpace
                                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
                                         Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
                                         throw new ApplicationException(
-                                            $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
+                                            $"{entryDataId} has no Invoice Total. Please check File.");
                                     var EDinv = new Invoices(true)
                                     {
-                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                        EntryDataId = item.EntryData.EntryDataId,
+                                        ApplicationSettingsId = applicationSettingsId,
+                                        EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
@@ -471,13 +910,13 @@ namespace WaterNut.DataSpace
                                     if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true &&
                                         Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
                                         throw new ApplicationException(
-                                            $"{item.EntryData.EntryDataId} has no Invoice Total. Please check File.");
+                                            $"{entryDataId} has no Invoice Total. Please check File.");
                                     var EDpo = new PurchaseOrders(true)
                                     {
-                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                        EntryDataId = item.EntryData.EntryDataId,
+                                        ApplicationSettingsId = applicationSettingsId,
+                                        EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                        PONumber = item.EntryData.EntryDataId,
+                                        PONumber = entryDataId,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
                                         TotalFreight = item.f.Sum(x => x.TotalFreight),
@@ -535,10 +974,10 @@ namespace WaterNut.DataSpace
                                 case "OPS":
                                     var EDops = new OpeningStock(true)
                                     {
-                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                        EntryDataId = item.EntryData.EntryDataId,
+                                        ApplicationSettingsId = applicationSettingsId,
+                                        EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
-                                        OPSNumber = item.EntryData.EntryDataId,
+                                        OPSNumber = entryDataId,
                                         TrackingState = TrackingState.Added,
                                         TotalFreight = item.f.Sum(x => x.TotalFreight),
                                         TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
@@ -567,8 +1006,8 @@ namespace WaterNut.DataSpace
                                 case "ADJ":
                                     var EDadj = new Adjustments(true)
                                     {
-                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                        EntryDataId = item.EntryData.EntryDataId,
+                                        ApplicationSettingsId = applicationSettingsId,
+                                        EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         TrackingState = TrackingState.Added,
                                         SupplierCode = item.EntryData.Supplier,
@@ -600,8 +1039,8 @@ namespace WaterNut.DataSpace
                                 case "DIS":
                                     var EDdis = new Adjustments(true)
                                     {
-                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                        EntryDataId = item.EntryData.EntryDataId,
+                                        ApplicationSettingsId = applicationSettingsId,
+                                        EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
@@ -633,8 +1072,8 @@ namespace WaterNut.DataSpace
                                 case "RCON":
                                     var EDrcon = new Adjustments(true)
                                     {
-                                        ApplicationSettingsId = item.EntryData.ApplicationSettingsId,
-                                        EntryDataId = item.EntryData.EntryDataId,
+                                        ApplicationSettingsId = applicationSettingsId,
+                                        EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         TrackingState = TrackingState.Added,
                                         TotalFreight = item.f.Sum(x => x.TotalFreight),
@@ -743,10 +1182,11 @@ namespace WaterNut.DataSpace
                             foreach (var e in item.InventoryItems
                                 .Where(x => !string.IsNullOrEmpty(x.ItemAlias) && x.ItemAlias != x.ItemNumber).ToList())
                             {
+                                string itemNumber = e.ItemNumber;
                                 var inventoryItem = ctx.InventoryItems
                                     .Include("InventoryItemAlias")
-                                    .First(x => x.ApplicationSettingsId == item.EntryData.ApplicationSettingsId &&
-                                                x.ItemNumber == e.ItemNumber);
+                                    .First(x => x.ApplicationSettingsId == applicationSettingsId &&
+                                                x.ItemNumber == itemNumber);
                                 if (inventoryItem == null) continue;
                                 {
                                     if (inventoryItem.InventoryItemAlias.FirstOrDefault(x =>
@@ -838,359 +1278,378 @@ namespace WaterNut.DataSpace
         }
 
 
-        private void GetMappings(Dictionary<string, int> mapping, string[] headings)
+        private void GetMappings(Dictionary<FileTypeMappings, int> mapping, string[] headings, FileTypes fileType)
         {
+
             for (var i = 0; i < headings.Count(); i++)
             {
                 var h = headings[i].Trim().ToUpper();
 
                 if (h == "") continue;
 
-                if ("Invoice|INVNO|Reciept #|NUM|Invoice #|Invoice#|Order Reference|Order Ref|Invoice Number".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                var ftm = fileType.FileTypeMappings.FirstOrDefault(x => x.OriginalName.ToUpper().Trim() == h.Trim());
+                if (ftm != null)
                 {
-                    mapping.Add("EntryDataId", i);
-                    continue;
+                    mapping.Add(ftm, i);
                 }
-
-                if ("DATE|Invoice Date|Order Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+                else
                 {
-                    mapping.Add("EntryDataDate", i);
-                    continue;
+                    
                 }
-
-                if ("ItemNumber|ITEM-#|Item Code|Product Code|Order Lines/Product/Internal Reference".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("ItemNumber", i);
-                    continue;
-                }
-
-                if ("DESCRIPTION|MEMO|Item Description|ItemDescription|Description 1|Product Description|Order Lines/Product/Name".ToUpper().Split('|')
-                    .Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("ItemDescription", i);
-                    continue;
-                }
-
-                if ("QUANTITY|QTY|Quantity ordered|Order Lines/Quantity".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Quantity", i);
-                    continue;
-                }
-
-                if ("ItemAlias".ToUpper().Split('|').Any(x => x == h.ToUpper())) //Manufact. SKU|
-                {
-                    mapping.Add("ItemAlias", i);
-                    continue;
-                }
-
-                if ("PRICE|COST|USD|Unit Price|Order Lines/Unit Price".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Cost", i);
-                    continue;
-                }
-
-                if ("TotalCost|Total Cost".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalCost", i);
-                    continue;
-                }
-
-                if ("UNITS".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Units", i);
-                    continue;
-                }
-
-                if ("Customer".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("CustomerName", i);
-                    continue;
-                }
-
-                if ("TAX1|Tax".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Tax", i);
-                    continue;
-                }
-
-                if ("Taxes|TotalTax".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalTax", i);
-                    continue;
-                }
-
-                if ("TariffCode".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TariffCode", i);
-                    continue;
-                }
-
-                if ("Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Freight", i);
-                    continue;
-                }
-
-                if ("Weight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Weight", i);
-                    continue;
-                }
-
-                if ("InternalFreight|Internal Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("InternalFreight", i);
-                    continue;
-                }
-
-                if ("Insurance".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Insurance", i);
-                    continue;
-                }
-
-                if ("Other Cost|OtherCost".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("OtherCost", i);
-                    continue;
-                }
-
-                if ("Deductions".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Deductions", i);
-                    continue;
-                }
-
-                if ("Total Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalFreight", i);
-                    continue;
-                }
-
-                if ("Total Weight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalWeight", i);
-                    continue;
-                }
-
-                if ("TotalInternalFreight|Total Internal Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalInternalFreight", i);
-                    continue;
-                }
-
-                if ("Total Insurance".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalInsurance", i);
-                    continue;
-                }
-
-                if ("Total Other Cost|TotalOtherCost".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalOtherCost", i);
-                    continue;
-                }
-
-                if ("Total Deductions".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("TotalDeductions", i);
-                    continue;
-                }
-
-                //-------------------------
-                if ("Cnumber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("pCNumber", i);
-                    continue;
-                }
-
-                if ("Invoice Quantity|From Quantity".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("InvoiceQuantity", i);
-                    continue;
-                }
-
-                if ("Received Quantity|To Quantity".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("ReceivedQuantity", i);
-                    continue;
-                }
-
-                if ("Currency".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Currency", i);
-                    continue;
-                }
-
-                if ("Comment".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Comment", i);
-                    continue;
-                }
-
-                if ("PreviousInvoiceNumber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("PreviousInvoiceNumber", i);
-                    continue;
-                }
-
-                if ("EffectiveDate|Effective Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("EffectiveDate", i);
-                    continue;
-                }
-
-                if ("Supplier|Supplier Code".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("SupplierCode", i);
-                    continue;
-                }
-
-                if ("SupplierName|Supplier Name".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("SupplierName", i);
-                    continue;
-                }
-
-                if ("SupplierAddress|Supplier Address".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("SupplierAddress", i);
-                    continue;
-                }
-
-                if ("CountryCode(2)|Country Code|CountryCode".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("CountryCode", i);
-                    continue;
-                }
-
-                if ("Invoice Total|InvoiceTotal|Total multiple items on invoice".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("InvoiceTotal", i);
-                    continue;
-                }
-
-                if ("Document Type|DocumentType".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("DocumentType", i);
-                    continue;
-                }
-
-                if ("Supplier Invoice#|SupplierInvoice#".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("SupplierInvoiceNo", i);
-                    continue;
-                }
-
-                if ("Inventory Source|InventorySource".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("InventorySource", i);
-                    continue;
-                }
-
-                if ("Packages|Package".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Packages", i);
-                    continue;
-                }
-
-                if ("Warehouse|WarehouseNo".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("WarehouseNo", i);
-                    continue;
-                }
-
-                if ("Previous Declaration".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("PreviousCNumber", i);
-                    continue;
-                }
-
-                if ("Financial Information".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("FinancialInformation", i);
-                    continue;
-                }
-
-                //////////////////////////// Expired Entries
-                /// //Gen. Proc.,Reg. Serial,Reg. Nber,Reg. Date,Ast. Serial,Ast. Nber,Ast. Date,Declarant Code,Declarant Ref.,Exporter,Consignee,Expiration
-               
-              
-                if ("Office".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Office", i);
-                    continue;
-                }
-
-                if ("Gen. Proc.".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("GeneralProcedure", i);
-                    continue;
-                }
-
-                if ("Reg. Serial".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("RegistrationSerial", i);
-                    continue;
-                }
-
-                if ("Reg. Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("RegistrationDate", i);
-                    continue;
-                }
-                if ("Reg. Nber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("RegistrationNumber", i);
-                    continue;
-                }
-                if ("Ast. Serial".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("AssessmentSerial", i);
-                    continue;
-                }
-                if ("Ast. Nber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("AssessmentNumber", i);
-                    continue;
-                }
-                if ("Ast. Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("AssessmentDate", i);
-                    continue;
-                }
-                if ("Declarant Code".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("DeclarantCode", i);
-                    continue;
-                }
-                if ("Declarant Ref.".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("DeclarantReference", i);
-                    continue;
-                }
-                if ("Exporter".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("Exporter", i);
-                    continue;
-                }
-                if ("Expiration".ToUpper().Split('|').Any(x => x == h.ToUpper()))
-                {
-                    mapping.Add("ExpirationDate", i);
-                    continue;
-                }
-
             }
+
+
+        //for (var i = 0; i < headings.Count(); i++)
+            //{
+            //    var h = headings[i].Trim().ToUpper();
+
+            //    if (h == "") continue;
+
+            //    if ("Invoice|INVNO|Reciept #|NUM|Invoice #|Invoice#|Order Reference|Order Ref|Invoice Number".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("EntryDataId", i);
+            //        continue;
+            //    }
+
+            //    if ("DATE|Invoice Date|Order Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("EntryDataDate", i);
+            //        continue;
+            //    }
+
+            //    if ("ItemNumber|ITEM-#|Item Code|Product Code|Order Lines/Product/Internal Reference".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("ItemNumber", i);
+            //        continue;
+            //    }
+
+            //    if ("DESCRIPTION|MEMO|Item Description|ItemDescription|Description 1|Product Description|Order Lines/Product/Name".ToUpper().Split('|')
+            //        .Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("ItemDescription", i);
+            //        continue;
+            //    }
+
+            //    if ("QUANTITY|QTY|Quantity ordered|Order Lines/Quantity".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Quantity", i);
+            //        continue;
+            //    }
+
+            //    if ("ItemAlias".ToUpper().Split('|').Any(x => x == h.ToUpper())) //Manufact. SKU|
+            //    {
+            //        mapping.Add("ItemAlias", i);
+            //        continue;
+            //    }
+
+            //    if ("PRICE|COST|USD|Unit Price|Order Lines/Unit Price".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Cost", i);
+            //        continue;
+            //    }
+
+            //    if ("TotalCost|Total Cost".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalCost", i);
+            //        continue;
+            //    }
+
+            //    if ("UNITS".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Units", i);
+            //        continue;
+            //    }
+
+            //    if ("Customer".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("CustomerName", i);
+            //        continue;
+            //    }
+
+            //    if ("TAX1|Tax".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Tax", i);
+            //        continue;
+            //    }
+
+            //    if ("Taxes|TotalTax".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalTax", i);
+            //        continue;
+            //    }
+
+            //    if ("TariffCode".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TariffCode", i);
+            //        continue;
+            //    }
+
+            //    if ("Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Freight", i);
+            //        continue;
+            //    }
+
+            //    if ("Weight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Weight", i);
+            //        continue;
+            //    }
+
+            //    if ("InternalFreight|Internal Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("InternalFreight", i);
+            //        continue;
+            //    }
+
+            //    if ("Insurance".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Insurance", i);
+            //        continue;
+            //    }
+
+            //    if ("Other Cost|OtherCost".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("OtherCost", i);
+            //        continue;
+            //    }
+
+            //    if ("Deductions".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Deductions", i);
+            //        continue;
+            //    }
+
+            //    if ("Total Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalFreight", i);
+            //        continue;
+            //    }
+
+            //    if ("Total Weight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalWeight", i);
+            //        continue;
+            //    }
+
+            //    if ("TotalInternalFreight|Total Internal Freight".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalInternalFreight", i);
+            //        continue;
+            //    }
+
+            //    if ("Total Insurance".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalInsurance", i);
+            //        continue;
+            //    }
+
+            //    if ("Total Other Cost|TotalOtherCost".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalOtherCost", i);
+            //        continue;
+            //    }
+
+            //    if ("Total Deductions".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("TotalDeductions", i);
+            //        continue;
+            //    }
+
+            //    //-------------------------
+            //    if ("Cnumber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("pCNumber", i);
+            //        continue;
+            //    }
+
+            //    if ("Invoice Quantity|From Quantity".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("InvoiceQuantity", i);
+            //        continue;
+            //    }
+
+            //    if ("Received Quantity|To Quantity".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("ReceivedQuantity", i);
+            //        continue;
+            //    }
+
+            //    if ("Currency".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Currency", i);
+            //        continue;
+            //    }
+
+            //    if ("Comment".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Comment", i);
+            //        continue;
+            //    }
+
+            //    if ("PreviousInvoiceNumber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("PreviousInvoiceNumber", i);
+            //        continue;
+            //    }
+
+            //    if ("EffectiveDate|Effective Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("EffectiveDate", i);
+            //        continue;
+            //    }
+
+            //    if ("Supplier|Supplier Code".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("SupplierCode", i);
+            //        continue;
+            //    }
+
+            //    if ("SupplierName|Supplier Name".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("SupplierName", i);
+            //        continue;
+            //    }
+
+            //    if ("SupplierAddress|Supplier Address".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("SupplierAddress", i);
+            //        continue;
+            //    }
+
+            //    if ("CountryCode(2)|Country Code|CountryCode".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("CountryCode", i);
+            //        continue;
+            //    }
+
+            //    if ("Invoice Total|InvoiceTotal|Total multiple items on invoice".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("InvoiceTotal", i);
+            //        continue;
+            //    }
+
+            //    if ("Document Type|DocumentType".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("DocumentType", i);
+            //        continue;
+            //    }
+
+            //    if ("Supplier Invoice#|SupplierInvoice#".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("SupplierInvoiceNo", i);
+            //        continue;
+            //    }
+
+            //    if ("Inventory Source|InventorySource".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("InventorySource", i);
+            //        continue;
+            //    }
+
+            //    if ("Packages|Package".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Packages", i);
+            //        continue;
+            //    }
+
+            //    if ("Warehouse|WarehouseNo".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("WarehouseNo", i);
+            //        continue;
+            //    }
+
+            //    if ("Previous Declaration".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("PreviousCNumber", i);
+            //        continue;
+            //    }
+
+            //    if ("Financial Information".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("FinancialInformation", i);
+            //        continue;
+            //    }
+
+            //    //////////////////////////// Expired Entries
+            //    /// //Gen. Proc.,Reg. Serial,Reg. Nber,Reg. Date,Ast. Serial,Ast. Nber,Ast. Date,Declarant Code,Declarant Ref.,Exporter,Consignee,Expiration
+
+
+            //    if ("Office".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Office", i);
+            //        continue;
+            //    }
+
+            //    if ("Gen. Proc.".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("GeneralProcedure", i);
+            //        continue;
+            //    }
+
+            //    if ("Reg. Serial".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("RegistrationSerial", i);
+            //        continue;
+            //    }
+
+            //    if ("Reg. Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("RegistrationDate", i);
+            //        continue;
+            //    }
+            //    if ("Reg. Nber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("RegistrationNumber", i);
+            //        continue;
+            //    }
+            //    if ("Ast. Serial".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("AssessmentSerial", i);
+            //        continue;
+            //    }
+            //    if ("Ast. Nber".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("AssessmentNumber", i);
+            //        continue;
+            //    }
+            //    if ("Ast. Date".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("AssessmentDate", i);
+            //        continue;
+            //    }
+            //    if ("Declarant Code".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("DeclarantCode", i);
+            //        continue;
+            //    }
+            //    if ("Declarant Ref.".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("DeclarantReference", i);
+            //        continue;
+            //    }
+            //    if ("Exporter".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("Exporter", i);
+            //        continue;
+            //    }
+            //    if ("Expiration".ToUpper().Split('|').Any(x => x == h.ToUpper()))
+            //    {
+            //        mapping.Add("ExpirationDate", i);
+            //        continue;
+            //    }
+
+            //}
         }
 
 
-        private List<CSVDataSummary> GetCSVDataSummayList(string[] lines, Dictionary<string, int> mapping,
+        private List<dynamic> GetCSVDataSummayList(string[] lines, Dictionary<FileTypeMappings, int> mapping,
             string[] headings)
         {
             int i = 0;
             try
             {
-                var eslst = new List<CSVDataSummary>();
+                var eslst = new List<dynamic>();
 
                 for (i = 1; i < lines.Count(); i++)
                 {
@@ -1215,7 +1674,7 @@ namespace WaterNut.DataSpace
 
 
 
-        private CSVDataSummary GetCSVDataFromLine(string line, Dictionary<string, int> map, string[] headings)
+        private dynamic GetCSVDataFromLine(string line, Dictionary<FileTypeMappings, int> map, string[] headings)
         {
             var ImportChecks =
                 new Dictionary<string, Func<CSVDataSummary, Dictionary<string, int>, string[], Tuple<bool, string>>>()
@@ -1272,290 +1731,294 @@ namespace WaterNut.DataSpace
                     "Quantity",
                     (c, mapping, splits) => c.Quantity = Convert.ToSingle(splits[mapping["Quantity"]].Replace("�", ""))
                 },
-                {
-                    "Units",
-                    (c, mapping, splits) => c.Units = mapping.ContainsKey("Units") ? splits[mapping["Units"]] : ""
-                },
-                {
-                    "CustomerName",
-                    (c, mapping, splits) => c.CustomerName =
-                        mapping.ContainsKey("CustomerName") ? splits[mapping["CustomerName"]] : ""
-                },
-                {
-                    "Tax",
-                    (c, mapping, splits) =>
-                        c.Tax = Convert.ToSingle(mapping.ContainsKey("Tax") ? splits[mapping["Tax"]] : "0")
-                },
-                {
-                    "TotalTax",
-                    (c, mapping, splits) =>
-                        c.Tax = Convert.ToSingle(mapping.ContainsKey("TotalTax") ? splits[mapping["TotalTax"]] : "0")
-                },
-                {
-                    "TariffCode",
-                    (c, mapping, splits) =>
-                        c.TariffCode = mapping.ContainsKey("TariffCode") ? splits[mapping["TariffCode"]] : ""
-                },
-                {
-                    "SupplierCode",
-                    (c, mapping, splits) => c.SupplierCode =
-                        mapping.ContainsKey("SupplierCode") ? splits[mapping["SupplierCode"]] : ""
-                },
-                {
-                    "Freight",
-                    (c, mapping, splits) =>
-                        c.Freight = Convert.ToSingle(
-                            mapping.ContainsKey("Freight") && !string.IsNullOrEmpty(splits[mapping["Freight"]])
-                                ? splits[mapping["Freight"]]
-                                : "0")
-                },
-                {
-                    "Weight",
-                    (c, mapping, splits) =>
-                        c.Weight = Convert.ToSingle(
-                            mapping.ContainsKey("Weight") && !string.IsNullOrEmpty(splits[mapping["Weight"]])
-                                ? splits[mapping["Weight"]]
-                                : "0")
-                },
-                {
-                    "InternalFreight",
-                    (c, mapping, splits) => c.InternalFreight = Convert.ToSingle(
-                        mapping.ContainsKey("InternalFreight") &&
-                        !string.IsNullOrEmpty(splits[mapping["InternalFreight"]])
-                            ? splits[mapping["InternalFreight"]]
-                            : "0")
-                },
-                {
-                    "TotalFreight",
-                    (c, mapping, splits) => c.TotalFreight = Convert.ToSingle(
-                        mapping.ContainsKey("TotalFreight") && !string.IsNullOrEmpty(splits[mapping["TotalFreight"]])
-                            ? splits[mapping["TotalFreight"]]
-                            : "0")
-                },
-                {
-                    "TotalWeight",
-                    (c, mapping, splits) => c.TotalWeight = Convert.ToSingle(
-                        mapping.ContainsKey("TotalWeight") && !string.IsNullOrEmpty(splits[mapping["TotalWeight"]])
-                            ? splits[mapping["TotalWeight"]]
-                            : "0")
-                },
-                {
-                    "TotalInternalFreight",
-                    (c, mapping, splits) => c.TotalInternalFreight = Convert.ToSingle(
-                        mapping.ContainsKey("TotalInternalFreight") &&
-                        !string.IsNullOrEmpty(splits[mapping["TotalInternalFreight"]])
-                            ? splits[mapping["TotalInternalFreight"]]
-                            : "0")
-                },
-                {
-                    "TotalOtherCost",
-                    (c, mapping, splits) => c.TotalOtherCost = Convert.ToSingle(
-                        mapping.ContainsKey("TotalOtherCost") &&
-                        !string.IsNullOrEmpty(splits[mapping["TotalOtherCost"]])
-                            ? splits[mapping["TotalOtherCost"]]
-                            : "0")
-                },
-                {
-                    "TotalInsurance",
-                    (c, mapping, splits) => c.TotalInsurance = Convert.ToSingle(
-                        mapping.ContainsKey("TotalInsurance") &&
-                        !string.IsNullOrEmpty(splits[mapping["TotalInsurance"]])
-                            ? splits[mapping["TotalInsurance"]]
-                            : "0")
-                },
-                {
-                    "TotalDeductions",
-                    (c, mapping, splits) => c.TotalDeductions = Convert.ToSingle(
-                        mapping.ContainsKey("TotalDeductions") &&
-                        !string.IsNullOrEmpty(splits[mapping["TotalDeductions"]])
-                            ? splits[mapping["TotalDeductions"]]
-                            : "0")
-                },
-                {
-                    "pCNumber",
-                    (c, mapping, splits) => c.CNumber = mapping.ContainsKey("pCNumber") ? splits[mapping["pCNumber"]] : ""
-                },
-                {
-                    "InvoiceQuantity",
-                    (c, mapping, splits) => c.InvoiceQuantity = mapping.ContainsKey("InvoiceQuantity")
-                        ? Convert.ToSingle(splits[mapping["InvoiceQuantity"]])
-                        : 0
-                },
-                {
-                    "ReceivedQuantity",
-                    (c, mapping, splits) => c.ReceivedQuantity =
-                        mapping.ContainsKey("ReceivedQuantity") && splits.Length >= mapping["ReceivedQuantity"]
-                            ? Convert.ToSingle(splits[mapping["ReceivedQuantity"]])
-                            : 0
-                },
-                {
-                    "Currency",
-                    (c, mapping, splits) =>
-                        c.Currency = mapping.ContainsKey("Currency") ? splits[mapping["Currency"]] : ""
-                },
-                {
-                    "Comment",
-                    (c, mapping, splits) => c.Comment = mapping.ContainsKey("Comment") ? splits[mapping["Comment"]] : ""
-                },
-                {
-                    "PreviousInvoiceNumber",
-                    (c, mapping, splits) => c.PreviousInvoiceNumber = mapping.ContainsKey("PreviousInvoiceNumber")
-                        ? splits[mapping["PreviousInvoiceNumber"]]
-                        : ""
-                },
-                {
-                    "EffectiveDate",
-                    (c, mapping, splits) => c.EffectiveDate =
-                        mapping.ContainsKey("EffectiveDate") && !string.IsNullOrEmpty(splits[mapping["EffectiveDate"]])
-                            ? DateTime.Parse(splits[mapping["EffectiveDate"]], CultureInfo.CurrentCulture)
-                            : (DateTime?) null
-                },
+                //{
+                //    "Units",
+                //    (c, mapping, splits) => c.Units = mapping.ContainsKey("Units") ? splits[mapping["Units"]] : ""
+                //},
+                //{
+                //    "CustomerName",
+                //    (c, mapping, splits) => c.CustomerName =
+                //        mapping.ContainsKey("CustomerName") ? splits[mapping["CustomerName"]] : ""
+                //},
+                //{
+                //    "Tax",
+                //    (c, mapping, splits) =>
+                //        c.Tax = Convert.ToSingle(mapping.ContainsKey("Tax") ? splits[mapping["Tax"]] : "0")
+                //},
+                //{
+                //    "TotalTax",
+                //    (c, mapping, splits) =>
+                //        c.Tax = Convert.ToSingle(mapping.ContainsKey("TotalTax") ? splits[mapping["TotalTax"]] : "0")
+                //},
+                //{
+                //    "TariffCode",
+                //    (c, mapping, splits) =>
+                //        c.TariffCode = mapping.ContainsKey("TariffCode") ? splits[mapping["TariffCode"]] : ""
+                //},
+                //{
+                //    "SupplierCode",
+                //    (c, mapping, splits) => c.SupplierCode =
+                //        mapping.ContainsKey("SupplierCode") ? splits[mapping["SupplierCode"]] : ""
+                //},
+                //{
+                //    "Freight",
+                //    (c, mapping, splits) =>
+                //        c.Freight = Convert.ToSingle(
+                //            mapping.ContainsKey("Freight") && !string.IsNullOrEmpty(splits[mapping["Freight"]])
+                //                ? splits[mapping["Freight"]]
+                //                : "0")
+                //},
+                //{
+                //    "Weight",
+                //    (c, mapping, splits) =>
+                //        c.Weight = Convert.ToSingle(
+                //            mapping.ContainsKey("Weight") && !string.IsNullOrEmpty(splits[mapping["Weight"]])
+                //                ? splits[mapping["Weight"]]
+                //                : "0")
+                //},
+                //{
+                //    "InternalFreight",
+                //    (c, mapping, splits) => c.InternalFreight = Convert.ToSingle(
+                //        mapping.ContainsKey("InternalFreight") &&
+                //        !string.IsNullOrEmpty(splits[mapping["InternalFreight"]])
+                //            ? splits[mapping["InternalFreight"]]
+                //            : "0")
+                //},
+                //{
+                //    "TotalFreight",
+                //    (c, mapping, splits) => c.TotalFreight = Convert.ToSingle(
+                //        mapping.ContainsKey("TotalFreight") && !string.IsNullOrEmpty(splits[mapping["TotalFreight"]])
+                //            ? splits[mapping["TotalFreight"]]
+                //            : "0")
+                //},
+                //{
+                //    "TotalWeight",
+                //    (c, mapping, splits) => c.TotalWeight = Convert.ToSingle(
+                //        mapping.ContainsKey("TotalWeight") && !string.IsNullOrEmpty(splits[mapping["TotalWeight"]])
+                //            ? splits[mapping["TotalWeight"]]
+                //            : "0")
+                //},
+                //{
+                //    "TotalInternalFreight",
+                //    (c, mapping, splits) => c.TotalInternalFreight = Convert.ToSingle(
+                //        mapping.ContainsKey("TotalInternalFreight") &&
+                //        !string.IsNullOrEmpty(splits[mapping["TotalInternalFreight"]])
+                //            ? splits[mapping["TotalInternalFreight"]]
+                //            : "0")
+                //},
+                //{
+                //    "TotalOtherCost",
+                //    (c, mapping, splits) => c.TotalOtherCost = Convert.ToSingle(
+                //        mapping.ContainsKey("TotalOtherCost") &&
+                //        !string.IsNullOrEmpty(splits[mapping["TotalOtherCost"]])
+                //            ? splits[mapping["TotalOtherCost"]]
+                //            : "0")
+                //},
+                //{
+                //    "TotalInsurance",
+                //    (c, mapping, splits) => c.TotalInsurance = Convert.ToSingle(
+                //        mapping.ContainsKey("TotalInsurance") &&
+                //        !string.IsNullOrEmpty(splits[mapping["TotalInsurance"]])
+                //            ? splits[mapping["TotalInsurance"]]
+                //            : "0")
+                //},
+                //{
+                //    "TotalDeductions",
+                //    (c, mapping, splits) => c.TotalDeductions = Convert.ToSingle(
+                //        mapping.ContainsKey("TotalDeductions") &&
+                //        !string.IsNullOrEmpty(splits[mapping["TotalDeductions"]])
+                //            ? splits[mapping["TotalDeductions"]]
+                //            : "0")
+                //},
+                //{
+                //    "pCNumber",
+                //    (c, mapping, splits) => c.CNumber = mapping.ContainsKey("pCNumber") ? splits[mapping["pCNumber"]] : ""
+                //},
+                //{
+                //    "InvoiceQuantity",
+                //    (c, mapping, splits) => c.InvoiceQuantity = mapping.ContainsKey("InvoiceQuantity")
+                //        ? Convert.ToSingle(splits[mapping["InvoiceQuantity"]])
+                //        : 0
+                //},
+                //{
+                //    "ReceivedQuantity",
+                //    (c, mapping, splits) => c.ReceivedQuantity =
+                //        mapping.ContainsKey("ReceivedQuantity") && splits.Length >= mapping["ReceivedQuantity"]
+                //            ? Convert.ToSingle(splits[mapping["ReceivedQuantity"]])
+                //            : 0
+                //},
+                //{
+                //    "Currency",
+                //    (c, mapping, splits) =>
+                //        c.Currency = mapping.ContainsKey("Currency") ? splits[mapping["Currency"]] : ""
+                //},
+                //{
+                //    "Comment",
+                //    (c, mapping, splits) => c.Comment = mapping.ContainsKey("Comment") ? splits[mapping["Comment"]] : ""
+                //},
+                //{
+                //    "PreviousInvoiceNumber",
+                //    (c, mapping, splits) => c.PreviousInvoiceNumber = mapping.ContainsKey("PreviousInvoiceNumber")
+                //        ? splits[mapping["PreviousInvoiceNumber"]]
+                //        : ""
+                //},
+                //{
+                //    "EffectiveDate",
+                //    (c, mapping, splits) => c.EffectiveDate =
+                //        mapping.ContainsKey("EffectiveDate") && !string.IsNullOrEmpty(splits[mapping["EffectiveDate"]])
+                //            ? DateTime.Parse(splits[mapping["EffectiveDate"]], CultureInfo.CurrentCulture)
+                //            : (DateTime?) null
+                //},
                 {
                     "TotalCost",
                     (c, mapping, splits) => c.Cost = !string.IsNullOrEmpty(splits[mapping["TotalCost"]])
                         ? Convert.ToSingle(splits[mapping["TotalCost"]].Replace("$", "")) / (c.Quantity?? Convert.ToSingle(splits[mapping["Quantity"]].Replace("�", "")))
                         : c.Cost
                 },
+                //{
+                //    "InvoiceTotal",
+                //    (c, mapping, splits) => c.InvoiceTotal = Convert.ToSingle(
+                //        mapping.ContainsKey("InvoiceTotal") && !string.IsNullOrEmpty(splits[mapping["InvoiceTotal"]])
+                //            ? splits[mapping["InvoiceTotal"]]
+                //            : "0")
+                //},
+                //{
+                //    "SupplierName",
+                //    (c, mapping, splits) => c.SupplierName =
+                //        mapping.ContainsKey("SupplierName") ? splits[mapping["SupplierName"]] : ""
+                //},
+                //{
+                //    "SupplierAddress",
+                //    (c, mapping, splits) => c.SupplierAddress =
+                //        mapping.ContainsKey("SupplierAddress") ? splits[mapping["SupplierAddress"]] : ""
+                //},
+                //{
+                //    "CountryCode",
+                //    (c, mapping, splits) => c.SupplierCountryCode =
+                //        mapping.ContainsKey("CountryCode") ? splits[mapping["CountryCode"]] : ""
+                //},
+                //{
+                //    "DocumentType",
+                //    (c, mapping, splits) => c.DocumentType =
+                //        mapping.ContainsKey("DocumentType") ? splits[mapping["DocumentType"]] : ""
+                //},
+                //{
+                //    "SupplierInvoiceNo",
+                //    (c, mapping, splits) => c.SupplierInvoiceNo = mapping.ContainsKey("SupplierInvoiceNo")
+                //        ? splits[mapping["SupplierInvoiceNo"]]
+                //        : ""
+                //},
+                //{
+                //    "InventorySource",
+                //    (c, mapping, splits) => c.SupplierInvoiceNo = mapping.ContainsKey("InventorySource")
+                //        ? splits[mapping["InventorySource"]]
+                //        : ""
+                //},
+                //{
+                //    "Packages",
+                //    (c, mapping, splits) => c.Packages = Convert.ToInt32(mapping.ContainsKey("Packages") && !string.IsNullOrEmpty(splits[mapping["Packages"]])
+                //        ? splits[mapping["Packages"]]
+                //        : "0")
+                //},
+                //{
+                //    "WarehouseNo",
+                //    (c, mapping, splits) => c.WarehouseNo = mapping.ContainsKey("WarehouseNo")
+                //        ? splits[mapping["WarehouseNo"]]
+                //        : ""
+                //},
+                //{
+                //    "FinancialInformation",
+                //    (c, mapping, splits) => c.FinancialInformation = mapping.ContainsKey("FinancialInformation")
+                //        ? splits[mapping["FinancialInformation"]]
+                //        : ""
+                //},
+                //{
+                //    "PreviousCNumber",
+                //    (c, mapping, splits) => c.PreviousCNumber = mapping.ContainsKey("PreviousCNumber")
+                //        ? splits[mapping["PreviousCNumber"]]
+                //        : ""
+                //},
+                //{
+                //    "Office",
+                //    (c, mapping, splits) => c.Office = mapping.ContainsKey("Office")
+                //        ? splits[mapping["Office"]]
+                //        : ""
+                //},
+                //{
+                //    "GeneralProcedure",
+                //    (c, mapping, splits) => c.GeneralProcedure = mapping.ContainsKey("GeneralProcedure")
+                //        ? splits[mapping["GeneralProcedure"]]
+                //        : ""
+                //},
+                //{
+                //    "AssessmentDate",
+                //    (c, mapping, splits) => c.AssessmentDate = mapping.ContainsKey("AssessmentDate")
+                //        ? splits[mapping["AssessmentDate"]]
+                //        : ""
+                //},
+                //{
+                //    "AssessmentNumber",
+                //    (c, mapping, splits) => c.AssessmentNumber = mapping.ContainsKey("AssessmentNumber")
+                //        ? splits[mapping["AssessmentNumber"]]
+                //        : ""
+                //},
+                //{
+                //    "AssessmentSerial",
+                //    (c, mapping, splits) => c.AssessmentSerial = mapping.ContainsKey("AssessmentSerial")
+                //        ? splits[mapping["AssessmentSerial"]]
+                //        : ""
+                //},
+                //{
+                //    "RegistrationDate",
+                //    (c, mapping, splits) => c.RegistrationDate = mapping.ContainsKey("RegistrationDate")
+                //        ? splits[mapping["RegistrationDate"]]
+                //        : ""
+                //},
+                //{
+                //    "RegistrationNumber",
+                //    (c, mapping, splits) => c.RegistrationNumber = mapping.ContainsKey("RegistrationNumber")
+                //        ? splits[mapping["RegistrationNumber"]]
+                //        : ""
+                //},
+                //{
+                //    "RegistrationSerial",
+                //    (c, mapping, splits) => c.RegistrationSerial = mapping.ContainsKey("RegistrationSerial")
+                //        ? splits[mapping["RegistrationSerial"]]
+                //        : ""
+                //},
+                //{
+                //    "Consignee",
+                //    (c, mapping, splits) => c.Consignee = mapping.ContainsKey("Consignee")
+                //        ? splits[mapping["Consignee"]]
+                //        : ""
+                //},
+                //{
+                //    "Exporter",
+                //    (c, mapping, splits) => c.Exporter = mapping.ContainsKey("Exporter")
+                //        ? splits[mapping["Exporter"]]
+                //        : ""
+                //},
+                //{
+                //    "DeclarantCode",
+                //    (c, mapping, splits) => c.DeclarantCode = mapping.ContainsKey("DeclarantCode")
+                //        ? splits[mapping["DeclarantCode"]]
+                //        : ""
+                //},
+                //{
+                //    "DeclarantReference",
+                //    (c, mapping, splits) => c.DeclarantReference = mapping.ContainsKey("DeclarantReference")
+                //        ? splits[mapping["DeclarantReference"]]
+                //        : ""
+                //},
+                //{
+                //    "ExpirationDate",
+                //    (c, mapping, splits) => c.ExpirationDate = mapping.ContainsKey("ExpirationDate")
+                //        ? splits[mapping["ExpirationDate"]]
+                //        : ""
+                //},
                 {
-                    "InvoiceTotal",
-                    (c, mapping, splits) => c.InvoiceTotal = Convert.ToSingle(
-                        mapping.ContainsKey("InvoiceTotal") && !string.IsNullOrEmpty(splits[mapping["InvoiceTotal"]])
-                            ? splits[mapping["InvoiceTotal"]]
-                            : "0")
-                },
-                {
-                    "SupplierName",
-                    (c, mapping, splits) => c.SupplierName =
-                        mapping.ContainsKey("SupplierName") ? splits[mapping["SupplierName"]] : ""
-                },
-                {
-                    "SupplierAddress",
-                    (c, mapping, splits) => c.SupplierAddress =
-                        mapping.ContainsKey("SupplierAddress") ? splits[mapping["SupplierAddress"]] : ""
-                },
-                {
-                    "CountryCode",
-                    (c, mapping, splits) => c.SupplierCountryCode =
-                        mapping.ContainsKey("CountryCode") ? splits[mapping["CountryCode"]] : ""
-                },
-                {
-                    "DocumentType",
-                    (c, mapping, splits) => c.DocumentType =
-                        mapping.ContainsKey("DocumentType") ? splits[mapping["DocumentType"]] : ""
-                },
-                {
-                    "SupplierInvoiceNo",
-                    (c, mapping, splits) => c.SupplierInvoiceNo = mapping.ContainsKey("SupplierInvoiceNo")
-                        ? splits[mapping["SupplierInvoiceNo"]]
-                        : ""
-                },
-                {
-                    "InventorySource",
-                    (c, mapping, splits) => c.SupplierInvoiceNo = mapping.ContainsKey("InventorySource")
-                        ? splits[mapping["InventorySource"]]
-                        : ""
-                },
-                {
-                    "Packages",
-                    (c, mapping, splits) => c.Packages = Convert.ToInt32(mapping.ContainsKey("Packages") && !string.IsNullOrEmpty(splits[mapping["Packages"]])
-                        ? splits[mapping["Packages"]]
-                        : "0")
-                },
-                {
-                    "WarehouseNo",
-                    (c, mapping, splits) => c.WarehouseNo = mapping.ContainsKey("WarehouseNo")
-                        ? splits[mapping["WarehouseNo"]]
-                        : ""
-                },
-                {
-                    "FinancialInformation",
-                    (c, mapping, splits) => c.FinancialInformation = mapping.ContainsKey("FinancialInformation")
-                        ? splits[mapping["FinancialInformation"]]
-                        : ""
-                },
-                {
-                    "PreviousCNumber",
-                    (c, mapping, splits) => c.PreviousCNumber = mapping.ContainsKey("PreviousCNumber")
-                        ? splits[mapping["PreviousCNumber"]]
-                        : ""
-                },
-                {
-                    "Office",
-                    (c, mapping, splits) => c.Office = mapping.ContainsKey("Office")
-                        ? splits[mapping["Office"]]
-                        : ""
-                },
-                {
-                    "GeneralProcedure",
-                    (c, mapping, splits) => c.GeneralProcedure = mapping.ContainsKey("GeneralProcedure")
-                        ? splits[mapping["GeneralProcedure"]]
-                        : ""
-                },
-                {
-                    "AssessmentDate",
-                    (c, mapping, splits) => c.AssessmentDate = mapping.ContainsKey("AssessmentDate")
-                        ? splits[mapping["AssessmentDate"]]
-                        : ""
-                },
-                {
-                    "AssessmentNumber",
-                    (c, mapping, splits) => c.AssessmentNumber = mapping.ContainsKey("AssessmentNumber")
-                        ? splits[mapping["AssessmentNumber"]]
-                        : ""
-                },
-                {
-                    "AssessmentSerial",
-                    (c, mapping, splits) => c.AssessmentSerial = mapping.ContainsKey("AssessmentSerial")
-                        ? splits[mapping["AssessmentSerial"]]
-                        : ""
-                },
-                {
-                    "RegistrationDate",
-                    (c, mapping, splits) => c.RegistrationDate = mapping.ContainsKey("RegistrationDate")
-                        ? splits[mapping["RegistrationDate"]]
-                        : ""
-                },
-                {
-                    "RegistrationNumber",
-                    (c, mapping, splits) => c.RegistrationNumber = mapping.ContainsKey("RegistrationNumber")
-                        ? splits[mapping["RegistrationNumber"]]
-                        : ""
-                },
-                {
-                    "RegistrationSerial",
-                    (c, mapping, splits) => c.RegistrationSerial = mapping.ContainsKey("RegistrationSerial")
-                        ? splits[mapping["RegistrationSerial"]]
-                        : ""
-                },
-                {
-                    "Consignee",
-                    (c, mapping, splits) => c.Consignee = mapping.ContainsKey("Consignee")
-                        ? splits[mapping["Consignee"]]
-                        : ""
-                },
-                {
-                    "Exporter",
-                    (c, mapping, splits) => c.Exporter = mapping.ContainsKey("Exporter")
-                        ? splits[mapping["Exporter"]]
-                        : ""
-                },
-                {
-                    "DeclarantCode",
-                    (c, mapping, splits) => c.DeclarantCode = mapping.ContainsKey("DeclarantCode")
-                        ? splits[mapping["DeclarantCode"]]
-                        : ""
-                },
-                {
-                    "DeclarantReference",
-                    (c, mapping, splits) => c.DeclarantReference = mapping.ContainsKey("DeclarantReference")
-                        ? splits[mapping["DeclarantReference"]]
-                        : ""
-                },
-                {
-                    "ExpirationDate",
-                    (c, mapping, splits) => c.ExpirationDate = mapping.ContainsKey("ExpirationDate")
-                        ? splits[mapping["ExpirationDate"]]
-                        : ""
+                    "Total",
+                    (c, mapping, splits) => {}
                 },
 
             };
@@ -1572,21 +2035,27 @@ namespace WaterNut.DataSpace
 
                 //if (splits[map["EntryDataId"]] != "" && splits[map["ItemNumber"]] != "")
                 //{
-                    var res = new CSVDataSummary();
+                    dynamic res = new ExpandoObject();
                     res.SourceRow = line;
                     foreach (var key in map.Keys)
                     {
                         try
                         {
-                            if (ImportChecks.ContainsKey(key))
+                            if (ImportChecks.ContainsKey(key.DestinationName))
                             {
                                 if (string.IsNullOrEmpty(splits[map[key]])) return null;
-                                var err = ImportChecks[key].Invoke(res, map, splits);
+                                var err = ImportChecks[key.DestinationName].Invoke(res, map.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                                 if (err.Item1) throw new ApplicationException(err.Item2);
                             }
 
-
-                            ImportActions[key].Invoke(res, map, splits);
+                            if (ImportActions.ContainsKey(key.DestinationName))
+                            {
+                                ImportActions[key.DestinationName].Invoke(res, map.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
+                            }
+                            else
+                            {
+                                ((IDictionary<string, object>)res)[key.DestinationName] =  GetMappingValue(key, splits, map[key]);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -1607,6 +2076,22 @@ namespace WaterNut.DataSpace
             }
 
             return null;
+        }
+
+      
+
+        private object GetMappingValue(FileTypeMappings key, string[] splits, int index)
+        {
+            var val = splits[index];
+            foreach (var regEx in key.FileTypeMappingRegExs)
+            {
+                val = Regex.Replace(val, regEx.ReplacementRegex, regEx.ReplacementValue??"",
+                    RegexOptions.IgnoreCase);
+            }
+            
+            if (key.DataType == "Date") return DateTime.Parse(val);
+            if (key.DataType == "Number") return Convert.ToSingle(val);
+            return val;
         }
 
         public class CSVDataSummary
@@ -1687,7 +2172,7 @@ namespace WaterNut.DataSpace
             public string ExpirationDate { get; set; }
         }
 
-        private async Task ImportSuppliers(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)
+        private async Task ImportSuppliers(List<dynamic> eslst, int applicationSettingsId, FileTypes fileType)
         {
             try
             {
@@ -1697,7 +2182,7 @@ namespace WaterNut.DataSpace
                     .GroupBy(x => new {x.SupplierCode, x.SupplierName, x.SupplierAddress, x.SupplierCountryCode})
                     .ToList();
 
-                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType == "PO")
+                if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType.Type == "PO")
                 {
                     if (itmlst.All(x => string.IsNullOrEmpty(x.Key?.SupplierCode ?? x.Key?.SupplierName)))
                     {
@@ -1740,7 +2225,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private async Task ImportInventory(List<CSVDataSummary> eslst, int applicationSettingsId, string fileType)
+        private async Task ImportInventory(List<dynamic> eslst, int applicationSettingsId, FileTypes fileType)
         {
             try
             {
@@ -1752,7 +2237,7 @@ namespace WaterNut.DataSpace
             InventorySource inventorySource;
             using (var dctx = new InventoryDSContext())
             {
-                switch (fileType)
+                switch (fileType.Type)
                 {
                     case "INV":
 

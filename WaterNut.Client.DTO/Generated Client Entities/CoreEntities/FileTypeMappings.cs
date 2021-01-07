@@ -116,6 +116,19 @@ namespace CoreEntities.Client.DTO
         private FileTypes _FileTypes;
         private ChangeTrackingCollection<FileTypes> FileTypesChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<FileTypeMappingRegExs> FileTypeMappingRegExs
+		{
+		    get { return _FileTypeMappingRegExs; }
+			set
+			{
+			    if (Equals(value, _FileTypeMappingRegExs)) return;
+				_FileTypeMappingRegExs = value;
+				NotifyPropertyChanged();//m => this.FileTypeMappingRegExs
+			}
+		}
+        private ChangeTrackingCollection<FileTypeMappingRegExs> _FileTypeMappingRegExs = new ChangeTrackingCollection<FileTypeMappingRegExs>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

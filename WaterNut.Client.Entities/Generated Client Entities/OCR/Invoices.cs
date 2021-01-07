@@ -77,6 +77,21 @@ public string Name
 		}
      
 
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.invoices.FileTypeId; }
+			set
+			{
+			    if (value == this.invoices.FileTypeId) return;
+				this.invoices.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
         ObservableCollection<Parts> _Parts = null;
         public  ObservableCollection<Parts> Parts
 		{
@@ -124,6 +139,60 @@ public string Name
                     {
                         if (itm != null)
                         invoices.Parts.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<OCR_InvoiceRegEx> _OCR_InvoiceRegEx = null;
+        public  ObservableCollection<OCR_InvoiceRegEx> OCR_InvoiceRegEx
+		{
+            
+		    get 
+				{ 
+					if(_OCR_InvoiceRegEx != null) return _OCR_InvoiceRegEx;
+					//if (this.invoices.OCR_InvoiceRegEx == null) Debugger.Break();
+					if(this.invoices.OCR_InvoiceRegEx != null)
+					{
+						_OCR_InvoiceRegEx = new ObservableCollection<OCR_InvoiceRegEx>(this.invoices.OCR_InvoiceRegEx.Select(x => new OCR_InvoiceRegEx(x)));
+					}
+					
+						_OCR_InvoiceRegEx.CollectionChanged += OCR_InvoiceRegEx_CollectionChanged; 
+					
+					return _OCR_InvoiceRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _OCR_InvoiceRegEx)) return;
+				if (value != null)
+					this.invoices.OCR_InvoiceRegEx = new ChangeTrackingCollection<DTO.OCR_InvoiceRegEx>(value.Select(x => x.DTO).ToList());
+                _OCR_InvoiceRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_OCR_InvoiceRegEx != null)
+				_OCR_InvoiceRegEx.CollectionChanged += OCR_InvoiceRegEx_CollectionChanged;               
+				NotifyPropertyChanged("OCR_InvoiceRegEx");
+			}
+		}
+        
+        void OCR_InvoiceRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (OCR_InvoiceRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        invoices.OCR_InvoiceRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (OCR_InvoiceRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        invoices.OCR_InvoiceRegEx.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

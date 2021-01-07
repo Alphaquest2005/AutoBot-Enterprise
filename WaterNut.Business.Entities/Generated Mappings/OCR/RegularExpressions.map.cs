@@ -18,6 +18,8 @@
               this.HasMany(t => t.End).WithRequired(t => (RegularExpressions)t.RegularExpressions);
               this.HasMany(t => t.Lines).WithRequired(t => (RegularExpressions)t.RegularExpressions);
               this.HasMany(t => t.Start).WithRequired(t => (RegularExpressions)t.RegularExpressions);
+              this.HasMany(t => t.OCR_InvoiceRegEx).WithRequired(t => (RegularExpressions)t.RegEx);
+              this.HasMany(t => t.OCR_InvoiceRegEx1).WithRequired(t => (RegularExpressions)t.ReplacementRegEx);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

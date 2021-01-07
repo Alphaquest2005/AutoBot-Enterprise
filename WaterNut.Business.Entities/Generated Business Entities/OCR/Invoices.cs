@@ -23,6 +23,7 @@ namespace OCR.Business.Entities
         partial void AutoGenStartUp() //Invoices()
         {
             this.Parts = new List<Parts>();
+            this.OCR_InvoiceRegEx = new List<OCR_InvoiceRegEx>();
         }
 
         [DataMember]
@@ -56,7 +57,24 @@ namespace OCR.Business.Entities
         }
         string _name;
         [DataMember]
+        public Nullable<int> FileTypeId 
+        {
+            get
+            {
+                return _filetypeid;
+            }
+            set
+            {
+                _filetypeid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filetypeid;
+        [DataMember]
         public List<Parts> Parts { get; set; }
+        [DataMember]
+        public List<OCR_InvoiceRegEx> OCR_InvoiceRegEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

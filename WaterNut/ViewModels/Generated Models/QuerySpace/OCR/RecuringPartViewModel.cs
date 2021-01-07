@@ -210,6 +210,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }
 
  
+
+		private Boolean? _isCompositeFilter;
+        public Boolean? IsCompositeFilter
+        {
+            get
+            {
+                return _isCompositeFilter;
+            }
+            set
+            {
+                _isCompositeFilter = value;
+				NotifyPropertyChanged(x => IsCompositeFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -238,6 +256,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 		internal virtual StringBuilder GetAutoPropertyFilterString()
 		{
 		var res = new StringBuilder();
+ 
+
+									if(IsCompositeFilter.HasValue)
+						res.Append(" && " + string.Format("IsComposite == {0}",  IsCompositeFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -260,6 +282,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
             {
                 dataToPrint = lst.Select(x => new RecuringPartExcelLine
                 {
+ 
+                    IsComposite = x.IsComposite 
+                    
                 }).ToList()
             };
             using (var sta = new StaTaskScheduler(numberOfThreads: 1))
@@ -270,7 +295,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
         public class RecuringPartExcelLine
         {
-		        }
+		 
+                    public bool IsComposite { get; set; } 
+                    
+        }
 
 		
     }

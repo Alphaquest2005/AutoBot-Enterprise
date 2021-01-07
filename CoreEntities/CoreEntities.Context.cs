@@ -111,5 +111,6 @@ namespace CoreEntities
         public DbSet<AsycudaDocumentSetC71> AsycudaDocumentSetC71 { get; set; }
         public DbSet<TODO_LicenseToXML> TODO_LicenseToXML { get; set; }
         public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
+        public DbSet<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }
     }
 }

@@ -246,6 +246,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _replacementValueFilter;
+        public string ReplacementValueFilter
+        {
+            get
+            {
+                return _replacementValueFilter;
+            }
+            set
+            {
+                _replacementValueFilter = value;
+				NotifyPropertyChanged(x => ReplacementValueFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -282,6 +300,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(IsSingleEmailFilter.HasValue)
 						res.Append(" && " + string.Format("IsSingleEmail == {0}",  IsSingleEmailFilter));						
+ 
+
+									if(string.IsNullOrEmpty(ReplacementValueFilter) == false)
+						res.Append(" && " + string.Format("ReplacementValue.Contains(\"{0}\")",  ReplacementValueFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -308,7 +330,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Pattern = x.Pattern ,
                     
  
-                    IsSingleEmail = x.IsSingleEmail 
+                    IsSingleEmail = x.IsSingleEmail ,
+                    
+ 
+                    ReplacementValue = x.ReplacementValue 
                     
                 }).ToList()
             };
@@ -325,6 +350,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> IsSingleEmail { get; set; } 
+                    
+ 
+                    public string ReplacementValue { get; set; } 
                     
         }
 

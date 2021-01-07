@@ -112,7 +112,12 @@ namespace OCR.Client.Services
         {
             return await Channel.LoadRangeNav(startIndex,count,exp, navExp, includeLst).ConfigureAwait(false);
         }
-        public decimal SumField(string whereExp, string sumExp)
+		public async Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            return  await Channel.GetInvoicesByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
+        }
+			 
+          public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
 		}

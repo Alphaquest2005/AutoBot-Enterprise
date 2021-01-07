@@ -215,6 +215,192 @@
           <Property Name="PackageType" Type="nvarchar" MaxLength="4" Nullable="false" />
           <Property Name="PackageDescription" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="ShimentBLCharges">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Amount" Type="float" Nullable="false" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentBL">
+          <Key>
+            <PropertyRef Name="BLNumber" />
+          </Key>
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Vessel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Voyage" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Container" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Seals" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PackagesNo" Type="int" Nullable="false" />
+          <Property Name="PackagesType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WeightKG" Type="float" Nullable="false" />
+          <Property Name="VolumeM3" Type="float" Nullable="false" />
+          <Property Name="WeightLB" Type="float" />
+          <Property Name="VolumeCF" Type="float" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentBLDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="PackageType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="ShipmentFreight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Consignee" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceDate" Type="date" Nullable="false" />
+          <Property Name="DueDate" Type="date" Nullable="false" />
+          <Property Name="InvoiceTotal" Type="float" Nullable="false" />
+          <Property Name="ETA" Type="date" Nullable="false" />
+          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentFreightDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FreightId" Type="int" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Rate" Type="float" Nullable="false" />
+          <Property Name="Total" Type="float" Nullable="false" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="ShipmentInvoice">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="ImportedLines" Type="int" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="TotalInternalFreight" Type="float" />
+          <Property Name="Currency" Type="nvarchar" MaxLength="4" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="FileTypeId" Type="int" />
+          <Property Name="TotalOtherCost" Type="float" />
+          <Property Name="TotalInsurance" Type="float" />
+          <Property Name="TotalDeduction" Type="float" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileLineNumber" Type="int" />
+          <Property Name="SubTotal" Type="float" />
+        </EntityType>
+        <EntityType Name="ShipmentInvoiceDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ShipmentInvoiceId" Type="int" Nullable="false" />
+          <Property Name="LineNumber" Type="int" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="Quantity" Type="float" Nullable="false" />
+          <Property Name="Units" Type="nvarchar" MaxLength="15" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Cost" Type="float" Nullable="false" />
+          <Property Name="TotalCost" Type="float" />
+          <Property Name="FileLineNumber" Type="int" />
+        </EntityType>
+        <EntityType Name="ShipmentInvoiceExtraInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Info" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Value" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="InvoiceId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentManifest">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RegistrationDate" Type="date" Nullable="false" />
+          <Property Name="CustomsOffice" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Voyage" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ETD" Type="date" Nullable="false" />
+          <Property Name="ETA" Type="date" Nullable="false" />
+          <Property Name="Vessel" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="WayBill" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LineNumber" Type="int" Nullable="false" />
+          <Property Name="LoadingPort" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ModeOfTransport" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TypeOfBL" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CargoReporter" Type="nvarchar" MaxLength="255" />
+          <Property Name="Exporter" Type="nvarchar" MaxLength="50" />
+          <Property Name="Consignee" Type="nvarchar" MaxLength="50" />
+          <Property Name="Notify" Type="nvarchar" MaxLength="50" />
+          <Property Name="Packages" Type="int" Nullable="false" />
+          <Property Name="PackageType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="GrossWeightKG" Type="float" Nullable="false" />
+          <Property Name="Volume" Type="float" Nullable="false" />
+          <Property Name="Freight" Type="float" />
+          <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Goods" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Containers" Type="int" />
+          <Property Name="EmailId" Type="int" Nullable="false" />
+          <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentManifestDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ManifestId" Type="int" Nullable="false" />
+          <Property Name="ContainerID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentRider">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ETA" Type="date" Nullable="false" />
+          <Property Name="DocumentDate" Type="date" Nullable="false" />
+          <Property Name="EmailId" Type="int" />
+          <Property Name="SourceFile" Type="nvarchar(max)" />
+          <Property Name="FileTypeId" Type="int" />
+        </EntityType>
+        <EntityType Name="ShipmentRiderDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Consignee" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Shipper" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TrackingNumber" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Pieces" Type="int" Nullable="false" />
+          <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="1000" />
+          <Property Name="InvoiceTotal" Type="float" />
+          <Property Name="GrossWeightKg" Type="float" Nullable="false" />
+          <Property Name="CubicFeet" Type="float" Nullable="false" />
+          <Property Name="RiderId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Suppliers">
           <Key>
             <PropertyRef Name="SupplierCode" />
@@ -597,6 +783,104 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ShimentBLCharges_ShipmentBL">
+          <End Role="ShipmentBL" Type="Self.ShipmentBL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShimentBLCharges" Type="Self.ShimentBLCharges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentBL">
+              <PropertyRef Name="BLNumber" />
+            </Principal>
+            <Dependent Role="ShimentBLCharges">
+              <PropertyRef Name="BLNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentBLDetails_ShipmentBL">
+          <End Role="ShipmentBL" Type="Self.ShipmentBL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentBLDetails" Type="Self.ShipmentBLDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentBL">
+              <PropertyRef Name="BLNumber" />
+            </Principal>
+            <Dependent Role="ShipmentBLDetails">
+              <PropertyRef Name="BLNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentFreightDetails_ShipmentFreight">
+          <End Role="ShipmentFreight" Type="Self.ShipmentFreight" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentFreightDetails" Type="Self.ShipmentFreightDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentFreight">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentFreightDetails">
+              <PropertyRef Name="FreightId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice">
+          <End Role="ShipmentInvoice" Type="Self.ShipmentInvoice" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentInvoiceDetails" Type="Self.ShipmentInvoiceDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceDetails">
+              <PropertyRef Name="ShipmentInvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentInvoiceExtraInfo_ShipmentInvoice">
+          <End Role="ShipmentInvoice" Type="Self.ShipmentInvoice" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentInvoiceExtraInfo" Type="Self.ShipmentInvoiceExtraInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceExtraInfo">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentManifestDetails_ShipmentManifest">
+          <End Role="ShipmentManifest" Type="Self.ShipmentManifest" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentManifestDetails" Type="Self.ShipmentManifestDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentManifest">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentManifestDetails">
+              <PropertyRef Name="ManifestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentRiderDetails_ShipmentRider">
+          <End Role="ShipmentRider" Type="Self.ShipmentRider" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="ShipmentRiderDetails" Type="Self.ShipmentRiderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentRider">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentRiderDetails">
+              <PropertyRef Name="RiderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_WarehouseInfo_EntryData_PurchaseOrders">
           <End Role="EntryData_PurchaseOrders" Type="Self.EntryData_PurchaseOrders" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -629,6 +913,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <EntitySet Name="InventoryItemSource" EntityType="Self.InventoryItemSource" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventorySources" EntityType="Self.InventorySources" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PackageTypes" EntityType="Self.PackageTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShimentBLCharges" EntityType="Self.ShimentBLCharges" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentBL" EntityType="Self.ShipmentBL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentBLDetails" EntityType="Self.ShipmentBLDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentFreight" EntityType="Self.ShipmentFreight" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentFreightDetails" EntityType="Self.ShipmentFreightDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentInvoice" EntityType="Self.ShipmentInvoice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentInvoiceDetails" EntityType="Self.ShipmentInvoiceDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentInvoiceExtraInfo" EntityType="Self.ShipmentInvoiceExtraInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentManifest" EntityType="Self.ShipmentManifest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentManifestDetails" EntityType="Self.ShipmentManifestDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentRider" EntityType="Self.ShipmentRider" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ShipmentRiderDetails" EntityType="Self.ShipmentRiderDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Suppliers" EntityType="Self.Suppliers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WarehouseInfo" EntityType="Self.WarehouseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataDetailsEx" EntityType="Self.EntryDataDetailsEx" store:Type="Views" store:Schema="dbo">
@@ -793,6 +1089,34 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             <End Role="InventorySources" EntitySet="InventorySources" />
             <End Role="InventoryItemSource" EntitySet="InventoryItemSource" />
           </AssociationSet>
+          <AssociationSet Name="FK_ShimentBLCharges_ShipmentBL" Association="Self.FK_ShimentBLCharges_ShipmentBL">
+            <End Role="ShipmentBL" EntitySet="ShipmentBL" />
+            <End Role="ShimentBLCharges" EntitySet="ShimentBLCharges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentBLDetails_ShipmentBL" Association="Self.FK_ShipmentBLDetails_ShipmentBL">
+            <End Role="ShipmentBL" EntitySet="ShipmentBL" />
+            <End Role="ShipmentBLDetails" EntitySet="ShipmentBLDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentFreightDetails_ShipmentFreight" Association="Self.FK_ShipmentFreightDetails_ShipmentFreight">
+            <End Role="ShipmentFreight" EntitySet="ShipmentFreight" />
+            <End Role="ShipmentFreightDetails" EntitySet="ShipmentFreightDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentInvoiceDetails_ShipmentInvoice" Association="Self.FK_ShipmentInvoiceDetails_ShipmentInvoice">
+            <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
+            <End Role="ShipmentInvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentInvoiceExtraInfo_ShipmentInvoice" Association="Self.FK_ShipmentInvoiceExtraInfo_ShipmentInvoice">
+            <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
+            <End Role="ShipmentInvoiceExtraInfo" EntitySet="ShipmentInvoiceExtraInfo" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentManifestDetails_ShipmentManifest" Association="Self.FK_ShipmentManifestDetails_ShipmentManifest">
+            <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
+            <End Role="ShipmentManifestDetails" EntitySet="ShipmentManifestDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentRiderDetails_ShipmentRider" Association="Self.FK_ShipmentRiderDetails_ShipmentRider">
+            <End Role="ShipmentRider" EntitySet="ShipmentRider" />
+            <End Role="ShipmentRiderDetails" EntitySet="ShipmentRiderDetails" />
+          </AssociationSet>
           <AssociationSet Name="FK_WarehouseInfo_EntryData_PurchaseOrders" Association="Self.FK_WarehouseInfo_EntryData_PurchaseOrders">
             <End Role="EntryData_PurchaseOrders" EntitySet="EntryData_PurchaseOrders" />
             <End Role="WarehouseInfo" EntitySet="WarehouseInfo" />
@@ -887,6 +1211,46 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <AssociationSet Name="FK_EntryData_Suppliers" Association="WaterNutDBModel.FK_EntryData_Suppliers">
             <End Role="Suppliers" EntitySet="Suppliers" />
             <End Role="EntryData" EntitySet="EntryData" />
+          </AssociationSet>
+          <EntitySet Name="ShimentBLCharges" EntityType="WaterNutDBModel.ShimentBLCharges" />
+          <EntitySet Name="ShipmentBL" EntityType="WaterNutDBModel.ShipmentBL" />
+          <EntitySet Name="ShipmentBLDetails" EntityType="WaterNutDBModel.ShipmentBLDetails" />
+          <EntitySet Name="ShipmentManifest" EntityType="WaterNutDBModel.ShipmentManifest" />
+          <EntitySet Name="ShipmentManifestDetails" EntityType="WaterNutDBModel.ShipmentManifestDetails" />
+          <EntitySet Name="ShipmentRider" EntityType="WaterNutDBModel.ShipmentRider" />
+          <AssociationSet Name="FK_ShimentBLCharges_ShipmentBL" Association="WaterNutDBModel.FK_ShimentBLCharges_ShipmentBL">
+            <End Role="ShipmentBL" EntitySet="ShipmentBL" />
+            <End Role="ShimentBLCharges" EntitySet="ShimentBLCharges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentBLDetails_ShipmentBL" Association="WaterNutDBModel.FK_ShipmentBLDetails_ShipmentBL">
+            <End Role="ShipmentBL" EntitySet="ShipmentBL" />
+            <End Role="ShipmentBLDetails" EntitySet="ShipmentBLDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ShipmentManifestDetails_ShipmentManifest" Association="WaterNutDBModel.FK_ShipmentManifestDetails_ShipmentManifest">
+            <End Role="ShipmentManifest" EntitySet="ShipmentManifest" />
+            <End Role="ShipmentManifestDetails" EntitySet="ShipmentManifestDetails" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentFreight" EntityType="WaterNutDBModel.ShipmentFreight" />
+          <EntitySet Name="ShipmentRiderDetails" EntityType="WaterNutDBModel.ShipmentRiderDetails" />
+          <AssociationSet Name="FK_ShipmentRiderDetails_ShipmentRider" Association="WaterNutDBModel.FK_ShipmentRiderDetails_ShipmentRider">
+            <End Role="ShipmentRider" EntitySet="ShipmentRider" />
+            <End Role="ShipmentRiderDetails" EntitySet="ShipmentRiderDetails" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentFreightDetails" EntityType="WaterNutDBModel.ShipmentFreightDetails" />
+          <AssociationSet Name="FK_ShipmentFreightDetails_ShipmentFreight" Association="WaterNutDBModel.FK_ShipmentFreightDetails_ShipmentFreight">
+            <End Role="ShipmentFreight" EntitySet="ShipmentFreight" />
+            <End Role="ShipmentFreightDetails" EntitySet="ShipmentFreightDetails" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentInvoice" EntityType="WaterNutDBModel.ShipmentInvoice" />
+          <EntitySet Name="ShipmentInvoiceDetails" EntityType="WaterNutDBModel.InvoiceDetails" />
+          <AssociationSet Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1" Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1">
+            <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
+            <End Role="ShipmentInvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentInvoiceExtraInfo" EntityType="WaterNutDBModel.InvoiceExtraInfo" />
+          <AssociationSet Name="FK_ShipmentInvoiceExtraInfo_ShipmentInvoice" Association="WaterNutDBModel.FK_ShipmentInvoiceExtraInfo_ShipmentInvoice">
+            <End Role="ShipmentInvoice" EntitySet="ShipmentInvoice" />
+            <End Role="ShipmentInvoiceExtraInfo" EntitySet="ShipmentInvoiceExtraInfo" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -1448,6 +1812,304 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ShimentBLCharges">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Amount" Type="Double" Nullable="false" />
+          <Property Name="Currency" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentBL" Relationship="WaterNutDBModel.FK_ShimentBLCharges_ShipmentBL" FromRole="ShimentBLCharges" ToRole="ShipmentBL" />
+        </EntityType>
+        <EntityType Name="ShipmentBL">
+          <Key>
+            <PropertyRef Name="BLNumber" />
+          </Key>
+          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Vessel" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Voyage" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Container" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Seals" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PackagesNo" Type="Int32" Nullable="false" />
+          <Property Name="PackagesType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WeightKG" Type="Double" Nullable="false" />
+          <Property Name="VolumeM3" Type="Double" Nullable="false" />
+          <Property Name="WeightLB" Type="Double" />
+          <Property Name="VolumeCF" Type="Double" />
+          <Property Name="Reference" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShimentBLCharges" Relationship="WaterNutDBModel.FK_ShimentBLCharges_ShipmentBL" FromRole="ShipmentBL" ToRole="ShimentBLCharges" />
+          <NavigationProperty Name="ShipmentBLDetails" Relationship="WaterNutDBModel.FK_ShipmentBLDetails_ShipmentBL" FromRole="ShipmentBL" ToRole="ShipmentBLDetails" />
+          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentBLDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="PackageType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Marks" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentBL" Relationship="WaterNutDBModel.FK_ShipmentBLDetails_ShipmentBL" FromRole="ShipmentBLDetails" ToRole="ShipmentBL" />
+        </EntityType>
+        <EntityType Name="ShipmentManifest">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RegistrationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="CustomsOffice" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Voyage" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ETD" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Vessel" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WayBill" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LineNumber" Type="Int32" Nullable="false" />
+          <Property Name="LoadingPort" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModeOfTransport" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TypeOfBL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CargoReporter" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="true" />
+          <Property Name="Exporter" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="true" />
+          <Property Name="Consignee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="true" />
+          <Property Name="Notify" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="true" />
+          <Property Name="Packages" Type="Int32" Nullable="false" />
+          <Property Name="PackageType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GrossWeightKG" Type="Double" Nullable="false" />
+          <Property Name="Volume" Type="Double" Nullable="false" />
+          <Property Name="Freight" Type="Double" Nullable="true" />
+          <Property Name="LocationOfGoods" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Goods" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Marks" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Containers" Type="Int32" Nullable="true" />
+          <NavigationProperty Name="ShipmentManifestDetails" Relationship="WaterNutDBModel.FK_ShipmentManifestDetails_ShipmentManifest" FromRole="ShipmentManifest" ToRole="ShipmentManifestDetails" />
+          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ShipmentManifestDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ManifestId" Type="Int32" Nullable="false" />
+          <Property Name="ContainerID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentManifest" Relationship="WaterNutDBModel.FK_ShipmentManifestDetails_ShipmentManifest" FromRole="ShipmentManifestDetails" ToRole="ShipmentManifest" />
+        </EntityType>
+        <EntityType Name="ShipmentRider">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DocumentDate" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="ShipmentRiderDetails" Relationship="WaterNutDBModel.FK_ShipmentRiderDetails_ShipmentRider" FromRole="ShipmentRider" ToRole="ShipmentRiderDetails" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="FileTypeId" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_ShimentBLCharges_ShipmentBL">
+          <End Type="WaterNutDBModel.ShipmentBL" Role="ShipmentBL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ShimentBLCharges" Role="ShimentBLCharges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentBL">
+              <PropertyRef Name="BLNumber" />
+            </Principal>
+            <Dependent Role="ShimentBLCharges">
+              <PropertyRef Name="BLNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentBLDetails_ShipmentBL">
+          <End Type="WaterNutDBModel.ShipmentBL" Role="ShipmentBL" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ShipmentBLDetails" Role="ShipmentBLDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentBL">
+              <PropertyRef Name="BLNumber" />
+            </Principal>
+            <Dependent Role="ShipmentBLDetails">
+              <PropertyRef Name="BLNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ShipmentManifestDetails_ShipmentManifest">
+          <End Type="WaterNutDBModel.ShipmentManifest" Role="ShipmentManifest" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ShipmentManifestDetails" Role="ShipmentManifestDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentManifest">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentManifestDetails">
+              <PropertyRef Name="ManifestId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShipmentFreight">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BLNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Consignee" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNumber" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="DueDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="InvoiceTotal" Type="Double" Nullable="false" />
+          <Property Name="ETA" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EmailId" Type="Int32" Nullable="false" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ShipmentFreightDetails" Relationship="WaterNutDBModel.FK_ShipmentFreightDetails_ShipmentFreight" FromRole="ShipmentFreight" ToRole="ShipmentFreightDetails" />
+        </EntityType>
+        <EntityType Name="ShipmentRiderDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Consignee" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Shipper" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TrackingNumber" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Pieces" Type="Int32" Nullable="false" />
+          <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNumber" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="GrossWeightKg" Type="Double" Nullable="false" />
+          <Property Name="CubicFeet" Type="Double" Nullable="false" />
+          <Property Name="RiderId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ShipmentRider" Relationship="WaterNutDBModel.FK_ShipmentRiderDetails_ShipmentRider" FromRole="ShipmentRiderDetails" ToRole="ShipmentRider" />
+          <Property Name="InvoiceTotal" Type="Double" />
+        </EntityType>
+        <Association Name="FK_ShipmentRiderDetails_ShipmentRider">
+          <End Type="WaterNutDBModel.ShipmentRider" Role="ShipmentRider" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ShipmentRiderDetails" Role="ShipmentRiderDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentRider">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentRiderDetails">
+              <PropertyRef Name="RiderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShipmentFreightDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FreightId" Type="Int32" Nullable="false" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Rate" Type="Double" Nullable="false" />
+          <Property Name="Total" Type="Double" Nullable="false" />
+          <Property Name="WarehouseCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ShipmentFreight" Relationship="WaterNutDBModel.FK_ShipmentFreightDetails_ShipmentFreight" FromRole="ShipmentFreightDetails" ToRole="ShipmentFreight" />
+        </EntityType>
+        <Association Name="FK_ShipmentFreightDetails_ShipmentFreight">
+          <End Type="WaterNutDBModel.ShipmentFreight" Role="ShipmentFreight" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.ShipmentFreightDetails" Role="ShipmentFreightDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentFreight">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentFreightDetails">
+              <PropertyRef Name="FreightId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShipmentInvoice">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceTotal" Type="Double" />
+          <Property Name="ImportedLines" Type="Int32" />
+          <Property Name="SupplierCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="TotalInternalFreight" Type="Double" />
+          <Property Name="Currency" Type="String" MaxLength="4" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="TotalOtherCost" Type="Double" />
+          <Property Name="TotalInsurance" Type="Double" />
+          <Property Name="TotalDeduction" Type="Double" />
+          <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="InvoiceDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" FromRole="ShipmentInvoice" ToRole="ShipmentInvoiceDetails" />
+          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="SubTotal" Type="Double" />
+          <NavigationProperty Name="InvoiceExtraInfo" Relationship="WaterNutDBModel.FK_ShipmentInvoiceExtraInfo_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoiceExtraInfo" />
+        </EntityType>
+        <EntityType Name="InvoiceDetails">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LineNumber" Type="Int32" />
+          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Quantity" Type="Double" Nullable="false" />
+          <Property Name="Units" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Cost" Type="Double" Nullable="false" />
+          <Property Name="TotalCost" Type="Double" />
+          <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="ShipmentInvoiceId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Invoice" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" FromRole="ShipmentInvoiceDetails" ToRole="ShipmentInvoice" />
+        </EntityType>
+        <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
+          <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InvoiceDetails" Role="ShipmentInvoiceDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceDetails">
+              <PropertyRef Name="ShipmentInvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="InvoiceExtraInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Info" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Value" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Invoice" Relationship="WaterNutDBModel.FK_ShipmentInvoiceExtraInfo_ShipmentInvoice" FromRole="ShipmentInvoiceExtraInfo" ToRole="ShipmentInvoice" />
+        </EntityType>
+        <Association Name="FK_ShipmentInvoiceExtraInfo_ShipmentInvoice">
+          <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InvoiceExtraInfo" Role="ShipmentInvoiceExtraInfo" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ShipmentInvoice">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceExtraInfo">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1797,6 +2459,204 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EntryData_Id" ColumnName="EntryData_Id" />
                 <ScalarProperty Name="WarehouseNo" ColumnName="WarehouseNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShimentBLCharges">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShimentBLCharges">
+              <MappingFragment StoreEntitySet="ShimentBLCharges">
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentBL">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentBL">
+              <MappingFragment StoreEntitySet="ShipmentBL">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
+                <ScalarProperty Name="VolumeCF" ColumnName="VolumeCF" />
+                <ScalarProperty Name="WeightLB" ColumnName="WeightLB" />
+                <ScalarProperty Name="VolumeM3" ColumnName="VolumeM3" />
+                <ScalarProperty Name="WeightKG" ColumnName="WeightKG" />
+                <ScalarProperty Name="PackagesType" ColumnName="PackagesType" />
+                <ScalarProperty Name="PackagesNo" ColumnName="PackagesNo" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Seals" ColumnName="Seals" />
+                <ScalarProperty Name="Container" ColumnName="Container" />
+                <ScalarProperty Name="Voyage" ColumnName="Voyage" />
+                <ScalarProperty Name="Vessel" ColumnName="Vessel" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentBLDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentBLDetails">
+              <MappingFragment StoreEntitySet="ShipmentBLDetails">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="Marks" ColumnName="Marks" />
+                <ScalarProperty Name="PackageType" ColumnName="PackageType" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentManifest">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentManifest">
+              <MappingFragment StoreEntitySet="ShipmentManifest">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Containers" ColumnName="Containers" />
+                <ScalarProperty Name="Marks" ColumnName="Marks" />
+                <ScalarProperty Name="Goods" ColumnName="Goods" />
+                <ScalarProperty Name="LocationOfGoods" ColumnName="LocationOfGoods" />
+                <ScalarProperty Name="Freight" ColumnName="Freight" />
+                <ScalarProperty Name="Volume" ColumnName="Volume" />
+                <ScalarProperty Name="GrossWeightKG" ColumnName="GrossWeightKG" />
+                <ScalarProperty Name="PackageType" ColumnName="PackageType" />
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
+                <ScalarProperty Name="Notify" ColumnName="Notify" />
+                <ScalarProperty Name="Consignee" ColumnName="Consignee" />
+                <ScalarProperty Name="Exporter" ColumnName="Exporter" />
+                <ScalarProperty Name="CargoReporter" ColumnName="CargoReporter" />
+                <ScalarProperty Name="TypeOfBL" ColumnName="TypeOfBL" />
+                <ScalarProperty Name="ModeOfTransport" ColumnName="ModeOfTransport" />
+                <ScalarProperty Name="LoadingPort" ColumnName="LoadingPort" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="WayBill" ColumnName="WayBill" />
+                <ScalarProperty Name="Vessel" ColumnName="Vessel" />
+                <ScalarProperty Name="ETA" ColumnName="ETA" />
+                <ScalarProperty Name="ETD" ColumnName="ETD" />
+                <ScalarProperty Name="Voyage" ColumnName="Voyage" />
+                <ScalarProperty Name="CustomsOffice" ColumnName="CustomsOffice" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentManifestDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentManifestDetails">
+              <MappingFragment StoreEntitySet="ShipmentManifestDetails">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ContainerID" ColumnName="ContainerID" />
+                <ScalarProperty Name="ManifestId" ColumnName="ManifestId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentRider">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentRider">
+              <MappingFragment StoreEntitySet="ShipmentRider">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="DocumentDate" ColumnName="DocumentDate" />
+                <ScalarProperty Name="ETA" ColumnName="ETA" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentFreight">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentFreight">
+              <MappingFragment StoreEntitySet="ShipmentFreight">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="ETA" ColumnName="ETA" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="DueDate" ColumnName="DueDate" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="Consignee" ColumnName="Consignee" />
+                <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentRiderDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentRiderDetails">
+              <MappingFragment StoreEntitySet="ShipmentRiderDetails">
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="RiderId" ColumnName="RiderId" />
+                <ScalarProperty Name="CubicFeet" ColumnName="CubicFeet" />
+                <ScalarProperty Name="GrossWeightKg" ColumnName="GrossWeightKg" />
+                <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
+                <ScalarProperty Name="Pieces" ColumnName="Pieces" />
+                <ScalarProperty Name="TrackingNumber" ColumnName="TrackingNumber" />
+                <ScalarProperty Name="Shipper" ColumnName="Shipper" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Consignee" ColumnName="Consignee" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentFreightDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentFreightDetails">
+              <MappingFragment StoreEntitySet="ShipmentFreightDetails">
+                <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+                <ScalarProperty Name="Rate" ColumnName="Rate" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="FreightId" ColumnName="FreightId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoice">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoice">
+              <MappingFragment StoreEntitySet="ShipmentInvoice">
+                <ScalarProperty Name="SubTotal" ColumnName="SubTotal" />
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
+                <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SourceFile" ColumnName="SourceFile" />
+                <ScalarProperty Name="TotalDeduction" ColumnName="TotalDeduction" />
+                <ScalarProperty Name="TotalInsurance" ColumnName="TotalInsurance" />
+                <ScalarProperty Name="TotalOtherCost" ColumnName="TotalOtherCost" />
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+                <ScalarProperty Name="Currency" ColumnName="Currency" />
+                <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
+                <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
+                <ScalarProperty Name="ImportedLines" ColumnName="ImportedLines" />
+                <ScalarProperty Name="InvoiceTotal" ColumnName="InvoiceTotal" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoiceDetails">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceDetails">
+              <MappingFragment StoreEntitySet="ShipmentInvoiceDetails">
+                <ScalarProperty Name="ShipmentInvoiceId" ColumnName="ShipmentInvoiceId" />
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
+                <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Units" ColumnName="Units" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />
+                <ScalarProperty Name="LineNumber" ColumnName="LineNumber" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoiceExtraInfo">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceExtraInfo">
+              <MappingFragment StoreEntitySet="ShipmentInvoiceExtraInfo">
+                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Info" ColumnName="Info" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

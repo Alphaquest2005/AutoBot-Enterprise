@@ -57,6 +57,21 @@ public int Id
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "IsComposite is required")]
+       
+public bool IsComposite
+		{ 
+		    get { return this.recuringpart.IsComposite; }
+			set
+			{
+			    if (value == this.recuringpart.IsComposite) return;
+				this.recuringpart.IsComposite = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsComposite");
+			}
+		}
+     
+
        private Parts _Parts;
         public  Parts Parts
 		{

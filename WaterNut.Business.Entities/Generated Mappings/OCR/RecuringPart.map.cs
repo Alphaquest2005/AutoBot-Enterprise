@@ -14,6 +14,7 @@
               this.HasKey(t => t.Id);        
               this.ToTable("OCR-RecuringPart");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.IsComposite).HasColumnName("IsComposite");
               this.HasRequired(t => t.Parts).WithOptional(t => (RecuringPart)t.RecuringPart);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);

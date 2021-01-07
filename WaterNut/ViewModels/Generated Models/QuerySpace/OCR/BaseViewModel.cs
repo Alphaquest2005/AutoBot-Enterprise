@@ -59,6 +59,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInvoicesIDChanged, OnCurrentInvoicesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentLinesIDChanged, OnCurrentLinesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_FieldValueIDChanged, OnCurrentOCR_FieldValueIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentOCR_InvoiceRegExIDChanged, OnCurrentOCR_InvoiceRegExIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartsIDChanged, OnCurrentPartsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentPartTypesIDChanged, OnCurrentPartTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentRecuringPartIDChanged, OnCurrentRecuringPartIDChanged);
@@ -73,6 +74,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                         RegisterToReceiveMessages<Invoices>(MessageToken.CurrentInvoicesChanged, OnCurrentInvoicesChanged);
                         RegisterToReceiveMessages<Lines>(MessageToken.CurrentLinesChanged, OnCurrentLinesChanged);
                         RegisterToReceiveMessages<OCR_FieldValue>(MessageToken.CurrentOCR_FieldValueChanged, OnCurrentOCR_FieldValueChanged);
+                        RegisterToReceiveMessages<OCR_InvoiceRegEx>(MessageToken.CurrentOCR_InvoiceRegExChanged, OnCurrentOCR_InvoiceRegExChanged);
                         RegisterToReceiveMessages<Parts>(MessageToken.CurrentPartsChanged, OnCurrentPartsChanged);
                         RegisterToReceiveMessages<PartTypes>(MessageToken.CurrentPartTypesChanged, OnCurrentPartTypesChanged);
                         RegisterToReceiveMessages<RecuringPart>(MessageToken.CurrentRecuringPartChanged, OnCurrentRecuringPartChanged);
@@ -256,6 +258,33 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                                     if (!string.IsNullOrEmpty(_currentOCR_FieldValueID)) BeginSendMessage(MessageToken.CurrentOCR_FieldValueIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentOCR_FieldValueIDChanged, _currentOCR_FieldValueID));
                                     NotifyPropertyChanged(x => this.CurrentOCR_FieldValueID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentOCR_InvoiceRegExIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (OCR_InvoiceRegExRepository ctx = new OCR_InvoiceRegExRepository())
+                            {
+                                CurrentOCR_InvoiceRegEx = await ctx.GetOCR_InvoiceRegEx(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentOCR_InvoiceRegEx);
+                        }
+
+                        private  string _currentOCR_InvoiceRegExID = "";
+                        public string CurrentOCR_InvoiceRegExID
+                        {
+                            get
+                            {
+                                return _currentOCR_InvoiceRegExID;
+                            }
+                            set
+                            {
+                                if (_currentOCR_InvoiceRegExID != value)
+                                {
+                                    _currentOCR_InvoiceRegExID = value;
+                                    if (!string.IsNullOrEmpty(_currentOCR_InvoiceRegExID)) BeginSendMessage(MessageToken.CurrentOCR_InvoiceRegExIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentOCR_InvoiceRegExIDChanged, _currentOCR_InvoiceRegExID));
+                                    NotifyPropertyChanged(x => this.CurrentOCR_InvoiceRegExID);  
                                 }
                             }
                         }
@@ -575,6 +604,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     NotifyPropertyChanged(x => this.CurrentInvoices);    
                     // all current navigation properties = null
                  CurrentParts = null;
+                 CurrentOCR_InvoiceRegEx = null;
    
                 }
             }
@@ -696,6 +726,56 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                     _vcurrentOCR_FieldValue = value;
 					if(_vcurrentOCR_FieldValue != null) CurrentOCR_FieldValue = value.Data;
                     NotifyPropertyChanged(x => this.VCurrentOCR_FieldValue);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
+        internal void OnCurrentOCR_InvoiceRegExChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<OCR_InvoiceRegEx> e)
+        {
+            //CurrentOCR_InvoiceRegEx = e.Data;
+            NotifyPropertyChanged(m => this.CurrentOCR_InvoiceRegEx);
+        }
+
+        private  OCR_InvoiceRegEx _currentOCR_InvoiceRegEx;
+        public OCR_InvoiceRegEx CurrentOCR_InvoiceRegEx
+        {
+            get
+            {
+                return _currentOCR_InvoiceRegEx;
+            }
+            set
+            {
+                if (_currentOCR_InvoiceRegEx != value)
+                {
+                    _currentOCR_InvoiceRegEx = value;
+                    BeginSendMessage(MessageToken.CurrentOCR_InvoiceRegExChanged,
+                                                     new NotificationEventArgs<OCR_InvoiceRegEx>(MessageToken.CurrentOCR_InvoiceRegExChanged, _currentOCR_InvoiceRegEx)); 
+                    NotifyPropertyChanged(x => this.CurrentOCR_InvoiceRegEx);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<OCR_InvoiceRegEx> _vcurrentOCR_InvoiceRegEx;
+        public VirtualListItem<OCR_InvoiceRegEx> VCurrentOCR_InvoiceRegEx
+        {
+            get
+            {
+                return _vcurrentOCR_InvoiceRegEx;
+            }
+            set
+            {
+                if (_vcurrentOCR_InvoiceRegEx != value)
+                {
+                    _vcurrentOCR_InvoiceRegEx = value;
+					if(_vcurrentOCR_InvoiceRegEx != null) CurrentOCR_InvoiceRegEx = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentOCR_InvoiceRegEx);                    
                 }
             }
         }
@@ -887,6 +967,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                  CurrentEnd = null;
                  CurrentLines = null;
                  CurrentStart = null;
+                 CurrentOCR_InvoiceRegEx = null;
    
                 }
             }
