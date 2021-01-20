@@ -290,7 +290,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="InvoiceDate" Type="datetime2" Precision="7" />
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="ImportedLines" Type="int" />
           <Property Name="SupplierCode" Type="nvarchar" MaxLength="100" />
@@ -2051,7 +2051,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="SourceFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="InvoiceDetails" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" FromRole="ShipmentInvoice" ToRole="ShipmentInvoiceDetails" />
-          <Property Name="InvoiceDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="InvoiceDate" Type="DateTime" Precision="7" />
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="SubTotal" Type="Double" />
           <NavigationProperty Name="InvoiceExtraInfo" Relationship="WaterNutDBModel.FK_ShipmentInvoiceExtraInfo_ShipmentInvoice" FromRole="ShipmentInvoice" ToRole="ShipmentInvoiceExtraInfo" />

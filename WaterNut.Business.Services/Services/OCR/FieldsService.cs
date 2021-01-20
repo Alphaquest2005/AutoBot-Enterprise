@@ -247,6 +247,12 @@ namespace OCR.Business.Services
                                         GetWhere<OCR_FieldValue>(dbContext, exp, itm.Value, "Field", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "FormatRegEx":
+                                return
+                                    await
+                                        GetWhere<FieldFormatRegEx>(dbContext, exp, itm.Value, "Field", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -752,6 +758,9 @@ namespace OCR.Business.Services
                             case "FieldValue":
                                 return await CountWhere<OCR_FieldValue>(dbContext, exp, itm.Value, "Field", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FormatRegEx":
+                                return await CountWhere<FieldFormatRegEx>(dbContext, exp, itm.Value, "Field", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Fields.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -868,6 +877,12 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<OCR_FieldValue>(startIndex, count, dbContext, exp, itm.Value, "Field", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FormatRegEx":
+                                return
+                                    await
+                                        LoadRangeWhere<FieldFormatRegEx>(startIndex, count, dbContext, exp, itm.Value, "Field", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1083,6 +1098,7 @@ namespace OCR.Business.Services
                 var i = Convert.ToInt32(LineId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<Fields> entities = await set//dbContext.Fields
+                                                    // .Include(x => x.FormatRegEx)									  
                                       .AsNoTracking()
                                         .Where(x => x.LineId.ToString() == LineId.ToString())
 										.ToListAsync()
@@ -1163,6 +1179,9 @@ namespace OCR.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "FieldValue":
                                 return await SumWhere<OCR_FieldValue>(dbContext, exp, itm.Value, "Field", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FormatRegEx":
+                                return await SumWhere<FieldFormatRegEx>(dbContext, exp, itm.Value, "Field", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

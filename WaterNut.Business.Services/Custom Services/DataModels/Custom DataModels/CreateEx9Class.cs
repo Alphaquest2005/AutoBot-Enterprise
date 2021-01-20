@@ -1244,7 +1244,7 @@ namespace WaterNut.DataSpace
                 var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id)
                     .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
-                if (totalSalesAll == 0 && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped")
+                if (totalSalesAll == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                 {
                     updateXStatus(mypod.Allocations,
                         $@"No Sales Found");
@@ -1258,7 +1258,7 @@ namespace WaterNut.DataSpace
                 if (applyHistoricChecks)
                 {
 
-                    if (totalSalesHistoric == 0 && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped")
+                    if (totalSalesHistoric == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         updateXStatus(mypod.Allocations,
                             $@"No Historical Sales Found");
@@ -1295,7 +1295,7 @@ namespace WaterNut.DataSpace
                     ///     Sales Cap/ Sales Bucket Current
 
 
-                    if (totalSalesCurrent == 0 && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped")
+                    if (totalSalesCurrent == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         updateXStatus(mypod.Allocations,
                             $@"No Current Sales Found");

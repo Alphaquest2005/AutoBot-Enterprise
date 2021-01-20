@@ -222,7 +222,7 @@ namespace EntryDataDS.Business.Entities
         }
         int _id;
         [DataMember]
-        public System.DateTime InvoiceDate 
+        public Nullable<System.DateTime> InvoiceDate 
         {
             get
             {
@@ -235,7 +235,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _invoicedate;
+        Nullable<System.DateTime> _invoicedate;
         [DataMember]
         public Nullable<int> FileLineNumber 
         {

@@ -83,7 +83,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SimpleMvvmToolkit-Common, Version=5.5.0.0, Culture=neutral, PublicKeyToken=20fad5ed49a0c3b4, processorArchitecture=MSIL">
       <HintPath>..\packages\SimpleMvvmToolkit.5.5.1.0\lib\net45\SimpleMvvmToolkit-Common.dll</HintPath>
@@ -260,11 +260,13 @@
     <Compile Include="Generated Client Entities\OCR\ChildParts.cs" />
     <Compile Include="Generated Client Entities\OCR\End.cs" />
     <Compile Include="Generated Client Entities\OCR\Enums\PartTypes.cs" />
+    <Compile Include="Generated Client Entities\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Fields.cs" />
+    <Compile Include="Generated Client Entities\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Client Entities\OCR\Lines.cs" />
+    <Compile Include="Generated Client Entities\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FieldValue.cs" />
-    <Compile Include="Generated Client Entities\OCR\OCR_InvoiceRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Parts.cs" />
     <Compile Include="Generated Client Entities\OCR\PartTypes.cs" />
     <Compile Include="Generated Client Entities\OCR\RecuringPart.cs" />
@@ -410,11 +412,13 @@
     <Compile Include="Generated Constructors Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated Constructors Models\OCR\ChildParts.cs" />
     <Compile Include="Generated Constructors Models\OCR\End.cs" />
+    <Compile Include="Generated Constructors Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Fields.cs" />
+    <Compile Include="Generated Constructors Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Invoices.cs" />
     <Compile Include="Generated Constructors Models\OCR\Lines.cs" />
+    <Compile Include="Generated Constructors Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Constructors Models\OCR\OCR_FieldValue.cs" />
-    <Compile Include="Generated Constructors Models\OCR\OCR_InvoiceRegEx.cs" />
     <Compile Include="Generated Constructors Models\OCR\Parts.cs" />
     <Compile Include="Generated Constructors Models\OCR\PartTypes.cs" />
     <Compile Include="Generated Constructors Models\OCR\RecuringPart.cs" />
@@ -560,11 +564,13 @@
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\ChildParts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\End.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Fields.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs" />
-    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\RecuringPart.cs" />
@@ -714,11 +720,13 @@
     <Compile Include="Generated MyNavProp Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\ChildParts.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\End.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Fields.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldValue.cs" />
-    <Compile Include="Generated MyNavProp Models\OCR\OCR_InvoiceRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Parts.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\PartTypes.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\RecuringPart.cs" />

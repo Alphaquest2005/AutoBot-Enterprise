@@ -22,6 +22,7 @@
               this.Property(t => t.Key).HasColumnName("Key").HasMaxLength(50);
               this.HasRequired(t => t.Lines).WithMany(t =>(ICollection<Fields>) t.Fields).HasForeignKey(d => d.LineId);
               this.HasOptional(t => t.FieldValue).WithRequired(t => (Fields)t.Field);
+              this.HasMany(t => t.FormatRegEx).WithRequired(t => (Fields)t.Field);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

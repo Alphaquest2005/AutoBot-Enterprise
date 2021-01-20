@@ -60,7 +60,15 @@ namespace EntryDataQS.Business.Services
                 }
 
                 dfileType.AsycudaDocumentSetId = docSetId;
-               InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId.GetValueOrDefault(), overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType);
+                var client = new EmailDownloader.Client
+                {
+                    CompanyName = BaseDataModel.Instance.CurrentApplicationSettings.CompanyName,
+                    DataFolder = BaseDataModel.Instance.CurrentApplicationSettings.DataFolder,
+                    Password = BaseDataModel.Instance.CurrentApplicationSettings.EmailPassword,
+                    Email = BaseDataModel.Instance.CurrentApplicationSettings.Email,
+                    EmailMappings = BaseDataModel.Instance.CurrentApplicationSettings.EmailMapping.ToList()
+                };
+                InvoiceReader.Import(droppedFilePath, fileTypeId.GetValueOrDefault(), emailId.GetValueOrDefault(), overwrite, SaveCSVModel.Instance.GetDocSets(dfileType), dfileType, client);
             }
             
         }

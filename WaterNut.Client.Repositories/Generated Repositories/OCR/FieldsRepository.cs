@@ -203,7 +203,8 @@ namespace OCR.Client.Repositories
                             return new Fields(res)
                     {
                   // Lines = (res.Lines != null?new Lines(res.Lines): null),    
-                  // FieldValue = (res.FieldValue != null?new OCR_FieldValue(res.FieldValue): null)    
+                  // FieldValue = (res.FieldValue != null?new OCR_FieldValue(res.FieldValue): null),    
+                     // FormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FormatRegEx.Select(y => new FieldFormatRegEx(y)))    
                   };
                     }
                     else

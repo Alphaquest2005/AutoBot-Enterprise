@@ -145,6 +145,19 @@ namespace OCR.Client.DTO
         private OCR_FieldValue _FieldValue;
         private ChangeTrackingCollection<OCR_FieldValue> FieldValueChangeTracker { get; set; }
 
+        [DataMember]
+        public ChangeTrackingCollection<FieldFormatRegEx> FormatRegEx
+		{
+		    get { return _FormatRegEx; }
+			set
+			{
+			    if (Equals(value, _FormatRegEx)) return;
+				_FormatRegEx = value;
+				NotifyPropertyChanged();//m => this.FormatRegEx
+			}
+		}
+        private ChangeTrackingCollection<FieldFormatRegEx> _FormatRegEx = new ChangeTrackingCollection<FieldFormatRegEx>();
+
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }
 

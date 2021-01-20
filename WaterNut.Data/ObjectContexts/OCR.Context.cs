@@ -69,7 +69,11 @@ namespace OCR.Business.Entities
      
         public DbSet<OCR_FieldValue> OCR_FieldValue { get; set; }
      
-        public DbSet<OCR_InvoiceRegEx> OCR_InvoiceRegEx { get; set; }
+        public DbSet<InvoiceRegEx> OCR_InvoiceRegEx { get; set; }
+     
+        public DbSet<FieldFormatRegEx> OCR_FieldFormatRegEx { get; set; }
+     
+        public DbSet<OCRFileTypes> OCRInvoicesFileTypes { get; set; }
      
 
 
@@ -97,7 +101,11 @@ namespace OCR.Business.Entities
          
             modelBuilder.Configurations.Add(new OCR_FieldValueMap());
          
-            modelBuilder.Configurations.Add(new OCR_InvoiceRegExMap());
+            modelBuilder.Configurations.Add(new InvoiceRegExMap());
+         
+            modelBuilder.Configurations.Add(new FieldFormatRegExMap());
+         
+            modelBuilder.Configurations.Add(new OCRFileTypesMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

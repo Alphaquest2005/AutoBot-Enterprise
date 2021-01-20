@@ -506,7 +506,7 @@ namespace AdjustmentQS.Business.Services
 
                     res = pres
                         .Where(exp)
-                        .Where(x => x.Status == null || x.Status == "Short Shipped")
+                        .Where(x => x.Status == null)// || x.Status == "Short Shipped"
                         .Where(x =>x.xBond_Item_Id == 0 //&& x.pQuantity != 0
                             )
                        // .Where(x => !entryDataDetailsIds.Any()|| entryDataDetailsIds.Contains(x.EntryDataDetailsId))//entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId)
@@ -710,7 +710,7 @@ namespace AdjustmentQS.Business.Services
                 {
                     PreviousItem_Id = aItem.Item_Id,
                     EntryDataDetailsId = os.EntryDataDetailsId,
-                    Status = "Short Shipped",
+                    //Status = "Short Shipped",
                     TrackingState = TrackingState.Added,
 
                 };

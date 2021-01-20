@@ -205,8 +205,10 @@ namespace OCR.Client.Repositories
                      // End = new System.Collections.ObjectModel.ObservableCollection<End>(res.End.Select(y => new End(y))),    
                      // Lines = new System.Collections.ObjectModel.ObservableCollection<Lines>(res.Lines.Select(y => new Lines(y))),    
                      // Start = new System.Collections.ObjectModel.ObservableCollection<Start>(res.Start.Select(y => new Start(y))),    
-                     // OCR_InvoiceRegEx = new System.Collections.ObjectModel.ObservableCollection<OCR_InvoiceRegEx>(res.OCR_InvoiceRegEx.Select(y => new OCR_InvoiceRegEx(y))),    
-                     // OCR_InvoiceRegEx1 = new System.Collections.ObjectModel.ObservableCollection<OCR_InvoiceRegEx>(res.OCR_InvoiceRegEx1.Select(y => new OCR_InvoiceRegEx(y)))    
+                     // InvoiceRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRegEx.Select(y => new InvoiceRegEx(y))),    
+                     // InvoiceRepRegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.InvoiceRepRegEx.Select(y => new InvoiceRegEx(y))),    
+                     // FieldFormatRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRegEx.Select(y => new FieldFormatRegEx(y))),    
+                     // FieldFormatRepRegEx = new System.Collections.ObjectModel.ObservableCollection<FieldFormatRegEx>(res.FieldFormatRepRegEx.Select(y => new FieldFormatRegEx(y)))    
                   };
                     }
                     else

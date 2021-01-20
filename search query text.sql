@@ -5,6 +5,6 @@ SELECT DISTINCT
        INNER JOIN
        sys.objects o
          ON m.object_id = o.object_id
-where m.definition like '%EntryDataDetails.ItemNumber =%'
+where m.definition like '%Short Shipped%'
 
 

@@ -88,30 +88,56 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<Start> _Start = new ChangeTrackingCollection<Start>();
 
         [DataMember]
-        public ChangeTrackingCollection<OCR_InvoiceRegEx> OCR_InvoiceRegEx
+        public ChangeTrackingCollection<InvoiceRegEx> InvoiceRegEx
 		{
-		    get { return _OCR_InvoiceRegEx; }
+		    get { return _InvoiceRegEx; }
 			set
 			{
-			    if (Equals(value, _OCR_InvoiceRegEx)) return;
-				_OCR_InvoiceRegEx = value;
-				NotifyPropertyChanged();//m => this.OCR_InvoiceRegEx
+			    if (Equals(value, _InvoiceRegEx)) return;
+				_InvoiceRegEx = value;
+				NotifyPropertyChanged();//m => this.InvoiceRegEx
 			}
 		}
-        private ChangeTrackingCollection<OCR_InvoiceRegEx> _OCR_InvoiceRegEx = new ChangeTrackingCollection<OCR_InvoiceRegEx>();
+        private ChangeTrackingCollection<InvoiceRegEx> _InvoiceRegEx = new ChangeTrackingCollection<InvoiceRegEx>();
 
         [DataMember]
-        public ChangeTrackingCollection<OCR_InvoiceRegEx> OCR_InvoiceRegEx1
+        public ChangeTrackingCollection<InvoiceRegEx> InvoiceRepRegEx
 		{
-		    get { return _OCR_InvoiceRegEx1; }
+		    get { return _InvoiceRepRegEx; }
 			set
 			{
-			    if (Equals(value, _OCR_InvoiceRegEx1)) return;
-				_OCR_InvoiceRegEx1 = value;
-				NotifyPropertyChanged();//m => this.OCR_InvoiceRegEx1
+			    if (Equals(value, _InvoiceRepRegEx)) return;
+				_InvoiceRepRegEx = value;
+				NotifyPropertyChanged();//m => this.InvoiceRepRegEx
 			}
 		}
-        private ChangeTrackingCollection<OCR_InvoiceRegEx> _OCR_InvoiceRegEx1 = new ChangeTrackingCollection<OCR_InvoiceRegEx>();
+        private ChangeTrackingCollection<InvoiceRegEx> _InvoiceRepRegEx = new ChangeTrackingCollection<InvoiceRegEx>();
+
+        [DataMember]
+        public ChangeTrackingCollection<FieldFormatRegEx> FieldFormatRegEx
+		{
+		    get { return _FieldFormatRegEx; }
+			set
+			{
+			    if (Equals(value, _FieldFormatRegEx)) return;
+				_FieldFormatRegEx = value;
+				NotifyPropertyChanged();//m => this.FieldFormatRegEx
+			}
+		}
+        private ChangeTrackingCollection<FieldFormatRegEx> _FieldFormatRegEx = new ChangeTrackingCollection<FieldFormatRegEx>();
+
+        [DataMember]
+        public ChangeTrackingCollection<FieldFormatRegEx> FieldFormatRepRegEx
+		{
+		    get { return _FieldFormatRepRegEx; }
+			set
+			{
+			    if (Equals(value, _FieldFormatRepRegEx)) return;
+				_FieldFormatRepRegEx = value;
+				NotifyPropertyChanged();//m => this.FieldFormatRepRegEx
+			}
+		}
+        private ChangeTrackingCollection<FieldFormatRegEx> _FieldFormatRepRegEx = new ChangeTrackingCollection<FieldFormatRegEx>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

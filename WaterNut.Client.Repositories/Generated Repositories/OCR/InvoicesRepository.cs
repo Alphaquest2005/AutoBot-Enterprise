@@ -203,7 +203,8 @@ namespace OCR.Client.Repositories
                             return new Invoices(res)
                     {
                      // Parts = new System.Collections.ObjectModel.ObservableCollection<Parts>(res.Parts.Select(y => new Parts(y))),    
-                     // OCR_InvoiceRegEx = new System.Collections.ObjectModel.ObservableCollection<OCR_InvoiceRegEx>(res.OCR_InvoiceRegEx.Select(y => new OCR_InvoiceRegEx(y)))    
+                     // RegEx = new System.Collections.ObjectModel.ObservableCollection<InvoiceRegEx>(res.RegEx.Select(y => new InvoiceRegEx(y))),    
+                     // FileTypes = new System.Collections.ObjectModel.ObservableCollection<OCRFileTypes>(res.FileTypes.Select(y => new OCRFileTypes(y)))    
                   };
                     }
                     else

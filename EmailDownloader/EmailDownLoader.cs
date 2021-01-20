@@ -268,6 +268,7 @@ namespace EmailDownloader
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
             message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
+            message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             message.Subject = "FWD: " + msg.Subject;
 
             // now to create our body...
@@ -332,13 +333,7 @@ namespace EmailDownloader
         {
             try
             {
-                var imapClient = new ImapClient();
-                imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
-                imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
-                var dataFolder = clientDetails.DataFolder;
-                imapClient.Inbox.Open(FolderAccess.ReadWrite);
-                var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
-                imapClient.Disconnect(true);
+                var msg = GetMsg(uID, clientDetails);
                 if (msg != null)
                 {
                     ForwardMsg(msg, clientDetails,subject, body, contacts ,attachments);
@@ -359,13 +354,26 @@ namespace EmailDownloader
 
         }
 
+        private static MimeMessage GetMsg(int uID, Client clientDetails)
+        {
+            var imapClient = new ImapClient();
+            imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
+            imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
+            var dataFolder = clientDetails.DataFolder;
+            imapClient.Inbox.Open(FolderAccess.ReadWrite);
+            var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
+            imapClient.Disconnect(true);
+            return msg;
+        }
+
         private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body,string[] contacts , string[] attachments)
         {
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            
+            message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+
             foreach (var recipent in contacts.Distinct())
             {
                 message.To.Add(MailboxAddress.Parse(recipent));
@@ -387,6 +395,30 @@ namespace EmailDownloader
             message.Body = builder.ToMessageBody();
 
             SendEmail(clientDetails, message);
+        }
+
+        public static bool ForwardMsgToSender(int uID, Client client, string subject, string body, string[] attachments)
+        {
+            try
+            {
+                var msg = GetMsg(uID, client);
+                if (msg != null)
+                {
+                    var contacts = msg.From.Mailboxes.Select(x => x.Address).ToArray();
+                    ForwardMsg(msg, client, subject, body, contacts, attachments);
+                }
+                else
+                {
+                    // msg not found
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

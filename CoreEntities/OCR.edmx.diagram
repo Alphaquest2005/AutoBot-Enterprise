@@ -10,7 +10,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.Invoices" Width="1.5" PointX="0.75" PointY="9.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.Parts" Width="1.5" PointX="3" PointY="7.75" />
         <EntityTypeShape EntityType="WaterNutDBModel.PartTypes" Width="1.5" PointX="0.75" PointY="7.125" />
-        <EntityTypeShape EntityType="WaterNutDBModel.RegularExpressions" Width="1.5" PointX="0.75" PointY="4" />
+        <EntityTypeShape EntityType="WaterNutDBModel.RegularExpressions" Width="2.875" PointX="0.75" PointY="4" />
         <EntityTypeShape EntityType="WaterNutDBModel.Start" Width="1.5" PointX="9.875" PointY="0.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_End_OCR_Parts" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" />
@@ -29,10 +29,16 @@
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_Start_OCR_RegularExpressions" />
-        <EntityTypeShape EntityType="WaterNutDBModel.OCR_InvoiceRegEx" Width="4.125" PointX="6" PointY="11.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InvoiceRegEx" Width="4.125" PointX="6" PointY="11.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" />
         <AssociationConnector Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" />
+        <EntityTypeShape EntityType="WaterNutDBModel.FieldFormatRegEx" Width="2.75" PointX="12.75" PointY="7.125" />
+        <EntityTypeShape EntityType="WaterNutDBModel.OCRFileTypes" Width="2.75" PointX="3" PointY="11.75" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_Fields" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" />
+        <AssociationConnector Association="WaterNutDBModel.FK_OCRInvoicesFileTypes_OCR_Invoices" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

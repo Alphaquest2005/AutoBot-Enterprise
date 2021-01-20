@@ -75,17 +75,30 @@ namespace OCR.Client.DTO
         private ChangeTrackingCollection<Parts> _Parts = new ChangeTrackingCollection<Parts>();
 
         [DataMember]
-        public ChangeTrackingCollection<OCR_InvoiceRegEx> OCR_InvoiceRegEx
+        public ChangeTrackingCollection<InvoiceRegEx> RegEx
 		{
-		    get { return _OCR_InvoiceRegEx; }
+		    get { return _RegEx; }
 			set
 			{
-			    if (Equals(value, _OCR_InvoiceRegEx)) return;
-				_OCR_InvoiceRegEx = value;
-				NotifyPropertyChanged();//m => this.OCR_InvoiceRegEx
+			    if (Equals(value, _RegEx)) return;
+				_RegEx = value;
+				NotifyPropertyChanged();//m => this.RegEx
 			}
 		}
-        private ChangeTrackingCollection<OCR_InvoiceRegEx> _OCR_InvoiceRegEx = new ChangeTrackingCollection<OCR_InvoiceRegEx>();
+        private ChangeTrackingCollection<InvoiceRegEx> _RegEx = new ChangeTrackingCollection<InvoiceRegEx>();
+
+        [DataMember]
+        public ChangeTrackingCollection<OCRFileTypes> FileTypes
+		{
+		    get { return _FileTypes; }
+			set
+			{
+			    if (Equals(value, _FileTypes)) return;
+				_FileTypes = value;
+				NotifyPropertyChanged();//m => this.FileTypes
+			}
+		}
+        private ChangeTrackingCollection<OCRFileTypes> _FileTypes = new ChangeTrackingCollection<OCRFileTypes>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

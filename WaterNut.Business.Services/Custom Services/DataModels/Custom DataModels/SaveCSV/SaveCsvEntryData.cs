@@ -352,7 +352,7 @@ namespace WaterNut.DataSpace
 
 
                         InvoiceNo = x["InvoiceNo"].ToString(),
-                        InvoiceDate = DateTime.Parse(x["InvoiceDate"].ToString()),
+                        InvoiceDate = x.ContainsKey("InvoiceDate") ?  DateTime.Parse(x["InvoiceDate"].ToString()) : DateTime.MinValue,
                         InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null,//Because of MPI not 
                         SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null,
                         ImportedLines = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count,
@@ -368,7 +368,7 @@ namespace WaterNut.DataSpace
                                                 {
                                                     Quantity = Convert.ToDouble(z["Quantity"].ToString()),
                                                     ItemNumber = z.ContainsKey("ItemNumber") ? z["ItemNumber"].ToString(): null,
-                                                    ItemDescription = z["ItemDescription"].ToString(),
+                                                    ItemDescription = z["ItemDescription"].ToString().Truncate(255),
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
                                                     Cost = Convert.ToDouble(z["Cost"].ToString()),
                                                     TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
@@ -377,11 +377,13 @@ namespace WaterNut.DataSpace
                                                     TrackingState = TrackingState.Added,
 
                                                 }).ToList(),
-                        InvoiceExtraInfo = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
+                        InvoiceExtraInfo = !x.ContainsKey("ExtraInfo")? new List<InvoiceExtraInfo>(): ((List<IDictionary<string, object>>)x["ExtraInfo"])
+                            .Where(z => z.Keys.Any())
+                            .SelectMany(z => z)
                             .Select(z => new InvoiceExtraInfo()
                             {
-                                Info = z["Quantity"].ToString(),
-                                Value = z["ItemNumber"].ToString(),
+                                Info = z.Key.ToString(),
+                                Value = z.Value.ToString(),
                                 TrackingState = TrackingState.Added,
                             }).ToList(),
 

@@ -23,7 +23,8 @@ namespace OCR.Business.Entities
         partial void AutoGenStartUp() //Invoices()
         {
             this.Parts = new List<Parts>();
-            this.OCR_InvoiceRegEx = new List<OCR_InvoiceRegEx>();
+            this.RegEx = new List<InvoiceRegEx>();
+            this.FileTypes = new List<OCRFileTypes>();
         }
 
         [DataMember]
@@ -74,7 +75,9 @@ namespace OCR.Business.Entities
         [DataMember]
         public List<Parts> Parts { get; set; }
         [DataMember]
-        public List<OCR_InvoiceRegEx> OCR_InvoiceRegEx { get; set; }
+        public List<InvoiceRegEx> RegEx { get; set; }
+        [DataMember]
+        public List<OCRFileTypes> FileTypes { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }
