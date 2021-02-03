@@ -23,7 +23,11 @@ namespace EntryDataDS.Business.Entities
         partial void AutoGenStartUp() //ShipmentBL()
         {
             this.ShimentBLCharges = new List<ShimentBLCharges>();
+            this.ShipmentAttachedBL = new List<ShipmentAttachedBL>();
             this.ShipmentBLDetails = new List<ShipmentBLDetails>();
+            this.ShipmentManifestBLs = new List<ShipmentManifestBLs>();
+            this.ShipmentRiderBLs = new List<ShipmentRiderBLs>();
+            this.ShipmentBLFreight = new List<ShipmentBLFreight>();
         }
 
         [DataMember]
@@ -267,9 +271,47 @@ namespace EntryDataDS.Business.Entities
         }
         int _filetypeid;
         [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
+        public int Id 
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _id;
+        [DataMember]
         public List<ShimentBLCharges> ShimentBLCharges { get; set; }
         [DataMember]
+        public List<ShipmentAttachedBL> ShipmentAttachedBL { get; set; }
+        [DataMember]
         public List<ShipmentBLDetails> ShipmentBLDetails { get; set; }
+        [DataMember]
+        public List<ShipmentManifestBLs> ShipmentManifestBLs { get; set; }
+        [DataMember]
+        public List<ShipmentRiderBLs> ShipmentRiderBLs { get; set; }
+        [DataMember]
+        public List<ShipmentBLFreight> ShipmentBLFreight { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

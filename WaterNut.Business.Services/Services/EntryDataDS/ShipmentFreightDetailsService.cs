@@ -241,6 +241,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentFreight>(dbContext, exp, itm.Value, "ShipmentFreightDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ShipmentFreightBLs":
+                                return
+                                    await
+                                        GetWhere<ShipmentFreightBLs>(dbContext, exp, itm.Value, "ShipmentFreightDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -743,6 +749,9 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentFreight":
                                 return await CountWhere<ShipmentFreight>(dbContext, exp, itm.Value, "ShipmentFreightDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentFreightBLs":
+                                return await CountWhere<ShipmentFreightBLs>(dbContext, exp, itm.Value, "ShipmentFreightDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.ShipmentFreightDetails.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -853,6 +862,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ShipmentFreight>(startIndex, count, dbContext, exp, itm.Value, "ShipmentFreightDetails", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentFreightBLs":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentFreightBLs>(startIndex, count, dbContext, exp, itm.Value, "ShipmentFreightDetails", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1068,6 +1083,7 @@ namespace EntryDataDS.Business.Services
                 var i = Convert.ToInt32(FreightId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ShipmentFreightDetails> entities = await set//dbContext.ShipmentFreightDetails
+                                                    // .Include(x => x.ShipmentFreightBLs)									  
                                       .AsNoTracking()
                                         .Where(x => x.FreightId.ToString() == FreightId.ToString())
 										.ToListAsync()
@@ -1145,6 +1161,9 @@ namespace EntryDataDS.Business.Services
                         {
                             case "ShipmentFreight":
                                 return await SumWhere<ShipmentFreight>(dbContext, exp, itm.Value, "ShipmentFreightDetails", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentFreightBLs":
+                                return await SumWhere<ShipmentFreightBLs>(dbContext, exp, itm.Value, "ShipmentFreightDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

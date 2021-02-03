@@ -21,6 +21,7 @@
               this.Property(t => t.Total).HasColumnName("Total");
               this.Property(t => t.WarehouseCode).HasColumnName("WarehouseCode").HasMaxLength(50);
               this.HasRequired(t => t.ShipmentFreight).WithMany(t =>(ICollection<ShipmentFreightDetails>) t.ShipmentFreightDetails).HasForeignKey(d => d.FreightId);
+              this.HasMany(t => t.ShipmentFreightBLs).WithRequired(t => (ShipmentFreightDetails)t.ShipmentFreightDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

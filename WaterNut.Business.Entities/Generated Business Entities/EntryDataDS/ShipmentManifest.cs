@@ -22,7 +22,9 @@ namespace EntryDataDS.Business.Entities
     {
         partial void AutoGenStartUp() //ShipmentManifest()
         {
+            this.ShipmentAttachedManifest = new List<ShipmentAttachedManifest>();
             this.ShipmentManifestDetails = new List<ShipmentManifestDetails>();
+            this.ShipmentManifestBLs = new List<ShipmentManifestBLs>();
         }
 
         [DataMember]
@@ -101,7 +103,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _voyage;
         [DataMember]
-        public System.DateTime ETD 
+        public Nullable<System.DateTime> ETD 
         {
             get
             {
@@ -114,7 +116,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        System.DateTime _etd;
+        Nullable<System.DateTime> _etd;
         [DataMember]
         public System.DateTime ETA 
         {
@@ -446,6 +448,21 @@ namespace EntryDataDS.Business.Entities
         }
         string _sourcefile;
         [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
         public int FileTypeId 
         {
             get
@@ -461,7 +478,11 @@ namespace EntryDataDS.Business.Entities
         }
         int _filetypeid;
         [DataMember]
+        public List<ShipmentAttachedManifest> ShipmentAttachedManifest { get; set; }
+        [DataMember]
         public List<ShipmentManifestDetails> ShipmentManifestDetails { get; set; }
+        [DataMember]
+        public List<ShipmentManifestBLs> ShipmentManifestBLs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

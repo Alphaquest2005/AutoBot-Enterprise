@@ -32,6 +32,7 @@ using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
+using Attachments = DocumentItemDS.Business.Entities.Attachments;
 
 //using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 //using xcuda_PreviousItem = AllocationDS.Business.Entities.xcuda_PreviousItem;

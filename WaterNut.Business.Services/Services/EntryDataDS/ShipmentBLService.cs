@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<ShipmentBL> GetShipmentBLByKey(string BLNumber, List<string> includesLst = null, bool tracking = true)
+        public async Task<ShipmentBL> GetShipmentBLByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(BLNumber))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = BLNumber;
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                ShipmentBL entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.BLNumber == i).ConfigureAwait(continueOnCapturedContext: false);
+                ShipmentBL entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -241,10 +241,34 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShimentBLCharges>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ShipmentAttachedBL":
+                                return
+                                    await
+                                        GetWhere<ShipmentAttachedBL>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                             case "ShipmentBLDetails":
                                 return
                                     await
                                         GetWhere<ShipmentBLDetails>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentManifestBLs":
+                                return
+                                    await
+                                        GetWhere<ShipmentManifestBLs>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentRiderBLs":
+                                return
+                                    await
+                                        GetWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentBLFreight":
+                                return
+                                    await
+                                        GetWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentBL", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -307,11 +331,11 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<ShipmentBL> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.BLNumber);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.BLNumber).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -382,12 +406,12 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<ShipmentBL> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.BLNumber);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.BLNumber);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -533,15 +557,15 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteShipmentBL(string BLNumber)
+        public async Task<bool> DeleteShipmentBL(string Id)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = BLNumber;
+                var i = Convert.ToInt32(Id);
                 ShipmentBL entity = await dbContext.ShipmentBL
-													.SingleOrDefaultAsync(x => x.BLNumber == i)
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -693,7 +717,7 @@ namespace EntryDataDS.Business.Services
                     {
                         return await dbContext.ShipmentBL
 										.AsNoTracking()
-                                        .OrderBy(y => y.BLNumber)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -705,7 +729,7 @@ namespace EntryDataDS.Business.Services
                         return await dbContext.ShipmentBL
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.BLNumber)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -749,12 +773,24 @@ namespace EntryDataDS.Business.Services
                             case "ShimentBLCharges":
                                 return await CountWhere<ShimentBLCharges>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentAttachedBL":
+                                return await CountWhere<ShipmentAttachedBL>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentBLDetails":
                                 return await CountWhere<ShipmentBLDetails>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentManifestBLs":
+                                return await CountWhere<ShipmentManifestBLs>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentRiderBLs":
+                                return await CountWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentBLFreight":
+                                return await CountWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentBL", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.ShipmentBL.Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                    return await dbContext.ShipmentBL.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -797,9 +833,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentBL>()
-                .Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("BLNumber")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -818,9 +854,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentBL>()
-                .Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("BLNumber")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -847,7 +883,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.BLNumber)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -864,10 +900,34 @@ namespace EntryDataDS.Business.Services
                                         LoadRangeWhere<ShimentBLCharges>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ShipmentAttachedBL":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentAttachedBL>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
                             case "ShipmentBLDetails":
                                 return
                                     await
                                         LoadRangeWhere<ShipmentBLDetails>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentManifestBLs":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentManifestBLs>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentRiderBLs":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentRiderBLs>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentBLFreight":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentBLFreight>(startIndex, count, dbContext, exp, itm.Value, "ShipmentBL", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -878,8 +938,8 @@ namespace EntryDataDS.Business.Services
                     }
                     return await set//dbContext.ShipmentBL
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
-								.OrderBy(y => y.BLNumber)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -931,9 +991,9 @@ namespace EntryDataDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.BLNumber)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -960,9 +1020,9 @@ namespace EntryDataDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.BLNumber)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1012,7 +1072,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<ShipmentBL>()
-							.Where(exp == "All" || exp == null?"BLNumber != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1022,7 +1082,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentBL>()
-                .Where(exp == "All" || exp == null?"BLNumber != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1049,7 +1109,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<ShipmentBL>()
-							.Where(exp == "All" || exp == null?"BLNumber != null":exp)
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1059,7 +1119,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentBL>()
-                .Where(exp == "All" || exp == null?"BLNumber != null":exp)
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1084,7 +1144,11 @@ namespace EntryDataDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ShipmentBL> entities = await set//dbContext.ShipmentBL
                                                     // .Include(x => x.ShimentBLCharges)									  
+                                                    // .Include(x => x.ShipmentAttachedBL)									  
                                                     // .Include(x => x.ShipmentBLDetails)									  
+                                                    // .Include(x => x.ShipmentManifestBLs)									  
+                                                    // .Include(x => x.ShipmentRiderBLs)									  
+                                                    // .Include(x => x.ShipmentBLFreight)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1115,9 +1179,48 @@ namespace EntryDataDS.Business.Services
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ShipmentBL> entities = await set//dbContext.ShipmentBL
                                                     // .Include(x => x.ShimentBLCharges)									  
+                                                    // .Include(x => x.ShipmentAttachedBL)									  
                                                     // .Include(x => x.ShipmentBLDetails)									  
+                                                    // .Include(x => x.ShipmentManifestBLs)									  
+                                                    // .Include(x => x.ShipmentRiderBLs)									  
+                                                    // .Include(x => x.ShipmentBLFreight)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<ShipmentBL>> GetShipmentBLByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(ApplicationSettingsId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<ShipmentBL> entities = await set//dbContext.ShipmentBL
+                                                    // .Include(x => x.ShimentBLCharges)									  
+                                                    // .Include(x => x.ShipmentAttachedBL)									  
+                                                    // .Include(x => x.ShipmentBLDetails)									  
+                                                    // .Include(x => x.ShipmentManifestBLs)									  
+                                                    // .Include(x => x.ShipmentRiderBLs)									  
+                                                    // .Include(x => x.ShipmentBLFreight)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1194,12 +1297,24 @@ namespace EntryDataDS.Business.Services
                             case "ShimentBLCharges":
                                 return await SumWhere<ShimentBLCharges>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentAttachedBL":
+                                return await SumWhere<ShipmentAttachedBL>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentBLDetails":
                                 return await SumWhere<ShipmentBLDetails>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentManifestBLs":
+                                return await SumWhere<ShipmentManifestBLs>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentRiderBLs":
+                                return await SumWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentBLFreight":
+                                return await SumWhere<ShipmentBLFreight>(dbContext, exp, itm.Value, "ShipmentBL", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.ShipmentBL.Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                    return Convert.ToDecimal(dbContext.ShipmentBL.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1240,9 +1355,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentBL>()
-                .Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("BLNumber")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1260,9 +1375,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentBL>()
-                .Where(exp == "All" || exp == null ? "BLNumber != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("BLNumber")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)

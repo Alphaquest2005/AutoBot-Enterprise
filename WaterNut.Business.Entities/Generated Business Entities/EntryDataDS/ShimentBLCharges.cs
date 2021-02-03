@@ -36,21 +36,6 @@ namespace EntryDataDS.Business.Entities
         }
         int _id;
         [DataMember]
-        public string BLNumber 
-        {
-            get
-            {
-                return _blnumber;
-            }
-            set
-            {
-                _blnumber = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _blnumber;
-        [DataMember]
         public string Description 
         {
             get
@@ -95,6 +80,21 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _currency;
+        [DataMember]
+        public int BLId 
+        {
+            get
+            {
+                return _blid;
+            }
+            set
+            {
+                _blid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _blid;
         [DataMember]
         public ShipmentBL ShipmentBL { get; set; }
 

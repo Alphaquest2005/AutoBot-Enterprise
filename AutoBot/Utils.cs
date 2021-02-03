@@ -33,9 +33,10 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
 using AdjustmentQS.Business.Entities;
 using Asycuda421;
+using AutoBotUtilities;
 using EmailDownloader;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
+//using NPOI.SS.UserModel;
+//using NPOI.XSSF.UserModel;
 using SimpleMvvmToolkit.ModelExtensions;
 using TrackableEntities;
 using TrackableEntities.Client;
@@ -231,91 +232,36 @@ namespace AutoBot
 
         private static void CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
         {
-            var emailId = Convert.ToInt32(fileType.EmailId);
-            using (var ctx = new EntryDataDSContext())
-            {
-                var shipmentName = "Next Shipment";
-                var body = "";
-                var invoices = ctx.ShipmentInvoice
-                    .Include(x => x.InvoiceDetails)
-                    .Include(x => x.InvoiceExtraInfo)
-                    .Where(x => x.EmailId == emailId);
-                var manifests = ctx.ShipmentManifest.Where(x => x.EmailId == emailId);
-                var bls = ctx.ShipmentBL.Where(x => x.EmailId == emailId);
-                var freightlst = ctx.ShipmentFreight.Include(x => x.ShipmentFreightDetails).Where(x => x.EmailId == emailId);
-                var riders = ctx.ShipmentRider.Where(x => x.EmailId == emailId);
-
-                var attachments = invoices.Select(x => new List<string>() {CreatCSV(x), x.SourceFile}).SelectMany(x => x.ToList()).ToList();
-                
-
-                EmailDownloader.EmailDownloader.ForwardMsgToSender(Convert.ToInt32(emailId), Client,
-                    $"CSVs for {shipmentName}", body, attachments.ToArray());
-
-
-            }
-        }
-
-        private static string CreatCSV(ShipmentInvoice shipmentInvoice)
-        {
             try
             {
 
+           
+            var emailId = Convert.ToInt32(fileType.EmailId);
+            
+                // Todo quick paks etc put Man reg#, bl numer, TotalWeight & Totalfreight in spreadsheet. so invoice can generate the entry.
+                // change the required documents to match too
+                var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
+                                    .ProcessEmailInvoices()
+                                    .LoadEmailRiders()
+                                    .LoadEmailBL()
+                                    .LoadEmailManifest()
+                                    .LoadEmailFreight()
+                                    .LoadDBBL()
+                                    .LoadDBRiders()
+                                    .LoadDBFreight()
+                                    .LoadDBManifest()
+                                    .LoadDBInvoices()
+                                    .ProcessShipment()
+                                    //.SaveShipment()
+                                    ;
+                                    
 
-                var pdfFile = new FileInfo(shipmentInvoice.SourceFile);
-                var csvFilePath = Path.Combine(pdfFile.DirectoryName, pdfFile.Name.Replace(".pdf", ".csv"));
-                var poTemplate = new CoreEntitiesContext().FileTypes
-                    .Include(x => x.FileTypeMappings)
-                    .First(x => x.ApplicationSettingsId ==
-                                BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId
-                                && x.Type == "POTemplate");
-                IWorkbook workbook = new XSSFWorkbook();
-                ISheet poSheet = workbook.CreateSheet("POTemplate");
-                var header = poTemplate.FileTypeMappings.OrderBy(x => x.Id).Select((x) => new {value = x, index = poTemplate.FileTypeMappings.IndexOf(x) })
-                    .ToDictionary(x => new {Column = x.value.OriginalName, Index = x.index}, v => v.value);
-                var headerRow = poSheet.CreateRow(0);
-
-                header.ForEach(x => headerRow.CreateCell(x.Key.Index).SetCellValue(x.Value.DestinationName));
-
-                var invoiceRow = poSheet.CreateRow(1);
-
-                invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)).Key.Index)
-                    .SetCellValue(shipmentInvoice.InvoiceTotal.GetValueOrDefault());
-                invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)).Key.Index)
-                    .SetCellValue(shipmentInvoice.SupplierCode);
-                invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(shipmentInvoice.Currency)).Key.Index)
-                    .SetCellValue(shipmentInvoice.Currency);
-                var po = shipmentInvoice.InvoiceExtraInfo.FirstOrDefault(x => x.Info == "PONumber");
-                if (!string.IsNullOrEmpty(po?.Value))
-                    invoiceRow.CreateCell(header.First(x => x.Key.Column == po.Info).Key.Index).SetCellValue(po.Value);
-                var i = 0;
-                foreach (var itm in shipmentInvoice.InvoiceDetails)
+                shipments.ForEach(shipment =>
                 {
-                    var row = poSheet.GetRow(i) ?? poSheet.CreateRow(i);
-                    invoiceRow.CreateCell(
-                            header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceNo)).Key.Index)
-                        .SetCellValue(shipmentInvoice.InvoiceNo);
-                    invoiceRow
-                        .CreateCell(header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index)
-                        .SetCellValue(shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("mm/dd/yyyy"));
-                    invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index)
-                        .SetCellValue(itm.Cost);
-                    invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(itm.ItemDescription)).Key.Index)
-                        .SetCellValue(itm.ItemDescription);
-                    invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index)
-                        .SetCellValue(itm.Quantity);
-                    invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(itm.ItemNumber)).Key.Index)
-                        .SetCellValue(itm.ItemNumber);
-                    invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index)
-                        .SetCellValue(itm.TotalCost.GetValueOrDefault());
-                    invoiceRow.CreateCell(header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index)
-                        .SetCellValue(itm.Units);
-                    i++;
-                }
+                    EmailDownloader.EmailDownloader.ForwardMsgToSender(Convert.ToInt32(emailId), Client,
+                                        $"CSVs for {shipment.ShipmentName}", shipment.ToString(), shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
+                });
 
-                FileStream sw = File.Create(csvFilePath);
-                workbook.Write(sw);
-                sw.Close();
-                return csvFilePath;
             }
             catch (Exception e)
             {
@@ -323,6 +269,8 @@ namespace AutoBot
                 throw;
             }
         }
+
+
 
 
         private static void AttachEmailPDF(FileTypes ft, FileInfo[] fs)
@@ -724,7 +672,7 @@ namespace AutoBot
         {
             Console.WriteLine("Importing PDF " + fileType.Type);
             var failedFiles = new List<string>();
-            foreach (var file in csvFiles)
+            foreach (var file in csvFiles.Where(x => x.Extension.ToLower() == ".pdf"))
             {
                 int? emailId = 0;
                 int? fileTypeId = 0;
@@ -6475,6 +6423,8 @@ namespace AutoBot
             //return str;
         }
     }
+
+   
 
     internal class AssessedEntryInfo
     {

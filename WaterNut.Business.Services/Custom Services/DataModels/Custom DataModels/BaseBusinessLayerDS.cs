@@ -1068,7 +1068,7 @@ namespace WaterNut.DataSpace
         {
             var alst = currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
                 .Where(x => x.Attachment.FilePath.Contains(pod.EntryData.EntryDataId) &&
-                            x.FileType.DocumentCode == "IV05"
+                            (x.FileType.DocumentCode == "IV05" || x.FileType.DocumentCode == "DO02")
                     /*||
                     (x.DocumentSpecific == false
                      && x.EmailUniqueId == pod.EntryData.EmailId

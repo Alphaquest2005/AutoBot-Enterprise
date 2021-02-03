@@ -88,6 +88,7 @@
     <Compile Include="Converters\DataGrid2Excel.cs" />
     <Compile Include="Converters\NotBoolConverter.cs" />
     <Compile Include="Converters\NullStringConverter.cs" />
+    <Compile Include="Extensions\BetterExpando.cs" />
     <Compile Include="Extensions\MefExtensions.cs" />
     <Compile Include="IAsyncInitialization.cs" />
     <Compile Include="Model.Validation\AddressValidationAttribute.cs" />

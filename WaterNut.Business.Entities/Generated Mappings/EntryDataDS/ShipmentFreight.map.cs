@@ -24,7 +24,11 @@
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.Currency).HasColumnName("Currency").HasMaxLength(3);
               this.HasMany(t => t.ShipmentFreightDetails).WithRequired(t => (ShipmentFreight)t.ShipmentFreight);
+              this.HasMany(t => t.ShipmentAttachedFreight).WithRequired(t => (ShipmentFreight)t.ShipmentFreight);
+              this.HasMany(t => t.ShipmentBLFreight).WithRequired(t => (ShipmentFreight)t.ShipmentFreight);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

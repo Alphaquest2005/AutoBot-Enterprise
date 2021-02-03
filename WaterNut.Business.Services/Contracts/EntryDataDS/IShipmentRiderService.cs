@@ -111,6 +111,9 @@ namespace EntryDataDS.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<ShipmentRider>> GetShipmentRiderByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentRider>> GetShipmentRiderByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
   
 
 

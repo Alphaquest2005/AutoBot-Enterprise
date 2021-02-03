@@ -89,10 +89,6 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentBLDetails> ShipmentBLDetails { get; set; }
      
-        public DbSet<ShipmentManifest> ShipmentManifest { get; set; }
-     
-        public DbSet<ShipmentManifestDetails> ShipmentManifestDetails { get; set; }
-     
         public DbSet<ShipmentRider> ShipmentRider { get; set; }
      
         public DbSet<ShipmentFreight> ShipmentFreight { get; set; }
@@ -106,6 +102,36 @@ namespace EntryDataDS.Business.Entities
         public DbSet<InvoiceDetails> ShipmentInvoiceDetails { get; set; }
      
         public DbSet<InvoiceExtraInfo> ShipmentInvoiceExtraInfo { get; set; }
+     
+        public DbSet<ShipmentRiderBLs> ShipmentRiderBLs { get; set; }
+     
+        public DbSet<ShipmentRiderInvoice> ShipmentRiderInvoice { get; set; }
+     
+        public DbSet<ShipmentAttachedBL> ShipmentAttachedBL { get; set; }
+     
+        public DbSet<ShipmentAttachedFreight> ShipmentAttachedFreight { get; set; }
+     
+        public DbSet<ShipmentAttachedInvoices> ShipmentAttachedInvoices { get; set; }
+     
+        public DbSet<ShipmentAttachedRider> ShipmentAttachedRider { get; set; }
+     
+        public DbSet<ShipmentAttachedManifest> ShipmentAttachedManifest { get; set; }
+     
+        public DbSet<ShipmentManifestDetails> ShipmentManifestDetails { get; set; }
+     
+        public DbSet<Shipment> Shipment { get; set; }
+     
+        public DbSet<ShipmentAttachments> ShipmentAttachments { get; set; }
+     
+        public DbSet<Attachments> Attachments { get; set; }
+     
+        public DbSet<ShipmentFreightBLs> ShipmentFreightBLs { get; set; }
+     
+        public DbSet<ShipmentManifest> ShipmentManifest { get; set; }
+     
+        public DbSet<ShipmentManifestBLs> ShipmentManifestBLs { get; set; }
+     
+        public DbSet<ShipmentBLFreight> ShipmentBLFreight { get; set; }
      
 
 
@@ -153,10 +179,6 @@ namespace EntryDataDS.Business.Entities
          
             modelBuilder.Configurations.Add(new ShipmentBLDetailsMap());
          
-            modelBuilder.Configurations.Add(new ShipmentManifestMap());
-         
-            modelBuilder.Configurations.Add(new ShipmentManifestDetailsMap());
-         
             modelBuilder.Configurations.Add(new ShipmentRiderMap());
          
             modelBuilder.Configurations.Add(new ShipmentFreightMap());
@@ -170,6 +192,36 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new InvoiceDetailsMap());
          
             modelBuilder.Configurations.Add(new InvoiceExtraInfoMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentRiderBLsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentRiderInvoiceMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentAttachedBLMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentAttachedFreightMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentAttachedInvoicesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentAttachedRiderMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentAttachedManifestMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentManifestDetailsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentAttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new AttachmentsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentFreightBLsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentManifestMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentManifestBLsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentBLFreightMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

@@ -110,6 +110,9 @@ namespace EntryDataDS.Business.Services
         Task<IEnumerable<ShipmentManifest>> GetShipmentManifestByEmailId(string EmailId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentManifest>> GetShipmentManifestByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<ShipmentManifest>> GetShipmentManifestByFileTypeId(string FileTypeId, List<string> includesLst = null);
   
 

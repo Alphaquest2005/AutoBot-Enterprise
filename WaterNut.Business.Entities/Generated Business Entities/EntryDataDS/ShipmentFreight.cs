@@ -23,6 +23,8 @@ namespace EntryDataDS.Business.Entities
         partial void AutoGenStartUp() //ShipmentFreight()
         {
             this.ShipmentFreightDetails = new List<ShipmentFreightDetails>();
+            this.ShipmentAttachedFreight = new List<ShipmentAttachedFreight>();
+            this.ShipmentBLFreight = new List<ShipmentBLFreight>();
         }
 
         [DataMember]
@@ -191,7 +193,41 @@ namespace EntryDataDS.Business.Entities
         }
         int _filetypeid;
         [DataMember]
+        public Nullable<int> ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _applicationsettingsid;
+        [DataMember]
+        public string Currency 
+        {
+            get
+            {
+                return _currency;
+            }
+            set
+            {
+                _currency = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _currency;
+        [DataMember]
         public List<ShipmentFreightDetails> ShipmentFreightDetails { get; set; }
+        [DataMember]
+        public List<ShipmentAttachedFreight> ShipmentAttachedFreight { get; set; }
+        [DataMember]
+        public List<ShipmentBLFreight> ShipmentBLFreight { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

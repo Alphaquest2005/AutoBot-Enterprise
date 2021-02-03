@@ -20,6 +20,11 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class ShipmentFreightDetails : BaseEntity<ShipmentFreightDetails>, ITrackable 
     {
+        partial void AutoGenStartUp() //ShipmentFreightDetails()
+        {
+            this.ShipmentFreightBLs = new List<ShipmentFreightBLs>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -127,6 +132,8 @@ namespace EntryDataDS.Business.Entities
         string _warehousecode;
         [DataMember]
         public ShipmentFreight ShipmentFreight { get; set; }
+        [DataMember]
+        public List<ShipmentFreightBLs> ShipmentFreightBLs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

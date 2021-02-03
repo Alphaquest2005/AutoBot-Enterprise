@@ -13,10 +13,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Core.Common.Utils;
+using EntryDataDS.Business.Entities;
 using MoreLinq.Extensions;
 using WaterNut.DataSpace;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
-
+using xlsxWriter;
+using FileTypes = CoreEntities.Business.Entities.FileTypes;
 
 namespace AutoBot
 {
@@ -113,17 +115,9 @@ namespace AutoBot
                                                       x.FileTypes.FilePattern,
                                                       RegexOptions.IgnoreCase) && z.LastWriteTime >= beforeImport))) continue;
 
-
-                                
-                              
-
                                 foreach (var emailFileType in msg.Key.Item2.FileTypes.OrderBy(x =>
                                     x.Type == "Info"))
                                 {
-
-
-
-
                                     var fileType = BaseDataModel.GetFileType(emailFileType);
                                     fileType.Data
                                         .Clear(); // because i am using emailmapping from email, its not a lookup

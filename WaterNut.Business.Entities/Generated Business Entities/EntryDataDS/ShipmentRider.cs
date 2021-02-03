@@ -23,6 +23,9 @@ namespace EntryDataDS.Business.Entities
         partial void AutoGenStartUp() //ShipmentRider()
         {
             this.ShipmentRiderDetails = new List<ShipmentRiderDetails>();
+            this.ShipmentRiderInvoice = new List<ShipmentRiderInvoice>();
+            this.ShipmentRiderBLs = new List<ShipmentRiderBLs>();
+            this.ShipmentAttachedRider = new List<ShipmentAttachedRider>();
         }
 
         [DataMember]
@@ -71,7 +74,7 @@ namespace EntryDataDS.Business.Entities
         }
         System.DateTime _documentdate;
         [DataMember]
-        public Nullable<int> EmailId 
+        public int EmailId 
         {
             get
             {
@@ -84,7 +87,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        int _emailid;
         [DataMember]
         public string SourceFile 
         {
@@ -101,7 +104,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _sourcefile;
         [DataMember]
-        public Nullable<int> FileTypeId 
+        public int FileTypeId 
         {
             get
             {
@@ -114,9 +117,30 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _filetypeid;
+        int _filetypeid;
+        [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
         [DataMember]
         public List<ShipmentRiderDetails> ShipmentRiderDetails { get; set; }
+        [DataMember]
+        public List<ShipmentRiderInvoice> ShipmentRiderInvoice { get; set; }
+        [DataMember]
+        public List<ShipmentRiderBLs> ShipmentRiderBLs { get; set; }
+        [DataMember]
+        public List<ShipmentAttachedRider> ShipmentAttachedRider { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

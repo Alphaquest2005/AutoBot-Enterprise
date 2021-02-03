@@ -24,6 +24,8 @@ namespace EntryDataDS.Business.Entities
         {
             this.InvoiceDetails = new List<InvoiceDetails>();
             this.InvoiceExtraInfo = new List<InvoiceExtraInfo>();
+            this.ShipmentRiderInvoice = new List<ShipmentRiderInvoice>();
+            this.ShipmentAttachedInvoices = new List<ShipmentAttachedInvoices>();
         }
 
         [DataMember]
@@ -117,7 +119,7 @@ namespace EntryDataDS.Business.Entities
         }
         string _currency;
         [DataMember]
-        public Nullable<int> EmailId 
+        public int EmailId 
         {
             get
             {
@@ -130,9 +132,9 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _emailid;
+        int _emailid;
         [DataMember]
-        public Nullable<int> FileTypeId 
+        public int FileTypeId 
         {
             get
             {
@@ -145,7 +147,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _filetypeid;
+        int _filetypeid;
         [DataMember]
         public Nullable<double> TotalOtherCost 
         {
@@ -267,9 +269,28 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<double> _subtotal;
         [DataMember]
+        public int ApplicationSettingsId 
+        {
+            get
+            {
+                return _applicationsettingsid;
+            }
+            set
+            {
+                _applicationsettingsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _applicationsettingsid;
+        [DataMember]
         public List<InvoiceDetails> InvoiceDetails { get; set; }
         [DataMember]
         public List<InvoiceExtraInfo> InvoiceExtraInfo { get; set; }
+        [DataMember]
+        public List<ShipmentRiderInvoice> ShipmentRiderInvoice { get; set; }
+        [DataMember]
+        public List<ShipmentAttachedInvoices> ShipmentAttachedInvoices { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

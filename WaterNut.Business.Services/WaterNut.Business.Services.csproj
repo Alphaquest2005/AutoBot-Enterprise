@@ -85,14 +85,32 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.8.9\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="commons-logging">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\commons-logging.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=1.3.1.9, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.1.3.1\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    <Reference Include="fontbox-1.8.9">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\fontbox-1.8.9.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.SwingAWT">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\IKVM.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Expression.Interactions">
@@ -110,23 +128,14 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NPOI, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.OOXML, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OOXML.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.OpenXml4Net, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
-    </Reference>
-    <Reference Include="NPOI.OpenXmlFormats, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
-      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
-    </Reference>
     <Reference Include="Omu.ValueInjecter, Version=3.2.0.0, Culture=neutral, PublicKeyToken=5692a4ecdffbe736, processorArchitecture=MSIL">
       <HintPath>..\packages\ValueInjecter.3.2.0\lib\net45\Omu.ValueInjecter.dll</HintPath>
     </Reference>
     <Reference Include="ParallelExtensionsExtras">
       <HintPath>..\packages\MSFT.ParallelExtensionsExtras.1.2.0\lib\ParallelExtensionsExtras.dll</HintPath>
+    </Reference>
+    <Reference Include="pdfbox-1.8.9">
+      <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\pdfbox-1.8.9.dll</HintPath>
     </Reference>
     <Reference Include="Serialize.Linq, Version=2.0.0.0, Culture=neutral, PublicKeyToken=25bcc11ba213b377, processorArchitecture=MSIL">
       <HintPath>..\packages\Serialize.Linq.2.0.0\lib\net45\Serialize.Linq.dll</HintPath>
@@ -278,6 +287,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.4.5.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
     <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.RegularExpressions.4.3.1\lib\net463\System.Text.RegularExpressions.dll</HintPath>
       <Private>True</Private>
@@ -571,6 +583,7 @@
     <Compile Include="Contracts\EntryDataDS\IAdjustmentsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IAsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IAttachmentsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEDDocumentTypesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsExService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataDetailsService.cs" />
@@ -592,15 +605,27 @@
     <Compile Include="Contracts\EntryDataDS\IPurchaseOrdersService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISalesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShimentBLChargesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedBLService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedFreightService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedInvoicesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedManifestService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachedRiderService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentAttachmentsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentBLFreightService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentBLService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentFreightBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentManifestBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentManifestDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentManifestService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderInvoiceService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
     <Compile Include="Contracts\EntryDataDS\ISuppliersService.cs" />
     <Compile Include="Contracts\EntryDataDS\IWarehouseInfoService.cs" />
     <Compile Include="Contracts\EntryDataQS\IAsycudaDocumentEntryDataService.cs" />
@@ -1133,6 +1158,7 @@
     <Compile Include="Services\EntryDataDS\AdjustmentsService.cs" />
     <Compile Include="Services\EntryDataDS\AsycudaDocumentEntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\AsycudaDocumentSetEntryDataService.cs" />
+    <Compile Include="Services\EntryDataDS\AttachmentsService.cs" />
     <Compile Include="Services\EntryDataDS\EDDocumentTypesService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataDetailsExService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataDetailsService.cs" />
@@ -1154,15 +1180,27 @@
     <Compile Include="Services\EntryDataDS\PurchaseOrdersService.cs" />
     <Compile Include="Services\EntryDataDS\SalesService.cs" />
     <Compile Include="Services\EntryDataDS\ShimentBLChargesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedBLService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedFreightService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedInvoicesService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedManifestService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachedRiderService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentAttachmentsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentBLFreightService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentBLService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentFreightBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentManifestBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentManifestDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentManifestService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentService.cs" />
     <Compile Include="Services\EntryDataDS\SuppliersService.cs" />
     <Compile Include="Services\EntryDataDS\WarehouseInfoService.cs" />
     <Compile Include="Services\EntryDataQS\AsycudaDocumentEntryDataService.cs" />

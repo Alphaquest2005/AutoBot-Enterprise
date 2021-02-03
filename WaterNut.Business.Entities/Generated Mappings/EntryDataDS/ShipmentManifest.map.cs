@@ -41,8 +41,11 @@
               this.Property(t => t.Containers).HasColumnName("Containers");
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.HasMany(t => t.ShipmentAttachedManifest).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
               this.HasMany(t => t.ShipmentManifestDetails).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
+              this.HasMany(t => t.ShipmentManifestBLs).WithRequired(t => (ShipmentManifest)t.ShipmentManifest);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -20,6 +20,12 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class ShipmentRiderDetails : BaseEntity<ShipmentRiderDetails>, ITrackable 
     {
+        partial void AutoGenStartUp() //ShipmentRiderDetails()
+        {
+            this.ShipmentRiderInvoice = new List<ShipmentRiderInvoice>();
+            this.ShipmentRiderBLs = new List<ShipmentRiderBLs>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -202,6 +208,10 @@ namespace EntryDataDS.Business.Entities
         Nullable<double> _invoicetotal;
         [DataMember]
         public ShipmentRider ShipmentRider { get; set; }
+        [DataMember]
+        public List<ShipmentRiderInvoice> ShipmentRiderInvoice { get; set; }
+        [DataMember]
+        public List<ShipmentRiderBLs> ShipmentRiderBLs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

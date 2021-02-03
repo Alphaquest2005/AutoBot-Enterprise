@@ -17,9 +17,13 @@
               this.Property(t => t.ETA).HasColumnName("ETA");
               this.Property(t => t.DocumentDate).HasColumnName("DocumentDate");
               this.Property(t => t.EmailId).HasColumnName("EmailId");
-              this.Property(t => t.SourceFile).HasColumnName("SourceFile");
+              this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasMany(t => t.ShipmentRiderDetails).WithRequired(t => (ShipmentRider)t.ShipmentRider);
+              this.HasMany(t => t.ShipmentRiderInvoice).WithRequired(t => (ShipmentRider)t.ShipmentRider);
+              this.HasMany(t => t.ShipmentRiderBLs).WithRequired(t => (ShipmentRider)t.ShipmentRider);
+              this.HasMany(t => t.ShipmentAttachedRider).WithRequired(t => (ShipmentRider)t.ShipmentRider);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

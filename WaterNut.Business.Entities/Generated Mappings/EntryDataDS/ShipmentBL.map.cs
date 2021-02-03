@@ -11,14 +11,14 @@
     {
         public ShipmentBLMap()
         {                        
-              this.HasKey(t => t.BLNumber);        
+              this.HasKey(t => t.Id);        
               this.ToTable("ShipmentBL");
               this.Property(t => t.BLNumber).HasColumnName("BLNumber").IsRequired().HasMaxLength(50);
-              this.Property(t => t.Vessel).HasColumnName("Vessel").IsRequired().HasMaxLength(50);
-              this.Property(t => t.Voyage).HasColumnName("Voyage").IsRequired().HasMaxLength(50);
-              this.Property(t => t.Container).HasColumnName("Container").IsRequired().HasMaxLength(50);
-              this.Property(t => t.Seals).HasColumnName("Seals").IsRequired().HasMaxLength(50);
-              this.Property(t => t.Type).HasColumnName("Type").IsRequired().HasMaxLength(50);
+              this.Property(t => t.Vessel).HasColumnName("Vessel").HasMaxLength(50);
+              this.Property(t => t.Voyage).HasColumnName("Voyage").HasMaxLength(50);
+              this.Property(t => t.Container).HasColumnName("Container").HasMaxLength(50);
+              this.Property(t => t.Seals).HasColumnName("Seals").HasMaxLength(50);
+              this.Property(t => t.Type).HasColumnName("Type").HasMaxLength(50);
               this.Property(t => t.PackagesNo).HasColumnName("PackagesNo");
               this.Property(t => t.PackagesType).HasColumnName("PackagesType").IsRequired().HasMaxLength(50);
               this.Property(t => t.WeightKG).HasColumnName("WeightKG");
@@ -29,8 +29,14 @@
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.SourceFile).HasColumnName("SourceFile").IsRequired();
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
+              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.HasMany(t => t.ShimentBLCharges).WithRequired(t => (ShipmentBL)t.ShipmentBL);
+              this.HasMany(t => t.ShipmentAttachedBL).WithRequired(t => (ShipmentBL)t.ShipmentBL);
               this.HasMany(t => t.ShipmentBLDetails).WithRequired(t => (ShipmentBL)t.ShipmentBL);
+              this.HasMany(t => t.ShipmentManifestBLs).WithRequired(t => (ShipmentBL)t.ShipmentBL);
+              this.HasMany(t => t.ShipmentRiderBLs).WithRequired(t => (ShipmentBL)t.ShipmentBL);
+              this.HasMany(t => t.ShipmentBLFreight).WithRequired(t => (ShipmentBL)t.ShipmentBL);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

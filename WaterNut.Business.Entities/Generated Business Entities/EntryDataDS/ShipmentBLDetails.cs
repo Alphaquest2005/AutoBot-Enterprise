@@ -20,6 +20,12 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class ShipmentBLDetails : BaseEntity<ShipmentBLDetails>, ITrackable 
     {
+        partial void AutoGenStartUp() //ShipmentBLDetails()
+        {
+            this.ShipmentRiderBLs = new List<ShipmentRiderBLs>();
+            this.ShipmentFreightBLs = new List<ShipmentFreightBLs>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -35,21 +41,6 @@ namespace EntryDataDS.Business.Entities
             }
         }
         int _id;
-        [DataMember]
-        public string BLNumber 
-        {
-            get
-            {
-                return _blnumber;
-            }
-            set
-            {
-                _blnumber = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _blnumber;
         [DataMember]
         public int Quantity 
         {
@@ -110,6 +101,25 @@ namespace EntryDataDS.Business.Entities
             }
         }
         string _comments;
+        [DataMember]
+        public int BLId 
+        {
+            get
+            {
+                return _blid;
+            }
+            set
+            {
+                _blid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _blid;
+        [DataMember]
+        public List<ShipmentRiderBLs> ShipmentRiderBLs { get; set; }
+        [DataMember]
+        public List<ShipmentFreightBLs> ShipmentFreightBLs { get; set; }
         [DataMember]
         public ShipmentBL ShipmentBL { get; set; }
 

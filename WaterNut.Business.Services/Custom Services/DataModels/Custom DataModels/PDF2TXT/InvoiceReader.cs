@@ -9,10 +9,13 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Core.Common.Extensions;
 using DocumentDS.Business.Entities;
 using EmailDownloader;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
+using org.apache.pdfbox.pdmodel;
+using org.apache.pdfbox.util;
 using OCR.Business.Entities;
 using pdf_ocr;
 using SimpleMvvmToolkit.ModelExtensions;
@@ -32,7 +35,11 @@ namespace WaterNut.DataSpace
             {
 
                 
-                var pdftxt = PdfOcr.Ocr(file);
+                string pdftxt = null;
+
+                //pdftxt = parseUsingPDFBox(file);
+
+                if(string.IsNullOrEmpty(pdftxt)) pdftxt = PdfOcr.Ocr(file);
 
                 //Get Template
                 using (var ctx = new OCRContext())
@@ -51,7 +58,7 @@ namespace WaterNut.DataSpace
                         .Include("Parts.Lines.Fields.FieldValue")
                         .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
                         .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
-                        .Where(x => x.Id > 4) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
+                        //.Where(x => x.Id == 3) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
                         .ToList()
                         .Select(x => new Invoice(x));
 
@@ -60,12 +67,12 @@ namespace WaterNut.DataSpace
                         try
                         {
                             List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt));
-                            if (csvLines.Count < 1)
+                            if (csvLines.Count < 1 || !tmp.Success)
                             {
-                                var failedlines = tmp.Parts.SelectMany(x => x.FailedLines).ToList();
-
+                                var failedlines = tmp.Parts.SelectMany(x => x.AllLines).Where(z => z.FailedFields.Any()).ToList();
+                                
                                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
-                                    tmp.Parts.First().WasStarted)
+                                    tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                                 {
                                     ReportUnImportedFile(file, emailId, client, pdftxt, failedlines);
                                     return false;
@@ -108,6 +115,26 @@ namespace WaterNut.DataSpace
                 EmailDownloader.EmailDownloader.SendBackMsg(emailId, client, errTxt);
                 
                 return false;
+            }
+        }
+
+        private static string parseUsingPDFBox(string input)
+        {
+            PDDocument doc = null;
+
+            try
+            {
+                doc = PDDocument.load(input);
+                PDFTextStripper stripper = new PDFTextStripper();
+               // stripper.
+                return stripper.getText(doc);
+            }
+            finally
+            {
+                if (doc != null)
+                {
+                    doc.close();
+                }
             }
         }
 
@@ -179,7 +206,7 @@ namespace WaterNut.DataSpace
                     Parts.ForEach(x => x.Read(iLine));
                 }
 
-                if (!Success ) return new List<dynamic>();
+                if (!this.Lines.SelectMany(x => x.Values.Values).Any()) return new List<dynamic>();//!Success
 
                 var ores = Parts.Select(x =>
                     {
@@ -205,7 +232,7 @@ namespace WaterNut.DataSpace
 
 
                 var lst = new List<IDictionary<string, object>>();
-                var itm = new ExpandoObject();
+                var itm = new BetterExpando();
                 var ditm = ((IDictionary<string, object>) itm);
                 foreach (var line in x.Lines)
                 {
@@ -214,7 +241,7 @@ namespace WaterNut.DataSpace
                     {
                         if (x.OCR_Part.RecuringPart != null && x.OCR_Part.RecuringPart.IsComposite == false)
                         {
-                            itm = new ExpandoObject();
+                            itm = new BetterExpando();
                             ditm = ((IDictionary<string, object>) itm);
                         }
 
@@ -452,6 +479,7 @@ namespace WaterNut.DataSpace
             if (OCR_Part.Start.Any(z => Regex.Match(line.Line,
                     z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
             {
+                if(!WasStarted  || (WasStarted && OCR_Part.RecuringPart != null))
                 if(_startlines.Count() < StartCount)
                     _startlines.Add(line);
                 else if (_startlines.Count() == StartCount) // treat as start tot start
@@ -507,7 +535,7 @@ namespace WaterNut.DataSpace
                 var value = field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim();
                 field.FormatRegEx.ForEach(x => value = Regex.Replace(value, x.RegEx.RegEx, x.ReplacementRegEx.RegEx,
                     RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture));
-                values.Add(field, value);//$"\"{}\""
+                values.Add(field, value.Trim());//$"\"{}\""
             }
 
             Values[lines.First().LineNumber] = values;

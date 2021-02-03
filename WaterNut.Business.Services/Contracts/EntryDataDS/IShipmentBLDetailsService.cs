@@ -105,7 +105,10 @@ namespace EntryDataDS.Business.Services
         [FaultContract(typeof(ValidationFault))]
 		string MinField(string whereExp, string field);
 
-		
+				[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentBLDetails>> GetShipmentBLDetailsByBLId(string BLId, List<string> includesLst = null);
+  
 
 
 
