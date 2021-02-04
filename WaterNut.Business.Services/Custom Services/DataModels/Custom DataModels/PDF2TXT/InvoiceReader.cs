@@ -19,6 +19,12 @@ using org.apache.pdfbox.util;
 using OCR.Business.Entities;
 using pdf_ocr;
 using SimpleMvvmToolkit.ModelExtensions;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.ReadingOrderDetector;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 using WaterNut.DataSpace;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
 using Invoices = OCR.Business.Entities.Invoices;
@@ -39,7 +45,9 @@ namespace WaterNut.DataSpace
 
                 //pdftxt = parseUsingPDFBox(file);
 
-                if(string.IsNullOrEmpty(pdftxt)) pdftxt = PdfOcr.Ocr(file);
+                //pdftxt = pdfPigText(file); //TODO: need to implement the layout logic
+
+                if (string.IsNullOrEmpty(pdftxt)) pdftxt = PdfOcr.Ocr(file);
 
                 //Get Template
                 using (var ctx = new OCRContext())
@@ -116,6 +124,106 @@ namespace WaterNut.DataSpace
                 
                 return false;
             }
+        }
+
+        private static string pdfPigText(string file)
+        {
+            var pdfText = "";
+            var sb = new StringBuilder();
+            using (var pdf = PdfDocument.Open(file))
+            {
+                foreach (var page in pdf.GetPages())
+                {
+                    // Either extract based on order in the underlying document with newlines and spaces.
+                    var text = ContentOrderTextExtractor.GetText(page);
+                    sb.AppendLine(text);
+                    // Or based on grouping letters into words.
+                    var otherText = string.Join(" ", page.GetWords());
+
+                    // Or the raw text of the page's content stream.
+                    var rawText = page.Text;
+
+                   // Console.WriteLine(text);
+                }
+
+            }
+
+            pdfText = sb.ToString();
+            return pdfText;
+            //var sb = new StringBuilder();
+
+            //using (var document = PdfDocument.Open(file))
+            //{
+            //    foreach (var page in document.GetPages())
+            //    {
+            //        // 0. Preprocessing
+            //        var letters = page.Letters; // no preprocessing
+
+            //        // 1. Extract words
+            //        var wordExtractor = NearestNeighbourWordExtractor.Instance;
+            //        var wordExtractorOptions = new NearestNeighbourWordExtractor.NearestNeighbourWordExtractorOptions()
+            //        {
+            //            Filter = (pivot, candidate) =>
+            //            {
+            //                // check if white space (default implementation of 'Filter')
+            //                if (string.IsNullOrWhiteSpace(candidate.Value))
+            //                {
+            //                    // pivot and candidate letters cannot belong to the same word 
+            //                    // if candidate letter is null or white space.
+            //                    // ('FilterPivot' already checks if the pivot is null or white space by default)
+            //                    return false;
+            //                }
+
+            //                // check for height difference
+            //                var maxHeight = Math.Max(pivot.PointSize, candidate.PointSize);
+            //                var minHeight = Math.Min(pivot.PointSize, candidate.PointSize);
+            //                if (minHeight != 0 && maxHeight / minHeight > 2.0)
+            //                {
+            //                    // pivot and candidate letters cannot belong to the same word 
+            //                    // if one letter is more than twice the size of the other.
+            //                    return false;
+            //                }
+
+            //                // check for colour difference
+            //                var pivotRgb = pivot.Color.ToRGBValues();
+            //                var candidateRgb = candidate.Color.ToRGBValues();
+            //                if (!pivotRgb.Equals(candidateRgb))
+            //                {
+            //                    // pivot and candidate letters cannot belong to the same word 
+            //                    // if they don't have the same colour.
+            //                    return false;
+            //                }
+
+            //                return true;
+            //            }
+            //        };
+
+            //        var words = wordExtractor.GetWords(letters, wordExtractorOptions);
+
+            //        // 2. Segment page
+            //        var pageSegmenter = DocstrumBoundingBoxes.Instance;
+            //        var pageSegmenterOptions = new DocstrumBoundingBoxes.DocstrumBoundingBoxesOptions()
+            //        {
+
+            //        };
+
+            //        var textBlocks = pageSegmenter.GetBlocks(words, pageSegmenterOptions);
+
+            //        // 3. Postprocessing
+            //        var readingOrder = UnsupervisedReadingOrderDetector.Instance;
+            //        var orderedTextBlocks = readingOrder.Get(textBlocks);
+
+            //        // 4. Extract text
+            //        foreach (var block in orderedTextBlocks)
+            //        {
+            //            sb.Append(block.Text.Normalize(NormalizationForm.FormKC)); // normalise text
+            //            sb.AppendLine();
+            //        }
+
+            //        sb.AppendLine();
+            //    }
+            //}
+
         }
 
         private static string parseUsingPDFBox(string input)

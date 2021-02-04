@@ -328,6 +328,27 @@
     <Reference Include="TrackableEntities.EF.6, Version=2.5.0.0, Culture=neutral, PublicKeyToken=b10b51e7b9be6a2e, processorArchitecture=MSIL">
       <HintPath>..\packages\TrackableEntities.EF.6.2.5.7\lib\net45\TrackableEntities.EF.6.dll</HintPath>
     </Reference>
+    <Reference Include="UglyToad.PdfPig, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Core, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.DocumentLayoutAnalysis, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.DocumentLayoutAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Fonts, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Package, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Package.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Tokenization, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Tokenization.dll</HintPath>
+    </Reference>
+    <Reference Include="UglyToad.PdfPig.Tokens, Version=0.1.4.0, Culture=neutral, PublicKeyToken=605d367334e74123, processorArchitecture=MSIL">
+      <HintPath>..\packages\PdfPig.0.1.4\lib\net47\UglyToad.PdfPig.Tokens.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Asycuda\LicenseToDatabase.cs" />
@@ -617,6 +638,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceDetailPOSSuggestionsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentManifestBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentManifestDetailsService.cs" />
@@ -1192,6 +1214,7 @@
     <Compile Include="Services\EntryDataDS\ShipmentFreightBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoiceDetailPOSSuggestionsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentManifestBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentManifestDetailsService.cs" />

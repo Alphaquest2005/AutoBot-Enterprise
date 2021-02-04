@@ -24,6 +24,7 @@
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.Property(t => t.ShipmentInvoiceId).HasColumnName("ShipmentInvoiceId");
               this.HasRequired(t => t.Invoice).WithMany(t =>(ICollection<InvoiceDetails>) t.InvoiceDetails).HasForeignKey(d => d.ShipmentInvoiceId);
+              this.HasMany(t => t.ShipmentInvoiceDetailPOSSuggestions).WithRequired(t => (InvoiceDetails)t.InvoiceDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

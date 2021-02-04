@@ -126,7 +126,9 @@ namespace AutoBotUtilities
                     .Distinct()
                     .Where(x => shipment.ShipmentAttachedInvoices.All(z => z.ShipmentInvoiceId != x))
                     .Select(x => ctx.ShipmentInvoice
+                        .Include("ShipmentRiderInvoice.ShipmentRider")
                         .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
+                        .Include(z => z.InvoiceDetails.POSSuggestions)
                         .First(z => z.Id == x))
                     .Select(x => new ShipmentAttachedInvoices()
                     {

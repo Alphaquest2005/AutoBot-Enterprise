@@ -652,6 +652,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentBLFreight' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShipmentBLFreight">
+          
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -677,6 +678,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentFreightBLs' does 
           <Property Name="BLNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Total" Type="float" Nullable="false" />
           <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        
+        <EntityType Name="ShipmentInvoiceDetailPOSSuggestions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="SupplierCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="POSCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="SupplierDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="InvoiceDetailId" Type="int" Nullable="false" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentManifestBLs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -725,17 +740,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             
             
             
-            
-            
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="RiderLineID" Type="int" Nullable="false" />
           <Property Name="RiderID" Type="int" Nullable="false" />
-          <Property Name="InvoiceId" Type="int" Nullable="false" />
+          <Property Name="InvoiceId" Type="int" />
           <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="255" />
-          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData1">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
@@ -1397,6 +1410,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentFreightBLs].[Marks] AS [Marks]
     FROM [dbo].[ShipmentFreightBLs] AS [ShipmentFreightBLs]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="ShipmentInvoiceDetailPOSSuggestions" EntityType="Self.ShipmentInvoiceDetailPOSSuggestions" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ShipmentInvoiceDetailPOSSuggestions].[id] AS [id], 
+    [ShipmentInvoiceDetailPOSSuggestions].[SupplierCode] AS [SupplierCode], 
+    [ShipmentInvoiceDetailPOSSuggestions].[POSCode] AS [POSCode], 
+    [ShipmentInvoiceDetailPOSSuggestions].[SupplierDescription] AS [SupplierDescription], 
+    [ShipmentInvoiceDetailPOSSuggestions].[ItemDescription] AS [ItemDescription], 
+    [ShipmentInvoiceDetailPOSSuggestions].[InventoryItemId] AS [InventoryItemId], 
+    [ShipmentInvoiceDetailPOSSuggestions].[InvoiceDetailId] AS [InvoiceDetailId], 
+    [ShipmentInvoiceDetailPOSSuggestions].[TariffCode] AS [TariffCode]
+    FROM [dbo].[ShipmentInvoiceDetailPOSSuggestions] AS [ShipmentInvoiceDetailPOSSuggestions]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="ShipmentManifestBLs" EntityType="Self.ShipmentManifestBLs" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ShipmentManifestBLs].[Id] AS [Id], 
@@ -1817,6 +1842,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <AssociationSet Name="ShipmentFreightShipmentBLFreight" Association="WaterNutDBModel.ShipmentFreightShipmentBLFreight">
             <End Role="ShipmentFreight" EntitySet="ShipmentFreight" />
             <End Role="ShipmentBLFreight" EntitySet="ShipmentBLFreight" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentInvoiceDetailPOSSuggestions" EntityType="WaterNutDBModel.ShipmentInvoiceDetailPOSSuggestions" />
+          <AssociationSet Name="InvoiceDetailsShipmentInvoiceDetailPOSSuggestions" Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailPOSSuggestions">
+            <End Role="InvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
+            <End Role="ShipmentInvoiceDetailPOSSuggestions" EntitySet="ShipmentInvoiceDetailPOSSuggestions" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -2572,6 +2602,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="FileLineNumber" Type="Int32" />
           <Property Name="ShipmentInvoiceId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Invoice" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" FromRole="ShipmentInvoiceDetails" ToRole="ShipmentInvoice" />
+          <NavigationProperty Name="ShipmentInvoiceDetailPOSSuggestions" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailPOSSuggestions" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailPOSSuggestions" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -2639,7 +2670,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="InvoiceId" Type="Int32" Nullable="false" />
           <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="InvoiceNo" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ShipmentRider" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentRider" />
           <NavigationProperty Name="ShipmentInvoice" Relationship="WaterNutDBModel.ShipmentInvoiceShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentInvoice" />
           <NavigationProperty Name="ShipmentRiderDetails" Relationship="WaterNutDBModel.ShipmentRiderDetailsShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentRiderDetails" />
@@ -3193,6 +3224,32 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Principal>
             <Dependent Role="ShipmentBLFreight">
               <PropertyRef Name="FreightInvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShipmentInvoiceDetailPOSSuggestions">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="SupplierCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="POSCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SupplierDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceDetailId" Type="Int32" Nullable="false" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InvoiceDetails" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailPOSSuggestions" FromRole="ShipmentInvoiceDetailPOSSuggestions" ToRole="InvoiceDetails" />
+        </EntityType>
+        <Association Name="InvoiceDetailsShipmentInvoiceDetailPOSSuggestions">
+          <End Type="WaterNutDBModel.InvoiceDetails" Role="InvoiceDetails" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentInvoiceDetailPOSSuggestions" Role="ShipmentInvoiceDetailPOSSuggestions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InvoiceDetails">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceDetailPOSSuggestions">
+              <PropertyRef Name="InvoiceDetailId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3902,6 +3959,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
                 <ScalarProperty Name="InvoiceDate" ColumnName="InvoiceDate" />
                 <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
                 <ScalarProperty Name="BLNumber" ColumnName="BLNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoiceDetailPOSSuggestions">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoiceDetailPOSSuggestions">
+              <MappingFragment StoreEntitySet="ShipmentInvoiceDetailPOSSuggestions">
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="InvoiceDetailId" ColumnName="InvoiceDetailId" />
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="SupplierDescription" ColumnName="SupplierDescription" />
+                <ScalarProperty Name="POSCode" ColumnName="POSCode" />
+                <ScalarProperty Name="SupplierCode" ColumnName="SupplierCode" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

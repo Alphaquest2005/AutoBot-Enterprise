@@ -19,7 +19,7 @@
               this.Property(t => t.InvoiceId).HasColumnName("InvoiceId");
               this.Property(t => t.WarehouseCode).HasColumnName("WarehouseCode").IsRequired().HasMaxLength(50);
               this.Property(t => t.InvoiceNumber).HasColumnName("InvoiceNumber").HasMaxLength(255);
-              this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").IsRequired().HasMaxLength(50);
+              this.Property(t => t.InvoiceNo).HasColumnName("InvoiceNo").HasMaxLength(50);
               this.HasRequired(t => t.ShipmentRider).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.RiderID);
               this.HasRequired(t => t.ShipmentInvoice).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.InvoiceId);
               this.HasRequired(t => t.ShipmentRiderDetails).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.RiderLineID);
