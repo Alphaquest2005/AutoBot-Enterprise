@@ -78,7 +78,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -148,6 +148,7 @@
     <Compile Include="Generated Client Entities\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated Client Entities\CoreEntities\InfoMapping.cs" />
@@ -229,9 +230,12 @@
     <Compile Include="Generated Client Entities\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated Client Entities\OCR\ChildParts.cs" />
     <Compile Include="Generated Client Entities\OCR\End.cs" />
+    <Compile Include="Generated Client Entities\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Fields.cs" />
+    <Compile Include="Generated Client Entities\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated Client Entities\OCR\Invoices.cs" />
     <Compile Include="Generated Client Entities\OCR\Lines.cs" />
+    <Compile Include="Generated Client Entities\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated Client Entities\OCR\OCR_FieldValue.cs" />
     <Compile Include="Generated Client Entities\OCR\Parts.cs" />
     <Compile Include="Generated Client Entities\OCR\PartTypes.cs" />
@@ -296,6 +300,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\CoreEntities\InfoMapping.cs" />
@@ -377,9 +382,12 @@
     <Compile Include="Generated IIdentitfiableEntity Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\ChildParts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\End.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Fields.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Invoices.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Lines.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\OCR_FieldValue.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\Parts.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\OCR\PartTypes.cs" />
@@ -444,6 +452,7 @@
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileGroups.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeActions.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeContacts.cs" />
+    <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappingRegExs.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypeMappings.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\FileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\CoreEntities\InfoMapping.cs" />
@@ -525,9 +534,12 @@
     <Compile Include="Generated MyNavProp Models\InventoryQS\TariffSupUnitLkps.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\ChildParts.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\End.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\FieldFormatRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Fields.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\InvoiceRegEx.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Invoices.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Lines.cs" />
+    <Compile Include="Generated MyNavProp Models\OCR\OCRFileTypes.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\OCR_FieldValue.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\Parts.cs" />
     <Compile Include="Generated MyNavProp Models\OCR\PartTypes.cs" />

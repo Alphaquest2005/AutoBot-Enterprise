@@ -34,6 +34,19 @@ namespace OCR.Client.DTO
 		}
         private int _Id;
 
+        [DataMember]
+        public bool IsComposite
+		{ 
+		    get { return _IsComposite; }
+			set
+			{
+			    if (value == _IsComposite) return;
+				_IsComposite = value;
+				NotifyPropertyChanged();//m => this.IsComposite
+			}
+		}
+        private bool _IsComposite;
+
        
         [DataMember]
         public Parts Parts

@@ -81,6 +81,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileGroupsIDChanged, OnCurrentFileGroupsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeActionsIDChanged, OnCurrentFileTypeActionsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeContactsIDChanged, OnCurrentFileTypeContactsIDChanged);
+                        RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingRegExsIDChanged, OnCurrentFileTypeMappingRegExsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypeMappingsIDChanged, OnCurrentFileTypeMappingsIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentFileTypesIDChanged, OnCurrentFileTypesIDChanged);
                         RegisterToReceiveMessages<string>(MessageToken.CurrentInfoMappingIDChanged, OnCurrentInfoMappingIDChanged);
@@ -170,6 +171,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                         RegisterToReceiveMessages<FileGroups>(MessageToken.CurrentFileGroupsChanged, OnCurrentFileGroupsChanged);
                         RegisterToReceiveMessages<FileTypeActions>(MessageToken.CurrentFileTypeActionsChanged, OnCurrentFileTypeActionsChanged);
                         RegisterToReceiveMessages<FileTypeContacts>(MessageToken.CurrentFileTypeContactsChanged, OnCurrentFileTypeContactsChanged);
+                        RegisterToReceiveMessages<FileTypeMappingRegExs>(MessageToken.CurrentFileTypeMappingRegExsChanged, OnCurrentFileTypeMappingRegExsChanged);
                         RegisterToReceiveMessages<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, OnCurrentFileTypeMappingsChanged);
                         RegisterToReceiveMessages<FileTypes>(MessageToken.CurrentFileTypesChanged, OnCurrentFileTypesChanged);
                         RegisterToReceiveMessages<InfoMapping>(MessageToken.CurrentInfoMappingChanged, OnCurrentInfoMappingChanged);
@@ -1000,6 +1002,33 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                     if (!string.IsNullOrEmpty(_currentFileTypeContactsID)) BeginSendMessage(MessageToken.CurrentFileTypeContactsIDChanged,
                                                      new NotificationEventArgs<string>(MessageToken.CurrentFileTypeContactsIDChanged, _currentFileTypeContactsID));
                                     NotifyPropertyChanged(x => this.CurrentFileTypeContactsID);  
+                                }
+                            }
+                        }
+                        internal async void OnCurrentFileTypeMappingRegExsIDChanged(object sender, NotificationEventArgs<string> e)
+                        {
+                            using (FileTypeMappingRegExsRepository ctx = new FileTypeMappingRegExsRepository())
+                            {
+                                CurrentFileTypeMappingRegExs = await ctx.GetFileTypeMappingRegExs(e.Data).ConfigureAwait(continueOnCapturedContext: false);
+                            }
+                            NotifyPropertyChanged(m => CurrentFileTypeMappingRegExs);
+                        }
+
+                        private  string _currentFileTypeMappingRegExsID = "";
+                        public string CurrentFileTypeMappingRegExsID
+                        {
+                            get
+                            {
+                                return _currentFileTypeMappingRegExsID;
+                            }
+                            set
+                            {
+                                if (_currentFileTypeMappingRegExsID != value)
+                                {
+                                    _currentFileTypeMappingRegExsID = value;
+                                    if (!string.IsNullOrEmpty(_currentFileTypeMappingRegExsID)) BeginSendMessage(MessageToken.CurrentFileTypeMappingRegExsIDChanged,
+                                                     new NotificationEventArgs<string>(MessageToken.CurrentFileTypeMappingRegExsIDChanged, _currentFileTypeMappingRegExsID));
+                                    NotifyPropertyChanged(x => this.CurrentFileTypeMappingRegExsID);  
                                 }
                             }
                         }
@@ -4007,6 +4036,56 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                      
        
 
+        internal void OnCurrentFileTypeMappingRegExsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypeMappingRegExs> e)
+        {
+            //CurrentFileTypeMappingRegExs = e.Data;
+            NotifyPropertyChanged(m => this.CurrentFileTypeMappingRegExs);
+        }
+
+        private  FileTypeMappingRegExs _currentFileTypeMappingRegExs;
+        public FileTypeMappingRegExs CurrentFileTypeMappingRegExs
+        {
+            get
+            {
+                return _currentFileTypeMappingRegExs;
+            }
+            set
+            {
+                if (_currentFileTypeMappingRegExs != value)
+                {
+                    _currentFileTypeMappingRegExs = value;
+                    BeginSendMessage(MessageToken.CurrentFileTypeMappingRegExsChanged,
+                                                     new NotificationEventArgs<FileTypeMappingRegExs>(MessageToken.CurrentFileTypeMappingRegExsChanged, _currentFileTypeMappingRegExs)); 
+                    NotifyPropertyChanged(x => this.CurrentFileTypeMappingRegExs);    
+                    // all current navigation properties = null
+   
+                }
+            }
+        }
+
+		VirtualListItem<FileTypeMappingRegExs> _vcurrentFileTypeMappingRegExs;
+        public VirtualListItem<FileTypeMappingRegExs> VCurrentFileTypeMappingRegExs
+        {
+            get
+            {
+                return _vcurrentFileTypeMappingRegExs;
+            }
+            set
+            {
+                if (_vcurrentFileTypeMappingRegExs != value)
+                {
+                    _vcurrentFileTypeMappingRegExs = value;
+					if(_vcurrentFileTypeMappingRegExs != null) CurrentFileTypeMappingRegExs = value.Data;
+                    NotifyPropertyChanged(x => this.VCurrentFileTypeMappingRegExs);                    
+                }
+            }
+        }
+
+
+
+                     
+       
+
         internal void OnCurrentFileTypeMappingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<FileTypeMappings> e)
         {
             //CurrentFileTypeMappings = e.Data;
@@ -4029,6 +4108,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                                                      new NotificationEventArgs<FileTypeMappings>(MessageToken.CurrentFileTypeMappingsChanged, _currentFileTypeMappings)); 
                     NotifyPropertyChanged(x => this.CurrentFileTypeMappings);    
                     // all current navigation properties = null
+                 CurrentFileTypeMappingRegExs = null;
    
                 }
             }

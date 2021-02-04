@@ -77,6 +77,21 @@ public string Name
 		}
      
 
+       
+       
+public Nullable<int> FileTypeId
+		{ 
+		    get { return this.invoices.FileTypeId; }
+			set
+			{
+			    if (value == this.invoices.FileTypeId) return;
+				this.invoices.FileTypeId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileTypeId");
+			}
+		}
+     
+
         ObservableCollection<Parts> _Parts = null;
         public  ObservableCollection<Parts> Parts
 		{
@@ -124,6 +139,114 @@ public string Name
                     {
                         if (itm != null)
                         invoices.Parts.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<InvoiceRegEx> _RegEx = null;
+        public  ObservableCollection<InvoiceRegEx> RegEx
+		{
+            
+		    get 
+				{ 
+					if(_RegEx != null) return _RegEx;
+					//if (this.invoices.RegEx == null) Debugger.Break();
+					if(this.invoices.RegEx != null)
+					{
+						_RegEx = new ObservableCollection<InvoiceRegEx>(this.invoices.RegEx.Select(x => new InvoiceRegEx(x)));
+					}
+					
+						_RegEx.CollectionChanged += RegEx_CollectionChanged; 
+					
+					return _RegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _RegEx)) return;
+				if (value != null)
+					this.invoices.RegEx = new ChangeTrackingCollection<DTO.InvoiceRegEx>(value.Select(x => x.DTO).ToList());
+                _RegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_RegEx != null)
+				_RegEx.CollectionChanged += RegEx_CollectionChanged;               
+				NotifyPropertyChanged("RegEx");
+			}
+		}
+        
+        void RegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InvoiceRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        invoices.RegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InvoiceRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        invoices.RegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<OCRFileTypes> _FileTypes = null;
+        public  ObservableCollection<OCRFileTypes> FileTypes
+		{
+            
+		    get 
+				{ 
+					if(_FileTypes != null) return _FileTypes;
+					//if (this.invoices.FileTypes == null) Debugger.Break();
+					if(this.invoices.FileTypes != null)
+					{
+						_FileTypes = new ObservableCollection<OCRFileTypes>(this.invoices.FileTypes.Select(x => new OCRFileTypes(x)));
+					}
+					
+						_FileTypes.CollectionChanged += FileTypes_CollectionChanged; 
+					
+					return _FileTypes; 
+				}
+			set
+			{
+			    if (Equals(value, _FileTypes)) return;
+				if (value != null)
+					this.invoices.FileTypes = new ChangeTrackingCollection<DTO.OCRFileTypes>(value.Select(x => x.DTO).ToList());
+                _FileTypes = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FileTypes != null)
+				_FileTypes.CollectionChanged += FileTypes_CollectionChanged;               
+				NotifyPropertyChanged("FileTypes");
+			}
+		}
+        
+        void FileTypes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (OCRFileTypes itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        invoices.FileTypes.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (OCRFileTypes itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        invoices.FileTypes.Remove(itm.DTO);
                     }
 					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
                     break;

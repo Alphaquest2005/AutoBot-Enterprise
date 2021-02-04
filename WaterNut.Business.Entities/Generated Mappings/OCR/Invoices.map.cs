@@ -15,7 +15,10 @@
               this.ToTable("OCR-Invoices");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
+              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.HasMany(t => t.Parts).WithRequired(t => (Invoices)t.Invoices);
+              this.HasMany(t => t.RegEx).WithRequired(t => (Invoices)t.OCR_Invoices);
+              this.HasMany(t => t.FileTypes).WithRequired(t => (Invoices)t.Invoices);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

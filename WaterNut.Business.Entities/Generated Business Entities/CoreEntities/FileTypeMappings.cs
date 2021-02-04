@@ -20,6 +20,11 @@ namespace CoreEntities.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class FileTypeMappings : BaseEntity<FileTypeMappings>, ITrackable 
     {
+        partial void AutoGenStartUp() //FileTypeMappings()
+        {
+            this.FileTypeMappingRegExs = new List<FileTypeMappingRegExs>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -112,6 +117,8 @@ namespace CoreEntities.Business.Entities
         bool _required;
         [DataMember]
         public FileTypes FileTypes { get; set; }
+        [DataMember]
+        public List<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

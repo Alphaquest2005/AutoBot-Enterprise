@@ -144,13 +144,22 @@ namespace pdf_ocr
 
                 using (var img = Pix.LoadFromFile(file.FullName))
                 {
-                    using (var tesseractEngine = new TesseractEngine("tessdata", ocrLanguage, EngineMode.Default))
+                    using (var tesseractEngine = new TesseractEngine(Path.Combine(Environment.CurrentDirectory, "tessdata"), ocrLanguage, EngineMode.Default))
                     {
+                        tesseractEngine.DefaultPageSegMode = PageSegMode.SingleColumn;
+                        
                         using (var page = tesseractEngine.Process(img))
                         {
                             result.AppendLine(page.GetText());
                         }
+                        //tesseractEngine.DefaultPageSegMode = PageSegMode.SparseText ;
+
+                        //using (var page = tesseractEngine.Process(img))
+                        //{
+                        //    result.AppendLine(page.GetText());
+                        //}
                     }
+                    
                 }
             }
 

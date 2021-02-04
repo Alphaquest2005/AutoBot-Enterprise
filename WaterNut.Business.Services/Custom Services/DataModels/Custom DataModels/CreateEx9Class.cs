@@ -32,6 +32,7 @@ using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using Customs_Procedure = DocumentDS.Business.Entities.Customs_Procedure;
 using EntryPreviousItems = DocumentItemDS.Business.Entities.EntryPreviousItems;
 using xcuda_Item = DocumentItemDS.Business.Entities.xcuda_Item;
+using Attachments = DocumentItemDS.Business.Entities.Attachments;
 
 //using xcuda_Item = AllocationDS.Business.Entities.xcuda_Item;
 //using xcuda_PreviousItem = AllocationDS.Business.Entities.xcuda_PreviousItem;
@@ -1247,7 +1248,7 @@ namespace WaterNut.DataSpace
                 var itemPiHistoric = itemSalesPiHistoric.GroupBy(x => x.PreviousItem_Id)
                     .Select(x => x.First().PiQuantity).DefaultIfEmpty(0).Sum();
 
-                if (totalSalesAll == 0 )//&& mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
+                if (totalSalesAll == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                 {
                     updateXStatus(mypod.Allocations,
                         $@"No Sales Found");
@@ -1261,7 +1262,7 @@ namespace WaterNut.DataSpace
                 if (applyHistoricChecks)
                 {
 
-                    if (totalSalesHistoric == 0 )//&& mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
+                    if (totalSalesHistoric == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         updateXStatus(mypod.Allocations,
                             $@"No Historical Sales Found");
@@ -1298,7 +1299,7 @@ namespace WaterNut.DataSpace
                     ///     Sales Cap/ Sales Bucket Current
 
 
-                    if (totalSalesCurrent == 0 )//&& mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
+                    if (totalSalesCurrent == 0)// && mypod.Allocations.FirstOrDefault()?.Status != "Short Shipped"
                     {
                         updateXStatus(mypod.Allocations,
                             $@"No Current Sales Found");

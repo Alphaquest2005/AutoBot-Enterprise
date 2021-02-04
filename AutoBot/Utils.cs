@@ -4,10 +4,7 @@ using Core.Common.Converters;
 using Core.Common.Data.Contracts;
 using Core.Common.Utils;
 using CoreEntities.Business.Entities;
-using CoreEntities.Business.Enums;
-using CoreEntities.Business.Services;
 using DocumentDS.Business.Entities;
-using EmailDownloader;
 using EntryDataDS.Business.Entities;
 using EntryDataQS.Business.Entities;
 using ExcelDataReader;
@@ -36,8 +33,10 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Schedulers;
 using AdjustmentQS.Business.Entities;
 using Asycuda421;
-using DocumentItemDS.Business.Entities;
-using Org.BouncyCastle.Crypto.Operators;
+using AutoBotUtilities;
+using EmailDownloader;
+//using NPOI.SS.UserModel;
+//using NPOI.XSSF.UserModel;
 using SimpleMvvmToolkit.ModelExtensions;
 using TrackableEntities;
 using TrackableEntities.Client;
@@ -52,7 +51,6 @@ using Contacts = CoreEntities.Business.Entities.Contacts;
 using CoreEntitiesContext = CoreEntities.Business.Entities.CoreEntitiesContext;
 using CustomsOperations = CoreEntities.Business.Enums.CustomsOperations;
 using FileTypes = CoreEntities.Business.Entities.FileTypes;
-using TODO_C71ToCreate = CoreEntities.Business.Entities.TODO_C71ToCreate;
 
 namespace AutoBot
 {
@@ -89,6 +87,7 @@ namespace AutoBot
                 {"MapUnClassifiedItems", (ft, fs) => MapUnClassifiedItems(ft,fs) },
                 {"UpdateSupplierInfo", (ft, fs) => UpdateSupplierInfo(ft,fs) },
                 {"ImportPDF", (ft, fs) => ImportPDF(fs,ft) },
+                {"CreateShipmentEmail", CreateShipmentEmail },
                //{"SaveAttachments",(ft, fs) => SaveAttachments(fs, ft) },
                 
                 //{"AttachToDocSetByRef", (ft, fs) => AttachToDocSetByRef(ft.AsycudaDocumentSetId) },
@@ -129,16 +128,13 @@ namespace AutoBot
                 {"DeletePONumber", DeletePONumber },
                 { "SubmitPOs", SubmitPOs },
                 {"SubmitEntryCIF", SubmitEntryCIF },
-                {"SubmitBlankLicenses", (ft,fs) => SubmitBlankLicenses(ft) }
+                {"SubmitBlankLicenses", (ft,fs) => SubmitBlankLicenses(ft) },
+                {"ProcessUnknownCSVFileType", (ft,fs) => ProcessUnknownCSVFileType(ft, fs) },
+                {"ProcessUnknownPDFFileType", (ft,fs) => ProcessUnknownPDFFileType(ft, fs) }
 
             };
 
-      
 
-        private static void AttachEmailPDF(FileTypes ft, FileInfo[] fs)
-        {
-            BaseDataModel.AttachEmailPDF(ft.AsycudaDocumentSetId, ft.EmailId);
-        }
 
 
         public static Dictionary<string, Action> SessionActions =>
@@ -222,6 +218,65 @@ namespace AutoBot
 
 
             };
+
+        private static void ProcessUnknownPDFFileType(FileTypes ft, FileInfo[] fs)
+        {
+            
+        }
+
+
+        private static void ProcessUnknownCSVFileType(FileTypes ft, FileInfo[] fs)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void CreateShipmentEmail(FileTypes fileType, FileInfo[] files)
+        {
+            try
+            {
+
+           
+            var emailId = Convert.ToInt32(fileType.EmailId);
+            
+                // Todo quick paks etc put Man reg#, bl numer, TotalWeight & Totalfreight in spreadsheet. so invoice can generate the entry.
+                // change the required documents to match too
+                var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
+                                    .ProcessEmailInvoices()
+                                    .LoadEmailRiders()
+                                    .LoadEmailBL()
+                                    .LoadEmailManifest()
+                                    .LoadEmailFreight()
+                                    .LoadDBBL()
+                                    .LoadDBRiders()
+                                    .LoadDBFreight()
+                                    .LoadDBManifest()
+                                    .LoadDBInvoices()
+                                    .ProcessShipment()
+                                    //.SaveShipment()
+                                    ;
+                                    
+
+                shipments.ForEach(shipment =>
+                {
+                    EmailDownloader.EmailDownloader.ForwardMsgToSender(Convert.ToInt32(emailId), Client,
+                                        $"CSVs for {shipment.ShipmentName}", shipment.ToString(), shipment.ShipmentAttachments.Select(x => x.Attachments.FilePath).ToArray());
+                });
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+
+
+
+        private static void AttachEmailPDF(FileTypes ft, FileInfo[] fs)
+        {
+            BaseDataModel.AttachEmailPDF(ft.AsycudaDocumentSetId, ft.EmailId);
+        }
 
         public static void ImportExpiredEntires()
         {
@@ -617,7 +672,8 @@ namespace AutoBot
         //(int? fileTypeId, int? emailId, bool overWriteExisting, List<AsycudaDocumentSet> docSet, string fileType)
         {
             Console.WriteLine("Importing PDF " + fileType.Type);
-            foreach (var file in csvFiles)
+            var failedFiles = new List<string>();
+            foreach (var file in csvFiles.Where(x => x.Extension.ToLower() == ".pdf"))
             {
                 int? emailId = 0;
                 int? fileTypeId = 0;
@@ -629,7 +685,8 @@ namespace AutoBot
                     emailId = res?.EmailUniqueId;
                     fileTypeId = res?.FileTypeId;
                 }
-                InvoiceReader.Import(file.FullName, fileTypeId, emailId, true, SaveCSVModel.Instance.GetDocSets(fileType), fileType.Type);
+                var success = InvoiceReader.Import(file.FullName, fileTypeId.GetValueOrDefault(), emailId.GetValueOrDefault(), true, SaveCSVModel.Instance.GetDocSets(fileType), fileType, Utils.Client);
+               
             }
         }
 
@@ -6001,7 +6058,7 @@ namespace AutoBot
             {
 
 
-                if (fileType.FileTypeMappings.Count == 0)
+                if (fileType.FileTypeMappings.Count == 0 && fileType.ReplicateHeaderRow == false)
                 {
                     throw new ApplicationException($"Missing File Type Mappings for {fileType.FilePattern}");
 
@@ -6017,7 +6074,10 @@ namespace AutoBot
                 int drow_no = 0;
                 var dRows = new List<DataRow>();
 
-                dt.Columns.Add("LineNumber", typeof(int));
+                dt.Columns.Add("LineNumber", typeof(string));
+                List<DataColumn> deleteColumns = new List<DataColumn>();
+               
+
                 //delete rows till header
                 DataRow currentReplicatedHeading = null;
                 var headerRow = dt.Rows[0].ItemArray.ToList();
@@ -6027,21 +6087,36 @@ namespace AutoBot
                     {
                         if (fileType.FileTypeMappings.Where(x => x.Required).All(x => !string.IsNullOrEmpty(dt.Rows[drow_no][headerRow.IndexOf(x.OriginalName)].ToString())))
                         {
-                            currentReplicatedHeading = dt.Rows[drow_no];
-                            dRows.Add(dt.Rows[drow_no]);
+                            if (dt.Rows[drow_no].ItemArray.Count(x => !string.IsNullOrEmpty(x.ToString())) >=
+                                (fileType.FileTypeMappings.Any()
+                                    ? fileType.FileTypeMappings.Count(x => x.Required)
+                                    : 1))
+                            {
+                                currentReplicatedHeading = dt.Rows[drow_no];
+                                dRows.Add(dt.Rows[drow_no]);
+                            }
                         }
                         else
                         {
-                            var row = dt.NewRow();
-                            foreach (DataColumn col in dt.Columns)
+
+                            if (dt.Rows[drow_no].ItemArray.Count(x => !string.IsNullOrEmpty(x.ToString())) >=
+                                (fileType.FileTypeMappings.Any()?fileType.FileTypeMappings.Count(x => x.Required):1))
                             {
-                                var val = dt.Rows[drow_no][col.ColumnName].ToString();
-                                if (!string.IsNullOrEmpty(val) && string.IsNullOrEmpty(row[col.ColumnName].ToString()))
-                                    row[col.ColumnName] = val;
-                                if (string.IsNullOrEmpty(val) && !string.IsNullOrEmpty(currentReplicatedHeading[col.ColumnName].ToString()))
-                                    row[col.ColumnName] = currentReplicatedHeading[col.ColumnName].ToString();
+
+                                var row = dt.NewRow();
+                                foreach (DataColumn col in dt.Columns)
+                                {
+                                    var val = dt.Rows[drow_no][col.ColumnName].ToString();
+                                    if (!string.IsNullOrEmpty(val) &&
+                                        string.IsNullOrEmpty(row[col.ColumnName].ToString()))
+                                        row[col.ColumnName] = val;
+                                    if (string.IsNullOrEmpty(val) &&
+                                        !string.IsNullOrEmpty(currentReplicatedHeading[col.ColumnName].ToString()))
+                                        row[col.ColumnName] = currentReplicatedHeading[col.ColumnName].ToString();
+                                }
+
+                                dRows.Add(row);
                             }
-                            dRows.Add(row);
 
                         }
                         //dRows.Add(dt.Rows[drow_no]);
@@ -6063,27 +6138,33 @@ namespace AutoBot
 
                 }
                 // delete duplicate headers
-
-                var dupheaders = dRows.Where(x =>
-                        x.ItemArray.Contains(fileType.FileTypeMappings.OrderBy(z => z.Id).First(z => !z.OriginalName.Contains("{")).OriginalName)).Skip(1)
-                    .ToList();
-                foreach (var row in dupheaders)
+                if (fileType.FileTypeMappings.Any())
                 {
-                    dRows.Remove(row);
+                    var dupheaders = dRows.Where(x =>
+                            x.ItemArray.Contains(fileType.FileTypeMappings.OrderBy(z => z.Id)
+                                .First(z => !z.OriginalName.Contains("{")).OriginalName)).Skip(1)
+                        .ToList();
+                    foreach (var row in dupheaders)
+                    {
+                        dRows.Remove(row);
+                    }
                 }
-
 
                 var header = dRows[0];
                 for (int i = 0; i < header.ItemArray.Length - 1; i++)
                 {
                     header[i] = header[i].ToString().ToUpper();
+                    if (string.IsNullOrEmpty(header[i].ToString())) deleteColumns.Add(dt.Columns[i]);
                 }
+                
+                deleteColumns.ForEach(x => dt.Columns.Remove(x));
 
                 for (int i = 0; i < dRows.Count; i++)
                 {
                     dRows[i]["LineNumber"] = i;
                 }
 
+                header["LineNumber"] = "LineNumber";
                 var headerlst = header.ItemArray.ToList();
 
                 var missingMaps = fileType.FileTypeMappings.Where(x => x.Required && !x.OriginalName.Contains("{"))
@@ -6102,155 +6183,175 @@ namespace AutoBot
                 Parallel.ForEach(dRows, new ParallelOptions() { MaxDegreeOfParallelism =  1 },//Environment.ProcessorCount *
             drow =>
             {
-                var row = new System.Collections.Generic.Dictionary<string, string>();
-                var row_no = Convert.ToInt32(drow["LineNumber"]);
-                foreach (var mapping in fileType.FileTypeMappings.OrderBy(x => x.Id))
+                var row = new Dictionary<string, string>();
+                var row_no = drow["LineNumber"].ToString() == $"LineNumber" ? 0 : Convert.ToInt32(drow["LineNumber"]);
+                if (fileType.FileTypeMappings.Any())
                 {
-                    var maps = mapping.OriginalName.Split('+');
-                    var val = "";
-                    foreach (var map in maps)
+                    foreach (var mapping in fileType.FileTypeMappings.OrderBy(x => x.Id))
                     {
-                        if (!header.ItemArray.Contains(map.ToUpper()) &&
-                            !dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
+                        var maps = mapping.OriginalName.Split('+');
+                        var val = "";
+                        foreach (var map in maps)
                         {
-                            if (mapping.Required)
+                            if (!header.ItemArray.Contains(map.ToUpper()) &&
+                                !dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
                             {
-                                if (mappingMailSent) return;
-                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),Utils.Client, $"Bug Found",
-                                    $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
-                                   new[] { "Joseph@auto-brokerage.com" } ,Array.Empty<string>()
-                                    );
-                                mappingMailSent = true;
-                                return;
-                            }
-
-                                    //TODO: log error
-                                    continue;
-                        }
-
-                        if (row_no == 0)
-                        {
-                            val += mapping.DestinationName;
-                            if (maps.Length > 1) break;
-                        }
-                        else
-                        {
-                                    //if (string.IsNullOrEmpty(dt.Rows[row_no][map].ToString())) continue;
-                                    if (map.Contains("{") && dic.ContainsKey(map.Replace("{", "").Replace("}", "")) )
-                            {
-
-                                val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row);
-                            }
-                            else
-                            {
-                                var index = Array.LastIndexOf(header.ItemArray,
-                                    map.ToUpper()); //last index of because of Cost USD file has two columns
-                                        val += drow[index];
-                            }
-
-                            if (maps.Length > 1 && map != maps.Last()) val += " - ";
-                        }
-
-
-                    }
-
-
-                    if (val == "{NULL}") continue;
-                    if (val == "" && row_no == 0) continue;
-                    if (val == "" && row_no > 0 &&
-                        (!header.ItemArray.Contains(mapping.OriginalName.ToUpper()) &&
-                         !dic.ContainsKey(mapping.OriginalName.Replace("{", "").Replace("}", "")))) continue;
-                    if (row_no > 0)
-                        if (string.IsNullOrEmpty(val) &&
-                            (mapping.Required == true || mapping.DestinationName == "Invoice #")
-                        ) // took out because it will replace invoice no regardless
+                                if (mapping.Required)
                                 {
-                            if (mapping.DestinationName == "Invoice #")
+                                    if (mappingMailSent) return;
+                                    EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
+                                        Utils.Client, $"Bug Found",
+                                        $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} dose not exists.",
+                                        new[] {"Joseph@auto-brokerage.com"}, Array.Empty<string>()
+                                    );
+                                    mappingMailSent = true;
+                                    return;
+                                }
+
+                                //TODO: log error
+                                continue;
+                            }
+
+                            if (row_no == 0)
                             {
-                                val += dic["DIS-Reference"].Invoke(row);
+                                val += mapping.DestinationName;
+                                if (maps.Length > 1) break;
+                            }
+                            else
+                            {
+                                //if (string.IsNullOrEmpty(dt.Rows[row_no][map].ToString())) continue;
+                                if (map.Contains("{") && dic.ContainsKey(map.Replace("{", "").Replace("}", "")))
+                                {
+
+                                    val += dic[map.Replace("{", "").Replace("}", "")].Invoke(row);
+                                }
+                                else
+                                {
+                                    var index = Array.LastIndexOf(header.ItemArray,
+                                        map.ToUpper()); //last index of because of Cost USD file has two columns
+                                    val += drow[index];
+                                }
+
+                                if (maps.Length > 1 && map != maps.Last()) val += " - ";
+                            }
+
+
+                        }
+
+
+                        if (val == "{NULL}") continue;
+                        if (val == "" && row_no == 0) continue;
+                        if (val == "" && row_no > 0 &&
+                            (!header.ItemArray.Contains(mapping.OriginalName.ToUpper()) &&
+                             !dic.ContainsKey(mapping.OriginalName.Replace("{", "").Replace("}", "")))) continue;
+                        if (row_no > 0)
+                            if (string.IsNullOrEmpty(val) &&
+                                (mapping.Required == true || mapping.DestinationName == "Invoice #")
+                            ) // took out because it will replace invoice no regardless
+                            {
+                                if (mapping.DestinationName == "Invoice #")
+                                {
+                                    val += dic["DIS-Reference"].Invoke(row);
+
+                                }
+                                else
+                                {
+                                    //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                    //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                    EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
+                                        Utils.Client, $"Bug Found",
+                                        $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has no Value.",
+                                        new[] {"Joseph@auto-brokerage.com"}, Array.Empty<string>()
+                                    );
+                                    return;
+                                }
+
+                            }
+
+                            else if (mapping.DataType == "Number")
+                            {
+                                if (string.IsNullOrEmpty(val)) val = "0";
+                                if (val.ToCharArray().All(x => !char.IsDigit(x)))
+                                {
+                                    //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                    //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                    EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
+                                        Utils.Client, $"Bug Found",
+                                        $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to Number.",
+                                        new[] {"Joseph@auto-brokerage.com"}, Array.Empty<string>()
+                                    );
+                                    return;
+                                    //val = "";
+                                }
+                            }
+                            else if (mapping.DataType == "Date")
+                            {
+                                if (DateTime.TryParse(val, out var tmp) == false)
+                                {
+                                    //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
+                                    //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
+                                    EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId),
+                                        Utils.Client, $"Bug Found",
+                                        $"Required Field - '{mapping.OriginalName}' on Line:{row_no} in File: {file.Name} has Value ='{val}' cannot be converted to date.",
+                                        new[] {"Joseph@auto-brokerage.com"}, Array.Empty<string>()
+                                    );
+                                    return;
+                                    //  val = "";
+                                }
+                            }
+
+                        if (row.ContainsKey(mapping.DestinationName))
+                        {
+                            if (row_no == 0)
+                            {
+                                row.Remove(mapping.DestinationName);
+                                var nrow = new Dictionary<string, string>();
+                                nrow = row.Clone();
+                                nrow.Add(mapping.DestinationName, StringToCSVCell(val));
+                                row = nrow;
+                                // row.Add(mapping.DestinationName, StringToCSVCell(val));
 
                             }
                             else
                             {
-                                //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
-                                    $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.",
-                                    new[] { "Joseph@auto-brokerage.com" },Array.Empty<string>()
-                                    );
-                                return;
+                                row[mapping.DestinationName] = StringToCSVCell(val);
                             }
-
-                        }
-
-                        else if (mapping.DataType == "Number")
-                        {
-                            if (string.IsNullOrEmpty(val)) val = "0";
-                            if (val.ToCharArray().All(x => !char.IsDigit(x)))
-                            {
-                                //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
-                                    $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has Value ='{val}' cannot be converted to Number.",
-                                    new[] { "Joseph@auto-brokerage.com" },Array.Empty<string>()
-                                    );
-                                return;
-                                        //val = "";
-                                    }
-                        }
-                        else if (mapping.DataType == "Date")
-                        {
-                            if (DateTime.TryParse(val, out var tmp) == false)
-                            {
-                                //EmailDownloader.EmailDownloader.SendEmail(Utils.Client, null, $"Bug Found",
-                                //    new[] { "Joseph@auto-brokerage.com" }, $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has no Value.", Array.Empty<string>());
-                                EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToUInt16(fileType.EmailId), Utils.Client, $"Bug Found",
-                                    $"Required Field - '{mapping.OriginalName}' on Line:{ row_no} in File: { file.Name} has Value ='{val}' cannot be converted to date.",
-                                    new[] { "Joseph@auto-brokerage.com" },Array.Empty<string>()
-                                    );
-                                return;
-                                        //  val = "";
-                                    }
-                        }
-
-                    if (row.ContainsKey(mapping.DestinationName))
-                    {
-                        if (row_no == 0)
-                        {
-                            row.Remove(mapping.DestinationName);
-                            var nrow = new Dictionary<string, string>();
-                            nrow = row.Clone();
-                            nrow.Add(mapping.DestinationName, StringToCSVCell(val));
-                            row = nrow;
-                           // row.Add(mapping.DestinationName, StringToCSVCell(val));
 
                         }
                         else
                         {
-                            row[mapping.DestinationName] = StringToCSVCell(val);
+                            row.Add(mapping.DestinationName, StringToCSVCell(val));
                         }
 
+
+
+
+
                     }
-                    else
-                    {
-                        row.Add(mapping.DestinationName, StringToCSVCell(val));
-                    }
-
-
-
-
-
                 }
-
+                else
+                {
+                    
+                        foreach (var h in header.ItemArray)
+                        {
+                            var index = Array.LastIndexOf(header.ItemArray,
+                                h); //last index of because of Cost USD file has two columns
+                            var val = drow[index].ToString();
+                            row.Add(h.ToString(), StringToCSVCell(val));
+                        }
+                    
+                }
 
 
                 if (row.Count > 0 && row.Count >= fileType.FileTypeMappings.DistinctBy(x => x.DestinationName)
                         .Count(x => x.Required == true))
                 {
-                    
-                    table.GetOrAdd(row_no, fileType.FileTypeMappings.OrderBy(x => x.Id).Select(x => x.DestinationName).Where(x => !x.StartsWith("{")).Distinct()
-                                               .Select(x => row[x])
-                                               .Aggregate((a, x) => a + "," + x) + "\n");
+                    var value = fileType.FileTypeMappings.Any()
+                                    ?fileType.FileTypeMappings.OrderBy(x => x.Id).Select(x => x.DestinationName).Where(x => !x.StartsWith("{")).Distinct()
+                                    .Select(x => row[x])
+                                    .Aggregate((a, x) => a + "," + x) + "\n"
+                        :row.Values.Aggregate((a, x) => a + "," + x) + "\n";
+                    table.GetOrAdd(row_no, value);
                 }
 
             });
@@ -6263,7 +6364,7 @@ namespace AutoBot
                 csv.Close();
                 if (fileType.ChildFileTypes.Any())
                 {
-                    var fileTypes = fileType.ChildFileTypes.First();
+                    var fileTypes = BaseDataModel.GetFileType(fileType.ChildFileTypes.First());
                     fileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
                     SaveCsv(new FileInfo[] { new FileInfo(output) }, fileTypes);
                 }
@@ -6326,6 +6427,8 @@ namespace AutoBot
             //return str;
         }
     }
+
+   
 
     internal class AssessedEntryInfo
     {

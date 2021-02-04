@@ -239,6 +239,222 @@ public string RegEx
             }
         }
 
+        ObservableCollection<InvoiceRegEx> _InvoiceRegEx = null;
+        public  ObservableCollection<InvoiceRegEx> InvoiceRegEx
+		{
+            
+		    get 
+				{ 
+					if(_InvoiceRegEx != null) return _InvoiceRegEx;
+					//if (this.regularexpressions.InvoiceRegEx == null) Debugger.Break();
+					if(this.regularexpressions.InvoiceRegEx != null)
+					{
+						_InvoiceRegEx = new ObservableCollection<InvoiceRegEx>(this.regularexpressions.InvoiceRegEx.Select(x => new InvoiceRegEx(x)));
+					}
+					
+						_InvoiceRegEx.CollectionChanged += InvoiceRegEx_CollectionChanged; 
+					
+					return _InvoiceRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _InvoiceRegEx)) return;
+				if (value != null)
+					this.regularexpressions.InvoiceRegEx = new ChangeTrackingCollection<DTO.InvoiceRegEx>(value.Select(x => x.DTO).ToList());
+                _InvoiceRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_InvoiceRegEx != null)
+				_InvoiceRegEx.CollectionChanged += InvoiceRegEx_CollectionChanged;               
+				NotifyPropertyChanged("InvoiceRegEx");
+			}
+		}
+        
+        void InvoiceRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InvoiceRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.InvoiceRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InvoiceRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.InvoiceRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<InvoiceRegEx> _InvoiceRepRegEx = null;
+        public  ObservableCollection<InvoiceRegEx> InvoiceRepRegEx
+		{
+            
+		    get 
+				{ 
+					if(_InvoiceRepRegEx != null) return _InvoiceRepRegEx;
+					//if (this.regularexpressions.InvoiceRepRegEx == null) Debugger.Break();
+					if(this.regularexpressions.InvoiceRepRegEx != null)
+					{
+						_InvoiceRepRegEx = new ObservableCollection<InvoiceRegEx>(this.regularexpressions.InvoiceRepRegEx.Select(x => new InvoiceRegEx(x)));
+					}
+					
+						_InvoiceRepRegEx.CollectionChanged += InvoiceRepRegEx_CollectionChanged; 
+					
+					return _InvoiceRepRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _InvoiceRepRegEx)) return;
+				if (value != null)
+					this.regularexpressions.InvoiceRepRegEx = new ChangeTrackingCollection<DTO.InvoiceRegEx>(value.Select(x => x.DTO).ToList());
+                _InvoiceRepRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_InvoiceRepRegEx != null)
+				_InvoiceRepRegEx.CollectionChanged += InvoiceRepRegEx_CollectionChanged;               
+				NotifyPropertyChanged("InvoiceRepRegEx");
+			}
+		}
+        
+        void InvoiceRepRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (InvoiceRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.InvoiceRepRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InvoiceRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.InvoiceRepRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<FieldFormatRegEx> _FieldFormatRegEx = null;
+        public  ObservableCollection<FieldFormatRegEx> FieldFormatRegEx
+		{
+            
+		    get 
+				{ 
+					if(_FieldFormatRegEx != null) return _FieldFormatRegEx;
+					//if (this.regularexpressions.FieldFormatRegEx == null) Debugger.Break();
+					if(this.regularexpressions.FieldFormatRegEx != null)
+					{
+						_FieldFormatRegEx = new ObservableCollection<FieldFormatRegEx>(this.regularexpressions.FieldFormatRegEx.Select(x => new FieldFormatRegEx(x)));
+					}
+					
+						_FieldFormatRegEx.CollectionChanged += FieldFormatRegEx_CollectionChanged; 
+					
+					return _FieldFormatRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _FieldFormatRegEx)) return;
+				if (value != null)
+					this.regularexpressions.FieldFormatRegEx = new ChangeTrackingCollection<DTO.FieldFormatRegEx>(value.Select(x => x.DTO).ToList());
+                _FieldFormatRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FieldFormatRegEx != null)
+				_FieldFormatRegEx.CollectionChanged += FieldFormatRegEx_CollectionChanged;               
+				NotifyPropertyChanged("FieldFormatRegEx");
+			}
+		}
+        
+        void FieldFormatRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FieldFormatRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.FieldFormatRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FieldFormatRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.FieldFormatRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
+        ObservableCollection<FieldFormatRegEx> _FieldFormatRepRegEx = null;
+        public  ObservableCollection<FieldFormatRegEx> FieldFormatRepRegEx
+		{
+            
+		    get 
+				{ 
+					if(_FieldFormatRepRegEx != null) return _FieldFormatRepRegEx;
+					//if (this.regularexpressions.FieldFormatRepRegEx == null) Debugger.Break();
+					if(this.regularexpressions.FieldFormatRepRegEx != null)
+					{
+						_FieldFormatRepRegEx = new ObservableCollection<FieldFormatRegEx>(this.regularexpressions.FieldFormatRepRegEx.Select(x => new FieldFormatRegEx(x)));
+					}
+					
+						_FieldFormatRepRegEx.CollectionChanged += FieldFormatRepRegEx_CollectionChanged; 
+					
+					return _FieldFormatRepRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _FieldFormatRepRegEx)) return;
+				if (value != null)
+					this.regularexpressions.FieldFormatRepRegEx = new ChangeTrackingCollection<DTO.FieldFormatRegEx>(value.Select(x => x.DTO).ToList());
+                _FieldFormatRepRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FieldFormatRepRegEx != null)
+				_FieldFormatRepRegEx.CollectionChanged += FieldFormatRepRegEx_CollectionChanged;               
+				NotifyPropertyChanged("FieldFormatRepRegEx");
+			}
+		}
+        
+        void FieldFormatRepRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FieldFormatRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.FieldFormatRepRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FieldFormatRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        regularexpressions.FieldFormatRepRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
+
 
         ChangeTrackingCollection<DTO.RegularExpressions> _changeTracker;    
         public ChangeTrackingCollection<DTO.RegularExpressions> ChangeTracker

@@ -87,6 +87,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _issingleemail;
         [DataMember]
+        public string ReplacementValue 
+        {
+            get
+            {
+                return _replacementvalue;
+            }
+            set
+            {
+                _replacementvalue = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _replacementvalue;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public List<EmailFileTypes> EmailFileTypes { get; set; }

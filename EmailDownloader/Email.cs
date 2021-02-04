@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CoreEntities.Business.Entities;
 
 namespace EmailDownloader
@@ -15,9 +16,12 @@ namespace EmailDownloader
             this.Subject = subject;
             this.EmailDate = emailDate;
             this.EmailMapping = emailMapping;
+          
 
         }
 
+        public List<FileTypes> FileTypes { get; set; }
+        
         public EmailMapping EmailMapping { get; }
     }
 }

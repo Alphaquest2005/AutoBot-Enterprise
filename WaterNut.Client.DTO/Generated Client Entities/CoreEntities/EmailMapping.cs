@@ -73,6 +73,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _IsSingleEmail;
 
+        [DataMember]
+        public string ReplacementValue
+		{ 
+		    get { return _ReplacementValue; }
+			set
+			{
+			    if (value == _ReplacementValue) return;
+				_ReplacementValue = value;
+				NotifyPropertyChanged();//m => this.ReplacementValue
+			}
+		}
+        private string _ReplacementValue;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

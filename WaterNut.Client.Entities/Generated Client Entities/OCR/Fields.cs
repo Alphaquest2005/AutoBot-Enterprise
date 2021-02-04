@@ -42,6 +42,9 @@ namespace OCR.Client.Entities
                 fields = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= " is required")]
        
 public int Id
@@ -260,6 +263,60 @@ public string Key
 			}
 		}
         
+
+        ObservableCollection<FieldFormatRegEx> _FormatRegEx = null;
+        public  ObservableCollection<FieldFormatRegEx> FormatRegEx
+		{
+            
+		    get 
+				{ 
+					if(_FormatRegEx != null) return _FormatRegEx;
+					//if (this.fields.FormatRegEx == null) Debugger.Break();
+					if(this.fields.FormatRegEx != null)
+					{
+						_FormatRegEx = new ObservableCollection<FieldFormatRegEx>(this.fields.FormatRegEx.Select(x => new FieldFormatRegEx(x)));
+					}
+					
+						_FormatRegEx.CollectionChanged += FormatRegEx_CollectionChanged; 
+					
+					return _FormatRegEx; 
+				}
+			set
+			{
+			    if (Equals(value, _FormatRegEx)) return;
+				if (value != null)
+					this.fields.FormatRegEx = new ChangeTrackingCollection<DTO.FieldFormatRegEx>(value.Select(x => x.DTO).ToList());
+                _FormatRegEx = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FormatRegEx != null)
+				_FormatRegEx.CollectionChanged += FormatRegEx_CollectionChanged;               
+				NotifyPropertyChanged("FormatRegEx");
+			}
+		}
+        
+        void FormatRegEx_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FieldFormatRegEx itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        fields.FormatRegEx.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FieldFormatRegEx itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        fields.FormatRegEx.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.Fields> _changeTracker;    

@@ -36,6 +36,21 @@ namespace OCR.Business.Entities
         }
         int _id;
         [DataMember]
+        public bool IsComposite 
+        {
+            get
+            {
+                return _iscomposite;
+            }
+            set
+            {
+                _iscomposite = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _iscomposite;
+        [DataMember]
         public Parts Parts { get; set; }
 
  //       [DataMember]

@@ -20,6 +20,11 @@ namespace OCR.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class Fields : BaseEntity<Fields>, ITrackable 
     {
+        partial void AutoGenStartUp() //Fields()
+        {
+            this.FormatRegEx = new List<FieldFormatRegEx>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -129,6 +134,8 @@ namespace OCR.Business.Entities
         public Lines Lines { get; set; }
         [DataMember]
         public OCR_FieldValue FieldValue { get; set; }
+        [DataMember]
+        public List<FieldFormatRegEx> FormatRegEx { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

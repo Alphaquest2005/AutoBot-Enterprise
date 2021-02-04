@@ -42,6 +42,9 @@ namespace CoreEntities.Client.Entities
                 filetypemappings = value;
             }
         }
+        
+
+
        [RequiredValidationAttribute(ErrorMessage= " is required")]
        
 public int Id
@@ -190,6 +193,60 @@ public bool Required
 			}
 		}
         
+
+        ObservableCollection<FileTypeMappingRegExs> _FileTypeMappingRegExs = null;
+        public  ObservableCollection<FileTypeMappingRegExs> FileTypeMappingRegExs
+		{
+            
+		    get 
+				{ 
+					if(_FileTypeMappingRegExs != null) return _FileTypeMappingRegExs;
+					//if (this.filetypemappings.FileTypeMappingRegExs == null) Debugger.Break();
+					if(this.filetypemappings.FileTypeMappingRegExs != null)
+					{
+						_FileTypeMappingRegExs = new ObservableCollection<FileTypeMappingRegExs>(this.filetypemappings.FileTypeMappingRegExs.Select(x => new FileTypeMappingRegExs(x)));
+					}
+					
+						_FileTypeMappingRegExs.CollectionChanged += FileTypeMappingRegExs_CollectionChanged; 
+					
+					return _FileTypeMappingRegExs; 
+				}
+			set
+			{
+			    if (Equals(value, _FileTypeMappingRegExs)) return;
+				if (value != null)
+					this.filetypemappings.FileTypeMappingRegExs = new ChangeTrackingCollection<DTO.FileTypeMappingRegExs>(value.Select(x => x.DTO).ToList());
+                _FileTypeMappingRegExs = value;
+				if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				if (_FileTypeMappingRegExs != null)
+				_FileTypeMappingRegExs.CollectionChanged += FileTypeMappingRegExs_CollectionChanged;               
+				NotifyPropertyChanged("FileTypeMappingRegExs");
+			}
+		}
+        
+        void FileTypeMappingRegExs_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (FileTypeMappingRegExs itm in e.NewItems)
+                    {
+                        if (itm != null)
+                        filetypemappings.FileTypeMappingRegExs.Add(itm.DTO);
+                    }
+                    if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (FileTypeMappingRegExs itm in e.OldItems)
+                    {
+                        if (itm != null)
+                        filetypemappings.FileTypeMappingRegExs.Remove(itm.DTO);
+                    }
+					if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+                    break;
+                
+            }
+        }
 
 
         ChangeTrackingCollection<DTO.FileTypeMappings> _changeTracker;    

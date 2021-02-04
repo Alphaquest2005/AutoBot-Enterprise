@@ -17,7 +17,7 @@ namespace EmailDownloader
 {
     public static partial class EmailDownloader
     {
-        public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client, List<string> patterns)
+        public static Dictionary<Tuple<string, Email, string>, List<string>> CheckEmails(Client client)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace EmailDownloader
                             imapClient.Authenticate(client.Email, client.Password);
                             var dataFolder = client.DataFolder;
                             imapClient.Inbox.Open(FolderAccess.ReadWrite);
-                            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client, patterns);
+                            var res = DownloadAttachment(imapClient, dataFolder, client.EmailMappings, client);
 
                             imapClient.Disconnect(true);
                             return res;
@@ -90,19 +90,25 @@ namespace EmailDownloader
 
 
         public static Dictionary<Tuple<string, Email, string>, List<string>> DownloadAttachment(ImapClient imapClient, string dataFolder,
-            List<EmailMapping> emailMappings, Client client, List<string> patterns)
+            List<EmailMapping> emailMappings, Client client)
         {
             try
             {
                 var sendNotifications = true;
 
                 var msgFiles = new Dictionary<Tuple<string, Email, string>, List<string>>();
-                foreach (var uid in imapClient.Inbox.Search(SearchQuery.NotSeen))
+
+                var uniqueIds = imapClient.Inbox.Search(SearchQuery.NotSeen).ToList();
+                foreach (var uid in uniqueIds)
                 {
                     var lst = new List<string>();
                     var msg = imapClient.Inbox.GetMessage(uid);
+                    var emailsFound =
+                        emailMappings.Where(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase))
+                            .OrderBy(x => x.Pattern.Length)
+                            .ToList();
 
-                    if (!emailMappings.Any(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase)))
+                    if (!emailsFound.Any())
                     {
                         if (sendNotifications)
                         {
@@ -117,61 +123,65 @@ namespace EmailDownloader
                         continue;
                     }
 
-                    var subject = GetSubject(msg, uid, emailMappings);
-
-                    if (string.IsNullOrEmpty(subject?.Item1))
+                    foreach (var emailMapping in emailsFound.Take(1))// taking first one because i think there should only be one real match but mutiple matches possible
                     {
-                        if (sendNotifications)
-                        {
+                        var subject = GetSubject(msg, uid, new List<EmailMapping>() {emailMapping});
 
-                            SendEmail(client, null, $"Bug Found",
-                                new[] {"Joseph@auto-brokerage.com"},
-                                $"Subject not configured for Regex: '{msg.Subject}'", Array.Empty<string>());
+                        if (string.IsNullOrEmpty(subject?.Item1))
+                        {
+                            if (sendNotifications)
+                            {
+
+                                SendEmail(client, null, $"Bug Found",
+                                    new[] {"Joseph@auto-brokerage.com"},
+                                    $"Subject not configured for Regex: '{msg.Subject}'", Array.Empty<string>());
+                            }
+
+                            imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                            continue;
                         }
 
-                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
-                        continue;
-                    }
-
-                    var desFolder = Path.Combine(dataFolder, subject.Item1, uid.ToString());
-                    if (Directory.Exists(desFolder)) Directory.Delete(desFolder, true);
-                    Directory.CreateDirectory(desFolder);
-                    foreach (var a in msg.Attachments.Where(x => x.ContentType.MediaType != "message"))
-                    {
-                        if (!a.IsAttachment) continue;
-                        SaveAttachmentPart(desFolder, a, lst);
-                    }
-
-                    if (lst.Any() && patterns.All(x => !lst.Any(z => Regex.IsMatch(z, x, RegexOptions.IgnoreCase))))
-                    {
-                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
-                        if (sendNotifications)
+                        var desFolder = Path.Combine(dataFolder, subject.Item1, uid.ToString());
+                        if (Directory.Exists(desFolder)) Directory.Delete(desFolder, true);
+                        Directory.CreateDirectory(desFolder);
+                        foreach (var a in msg.Attachments.Where(x => x.ContentType.MediaType != "message"))
                         {
-                            var errTxt =
-                                "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
-                                "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
-                                "Thanks\r\n" +
-                                "Ez-Asycuda-Toolkit";
-                            SendBackMsg(msg, client, errTxt);
+                            if (!a.IsAttachment) continue;
+                            SaveAttachmentPart(desFolder, a, lst);
                         }
-                    }
+                        SaveBodyPart(desFolder, msg, lst);
+
+                        var fileTypes = emailMapping.EmailFileTypes.Select(x => x.FileTypes)
+                            .Where(x => lst.Any(z => Regex.IsMatch(z, x.FilePattern, RegexOptions.IgnoreCase))).ToList();
+
+                        if (lst.Any() && !fileTypes.Any(x => x.Type != "Info"))
+                        {
+                            imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                            if (sendNotifications)
+                            {
+                                var errTxt =
+                                    "Hey,\r\n\r\n The System is not configured for none of the Attachments in this mail.\r\n" +
+                                    "Check the file Name of attachments again or Check Joseph Bartholomew at Joseph@auto-brokerage.com to make the necessary changes.\r\n" +
+                                    "Thanks\r\n" +
+                                    "Ez-Asycuda-Toolkit";
+                                SendBackMsg(msg, client, errTxt);
+                            }
+                        }
+
+                        
+
+                        subject.Item2.FileTypes = fileTypes;
 
 
-                    SaveBodyPart(desFolder, msg, lst);
-
-
-
-                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
-                    if (msgFiles.ContainsKey(subject))
-                    {
-                        msgFiles[subject].AddRange(lst);
-                    }
-                    else
-                    {
+                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
+                      
+                       
                         msgFiles.Add(subject, lst);
+                     
+
+                        imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                     }
 
-                    imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                 }
 
                 return msgFiles;
@@ -206,11 +216,13 @@ namespace EmailDownloader
                 {
                     var v = mat.Groups[i];
                     if(string.IsNullOrEmpty(v.Value) || subject.Contains(v.Value)) continue;
-                    var g = v.Value;
+                    var g = string.IsNullOrEmpty(emailMapping.ReplacementValue)
+                            ? v.Value
+                            : emailMapping.ReplacementValue;
                     subject += " " + g.Trim();
                 }
+               
 
-                 
                 return new Tuple<string, Email, string>($"{subject.Trim()}", new Email(emailId: Convert.ToInt32(uid.ToString()), subject: msg.Subject, emailDate: msg.Date.DateTime, emailMapping: emailMapping), uid.ToString());
 
             }
@@ -256,6 +268,7 @@ namespace EmailDownloader
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
             message.To.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
+            message.To.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
             message.Subject = "FWD: " + msg.Subject;
 
             // now to create our body...
@@ -320,13 +333,7 @@ namespace EmailDownloader
         {
             try
             {
-                var imapClient = new ImapClient();
-                imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
-                imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
-                var dataFolder = clientDetails.DataFolder;
-                imapClient.Inbox.Open(FolderAccess.ReadWrite);
-                var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
-                imapClient.Disconnect(true);
+                var msg = GetMsg(uID, clientDetails);
                 if (msg != null)
                 {
                     ForwardMsg(msg, clientDetails,subject, body, contacts ,attachments);
@@ -347,13 +354,26 @@ namespace EmailDownloader
 
         }
 
+        private static MimeMessage GetMsg(int uID, Client clientDetails)
+        {
+            var imapClient = new ImapClient();
+            imapClient.Connect("auto-brokerage.com", 993, SecureSocketOptions.SslOnConnect);
+            imapClient.Authenticate(clientDetails.Email, clientDetails.Password);
+            var dataFolder = clientDetails.DataFolder;
+            imapClient.Inbox.Open(FolderAccess.ReadWrite);
+            var msg = imapClient.Inbox.GetMessage(new UniqueId(Convert.ToUInt16(uID)));
+            imapClient.Disconnect(true);
+            return msg;
+        }
+
         private static void ForwardMsg(MimeMessage msg, Client clientDetails,string subject, string body,string[] contacts , string[] attachments)
         {
             // construct a new message
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress($"{clientDetails.CompanyName}-AutoBot", clientDetails.Email));
             message.ReplyTo.Add(new MailboxAddress(msg.From.First().Name, msg.From.Mailboxes.FirstOrDefault().Address));
-            
+            message.Cc.Add(new MailboxAddress("Joseph Bartholomew", "Joseph@auto-brokerage.com"));
+
             foreach (var recipent in contacts.Distinct())
             {
                 message.To.Add(MailboxAddress.Parse(recipent));
@@ -375,6 +395,30 @@ namespace EmailDownloader
             message.Body = builder.ToMessageBody();
 
             SendEmail(clientDetails, message);
+        }
+
+        public static bool ForwardMsgToSender(int uID, Client client, string subject, string body, string[] attachments)
+        {
+            try
+            {
+                var msg = GetMsg(uID, client);
+                if (msg != null)
+                {
+                    var contacts = msg.From.Mailboxes.Select(x => x.Address).ToArray();
+                    ForwardMsg(msg, client, subject, body, contacts, attachments);
+                }
+                else
+                {
+                    // msg not found
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

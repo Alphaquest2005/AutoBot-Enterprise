@@ -47,6 +47,19 @@ namespace OCR.Client.DTO
 		}
         private string _Name;
 
+        [DataMember]
+        public Nullable<int> FileTypeId
+		{ 
+		    get { return _FileTypeId; }
+			set
+			{
+			    if (value == _FileTypeId) return;
+				_FileTypeId = value;
+				NotifyPropertyChanged();//m => this.FileTypeId
+			}
+		}
+        private Nullable<int> _FileTypeId;
+
        
         [DataMember]
         public ChangeTrackingCollection<Parts> Parts
@@ -60,6 +73,32 @@ namespace OCR.Client.DTO
 			}
 		}
         private ChangeTrackingCollection<Parts> _Parts = new ChangeTrackingCollection<Parts>();
+
+        [DataMember]
+        public ChangeTrackingCollection<InvoiceRegEx> RegEx
+		{
+		    get { return _RegEx; }
+			set
+			{
+			    if (Equals(value, _RegEx)) return;
+				_RegEx = value;
+				NotifyPropertyChanged();//m => this.RegEx
+			}
+		}
+        private ChangeTrackingCollection<InvoiceRegEx> _RegEx = new ChangeTrackingCollection<InvoiceRegEx>();
+
+        [DataMember]
+        public ChangeTrackingCollection<OCRFileTypes> FileTypes
+		{
+		    get { return _FileTypes; }
+			set
+			{
+			    if (Equals(value, _FileTypes)) return;
+				_FileTypes = value;
+				NotifyPropertyChanged();//m => this.FileTypes
+			}
+		}
+        private ChangeTrackingCollection<OCRFileTypes> _FileTypes = new ChangeTrackingCollection<OCRFileTypes>();
 
    //     [DataMember]
    //     public TrackingState TrackingState { get; set; }

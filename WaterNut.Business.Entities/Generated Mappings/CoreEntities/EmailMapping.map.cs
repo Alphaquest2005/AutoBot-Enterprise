@@ -17,6 +17,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.Property(t => t.Pattern).HasColumnName("Pattern").IsRequired();
               this.Property(t => t.IsSingleEmail).HasColumnName("IsSingleEmail");
+              this.Property(t => t.ReplacementValue).HasColumnName("ReplacementValue").HasMaxLength(50);
               this.HasRequired(t => t.ApplicationSettings).WithMany(t =>(ICollection<EmailMapping>) t.EmailMapping).HasForeignKey(d => d.ApplicationSettingsId);
               this.HasMany(t => t.EmailFileTypes).WithRequired(t => (EmailMapping)t.EmailMapping);
               this.HasMany(t => t.EmailInfoMappings).WithRequired(t => (EmailMapping)t.EmailMapping);

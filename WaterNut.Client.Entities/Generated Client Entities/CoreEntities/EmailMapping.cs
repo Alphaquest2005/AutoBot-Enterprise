@@ -107,6 +107,23 @@ public Nullable<bool> IsSingleEmail
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "ReplacementValue has a max length of 50 letters ")]
+public string ReplacementValue
+		{ 
+		    get { return this.emailmapping.ReplacementValue; }
+			set
+			{
+			    if (value == this.emailmapping.ReplacementValue) return;
+				this.emailmapping.ReplacementValue = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ReplacementValue");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

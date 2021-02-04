@@ -179,6 +179,7 @@
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Pattern" Type="nvarchar(max)" Nullable="false" />
           <Property Name="IsSingleEmail" Type="bit" />
+          <Property Name="ReplacementValue" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Emails">
           <Key>
@@ -240,6 +241,15 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FileTypeId" Type="int" Nullable="false" />
           <Property Name="ContactId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FileTypeMappingRegExs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileTypeMappingId" Type="int" Nullable="false" />
+          <Property Name="ReplacementRegex" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ReplacementValue" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="FileTypeMappings">
           <Key>
@@ -2008,6 +2018,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_FileTypeMappingRegExs_FileTypeMappings">
+          <End Role="FileTypeMappings" Type="Self.FileTypeMappings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="FileTypeMappingRegExs" Type="Self.FileTypeMappingRegExs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypeMappings">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeMappingRegExs">
+              <PropertyRef Name="FileTypeMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_FileTypeMappings_FileTypes">
           <End Role="FileTypes" Type="Self.FileTypes" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -2145,6 +2169,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
           <EntitySet Name="FileGroups" EntityType="Self.FileGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeActions" EntityType="Self.FileTypeActions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeContacts" EntityType="Self.FileTypeContacts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FileTypeMappingRegExs" EntityType="Self.FileTypeMappingRegExs" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypeMappings" EntityType="Self.FileTypeMappings" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InfoMapping" EntityType="Self.InfoMapping" Schema="dbo" store:Type="Tables" />
@@ -3277,6 +3302,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypeContacts" EntitySet="FileTypeContacts" />
           </AssociationSet>
+          <AssociationSet Name="FK_FileTypeMappingRegExs_FileTypeMappings" Association="Self.FK_FileTypeMappingRegExs_FileTypeMappings">
+            <End Role="FileTypeMappings" EntitySet="FileTypeMappings" />
+            <End Role="FileTypeMappingRegExs" EntitySet="FileTypeMappingRegExs" />
+          </AssociationSet>
           <AssociationSet Name="FK_FileTypeMappings_FileTypes" Association="Self.FK_FileTypeMappings_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypeMappings" EntitySet="FileTypeMappings" />
@@ -3577,6 +3606,11 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="AsycudaDocumentSetC71" EntityType="WaterNutDBModel.AsycudaDocumentSetC71" />
           <EntitySet Name="TODO_LicenseToXML" EntityType="WaterNutDBModel.TODO_LicenseToXML" />
           <EntitySet Name="TODO_LICToCreate" EntityType="WaterNutDBModel.TODO_LICToCreate" />
+          <EntitySet Name="FileTypeMappingRegExs" EntityType="WaterNutDBModel.FileTypeMappingRegExs" />
+          <AssociationSet Name="FK_FileTypeMappingRegExs_FileTypeMappings" Association="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings">
+            <End Role="FileTypeMappings" EntitySet="FileTypeMappings" />
+            <End Role="FileTypeMappingRegExs" EntitySet="FileTypeMappingRegExs" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -4151,6 +4185,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_FileTypeMappings_FileTypes" FromRole="FileTypeMappings" ToRole="FileTypes" />
           <Property Name="DataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Required" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="FileTypeMappingRegExs" Relationship="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" FromRole="FileTypeMappings" ToRole="FileTypeMappingRegExs" />
         </EntityType>
         <Association Name="FK_FileTypeMappings_FileTypes">
           <End Type="WaterNutDBModel.FileTypes" Role="FileTypes" Multiplicity="1">
@@ -4260,6 +4295,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="EmailFileTypes" Relationship="WaterNutDBModel.FK_EmailFileTypes_EmailMapping" FromRole="EmailMapping" ToRole="EmailFileTypes" />
           <NavigationProperty Name="EmailInfoMappings" Relationship="WaterNutDBModel.FK_EmailInfoMappings_EmailMapping" FromRole="EmailMapping" ToRole="EmailInfoMappings" />
           <Property Name="IsSingleEmail" Type="Boolean" />
+          <Property Name="ReplacementValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_EmailMapping_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -5811,6 +5847,30 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="TotalCIF" Type="Double" />
           <Property Name="QtyLicensesRequired" Type="Int32" />
         </EntityType>
+        <EntityType Name="FileTypeMappingRegExs">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FileTypeMappingId" Type="Int32" Nullable="false" />
+          <Property Name="ReplacementRegex" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReplacementValue" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="FileTypeMappings" Relationship="WaterNutDBModel.FK_FileTypeMappingRegExs_FileTypeMappings" FromRole="FileTypeMappingRegExs" ToRole="FileTypeMappings" />
+        </EntityType>
+        <Association Name="FK_FileTypeMappingRegExs_FileTypeMappings">
+          <End Type="WaterNutDBModel.FileTypeMappings" Role="FileTypeMappings" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.FileTypeMappingRegExs" Role="FileTypeMappingRegExs" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FileTypeMappings">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="FileTypeMappingRegExs">
+              <PropertyRef Name="FileTypeMappingId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -6195,6 +6255,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="EmailMapping">
             <EntityTypeMapping TypeName="WaterNutDBModel.EmailMapping">
               <MappingFragment StoreEntitySet="EmailMapping">
+                <ScalarProperty Name="ReplacementValue" ColumnName="ReplacementValue" />
                 <ScalarProperty Name="IsSingleEmail" ColumnName="IsSingleEmail" />
                 <ScalarProperty Name="Pattern" ColumnName="Pattern" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
@@ -7344,6 +7405,16 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="Country_of_origin_code" ColumnName="Country_of_origin_code" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="AsycudaDocumentSetId" ColumnName="AsycudaDocumentSetId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FileTypeMappingRegExs">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FileTypeMappingRegExs">
+              <MappingFragment StoreEntitySet="FileTypeMappingRegExs">
+                <ScalarProperty Name="ReplacementValue" ColumnName="ReplacementValue" />
+                <ScalarProperty Name="ReplacementRegex" ColumnName="ReplacementRegex" />
+                <ScalarProperty Name="FileTypeMappingId" ColumnName="FileTypeMappingId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

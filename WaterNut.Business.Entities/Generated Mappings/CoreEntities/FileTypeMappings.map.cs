@@ -20,6 +20,7 @@
               this.Property(t => t.DataType).HasColumnName("DataType").IsRequired().HasMaxLength(50);
               this.Property(t => t.Required).HasColumnName("Required");
               this.HasRequired(t => t.FileTypes).WithMany(t =>(ICollection<FileTypeMappings>) t.FileTypeMappings).HasForeignKey(d => d.FileTypeId);
+              this.HasMany(t => t.FileTypeMappingRegExs).WithRequired(t => (FileTypeMappings)t.FileTypeMappings);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

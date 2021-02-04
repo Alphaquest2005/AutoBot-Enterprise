@@ -219,6 +219,8 @@ namespace CoreEntities.Business.Entities
      
         public DbSet<TODO_LICToCreate> TODO_LICToCreate { get; set; }
      
+        public DbSet<FileTypeMappingRegExs> FileTypeMappingRegExs { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -394,6 +396,8 @@ namespace CoreEntities.Business.Entities
             modelBuilder.Configurations.Add(new TODO_LicenseToXMLMap());
          
             modelBuilder.Configurations.Add(new TODO_LICToCreateMap());
+         
+            modelBuilder.Configurations.Add(new FileTypeMappingRegExsMap());
          
 			OnModelCreatingExtentsion(modelBuilder);
 

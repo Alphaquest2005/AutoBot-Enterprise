@@ -79,7 +79,10 @@ namespace OCR.Client.Contracts
 		[OperationContract]
 		string MinField(string whereExp, string field);
 
-				
+				[OperationContract]
+		Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        
+  		
     }
 }
 

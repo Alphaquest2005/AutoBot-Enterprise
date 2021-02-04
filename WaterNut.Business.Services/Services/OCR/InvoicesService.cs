@@ -241,6 +241,18 @@ namespace OCR.Business.Services
                                         GetWhere<Parts>(dbContext, exp, itm.Value, "Invoices", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "RegEx":
+                                return
+                                    await
+                                        GetWhere<InvoiceRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileTypes":
+                                return
+                                    await
+                                        GetWhere<OCRFileTypes>(dbContext, exp, itm.Value, "Invoices", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -743,6 +755,12 @@ namespace OCR.Business.Services
                             case "Parts":
                                 return await CountWhere<Parts>(dbContext, exp, itm.Value, "Invoices", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "RegEx":
+                                return await CountWhere<InvoiceRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await CountWhere<OCRFileTypes>(dbContext, exp, itm.Value, "Invoices", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Invoices.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -853,6 +871,18 @@ namespace OCR.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<Parts>(startIndex, count, dbContext, exp, itm.Value, "Invoices", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "RegEx":
+                                return
+                                    await
+                                        LoadRangeWhere<InvoiceRegEx>(startIndex, count, dbContext, exp, itm.Value, "OCR_Invoices", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "FileTypes":
+                                return
+                                    await
+                                        LoadRangeWhere<OCRFileTypes>(startIndex, count, dbContext, exp, itm.Value, "Invoices", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1059,7 +1089,39 @@ namespace OCR.Business.Services
 			}
         }
 
-		
+			        public async Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new OCRContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(FileTypeId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<Invoices> entities = await set//dbContext.Invoices
+                                                    // .Include(x => x.Parts)									  
+                                                    // .Include(x => x.RegEx)									  
+                                                    // .Include(x => x.FileTypes)									  
+                                      .AsNoTracking()
+                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 
 		public decimal SumField(string whereExp, string field)
          {
              try
@@ -1116,6 +1178,12 @@ namespace OCR.Business.Services
                         {
                             case "Parts":
                                 return await SumWhere<Parts>(dbContext, exp, itm.Value, "Invoices", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "RegEx":
+                                return await SumWhere<InvoiceRegEx>(dbContext, exp, itm.Value, "OCR_Invoices", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "FileTypes":
+                                return await SumWhere<OCRFileTypes>(dbContext, exp, itm.Value, "Invoices", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

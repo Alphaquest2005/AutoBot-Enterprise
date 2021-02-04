@@ -21,6 +21,15 @@
           <Property Name="PartId" Type="int" Nullable="false" />
           <Property Name="RegExId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="OCR-FieldFormatRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FieldId" Type="int" Nullable="false" />
+          <Property Name="RegExId" Type="int" Nullable="false" />
+          <Property Name="ReplacementRegExId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="OCR-Fields">
           <Key>
             <PropertyRef Name="Id" />
@@ -40,12 +49,32 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Value" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="OCR-InvoiceRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InvoiceId" Type="int" Nullable="false" />
+          <Property Name="RegExId" Type="int" Nullable="false" />
+          <Property Name="ReplacementRegExId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="OCR-Invoices">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="OCRInvoicesFileTypes">
+          <Key>
+            <PropertyRef Name="OCRInvoiceId" />
+            <PropertyRef Name="FileTypeId" />
+          </Key>
+          <Property Name="OCRInvoiceId" Type="int" Nullable="false" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR-Lines">
           <Key>
@@ -77,6 +106,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="IsComposite" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR-RegularExpressions">
           <Key>
@@ -145,6 +175,44 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_OCR-FieldFormatRegEx_OCR-Fields">
+          <End Role="OCR-Fields" Type="Self.OCR-Fields" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-FieldFormatRegEx" Type="Self.OCR-FieldFormatRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Fields">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-FieldFormatRegEx">
+              <PropertyRef Name="FieldId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-FieldFormatRegEx_OCR-RegularExpressions">
+          <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
+          <End Role="OCR-FieldFormatRegEx" Type="Self.OCR-FieldFormatRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-FieldFormatRegEx">
+              <PropertyRef Name="RegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-FieldFormatRegEx_OCR-RegularExpressions1">
+          <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
+          <End Role="OCR-FieldFormatRegEx" Type="Self.OCR-FieldFormatRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-FieldFormatRegEx">
+              <PropertyRef Name="ReplacementRegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_OCR-Fields_OCR-Lines">
           <End Role="OCR-Lines" Type="Self.OCR-Lines" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -170,6 +238,58 @@
             </Principal>
             <Dependent Role="OCR-FieldValue">
               <PropertyRef Name="Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-InvoiceRegEx_OCR-Invoices">
+          <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCR-InvoiceRegEx" Type="Self.OCR-InvoiceRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-InvoiceRegEx">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions">
+          <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
+          <End Role="OCR-InvoiceRegEx" Type="Self.OCR-InvoiceRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-InvoiceRegEx">
+              <PropertyRef Name="RegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions1">
+          <End Role="OCR-RegularExpressions" Type="Self.OCR-RegularExpressions" Multiplicity="1" />
+          <End Role="OCR-InvoiceRegEx" Type="Self.OCR-InvoiceRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR-InvoiceRegEx">
+              <PropertyRef Name="ReplacementRegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCRInvoicesFileTypes_OCR-Invoices">
+          <End Role="OCR-Invoices" Type="Self.OCR-Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="OCRInvoicesFileTypes" Type="Self.OCRInvoicesFileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OCR-Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCRInvoicesFileTypes">
+              <PropertyRef Name="OCRInvoiceId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -272,8 +392,10 @@
         <EntityContainer Name="WaterNutDBModelStoreContainer">
           <EntitySet Name="OCR-ChildPart" EntityType="Self.OCR-ChildPart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-End" EntityType="Self.OCR-End" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-FieldFormatRegEx" EntityType="Self.OCR-FieldFormatRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Fields" EntityType="Self.OCR-Fields" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-FieldValue" EntityType="Self.OCR-FieldValue" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCR-InvoiceRegEx" EntityType="Self.OCR-InvoiceRegEx" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Invoices" EntityType="Self.OCR-Invoices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Lines" EntityType="Self.OCR-Lines" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Parts" EntityType="Self.OCR-Parts" Schema="dbo" store:Type="Tables" />
@@ -281,6 +403,12 @@
           <EntitySet Name="OCR-RecuringPart" EntityType="Self.OCR-RecuringPart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-RegularExpressions" EntityType="Self.OCR-RegularExpressions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="OCR-Start" EntityType="Self.OCR-Start" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OCRInvoicesFileTypes" EntityType="Self.OCRInvoicesFileTypes" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+[OCRInvoicesFileTypes].[OCRInvoiceId] AS [OCRInvoiceId], 
+[OCRInvoicesFileTypes].[FileTypeId] AS [FileTypeId]
+FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_OCR-ChildPart_OCR-Parts" Association="Self.FK_OCR-ChildPart_OCR-Parts">
             <End Role="OCR-Parts" EntitySet="OCR-Parts" />
             <End Role="OCR-ChildPart" EntitySet="OCR-ChildPart" />
@@ -297,6 +425,18 @@
             <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
             <End Role="OCR-End" EntitySet="OCR-End" />
           </AssociationSet>
+          <AssociationSet Name="FK_OCR-FieldFormatRegEx_OCR-Fields" Association="Self.FK_OCR-FieldFormatRegEx_OCR-Fields">
+            <End Role="OCR-Fields" EntitySet="OCR-Fields" />
+            <End Role="OCR-FieldFormatRegEx" EntitySet="OCR-FieldFormatRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-FieldFormatRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-FieldFormatRegEx_OCR-RegularExpressions">
+            <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
+            <End Role="OCR-FieldFormatRegEx" EntitySet="OCR-FieldFormatRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-FieldFormatRegEx_OCR-RegularExpressions1" Association="Self.FK_OCR-FieldFormatRegEx_OCR-RegularExpressions1">
+            <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
+            <End Role="OCR-FieldFormatRegEx" EntitySet="OCR-FieldFormatRegEx" />
+          </AssociationSet>
           <AssociationSet Name="FK_OCR-Fields_OCR-Lines" Association="Self.FK_OCR-Fields_OCR-Lines">
             <End Role="OCR-Lines" EntitySet="OCR-Lines" />
             <End Role="OCR-Fields" EntitySet="OCR-Fields" />
@@ -304,6 +444,22 @@
           <AssociationSet Name="FK_OCR-FieldValue_OCR-Fields" Association="Self.FK_OCR-FieldValue_OCR-Fields">
             <End Role="OCR-Fields" EntitySet="OCR-Fields" />
             <End Role="OCR-FieldValue" EntitySet="OCR-FieldValue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-Invoices" Association="Self.FK_OCR-InvoiceRegEx_OCR-Invoices">
+            <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
+            <End Role="OCR-InvoiceRegEx" EntitySet="OCR-InvoiceRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions" Association="Self.FK_OCR-InvoiceRegEx_OCR-RegularExpressions">
+            <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
+            <End Role="OCR-InvoiceRegEx" EntitySet="OCR-InvoiceRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR-InvoiceRegEx_OCR-RegularExpressions1" Association="Self.FK_OCR-InvoiceRegEx_OCR-RegularExpressions1">
+            <End Role="OCR-RegularExpressions" EntitySet="OCR-RegularExpressions" />
+            <End Role="OCR-InvoiceRegEx" EntitySet="OCR-InvoiceRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCRInvoicesFileTypes_OCR-Invoices" Association="Self.FK_OCRInvoicesFileTypes_OCR-Invoices">
+            <End Role="OCR-Invoices" EntitySet="OCR-Invoices" />
+            <End Role="OCRInvoicesFileTypes" EntitySet="OCRInvoicesFileTypes" />
           </AssociationSet>
           <AssociationSet Name="FK_OCR-Lines_OCR-Parts" Association="Self.FK_OCR-Lines_OCR-Parts">
             <End Role="OCR-Parts" EntitySet="OCR-Parts" />
@@ -402,6 +558,37 @@
             <End Role="RegularExpressions" EntitySet="RegularExpressions" />
             <End Role="Start" EntitySet="Start" />
           </AssociationSet>
+          <EntitySet Name="OCR_InvoiceRegEx" EntityType="WaterNutDBModel.InvoiceRegEx" />
+          <AssociationSet Name="FK_OCR_InvoiceRegEx_OCR_Invoices" Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices">
+            <End Role="Invoices" EntitySet="Invoices" />
+            <End Role="OCR_InvoiceRegEx" EntitySet="OCR_InvoiceRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_InvoiceRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions">
+            <End Role="RegularExpressions" EntitySet="RegularExpressions" />
+            <End Role="OCR_InvoiceRegEx" EntitySet="OCR_InvoiceRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" Association="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1">
+            <End Role="RegularExpressions" EntitySet="RegularExpressions" />
+            <End Role="OCR_InvoiceRegEx" EntitySet="OCR_InvoiceRegEx" />
+          </AssociationSet>
+          <EntitySet Name="OCR_FieldFormatRegEx" EntityType="WaterNutDBModel.FieldFormatRegEx" />
+          <EntitySet Name="OCRInvoicesFileTypes" EntityType="WaterNutDBModel.OCRFileTypes" />
+          <AssociationSet Name="FK_OCR_FieldFormatRegEx_OCR_Fields" Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_Fields">
+            <End Role="Fields" EntitySet="Fields" />
+            <End Role="OCR_FieldFormatRegEx" EntitySet="OCR_FieldFormatRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions">
+            <End Role="RegularExpressions" EntitySet="RegularExpressions" />
+            <End Role="OCR_FieldFormatRegEx" EntitySet="OCR_FieldFormatRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" Association="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1">
+            <End Role="RegularExpressions" EntitySet="RegularExpressions" />
+            <End Role="OCR_FieldFormatRegEx" EntitySet="OCR_FieldFormatRegEx" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OCRInvoicesFileTypes_OCR_Invoices" Association="WaterNutDBModel.FK_OCRInvoicesFileTypes_OCR_Invoices">
+            <End Role="Invoices" EntitySet="Invoices" />
+            <End Role="OCRInvoicesFileTypes" EntitySet="OCRInvoicesFileTypes" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="End">
           <Key>
@@ -426,6 +613,7 @@
           <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" FromRole="Fields" ToRole="OCR_Lines" />
           <Property Name="Key" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="FieldValue" Relationship="WaterNutDBModel.FK_OCR_FieldValue_OCR_Fields" FromRole="Fields" ToRole="OCR_FieldValue" />
+          <NavigationProperty Name="FormatRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_Fields" FromRole="Fields" ToRole="OCR_FieldFormatRegEx" />
         </EntityType>
         <EntityType Name="Invoices">
           <Key>
@@ -434,6 +622,9 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" FromRole="OCR_Invoices" ToRole="OCR_Parts" />
+          <Property Name="FileTypeId" Type="Int32" />
+          <NavigationProperty Name="RegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" FromRole="Invoices" ToRole="OCR_InvoiceRegEx" />
+          <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_OCRInvoicesFileTypes_OCR_Invoices" FromRole="Invoices" ToRole="OCRInvoicesFileTypes" />
         </EntityType>
         <EntityType Name="Parts">
           <Key>
@@ -468,6 +659,10 @@
           <NavigationProperty Name="End" Relationship="WaterNutDBModel.FK_OCR_End_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="End" />
           <NavigationProperty Name="Lines" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="Lines" />
           <NavigationProperty Name="Start" Relationship="WaterNutDBModel.FK_OCR_Start_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="Start" />
+          <NavigationProperty Name="InvoiceRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_InvoiceRegEx" />
+          <NavigationProperty Name="InvoiceRepRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_InvoiceRegEx" />
+          <NavigationProperty Name="FieldFormatRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
+          <NavigationProperty Name="FieldFormatRepRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
         </EntityType>
         <EntityType Name="Start">
           <Key>
@@ -580,6 +775,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_RecuringPart_OCR_Parts" FromRole="OCR_RecuringPart" ToRole="Parts" />
+          <Property Name="IsComposite" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_OCR_RecuringPart_OCR_Parts">
           <End Type="WaterNutDBModel.Parts" Role="Parts" Multiplicity="1">
@@ -693,6 +889,129 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="InvoiceRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <Property Name="RegExId" Type="Int32" Nullable="false" />
+          <Property Name="ReplacementRegExId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="OCR_Invoices" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" FromRole="OCR_InvoiceRegEx" ToRole="Invoices" />
+          <NavigationProperty Name="RegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions" FromRole="OCR_InvoiceRegEx" ToRole="RegularExpressions" />
+          <NavigationProperty Name="ReplacementRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" FromRole="OCR_InvoiceRegEx" ToRole="RegularExpressions" />
+        </EntityType>
+        <Association Name="FK_OCR_InvoiceRegEx_OCR_Invoices">
+          <End Type="WaterNutDBModel.Invoices" Role="Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InvoiceRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_InvoiceRegEx">
+              <PropertyRef Name="InvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_InvoiceRegEx_OCR_RegularExpressions">
+          <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.InvoiceRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_InvoiceRegEx">
+              <PropertyRef Name="RegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_InvoiceRegEx_OCR_RegularExpressions1">
+          <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.InvoiceRegEx" Role="OCR_InvoiceRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_InvoiceRegEx">
+              <PropertyRef Name="ReplacementRegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="FieldFormatRegEx">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FieldId" Type="Int32" Nullable="false" />
+          <Property Name="RegExId" Type="Int32" Nullable="false" />
+          <Property Name="ReplacementRegExId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Field" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_Fields" FromRole="OCR_FieldFormatRegEx" ToRole="Fields" />
+          <NavigationProperty Name="RegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" FromRole="OCR_FieldFormatRegEx" ToRole="RegularExpressions" />
+          <NavigationProperty Name="ReplacementRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" FromRole="OCR_FieldFormatRegEx" ToRole="RegularExpressions" />
+        </EntityType>
+        <EntityType Name="OCRFileTypes">
+          <Key>
+            <PropertyRef Name="OCRInvoiceId" />
+            <PropertyRef Name="FileTypeId" />
+          </Key>
+          <Property Name="OCRInvoiceId" Type="Int32" Nullable="false" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Invoices" Relationship="WaterNutDBModel.FK_OCRInvoicesFileTypes_OCR_Invoices" FromRole="OCRInvoicesFileTypes" ToRole="Invoices" />
+        </EntityType>
+        <Association Name="FK_OCR_FieldFormatRegEx_OCR_Fields">
+          <End Type="WaterNutDBModel.Fields" Role="Fields" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.FieldFormatRegEx" Role="OCR_FieldFormatRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Fields">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FieldFormatRegEx">
+              <PropertyRef Name="FieldId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FieldFormatRegEx_OCR_RegularExpressions">
+          <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.FieldFormatRegEx" Role="OCR_FieldFormatRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FieldFormatRegEx">
+              <PropertyRef Name="RegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1">
+          <End Type="WaterNutDBModel.RegularExpressions" Role="RegularExpressions" Multiplicity="1" />
+          <End Type="WaterNutDBModel.FieldFormatRegEx" Role="OCR_FieldFormatRegEx" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegularExpressions">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCR_FieldFormatRegEx">
+              <PropertyRef Name="ReplacementRegExId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OCRInvoicesFileTypes_OCR_Invoices">
+          <End Type="WaterNutDBModel.Invoices" Role="Invoices" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.OCRFileTypes" Role="OCRInvoicesFileTypes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Invoices">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OCRInvoicesFileTypes">
+              <PropertyRef Name="OCRInvoiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -724,6 +1043,7 @@
           <EntitySetMapping Name="Invoices">
             <EntityTypeMapping TypeName="WaterNutDBModel.Invoices">
               <MappingFragment StoreEntitySet="OCR-Invoices">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -777,6 +1097,7 @@
           <EntitySetMapping Name="RecuringPart">
             <EntityTypeMapping TypeName="IsTypeOf(WaterNutDBModel.RecuringPart)">
               <MappingFragment StoreEntitySet="OCR-RecuringPart">
+                <ScalarProperty Name="IsComposite" ColumnName="IsComposite" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -795,6 +1116,34 @@
               <MappingFragment StoreEntitySet="OCR-FieldValue">
                 <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCR_InvoiceRegEx">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceRegEx">
+              <MappingFragment StoreEntitySet="OCR-InvoiceRegEx">
+                <ScalarProperty Name="ReplacementRegExId" ColumnName="ReplacementRegExId" />
+                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
+                <ScalarProperty Name="InvoiceId" ColumnName="InvoiceId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCR_FieldFormatRegEx">
+            <EntityTypeMapping TypeName="WaterNutDBModel.FieldFormatRegEx">
+              <MappingFragment StoreEntitySet="OCR-FieldFormatRegEx">
+                <ScalarProperty Name="ReplacementRegExId" ColumnName="ReplacementRegExId" />
+                <ScalarProperty Name="RegExId" ColumnName="RegExId" />
+                <ScalarProperty Name="FieldId" ColumnName="FieldId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OCRInvoicesFileTypes">
+            <EntityTypeMapping TypeName="WaterNutDBModel.OCRFileTypes">
+              <MappingFragment StoreEntitySet="OCRInvoicesFileTypes">
+                <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
+                <ScalarProperty Name="OCRInvoiceId" ColumnName="OCRInvoiceId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

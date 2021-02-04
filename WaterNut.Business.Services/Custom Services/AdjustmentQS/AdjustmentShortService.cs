@@ -304,7 +304,7 @@ namespace AdjustmentQS.Business.Services
                     //"&& PreviousDocumentItem.AsycudaDocument.SystemDocumentSet == null" +
                     $" && (PreviousDocumentItem.AsycudaDocument.CustomsOperationId == {(int)CustomsOperations.Warehouse})";
                 var slst =
-                    (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro, entryDataDetailsIds, adjustmentType).ConfigureAwait(false))
+                    (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro, entryDataDetailsIds).ConfigureAwait(false))
                     .Where(
                         x => x.Allocations.Count > 0).ToList();
                 if (slst.Any())
@@ -359,12 +359,12 @@ namespace AdjustmentQS.Business.Services
 
        
 
-        private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(bool perInvoice,string filterExpression, List<int> entryDataDetailsIds, string adjustmentType)
+        private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(bool perInvoice,string filterExpression, List<int> entryDataDetailsIds)
         {
             try
             {
                 StatusModel.Timer("Getting IM9 Data");
-                var slstSource = await GetIM9Data(filterExpression, entryDataDetailsIds, adjustmentType).ConfigureAwait(false);
+                var slstSource = await GetIM9Data(filterExpression, entryDataDetailsIds).ConfigureAwait(false);
                 StatusModel.StartStatusUpdate("Creating IM9 Entries", slstSource.Count());
                 IEnumerable<AllocationDataBlock> slst;
                 slst = CreateWholeAllocationDataBlocks(perInvoice,slstSource);
@@ -450,13 +450,12 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        private async  Task<List<EX9Allocations>> GetIM9Data(string FilterExpression, List<int> entryDataDetailsIds, string adjustmentType)
+        private async  Task<List<EX9Allocations>> GetIM9Data(string FilterExpression, List<int> entryDataDetailsIds)
         {
             FilterExpression =
                 FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\")", "");
-            var docsetid = new CoreEntitiesContext().FileTypes.First(x => x.Type == adjustmentType).AsycudaDocumentSetId;
             FilterExpression =
-                Regex.Replace(FilterExpression, "AsycudaDocumentSetId == \"\\d+\"", $"AsycudaDocumentSetId == \"{docsetid}\"");
+                Regex.Replace(FilterExpression, "AsycudaDocumentSetId == \"\\d+\"", "AsycudaDocumentSetId == \"8\"");
 
             FilterExpression += "&& (PreviousDocumentItem.DoNotAllocate != true && PreviousDocumentItem.DoNotEX != true && PreviousDocumentItem.WarehouseError == null)";
 
@@ -507,7 +506,7 @@ namespace AdjustmentQS.Business.Services
 
                     res = pres
                         .Where(exp)
-                        .Where(x => x.Status == null )//|| x.Status == "Short Shipped"
+                        .Where(x => x.Status == null)// || x.Status == "Short Shipped"
                         .Where(x =>x.xBond_Item_Id == 0 //&& x.pQuantity != 0
                             )
                        // .Where(x => !entryDataDetailsIds.Any()|| entryDataDetailsIds.Contains(x.EntryDataDetailsId))//entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId)
@@ -649,10 +648,11 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        public async Task CreateIM9(string filterExpression,bool perInvoice,bool process7100,int asycudaDocumentSetId,string ex9Type,string dutyFreePaid)
+        public async Task CreateIM9(string filterExpression, bool perInvoice, int asycudaDocumentSetId, 
+            string dutyFreePaid, string adjustmentType)
         {
             await CreateIM9(filterExpression, perInvoice,  asycudaDocumentSetId, dutyFreePaid,
-                ex9Type, null, null).ConfigureAwait(false);
+                adjustmentType, null, null).ConfigureAwait(false);
         }
 
         private void MatchToAsycudaItem(AdjustmentDetail os, List<AsycudaDocumentItem> alst, EntryDataDetail ed, AdjustmentQSContext ctx)
