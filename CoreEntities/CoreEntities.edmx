@@ -358,8 +358,8 @@
           <Property Name="Suppplementary_unit_name" Type="nvarchar" MaxLength="255" />
           <Property Name="IsFirstRow" Type="bit" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocument">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -406,8 +406,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="TotalInternalFreight" Type="float" />
           <Property Name="TotalInsurance" Type="float" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentBasicInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocumentBasicInfo">
           <Key>
             
@@ -433,8 +433,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentBasicInfo'
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocumentItem">
           <Key>
             
@@ -488,8 +488,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="InventoryItemId" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
@@ -515,8 +515,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryD
           <Property Name="Asycuda_id" Type="int" Nullable="false" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocumentSetC71">
           <Key>
             <PropertyRef Name="Value_declaration_form_Id" />
@@ -533,8 +533,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' do
           <Property Name="AttachmentId" Type="int" Nullable="false" />
           <Property Name="RegNumber" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocumentSetEntryDataDetails">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -544,8 +544,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDa
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="Id" Type="bigint" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDataEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocumentSetEntryDataEx">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -560,8 +560,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEntryDa
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="SourceFile" Type="nvarchar(max)" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaDocumentSetEx">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -606,8 +606,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetEx' doe
           <Property Name="CurrencyRate" Type="float" Nullable="false" />
           <Property Name="FreightCurrencyRate" Type="float" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemBasicInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="AsycudaItemBasicInfo">
           <Key>
             
@@ -627,8 +627,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaItemBasicInfo' doe
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="RegistrationDate" Type="nvarchar" MaxLength="10" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="InventoryItemAliasEx">
           <Key>
             <PropertyRef Name="AliasId" />
@@ -643,8 +643,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemAliasEx' doe
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="InventoryItemsEx">
           <Key>
             <PropertyRef Name="InventoryItemId" />
@@ -662,8 +662,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
           <Property Name="SuppQty" Type="float" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="LicenceSummary">
           <Key>
             
@@ -678,23 +678,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.LicenceSummary' does not 
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="RowNumber" Type="bigint" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentsAlreadyXMLed' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-AdjustmentsAlreadyXMLed">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
-            <PropertyRef Name="EntryData_Id" />
-            <PropertyRef Name="ApplicationSettingsId" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
-            <PropertyRef Name="InvoiceNo" />
-            <PropertyRef Name="InvoiceDate" />
-            <PropertyRef Name="ItemNumber" />
-            <PropertyRef Name="ItemDescription" />
-            <PropertyRef Name="Quantity" />
-            <PropertyRef Name="Cost" />
-            <PropertyRef Name="Subject" />
-            <PropertyRef Name="EmailDate" />
-            <PropertyRef Name="DutyFreePaid" />
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -729,16 +716,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-AdjustmentsAlreadyXM
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-C71ToCreate">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
-            <PropertyRef Name="ApplicationSettingsId" />
-            
-            
-            <PropertyRef Name="Rate" />
+
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
@@ -760,8 +742,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToCreate' does no
           <Property Name="Rate" Type="float" Nullable="false" />
           <Property Name="GeneratedC71Total" Type="float" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-C71ToXML">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -785,8 +766,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-C71ToXML' does not h
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="CurrencyRate" Type="float" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateDiscrepancyEntries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-CreateDiscrepancyEntries">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
@@ -801,12 +781,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateDiscrepancyEnt
           <Property Name="InvoiceDate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateEx9' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-CreateEx9">
           <Key>
             
-            <PropertyRef Name="ApplicationSettingsId" />
+           
             <PropertyRef Name="PreviousItem_Id" />
           </Key>
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
@@ -815,8 +794,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-CreateEx9' does not 
           <Property Name="pQuantity" Type="float" />
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DeleteDocumentSet' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-DeleteDocumentSet">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -826,8 +804,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DeleteDocumentSet' d
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesAlreadyXMLed' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-DiscrepanciesAlreadyXMLed">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
@@ -877,8 +854,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesAlready
           <Property Name="Comment" Type="nvarchar" MaxLength="255" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-DiscrepanciesErrors">
           <Key>
             <PropertyRef Name="Entrydatadetailsid" />
@@ -917,8 +893,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesErrors'
           <Property Name="EmailId" Type="int" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-DiscrepanciesToAssess">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -929,8 +904,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepanciesToAsses
           <Property Name="CNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepancyPreExecutionReport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-DiscrepancyPreExecutionReport">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
@@ -981,8 +955,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DiscrepancyPreExecut
           <Property Name="DocumentType" Type="nvarchar" MaxLength="40" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DocumentsToDelete' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-DocumentsToDelete">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -995,8 +968,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-DocumentsToDelete' d
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-EntriesExpiringNextMonth' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-EntriesExpiringNextMonth">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -1012,8 +984,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-EntriesExpiringNextM
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-DuplicateEntry' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-Error-DuplicateEntry">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -1031,8 +1002,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-DuplicateEntry
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="Reference" Type="nvarchar" MaxLength="30" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-IncompleteImport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-Error-IncompleteImport">
           <Key>
             <PropertyRef Name="ASYCUDA_Id" />
@@ -1049,8 +1019,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-IncompleteImpo
           <Property Name="ApplicationSettingsId" Type="int" />
           <Property Name="DocumentType" Type="nvarchar" MaxLength="20" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-IncompleteItems' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-Error-IncompleteItems">
           <Key>
             <PropertyRef Name="Item_Id" />
@@ -1067,8 +1036,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-Error-IncompleteItem
           <Property Name="SourceFileName" Type="nvarchar(max)" />
           <Property Name="AsycudaDocumentSetId" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-Allocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ERRReport-Allocations">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
@@ -1087,8 +1055,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-Allocation
           <Property Name="Error" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="Info" Type="nvarchar" MaxLength="128" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-AsycudaEntries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ERRReport-AsycudaEntries">
           <Key>
             <PropertyRef Name="Error" />
@@ -1101,8 +1068,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-AsycudaEnt
           <Property Name="Error" Type="varchar" MaxLength="16" Nullable="false" />
           <Property Name="Info" Type="nvarchar" MaxLength="130" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-AsycudaLines' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ERRReport-AsycudaLines">
           <Key>
             <PropertyRef Name="Error" />
@@ -1118,8 +1084,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-AsycudaLin
           <Property Name="Error" Type="varchar" MaxLength="26" Nullable="false" />
           <Property Name="Info" Type="nvarchar" MaxLength="66" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-ByItemNumber' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ERRReport-ByItemNumber">
           <Key>
             <PropertyRef Name="Error" />
@@ -1135,8 +1100,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-ByItemNumb
           <Property Name="Error" Type="varchar" MaxLength="30" Nullable="false" />
           <Property Name="Info" Type="nvarchar" MaxLength="128" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-EntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ERRReport-EntryDataDetails">
           <Key>
             <PropertyRef Name="Error" />
@@ -1155,8 +1119,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-EntryDataD
           <Property Name="Error" Type="varchar" MaxLength="21" Nullable="false" />
           <Property Name="Info" Type="nvarchar" MaxLength="128" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-SubmitWarehouseErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ERRReport-SubmitWarehouseErrors">
           <Key>
             <PropertyRef Name="Error" />
@@ -1175,8 +1138,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-SubmitWare
           <Property Name="Error" Type="varchar" MaxLength="26" Nullable="false" />
           <Property Name="Info" Type="nvarchar" MaxLength="62" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-UnmappedItems' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ERRReport-UnmappedItems">
           <Key>
             <PropertyRef Name="Error" />
@@ -1192,8 +1154,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ERRReport-UnmappedIt
           <Property Name="Error" Type="varchar" MaxLength="13" Nullable="false" />
           <Property Name="Info" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ImportCompleteEntries' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-ImportCompleteEntries">
           <Key>
             
@@ -1211,8 +1172,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-ImportCompleteEntrie
           <Property Name="NewAsycuda_Id" Type="int" Nullable="false" />
           <Property Name="AssessedAsycuda_Id" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-LicenceAvailableQty">
           <Key>
             
@@ -1236,8 +1196,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenceAvailableQty'
           <Property Name="DocumentReference" Type="nvarchar" MaxLength="50" />
           <Property Name="SegmentId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-LicenseToXML">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -1262,8 +1221,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LicenseToXML' does n
           <Property Name="ItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="LineNumber" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-LICToCreate">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -1286,8 +1244,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-LICToCreate' does no
           <Property Name="TotalCIF" Type="float" />
           <Property Name="QtyLicensesRequired" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-PODocSet">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -1323,8 +1280,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSet' does not h
           <Property Name="CurrencyRate" Type="float" Nullable="false" />
           <Property Name="FreightCurrencyRate" Type="float" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToAssess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-PODocSetToAssess">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -1360,8 +1316,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToAssess' do
           <Property Name="DocumentAttachments" Type="int" />
           <Property Name="AttachedDocuments" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToAssessErrors' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-PODocSetToAssessErrors">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -1404,8 +1359,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToAssessErro
           <Property Name="GeneratedPackages" Type="float" />
           <Property Name="Status" Type="nvarchar" MaxLength="137" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToExport' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-PODocSetToExport">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -1442,8 +1396,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-PODocSetToExport' do
           <Property Name="TotalWeight" Type="float" />
           <Property Name="TotalPackages" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="ToDo-POToXML">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
@@ -1455,8 +1408,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ToDo-POToXML' does not ha
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="IsClassified" Type="bit" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-SubmitAllXMLToCustoms">
           <Key>
             <PropertyRef Name="Id" />
@@ -1477,8 +1429,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitAllXMLToCustom
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
           <Property Name="SystemDocumentSetId" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
         <EntityType Name="TODO-SubmitDiscrepanciesToCustoms">
           <Key>
             <PropertyRef Name="Id" />
@@ -1498,8 +1449,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDiscrepanciesT
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDocSetWithIncompleteInvoices' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitDocSetWithIncompleteInvoices">
           <Key>
             <PropertyRef Name="AsycudaDocumentSetId" />
@@ -1517,8 +1468,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitDocSetWithInco
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
           <Property Name="EmailId" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitEntryCIF' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitEntryCIF">
           <Key>
             <PropertyRef Name="InvoiceNo" />
@@ -1538,8 +1489,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitEntryCIF' does
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitInadequatePackages' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitInadequatePackages">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
@@ -1553,8 +1504,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitInadequatePack
           <Property Name="RequiredPackages" Type="int" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitIncompleteEntryData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitIncompleteEntryData">
           <Key>
             
@@ -1580,8 +1531,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitIncompleteEntr
           <Property Name="InvoiceTotal" Type="float" />
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitIncompleteSupplierInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitIncompleteSupplierInfo">
           <Key>
             <PropertyRef Name="SupplierCode" />
@@ -1597,8 +1548,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitIncompleteSupp
           <Property Name="AsycudaDocumentSetId" Type="int" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitMissingInvoicePDFs' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitMissingInvoicePDFs">
           <Key>
             <PropertyRef Name="InvoiceNo" />
@@ -1612,8 +1563,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitMissingInvoice
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="EmailId" Type="int" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitPOInfo">
           <Key>
             <PropertyRef Name="Id" />
@@ -1646,8 +1597,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does n
           <Property Name="BillingLine" Type="nvarchar" MaxLength="113" />
           <Property Name="IsSubmitted" Type="bit" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitSalesToCustoms">
           <Key>
             <PropertyRef Name="Id" />
@@ -1667,8 +1618,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitSalesToCustoms
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitUnclassifiedItems' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitUnclassifiedItems">
           <Key>
             <PropertyRef Name="InvoiceNo" />
@@ -1688,8 +1639,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitUnclassifiedIt
           <Property Name="Declarant_Reference_Number" Type="nvarchar" MaxLength="50" />
           <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-SubmitXMLToCustoms">
           <Key>
             <PropertyRef Name="Id" />
@@ -1709,8 +1660,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitXMLToCustoms' 
           <Property Name="FilePath" Type="nvarchar" MaxLength="255" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-TotalAdjustmentsToProcess' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-TotalAdjustmentsToProcess">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
@@ -1759,8 +1710,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-TotalAdjustmentsToPr
           <Property Name="EmailDate" Type="datetime" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-UnallocatedSales">
           <Key>
             <PropertyRef Name="EntryDataId" />
@@ -1780,8 +1731,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedSales' do
           <Property Name="QtyAllocated" Type="float" Nullable="false" />
           <Property Name="Cost" Type="float" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+
+
         <EntityType Name="TODO-UnallocatedShorts">
           <Key>
             <PropertyRef Name="EntryDataId" />
