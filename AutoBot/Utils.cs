@@ -410,6 +410,7 @@ namespace AutoBot
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId && x.FileTypeId != null)
                         .Where (x => x.IsSubmitted == false)
+                        .Where(x => x.CNumber != null)
                         .ToList()
                         .GroupBy(x => x.AsycudaDocumentSetId)
                         .Join(ctx.AsycudaDocumentSetExs.Include("AsycudaDocumentSet_Attachments.Attachments"),
@@ -515,7 +516,7 @@ namespace AutoBot
                     var pdfs = new List<string>();
 
                     var poInfo = CurrentPOInfo(docSet.AsycudaDocumentSetId).FirstOrDefault();
-
+                    if (!Directory.Exists(poInfo.Item2)) return;
                     foreach (var itm in pOs)
                     {
                         
@@ -999,7 +1000,7 @@ namespace AutoBot
 
                         foreach (var itm in lst)
                         {
-                            var fileName = Path.Combine(directoryName, $"{itm.Key.EntryDataId}-LIC.xml");
+                            var fileName = Path.Combine(directoryName, $"{itm.Key.EntryDataId}-{itm.Key.TariffCategoryCode}-LIC.xml");
 
 
                             if (File.Exists(fileName))
@@ -2045,13 +2046,13 @@ namespace AutoBot
                 {
                     ctx.Database.CommandTimeout = 60;
                     var contacts = ctx.Contacts.Where(x => x.Role == "Customs").Select(x => x.EmailAddress).ToArray();
-                   
-                    foreach (var emailIds in lst)
+                   var pdfs = new List<string>();
+                    var RES = lst.SelectMany(x => x).DistinctBy(x => x.ASYCUDA_Id);
+                    foreach (var itm in RES)
                     {
-                        var pdfs = new List<string>();
-                        foreach (var itm in emailIds)
-                        {
-                            
+
+                       
+
                             var res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
                             if (!res.Any())
                             {
@@ -2059,14 +2060,14 @@ namespace AutoBot
                                 res = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToArray();
                             }
                             pdfs.AddRange(res);
-                        }
+                       
 
                         if (pdfs.Count == 0) continue;
-
+                    }
                         var body = "The Following Sales Entries were Assessed. \r\n" +
 
                                    $"\t{"pCNumber".FormatedSpace(20)}{"Reference".FormatedSpace(20)}{"AssessmentDate".FormatedSpace(20)}\r\n" +
-                                   $"{emailIds.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
+                                   $"{RES.Select(current => $"\t{current.CNumber.FormatedSpace(20)}{current.ReferenceNumber.FormatedSpace(20)}{current.RegistrationDate.Value.ToString("yyyy-MM-dd").FormatedSpace(20)} \r\n").Aggregate((old, current) => old + current)}" +
                                    $"\r\n" +
                                    $"Please open the attached email to view Email Thread.\r\n" +
                                    $"Any questions or concerns please contact Joseph Bartholomew at Joseph@auto-brokerage.com.\r\n" +
@@ -2075,7 +2076,7 @@ namespace AutoBot
                                    $"AutoBot";
 
 
-                        var info = CurrentPOInfo(emailIds.First().AsycudaDocumentSetId.GetValueOrDefault()).FirstOrDefault();
+                        var info = CurrentPOInfo(RES.First().AsycudaDocumentSetId.GetValueOrDefault()).FirstOrDefault();
                         var directory = info.Item2;
 
                         var summaryFile = Path.Combine(directory, $"SalesSummary.csv");
@@ -2085,24 +2086,24 @@ namespace AutoBot
                         var sumres =
                             new ExportToCSV<TODO_SubmitDiscrepanciesToCustoms,
                                 List<TODO_SubmitDiscrepanciesToCustoms>>();
-                        sumres.dataToPrint = emailIds.ToList();
+                        sumres.dataToPrint = RES.ToList();
                         using (var sta = new StaTaskScheduler(numberOfThreads: 1))
                         {
                             Task.Factory.StartNew(() => sumres.SaveReport(summaryFile), CancellationToken.None,
                                 TaskCreationOptions.None, sta);
                         }
 
-                        if (emailIds.Key == null)
-                        {
+                        //if (RES.Key == null)
+                        //{
                             EmailDownloader.EmailDownloader.SendEmail(Client, "", "Assessed Ex-Warehoused Entries",
                                 contacts, body, pdfs.ToArray());
-                        }
-                        else
-                        {
-                            EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Assessed Ex-Warehoused Entries", body, contacts, pdfs.ToArray());
-                        }
+                        //}
+                        //else
+                        //{
+                        //    EmailDownloader.EmailDownloader.ForwardMsg(Convert.ToInt32(emailIds.Key), Client, "Assessed Ex-Warehoused Entries", body, contacts, pdfs.ToArray());
+                        //}
 
-                        foreach (var item in emailIds)
+                        foreach (var item in RES)
                         {
                             var sfile = ctx.AsycudaDocuments.FirstOrDefault(x =>
                                 x.ASYCUDA_Id == item.ASYCUDA_Id &&
@@ -2122,7 +2123,7 @@ namespace AutoBot
 
                         ctx.SaveChanges();
 
-                    }
+                    
 
                 }
             }
@@ -3200,7 +3201,7 @@ namespace AutoBot
                 {
                     var doc = ctx.AsycudaDocuments.First(x => x.ASYCUDA_Id == entryId);
 
-                    var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*{doc.CNumber}*")
+                    var csvFiles = new DirectoryInfo(directoryName).GetFiles($"*-{doc.CNumber}*")
                         .Where(x => Regex.IsMatch(x.FullName,
                             @".*(?<=\\)([A-Z,0-9]{3}\-[A-Z]{5}\-)(?<pCNumber>\d+).*.pdf",
                             RegexOptions.IgnoreCase)).ToArray();
@@ -3216,15 +3217,15 @@ namespace AutoBot
                             RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                         if (!mat.Success) continue;
 
-                        var cnumber = mat.Groups["pCNumber"].Value;
-                        var cdoc = ctx.AsycudaDocuments.FirstOrDefault(x => x.CNumber == cnumber);
-                        if (cdoc == null) continue;
+                        //var cnumber = mat.Groups["pCNumber"].Value;
+                        //var cdoc = ctx.AsycudaDocuments.FirstOrDefault(x => x.CNumber == cnumber);
+                        //if (cdoc == null) continue;
 
 
                         ctx.AsycudaDocument_Attachments.Add(
                             new AsycudaDocument_Attachments(true)
                             {
-                                AsycudaDocumentId = cdoc.ASYCUDA_Id,
+                                AsycudaDocumentId = entryId,
                                 Attachments = new Attachments(true)
                                 {
                                     FilePath = file.FullName,
@@ -3704,7 +3705,10 @@ namespace AutoBot
                     foreach (var inline in instructions)
                     {
                         var p = inline.Split('\t');
-                        if (lcont >= res.Length) return true;
+                        if (lcont >= res.Length) 
+                        {
+                            if ((res.Length/2) == (instructions.Length/3)) return true; else return false;
+                        }
                         if (string.IsNullOrEmpty(res[lcont])) return false;
                         var isSuccess = false;
                         foreach (var rline in res)

@@ -899,10 +899,10 @@ namespace WaterNut.DataSpace
                 cdoc.Document.xcuda_Valuation.xcuda_Gs_Invoice.Currency_code =
                     pod.EntryData.Currency ?? currentAsycudaDocumentSet.Currency_Code; //curLst.First();
 
+              
 
-               
 
-                var itm = CreateItemFromEntryDataDetail(pod, cdoc);
+                    var itm = CreateItemFromEntryDataDetail(pod, cdoc);
 
                 if ( (pod.EntryData is PurchaseOrders p))
                 {
@@ -915,7 +915,10 @@ namespace WaterNut.DataSpace
                             
                         };
                     }
-                }
+
+                    
+
+                    }
 
                 if (itm == null) continue;
                 itmcount += 1;
@@ -1045,13 +1048,17 @@ namespace WaterNut.DataSpace
                         TrackingState = TrackingState.Added
 
                     };
-                    itm.xcuda_Packages.Add(pkg);
+                    if ((pod.EntryData is PurchaseOrders p))
+                    {
+                        if (p.WarehouseInfo.Any()) pkg.Marks2_of_packages = p.WarehouseInfo.Select(z => z.WarehouseNo).DefaultIfEmpty("").Aggregate((o, n) => $"{o},{n}");
+                    }
+                        itm.xcuda_Packages.Add(pkg);
                 }
 
                 if (possibleEntries == 1)
                 {
 
-                    pkg.Number_of_packages = remainingPackages;
+                    pkg.Number_of_packages += remainingPackages;
                     remainingPackages = 0;
                 }
                 else
@@ -1075,7 +1082,18 @@ namespace WaterNut.DataSpace
                      && !cdoc.Document.AsycudaDocument_Attachments.Any(z =>
                          z.AttachmentId == x.AttachmentId))*/)
                 .Select(x => x.Attachment).ToList();
-            AttachToDocument(alst, cdoc.Document, cdoc.DocumentItems);
+            if ((pod.EntryData is PurchaseOrders p))
+            {
+                if (p.PreviousCNumber != null)
+                {
+                    alst.AddRange(currentAsycudaDocumentSet.AsycudaDocumentSet_Attachments
+                  .Where(x => x.Attachment.FilePath.Contains(p.PreviousCNumber) &&
+                              x.FileType.DocumentCode == "DO02").Select(x => x.Attachment).ToList());
+                }
+            }
+
+
+                    AttachToDocument(alst, cdoc.Document, cdoc.DocumentItems);
         }
 
         private Customs_Procedure AttachEntryDataDocumentType(DocumentCT cdoc, EDDocumentTypes documentType)
@@ -1497,11 +1515,12 @@ namespace WaterNut.DataSpace
 
                     foreach (var doc in doclst)
                     {
+
                         var t = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
                             .Select(y => y.TotalCIF).DefaultIfEmpty(0).Sum();
                         var f = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
                             .Select(y => y.TotalFreight).DefaultIfEmpty(0).Sum(); // should be zero if new existing has value take away existing value
-                        var val = t.GetValueOrDefault() - f.GetValueOrDefault();
+                        var val = t.GetValueOrDefault()- f.GetValueOrDefault();
                         docValues.Add(doc, val);
                         totalfob += val;
                     }
@@ -3579,7 +3598,7 @@ namespace WaterNut.DataSpace
                 docs = ctx.xcuda_ASYCUDA.Where(x => x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId ==
                                                     asycudaDocumentSetId).ToList();
                 pdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
-                        x.Attachment.FilePath.ToLower().EndsWith("pdf") && (x.FileType.Type != "INV" &&  (x.FileType.Type != "PO")) &&
+                        x.Attachment.FilePath.ToLower().EndsWith("pdf") && (x.FileType.DocumentSpecific != true) && //x.FileType.Type != "INV" &&  (x.FileType.Type != "PO")
                         x.AsycudaDocumentSetId == asycudaDocumentSetId )
                     .Select(x => x.Attachment).AsEnumerable().OrderByDescending(x => x.Id).Where(x => File.Exists(x.FilePath)).DistinctBy(x => new FileInfo(x.FilePath).Name).ToList();
 

@@ -230,14 +230,14 @@ namespace WaterNut.DataSpace
                     PreviousItem_Id = g.PreviousItem_Id,
                     pCNumber = g.pCNumber,
                     pLineNumber = g.pLineNumber,
-                    ItemNumber = g.ItemNumber,
+                   // ItemNumber = g.ItemNumber, /// took out all itemnumber because the pos can have different itemnumbers in entrydatadetails... c#14280 - 64
 
 
                 })
                 .Select(x => new ItemSalesPiSummary
                 {
                     PreviousItem_Id = (int)x.Key.PreviousItem_Id,
-                    ItemNumber = x.Key.ItemNumber,
+                    ItemNumber = x.First().ItemNumber,
                     QtyAllocated = x.DistinctBy(q => q.Id).Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
                     pQtyAllocated = x.DistinctBy(q => new { q.DutyFreePaid, q.pQtyAllocated }).Select(z => z.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                     PiQuantity = x.DistinctBy(q => q.Id).Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -247,23 +247,26 @@ namespace WaterNut.DataSpace
                     Type = "Universal",
                     EntryDataType = "Universal",
                 }).ToList());
+            
 
+            var allSales = universalData;//.Where(x => x.EntryDataType == entryType || x.Type == null)
 
-            var allSales = universalData.Where(x => x.EntryDataType == entryType || x.Type == null);
+            //var test = allSales.Where(x => x.PreviousItem_Id == 44067);
+
             res.AddRange(allSales 
                 .GroupBy(g => new
                 {
                     PreviousItem_Id = g.PreviousItem_Id,
                     pCNumber = g.pCNumber,
                     pLineNumber = g.pLineNumber,
-                    ItemNumber = g.ItemNumber,
+                   // ItemNumber = g.ItemNumber,
 
 
                 })
                 .Select(x => new ItemSalesPiSummary
                 {
                     PreviousItem_Id = (int)x.Key.PreviousItem_Id,
-                    ItemNumber = x.Key.ItemNumber,
+                    ItemNumber = x.First().ItemNumber,
                     QtyAllocated = x.DistinctBy(q => q.Id).Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
                     pQtyAllocated = x.DistinctBy(q => new {q.DutyFreePaid, q.pQtyAllocated}).Select(z => z.pQtyAllocated).DefaultIfEmpty(0).Sum(),
                     PiQuantity = x.DistinctBy(q => q.Id).Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -274,8 +277,8 @@ namespace WaterNut.DataSpace
                     EntryDataType = entryType
                 }).ToList());
 
-           // var test2 = allSales.Where(x => x.PreviousItem_Id == 490395).ToList();
-           //var test = res.Where(x => x.PreviousItem_Id == 490395).ToList();
+            //var test2 = allSales.Where(x => x.PreviousItem_Id == 490395).ToList();
+           //var test3 = res.Where(x => x.PreviousItem_Id == 44067).ToList();
 
 
             var allHistoricSales = allSales
@@ -289,14 +292,14 @@ namespace WaterNut.DataSpace
                     PreviousItem_Id = g.PreviousItem_Id,
                     pCNumber = g.pCNumber,
                     pLineNumber = g.pLineNumber,
-                    ItemNumber = g.ItemNumber,
+                  //  ItemNumber = g.ItemNumber,
                     DutyFreePaid = g.DutyFreePaid
 
                 })
                 .Select(x => new ItemSalesPiSummary
                 {
                     PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                    ItemNumber = x.Key.ItemNumber,
+                    ItemNumber = x.First().ItemNumber,
                     QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
                     pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                     PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -314,14 +317,14 @@ namespace WaterNut.DataSpace
                     PreviousItem_Id = g.PreviousItem_Id,
                     pCNumber = g.pCNumber,
                     pLineNumber = g.pLineNumber,
-                    ItemNumber = g.ItemNumber,
+                    //ItemNumber = g.ItemNumber,
                     DutyFreePaid = g.DutyFreePaid
 
                 })
                 .Select(x => new ItemSalesPiSummary
                 {
                     PreviousItem_Id = (int) x.Key.PreviousItem_Id,
-                    ItemNumber = x.Key.ItemNumber,
+                    ItemNumber = x.First().ItemNumber,
                     QtyAllocated = x.Select(z => z.QtyAllocated).DefaultIfEmpty(0).Sum(),
                     pQtyAllocated = x.Select(z => z.pQtyAllocated).Distinct().DefaultIfEmpty(0).Sum(),
                     PiQuantity = x.Select(z => z.PiQuantity).DefaultIfEmpty(0).Sum(),
@@ -1084,8 +1087,8 @@ namespace WaterNut.DataSpace
                 universalData = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
                                                               && x.Type == "Universal").ToList();
 
-                salesPiAll = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber
-                                                              && x.pCNumber == mypod.EntlnData.EX9Allocation
+                salesPiAll = itemSalesPiSummaryLst.Where(x => x.ItemNumber == mypod.EntlnData.ItemNumber &&
+                                                               x.pCNumber == mypod.EntlnData.EX9Allocation
                                                                   .pCNumber // donot disable this because previous month pi are not included
                                                               && x.pLineNumber == mypod.EntlnData.pDocumentItem
                                                                   .LineNumber
