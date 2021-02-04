@@ -40,6 +40,8 @@
               this.Property(t => t.TotalCost).HasColumnName("TotalCost");
               this.Property(t => t.LastCost).HasColumnName("LastCost");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
+              this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
+              this.Property(t => t.UpgradeKey).HasColumnName("UpgradeKey");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

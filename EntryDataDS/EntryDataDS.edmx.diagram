@@ -50,7 +50,7 @@
         <AssociationConnector Association="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Suppliers" />
         </Diagram>
-      <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="54" >
+      <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="63" >
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedBL" Width="2.5" PointX="6.625" PointY="6.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedFreight" Width="2.125" PointX="4.625" PointY="14.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedInvoices" Width="2.125" PointX="7.25" PointY="16.125" />

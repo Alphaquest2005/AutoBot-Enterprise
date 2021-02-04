@@ -583,6 +583,42 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private string _supplierInvoiceNoFilter;
+        public string SupplierInvoiceNoFilter
+        {
+            get
+            {
+                return _supplierInvoiceNoFilter;
+            }
+            set
+            {
+                _supplierInvoiceNoFilter = value;
+				NotifyPropertyChanged(x => SupplierInvoiceNoFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _taxFilter;
+        public Double? TaxFilter
+        {
+            get
+            {
+                return _taxFilter;
+            }
+            set
+            {
+                _taxFilter = value;
+				NotifyPropertyChanged(x => TaxFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -703,7 +739,14 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
  
 
 					if(PackagesFilter.HasValue)
-						res.Append(" && " + string.Format("Packages == {0}",  PackagesFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+						res.Append(" && " + string.Format("Packages == {0}",  PackagesFilter.ToString()));				 
+
+									if(string.IsNullOrEmpty(SupplierInvoiceNoFilter) == false)
+						res.Append(" && " + string.Format("SupplierInvoiceNo.Contains(\"{0}\")",  SupplierInvoiceNoFilter));						
+ 
+
+					if(TaxFilter.HasValue)
+						res.Append(" && " + string.Format("Tax == {0}",  TaxFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -783,7 +826,13 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     SourceFile = x.SourceFile ,
                     
  
-                    Packages = x.Packages 
+                    Packages = x.Packages ,
+                    
+ 
+                    SupplierInvoiceNo = x.SupplierInvoiceNo ,
+                    
+ 
+                    Tax = x.Tax 
                     
                 }).ToList()
             };
@@ -854,6 +903,12 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public int Packages { get; set; } 
+                    
+ 
+                    public string SupplierInvoiceNo { get; set; } 
+                    
+ 
+                    public Nullable<double> Tax { get; set; } 
                     
         }
 

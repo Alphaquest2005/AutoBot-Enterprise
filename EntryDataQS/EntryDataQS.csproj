@@ -86,7 +86,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EntryDataQS.Views.cs" />
     <Compile Include="EntryDataQS.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -132,6 +132,21 @@ namespace InventoryDS.Business.Entities
         }
         int _id;
         [DataMember]
+        public string UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _upgradekey;
+        [DataMember]
         public TariffCode TariffCodes { get; set; }
         [DataMember]
         public List<InventoryItemAlia> InventoryItemAlias { get; set; }

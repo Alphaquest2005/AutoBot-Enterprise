@@ -36,6 +36,8 @@
           <Property Name="TaxAmount" Type="float" />
           <Property Name="LastCost" Type="float" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="FileLineNumber" Type="int" />
+          <Property Name="UpgradeKey" Type="int" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -62,8 +64,8 @@
           <Property Name="Quantity_deducted_from_licence" Type="nvarchar" MaxLength="4" />
           <Property Name="Item_Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ASYCUDA_Id" Type="int" Nullable="false" />
-          <Property Name="Licence_number" Type="nvarchar" MaxLength="6" />
-          <Property Name="Free_text_1" Type="nvarchar" MaxLength="30" />
+          <Property Name="Licence_number" Type="nvarchar" MaxLength="50" />
+          <Property Name="Free_text_1" Type="nvarchar" MaxLength="35" />
           <Property Name="Free_text_2" Type="nvarchar" MaxLength="30" />
           <Property Name="EntryDataDetailsId" Type="int" />
           <Property Name="LineNumber" Type="int" Nullable="false" />
@@ -80,6 +82,8 @@
           <Property Name="PreviousInvoiceNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceLineNumber" Type="nvarchar" MaxLength="50" />
           <Property Name="PreviousInvoiceItemNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
+          <Property Name="UpgradeKey" Type="int" />
         </EntityType>
         <EntityType Name="xcuda_PreviousItem">
           <Key>
@@ -279,8 +283,8 @@
           <Property Type="String" Name="Quantity_deducted_from_licence" MaxLength="4" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="Item_Id" Nullable="false" p1:StoreGeneratedPattern="Identity" />
           <Property Type="Int32" Name="ASYCUDA_Id" Nullable="false" />
-          <Property Type="String" Name="Licence_number" MaxLength="6" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="Free_text_1" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Licence_number" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Free_text_1" MaxLength="35" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Free_text_2" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Type="Int32" Name="EntryDataDetailsId" />
           <Property Type="Int32" Name="LineNumber" Nullable="false" />
@@ -301,6 +305,8 @@
           <Property Name="PreviousInvoiceNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceLineNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PreviousInvoiceItemNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EntryDataType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UpgradeKey" Type="Int32" />
         </EntityType>
         <EntityType Name="xcuda_PreviousItem">
           <Key>
@@ -441,6 +447,8 @@
           <Property Name="TotalCost" Type="Double" />
           <Property Name="LastCost" Type="Double" />
           <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="FileLineNumber" Type="Int32" />
+          <Property Name="UpgradeKey" Type="Int32" />
         </EntityType>
         <EntityType Name="EntryPreviousItems">
           <Key>
@@ -484,6 +492,8 @@
           <EntitySetMapping Name="PreviousEntries">
             <EntityTypeMapping TypeName="WaterNutDBModel.PreviousEntry">
               <MappingFragment StoreEntitySet="xcuda_Item">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
+                <ScalarProperty Name="EntryDataType" ColumnName="EntryDataType" />
                 <ScalarProperty Name="PreviousInvoiceItemNumber" ColumnName="PreviousInvoiceItemNumber" />
                 <ScalarProperty Name="PreviousInvoiceLineNumber" ColumnName="PreviousInvoiceLineNumber" />
                 <ScalarProperty Name="PreviousInvoiceNumber" ColumnName="PreviousInvoiceNumber" />
@@ -563,6 +573,8 @@
           <EntitySetMapping Name="EntryDataDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.EntryDataDetails">
               <MappingFragment StoreEntitySet="EntryDataDetails">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
+                <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="LastCost" ColumnName="LastCost" />
                 <ScalarProperty Name="TotalCost" ColumnName="TotalCost" />

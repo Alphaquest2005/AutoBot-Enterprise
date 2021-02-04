@@ -513,6 +513,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="SourceFileName" Type="nvarchar" MaxLength="500" />
           <Property Name="IsPaid" Type="bit" />
           <Property Name="SubmitToCustoms" Type="bit" />
+          <Property Name="TotalDeduction" Type="float" />
+          <Property Name="TotalOtherCost" Type="float" />
+          <Property Name="TotalInternalFreight" Type="float" />
+          <Property Name="TotalInsurance" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -624,10 +628,38 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
         </EntityType>
-     
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EX9AsycudaSalesAllocations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="EX9AsycudaSalesAllocations">
           <Key>
             <PropertyRef Name="AllocationId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="AllocationId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -757,7 +789,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesAsycudaPiSummary
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesPiSummary' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ItemSalesPiSummary">
           <Key>
-            
             <PropertyRef Name="SalesQty" />
             <PropertyRef Name="SalesAllocatedQty" />
             
@@ -771,7 +802,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ItemSalesPiSummary' does 
             <PropertyRef Name="Type" />
           </Key>
           <Property Name="PreviousItem_Id" Type="int" Nullable="false" />
-          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="SalesQty" Type="float" Nullable="false" />
           <Property Name="SalesAllocatedQty" Type="float" Nullable="false" />
           <Property Name="DutyFreePaid" Type="varchar" MaxLength="9" Nullable="false" />
@@ -1326,7 +1357,11 @@ FROM [dbo].[AscyudaItemPiQuantity] AS [AscyudaItemPiQuantity]</DefiningQuery>
 [AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AsycudaDocument].[SourceFileName] AS [SourceFileName], 
 [AsycudaDocument].[IsPaid] AS [IsPaid], 
-[AsycudaDocument].[SubmitToCustoms] AS [SubmitToCustoms]
+[AsycudaDocument].[SubmitToCustoms] AS [SubmitToCustoms], 
+[AsycudaDocument].[TotalDeduction] AS [TotalDeduction], 
+[AsycudaDocument].[TotalOtherCost] AS [TotalOtherCost], 
+[AsycudaDocument].[TotalInternalFreight] AS [TotalInternalFreight], 
+[AsycudaDocument].[TotalInsurance] AS [TotalInsurance]
 FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
@@ -2198,6 +2233,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="CustomsOperationId" Type="Int32" />
           <Property Name="IsPaid" Type="Boolean" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
+          <Property Name="TotalDeduction" Type="Double" />
+          <Property Name="TotalOtherCost" Type="Double" />
+          <Property Name="TotalInternalFreight" Type="Double" />
+          <Property Name="TotalInsurance" Type="Double" />
         </EntityType>
         <Association Name="AsycudaDocumentxcuda_Item">
           <End Type="WaterNutDBModel.AsycudaDocument" Role="AsycudaDocument" Multiplicity="1" />
@@ -3102,7 +3141,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="QtyAllocated" Type="Double" Nullable="false" />
           <Property Name="EntryDataDate" Type="DateTime" Precision="7" Nullable="false" />
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-          <Property Name="ItemNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ItemNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="AllocationId" Type="Int32" Nullable="false" />
           <Property Name="Status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
@@ -3460,6 +3499,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocument">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocument">
               <MappingFragment StoreEntitySet="AsycudaDocument">
+                <ScalarProperty Name="TotalInsurance" ColumnName="TotalInsurance" />
+                <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
+                <ScalarProperty Name="TotalOtherCost" ColumnName="TotalOtherCost" />
+                <ScalarProperty Name="TotalDeduction" ColumnName="TotalDeduction" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />

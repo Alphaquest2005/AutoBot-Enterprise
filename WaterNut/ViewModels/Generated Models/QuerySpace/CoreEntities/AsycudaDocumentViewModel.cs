@@ -994,6 +994,78 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Double? _totalDeductionFilter;
+        public Double? TotalDeductionFilter
+        {
+            get
+            {
+                return _totalDeductionFilter;
+            }
+            set
+            {
+                _totalDeductionFilter = value;
+				NotifyPropertyChanged(x => TotalDeductionFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalOtherCostFilter;
+        public Double? TotalOtherCostFilter
+        {
+            get
+            {
+                return _totalOtherCostFilter;
+            }
+            set
+            {
+                _totalOtherCostFilter = value;
+				NotifyPropertyChanged(x => TotalOtherCostFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalInternalFreightFilter;
+        public Double? TotalInternalFreightFilter
+        {
+            get
+            {
+                return _totalInternalFreightFilter;
+            }
+            set
+            {
+                _totalInternalFreightFilter = value;
+				NotifyPropertyChanged(x => TotalInternalFreightFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private Double? _totalInsuranceFilter;
+        public Double? TotalInsuranceFilter
+        {
+            get
+            {
+                return _totalInsuranceFilter;
+            }
+            set
+            {
+                _totalInsuranceFilter = value;
+				NotifyPropertyChanged(x => TotalInsuranceFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -1241,7 +1313,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(SubmitToCustomsFilter.HasValue)
 						res.Append(" && " + string.Format("SubmitToCustoms == {0}",  SubmitToCustomsFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(TotalDeductionFilter.HasValue)
+						res.Append(" && " + string.Format("TotalDeduction == {0}",  TotalDeductionFilter.ToString()));				 
+
+					if(TotalOtherCostFilter.HasValue)
+						res.Append(" && " + string.Format("TotalOtherCost == {0}",  TotalOtherCostFilter.ToString()));				 
+
+					if(TotalInternalFreightFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInternalFreight == {0}",  TotalInternalFreightFilter.ToString()));				 
+
+					if(TotalInsuranceFilter.HasValue)
+						res.Append(" && " + string.Format("TotalInsurance == {0}",  TotalInsuranceFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1354,7 +1438,19 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     IsPaid = x.IsPaid ,
                     
  
-                    SubmitToCustoms = x.SubmitToCustoms 
+                    SubmitToCustoms = x.SubmitToCustoms ,
+                    
+ 
+                    TotalDeduction = x.TotalDeduction ,
+                    
+ 
+                    TotalOtherCost = x.TotalOtherCost ,
+                    
+ 
+                    TotalInternalFreight = x.TotalInternalFreight ,
+                    
+ 
+                    TotalInsurance = x.TotalInsurance 
                     
                 }).ToList()
             };
@@ -1458,6 +1554,18 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> SubmitToCustoms { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalDeduction { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalOtherCost { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalInternalFreight { get; set; } 
+                    
+ 
+                    public Nullable<double> TotalInsurance { get; set; } 
                     
         }
 

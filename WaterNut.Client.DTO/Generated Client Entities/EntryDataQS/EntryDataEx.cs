@@ -346,6 +346,32 @@ namespace EntryDataQS.Client.DTO
 		}
         private int _Packages;
 
+        [DataMember]
+        public string SupplierInvoiceNo
+		{ 
+		    get { return _SupplierInvoiceNo; }
+			set
+			{
+			    if (value == _SupplierInvoiceNo) return;
+				_SupplierInvoiceNo = value;
+				NotifyPropertyChanged();//m => this.SupplierInvoiceNo
+			}
+		}
+        private string _SupplierInvoiceNo;
+
+        [DataMember]
+        public Nullable<double> Tax
+		{ 
+		    get { return _Tax; }
+			set
+			{
+			    if (value == _Tax) return;
+				_Tax = value;
+				NotifyPropertyChanged();//m => this.Tax
+			}
+		}
+        private Nullable<double> _Tax;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets

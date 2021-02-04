@@ -128,7 +128,7 @@ namespace AutoBotUtilities
                     .Select(x => ctx.ShipmentInvoice
                         .Include("ShipmentRiderInvoice.ShipmentRider")
                         .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
-                        .Include(z => z.InvoiceDetails.POSSuggestions)
+                        .Include("InvoiceDetails.ShipmentInvoiceDetailPOSSuggestions")
                         .First(z => z.Id == x))
                     .Select(x => new ShipmentAttachedInvoices()
                     {

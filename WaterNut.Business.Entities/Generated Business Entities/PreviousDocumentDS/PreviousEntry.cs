@@ -356,6 +356,36 @@ namespace PreviousDocumentDS.Business.Entities
         }
         string _previousinvoiceitemnumber;
         [DataMember]
+        public string EntryDataType 
+        {
+            get
+            {
+                return _entrydatatype;
+            }
+            set
+            {
+                _entrydatatype = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _entrydatatype;
+        [DataMember]
+        public Nullable<int> UpgradeKey 
+        {
+            get
+            {
+                return _upgradekey;
+            }
+            set
+            {
+                _upgradekey = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _upgradekey;
+        [DataMember]
         public xcuda_Tarification xcuda_Tarification { get; set; }
         [DataMember]
         public xcuda_Valuation_item xcuda_Valuation_item { get; set; }

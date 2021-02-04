@@ -630,6 +630,66 @@ public Nullable<bool> SubmitToCustoms
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalDeduction
+		{ 
+		    get { return this.asycudadocument.TotalDeduction; }
+			set
+			{
+			    if (value == this.asycudadocument.TotalDeduction) return;
+				this.asycudadocument.TotalDeduction = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalDeduction");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalOtherCost
+		{ 
+		    get { return this.asycudadocument.TotalOtherCost; }
+			set
+			{
+			    if (value == this.asycudadocument.TotalOtherCost) return;
+				this.asycudadocument.TotalOtherCost = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalOtherCost");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalInternalFreight
+		{ 
+		    get { return this.asycudadocument.TotalInternalFreight; }
+			set
+			{
+			    if (value == this.asycudadocument.TotalInternalFreight) return;
+				this.asycudadocument.TotalInternalFreight = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalInternalFreight");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> TotalInsurance
+		{ 
+		    get { return this.asycudadocument.TotalInsurance; }
+			set
+			{
+			    if (value == this.asycudadocument.TotalInsurance) return;
+				this.asycudadocument.TotalInsurance = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("TotalInsurance");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentItem> _AsycudaDocumentItems = null;
         public  ObservableCollection<AsycudaDocumentItem> AsycudaDocumentItems
 		{

@@ -432,6 +432,38 @@ public int Packages
 		}
      
 
+       
+       
+                
+                [MaxLength(50, ErrorMessage = "SupplierInvoiceNo has a max length of 50 letters ")]
+public string SupplierInvoiceNo
+		{ 
+		    get { return this.entrydataex.SupplierInvoiceNo; }
+			set
+			{
+			    if (value == this.entrydataex.SupplierInvoiceNo) return;
+				this.entrydataex.SupplierInvoiceNo = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("SupplierInvoiceNo");
+			}
+		}
+     
+
+       
+       [NumberValidationAttribute]
+public Nullable<double> Tax
+		{ 
+		    get { return this.entrydataex.Tax; }
+			set
+			{
+			    if (value == this.entrydataex.Tax) return;
+				this.entrydataex.Tax = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Tax");
+			}
+		}
+     
+
         ObservableCollection<AsycudaDocumentSetEntryData> _AsycudaDocumentSets = null;
         public  ObservableCollection<AsycudaDocumentSetEntryData> AsycudaDocumentSets
 		{

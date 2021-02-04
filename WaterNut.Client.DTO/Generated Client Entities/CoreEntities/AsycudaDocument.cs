@@ -502,6 +502,58 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _SubmitToCustoms;
 
+        [DataMember]
+        public Nullable<double> TotalDeduction
+		{ 
+		    get { return _TotalDeduction; }
+			set
+			{
+			    if (value == _TotalDeduction) return;
+				_TotalDeduction = value;
+				NotifyPropertyChanged();//m => this.TotalDeduction
+			}
+		}
+        private Nullable<double> _TotalDeduction;
+
+        [DataMember]
+        public Nullable<double> TotalOtherCost
+		{ 
+		    get { return _TotalOtherCost; }
+			set
+			{
+			    if (value == _TotalOtherCost) return;
+				_TotalOtherCost = value;
+				NotifyPropertyChanged();//m => this.TotalOtherCost
+			}
+		}
+        private Nullable<double> _TotalOtherCost;
+
+        [DataMember]
+        public Nullable<double> TotalInternalFreight
+		{ 
+		    get { return _TotalInternalFreight; }
+			set
+			{
+			    if (value == _TotalInternalFreight) return;
+				_TotalInternalFreight = value;
+				NotifyPropertyChanged();//m => this.TotalInternalFreight
+			}
+		}
+        private Nullable<double> _TotalInternalFreight;
+
+        [DataMember]
+        public Nullable<double> TotalInsurance
+		{ 
+		    get { return _TotalInsurance; }
+			set
+			{
+			    if (value == _TotalInsurance) return;
+				_TotalInsurance = value;
+				NotifyPropertyChanged();//m => this.TotalInsurance
+			}
+		}
+        private Nullable<double> _TotalInsurance;
+
        
         [DataMember]
         public ChangeTrackingCollection<AsycudaDocumentItem> AsycudaDocumentItems

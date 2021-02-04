@@ -463,6 +463,19 @@ namespace EntryDataQS.Client.DTO
 		}
         private int _InventoryItemId;
 
+        [DataMember]
+        public Nullable<int> FileLineNumber
+		{ 
+		    get { return _FileLineNumber; }
+			set
+			{
+			    if (value == _FileLineNumber) return;
+				_FileLineNumber = value;
+				NotifyPropertyChanged();//m => this.FileLineNumber
+			}
+		}
+        private Nullable<int> _FileLineNumber;
+
        
         [DataMember]
         public InventoryItemsEx InventoryItemsEx

@@ -67,8 +67,9 @@
           <Property Name="AsycudaPassword" Type="nvarchar" MaxLength="50" />
           <Property Name="AssessIM7" Type="bit" />
           <Property Name="AssessEX" Type="bit" />
-          <Property Name="TestMode" Type="bit" Nullable="false" />
+          <Property Name="TestMode" Type="bit" />
           <Property Name="BondTypeId" Type="int" Nullable="false" />
+          <Property Name="RequirePOs" Type="bit" />
         </EntityType>
         <EntityType Name="AsycudaDocument_Attachments">
           <Key>
@@ -400,6 +401,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocument' does not
           <Property Name="SourceFileName" Type="nvarchar" MaxLength="500" />
           <Property Name="IsPaid" Type="bit" />
           <Property Name="SubmitToCustoms" Type="bit" />
+          <Property Name="TotalDeduction" Type="float" />
+          <Property Name="TotalOtherCost" Type="float" />
+          <Property Name="TotalInternalFreight" Type="float" />
+          <Property Name="TotalInsurance" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentBasicInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -428,7 +433,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentBasicInfo'
           <Property Name="ImportComplete" Type="bit" Nullable="false" />
           <Property Name="Customs_ProcedureId" Type="int" Nullable="false" />
         </EntityType>
-        
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItem' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentItem">
           <Key>
             
@@ -482,7 +488,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentBasicInfo'
           <Property Name="ExpiryDate" Type="datetime2" Precision="7" />
           <Property Name="InventoryItemId" Type="int" />
         </EntityType>
-        
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentItemEntryDataDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentItemEntryDataDetails">
           <Key>
             <PropertyRef Name="ApplicationSettingsId" />
@@ -508,7 +515,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentBasicInfo'
           <Property Name="Asycuda_id" Type="int" Nullable="false" />
           <Property Name="EntryDataType" Type="nvarchar" MaxLength="50" />
         </EntityType>
-       
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.AsycudaDocumentSetC71' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="AsycudaDocumentSetC71">
           <Key>
             <PropertyRef Name="Value_declaration_form_Id" />
@@ -2217,7 +2225,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-UnallocatedShorts' d
 [AsycudaDocument].[ApplicationSettingsId] AS [ApplicationSettingsId], 
 [AsycudaDocument].[SourceFileName] AS [SourceFileName], 
 [AsycudaDocument].[IsPaid] AS [IsPaid], 
-[AsycudaDocument].[SubmitToCustoms] AS [SubmitToCustoms]
+[AsycudaDocument].[SubmitToCustoms] AS [SubmitToCustoms], 
+[AsycudaDocument].[TotalDeduction] AS [TotalDeduction], 
+[AsycudaDocument].[TotalOtherCost] AS [TotalOtherCost], 
+[AsycudaDocument].[TotalInternalFreight] AS [TotalInternalFreight], 
+[AsycudaDocument].[TotalInsurance] AS [TotalInsurance]
 FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentBasicInfo" EntityType="Self.AsycudaDocumentBasicInfo" store:Type="Views" store:Schema="dbo">
@@ -2241,57 +2253,54 @@ FROM [dbo].[AsycudaDocument] AS [AsycudaDocument]</DefiningQuery>
 FROM [dbo].[AsycudaDocumentBasicInfo] AS [AsycudaDocumentBasicInfo]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItem" EntityType="Self.AsycudaDocumentItem" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>
-				SELECT
-				[AsycudaDocumentItem].[Item_Id] AS [Item_Id],
-				[AsycudaDocumentItem].[AsycudaDocumentId] AS [AsycudaDocumentId],
-				[AsycudaDocumentItem].[EntryDataDetailsId] AS [EntryDataDetailsId],
-				[AsycudaDocumentItem].[LineNumber] AS [LineNumber],
-				[AsycudaDocumentItem].[IsAssessed] AS [IsAssessed],
-				[AsycudaDocumentItem].[DoNotAllocate] AS [DoNotAllocate],
-				[AsycudaDocumentItem].[DoNotEX] AS [DoNotEX],
-				[AsycudaDocumentItem].[AttributeOnlyAllocation] AS [AttributeOnlyAllocation],
-				[AsycudaDocumentItem].[Description_of_goods] AS [Description_of_goods],
-				[AsycudaDocumentItem].[Commercial_Description] AS [Commercial_Description],
-				[AsycudaDocumentItem].[Gross_weight_itm] AS [Gross_weight_itm],
-				[AsycudaDocumentItem].[Net_weight_itm] AS [Net_weight_itm],
-				[AsycudaDocumentItem].[Item_price] AS [Item_price],
-				[AsycudaDocumentItem].[ItemQuantity] AS [ItemQuantity],
-				[AsycudaDocumentItem].[Suppplementary_unit_code] AS [Suppplementary_unit_code],
-				[AsycudaDocumentItem].[ItemNumber] AS [ItemNumber],
-				[AsycudaDocumentItem].[TariffCode] AS [TariffCode],
-				[AsycudaDocumentItem].[TariffCodeLicenseRequired] AS [TariffCodeLicenseRequired],
-				[AsycudaDocumentItem].[TariffCategoryLicenseRequired] AS [TariffCategoryLicenseRequired],
-				[AsycudaDocumentItem].[TariffCodeDescription] AS [TariffCodeDescription],
-				[AsycudaDocumentItem].[DutyLiability] AS [DutyLiability],
-				[AsycudaDocumentItem].[Total_CIF_itm] AS [Total_CIF_itm],
-				[AsycudaDocumentItem].[Freight] AS [Freight],
-				[AsycudaDocumentItem].[Statistical_value] AS [Statistical_value],
-				[AsycudaDocumentItem].[DPQtyAllocated] AS [DPQtyAllocated],
-				[AsycudaDocumentItem].[DFQtyAllocated] AS [DFQtyAllocated],
-				[AsycudaDocumentItem].[ImportComplete] AS [ImportComplete],
-				[AsycudaDocumentItem].[CNumber] AS [CNumber],
-				[AsycudaDocumentItem].[RegistrationDate] AS [RegistrationDate],
-				[AsycudaDocumentItem].[Number_of_packages] AS [Number_of_packages],
-				[AsycudaDocumentItem].[Country_of_origin_code] AS [Country_of_origin_code],
-				[AsycudaDocumentItem].[PiWeight] AS [PiWeight],
-				[AsycudaDocumentItem].[Currency_rate] AS [Currency_rate],
-				[AsycudaDocumentItem].[Currency_code] AS [Currency_code],
-				[AsycudaDocumentItem].[InvalidHSCode] AS [InvalidHSCode],
-				[AsycudaDocumentItem].[WarehouseError] AS [WarehouseError],
-				[AsycudaDocumentItem].[PiQuantity] AS [PiQuantity],
-				[AsycudaDocumentItem].[SalesFactor] AS [SalesFactor],
-				[AsycudaDocumentItem].[ReferenceNumber] AS [ReferenceNumber],
-				[AsycudaDocumentItem].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber],
-				[AsycudaDocumentItem].[PreviousInvoiceLineNumber] AS [PreviousInvoiceLineNumber],
-				[AsycudaDocumentItem].[PreviousInvoiceItemNumber] AS [PreviousInvoiceItemNumber],
-				[AsycudaDocumentItem].[ApplicationSettingsId] AS [ApplicationSettingsId],
-				[AsycudaDocumentItem].[Cancelled] AS [Cancelled],
-				[AsycudaDocumentItem].[ExpiryDate] AS [ExpiryDate],
-				[AsycudaDocumentItem].[InventoryItemId] AS [InventoryItemId]
-				FROM [dbo].[AsycudaDocumentItem] AS [AsycudaDocumentItem]
-				order by cast(LineNumber as float)
-			</DefiningQuery>
+            <DefiningQuery>SELECT 
+[AsycudaDocumentItem].[Item_Id] AS [Item_Id], 
+[AsycudaDocumentItem].[AsycudaDocumentId] AS [AsycudaDocumentId], 
+[AsycudaDocumentItem].[EntryDataDetailsId] AS [EntryDataDetailsId], 
+[AsycudaDocumentItem].[LineNumber] AS [LineNumber], 
+[AsycudaDocumentItem].[IsAssessed] AS [IsAssessed], 
+[AsycudaDocumentItem].[DoNotAllocate] AS [DoNotAllocate], 
+[AsycudaDocumentItem].[DoNotEX] AS [DoNotEX], 
+[AsycudaDocumentItem].[AttributeOnlyAllocation] AS [AttributeOnlyAllocation], 
+[AsycudaDocumentItem].[Description_of_goods] AS [Description_of_goods], 
+[AsycudaDocumentItem].[Commercial_Description] AS [Commercial_Description], 
+[AsycudaDocumentItem].[Gross_weight_itm] AS [Gross_weight_itm], 
+[AsycudaDocumentItem].[Net_weight_itm] AS [Net_weight_itm], 
+[AsycudaDocumentItem].[Item_price] AS [Item_price], 
+[AsycudaDocumentItem].[ItemQuantity] AS [ItemQuantity], 
+[AsycudaDocumentItem].[Suppplementary_unit_code] AS [Suppplementary_unit_code], 
+[AsycudaDocumentItem].[ItemNumber] AS [ItemNumber], 
+[AsycudaDocumentItem].[TariffCode] AS [TariffCode], 
+[AsycudaDocumentItem].[TariffCodeLicenseRequired] AS [TariffCodeLicenseRequired], 
+[AsycudaDocumentItem].[TariffCategoryLicenseRequired] AS [TariffCategoryLicenseRequired], 
+[AsycudaDocumentItem].[TariffCodeDescription] AS [TariffCodeDescription], 
+[AsycudaDocumentItem].[DutyLiability] AS [DutyLiability], 
+[AsycudaDocumentItem].[Total_CIF_itm] AS [Total_CIF_itm], 
+[AsycudaDocumentItem].[Freight] AS [Freight], 
+[AsycudaDocumentItem].[Statistical_value] AS [Statistical_value], 
+[AsycudaDocumentItem].[DPQtyAllocated] AS [DPQtyAllocated], 
+[AsycudaDocumentItem].[DFQtyAllocated] AS [DFQtyAllocated], 
+[AsycudaDocumentItem].[ImportComplete] AS [ImportComplete], 
+[AsycudaDocumentItem].[CNumber] AS [CNumber], 
+[AsycudaDocumentItem].[RegistrationDate] AS [RegistrationDate], 
+[AsycudaDocumentItem].[Number_of_packages] AS [Number_of_packages], 
+[AsycudaDocumentItem].[Country_of_origin_code] AS [Country_of_origin_code], 
+[AsycudaDocumentItem].[PiWeight] AS [PiWeight], 
+[AsycudaDocumentItem].[Currency_rate] AS [Currency_rate], 
+[AsycudaDocumentItem].[Currency_code] AS [Currency_code], 
+[AsycudaDocumentItem].[InvalidHSCode] AS [InvalidHSCode], 
+[AsycudaDocumentItem].[WarehouseError] AS [WarehouseError], 
+[AsycudaDocumentItem].[PiQuantity] AS [PiQuantity], 
+[AsycudaDocumentItem].[SalesFactor] AS [SalesFactor], 
+[AsycudaDocumentItem].[ReferenceNumber] AS [ReferenceNumber], 
+[AsycudaDocumentItem].[PreviousInvoiceNumber] AS [PreviousInvoiceNumber], 
+[AsycudaDocumentItem].[PreviousInvoiceLineNumber] AS [PreviousInvoiceLineNumber], 
+[AsycudaDocumentItem].[PreviousInvoiceItemNumber] AS [PreviousInvoiceItemNumber], 
+[AsycudaDocumentItem].[ApplicationSettingsId] AS [ApplicationSettingsId], 
+[AsycudaDocumentItem].[Cancelled] AS [Cancelled], 
+[AsycudaDocumentItem].[ExpiryDate] AS [ExpiryDate], 
+[AsycudaDocumentItem].[InventoryItemId] AS [InventoryItemId]
+FROM [dbo].[AsycudaDocumentItem] AS [AsycudaDocumentItem]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AsycudaDocumentItemEntryDataDetails" EntityType="Self.AsycudaDocumentItemEntryDataDetails" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -3664,8 +3673,9 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <NavigationProperty Name="EmailMapping" Relationship="WaterNutDBModel.FK_EmailMapping_ApplicationSettings" FromRole="ApplicationSettings" ToRole="EmailMapping" />
           <Property Name="AssessIM7" Type="Boolean" />
           <Property Name="AssessEX" Type="Boolean" />
-          <Property Name="TestMode" Type="Boolean" Nullable="false" />
-          <Property Name="BondTypeId" Type="Int32" Nullable="false" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
+          <Property Name="TestMode" Type="Boolean" />
+          <Property Name="BondTypeId" Type="Int32" Nullable="false" />
+          <Property Name="RequirePOs" Type="Boolean" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty>
         </EntityType>
         <EntityType Name="AsycudaDocument">
           <Key>
@@ -3712,6 +3722,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="CustomsOperationId" Type="Int32" />
           <Property Name="IsPaid" Type="Boolean" />
           <Property Name="SubmitToCustoms" Type="Boolean" />
+          <Property Name="TotalDeduction" Type="Double" />
+          <Property Name="TotalOtherCost" Type="Double" />
+          <Property Name="TotalInternalFreight" Type="Double" />
+          <Property Name="TotalInsurance" Type="Double" />
           <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IDocument</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="AsycudaDocumentItem">
@@ -5880,6 +5894,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="ApplicationSettings">
             <EntityTypeMapping TypeName="WaterNutDBModel.ApplicationSettings">
               <MappingFragment StoreEntitySet="ApplicationSettings">
+                <ScalarProperty Name="RequirePOs" ColumnName="RequirePOs" />
                 <ScalarProperty Name="BondTypeId" ColumnName="BondTypeId" />
                 <ScalarProperty Name="TestMode" ColumnName="TestMode" />
                 <ScalarProperty Name="AssessEX" ColumnName="AssessEX" />
@@ -5929,6 +5944,10 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="AsycudaDocuments">
             <EntityTypeMapping TypeName="WaterNutDBModel.AsycudaDocument">
               <MappingFragment StoreEntitySet="AsycudaDocument">
+                <ScalarProperty Name="TotalInsurance" ColumnName="TotalInsurance" />
+                <ScalarProperty Name="TotalInternalFreight" ColumnName="TotalInternalFreight" />
+                <ScalarProperty Name="TotalOtherCost" ColumnName="TotalOtherCost" />
+                <ScalarProperty Name="TotalDeduction" ColumnName="TotalDeduction" />
                 <ScalarProperty Name="SubmitToCustoms" ColumnName="SubmitToCustoms" />
                 <ScalarProperty Name="IsPaid" ColumnName="IsPaid" />
                 <ScalarProperty Name="CustomsOperationId" ColumnName="CustomsOperationId" />

@@ -785,6 +785,24 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
         }	
 
  
+
+		private Int32? _fileLineNumberFilter;
+        public Int32? FileLineNumberFilter
+        {
+            get
+            {
+                return _fileLineNumberFilter;
+            }
+            set
+            {
+                _fileLineNumberFilter = value;
+				NotifyPropertyChanged(x => FileLineNumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -935,7 +953,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
-			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
+ 
+
+					if(FileLineNumberFilter.HasValue)
+						res.Append(" && " + string.Format("FileLineNumber == {0}",  FileLineNumberFilter.ToString()));							return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
 // Send to Excel Implementation
@@ -1036,7 +1057,10 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     TaxAmount = x.TaxAmount ,
                     
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    FileLineNumber = x.FileLineNumber 
                     
                 }).ToList()
             };
@@ -1128,6 +1152,9 @@ namespace WaterNut.QuerySpace.EntryDataQS.ViewModels
                     
  
                     public string Name { get; set; } 
+                    
+ 
+                    public Nullable<int> FileLineNumber { get; set; } 
                     
         }
 

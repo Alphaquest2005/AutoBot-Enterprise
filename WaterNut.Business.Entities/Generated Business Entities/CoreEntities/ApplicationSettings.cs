@@ -647,7 +647,7 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _assessex;
         [DataMember]
-        public bool TestMode 
+        public Nullable<bool> TestMode 
         {
             get
             {
@@ -660,7 +660,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        bool _testmode;
+        Nullable<bool> _testmode;
         [DataMember]
         public int BondTypeId 
         {
@@ -676,6 +676,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         int _bondtypeid;
+        [DataMember]
+        public Nullable<bool> RequirePOs 
+        {
+            get
+            {
+                return _requirepos;
+            }
+            set
+            {
+                _requirepos = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _requirepos;
         [DataMember]
         public List<AsycudaDocumentSetEx> AsycudaDocumentSetEx { get; set; }
         [DataMember]

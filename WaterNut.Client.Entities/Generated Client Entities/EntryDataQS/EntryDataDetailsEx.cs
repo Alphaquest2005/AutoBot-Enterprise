@@ -579,6 +579,21 @@ public int InventoryItemId
 		}
      
 
+       
+       [NumberValidationAttribute]
+public Nullable<int> FileLineNumber
+		{ 
+		    get { return this.entrydatadetailsex.FileLineNumber; }
+			set
+			{
+			    if (value == this.entrydatadetailsex.FileLineNumber) return;
+				this.entrydatadetailsex.FileLineNumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("FileLineNumber");
+			}
+		}
+     
+
        private InventoryItemsEx _InventoryItemsEx;
         public  InventoryItemsEx InventoryItemsEx
 		{

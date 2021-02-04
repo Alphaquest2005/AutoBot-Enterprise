@@ -679,9 +679,15 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentFreightBLs' does 
           <Property Name="Total" Type="float" Nullable="false" />
           <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
         </EntityType>
-        
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoiceDetailPOSSuggestions' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="ShipmentInvoiceDetailPOSSuggestions">
           <Key>
+            
+            
+            
+            
+            
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />

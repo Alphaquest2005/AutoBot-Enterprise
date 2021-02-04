@@ -581,6 +581,66 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _submittocustoms;
         [DataMember]
+        public Nullable<double> TotalDeduction 
+        {
+            get
+            {
+                return _totaldeduction;
+            }
+            set
+            {
+                _totaldeduction = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totaldeduction;
+        [DataMember]
+        public Nullable<double> TotalOtherCost 
+        {
+            get
+            {
+                return _totalothercost;
+            }
+            set
+            {
+                _totalothercost = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalothercost;
+        [DataMember]
+        public Nullable<double> TotalInternalFreight 
+        {
+            get
+            {
+                return _totalinternalfreight;
+            }
+            set
+            {
+                _totalinternalfreight = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalinternalfreight;
+        [DataMember]
+        public Nullable<double> TotalInsurance 
+        {
+            get
+            {
+                return _totalinsurance;
+            }
+            set
+            {
+                _totalinsurance = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _totalinsurance;
+        [DataMember]
         public List<AsycudaDocumentItem> AsycudaDocumentItems { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

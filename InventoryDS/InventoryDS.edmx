@@ -24,6 +24,7 @@
           <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
           <Property Name="EntryTimeStamp" Type="datetime2" Precision="7" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UpgradeKey" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="InventoryItemSource">
           <Key>
@@ -234,7 +235,8 @@
           <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="InventoryItemAlias" Relationship="Model.FK_InventoryItemAlias_InventoryItems1" FromRole="InventoryItem" ToRole="InventoryItemAlia" />
-          <NavigationProperty Name="InventoryItemSources" Relationship="Model.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItem" ToRole="InventoryItemSource" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
+          <NavigationProperty Name="InventoryItemSources" Relationship="Model.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItem" ToRole="InventoryItemSource" />
+          <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" /><a:MainEntityProperty xmlns:a="http://schemas.tempuri.com/MainEntityProperty">True</a:MainEntityProperty><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty">IInventoryItem,ITariffUnit</a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="TariffCategory">
           <Key>
@@ -454,6 +456,7 @@
           <EntitySetMapping Name="InventoryItems">
             <EntityTypeMapping TypeName="Model.InventoryItem">
               <MappingFragment StoreEntitySet="InventoryItems">
+                <ScalarProperty Name="UpgradeKey" ColumnName="UpgradeKey" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="ItemNumber" ColumnName="ItemNumber" />

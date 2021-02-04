@@ -38,6 +38,8 @@
               this.Property(t => t.Totals).HasColumnName("Totals");
               this.Property(t => t.SourceFile).HasColumnName("SourceFile");
               this.Property(t => t.Packages).HasColumnName("Packages");
+              this.Property(t => t.SupplierInvoiceNo).HasColumnName("SupplierInvoiceNo").HasMaxLength(50);
+              this.Property(t => t.Tax).HasColumnName("Tax");
               this.HasMany(t => t.AsycudaDocumentSets).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.AsycudaDocuments).WithRequired(t => (EntryDataEx)t.EntryDataEx);
               this.HasMany(t => t.EntryDataDetailsExs).WithRequired(t => (EntryDataEx)t.EntryDataEx);

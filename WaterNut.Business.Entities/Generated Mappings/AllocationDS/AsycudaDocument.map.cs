@@ -50,6 +50,10 @@
               this.Property(t => t.CustomsOperationId).HasColumnName("CustomsOperationId");
               this.Property(t => t.IsPaid).HasColumnName("IsPaid");
               this.Property(t => t.SubmitToCustoms).HasColumnName("SubmitToCustoms");
+              this.Property(t => t.TotalDeduction).HasColumnName("TotalDeduction");
+              this.Property(t => t.TotalOtherCost).HasColumnName("TotalOtherCost");
+              this.Property(t => t.TotalInternalFreight).HasColumnName("TotalInternalFreight");
+              this.Property(t => t.TotalInsurance).HasColumnName("TotalInsurance");
               this.HasOptional(t => t.SystemDocumentSets).WithMany(t =>(ICollection<AsycudaDocument>) t.AsycudaDocument).HasForeignKey(d => d.AsycudaDocumentSetId);
               this.HasOptional(t => t.Customs_Procedure).WithMany(t =>(ICollection<AsycudaDocument>) t.AsycudaDocument).HasForeignKey(d => d.Customs_ProcedureId);
               this.HasMany(t => t.xcuda_Item).WithRequired(t => (AsycudaDocument)t.AsycudaDocument);

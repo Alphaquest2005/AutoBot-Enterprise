@@ -555,7 +555,7 @@ namespace CoreEntities.Client.DTO
         private Nullable<bool> _AssessEX;
 
         [DataMember]
-        public bool TestMode
+        public Nullable<bool> TestMode
 		{ 
 		    get { return _TestMode; }
 			set
@@ -565,7 +565,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.TestMode
 			}
 		}
-        private bool _TestMode;
+        private Nullable<bool> _TestMode;
 
         [DataMember]
         public int BondTypeId
@@ -579,6 +579,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private int _BondTypeId;
+
+        [DataMember]
+        public Nullable<bool> RequirePOs
+		{ 
+		    get { return _RequirePOs; }
+			set
+			{
+			    if (value == _RequirePOs) return;
+				_RequirePOs = value;
+				NotifyPropertyChanged();//m => this.RequirePOs
+			}
+		}
+        private Nullable<bool> _RequirePOs;
 
        
         [DataMember]

@@ -536,6 +536,21 @@ namespace EntryDataQS.Business.Entities
         }
         int _inventoryitemid;
         [DataMember]
+        public Nullable<int> FileLineNumber 
+        {
+            get
+            {
+                return _filelinenumber;
+            }
+            set
+            {
+                _filelinenumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _filelinenumber;
+        [DataMember]
         public InventoryItemsEx InventoryItemsEx { get; set; }
         [DataMember]
         public EntryDataEx EntryDataEx { get; set; }

@@ -55,6 +55,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.EntryDataDetailsEx' does 
         <EntityType Name="EntryDataDetailsEx">
           <Key>
             <PropertyRef Name="EntryDataDetailsId" />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
           </Key>
           <Property Name="EntryDataDetailsId" Type="int" Nullable="false" />
           <Property Name="EntryData_Id" Type="int" Nullable="false" />
@@ -97,6 +108,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.InventoryItemsEx' does no
         <EntityType Name="InventoryItemsEx">
           <Key>
             <PropertyRef Name="InventoryItemId" />
+            
+            
+            
           </Key>
           <Property Name="InventoryItemId" Type="int" Nullable="false" />
           <Property Name="ItemNumber" Type="nvarchar" MaxLength="20" Nullable="false" />

@@ -722,9 +722,9 @@ public Nullable<bool> AssessEX
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "TestMode is required")]
        
-public bool TestMode
+       
+public Nullable<bool> TestMode
 		{ 
 		    get { return this.applicationsettings.TestMode; }
 			set
@@ -748,6 +748,21 @@ public int BondTypeId
 				this.applicationsettings.BondTypeId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("BondTypeId");
+			}
+		}
+     
+
+       
+       
+public Nullable<bool> RequirePOs
+		{ 
+		    get { return this.applicationsettings.RequirePOs; }
+			set
+			{
+			    if (value == this.applicationsettings.RequirePOs) return;
+				this.applicationsettings.RequirePOs = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("RequirePOs");
 			}
 		}
      
