@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,23 @@ using WaterNut.Views;
 
 namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
 {
+
+    public partial class AdjustmentShortViewModel_AutoGen
+    {
+        partial void OnCreated()
+        {
+            EffectiveDateFilter = DateTime.MinValue;
+            _startEffectiveDateFilter = DateTime.MinValue;
+            _endEffectiveDateFilter = DateTime.MinValue;
+            EmailDateFilter = DateTime.MinValue;
+            _startEmailDateFilter = DateTime.MinValue;
+            _endEmailDateFilter = DateTime.MinValue;
+            
+        }
+
+
+    }
+
     public class AdjustmentShortDetailsModel : AdjustmentShortViewModel_AutoGen
     {
         private static readonly AdjustmentShortDetailsModel instance;
@@ -285,7 +303,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             StatusModel.Timer("Creating IM9");
             using (var ctx = new AdjustmentShortRepository())
             {
-                await ctx.CreateIM9(vloader.FilterExpression, PerInvoice, Process7100, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "IM9", "Duty Free").ConfigureAwait(false);
+                await ctx.CreateIM9(vloader.FilterExpression, PerInvoice, Process7100, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "DIS", "Duty Free").ConfigureAwait(false);
             }
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentShortsChanged, this,
@@ -305,7 +323,7 @@ namespace WaterNut.QuerySpace.AdjustmentQS.ViewModels
             StatusModel.Timer("Creating IM4");
             using (var ctx = new AdjustmentShortRepository())
             {
-                await ctx.CreateIM9(vloader.FilterExpression, PerInvoice, Process7100, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "IM4-801", "Duty Free").ConfigureAwait(false);// the code 801 makes it duty free
+                await ctx.CreateIM9(vloader.FilterExpression, PerInvoice, Process7100, CoreEntities.ViewModels.BaseViewModel.Instance.CurrentAsycudaDocumentSetEx.AsycudaDocumentSetId, "DIS", "Duty Free").ConfigureAwait(false);// the code 801 makes it duty free
             }
 
             MessageBus.Default.BeginNotify(MessageToken.AdjustmentShortsChanged, this,

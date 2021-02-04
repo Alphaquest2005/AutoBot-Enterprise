@@ -304,7 +304,7 @@ namespace AdjustmentQS.Business.Services
                     //"&& PreviousDocumentItem.AsycudaDocument.SystemDocumentSet == null" +
                     $" && (PreviousDocumentItem.AsycudaDocument.CustomsOperationId == {(int)CustomsOperations.Warehouse})";
                 var slst =
-                    (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro, entryDataDetailsIds).ConfigureAwait(false))
+                    (await CreateAllocationDataBlocks(perInvoice, filterExpression + exPro, entryDataDetailsIds, adjustmentType).ConfigureAwait(false))
                     .Where(
                         x => x.Allocations.Count > 0).ToList();
                 if (slst.Any())
@@ -359,12 +359,12 @@ namespace AdjustmentQS.Business.Services
 
        
 
-        private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(bool perInvoice,string filterExpression, List<int> entryDataDetailsIds)
+        private async Task<IEnumerable<AllocationDataBlock>> CreateAllocationDataBlocks(bool perInvoice,string filterExpression, List<int> entryDataDetailsIds, string adjustmentType)
         {
             try
             {
                 StatusModel.Timer("Getting IM9 Data");
-                var slstSource = await GetIM9Data(filterExpression, entryDataDetailsIds).ConfigureAwait(false);
+                var slstSource = await GetIM9Data(filterExpression, entryDataDetailsIds, adjustmentType).ConfigureAwait(false);
                 StatusModel.StartStatusUpdate("Creating IM9 Entries", slstSource.Count());
                 IEnumerable<AllocationDataBlock> slst;
                 slst = CreateWholeAllocationDataBlocks(perInvoice,slstSource);
@@ -450,12 +450,13 @@ namespace AdjustmentQS.Business.Services
             }
         }
 
-        private async  Task<List<EX9Allocations>> GetIM9Data(string FilterExpression, List<int> entryDataDetailsIds)
+        private async  Task<List<EX9Allocations>> GetIM9Data(string FilterExpression, List<int> entryDataDetailsIds, string adjustmentType)
         {
             FilterExpression =
                 FilterExpression.Replace("&& (pExpiryDate >= \"" + DateTime.Now.Date.ToShortDateString() + "\")", "");
+            var docsetid = new CoreEntitiesContext().FileTypes.First(x => x.Type == adjustmentType).AsycudaDocumentSetId;
             FilterExpression =
-                Regex.Replace(FilterExpression, "AsycudaDocumentSetId == \"\\d+\"", "AsycudaDocumentSetId == \"8\"");
+                Regex.Replace(FilterExpression, "AsycudaDocumentSetId == \"\\d+\"", $"AsycudaDocumentSetId == \"{docsetid}\"");
 
             FilterExpression += "&& (PreviousDocumentItem.DoNotAllocate != true && PreviousDocumentItem.DoNotEX != true && PreviousDocumentItem.WarehouseError == null)";
 
@@ -506,7 +507,7 @@ namespace AdjustmentQS.Business.Services
 
                     res = pres
                         .Where(exp)
-                        .Where(x => x.Status == null || x.Status == "Short Shipped")
+                        .Where(x => x.Status == null )//|| x.Status == "Short Shipped"
                         .Where(x =>x.xBond_Item_Id == 0 //&& x.pQuantity != 0
                             )
                        // .Where(x => !entryDataDetailsIds.Any()|| entryDataDetailsIds.Contains(x.EntryDataDetailsId))//entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId)
@@ -648,11 +649,10 @@ namespace AdjustmentQS.Business.Services
 
         }
 
-        public async Task CreateIM9(string filterExpression, bool perInvoice, int asycudaDocumentSetId, 
-            string dutyFreePaid, string adjustmentType)
+        public async Task CreateIM9(string filterExpression,bool perInvoice,bool process7100,int asycudaDocumentSetId,string ex9Type,string dutyFreePaid)
         {
             await CreateIM9(filterExpression, perInvoice,  asycudaDocumentSetId, dutyFreePaid,
-                adjustmentType, null, null).ConfigureAwait(false);
+                ex9Type, null, null).ConfigureAwait(false);
         }
 
         private void MatchToAsycudaItem(AdjustmentDetail os, List<AsycudaDocumentItem> alst, EntryDataDetail ed, AdjustmentQSContext ctx)
@@ -710,7 +710,7 @@ namespace AdjustmentQS.Business.Services
                 {
                     PreviousItem_Id = aItem.Item_Id,
                     EntryDataDetailsId = os.EntryDataDetailsId,
-                    Status = "Short Shipped",
+                    //Status = "Short Shipped",
                     TrackingState = TrackingState.Added,
 
                 };

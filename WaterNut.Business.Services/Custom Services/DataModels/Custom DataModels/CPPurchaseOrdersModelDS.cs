@@ -78,7 +78,7 @@ namespace WaterNut.DataSpace
 													 CounterPointPODetails.ITEM_DESCR, CounterPointPODetails.ORD_COST, CounterPointPODetails.UNIT_WEIGHT, 0 AS Expr1, InventoryItems.Id
 									FROM    CounterPointPODetails INNER JOIN
 													 EntryData ON CounterPointPODetails.PO_NO COLLATE DATABASE_DEFAULT = EntryData.EntryDataId COLLATE DATABASE_DEFAULT INNER JOIN
-													 InventoryItems ON CounterPointPODetails.PO_NO  COLLATE Database_Default = InventoryItems.ItemNumber  COLLATE Database_Default AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
+													 InventoryItems ON CounterPointPODetails.ITEM_NO  COLLATE Database_Default = InventoryItems.ItemNumber  COLLATE Database_Default AND EntryData.ApplicationSettingsId = InventoryItems.ApplicationSettingsId
 									WHERE (CounterPointPODetails.PO_NO = @PONumber) AND (LEFT(CounterPointPODetails.ITEM_NO, 1) <> '*') AND (EntryData.ApplicationSettingsId = @applicationsettingsId) AND (EntryData.EntryDataDate = @Date)
 ", 
                                                                                                                
