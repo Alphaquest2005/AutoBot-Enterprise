@@ -82,6 +82,9 @@ namespace OCR.Client.Contracts
 				[OperationContract]
 		Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null);
         
+  		[OperationContract]
+		Task<IEnumerable<Invoices>> GetInvoicesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        
   		
     }
 }

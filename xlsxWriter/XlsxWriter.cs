@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
+using WaterNut.Interfaces;
 using PicoXLSX;
 using WaterNut.DataSpace;
 
@@ -49,9 +50,9 @@ namespace xlsxWriter
                 //SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)));
                 //SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)));
                 //SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.Currency)));
-                 var po = shipmentInvoice.InvoiceExtraInfo.FirstOrDefault(x => x.Info == "PONumber");
-                                if (!string.IsNullOrEmpty(po?.Value))
-                    SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == po.Info).Key.Index, po.Value);
+                 //var po = shipmentInvoice.InvoiceExtraInfo.FirstOrDefault(x => x.Info == "PONumber");
+                 //               if (!string.IsNullOrEmpty(po?.Value))
+                 //   SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == po.Info).Key.Index, po.Value);
 
                 SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)).Key.Index, shipmentInvoice.InvoiceTotal.GetValueOrDefault());
 
@@ -59,19 +60,93 @@ namespace xlsxWriter
 
                 SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.Currency)).Key.Index, shipmentInvoice.Currency);
 
-               var i = 1;
-                foreach (var itm in shipmentInvoice.InvoiceDetails)
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "SupplierInvoice").Key.Index, shipmentInvoice.InvoiceNo);
+
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Total Internal Freight").Key.Index, shipmentInvoice.TotalInternalFreight);
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Total Deductions").Key.Index, shipmentInvoice.TotalDeduction);
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Total Other Cost").Key.Index, shipmentInvoice.TotalOtherCost);
+
+                var riderdetails = shipmentInvoice.ShipmentRiderInvoice.Where(x => x.ShipmentRiderDetails != null).ToList();
+                var doRider = false;
+                if(riderdetails.Any())
+                    if (shipmentInvoice.ShipmentInvoicePOs.Sum(x => x.PurchaseOrders.EntryDataDetails.Count()) > riderdetails.Count())
+                    {
+                        doRider = false;
+                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index, riderdetails.Sum(x => x.ShipmentRiderDetails.Pieces));
+                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index, riderdetails.Select(x => x.ShipmentRiderDetails.WarehouseCode).DefaultIfEmpty("").Aggregate((o,c) => o + "," + c));
+                    }
+                    else
+                    {
+                        doRider = true;
+                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index, riderdetails.First().ShipmentRiderDetails.Pieces);
+                        SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index, riderdetails.First().ShipmentRiderDetails.WarehouseCode);
+                    }
+
+
+                if (shipmentInvoice.ShipmentInvoicePOs.Any())
                 {
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceNo)).Key.Index, shipmentInvoice.InvoiceNo);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index, shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index, itm.Cost);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.ItemDescription)).Key.Index, itm.ItemDescription);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index, itm.Quantity);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.ItemNumber)).Key.Index, itm.ItemNumber);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index, itm.TotalCost);
-                    SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index, itm.Units);
-                    i++;
+                    var i = 1;
+                    foreach (var pO in shipmentInvoice.ShipmentInvoicePOs)
+                    {
+                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails)
+                        {
+
+                            SetValue(workbook, i, header.First(x => x.Key.Column == "PONumber").Key.Index,
+                                pO.PurchaseOrders.PONumber);
+                            SetValue(workbook, i,
+                                header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
+                                pO.PurchaseOrders.EntryDataDate.ToString("yyyy-MM-dd"));
+                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index,
+                                itm.Cost);
+                            SetValue(workbook, i,
+                                header.First(x => x.Key.Column == "Description").Key.Index,
+                                itm.ItemDescription);
+                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
+                                itm.Quantity);
+                            SetValue(workbook, i, header.First(x => x.Key.Column == "ProductCode").Key.Index,
+                                itm.ItemNumber);
+                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
+                                itm.TotalCost);
+                            SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
+                                itm.Units);
+                            if (doRider && i < riderdetails.Count)
+                            {
+                                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index,
+                                    riderdetails[i].ShipmentRiderDetails.Pieces);
+                                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index,
+                                    riderdetails[i].ShipmentRiderDetails.WarehouseCode);
+                            }
+
+                            i++;
+                        }
+                    }
                 }
+                else
+                {
+                    var i = 1;
+                    foreach (var itm in shipmentInvoice.InvoiceDetails)
+                    {
+                        SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierInvoice").Key.Index, shipmentInvoice.InvoiceNo);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index, shipmentInvoice.InvoiceDate.GetValueOrDefault().ToString("yyyy-MM-dd"));
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Cost)).Key.Index, itm.Cost);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.ItemDescription)).Key.Index, itm.ItemDescription);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index, itm.Quantity);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.ItemNumber)).Key.Index, itm.ItemNumber);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index, itm.TotalCost);
+                        SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index, itm.Units);
+
+                        if (doRider && i < riderdetails.Count)
+                        {
+                            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Packages").Key.Index, riderdetails[i].ShipmentRiderDetails.Pieces);
+                            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == "Warehouse").Key.Index, riderdetails[i].ShipmentRiderDetails.WarehouseCode);
+                        }
+
+                        i++;
+                    }
+
+                }
+                
+                
 
 
                 workbook.Save();

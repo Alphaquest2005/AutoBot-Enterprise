@@ -19,6 +19,7 @@
               this.Property(t => t.PreviousCNumber).HasColumnName("PreviousCNumber").HasMaxLength(50);
               this.Property(t => t.FinancialInformation).HasColumnName("FinancialInformation").HasMaxLength(255);
               this.HasMany(t => t.WarehouseInfo).WithRequired(t => (PurchaseOrders)t.EntryData_PurchaseOrders);
+              this.HasMany(t => t.ShipmentInvoicePOs).WithRequired(t => (PurchaseOrders)t.PurchaseOrders);
              // Nav Property Names
                   
     

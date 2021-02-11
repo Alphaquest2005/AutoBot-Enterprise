@@ -13,20 +13,13 @@ using Core.Common.Business.Entities;
 using WaterNut.Interfaces;
 using TrackableEntities;
 
-namespace OCR.Business.Entities
+namespace EntryDataDS.Business.Entities
 {
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class Invoices : BaseEntity<Invoices>, ITrackable 
+    public partial class ShipmentInvoicePOs : BaseEntity<ShipmentInvoicePOs>, ITrackable 
     {
-        partial void AutoGenStartUp() //Invoices()
-        {
-            this.Parts = new List<Parts>();
-            this.RegEx = new List<InvoiceRegEx>();
-            this.FileTypes = new List<OCRFileTypes>();
-        }
-
         [DataMember]
         public int Id 
         {
@@ -43,56 +36,39 @@ namespace OCR.Business.Entities
         }
         int _id;
         [DataMember]
-        public string Name 
+        public int InvoiceId 
         {
             get
             {
-                return _name;
+                return _invoiceid;
             }
             set
             {
-                _name = value;
+                _invoiceid = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _name;
+        int _invoiceid;
         [DataMember]
-        public Nullable<int> FileTypeId 
+        public int EntryData_Id 
         {
             get
             {
-                return _filetypeid;
+                return _entrydata_id;
             }
             set
             {
-                _filetypeid = value;
+                _entrydata_id = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _filetypeid;
+        int _entrydata_id;
         [DataMember]
-        public Nullable<int> ApplicationSettingsId 
-        {
-            get
-            {
-                return _applicationsettingsid;
-            }
-            set
-            {
-                _applicationsettingsid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<int> _applicationsettingsid;
+        public PurchaseOrders PurchaseOrders { get; set; }
         [DataMember]
-        public List<Parts> Parts { get; set; }
-        [DataMember]
-        public List<InvoiceRegEx> RegEx { get; set; }
-        [DataMember]
-        public List<OCRFileTypes> FileTypes { get; set; }
+        public ShipmentInvoice ShipmentInvoice { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

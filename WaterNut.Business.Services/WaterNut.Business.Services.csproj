@@ -639,6 +639,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightDetailsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentFreightService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceDetailPOSSuggestionsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentInvoicePOsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentInvoiceService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentManifestBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentManifestDetailsService.cs" />
@@ -1215,6 +1216,7 @@
     <Compile Include="Services\EntryDataDS\ShipmentFreightDetailsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentFreightService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceDetailPOSSuggestionsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentInvoicePOsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentManifestBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentManifestDetailsService.cs" />

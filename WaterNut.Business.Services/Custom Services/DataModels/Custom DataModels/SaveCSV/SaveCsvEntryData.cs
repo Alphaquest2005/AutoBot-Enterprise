@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Dynamic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
@@ -96,6 +97,7 @@ namespace WaterNut.DataSpace
                         .SelectMany(x => x.FileTypeMappings.Where(z => heading.Select(h => h.ToUpper().Trim()).Contains(z.OriginalName.ToUpper().Trim())))
                         .GroupBy(x => x.FileTypes)
                         .OrderByDescending(x => x.Count())
+                        .Where(x => x.Key.Type != "POTemplate")
                         .ToList();
 
                  var res = resLst.FirstOrDefault();
@@ -165,39 +167,77 @@ namespace WaterNut.DataSpace
                             for (int j = 0; j < i.Number.Length; j++)
                             {
                                 
-                                var rate = totalst[j] / totalSum;
+                                var rate =  (totalSum == 0 || j >= totalst.Count || totalst[j] == 0) ? (1 / Convert.ToDouble(i.Number.Length) ) : totalst[j] / totalSum;
                                 var pkgs = j == i.Number.Length - 1
                                     ? i.Totalpkgs - usedPieces
                                     : Convert.ToInt32(i.Totalpkgs * rate);
+                                if (pkgs == 0) pkgs = 1;
                                 var kgs = j == i.Number.Length - 1
                                     ? i.totalKgs - usedKgs
                                     : Convert.ToDouble(i.totalKgs * rate);
                                 var cf = j == i.Number.Length - 1
                                     ? i.totalCF - usedCF
                                     : Convert.ToDouble(i.totalCF * rate);
-                                var res = rawRider.ShipmentRiderDetails
-                                    .Where(x => x.WarehouseCode == i.WarehouseCode && x.InvoiceNumber.Contains(i.Number[j])).Select(
-                                        z =>
-                                            new ShipmentRiderDetails()
-                                            {
-                                                Consignee = z.Consignee,
-                                                Code = z.Code,
-                                                Shipper = z.Shipper,
-                                                TrackingNumber = z.TrackingNumber,
-                                                Pieces = pkgs,
-                                                WarehouseCode = z.WarehouseCode,
-                                                InvoiceNumber = i.Number[j],
-                                                InvoiceTotal = totalst[j],
-                                                GrossWeightKg = kgs,
-                                                CubicFeet = cf,
-                                                TrackingState = TrackingState.Added
 
-                                            });
+                                List<ShipmentRiderDetails> res = new List<ShipmentRiderDetails>();
+                                if (usedPieces >= i.Totalpkgs)
+                                {
+                                    var riderDetail = riderDetails.FirstOrDefault(x => x.Pieces > 1);
+                                    if (riderDetail != null)
+                                    {
+                                        riderDetail.Pieces -= 1;
+                                        res.Add(new ShipmentRiderDetails()
+                                        {
+                                            Consignee = riderDetail.Consignee,
+                                            Code = riderDetail.Code,
+                                            Shipper = riderDetail.Shipper,
+                                            TrackingNumber = riderDetail.TrackingNumber,
+                                            Pieces = 1,
+                                            WarehouseCode = riderDetail.WarehouseCode,
+                                            InvoiceNumber = i.Number[j],
+                                            InvoiceTotal = j >= totalst.Count ? 0 : totalst[j],
+                                            GrossWeightKg = kgs,
+                                            CubicFeet = cf,
+                                            TrackingState = TrackingState.Added
+
+                                        });
+                                    }
+                                    else
+                                    {
+
+                                    }
+
+                                }
+                                else
+                                {
+                                   
+                                    res = rawRider.ShipmentRiderDetails
+                                        .Where(x => x.WarehouseCode == i.WarehouseCode &&
+                                                    x.InvoiceNumber.Contains(i.Number[j])).Select(
+                                            z =>
+                                                new ShipmentRiderDetails()
+                                                {
+                                                    Consignee = z.Consignee,
+                                                    Code = z.Code,
+                                                    Shipper = z.Shipper,
+                                                    TrackingNumber = z.TrackingNumber,
+                                                    Pieces = pkgs,
+                                                    WarehouseCode = z.WarehouseCode,
+                                                    InvoiceNumber = i.Number[j],
+                                                    InvoiceTotal = j >= totalst.Count ? 0 : totalst[j],
+                                                    GrossWeightKg = kgs,
+                                                    CubicFeet = cf,
+                                                    TrackingState = TrackingState.Added
+
+                                                }).ToList();
+                                }
+
+
                                 usedCF += cf;
                                 usedKgs += kgs;
                                 usedPieces += pkgs;
                                 riderDetails.AddRange(res);
-                                if (i.Number.Length != i.Total.Length) break;
+                                if (totalst.Sum() != 0 && i.Number.Length != i.Total.Length) break;
                             }
 
                         }
@@ -366,7 +406,7 @@ namespace WaterNut.DataSpace
                     {
 
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        InvoiceNo = x["InvoiceNo"].ToString(),
+                        InvoiceNo = x.ContainsKey("InvoiceNo") ?  x["InvoiceNo"].ToString() : "Unknown",
                         InvoiceDate = x.ContainsKey("InvoiceDate") ?  DateTime.Parse(x["InvoiceDate"].ToString()) : DateTime.MinValue,
                         InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null,//Because of MPI not 
                         SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null,
@@ -379,6 +419,7 @@ namespace WaterNut.DataSpace
                         TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null,
                         TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null,
                         InvoiceDetails = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
+                                                .Where(z => Convert.ToDouble(z["Quantity"].ToString()) > 0 && (z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString())) > 0)
                                                 .Select(z => new InvoiceDetails()
                                                 {
                                                     Quantity = Convert.ToDouble(z["Quantity"].ToString()),
@@ -436,6 +477,13 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                var filename = SetFilename(droppedFilePath, "-Freight.pdf");
+                
+                 
+                   
+                
+
+
                 var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
                     .Select(x => new ShipmentFreight()
                     {
@@ -443,6 +491,7 @@ namespace WaterNut.DataSpace
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         InvoiceNumber = x["InvoiceNumber"].ToString(),
                         Consignee = x["Consignee"].ToString(),
+                        Currency = x["Currency"].ToString().Truncate(3),
                         InvoiceDate =(DateTime) x["ETA"],
                         DueDate = (DateTime)x["DueDate"],
                         ETA = (DateTime)x["ETA"],
@@ -461,7 +510,7 @@ namespace WaterNut.DataSpace
                                                 }).ToList(),
 
                         EmailId = emailId,
-                        SourceFile = droppedFilePath,
+                        SourceFile = filename,
                         FileTypeId = fileTypeId,
                         TrackingState = TrackingState.Added,
 
@@ -489,12 +538,31 @@ namespace WaterNut.DataSpace
                 throw;
             }
         }
+
+        private static string SetFilename(string droppedFilePath, string nameExtension)
+        {
+            string filename;
+            if (droppedFilePath.Contains(nameExtension))
+            {
+                filename = droppedFilePath;
+            }
+            else
+            {
+                var file = new FileInfo(droppedFilePath);
+                filename = $"{Path.Combine(file.DirectoryName)}\\{file.Name.Replace(file.Extension, "")}{nameExtension}";
+                if(!File.Exists(filename))File.Copy(droppedFilePath, filename);
+            }
+
+            return filename;
+        }
+
         double CF2M3 = 0.0283168;
         private void ProcessBL(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
         {
             try
             {
-                
+                var filename = SetFilename(droppedFilePath, "-BL.pdf");
+
                 var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
                     .Select(x => new ShipmentBL()
                     {
@@ -538,7 +606,7 @@ namespace WaterNut.DataSpace
                                                             }).ToList(),
 
                         EmailId = emailId,
-                        SourceFile = droppedFilePath,
+                        SourceFile = filename,
                         FileTypeId = fileTypeId,
                         TrackingState = TrackingState.Added,
 
@@ -571,6 +639,8 @@ namespace WaterNut.DataSpace
         {
             try
             {
+                var filename = SetFilename(droppedFilePath, "-Manifest.pdf");
+
                 var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>) x))
                     .Select(x => new ShipmentManifest()
                     {
@@ -601,7 +671,7 @@ namespace WaterNut.DataSpace
                         Marks = x["Marks"].ToString(),
                         //Containers = Convert.ToInt32(x["Containers"].ToString()),
                         EmailId = emailId,
-                        SourceFile = droppedFilePath,
+                        SourceFile = filename,
                         FileTypeId = fileTypeId,
                         TrackingState = TrackingState.Added,
 
@@ -733,16 +803,16 @@ namespace WaterNut.DataSpace
                                 //Can't set entrydata_id here cuz this is from data
                                 ItemNumber = x.ItemNumber.ToUpper(),
                                 ItemDescription = x.ItemDescription,
-                                Cost = Convert.ToDouble(x.Cost ?? 0),
-                                TotalCost = Convert.ToDouble(x.TotalCost ?? 0),
-                                Quantity = Convert.ToDouble(x.Quantity ?? 0),
+                                Cost = Convert.ToDouble(x.Cost ?? 0.0),
+                                TotalCost = Convert.ToDouble(x.TotalCost ?? 0.0),
+                                Quantity = Convert.ToDouble(x.Quantity ?? 0.0),
                                 FileLineNumber = x.LineNumber,
                                 Units = x.Units,
-                                Freight = x.Freight ?? 0,
-                                Weight = x.Weight ?? 0,
-                                InternalFreight = x.InternalFreight ?? 0,
-                                InvoiceQty = x.InvoiceQuantity ?? 0,
-                                ReceivedQty = x.ReceivedQuantity ?? 0,
+                                Freight = Convert.ToDouble(x.Freight ?? 0.0),
+                                Weight = Convert.ToDouble(x.Weight ?? 0.0),
+                                InternalFreight = Convert.ToDouble(x.InternalFreight ?? 0.0),
+                                InvoiceQty = Convert.ToDouble(x.InvoiceQty ?? 0.0),
+                                ReceivedQty = Convert.ToDouble(x.ReceivedQty ?? 0.0),
                                 TaxAmount = x.Tax,
                                 CNumber = x.CNumber,
                                 PreviousInvoiceNumber = x.PreviousInvoiceNumber,
@@ -753,15 +823,15 @@ namespace WaterNut.DataSpace
                             }),
                         f = g.Select(x => new
                         {
-                            TotalWeight = x.TotalWeight ?? 0,
-                            TotalFreight = x.TotalFreight ?? 0,
-                            TotalInternalFreight = x.TotalInternalFreight ?? 0,
-                            TotalOtherCost = x.TotalOtherCost ?? 0,
-                            TotalInsurance = x.TotalInsurance ?? 0,
-                            TotalDeductions = x.TotalDeductions ?? 0,
-                            InvoiceTotal = x.InvoiceTotal ?? 0,
-                            TotalTax = x.TotalTax ?? 0,
-                            Packages = x.Packages ?? 0,
+                            TotalWeight = Convert.ToDouble(x.TotalWeight ?? 0.0),
+                            TotalFreight = Convert.ToDouble(x.TotalFreight ?? 0.0),
+                            TotalInternalFreight = Convert.ToDouble(x.TotalInternalFreight ?? 0.0),
+                            TotalOtherCost = Convert.ToDouble(x.TotalOtherCost ?? 0.0),
+                            TotalInsurance = Convert.ToDouble(x.TotalInsurance ?? 0.0),
+                            TotalDeductions = Convert.ToDouble(x.TotalDeductions ?? 0.0),
+                            InvoiceTotal = Convert.ToDouble(x.InvoiceTotal ?? 0.0),
+                            TotalTax = Convert.ToDouble(x.TotalTax ?? 0.0),
+                            Packages = Convert.ToInt32(string.IsNullOrEmpty(x.Packages) ? "0" : x.Packages),
                             WarehouseNo = x.WarehouseNo,
 
 
@@ -950,6 +1020,8 @@ namespace WaterNut.DataSpace
                                         Math.Abs((double) item.f.Sum(x => x.InvoiceTotal)) < .001)
                                         throw new ApplicationException(
                                             $"{entryDataId} has no Invoice Total. Please check File.");
+                                    
+
                                     var EDpo = new PurchaseOrders(true)
                                     {
                                         ApplicationSettingsId = applicationSettingsId,
@@ -958,15 +1030,15 @@ namespace WaterNut.DataSpace
                                         PONumber = entryDataId,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
-                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
-                                        Packages = item.f.Sum(x => x.Packages),
-                                        
+                                        TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => (double)x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => (double)x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => (double)x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => (double)x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
+                                        Packages = item.f.Sum(x => (int)x.Packages),
+
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
@@ -2145,7 +2217,8 @@ namespace WaterNut.DataSpace
                         out rdate))
                         return rdate;
                 }
-                return DateTime.Parse(val);
+
+                return rdate; //DateTime.Parse(val);
             }
 
             if (key.DataType == "Number") return Convert.ToSingle(string.IsNullOrEmpty(val)?"0":val);

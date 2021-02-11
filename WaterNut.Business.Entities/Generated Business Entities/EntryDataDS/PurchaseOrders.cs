@@ -23,6 +23,7 @@ namespace EntryDataDS.Business.Entities
         partial void AutoGenStartUp() //PurchaseOrders()
         {
             this.WarehouseInfo = new List<WarehouseInfo>();
+            this.ShipmentInvoicePOs = new List<ShipmentInvoicePOs>();
         }
 
         [DataMember]
@@ -87,6 +88,8 @@ namespace EntryDataDS.Business.Entities
         string _financialinformation;
         [DataMember]
         public List<WarehouseInfo> WarehouseInfo { get; set; }
+        [DataMember]
+        public List<ShipmentInvoicePOs> ShipmentInvoicePOs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

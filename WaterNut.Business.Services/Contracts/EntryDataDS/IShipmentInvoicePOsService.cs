@@ -13,61 +13,61 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 
 using Core.Common.Contracts;
-using OCR.Business.Entities;
+using EntryDataDS.Business.Entities;
 using Core.Common.Business.Services;
 using WaterNut.Interfaces;
 
-namespace OCR.Business.Services
+namespace EntryDataDS.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IInvoicesService : IBusinessService
+    public partial interface IShipmentInvoicePOsService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> GetInvoices(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOs(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<Invoices> GetInvoicesByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<ShipmentInvoicePOs> GetShipmentInvoicePOsByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> GetInvoicesByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> GetInvoicesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<Invoices>> GetInvoicesByExpressionNav(string exp,
+		Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> GetInvoicesByBatch(string exp,
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> GetInvoicesByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<Invoices> UpdateInvoices(Invoices entity);
+        Task<ShipmentInvoicePOs> UpdateShipmentInvoicePOs(ShipmentInvoicePOs entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<Invoices> CreateInvoices(Invoices entity);
+        Task<ShipmentInvoicePOs> CreateShipmentInvoicePOs(ShipmentInvoicePOs entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteInvoices(string id);
+        Task<bool> DeleteShipmentInvoicePOs(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedInvoices(IEnumerable<string> selectedInvoices);
+        Task<bool> RemoveSelectedShipmentInvoicePOs(IEnumerable<string> selectedShipmentInvoicePOs);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace OCR.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<ShipmentInvoicePOs>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<Invoices>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<ShipmentInvoicePOs>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,10 +107,10 @@ namespace OCR.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> GetInvoicesByFileTypeId(string FileTypeId, List<string> includesLst = null);
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByInvoiceId(string InvoiceId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<Invoices>> GetInvoicesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null);
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
   
 
 

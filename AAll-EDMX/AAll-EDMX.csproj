@@ -469,6 +469,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoice.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoicePOs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentManifestDetails.cs
@@ -848,6 +849,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifest.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs
@@ -1236,6 +1238,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoice.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentManifestDetails.cs
@@ -1602,6 +1605,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoice.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoicePOs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentManifestDetails.cs
@@ -1968,6 +1972,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoice.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifestDetails.cs
@@ -2334,6 +2339,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoice.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifestDetails.cs
@@ -3820,6 +3826,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifest.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs
@@ -4850,6 +4857,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceDetailPOSSuggestionsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoicePOsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentManifestBLsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentManifestDetailsService.cs
@@ -5216,6 +5224,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceDetailPOSSuggestionsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoicePOsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentManifestBLsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentManifestDetailsService.cs

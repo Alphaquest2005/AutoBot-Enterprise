@@ -60,6 +60,19 @@ namespace OCR.Client.DTO
 		}
         private Nullable<int> _FileTypeId;
 
+        [DataMember]
+        public Nullable<int> ApplicationSettingsId
+		{ 
+		    get { return _ApplicationSettingsId; }
+			set
+			{
+			    if (value == _ApplicationSettingsId) return;
+				_ApplicationSettingsId = value;
+				NotifyPropertyChanged();//m => this.ApplicationSettingsId
+			}
+		}
+        private Nullable<int> _ApplicationSettingsId;
+
        
         [DataMember]
         public ChangeTrackingCollection<Parts> Parts

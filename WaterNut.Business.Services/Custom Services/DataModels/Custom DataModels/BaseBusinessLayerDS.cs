@@ -1517,7 +1517,7 @@ namespace WaterNut.DataSpace
                     {
 
                         var t = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
-                            .Select(y => y.TotalCIF).DefaultIfEmpty(0).Sum();
+                            .Select(y => y.TotalCIF + y.TotalInternalFreight + y.TotalInsurance + y.TotalOtherCost - y.TotalDeduction).DefaultIfEmpty(0).Sum();
                         var f = ctx.AsycudaDocuments.Where(x => x.ASYCUDA_Id == doc)
                             .Select(y => y.TotalFreight).DefaultIfEmpty(0).Sum(); // should be zero if new existing has value take away existing value
                         var val = t.GetValueOrDefault()- f.GetValueOrDefault();

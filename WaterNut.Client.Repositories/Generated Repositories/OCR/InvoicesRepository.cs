@@ -394,6 +394,34 @@ namespace OCR.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<Invoices>> GetInvoicesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+             if (ApplicationSettingsId == "0") return null;
+            try
+            {
+                 using (InvoicesClient t = new InvoicesClient())
+                    {
+                        var res = await t.GetInvoicesByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new Invoices(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {

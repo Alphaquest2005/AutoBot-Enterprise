@@ -428,6 +428,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoicePOs.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentManifest.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentManifestBLs.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentManifestDetails.cs" />
@@ -796,6 +797,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOs.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentManifest.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentManifestBLs.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentManifestDetails.cs" />
@@ -1162,6 +1164,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoicePOs.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentManifest.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentManifestBLs.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentManifestDetails.cs" />
@@ -1528,6 +1531,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifest.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifestBLs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifestDetails.cs" />
@@ -1894,6 +1898,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifest.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifestBLs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifestDetails.cs" />
@@ -2270,6 +2275,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoicePOs.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentManifest.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentManifestBLs.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs" />

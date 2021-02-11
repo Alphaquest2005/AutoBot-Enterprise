@@ -45,9 +45,9 @@ namespace WaterNut.DataSpace
 
                 //pdftxt = parseUsingPDFBox(file);
 
-                //pdftxt = pdfPigText(file); //TODO: need to implement the layout logic
+                pdftxt += pdfPigText(file); //TODO: need to implement the layout logic
 
-                if (string.IsNullOrEmpty(pdftxt)) pdftxt = PdfOcr.Ocr(file);
+                pdftxt += PdfOcr.Ocr(file);
 
                 //Get Template
                 using (var ctx = new OCRContext())
@@ -66,6 +66,7 @@ namespace WaterNut.DataSpace
                         .Include("Parts.Lines.Fields.FieldValue")
                         .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
                         .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         //.Where(x => x.Id == 3) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
                         .ToList()
                         .Select(x => new Invoice(x));
@@ -77,7 +78,7 @@ namespace WaterNut.DataSpace
                             List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt));
                             if (csvLines.Count < 1 || !tmp.Success)
                             {
-                                var failedlines = tmp.Parts.SelectMany(x => x.AllLines).Where(z => z.FailedFields.Any()).ToList();
+                                var failedlines = tmp.Parts.SelectMany(x => x.AllLines).Where(z => z.FailedFields.Any() || !z.Values.Any()).ToList();
                                 
                                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                                     tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
@@ -477,8 +478,9 @@ namespace WaterNut.DataSpace
                     if (DateTime.TryParse(f.Value, out DateTime date))
                         return date;
                     else
-                        throw new ApplicationException(
-                            $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                        //throw new ApplicationException(
+                        //    $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
+                        return DateTime.MinValue;
                 case "English Date":
                     if (DateTime.TryParseExact(f.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
                         out DateTime edate))
@@ -641,8 +643,12 @@ namespace WaterNut.DataSpace
             foreach (var field in OCR_Lines.Fields)
             {
                 var value = field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim();
-                field.FormatRegEx.ForEach(x => value = Regex.Replace(value, x.RegEx.RegEx, x.ReplacementRegEx.RegEx,
-                    RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture));
+                foreach (var reg in field.FormatRegEx)
+                {
+                    value = Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
+                };
+               
                 values.Add(field, value.Trim());//$"\"{}\""
             }
 

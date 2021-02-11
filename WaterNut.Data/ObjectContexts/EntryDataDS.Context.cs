@@ -135,6 +135,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentInvoiceDetailPOSSuggestions> ShipmentInvoiceDetailPOSSuggestions { get; set; }
      
+        public DbSet<ShipmentInvoicePOs> ShipmentInvoicePOs { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -226,6 +228,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ShipmentBLFreightMap());
          
             modelBuilder.Configurations.Add(new ShipmentInvoiceDetailPOSSuggestionsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoicePOsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

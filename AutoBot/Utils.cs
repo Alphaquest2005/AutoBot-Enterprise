@@ -240,6 +240,20 @@ namespace AutoBot
             
                 // Todo quick paks etc put Man reg#, bl numer, TotalWeight & Totalfreight in spreadsheet. so invoice can generate the entry.
                 // change the required documents to match too
+
+                using (var ctx = new EntryDataDSContext())
+                {
+                    ctx.Database.ExecuteSqlCommand(@"INSERT INTO ShipmentInvoicePOs
+                                                                     (EntryData_Id, InvoiceId)
+                                                    SELECT EntryData_PurchaseOrders.EntryData_Id, ShipmentInvoice.Id
+                                                    FROM    ShipmentInvoicePOManualMatches INNER JOIN
+                                                                     EntryData_PurchaseOrders ON ShipmentInvoicePOManualMatches.PONumber = EntryData_PurchaseOrders.PONumber INNER JOIN
+                                                                     ShipmentInvoice ON ShipmentInvoicePOManualMatches.InvoiceNo = ShipmentInvoice.InvoiceNo LEFT OUTER JOIN
+                                                                     ShipmentInvoicePOs ON EntryData_PurchaseOrders.EntryData_Id = ShipmentInvoicePOs.EntryData_Id AND ShipmentInvoice.Id = ShipmentInvoicePOs.InvoiceId
+                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)");
+                }
+
+
                 var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
                                     .ProcessEmailInvoices()
                                     .LoadEmailRiders()
@@ -6337,7 +6351,7 @@ namespace AutoBot
                             var index = Array.LastIndexOf(header.ItemArray,
                                 h); //last index of because of Cost USD file has two columns
                             var val = drow[index].ToString();
-                            row.Add(h.ToString(), StringToCSVCell(val));
+                            if(!row.ContainsKey(h.ToString()))row.Add(h.ToString(), StringToCSVCell(val));
                         }
                     
                 }

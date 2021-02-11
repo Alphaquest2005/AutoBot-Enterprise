@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace EntryDataDS.Business.Services
 {
-   [Export (typeof(IPurchaseOrdersService))]
+   [Export (typeof(IShipmentInvoicePOsService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class PurchaseOrdersService : IPurchaseOrdersService, IDisposable
+    public partial class ShipmentInvoicePOsService : IShipmentInvoicePOsService, IDisposable
     {
         //private readonly EntryDataDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public PurchaseOrdersService()
+        public ShipmentInvoicePOsService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<PurchaseOrders>> GetEntryData(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOs(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace EntryDataDS.Business.Services
                   using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<PurchaseOrders> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<ShipmentInvoicePOs> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<PurchaseOrders> GetPurchaseOrdersByKey(string EntryData_Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<ShipmentInvoicePOs> GetShipmentInvoicePOsByKey(string Id, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(EntryData_Id))return null; 
+			   if(string.IsNullOrEmpty(Id))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryData_Id);
+                var i = Convert.ToInt32(Id);
 				var set = AddIncludes(includesLst, dbContext);
-                PurchaseOrders entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.EntryData_Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                ShipmentInvoicePOs entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace EntryDataDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<PurchaseOrders>> GetEntryDataByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PurchaseOrders>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentInvoicePOs>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<PurchaseOrders>> GetEntryDataByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PurchaseOrders>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentInvoicePOs>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<PurchaseOrders>> GetEntryDataByExpressionNav(string exp,
+		public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PurchaseOrders>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentInvoicePOs>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,64 +235,16 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
+                            case "PurchaseOrders":
                                 return
                                     await
-                                        GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
+                                        GetWhere<PurchaseOrders>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocuments":
+                            case "ShipmentInvoice":
                                 return
                                     await
-                                        GetWhere<AsycudaDocumentEntryData>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentSets":
-                                return
-                                    await
-                                        GetWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypes":
-                                return
-                                    await
-                                        GetWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataTotals":
-                                return
-                                    await
-                                        GetWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataEx":
-                                return
-                                    await
-                                        GetWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "DocumentType":
-                                return
-                                    await
-                                        GetWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "Suppliers":
-                                return
-                                    await
-                                        GetWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "WarehouseInfo":
-                                return
-                                    await
-                                        GetWhere<WarehouseInfo>(dbContext, exp, itm.Value, "", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentInvoicePOs":
-                                return
-                                    await
-                                        GetWhere<ShipmentInvoicePOs>(dbContext, exp, itm.Value, "", "Select", includesLst)
+                                        GetWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -321,17 +273,17 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<PurchaseOrders>> GetEntryDataByBatch(string exp,
+        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<PurchaseOrders>>();
+                var res = new ConcurrentQueue<List<ShipmentInvoicePOs>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PurchaseOrders>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentInvoicePOs>();
 
 
                 var batchSize = 500;
@@ -352,14 +304,14 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<PurchaseOrders> dset;
+                                IQueryable<ShipmentInvoicePOs> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryData_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.EntryData_Id).Where(exp);
+                                    dset = set.OrderBy(x => x.Id).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -396,17 +348,17 @@ namespace EntryDataDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<PurchaseOrders>> GetEntryDataByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<PurchaseOrders>>();
+                var res = new ConcurrentQueue<List<ShipmentInvoicePOs>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<PurchaseOrders>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<ShipmentInvoicePOs>();
 
 
                 var batchSize = 500;
@@ -427,15 +379,15 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<PurchaseOrders> dset;
+                                IQueryable<ShipmentInvoicePOs> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.EntryData_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.EntryData_Id);
+                                    dset = set.OrderBy(x => x.Id);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -472,13 +424,13 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<PurchaseOrders> UpdatePurchaseOrders(PurchaseOrders entity)
+        public async Task<ShipmentInvoicePOs> UpdateShipmentInvoicePOs(ShipmentInvoicePOs entity)
         { 
             using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (PurchaseOrders) entity;
+                     var res = (ShipmentInvoicePOs) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -554,14 +506,14 @@ namespace EntryDataDS.Business.Services
            return entity;
         }
 
-        public async Task<PurchaseOrders> CreatePurchaseOrders(PurchaseOrders entity)
+        public async Task<ShipmentInvoicePOs> CreateShipmentInvoicePOs(ShipmentInvoicePOs entity)
         {
             try
             {
-                var res = (PurchaseOrders) entity;
+                var res = (ShipmentInvoicePOs) entity;
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                dbContext.Set<PurchaseOrders>().Add(res);
+                dbContext.ShipmentInvoicePOs.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -581,21 +533,21 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeletePurchaseOrders(string EntryData_Id)
+        public async Task<bool> DeleteShipmentInvoicePOs(string Id)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(EntryData_Id);
-                PurchaseOrders entity = await dbContext.EntryData.OfType<PurchaseOrders>()
-													.SingleOrDefaultAsync(x => x.EntryData_Id == i)
+                var i = Convert.ToInt32(Id);
+                ShipmentInvoicePOs entity = await dbContext.ShipmentInvoicePOs
+													.SingleOrDefaultAsync(x => x.Id == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.Set<PurchaseOrders>().Attach(entity);
-                    dbContext.Set<PurchaseOrders>().Remove(entity);
+                    dbContext.ShipmentInvoicePOs.Attach(entity);
+                    dbContext.ShipmentInvoicePOs.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -614,19 +566,19 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedPurchaseOrders(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedShipmentInvoicePOs(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing PurchaseOrders", lst.Count());
+                StatusModel.StartStatusUpdate("Removing ShipmentInvoicePOs", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new PurchaseOrdersService())
+                    using (var ctx = new ShipmentInvoicePOsService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeletePurchaseOrders(item).Wait();
+                            ctx.DeleteShipmentInvoicePOs(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -661,7 +613,7 @@ namespace EntryDataDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<PurchaseOrders>)dbContext.Set<PurchaseOrders>(); 
+                    var set = (IQueryable<ShipmentInvoicePOs>)dbContext.ShipmentInvoicePOs; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -699,7 +651,7 @@ namespace EntryDataDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.Set<PurchaseOrders>()
+                        return await dbContext.ShipmentInvoicePOs
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -707,7 +659,7 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.Set<PurchaseOrders>()
+                        return await dbContext.ShipmentInvoicePOs
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -729,19 +681,19 @@ namespace EntryDataDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<PurchaseOrders>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<ShipmentInvoicePOs>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<PurchaseOrders>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<ShipmentInvoicePOs>();
                     if (exp == "All")
                     {
-                        return await dbContext.Set<PurchaseOrders>()
+                        return await dbContext.ShipmentInvoicePOs
 										.AsNoTracking()
-                                        .OrderBy(y => y.EntryData_Id)
+                                        .OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -750,10 +702,10 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.Set<PurchaseOrders>()
+                        return await dbContext.ShipmentInvoicePOs
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.EntryData_Id)
+										.OrderBy(y => y.Id)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -785,7 +737,7 @@ namespace EntryDataDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.Set<PurchaseOrders>()
+                        return await dbContext.ShipmentInvoicePOs
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -794,39 +746,15 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
-                                return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EntryData", "Select")
+                            case "PurchaseOrders":
+                                return await CountWhere<PurchaseOrders>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocuments":
-                                return await CountWhere<AsycudaDocumentEntryData>(dbContext, exp, itm.Value, "EntryData", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSets":
-                                return await CountWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await CountWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataTotals":
-                                return await CountWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataEx":
-                                return await CountWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "DocumentType":
-                                return await CountWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Suppliers":
-                                return await CountWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "WarehouseInfo":
-                                return await CountWhere<WarehouseInfo>(dbContext, exp, itm.Value, "", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentInvoicePOs":
-                                return await CountWhere<ShipmentInvoicePOs>(dbContext, exp, itm.Value, "", "Select")
+                            case "ShipmentInvoice":
+                                return await CountWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.Set<PurchaseOrders>().Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                    return await dbContext.ShipmentInvoicePOs.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -868,10 +796,10 @@ namespace EntryDataDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PurchaseOrders>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .SelectMany(navProp).OfType<ShipmentInvoicePOs>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -889,10 +817,10 @@ namespace EntryDataDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PurchaseOrders>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Select(navProp).OfType<ShipmentInvoicePOs>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -903,7 +831,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<PurchaseOrders>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<ShipmentInvoicePOs>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -911,7 +839,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<PurchaseOrders>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<ShipmentInvoicePOs>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -919,7 +847,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.EntryData_Id)
+                                    .OrderBy(y => y.Id)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -930,64 +858,16 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
+                            case "PurchaseOrders":
                                 return
                                     await
-                                        LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
+                                        LoadRangeWhere<PurchaseOrders>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
-                            case "AsycudaDocuments":
+                            case "ShipmentInvoice":
                                 return
                                     await
-                                        LoadRangeWhere<AsycudaDocumentEntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "AsycudaDocumentSets":
-                                return
-                                    await
-                                        LoadRangeWhere<AsycudaDocumentSetEntryData>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "FileTypes":
-                                return
-                                    await
-                                        LoadRangeWhere<FileTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataTotals":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryDataExTotals>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataEx":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryDataEx>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "DocumentType":
-                                return
-                                    await
-                                        LoadRangeWhere<EDDocumentTypes>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "Suppliers":
-                                return
-                                    await
-                                        LoadRangeWhere<Suppliers>(startIndex, count, dbContext, exp, itm.Value, "EntryData", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "WarehouseInfo":
-                                return
-                                    await
-                                        LoadRangeWhere<WarehouseInfo>(startIndex, count, dbContext, exp, itm.Value, "", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "ShipmentInvoicePOs":
-                                return
-                                    await
-                                        LoadRangeWhere<ShipmentInvoicePOs>(startIndex, count, dbContext, exp, itm.Value, "", "Select")
+                                        LoadRangeWhere<ShipmentInvoice>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -996,10 +876,10 @@ namespace EntryDataDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.Set<PurchaseOrders>()
+                    return await set//dbContext.ShipmentInvoicePOs
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
-								.OrderBy(y => y.EntryData_Id)
+                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+								.OrderBy(y => y.Id)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -1023,7 +903,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<PurchaseOrders>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ShipmentInvoicePOs>> LoadRangeWhere<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -1038,7 +918,7 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<PurchaseOrders>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ShipmentInvoicePOs>> LoadRangeSelectMany<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1046,14 +926,14 @@ namespace EntryDataDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PurchaseOrders>();
+                .SelectMany(navProp).OfType<ShipmentInvoicePOs>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryData_Id)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1067,7 +947,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<PurchaseOrders>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<ShipmentInvoicePOs>> LoadRangeSelect<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -1075,14 +955,14 @@ namespace EntryDataDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PurchaseOrders>();
+                .Select(navProp).OfType<ShipmentInvoicePOs>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.EntryData_Id)
+                .OrderBy(y => y.Id)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1096,7 +976,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<PurchaseOrders>> GetWhere<T>(EntryDataDSContext dbContext,
+        private static async Task<IEnumerable<ShipmentInvoicePOs>> GetWhere<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1120,7 +1000,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<PurchaseOrders>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<ShipmentInvoicePOs>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1131,18 +1011,18 @@ namespace EntryDataDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<PurchaseOrders>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+							.SelectMany(navProp).OfType<ShipmentInvoicePOs>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<PurchaseOrders>)dbContext.Set<T>()
+			var set = (DbQuery<ShipmentInvoicePOs>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PurchaseOrders>()
-                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                .SelectMany(navProp).OfType<ShipmentInvoicePOs>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1157,7 +1037,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<PurchaseOrders>> GetWhereSelect<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<ShipmentInvoicePOs>> GetWhereSelect<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1168,18 +1048,18 @@ namespace EntryDataDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<PurchaseOrders>()
-							.Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+							.Select(navProp).OfType<ShipmentInvoicePOs>()
+							.Where(exp == "All" || exp == null?"Id != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<PurchaseOrders>)dbContext.Set<T>()
+			var set = (DbQuery<ShipmentInvoicePOs>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PurchaseOrders>()
-                .Where(exp == "All" || exp == null?"EntryData_Id != null":exp)
+                .Select(navProp).OfType<ShipmentInvoicePOs>()
+                .Where(exp == "All" || exp == null?"Id != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1194,19 +1074,17 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<PurchaseOrders>> GetPurchaseOrdersByEntryDataId(string EntryDataId, List<string> includesLst = null)
+			        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByInvoiceId(string InvoiceId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = EntryDataId;
+                var i = Convert.ToInt32(InvoiceId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
-                                                    // .Include(x => x.WarehouseInfo)									  
-                                                    // .Include(x => x.ShipmentInvoicePOs)									  
+                IEnumerable<ShipmentInvoicePOs> entities = await set//dbContext.ShipmentInvoicePOs
                                       .AsNoTracking()
-                                        .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
+                                        .Where(x => x.InvoiceId.ToString() == InvoiceId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1225,81 +1103,17 @@ namespace EntryDataDS.Business.Services
                     throw new FaultException<ValidationFault>(fault);
             }
         }
- 	        public async Task<IEnumerable<PurchaseOrders>> GetPurchaseOrdersByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+ 	        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(EntryData_Id);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
-                                                    // .Include(x => x.WarehouseInfo)									  
-                                                    // .Include(x => x.ShipmentInvoicePOs)									  
+                IEnumerable<ShipmentInvoicePOs> entities = await set//dbContext.ShipmentInvoicePOs
                                       .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<PurchaseOrders>> GetPurchaseOrdersByEmailId(string EmailId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(EmailId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
-                                                    // .Include(x => x.WarehouseInfo)									  
-                                                    // .Include(x => x.ShipmentInvoicePOs)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.EmailId.ToString() == EmailId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<PurchaseOrders>> GetPurchaseOrdersByFileTypeId(string FileTypeId, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(FileTypeId);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
-                                                    // .Include(x => x.WarehouseInfo)									  
-                                                    // .Include(x => x.ShipmentInvoicePOs)									  
-                                      .AsNoTracking()
-                                        .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
+                                        .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1330,11 +1144,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.EntryData.OfType<PurchaseOrders>().AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.ShipmentInvoicePOs.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.EntryData.OfType<PurchaseOrders>().AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.ShipmentInvoicePOs.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1362,10 +1176,10 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.Set<PurchaseOrders>().Any()) return 0;
+                    if (!dbContext.ShipmentInvoicePOs.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.Set<PurchaseOrders>()
+                        return Convert.ToDecimal(dbContext.ShipmentInvoicePOs
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1373,39 +1187,15 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "EntryDataDetails":
-                                return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "EntryData", field, "Select")
+                            case "PurchaseOrders":
+                                return await SumWhere<PurchaseOrders>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocuments":
-                                return await SumWhere<AsycudaDocumentEntryData>(dbContext, exp, itm.Value, "EntryData", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "AsycudaDocumentSets":
-                                return await SumWhere<AsycudaDocumentSetEntryData>(dbContext, exp, itm.Value, "EntryData", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "FileTypes":
-                                return await SumWhere<FileTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataTotals":
-                                return await SumWhere<EntryDataExTotals>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataEx":
-                                return await SumWhere<EntryDataEx>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "DocumentType":
-                                return await SumWhere<EDDocumentTypes>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "Suppliers":
-                                return await SumWhere<Suppliers>(dbContext, exp, itm.Value, "EntryData", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "WarehouseInfo":
-                                return await SumWhere<WarehouseInfo>(dbContext, exp, itm.Value, "", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "ShipmentInvoicePOs":
-                                return await SumWhere<ShipmentInvoicePOs>(dbContext, exp, itm.Value, "", field, "Select")
+                            case "ShipmentInvoice":
+                                return await SumWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.Set<PurchaseOrders>().Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.ShipmentInvoicePOs.Where(exp == "All" || exp == null ? "Id != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1445,10 +1235,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<PurchaseOrders>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .SelectMany(navProp).OfType<ShipmentInvoicePOs>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1465,10 +1255,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<PurchaseOrders>()
-                .Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
+                .Select(navProp).OfType<ShipmentInvoicePOs>()
+                .Where(exp == "All" || exp == null ? "Id != null" : exp)
                 .Distinct()
-                .OrderBy("EntryData_Id")
+                .OrderBy("Id")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1491,11 +1281,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.EntryData.OfType<PurchaseOrders>().AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.ShipmentInvoicePOs.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.EntryData.OfType<PurchaseOrders>().AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.ShipmentInvoicePOs.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1516,12 +1306,12 @@ namespace EntryDataDS.Business.Services
          }
 
 		 
-		private static IQueryable<PurchaseOrders> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
+		private static IQueryable<ShipmentInvoicePOs> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<PurchaseOrders>) dbContext.EntryData.OfType<PurchaseOrders>(); 
+			   var set =(DbQuery<ShipmentInvoicePOs>) dbContext.ShipmentInvoicePOs; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1532,7 +1322,7 @@ namespace EntryDataDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<PurchaseOrders> AddWheres(List<string> expLst, IQueryable<PurchaseOrders> set)
+	   private IQueryable<ShipmentInvoicePOs> AddWheres(List<string> expLst, IQueryable<ShipmentInvoicePOs> set)
         {
             try
             {

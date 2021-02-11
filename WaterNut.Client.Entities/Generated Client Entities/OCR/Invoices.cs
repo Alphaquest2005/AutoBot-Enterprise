@@ -92,6 +92,21 @@ public Nullable<int> FileTypeId
 		}
      
 
+       
+       
+public Nullable<int> ApplicationSettingsId
+		{ 
+		    get { return this.invoices.ApplicationSettingsId; }
+			set
+			{
+			    if (value == this.invoices.ApplicationSettingsId) return;
+				this.invoices.ApplicationSettingsId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
         ObservableCollection<Parts> _Parts = null;
         public  ObservableCollection<Parts> Parts
 		{

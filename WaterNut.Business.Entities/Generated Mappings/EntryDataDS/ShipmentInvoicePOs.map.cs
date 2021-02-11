@@ -1,4 +1,4 @@
-﻿namespace OCR.Business.Entities.Mapping
+﻿namespace EntryDataDS.Business.Entities.Mapping
 {
     //#pragma warning disable 1573
     using Entities;
@@ -7,19 +7,17 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Collections.Generic;
     
-    public partial class InvoicesMap : EntityTypeConfiguration<Invoices>
+    public partial class ShipmentInvoicePOsMap : EntityTypeConfiguration<ShipmentInvoicePOs>
     {
-        public InvoicesMap()
+        public ShipmentInvoicePOsMap()
         {                        
               this.HasKey(t => t.Id);        
-              this.ToTable("OCR-Invoices");
+              this.ToTable("ShipmentInvoicePOs");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
-              this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
-              this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
-              this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.HasMany(t => t.Parts).WithRequired(t => (Invoices)t.Invoices);
-              this.HasMany(t => t.RegEx).WithRequired(t => (Invoices)t.OCR_Invoices);
-              this.HasMany(t => t.FileTypes).WithRequired(t => (Invoices)t.Invoices);
+              this.Property(t => t.InvoiceId).HasColumnName("InvoiceId");
+              this.Property(t => t.EntryData_Id).HasColumnName("EntryData_Id");
+              this.HasRequired(t => t.PurchaseOrders).WithMany(t =>(ICollection<ShipmentInvoicePOs>) t.ShipmentInvoicePOs).HasForeignKey(d => d.EntryData_Id);
+              this.HasRequired(t => t.ShipmentInvoice).WithMany(t =>(ICollection<ShipmentInvoicePOs>) t.ShipmentInvoicePOs).HasForeignKey(d => d.InvoiceId);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

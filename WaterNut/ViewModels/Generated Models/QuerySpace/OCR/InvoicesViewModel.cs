@@ -55,6 +55,7 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 
  			// Recieve messages for Core Current Entities Changed
+                        RegisterToReceiveMessages<ApplicationSettings>(CoreEntities.MessageToken.CurrentApplicationSettingsChanged, OnCurrentApplicationSettingsChanged);
  
 
 			Invoices = new VirtualList<Invoices>(vloader);
@@ -136,6 +137,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
             void CurrentInvoices__propertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
                 {
+                    //if (e.PropertyName == "AddApplicationSettings")
+                   // {
+                   //    if(ApplicationSettings.Contains(CurrentInvoices.ApplicationSettings) == false) ApplicationSettings.Add(CurrentInvoices.ApplicationSettings);
+                    //}
                  } 
         internal virtual void OnInvoicesChanged(object sender, NotificationEventArgs e)
         {
@@ -147,11 +152,25 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
  
   			// Core Current Entities Changed
 			// theorticall don't need this cuz i am inheriting from core entities baseview model so changes should flow up to here
+                internal virtual void OnCurrentApplicationSettingsChanged(object sender, SimpleMvvmToolkit.NotificationEventArgs<ApplicationSettings> e)
+				{
+				if (e.Data == null || e.Data.ApplicationSettingsId == null)
+                {
+                    vloader.FilterExpression = null;
+                }
+                else
+                {
+                    vloader.FilterExpression = string.Format("ApplicationSettingsId == {0}", e.Data.ApplicationSettingsId.ToString());
+                }
+					
+                    Invoices.Refresh();
+					NotifyPropertyChanged(x => this.Invoices);
+				}
   
 // Filtering Each Field except IDs
 		public void ViewAll()
         {
-		vloader.FilterExpression = "All";
+			vloader.FilterExpression = $"ApplicationSettingsId == {CoreEntities.ViewModels.BaseViewModel.Instance.CurrentApplicationSettings.ApplicationSettingsId}";
 
 
 

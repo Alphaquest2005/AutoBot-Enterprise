@@ -117,6 +117,11 @@ namespace OCR.Client.Services
             return  await Channel.GetInvoicesByFileTypeId(FileTypeId, includesLst).ConfigureAwait(false);
         }
 			 
+  		public async Task<IEnumerable<Invoices>> GetInvoicesByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+        {
+            return  await Channel.GetInvoicesByApplicationSettingsId(ApplicationSettingsId, includesLst).ConfigureAwait(false);
+        }
+			 
           public decimal SumField(string whereExp, string sumExp)
 		{
 			return Channel.SumField(whereExp,sumExp);
