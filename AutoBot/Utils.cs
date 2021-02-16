@@ -477,8 +477,30 @@ namespace AutoBot
                         .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
 
                         .ToList();
-                   var lst = rlst.Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number))
-                        .ToList();
+                   List<TODO_SubmitPOInfo> lst;
+                    if (rlst.Any())
+                    {
+                        lst = rlst.Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number))
+                            .ToList();
+                    }
+                    else
+                    {
+                        lst = ctx.AsycudaDocuments.Where(x =>
+                            x.ReferenceNumber.Contains(docSet.Declarant_Reference_Number)
+                            || poList.Contains(x.CNumber))
+                            .Where(x => x.ImportComplete == true)
+                            .Select(x => new {
+                                ApplicationSettingsId = docSet.ApplicationSettingsId,
+                                AssessedAsycuda_Id = x.ASYCUDA_Id,
+                                CNumber = x.CNumber
+                            }).ToList()
+                            .Select(x => new TODO_SubmitPOInfo()
+                        {
+                            ApplicationSettingsId = docSet.ApplicationSettingsId,
+                            AssessedAsycuda_Id = x.AssessedAsycuda_Id,
+                            CNumber = x.CNumber
+                        }).ToList();
+                    }
 
                     if (poList.Any())
                     {

@@ -154,7 +154,7 @@ namespace EmailDownloader
                         var fileTypes = emailMapping.EmailFileTypes.Select(x => x.FileTypes)
                             .Where(x => lst.Any(z => Regex.IsMatch(z, x.FilePattern, RegexOptions.IgnoreCase))).ToList();
 
-                        if (lst.Any() && !fileTypes.Any(x => x.Type != "Info"))
+                        if (lst.Any(x => x != "Info.txt") && !fileTypes.Any(x => x.Type != "Info"))
                         {
                             imapClient.Inbox.AddFlags(uid, MessageFlags.Seen, true);
                             if (sendNotifications)
