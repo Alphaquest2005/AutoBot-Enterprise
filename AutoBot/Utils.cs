@@ -6397,11 +6397,25 @@ namespace AutoBot
 
         public static DataTable CSV2DataTable(FileInfo file, string headers)
         {
-            OleDbConnection conn = new OleDbConnection(string.Format(
-                @"Provider=Microsoft.Jet.OleDb.4.0; Data Source={0};" +
-                $"Extended Properties=\"Text;HDR={headers};FMT=Delimited;CharacterSet=65001\"",
-                file.DirectoryName
-            ));
+            OleDbConnection conn = null;
+
+            if (Environment.Is64BitOperatingSystem == false)
+            {
+                conn = new OleDbConnection(string.Format(
+                    @"Provider=Microsoft.Jet.OleDb.4.0; Data Source={0};" +
+                    $"Extended Properties=\"Text;HDR={headers};FMT=Delimited;CharacterSet=65001\"",
+                    file.DirectoryName));
+            }
+            else
+            {
+                conn = new OleDbConnection(string.Format(
+                    @"Provider=Microsoft.ACE.OLEDB.12.0; Data Source={0};" +
+                    $"Extended Properties=\"Text;HDR={headers};FMT=Delimited;CharacterSet=65001\"",
+                    file.DirectoryName));
+            }
+
+
+
             conn.Open();
 
             string sql = string.Format("select * from [{0}]", Path.GetFileName(file.Name));
