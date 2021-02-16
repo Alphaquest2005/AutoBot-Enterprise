@@ -157,18 +157,28 @@ namespace WaterNut.DataSpace
             get { return BaseDataModel._document_TypeCache; }
         }
 
+        private static List<FileTypes> _fileTypes = null;
         public static FileTypes GetFileType(FileTypes fileTypes)
         {
-            using (var ctx = new CoreEntitiesContext())
+            if(_fileTypes == null)
             {
-                return ctx.FileTypes
-                    .Include("FileTypeContacts.Contacts")
-                    .Include("FileTypeActions.Actions")
-                    .Include("AsycudaDocumentSetEx")
-                    .Include("ChildFileTypes")
-                    .Include("FileTypeMappings.FileTypeMappingRegExs")
-                    .First(x => x.Id == fileTypes.Id);
+                using (var ctx = new CoreEntitiesContext())
+                {
+                    _fileTypes =  ctx.FileTypes
+                        .Include("FileTypeContacts.Contacts")
+                        .Include("FileTypeActions.Actions")
+                        .Include("AsycudaDocumentSetEx")
+                        .Include("ChildFileTypes")
+                        .Include("FileTypeMappings.FileTypeMappingRegExs")
+                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .ToList();
+                        
+                       // .First(x => x.Id == fileTypes.Id);
+                }
             }
+           
+                return _fileTypes.First(x => x.Id == fileTypes.Id);
+          
         }
 
         public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
