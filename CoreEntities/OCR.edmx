@@ -64,8 +64,9 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="FileTypeId" Type="int" />
-          <Property Name="ApplicationSettingsId" Type="int" />
+          <Property Name="FileTypeId" Type="int" Nullable="false" />
+          <Property Name="ApplicationSettingsId" Type="int" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -627,10 +628,11 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_Parts_OCR_Invoices" FromRole="OCR_Invoices" ToRole="OCR_Parts" />
-          <Property Name="FileTypeId" Type="Int32" />
+          <Property Name="FileTypeId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="RegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_Invoices" FromRole="Invoices" ToRole="OCR_InvoiceRegEx" />
           <NavigationProperty Name="FileTypes" Relationship="WaterNutDBModel.FK_OCRInvoicesFileTypes_OCR_Invoices" FromRole="Invoices" ToRole="OCRInvoicesFileTypes" />
-          <Property Name="ApplicationSettingsId" Type="Int32" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="Parts">
           <Key>
@@ -1049,6 +1051,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <EntitySetMapping Name="Invoices">
             <EntityTypeMapping TypeName="WaterNutDBModel.Invoices">
               <MappingFragment StoreEntitySet="OCR-Invoices">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
                 <ScalarProperty Name="FileTypeId" ColumnName="FileTypeId" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

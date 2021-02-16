@@ -575,15 +575,23 @@ namespace Asycuda421
 
         private void SavePackages(xcuda_Item item, ASYCUDAItem ai, int lnCounter)
         {
-            
+
             if (item.xcuda_Packages.Count > 0 && item.xcuda_Packages.First().Number_of_packages > 0)
             {
                 var pk = item.xcuda_Packages.First();
                 ai.Packages.Number_of_packages = pk.Number_of_packages.ToString(CultureInfo.InvariantCulture);
                 ai.Packages.Marks1_of_packages.Text.Clear();
                 ai.Packages.Marks1_of_packages.Text.Add(pk.Marks1_of_packages);
+                if (!string.IsNullOrEmpty(pk.Marks2_of_packages))
+                {
+                    ai.Packages.Marks2_of_packages.Text.Clear();
+                    ai.Packages.Marks2_of_packages.Text.Add(pk.Marks2_of_packages);
+                }
+
                 ai.Packages.Kind_of_packages_code.Text.Clear();
-                ai.Packages.Kind_of_packages_code.Text.Add(string.IsNullOrEmpty(pk.Kind_of_packages_code)? "PK":pk.Kind_of_packages_code);
+                ai.Packages.Kind_of_packages_code.Text.Add(string.IsNullOrEmpty(pk.Kind_of_packages_code)
+                    ? "PK"
+                    : pk.Kind_of_packages_code);
             }
             else
             {

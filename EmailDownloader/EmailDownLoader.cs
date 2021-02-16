@@ -105,7 +105,7 @@ namespace EmailDownloader
                     var msg = imapClient.Inbox.GetMessage(uid);
                     var emailsFound =
                         emailMappings.Where(x => Regex.IsMatch(msg.Subject, x.Pattern, RegexOptions.IgnoreCase))
-                            .OrderBy(x => x.Pattern.Length)
+                            .OrderByDescending(x => x.Pattern.Length)
                             .ToList();
 
                     if (!emailsFound.Any())

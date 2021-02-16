@@ -16,7 +16,7 @@
         <InheritanceConnector EntityType="WaterNutDBModel.PurchaseOrders" />
         <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemsEx" Width="2" PointX="5.375" PointY="5.375" />
         <AssociationConnector Association="WaterNutDBModel.InventoryItemsExEntryDataDetails" />
-        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetailsEx" Width="2" PointX="12.625" PointY="6.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetailsEx" Width="2" PointX="12.75" PointY="6.75" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsEntryDataDetailsEx" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentEntryData" Width="2.625" PointX="2.625" PointY="0.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentSetEntryData" Width="2.375" PointX="12.375" PointY="0.75" />

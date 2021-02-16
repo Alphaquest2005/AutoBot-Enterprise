@@ -58,7 +58,7 @@ namespace OCR.Business.Entities
         }
         string _name;
         [DataMember]
-        public Nullable<int> FileTypeId 
+        public int FileTypeId 
         {
             get
             {
@@ -71,9 +71,9 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _filetypeid;
+        int _filetypeid;
         [DataMember]
-        public Nullable<int> ApplicationSettingsId 
+        public int ApplicationSettingsId 
         {
             get
             {
@@ -86,7 +86,22 @@ namespace OCR.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _applicationsettingsid;
+        int _applicationsettingsid;
+        [DataMember]
+        public bool IsActive 
+        {
+            get
+            {
+                return _isactive;
+            }
+            set
+            {
+                _isactive = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        bool _isactive;
         [DataMember]
         public List<Parts> Parts { get; set; }
         [DataMember]

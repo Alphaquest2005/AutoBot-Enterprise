@@ -126,6 +126,36 @@ namespace EntryDataDS.Business.Entities
         }
         string _invoiceno;
         [DataMember]
+        public Nullable<int> Packages 
+        {
+            get
+            {
+                return _packages;
+            }
+            set
+            {
+                _packages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _packages;
+        [DataMember]
+        public Nullable<long> rowNumber 
+        {
+            get
+            {
+                return _rownumber;
+            }
+            set
+            {
+                _rownumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<long> _rownumber;
+        [DataMember]
         public ShipmentRider ShipmentRider { get; set; }
         [DataMember]
         public ShipmentInvoice ShipmentInvoice { get; set; }

@@ -59,7 +59,7 @@ namespace Core.Common.CSV
                         if (sourceCharArray[i] == ',')
                         {
                             splitString.Add(
-                                source.Substring(tokenStart, i - tokenStart));
+                                source.Substring(tokenStart, i - tokenStart).Trim());
                             state = State.AtBeginningOfToken;
                             tokenStart = i + 1;
                         }
@@ -89,9 +89,7 @@ namespace Core.Common.CSV
                         foreach (var item in slashesToRemove.Reverse<int>())
                             stringWithSlashes =
                                 stringWithSlashes.Remove(item, 1);
-                        splitString.Add(
-                            stringWithSlashes.Substring(1,
-                                stringWithSlashes.Length - 2));
+                        splitString.Add( stringWithSlashes.Substring(1,stringWithSlashes.Length - 2).Trim());
                         state = State.AtBeginningOfToken;
                         tokenStart = i + 1;
                         continue;

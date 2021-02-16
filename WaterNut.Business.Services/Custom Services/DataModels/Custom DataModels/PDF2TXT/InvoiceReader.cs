@@ -44,9 +44,9 @@ namespace WaterNut.DataSpace
                 string pdftxt = null;
 
                 //pdftxt = parseUsingPDFBox(file);
-
+                pdftxt += "------------------------------------------Ripped Text-------------------------";
                 pdftxt += pdfPigText(file); //TODO: need to implement the layout logic
-
+                pdftxt += "------------------------------------------Single Column-------------------------";
                 pdftxt += PdfOcr.Ocr(file);
 
                 //Get Template
@@ -66,6 +66,7 @@ namespace WaterNut.DataSpace
                         .Include("Parts.Lines.Fields.FieldValue")
                         .Include("Parts.Lines.Fields.FormatRegEx.RegEx")
                         .Include("Parts.Lines.Fields.FormatRegEx.ReplacementRegEx")
+                        .Where(x => x.IsActive)
                         .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
                         //.Where(x => x.Id == 3) //BaseDataModel.Instance.CurrentApplicationSettings.TestMode != true ||
                         .ToList()
@@ -89,8 +90,8 @@ namespace WaterNut.DataSpace
                                 continue;
                             }
 
-                            if (fileType.Id != tmp.OcrInvoices.FileTypeId && tmp.OcrInvoices.FileTypeId.HasValue)
-                                fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId.Value);
+                            if (fileType.Id != tmp.OcrInvoices.FileTypeId)
+                                fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId);
 
                             SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
                                 emailId,

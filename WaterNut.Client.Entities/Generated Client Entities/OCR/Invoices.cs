@@ -77,9 +77,9 @@ public string Name
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "FileType is required")]
        
-       
-public Nullable<int> FileTypeId
+public int FileTypeId
 		{ 
 		    get { return this.invoices.FileTypeId; }
 			set
@@ -92,9 +92,9 @@ public Nullable<int> FileTypeId
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-       
-public Nullable<int> ApplicationSettingsId
+public int ApplicationSettingsId
 		{ 
 		    get { return this.invoices.ApplicationSettingsId; }
 			set
@@ -103,6 +103,21 @@ public Nullable<int> ApplicationSettingsId
 				this.invoices.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "IsActive is required")]
+       
+public bool IsActive
+		{ 
+		    get { return this.invoices.IsActive; }
+			set
+			{
+			    if (value == this.invoices.IsActive) return;
+				this.invoices.IsActive = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsActive");
 			}
 		}
      

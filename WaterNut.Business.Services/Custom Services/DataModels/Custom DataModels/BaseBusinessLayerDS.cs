@@ -3066,37 +3066,58 @@ namespace WaterNut.DataSpace
 
         public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<int> lst, int asycudaDocumentSetId)
         {
+            try
+            {
+
+          
             var res = new ConcurrentDictionary<int, EntryDataDetails>();
             if (lst.Any())
             {
 
-                //foreach (var item in )
-                Parallel.ForEach(lst.Where(x => x != 0),
-                    new ParallelOptions {MaxDegreeOfParallelism = Environment.ProcessorCount}, item =>
-                    {
+                    //foreach (var item in lst)
+                    Parallel.ForEach(lst.Where(x => x != 0),
+                        new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, item =>  //
+                        {
                         using (var ctx = new EntryDataDSContext())
                         {
+                            ctx.Database.CommandTimeout = 10;
                             var entryDataDetailses = ctx.EntryDataDetails
                                 .Include(x => x.EntryDataDetailsEx)
                                 .Include(x => x.InventoryItems)
                                 .Include(x => x.InventoryItemEx)
-                                .Include(x => x.EntryData.DocumentType)
-                                .Include(x => x.EntryData.EntryDataTotals)
-                                .Include(x => x.EntryData.EntryDataEx)
-                                .Include(x => x.EntryData.Suppliers)
+                                //.Include(x => x.EntryData.DocumentType)
+                                //.Include(x => x.EntryData.EntryDataTotals)
+                                //.Include(x => x.EntryData.EntryDataEx)
+                                //.Include(x => x.EntryData.Suppliers)
+                                //.Include("EntryData.WarehouseInfo")
+                                //.Include(x => x.EntryData)
                                 .Where(x => x.EntryDataDetailsId == item
                                             // && x.EntryData.AsycudaDocumentSets.Any(z => z.AsycudaDocumentSetId == asycudaDocumentSetId)
                                             && x.EntryData.EntryDataEx != null)
-                                .Where(x => Math.Abs((double) (x.EntryData.EntryDataEx.ExpectedTotal -
+                                .Where(x => Math.Abs((double)(x.EntryData.EntryDataEx.ExpectedTotal -
                                                                (x.EntryData.InvoiceTotal == null ||
                                                                 x.EntryData.InvoiceTotal == 0
                                                                    ? x.EntryData.EntryDataEx.ExpectedTotal
                                                                    : x.EntryData.InvoiceTotal))) <
                                             0.01) //Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
-                                .FirstOrDefault();
+                                .First();
+
+                            // had to do all this stupidity because ef not loading the warehouse info because its derived...smh
+
+                            entryDataDetailses.EntryData = ctx.EntryData.OfType<PurchaseOrders>()
+                                .Include(x => x.Suppliers)
+                                .Include(x => x.EntryDataEx)
+                                .Include(x => x.DocumentType)
+                                .Include(x => x.EntryDataTotals)
+                                .Include(x => x.WarehouseInfo)
+                                .First(x => x.EntryData_Id == entryDataDetailses.EntryData_Id);
+
+
+
+
                             //.ToList()
                             //.DistinctBy(x => x.EntryDataDetailsId);
-                            res.AddOrUpdate(item, entryDataDetailses, (i, details) => details);
+                                res.AddOrUpdate(item, entryDataDetailses, (i, details) => details);
 
                         }
                     });
@@ -3107,49 +3128,65 @@ namespace WaterNut.DataSpace
             return
                 res.Values.OrderBy(x =>
                     x.EntryDataDetailsId); //.Where(x => Math.Abs(x.EntryData.EntryDataTotals.Total.GetValueOrDefault() - (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataTotals.Total.GetValueOrDefault())) < 0.01);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<EntryDataDetails>> GetSelectedPODetails(List<string> elst,
             int asycudaDocumentSetId)
         {
-
-            var res = new List<EntryDataDetails>();
-            if (!elst.Any()) return res;
+            try
             {
-                using (var ctx = new EntryDataDSContext())
+
+
+                var res = new List<EntryDataDetails>();
+                if (!elst.Any()) return res;
                 {
-                    foreach (var item in elst.Where(x => x != null))
+                    using (var ctx = new EntryDataDSContext())
                     {
-                        var entryDataDetailses = ctx.EntryDataDetails
-                            .Include(x => x.EntryDataDetailsEx)
-                            .Include(x => x.InventoryItems)
-                            .Include(x => x.InventoryItemEx)
-                            .Include(x => x.EntryData.EntryDataTotals)
-                            .Include(x => x.EntryData.EntryDataEx)
-                            .Include(x => x.EntryData.DocumentType)
-                            .Include(x => x.EntryData.Suppliers)
-                            .Where(x => x.EntryDataId == item
-                                        && x.EntryDataDetailsEx.AsycudaDocumentSetId == asycudaDocumentSetId
-                                        && x.EntryData.EntryDataEx != null
-                            )
-                            .ToList().DistinctBy(x => x.EntryDataDetailsId);
+                        foreach (var item in elst.Where(x => x != null))
+                        {
+                            var entryDataDetailses = ctx.EntryDataDetails
+                                .Include(x => x.EntryDataDetailsEx)
+                                .Include(x => x.InventoryItems)
+                                .Include(x => x.InventoryItemEx)
+                                .Include(x => x.EntryData.EntryDataTotals)
+                                .Include(x => x.EntryData.EntryDataEx)
+                                .Include(x => x.EntryData.DocumentType)
+                                .Include(x => x.EntryData.Suppliers)
+                               // .Include(x => x.EntryData.WarehouseInfos)
+                                .Where(x => x.EntryDataId == item
+                                            && x.EntryDataDetailsEx.AsycudaDocumentSetId == asycudaDocumentSetId
+                                            && x.EntryData.EntryDataEx != null
+                                )
+                                .ToList().DistinctBy(x => x.EntryDataDetailsId);
 
-                        var res1 = entryDataDetailses.Where(x =>
-                            BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true
-                                ? Math.Abs((double) (x.EntryData.EntryDataEx.ExpectedTotal -
-                                                     (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx
-                                                          .ExpectedTotal))) < 0.01
-                                : true); //Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
+                            var res1 = entryDataDetailses.Where(x =>
+                                BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true
+                                    ? Math.Abs((double) (x.EntryData.EntryDataEx.ExpectedTotal -
+                                                         (x.EntryData.InvoiceTotal ?? x.EntryData.EntryDataEx
+                                                              .ExpectedTotal))) < 0.01
+                                    : true); //Math.Abs(x.EntryData.ExpectedTotal - (x.EntryData.InvoiceTotal ?? x.EntryData.ExpectedTotal)) < 0.01)
 
 
-                        res.AddRange(res1);
+                            res.AddRange(res1);
 
 
+                        }
                     }
                 }
-            }
 
-            return res.OrderBy(x => x.EntryDataDetailsId);
+                return res.OrderBy(x => x.EntryDataDetailsId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
 

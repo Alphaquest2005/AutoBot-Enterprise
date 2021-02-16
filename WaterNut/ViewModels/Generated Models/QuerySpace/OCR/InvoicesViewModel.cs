@@ -209,6 +209,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Boolean? _isActiveFilter;
+        public Boolean? IsActiveFilter
+        {
+            get
+            {
+                return _isActiveFilter;
+            }
+            set
+            {
+                _isActiveFilter = value;
+				NotifyPropertyChanged(x => IsActiveFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -241,6 +259,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(NameFilter) == false)
 						res.Append(" && " + string.Format("Name.Contains(\"{0}\")",  NameFilter));						
+ 
+
+									if(IsActiveFilter.HasValue)
+						res.Append(" && " + string.Format("IsActive == {0}",  IsActiveFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -264,7 +286,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                 dataToPrint = lst.Select(x => new InvoicesExcelLine
                 {
  
-                    Name = x.Name 
+                    Name = x.Name ,
+                    
+ 
+                    IsActive = x.IsActive 
                     
                 }).ToList()
             };
@@ -278,6 +303,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         {
 		 
                     public string Name { get; set; } 
+                    
+ 
+                    public bool IsActive { get; set; } 
                     
         }
 

@@ -17,6 +17,7 @@
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.IsActive).HasColumnName("IsActive");
               this.HasMany(t => t.Parts).WithRequired(t => (Invoices)t.Invoices);
               this.HasMany(t => t.RegEx).WithRequired(t => (Invoices)t.OCR_Invoices);
               this.HasMany(t => t.FileTypes).WithRequired(t => (Invoices)t.Invoices);

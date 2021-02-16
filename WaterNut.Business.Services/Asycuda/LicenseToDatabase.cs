@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Core.Common.Utils;
 using EntryDataDS.Business.Entities;
 using LicenseDS.Business.Entities;
 //using WaterNut.DataLayer;
@@ -331,7 +332,7 @@ namespace WaterNut.DataSpace.Asycuda
                 File.AppendAllText(instructions, $"File\t{fileInfo.FullName}\r\n");
                 foreach (var itm in invoices)
                 {
-                    File.AppendAllText(instructions, $"Attach\t{itm.Item2}\t{itm.Item1}\t{"IV05"}\r\n");
+                    File.AppendAllText(instructions, $"Attach\t{itm.Item2}\t{itm.Item1.Right(10)}\t{"IV05"}\r\n");
                 }
                 File.AppendAllText(instructions, $"File\t{fileInfo.FullName}\r\n");
                 return true;

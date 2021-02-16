@@ -753,16 +753,17 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Key>
             
             
-            
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" Nullable="false" />
-          <Property Name="RiderLineID" Type="int" Nullable="false" />
+          <Property Name="RiderLineID" Type="int" />
           <Property Name="RiderID" Type="int" Nullable="false" />
           <Property Name="InvoiceId" Type="int" />
           <Property Name="WarehouseCode" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="InvoiceNumber" Type="nvarchar" MaxLength="255" />
           <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Packages" Type="int" />
+          <Property Name="rowNumber" Type="bigint" />
         </EntityType>
         <Association Name="FK_AsycudaDocumentEntryData_EntryData1">
           <End Role="EntryData" Type="Self.EntryData" Multiplicity="1">
@@ -1495,7 +1496,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentRiderInvoice].[InvoiceId] AS [InvoiceId], 
     [ShipmentRiderInvoice].[WarehouseCode] AS [WarehouseCode], 
     [ShipmentRiderInvoice].[InvoiceNumber] AS [InvoiceNumber], 
-    [ShipmentRiderInvoice].[InvoiceNo] AS [InvoiceNo]
+    [ShipmentRiderInvoice].[InvoiceNo] AS [InvoiceNo], 
+    [ShipmentRiderInvoice].[Packages] AS [Packages], 
+    [ShipmentRiderInvoice].[rowNumber] AS [rowNumber]
     FROM [dbo].[ShipmentRiderInvoice] AS [ShipmentRiderInvoice]</DefiningQuery>
           </EntitySet>
           <AssociationSet Name="FK_AsycudaDocumentEntryData_EntryData1" Association="Self.FK_AsycudaDocumentEntryData_EntryData1">
@@ -2736,6 +2739,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="ShipmentRider" Relationship="WaterNutDBModel.ShipmentRiderShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentRider" />
           <NavigationProperty Name="ShipmentInvoice" Relationship="WaterNutDBModel.ShipmentInvoiceShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentInvoice" />
           <NavigationProperty Name="ShipmentRiderDetails" Relationship="WaterNutDBModel.ShipmentRiderDetailsShipmentRiderInvoice" FromRole="ShipmentRiderInvoice" ToRole="ShipmentRiderDetails" />
+          <Property Name="Packages" Type="Int32" />
+          <Property Name="rowNumber" Type="Int64" />
         </EntityType>
         <Association Name="ShipmentRiderShipmentRiderInvoice">
           <End Type="WaterNutDBModel.ShipmentRider" Role="ShipmentRider" Multiplicity="1" />
@@ -3882,6 +3887,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="ShipmentRiderInvoice">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentRiderInvoice">
               <MappingFragment StoreEntitySet="ShipmentRiderInvoice">
+                <ScalarProperty Name="rowNumber" ColumnName="rowNumber" />
+                <ScalarProperty Name="Packages" ColumnName="Packages" />
                 <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
                 <ScalarProperty Name="InvoiceNumber" ColumnName="InvoiceNumber" />
                 <ScalarProperty Name="WarehouseCode" ColumnName="WarehouseCode" />

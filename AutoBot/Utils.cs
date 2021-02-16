@@ -1175,7 +1175,7 @@ namespace AutoBot
                             x.ApplicationSettingsId == pO.ApplicationSettingsId &&
                             x.AsycudaDocumentSetId == pO.AsycudaDocumentSetId)
                             .GroupBy(x => x.AsycudaDocumentSetId)
-                            .Where(x => x.Sum(z => z.InvoiceTotal * z.CurrencyRate) > 500 ).ToList();
+                            .Where(x => x.Sum(z => z.InvoiceTotal * z.CurrencyRate) > 1 ).ToList();
                         if (!lst.Any()) continue;
                         var supplierCode = lst.SelectMany(x => x.Select(z => z.SupplierCode)).FirstOrDefault(x => !string.IsNullOrEmpty(x));
                         Suppliers supplier = new Suppliers();
@@ -5815,7 +5815,7 @@ namespace AutoBot
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
+                throw; 
             }
         }
 

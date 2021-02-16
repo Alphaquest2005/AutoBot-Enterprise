@@ -48,7 +48,7 @@ namespace OCR.Client.DTO
         private string _Name;
 
         [DataMember]
-        public Nullable<int> FileTypeId
+        public int FileTypeId
 		{ 
 		    get { return _FileTypeId; }
 			set
@@ -58,10 +58,10 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.FileTypeId
 			}
 		}
-        private Nullable<int> _FileTypeId;
+        private int _FileTypeId;
 
         [DataMember]
-        public Nullable<int> ApplicationSettingsId
+        public int ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -71,7 +71,20 @@ namespace OCR.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private Nullable<int> _ApplicationSettingsId;
+        private int _ApplicationSettingsId;
+
+        [DataMember]
+        public bool IsActive
+		{ 
+		    get { return _IsActive; }
+			set
+			{
+			    if (value == _IsActive) return;
+				_IsActive = value;
+				NotifyPropertyChanged();//m => this.IsActive
+			}
+		}
+        private bool _IsActive;
 
        
         [DataMember]

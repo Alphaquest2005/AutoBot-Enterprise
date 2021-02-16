@@ -59,7 +59,7 @@ namespace WaterNut.DataSpace
 
                 }
                 var mappingFileType = GetHeadingFileType(headings);
-                if (mappingFileType.Id != fileType.Id) fileType = mappingFileType;
+                if (mappingFileType.Id != fileType.Id && mappingFileType.Id != fileType.ParentFileTypeId) fileType = mappingFileType;
 
                 var mapping = new Dictionary<FileTypeMappings, int>();
                 GetMappings(mapping, headings, fileType);
@@ -130,8 +130,8 @@ namespace WaterNut.DataSpace
                             InvoiceNumber = z["InvoiceNumber"].ToString(),
                             InvoiceTotal = z.ContainsKey("InvoiceTotal")? z["InvoiceTotal"].ToString(): "0",
                             GrossWeightLB = Convert.ToDouble(z["GrossWeightLB"].ToString()),
-                            CubicFeet = Convert.ToDouble(z["VolumeCF"].ToString())
-                           
+                            CubicFeet = z.ContainsKey("VolumeCF") ? Convert.ToDouble(z["VolumeCF"].ToString()) : 0.0
+                            
 
                         }).ToList()
 
@@ -194,8 +194,9 @@ namespace WaterNut.DataSpace
                                             TrackingNumber = riderDetail.TrackingNumber,
                                             Pieces = 1,
                                             WarehouseCode = riderDetail.WarehouseCode,
-                                            InvoiceNumber = i.Number[j],
-                                            InvoiceTotal = j >= totalst.Count ? 0 : totalst[j],
+                                            InvoiceNumber = i.Number[j].Trim(),
+                                            InvoiceTotal = j >= totalst.Count 
+                                            ? 0 : totalst[j],
                                             GrossWeightKg = kgs,
                                             CubicFeet = cf,
                                             TrackingState = TrackingState.Added
@@ -477,13 +478,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var filename = SetFilename(droppedFilePath, "-Freight.pdf");
                 
-                 
-                   
-                
-
-
                 var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
                     .Select(x => new ShipmentFreight()
                     {
@@ -510,7 +505,7 @@ namespace WaterNut.DataSpace
                                                 }).ToList(),
 
                         EmailId = emailId,
-                        SourceFile = filename,
+                       // SourceFile = filename,
                         FileTypeId = fileTypeId,
                         TrackingState = TrackingState.Added,
 
@@ -520,6 +515,8 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
+                        var filename = SetFilename(droppedFilePath, manifest.BLNumber, "-Freight.pdf");
+                        manifest.SourceFile = filename;
                         var existingManifest =
                             ctx.ShipmentFreight.FirstOrDefault(
                                 x => x.InvoiceNumber == manifest.InvoiceNumber);
@@ -539,19 +536,19 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static string SetFilename(string droppedFilePath, string nameExtension)
+        private static string SetFilename(string droppedFilePath, string targetFileName, string nameExtension)
         {
             string filename;
-            if (droppedFilePath.Contains(nameExtension))
-            {
-                filename = droppedFilePath;
-            }
-            else
-            {
+            //if (droppedFilePath.Contains(nameExtension))
+            //{
+            //    filename = droppedFilePath;
+            //}
+            //else
+            //{
                 var file = new FileInfo(droppedFilePath);
-                filename = $"{Path.Combine(file.DirectoryName)}\\{file.Name.Replace(file.Extension, "")}{nameExtension}";
+                filename = $"{Path.Combine(file.DirectoryName)}\\{targetFileName}{nameExtension}";
                 if(!File.Exists(filename))File.Copy(droppedFilePath, filename);
-            }
+            //}
 
             return filename;
         }
@@ -561,8 +558,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var filename = SetFilename(droppedFilePath, "-BL.pdf");
-
+                
                 var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>)x))
                     .Select(x => new ShipmentBL()
                     {
@@ -606,16 +602,21 @@ namespace WaterNut.DataSpace
                                                             }).ToList(),
 
                         EmailId = emailId,
-                        SourceFile = filename,
+                       // SourceFile = droppedFilePath,
                         FileTypeId = fileTypeId,
                         TrackingState = TrackingState.Added,
 
                     }).ToList();
 
+                
+
                 using (var ctx = new EntryDataDSContext())
                 {
                     foreach (var manifest in lst)
                     {
+                        var filename = SetFilename(droppedFilePath,manifest.BLNumber, "-BL.pdf");
+                        if(!File.Exists(filename)) File.Copy(droppedFilePath, filename);
+                        manifest.SourceFile = filename;
                         var existingManifest =
                             ctx.ShipmentBL.FirstOrDefault(
                                 x => x.BLNumber == manifest.BLNumber);
@@ -639,7 +640,7 @@ namespace WaterNut.DataSpace
         {
             try
             {
-                var filename = SetFilename(droppedFilePath, "-Manifest.pdf");
+               
 
                 var lst = eslst.Cast<List<IDictionary<string, object>>>().SelectMany(x => x.ToList()).Select(x => ((IDictionary<string, object>) x))
                     .Select(x => new ShipmentManifest()
@@ -671,7 +672,7 @@ namespace WaterNut.DataSpace
                         Marks = x["Marks"].ToString(),
                         //Containers = Convert.ToInt32(x["Containers"].ToString()),
                         EmailId = emailId,
-                        SourceFile = filename,
+                       // SourceFile = filename,
                         FileTypeId = fileTypeId,
                         TrackingState = TrackingState.Added,
 
@@ -681,6 +682,8 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
+                        var filename = SetFilename(droppedFilePath,manifest.WayBill, "-Manifest.pdf");
+                        manifest.SourceFile = filename;
                         var existingManifest =
                             ctx.ShipmentManifest.FirstOrDefault(
                                 x => x.RegistrationNumber == manifest.RegistrationNumber && x.WayBill == manifest.WayBill);
@@ -766,7 +769,7 @@ namespace WaterNut.DataSpace
 
                
 
-                var ed = (from es in eslst
+                var ed = (from es in eslst.Select(x => (dynamic)x)
                     group es by new {es.EntryDataId, es.EntryDataDate, es.CustomerName}//, es.Currency
                     into g
                     select new
@@ -779,20 +782,20 @@ namespace WaterNut.DataSpace
                                 AsycudaDocumentSetId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.AsycudaDocumentSetId ?? docSet.First().AsycudaDocumentSetId,
                                 ApplicationSettingsId = docSet.FirstOrDefault(x => x.SystemDocumentSet == null)?.ApplicationSettingsId ?? docSet.First().ApplicationSettingsId,
                                 CustomerName = g.Key.CustomerName,
-                                Tax = g.FirstOrDefault()?.Tax,
+                                Tax = ((dynamic)g.FirstOrDefault())?.Tax,
                                 
-                                Supplier = string.IsNullOrEmpty(g.Max(x => x.SupplierCode))
+                                Supplier = string.IsNullOrEmpty(g.Max(x => ((dynamic)x).SupplierCode))
                                     ? null
-                                    : g.Max(x => x.SupplierCode?.ToUpper()),
-                                Currency = g.FirstOrDefault(x => x.Currency != "")?.Currency,
+                                    : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
+                                Currency = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
                                 EmailId = emailId,
                                 FileTypeId = fileTypeId,
-                                DocumentType = g.FirstOrDefault(x => x.DocumentType != "")?.DocumentType,
-                                SupplierInvoiceNo = g.FirstOrDefault(x => x.SupplierInvoiceNo != "")?.SupplierInvoiceNo,
-                                PreviousCNumber = g.FirstOrDefault(x => x.PreviousCNumber != "")?.PreviousCNumber,
-                                FinancialInformation = g.FirstOrDefault(x => x.FinancialInformation != "")?.FinancialInformation,
+                                DocumentType = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
+                                SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
+                                PreviousCNumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
+                                FinancialInformation = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).FinancialInformation != ""))?.FinancialInformation,
 
-                                PONumber = g.FirstOrDefault(x => x.PONumber != "")?.PONumber,
+                                PONumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PONumber != ""))?.PONumber,
                                 SourceFile = droppedFilePath,
                                 
                             },
@@ -831,7 +834,7 @@ namespace WaterNut.DataSpace
                             TotalDeductions = Convert.ToDouble(x.TotalDeductions ?? 0.0),
                             InvoiceTotal = Convert.ToDouble(x.InvoiceTotal ?? 0.0),
                             TotalTax = Convert.ToDouble(x.TotalTax ?? 0.0),
-                            Packages = Convert.ToInt32(string.IsNullOrEmpty(x.Packages) ? "0" : x.Packages),
+                            Packages = Convert.ToInt32(x.Packages ?? 0),
                             WarehouseNo = x.WarehouseNo,
 
 
@@ -1984,10 +1987,31 @@ namespace WaterNut.DataSpace
                 //},
                 {
                     "TotalCost",
-                    (c, mapping, splits) => c.Cost = !string.IsNullOrEmpty(splits[mapping["TotalCost"]])
+                    (c, mapping, splits) => c.Cost = !string.IsNullOrEmpty(splits[mapping["TotalCost"]]) && Convert.ToSingle(splits[mapping["TotalCost"]].Replace("$", "")) != 0.0
                         ? Convert.ToSingle(splits[mapping["TotalCost"]].Replace("$", "")) / (c.Quantity?? Convert.ToSingle(splits[mapping["Quantity"]].Replace("�", "")))
                         : c.Cost
                 },
+                {
+                    "SupplierItemNumber",
+                    (c, mapping, splits) => c.ItemNumber = !string.IsNullOrEmpty(splits[mapping["POItemNumber"]]) ? splits[mapping["POItemNumber"]] : splits[mapping["SupplierItemNumber"]]
+                },
+                {
+                    "SupplierItemDescription",
+                    (c, mapping, splits) => c.ItemDescription = !string.IsNullOrEmpty(splits[mapping["POItemDescription"]]) ? splits[mapping["POItemDescription"]] : splits[mapping["SupplierItemDescription"]]
+                },
+                {
+                    "SupplierInvoiceNo",
+                    (c, mapping, splits) => c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]]) ? splits[mapping["EntryDataId"]] : splits[mapping["SupplierInvoiceNo"]]
+                },
+                {
+                    "POItemNumber",
+                    (c, mapping, splits) => c.ItemNumber = !string.IsNullOrEmpty(splits[mapping["POItemNumber"]]) ? splits[mapping["POItemNumber"]] : splits[mapping["SupplierItemNumber"]]
+                },
+                {
+                    "POItemDescription",
+                    (c, mapping, splits) => c.ItemDescription = !string.IsNullOrEmpty(splits[mapping["POItemDescription"]]) ? splits[mapping["POItemDescription"]] : splits[mapping["SupplierItemDescription"]]
+                },
+               
                 //{
                 //    "InvoiceTotal",
                 //    (c, mapping, splits) => c.InvoiceTotal = Convert.ToSingle(
@@ -2154,9 +2178,15 @@ namespace WaterNut.DataSpace
                     {
                         try
                         {
+                            if (string.IsNullOrEmpty(splits[map[key]]))
+                            {
+                                ((IDictionary<string, object>) res)[key.DestinationName] = "";
+                                continue;
+                            }
+
                             if (ImportChecks.ContainsKey(key.DestinationName))
                             {
-                                if (string.IsNullOrEmpty(splits[map[key]])) return null;
+                                
                                 var err = ImportChecks[key.DestinationName].Invoke(res, map.ToDictionary(x => x.Key.DestinationName, x => x.Value), splits);
                                 if (err.Item1) throw new ApplicationException(err.Item2);
                             }
@@ -2360,6 +2390,8 @@ namespace WaterNut.DataSpace
             try
             {
                
+               
+
                var itmlst = eslst.Where(x => x.ItemNumber != null)
                             .GroupBy(g => new { ItemNumber = g.ItemNumber.ToUpper(), g.ItemDescription, g.TariffCode})
                             .ToList();

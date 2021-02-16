@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Core.Common.Utils;
 using MoreLinq;
 using Org.BouncyCastle.Crypto.Operators;
 using TrackableEntities;
@@ -146,9 +147,8 @@ namespace AutoBotUtilities
 
 
 
-                var attachments = invoices.Select(x => xlsxWriter.XlsxWriter.CreatCSV(x.ShipmentInvoice))
-                    .SelectMany(x => x.ToList())
-                    .ToList();
+              
+              
             }
 
             return shipment;
@@ -162,7 +162,7 @@ namespace AutoBotUtilities
                 {
                     var bls = ctx.ShipmentBL
                         .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
-                        .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRiderInvoice")
+                        .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails")
                         .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                         //.Include(x => x.ShipmentFreight)
                         .Include(x => x.ShipmentManifestBLs)
@@ -356,7 +356,7 @@ namespace AutoBotUtilities
                         .Where(x => shipment.ShipmentAttachedBL.All(z => z.ShipmentBL.Id != x))
                         .Select(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
-                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails.ShipmentRiderInvoice")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -374,6 +374,7 @@ namespace AutoBotUtilities
                         .Where(x => bls.All(z => z.BLNumber != x))
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -389,6 +390,7 @@ namespace AutoBotUtilities
                         .Where(x => bls.All(z => z.BLNumber != x.BLNumber))
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -404,6 +406,7 @@ namespace AutoBotUtilities
                         .Where(x => bls.All(z => z.BLNumber != x))
                         .SelectMany(x => ctx.ShipmentBL
                             .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentBLDetails")
+                            .Include("ShipmentBLDetails.ShipmentRiderBLs.ShipmentRiderDetails")
                             .Include("ShipmentBLDetails.ShipmentFreightBLs.ShipmentFreightDetails")
                             .Include(z => z.ShipmentBLFreight)
                             .Include(z => z.ShipmentRiderBLs)
@@ -458,7 +461,7 @@ namespace AutoBotUtilities
                     .Where(x => emailList.Any(z => z == x.EmailId) &&
                     (!x.ShipmentRiderInvoice.Any() && !x.ShipmentAttachedInvoices.Any())).ToList();
 
-                unAttachedInvoices.ForEach(x => xlsxWriter.XlsxWriter.CreatCSV(x));
+                unAttachedInvoices.ForEach(x => xlsxWriter.XlsxWriter.CreatCSV(x, 0));
 
 
 
@@ -601,13 +604,10 @@ namespace AutoBotUtilities
             shipments.Add(unattachedShippment);
             foreach (var aBl in masterShipment.ShipmentAttachedBL)
             {
-
-                
-
                 var bl = aBl.ShipmentBL;
                 var riderDetails = bl.ShipmentBLDetails.SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null).ToList();
 
-                var clients = riderDetails.GroupBy(x => x.Code).ToList();
+                var clients = riderDetails.GroupBy(x => new{x.Code, x.RiderId}).ToList();
                 foreach (var client in clients)
                 {
                     var manifests = masterShipment.ShipmentAttachedManifest
@@ -629,28 +629,30 @@ namespace AutoBotUtilities
 
 
                     var invoices = masterShipment.ShipmentAttachedInvoices
-                        //     .Where(x => client.Any(riderDetail => riderDetail.ShipmentRiderInvoice.Any(sri => sri.InvoiceId == x.ShipmentInvoiceId)))//todo: remove the extra query include 
-                        //.Where(x => x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => client.Any(q => q.Id == z.RiderLineID)))
                         .Where(x => x.ShipmentInvoice.ShipmentRiderInvoice.Any(z => client.Any(q => q.Id == z.RiderLineID)))// 
                         //Todo: add to unmaped bl rider lines invoice "client.Where(riderDetail => !riderDetail.ShipmentRiderInvoice.Any())"
                         .Select(x => x.ShipmentInvoice)
                         .DistinctBy(x => x.InvoiceNo)
-                        .Where(x => x.InvoiceNo != "272431")//Todo: remove this
-                        .ToList();
+                       .ToList();
 
                     var attachments = new List<Attachments>();
-                    attachments.AddRange(invoices.Select(x => new Attachments()
+
+                    var invocieAttachments = invoices.Select(shipmentInvoice => xlsxWriter.XlsxWriter.CreatCSV(shipmentInvoice, client.Key.RiderId))
+                        .SelectMany(x => x.ToList())
+                        .ToList();
+
+                    attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".pdf")).Select(x => new Attachments()
                     {
-                        FilePath = Path.Combine(new FileInfo(x.SourceFile).DirectoryName, $"{x.InvoiceNo}.pdf"),
+                        FilePath = x.filepath,
                         DocumentCode = "IV05",
-                        Reference = x.InvoiceNo,
+                        Reference = x.reference,
                         TrackingState = TrackingState.Added
                     }));
-                    attachments.AddRange(invoices.Select(x => new Attachments()
+                    attachments.AddRange(invocieAttachments.Where(x => x.filepath.EndsWith(".xlsx")).Select(x => new Attachments()
                     {
-                        FilePath = Path.Combine(new FileInfo(x.SourceFile).DirectoryName, $"{x.InvoiceNo}.xlsx"),
+                        FilePath = x.filepath,
                         DocumentCode = "NA",
-                        Reference = x.InvoiceNo,
+                        Reference = x.reference,
                         TrackingState = TrackingState.Added
                     }));
                     attachments.AddRange(manifests.Select(x => new Attachments()
@@ -677,7 +679,7 @@ namespace AutoBotUtilities
 
                     var shipment = new Shipment()
                     {
-                        ShipmentName = $"{bl.BLNumber}-{client.Key.Split(' ').FirstOrDefault()}",
+                        ShipmentName = $"{bl.BLNumber.Split('-').First()}-{client.Key.Code.Split(' ').FirstOrDefault()}",
                         ManifestNumber = manifests.LastOrDefault()?.RegistrationNumber,
                         BLNumber = bl?.BLNumber,
                         WeightKG = client.Any()? client.Sum(x => x.GrossWeightKg) : manifests.LastOrDefault()?.GrossWeightKG ?? bl?.WeightKG,
@@ -734,7 +736,7 @@ namespace AutoBotUtilities
             }
 
             if (!masterShipment.ShipmentAttachedBL.Any() && masterShipment.ShipmentAttachedRider.Any())
-            {
+            { //TODO:// Copy the system above
                 foreach (var sRider in masterShipment.ShipmentAttachedRider)
                 {
                     var rider = sRider.ShipmentRider;

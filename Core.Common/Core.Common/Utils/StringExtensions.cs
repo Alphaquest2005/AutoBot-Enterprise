@@ -14,6 +14,12 @@ namespace Core.Common.Utils
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
 
+        public static string Right(this string value, int maxLength)
+        {
+            if (String.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength ? value : value.Substring(value.Length - maxLength);
+        }
+
         public static string FormatedSpace(this string val, int fixedLen)
 
         {

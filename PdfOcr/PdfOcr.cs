@@ -152,12 +152,13 @@ namespace pdf_ocr
                         {
                             result.AppendLine(page.GetText());
                         }
-                        //tesseractEngine.DefaultPageSegMode = PageSegMode.SparseText ;
+                        result.AppendLine("------------------------------------------Sparse Text-------------------------");
+                        tesseractEngine.DefaultPageSegMode = PageSegMode.SparseText;
 
-                        //using (var page = tesseractEngine.Process(img))
-                        //{
-                        //    result.AppendLine(page.GetText());
-                        //}
+                        using (var page = tesseractEngine.Process(img))
+                        {
+                            result.AppendLine(page.GetText());
+                        }
                     }
                     
                 }
