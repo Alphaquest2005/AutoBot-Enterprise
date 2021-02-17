@@ -661,7 +661,7 @@ namespace WaterNut.DataSpace
                 if (!IsValidDocument(currentAsycudaDocumentSet)) return;
 
                 var slstSource =
-                    (from s in await GetSelectedPODetails(entryDatalst.ToList(),
+                    (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(),
                             currentAsycudaDocumentSet.AsycudaDocumentSetId).ConfigureAwait(false)
                         //.Where(p => p.Downloaded == false)
                         select s).ToList();
@@ -703,7 +703,7 @@ namespace WaterNut.DataSpace
                 docSet.Customs_ProcedureId = cp.Customs_ProcedureId;
 
                 var slstSource =
-                    (from s in await GetSelectedPODetails(entryDatalst.ToList(), docSetId).ConfigureAwait(false)
+                    (from s in await GetSelectedPODetails(entryDatalst.Distinct().ToList(), docSetId).ConfigureAwait(false)
                         //.Where(p => p.Downloaded == false)
                         select s).ToList();
                 ;

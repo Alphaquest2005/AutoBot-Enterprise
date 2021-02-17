@@ -602,6 +602,11 @@ namespace AutoBotUtilities
             var shipments = new List<Shipment>();
             var unattachedShippment = masterShipment.CreateUnattachedShipment();
             shipments.Add(unattachedShippment);
+
+            ShipmentBL masterBL = null;
+
+
+
             foreach (var aBl in masterShipment.ShipmentAttachedBL)
             {
                 var bl = aBl.ShipmentBL;

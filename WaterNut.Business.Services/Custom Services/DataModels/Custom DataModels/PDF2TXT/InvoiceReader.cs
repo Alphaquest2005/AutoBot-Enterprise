@@ -44,9 +44,9 @@ namespace WaterNut.DataSpace
                 string pdftxt = null;
 
                 //pdftxt = parseUsingPDFBox(file);
-                pdftxt += "------------------------------------------Ripped Text-------------------------";
+                pdftxt += "------------------------------------------Ripped Text-------------------------\r\n";
                 pdftxt += pdfPigText(file); //TODO: need to implement the layout logic
-                pdftxt += "------------------------------------------Single Column-------------------------";
+                pdftxt += "------------------------------------------Single Column-------------------------\r\n";
                 pdftxt += PdfOcr.Ocr(file);
 
                 //Get Template

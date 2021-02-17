@@ -17,7 +17,7 @@
         </Style>
 
         <DataTemplate x:Key="VPurchaseOrderTemplate" DataType="{x:Type qsEntryDataEntities:EntryDataEx}">
-            <Grid x:Name="ItmGrid"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0" Width="770" Height="35">
+            <Grid x:Name="ItmGrid"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Width="770" Height="35">
                 <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.InvoiceDate, Mode=OneWay}" Margin="295,0,345,0"/>
                 <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.InvoiceNo, Mode=OneWay}" Margin="122,-1,480,0" FontSize="14"/>
                 <TextBlock Text="{Binding Data.Filled}" Margin="430,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="78" Height="35"/>
@@ -25,6 +25,9 @@
                 <TextBox Style="{DynamicResource TextBox2TextBlock}"  Text="{Binding Data.Type, Mode=OneWay}" Margin="25,0,653,4" FontSize="18" FontWeight="Bold"/>
                 <TextBlock Text="{Binding Data.MissingLines, StringFormat = Missing Lines: 0}" Margin="508,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Width="157" Height="35"/>
                 <Rectangle HorizontalAlignment="Left" Height="34" Margin="0,1,0,0" Stroke="{x:Null}" VerticalAlignment="Top" Width="10">
+                    <Rectangle.Triggers>
+
+                    </Rectangle.Triggers>
                     <Rectangle.Fill>
                         <RadialGradientBrush>
                             <GradientStop Color="White" Offset="0.011"/>
@@ -36,7 +39,8 @@
             </Grid>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Data.TotalsEqual}" Value="False">
-                    <Setter Property="Background" TargetName="ItmGrid" Value="Red"/>
+                    <Setter Property="Background" TargetName="ItmGrid" Value="#66FF0000"/>
+                    <Setter Property="Margin" TargetName="ItmGrid" Value="5"/>
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>

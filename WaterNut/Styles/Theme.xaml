@@ -5563,6 +5563,9 @@
         </Setter>
     </Style>
     <Style x:Key="AlphaListBoxStyle" TargetType="{x:Type ListBox}">
+        <Style.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#CCE4FF00" />
+        </Style.Resources>
         <Setter Property="Background" Value="#4CFFFFFF"/>
         <Setter Property="BorderBrush">
             <Setter.Value>
@@ -5576,6 +5579,7 @@
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+
         <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
