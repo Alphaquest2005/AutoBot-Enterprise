@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Tesseract;
 
 
 namespace pdf_ocr
@@ -15,7 +16,7 @@ namespace pdf_ocr
             Console.WriteLine();
 
            
-            var recognizedText = PdfOcr.Ocr("test.pdf");
+            var recognizedText = new PdfOcr().Ocr("test.pdf", PageSegMode.SingleColumn);
 
             Console.WriteLine($"Recognized text on page");
             Console.WriteLine($"=====");

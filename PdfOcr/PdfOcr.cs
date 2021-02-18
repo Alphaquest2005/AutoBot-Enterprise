@@ -18,7 +18,7 @@ namespace pdf_ocr
     public class PdfOcr
     {
         private static readonly string BaseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        private static readonly string TempDir = Path.Combine(BaseDirectory, "Temp");
+        //private static readonly string TempDir = Path.Combine(BaseDirectory, "Temp");
 
         #region Settings
 
@@ -44,22 +44,26 @@ namespace pdf_ocr
 
         #endregion
 
-        public static string Ocr(string inputPdfFile)
+        public string Ocr(string inputPdfFile, PageSegMode pagemode)
         {
             try
             {
+                var TempDir = Path.Combine(BaseDirectory, $"{Guid.NewGuid()}");
                 if(Directory.Exists(TempDir)) Directory.Delete(TempDir, true);
                 Directory.CreateDirectory(TempDir);
+                
                 var file = new FileInfo(inputPdfFile);
-                var newFile = new FileInfo(inputPdfFile + ".txt");
+                var processFile = Path.Combine(TempDir, file.Name);
+                File.Copy(inputPdfFile, processFile);
+                var newFile = new FileInfo(Path.Combine(TempDir,file.Name + ".txt"));
                 if (newFile.Exists && newFile.LastWriteTime > file.LastAccessTime.AddMinutes(5))
                 {
-                    return File.ReadAllText(inputPdfFile + ".txt");
+                    return File.ReadAllText(processFile + ".txt");
                 }
-                GetImageFromPdf(inputPdfFile);
+                GetImageFromPdf(processFile, TempDir);
                 //Recognizing text from the generated image
-                var recognizedText = GetTextFromImage();
-                File.WriteAllText(inputPdfFile+ ".txt", recognizedText);
+                var recognizedText = GetTextFromImage(pagemode, TempDir);
+                File.WriteAllText(processFile + ".txt", recognizedText);
                 Directory.Delete(TempDir, true);
                 return recognizedText;
             }
@@ -74,9 +78,10 @@ namespace pdf_ocr
         /// Get an image from a PDF page.
         /// </summary>
         /// <param name="pdfPath"></param>
+        /// <param name="TempDir"></param>
         /// <param name="pageNumber"></param>
         /// <returns>The path of the generated image.</returns>
-        private static void GetImageFromPdf(string pdfPath)
+        private void GetImageFromPdf(string pdfPath, string TempDir)
         {
 
             try
@@ -94,7 +99,7 @@ namespace pdf_ocr
 
                 for (int i = 1; i <= pageCount; i++)
                 {
-                    var outputFilePath = GetTempFile(".png");
+                    var outputFilePath = GetTempFile(TempDir, ".png");
                     //using (var img = ghostscriptRasterizer.GetPage(pdfToImageDPI, pdfToImageDPI, i))
                     //{
                     //    img.Save(outputFilePath, System.Drawing.Imaging.ImageFormat.Png);
@@ -117,7 +122,7 @@ namespace pdf_ocr
         }
 
 
-        private static void PdfToPngWithGhostscriptPngDevice(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile)
+        private void PdfToPngWithGhostscriptPngDevice(string srcFile, int pageNo, int dpiX, int dpiY, string tgtFile)
         {
             GhostscriptPngDevice dev = new GhostscriptPngDevice(GhostscriptPngDeviceType.PngGray);
             dev.GraphicsAlphaBits = GhostscriptImageDeviceAlphaBits.V_4;
@@ -130,15 +135,18 @@ namespace pdf_ocr
             dev.OutputPath = tgtFile;
             dev.Process();
         }
+
         /// <summary>
         /// Get text from the specified image file.
         /// </summary>
+        /// <param name="pagemode"></param>
+        /// <param name="TempDir"></param>
         /// <param name="imagePath"></param>
         /// <returns></returns>
-        private static string GetTextFromImage()
+        private string GetTextFromImage(PageSegMode pagemode, string TempDir)
         {
             var result = new StringBuilder();
-            foreach (var file in new DirectoryInfo(TempDir).GetFiles().OrderBy(x => x.LastWriteTime))
+            foreach (var file in new DirectoryInfo(TempDir).GetFiles().Where(x => x.Extension == ".png").OrderBy(x => x.LastWriteTime))
             {
 
 
@@ -146,19 +154,19 @@ namespace pdf_ocr
                 {
                     using (var tesseractEngine = new TesseractEngine(Path.Combine(Environment.CurrentDirectory, "tessdata"), ocrLanguage, EngineMode.Default))
                     {
-                        tesseractEngine.DefaultPageSegMode = PageSegMode.SingleColumn;
+                        tesseractEngine.DefaultPageSegMode = pagemode;
                         
                         using (var page = tesseractEngine.Process(img))
                         {
                             result.AppendLine(page.GetText());
                         }
-                        result.AppendLine("------------------------------------------Sparse Text-------------------------");
-                        tesseractEngine.DefaultPageSegMode = PageSegMode.SparseText;
+                        
+                        //tesseractEngine.DefaultPageSegMode = PageSegMode.SparseText;
 
-                        using (var page = tesseractEngine.Process(img))
-                        {
-                            result.AppendLine(page.GetText());
-                        }
+                        //using (var page = tesseractEngine.Process(img))
+                        //{
+                        //    result.AppendLine(page.GetText());
+                        //}
                     }
                     
                 }
@@ -170,9 +178,10 @@ namespace pdf_ocr
         /// <summary>
         /// Returns the path of a new file in the <see cref="TempDir"/> directory. The file is not created.
         /// </summary>
+        /// <param name="TempDir"></param>
         /// <param name="extension"></param>
         /// <returns></returns>
-        private static string GetTempFile(string extension = ".tmp")
+        private string GetTempFile(string TempDir, string extension = ".tmp")
         {
             return Path.Combine(TempDir, Guid.NewGuid().ToString() + extension);
         }

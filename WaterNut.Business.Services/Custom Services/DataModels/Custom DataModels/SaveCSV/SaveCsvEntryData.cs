@@ -515,7 +515,7 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
-                        var filename = SetFilename(droppedFilePath, manifest.BLNumber, "-Freight.pdf");
+                        var filename = BaseDataModel.SetFilename(droppedFilePath, manifest.BLNumber, "-Freight.pdf");
                         manifest.SourceFile = filename;
                         var existingManifest =
                             ctx.ShipmentFreight.FirstOrDefault(
@@ -536,22 +536,6 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static string SetFilename(string droppedFilePath, string targetFileName, string nameExtension)
-        {
-            string filename;
-            //if (droppedFilePath.Contains(nameExtension))
-            //{
-            //    filename = droppedFilePath;
-            //}
-            //else
-            //{
-                var file = new FileInfo(droppedFilePath);
-                filename = $"{Path.Combine(file.DirectoryName)}\\{targetFileName}{nameExtension}";
-                if(!File.Exists(filename))File.Copy(droppedFilePath, filename);
-            //}
-
-            return filename;
-        }
 
         double CF2M3 = 0.0283168;
         private void ProcessBL(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
@@ -614,7 +598,7 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
-                        var filename = SetFilename(droppedFilePath,manifest.BLNumber, "-BL.pdf");
+                        var filename = BaseDataModel.SetFilename(droppedFilePath,manifest.BLNumber, "-BL.pdf");
                         if(!File.Exists(filename)) File.Copy(droppedFilePath, filename);
                         manifest.SourceFile = filename;
                         var existingManifest =
@@ -682,7 +666,7 @@ namespace WaterNut.DataSpace
                 {
                     foreach (var manifest in lst)
                     {
-                        var filename = SetFilename(droppedFilePath,manifest.WayBill, "-Manifest.pdf");
+                        var filename = BaseDataModel.SetFilename(droppedFilePath,manifest.WayBill, "-Manifest.pdf");
                         manifest.SourceFile = filename;
                         var existingManifest =
                             ctx.ShipmentManifest.FirstOrDefault(
@@ -2180,7 +2164,8 @@ namespace WaterNut.DataSpace
                         {
                             if (string.IsNullOrEmpty(splits[map[key]]))
                             {
-                                ((IDictionary<string, object>) res)[key.DestinationName] = "";
+                                if(((IDictionary<string, object>)res).ContainsKey(key.DestinationName)  &&    string.IsNullOrEmpty(((IDictionary<string, object>)res)[key.DestinationName] as string))
+                                     ((IDictionary<string, object>) res)[key.DestinationName] = "";
                                 continue;
                             }
 

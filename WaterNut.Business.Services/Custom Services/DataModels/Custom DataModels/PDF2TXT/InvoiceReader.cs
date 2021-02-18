@@ -8,7 +8,9 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Schedulers;
 using Core.Common.Extensions;
 using DocumentDS.Business.Entities;
 using EmailDownloader;
@@ -19,6 +21,7 @@ using org.apache.pdfbox.util;
 using OCR.Business.Entities;
 using pdf_ocr;
 using SimpleMvvmToolkit.ModelExtensions;
+using Tesseract;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
@@ -41,14 +44,41 @@ namespace WaterNut.DataSpace
             {
 
                 
-                string pdftxt = null;
+                StringBuilder pdftxt = new StringBuilder();
+                
 
                 //pdftxt = parseUsingPDFBox(file);
-                pdftxt += "------------------------------------------Ripped Text-------------------------\r\n";
-                pdftxt += pdfPigText(file); //TODO: need to implement the layout logic
-                pdftxt += "------------------------------------------Single Column-------------------------\r\n";
-                pdftxt += PdfOcr.Ocr(file);
+                var ripTask = Task.Run(() =>
+                {
+                    var txt = "------------------------------------------Ripped Text-------------------------\r\n";
+                    txt += pdfPigText(file); //TODO: need to implement the layout logic
+                    return txt; 
+                });
 
+               
+                var singleColumnTask = Task.Run(() =>
+                {
+
+                    var txt =
+                        "------------------------------------------Single Column-------------------------\r\n";
+                    txt += new PdfOcr().Ocr(file, PageSegMode.SingleColumn);
+                    return txt;
+                });
+
+                var sparseTextTask = Task.Run(() =>
+                {
+                   
+                        var txt = "------------------------------------------SparseText-------------------------\r\n";
+                        txt += new PdfOcr().Ocr(file, PageSegMode.SparseText);
+                        return txt;
+                
+                });
+
+                Task.WhenAll(ripTask, singleColumnTask, sparseTextTask);//, 
+
+                pdftxt.AppendLine(ripTask.Result);
+                pdftxt.AppendLine(singleColumnTask.Result);
+                pdftxt.AppendLine(sparseTextTask.Result);
                 //Get Template
                 using (var ctx = new OCRContext())
                 {
@@ -76,7 +106,7 @@ namespace WaterNut.DataSpace
                     {
                         try
                         {
-                            List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt));
+                            List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt.ToString()));
                             if (csvLines.Count < 1 || !tmp.Success)
                             {
                                 var failedlines = tmp.Parts.SelectMany(x => x.AllLines).Where(z => z.FailedFields.Any() || !z.Values.Any()).ToList();
@@ -84,7 +114,7 @@ namespace WaterNut.DataSpace
                                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                                     tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                                 {
-                                    ReportUnImportedFile(file, emailId, client, pdftxt, failedlines);
+                                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), failedlines);
                                     return false;
                                 }
                                 continue;
@@ -107,7 +137,7 @@ namespace WaterNut.DataSpace
 
                     }
 
-                    ReportUnImportedFile(file, emailId, client, pdftxt, new List<Line>());
+                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), new List<Line>());
                     //SeeWhatSticks(pdftxt);
                 }
 
@@ -130,101 +160,31 @@ namespace WaterNut.DataSpace
 
         private static string pdfPigText(string file)
         {
-            var pdfText = "";
-            var sb = new StringBuilder();
-            using (var pdf = PdfDocument.Open(file))
-            {
-                foreach (var page in pdf.GetPages())
+         
+                var pdfText = "";
+                var sb = new StringBuilder();
+                using (var pdf = PdfDocument.Open(file))
                 {
-                    // Either extract based on order in the underlying document with newlines and spaces.
-                    var text = ContentOrderTextExtractor.GetText(page);
-                    sb.AppendLine(text);
-                    // Or based on grouping letters into words.
-                    var otherText = string.Join(" ", page.GetWords());
+                    foreach (var page in pdf.GetPages())
+                    {
+                        // Either extract based on order in the underlying document with newlines and spaces.
+                        var text = ContentOrderTextExtractor.GetText(page);
+                        sb.AppendLine(text);
+                        // // Or based on grouping letters into words.
+                        // var otherText = string.Join(" ", page.GetWords());
 
-                    // Or the raw text of the page's content stream.
-                    var rawText = page.Text;
+                        // // Or the raw text of the page's content stream.
+                        // var rawText = page.Text;
 
-                   // Console.WriteLine(text);
+                        //// Console.WriteLine(text);
+                    }
+
                 }
 
-            }
+                pdfText = sb.ToString();
+                return pdfText;
+           
 
-            pdfText = sb.ToString();
-            return pdfText;
-            //var sb = new StringBuilder();
-
-            //using (var document = PdfDocument.Open(file))
-            //{
-            //    foreach (var page in document.GetPages())
-            //    {
-            //        // 0. Preprocessing
-            //        var letters = page.Letters; // no preprocessing
-
-            //        // 1. Extract words
-            //        var wordExtractor = NearestNeighbourWordExtractor.Instance;
-            //        var wordExtractorOptions = new NearestNeighbourWordExtractor.NearestNeighbourWordExtractorOptions()
-            //        {
-            //            Filter = (pivot, candidate) =>
-            //            {
-            //                // check if white space (default implementation of 'Filter')
-            //                if (string.IsNullOrWhiteSpace(candidate.Value))
-            //                {
-            //                    // pivot and candidate letters cannot belong to the same word 
-            //                    // if candidate letter is null or white space.
-            //                    // ('FilterPivot' already checks if the pivot is null or white space by default)
-            //                    return false;
-            //                }
-
-            //                // check for height difference
-            //                var maxHeight = Math.Max(pivot.PointSize, candidate.PointSize);
-            //                var minHeight = Math.Min(pivot.PointSize, candidate.PointSize);
-            //                if (minHeight != 0 && maxHeight / minHeight > 2.0)
-            //                {
-            //                    // pivot and candidate letters cannot belong to the same word 
-            //                    // if one letter is more than twice the size of the other.
-            //                    return false;
-            //                }
-
-            //                // check for colour difference
-            //                var pivotRgb = pivot.Color.ToRGBValues();
-            //                var candidateRgb = candidate.Color.ToRGBValues();
-            //                if (!pivotRgb.Equals(candidateRgb))
-            //                {
-            //                    // pivot and candidate letters cannot belong to the same word 
-            //                    // if they don't have the same colour.
-            //                    return false;
-            //                }
-
-            //                return true;
-            //            }
-            //        };
-
-            //        var words = wordExtractor.GetWords(letters, wordExtractorOptions);
-
-            //        // 2. Segment page
-            //        var pageSegmenter = DocstrumBoundingBoxes.Instance;
-            //        var pageSegmenterOptions = new DocstrumBoundingBoxes.DocstrumBoundingBoxesOptions()
-            //        {
-
-            //        };
-
-            //        var textBlocks = pageSegmenter.GetBlocks(words, pageSegmenterOptions);
-
-            //        // 3. Postprocessing
-            //        var readingOrder = UnsupervisedReadingOrderDetector.Instance;
-            //        var orderedTextBlocks = readingOrder.Get(textBlocks);
-
-            //        // 4. Extract text
-            //        foreach (var block in orderedTextBlocks)
-            //        {
-            //            sb.Append(block.Text.Normalize(NormalizationForm.FormKC)); // normalise text
-            //            sb.AppendLine();
-            //        }
-
-            //        sb.AppendLine();
-            //    }
-            //}
 
         }
 

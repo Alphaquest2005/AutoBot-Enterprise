@@ -604,10 +604,21 @@ namespace AutoBotUtilities
             shipments.Add(unattachedShippment);
 
             ShipmentBL masterBL = null;
+            var bls = masterShipment.ShipmentAttachedBL.Select(x => x.ShipmentBL)
+                .OrderByDescending(x => x.ShipmentBLDetails.Count).ToList();
+            foreach (var bl in bls)
+            {
+                var otherBls = bls.Where(x => x.BLNumber != bl.BLNumber).SelectMany(x => x.ShipmentBLDetails.Select(z => z.Marks)).ToList();
+                var marks = bl.ShipmentBLDetails.Select(x => x.Marks).ToList();
+                if (otherBls.All(x => marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any() )))
+                {
+                    masterBL = bl;
+                    break;
+                }
+            }
+            if(masterBL != null) masterBL.SourceFile = BaseDataModel.SetFilename(masterBL.SourceFile, masterBL.BLNumber, "-MasterBL.pdf");
 
-
-
-            foreach (var aBl in masterShipment.ShipmentAttachedBL)
+            foreach (var aBl in masterShipment.ShipmentAttachedBL.Where(x => x.ShipmentBL.BLNumber != masterBL?.BLNumber))
             {
                 var bl = aBl.ShipmentBL;
                 var riderDetails = bl.ShipmentBLDetails.SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null).ToList();
@@ -618,7 +629,7 @@ namespace AutoBotUtilities
                     var manifests = masterShipment.ShipmentAttachedManifest
                         .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber).Select(x => x.ShipmentManifest).ToList();
                     var freightInvoices = masterShipment.ShipmentAttachedFreight
-                        .Where(x => x.ShipmentFreight.BLNumber == bl.BLNumber ||
+                        .Where(x => //x.ShipmentFreight.BLNumber == bl.BLNumber ||
                                     x.ShipmentFreight.ShipmentFreightDetails.Any(z =>
                                         z.ShipmentFreightBLs.Any(f => f.BLNumber == bl.BLNumber)))
                         .Where(x => x.ShipmentFreight.ShipmentFreightDetails.Any(z =>client.Any(q => q.WarehouseCode == z.WarehouseCode)))
@@ -678,6 +689,14 @@ namespace AutoBotUtilities
                     {
                         FilePath = bl.SourceFile,
                         DocumentCode = "BL10",
+                        Reference = bl.BLNumber,
+                        TrackingState = TrackingState.Added
+                    });
+                    if(masterBL != null)
+                    attachments.Add(new Attachments()
+                    {
+                        FilePath = masterBL.SourceFile,
+                        DocumentCode = "BL05",
                         Reference = bl.BLNumber,
                         TrackingState = TrackingState.Added
                     });

@@ -724,6 +724,22 @@ namespace WaterNut.DataSpace
         }
 
 
+        public static string SetFilename(string droppedFilePath, string targetFileName, string nameExtension)
+        {
+            string filename;
+            //if (droppedFilePath.Contains(nameExtension))
+            //{
+            //    filename = droppedFilePath;
+            //}
+            //else
+            //{
+            var file = new FileInfo(droppedFilePath);
+            filename = $"{Path.Combine(file.DirectoryName)}\\{targetFileName}{nameExtension}";
+            if (!File.Exists(filename)) File.Copy(droppedFilePath, filename);
+            //}
+
+            return filename;
+        }
 
         //public async Task AddToEntry(IEnumerable<EntryDataDetailsEx> entryDataDetailslst,
         //    AsycudaDocumentSet currentAsycudaDocumentSet)
