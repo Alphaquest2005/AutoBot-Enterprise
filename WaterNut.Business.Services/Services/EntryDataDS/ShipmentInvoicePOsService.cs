@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<ShipmentInvoicePOs> GetShipmentInvoicePOsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<ShipmentInvoicePOs> GetShipmentInvoicePOsByKey(string InvoiceId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(InvoiceId))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(InvoiceId);
 				var set = AddIncludes(includesLst, dbContext);
-                ShipmentInvoicePOs entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                ShipmentInvoicePOs entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.InvoiceId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -247,6 +247,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "POMISMatches":
+                                return
+                                    await
+                                        GetWhere<ShipmentInvoicePOItemMISMatches>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -307,11 +313,11 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<ShipmentInvoicePOs> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.InvoiceId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.InvoiceId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -382,12 +388,12 @@ namespace EntryDataDS.Business.Services
                                 IQueryable<ShipmentInvoicePOs> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.InvoiceId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.InvoiceId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -533,15 +539,15 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteShipmentInvoicePOs(string Id)
+        public async Task<bool> DeleteShipmentInvoicePOs(string InvoiceId)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(InvoiceId);
                 ShipmentInvoicePOs entity = await dbContext.ShipmentInvoicePOs
-													.SingleOrDefaultAsync(x => x.Id == i)
+													.SingleOrDefaultAsync(x => x.InvoiceId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
@@ -693,7 +699,7 @@ namespace EntryDataDS.Business.Services
                     {
                         return await dbContext.ShipmentInvoicePOs
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.InvoiceId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -705,7 +711,7 @@ namespace EntryDataDS.Business.Services
                         return await dbContext.ShipmentInvoicePOs
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.InvoiceId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -752,9 +758,12 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentInvoice":
                                 return await CountWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "POMISMatches":
+                                return await CountWhere<ShipmentInvoicePOItemMISMatches>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.ShipmentInvoicePOs.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.ShipmentInvoicePOs.Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -797,9 +806,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentInvoicePOs>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InvoiceId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -818,9 +827,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentInvoicePOs>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InvoiceId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -847,7 +856,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.InvoiceId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -870,6 +879,12 @@ namespace EntryDataDS.Business.Services
                                         LoadRangeWhere<ShipmentInvoice>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoicePOs", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "POMISMatches":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentInvoicePOItemMISMatches>(startIndex, count, dbContext, exp, itm.Value, "ShipmentInvoicePOs", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
                           
 							default:
                                 throw new ArgumentException("No Navigation property found for " + itm.Key);
@@ -878,8 +893,8 @@ namespace EntryDataDS.Business.Services
                     }
                     return await set//dbContext.ShipmentInvoicePOs
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
+								.OrderBy(y => y.InvoiceId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -931,9 +946,9 @@ namespace EntryDataDS.Business.Services
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.InvoiceId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -960,9 +975,9 @@ namespace EntryDataDS.Business.Services
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.InvoiceId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1012,7 +1027,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.SelectMany(navProp).OfType<ShipmentInvoicePOs>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Where(exp == "All" || exp == null?"InvoiceId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1022,7 +1037,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentInvoicePOs>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Where(exp == "All" || exp == null?"InvoiceId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1049,7 +1064,7 @@ namespace EntryDataDS.Business.Services
 							.AsNoTracking()
                             .Where(navExp)
 							.Select(navProp).OfType<ShipmentInvoicePOs>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Where(exp == "All" || exp == null?"InvoiceId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
@@ -1059,7 +1074,7 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentInvoicePOs>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Where(exp == "All" || exp == null?"InvoiceId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1074,46 +1089,18 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByInvoiceId(string InvoiceId, List<string> includesLst = null)
+			        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsById(string Id, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(InvoiceId);
+                var i = Convert.ToInt32(Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<ShipmentInvoicePOs> entities = await set//dbContext.ShipmentInvoicePOs
+                                                    // .Include(x => x.POMISMatches)									  
                                       .AsNoTracking()
-                                        .Where(x => x.InvoiceId.ToString() == InvoiceId.ToString())
-										.ToListAsync()
-										.ConfigureAwait(continueOnCapturedContext: false);
-                return entities;
-              }
-             }
-            catch (Exception updateEx)
-            {
-                System.Diagnostics.Debugger.Break();
-                //throw new FaultException(updateEx.Message);
-                    var fault = new ValidationFault
-                                {
-                                    Result = false,
-                                    Message = updateEx.Message,
-                                    Description = updateEx.StackTrace
-                                };
-                    throw new FaultException<ValidationFault>(fault);
-            }
-        }
- 	        public async Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByEntryData_Id(string EntryData_Id, List<string> includesLst = null)
-        {
-            try
-            {
-                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
-              {
-                var i = Convert.ToInt32(EntryData_Id);
-                var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<ShipmentInvoicePOs> entities = await set//dbContext.ShipmentInvoicePOs
-                                      .AsNoTracking()
-                                        .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
+                                        .Where(x => x.Id.ToString() == Id.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1193,9 +1180,12 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentInvoice":
                                 return await SumWhere<ShipmentInvoice>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "POMISMatches":
+                                return await SumWhere<ShipmentInvoicePOItemMISMatches>(dbContext, exp, itm.Value, "ShipmentInvoicePOs", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.ShipmentInvoicePOs.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.ShipmentInvoicePOs.Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1236,9 +1226,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .SelectMany(navProp).OfType<ShipmentInvoicePOs>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InvoiceId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1256,9 +1246,9 @@ namespace EntryDataDS.Business.Services
 				.AsNoTracking()
                 .Where(navExp)
                 .Select(navProp).OfType<ShipmentInvoicePOs>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "InvoiceId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("InvoiceId")
                 .Sum(field));
 			}
 			catch (Exception)

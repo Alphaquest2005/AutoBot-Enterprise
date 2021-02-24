@@ -295,6 +295,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentInvoicePOs>(dbContext, exp, itm.Value, "", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ShipmentAttachedPOs":
+                                return
+                                    await
+                                        GetWhere<ShipmentAttachedPOs>(dbContext, exp, itm.Value, "", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -824,6 +830,9 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentInvoicePOs":
                                 return await CountWhere<ShipmentInvoicePOs>(dbContext, exp, itm.Value, "", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentAttachedPOs":
+                                return await CountWhere<ShipmentAttachedPOs>(dbContext, exp, itm.Value, "", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.Set<PurchaseOrders>().Where(exp == "All" || exp == null ? "EntryData_Id != null" : exp)
@@ -988,6 +997,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ShipmentInvoicePOs>(startIndex, count, dbContext, exp, itm.Value, "", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentAttachedPOs":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentAttachedPOs>(startIndex, count, dbContext, exp, itm.Value, "", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1205,6 +1220,7 @@ namespace EntryDataDS.Business.Services
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
                                                     // .Include(x => x.WarehouseInfo)									  
                                                     // .Include(x => x.ShipmentInvoicePOs)									  
+                                                    // .Include(x => x.ShipmentAttachedPOs)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
@@ -1236,6 +1252,7 @@ namespace EntryDataDS.Business.Services
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
                                                     // .Include(x => x.WarehouseInfo)									  
                                                     // .Include(x => x.ShipmentInvoicePOs)									  
+                                                    // .Include(x => x.ShipmentAttachedPOs)									  
                                       .AsNoTracking()
                                         .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
 										.ToListAsync()
@@ -1267,6 +1284,7 @@ namespace EntryDataDS.Business.Services
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
                                                     // .Include(x => x.WarehouseInfo)									  
                                                     // .Include(x => x.ShipmentInvoicePOs)									  
+                                                    // .Include(x => x.ShipmentAttachedPOs)									  
                                       .AsNoTracking()
                                         .Where(x => x.EmailId.ToString() == EmailId.ToString())
 										.ToListAsync()
@@ -1298,6 +1316,7 @@ namespace EntryDataDS.Business.Services
                 IEnumerable<PurchaseOrders> entities = await set//dbContext.EntryData.OfType<PurchaseOrders>()
                                                     // .Include(x => x.WarehouseInfo)									  
                                                     // .Include(x => x.ShipmentInvoicePOs)									  
+                                                    // .Include(x => x.ShipmentAttachedPOs)									  
                                       .AsNoTracking()
                                         .Where(x => x.FileTypeId.ToString() == FileTypeId.ToString())
 										.ToListAsync()
@@ -1402,6 +1421,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentInvoicePOs":
                                 return await SumWhere<ShipmentInvoicePOs>(dbContext, exp, itm.Value, "", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentAttachedPOs":
+                                return await SumWhere<ShipmentAttachedPOs>(dbContext, exp, itm.Value, "", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

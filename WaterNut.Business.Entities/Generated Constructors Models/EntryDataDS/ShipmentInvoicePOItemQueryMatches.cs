@@ -5,9 +5,9 @@
 
 		namespace EntryDataDS.Business.Entities
 {
-    public partial class ShipmentInvoiceDetailPOSSuggestions
+    public partial class ShipmentInvoicePOItemQueryMatches
     {
-       public ShipmentInvoiceDetailPOSSuggestions()
+       public ShipmentInvoicePOItemQueryMatches()
         {
             CustomClassStartUp();
             MyNavPropStartUp();
@@ -17,7 +17,7 @@
             TrackableStartUp();
         }
 
-      public ShipmentInvoiceDetailPOSSuggestions(bool start) : this()
+      public ShipmentInvoicePOItemQueryMatches(bool start) : this()
        {
           if(start) StartTracking();
        }

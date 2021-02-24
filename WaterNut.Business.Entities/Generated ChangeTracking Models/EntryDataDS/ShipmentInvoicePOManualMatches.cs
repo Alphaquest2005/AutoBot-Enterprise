@@ -10,19 +10,19 @@ using TrackableEntities.Client;
 
 		namespace EntryDataDS.Business.Entities
 {
-    public partial class ShipmentInvoiceDetailPOSSuggestions
+    public partial class ShipmentInvoicePOManualMatches
     {
        
          partial void TrackableStartUp()
          {
-           // _changeTracker = new ChangeTrackingCollection<ShipmentInvoiceDetailPOSSuggestions>(this);
+           // _changeTracker = new ChangeTrackingCollection<ShipmentInvoicePOManualMatches>(this);
          }
 
-        ChangeTrackingCollection<ShipmentInvoiceDetailPOSSuggestions> _changeTracker;
+        ChangeTrackingCollection<ShipmentInvoicePOManualMatches> _changeTracker;
 
         [NotMapped]
         [IgnoreDataMember]
-        public new ChangeTrackingCollection<ShipmentInvoiceDetailPOSSuggestions> ChangeTracker
+        public new ChangeTrackingCollection<ShipmentInvoicePOManualMatches> ChangeTracker
         {
             get
             {
@@ -32,7 +32,7 @@ using TrackableEntities.Client;
 
          public new void StartTracking()
         {
-            _changeTracker = new ChangeTrackingCollection<ShipmentInvoiceDetailPOSSuggestions>(this);
+            _changeTracker = new ChangeTrackingCollection<ShipmentInvoicePOManualMatches>(this);
         }
    
     }

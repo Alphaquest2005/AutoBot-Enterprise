@@ -20,54 +20,54 @@ using WaterNut.Interfaces;
 namespace EntryDataDS.Business.Services
 {
     [ServiceContract (Namespace="http://www.insight-software.com/WaterNut")]
-    public partial interface IShipmentInvoiceDetailPOSSuggestionsService : IBusinessService
+    public partial interface IShipmentInvoicePOItemMISMatchesService : IBusinessService
     {
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestions(List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatches(List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<ShipmentInvoiceDetailPOSSuggestions> GetShipmentInvoiceDetailPOSSuggestionsByKey(string id, List<string> includesLst = null, bool tracking = true);
+        Task<ShipmentInvoicePOItemMISMatches> GetShipmentInvoicePOItemMISMatchesByKey(string id, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestionsByExpression(string exp, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByExpression(string exp, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestionsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true);
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestionsByExpressionNav(string exp,
+		Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByExpressionNav(string exp,
             Dictionary<string, string> navExp, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestionsByBatch(string exp,
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestionsByBatchExpressionLst(List<string> exp,
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByBatchExpressionLst(List<string> exp,
             int totalrow, List<string> includesLst = null, bool tracking = true);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<ShipmentInvoiceDetailPOSSuggestions> UpdateShipmentInvoiceDetailPOSSuggestions(ShipmentInvoiceDetailPOSSuggestions entity);
+        Task<ShipmentInvoicePOItemMISMatches> UpdateShipmentInvoicePOItemMISMatches(ShipmentInvoicePOItemMISMatches entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<ShipmentInvoiceDetailPOSSuggestions> CreateShipmentInvoiceDetailPOSSuggestions(ShipmentInvoiceDetailPOSSuggestions entity);
+        Task<ShipmentInvoicePOItemMISMatches> CreateShipmentInvoicePOItemMISMatches(ShipmentInvoicePOItemMISMatches entity);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> DeleteShipmentInvoiceDetailPOSSuggestions(string id);
+        Task<bool> DeleteShipmentInvoicePOItemMISMatches(string id);
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<bool> RemoveSelectedShipmentInvoiceDetailPOSSuggestions(IEnumerable<string> selectedShipmentInvoiceDetailPOSSuggestions);
+        Task<bool> RemoveSelectedShipmentInvoicePOItemMISMatches(IEnumerable<string> selectedShipmentInvoicePOItemMISMatches);
 	
 		//Virtural list implementation
         [OperationContract]
@@ -84,13 +84,13 @@ namespace EntryDataDS.Business.Services
 
         [OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> LoadRange(int startIndex, int count, string exp);
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> LoadRange(int startIndex, int count, string exp);
 
 
 
 		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-		Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> LoadRangeNav(int startIndex, int count, string exp,
+		Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null);
 
 		[OperationContract]
@@ -107,10 +107,16 @@ namespace EntryDataDS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestionsByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByPODetailsId(string PODetailsId, List<string> includesLst = null);
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoiceDetailPOSSuggestions>> GetShipmentInvoiceDetailPOSSuggestionsByInvoiceDetailId(string InvoiceDetailId, List<string> includesLst = null);
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByINVDetailsId(string INVDetailsId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByPOId(string POId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<ShipmentInvoicePOItemMISMatches>> GetShipmentInvoicePOItemMISMatchesByINVId(string INVId, List<string> includesLst = null);
   
 
 

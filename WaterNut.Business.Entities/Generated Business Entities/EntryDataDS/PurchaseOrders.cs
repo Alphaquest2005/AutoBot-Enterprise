@@ -24,6 +24,7 @@ namespace EntryDataDS.Business.Entities
         {
             this.WarehouseInfo = new List<WarehouseInfo>();
             this.ShipmentInvoicePOs = new List<ShipmentInvoicePOs>();
+            this.ShipmentAttachedPOs = new List<ShipmentAttachedPOs>();
         }
 
         [DataMember]
@@ -90,6 +91,8 @@ namespace EntryDataDS.Business.Entities
         public List<WarehouseInfo> WarehouseInfo { get; set; }
         [DataMember]
         public List<ShipmentInvoicePOs> ShipmentInvoicePOs { get; set; }
+        [DataMember]
+        public List<ShipmentAttachedPOs> ShipmentAttachedPOs { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

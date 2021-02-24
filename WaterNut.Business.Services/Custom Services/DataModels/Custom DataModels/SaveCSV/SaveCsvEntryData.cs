@@ -97,7 +97,7 @@ namespace WaterNut.DataSpace
                         .SelectMany(x => x.FileTypeMappings.Where(z => heading.Select(h => h.ToUpper().Trim()).Contains(z.OriginalName.ToUpper().Trim())))
                         .GroupBy(x => x.FileTypes)
                         .OrderByDescending(x => x.Count())
-                        .Where(x => x.Key.Type != "POTemplate")
+                        .Where(x => x.Key.IsImportable == null || x.Key.IsImportable == true) 
                         .ToList();
 
                  var res = resLst.FirstOrDefault();
@@ -115,22 +115,22 @@ namespace WaterNut.DataSpace
                 const double kg = lb2Kg;
 
                 var rawRiders = eslst.Select(x => ((IDictionary<string, object>) x))
-                    .GroupBy(x => new {ETA = x["ETA"], Date = x["Date"]})
+                    .GroupBy(x => new {ETA = x[nameof(ShipmentRider.ETA)], Date = x["Date"]})
                     .Select(x => new{
                         ETA = x.Key.Date,
                         DocumentDate = x.Key.Date,
                         ShipmentRiderDetails = x.Select(z => new 
                         {
-                            Consignee = z["Consignee"]?.ToString(),
-                            Code = z["Code"].ToString(),
-                            Shipper = z["Shipper"].ToString(),
-                            TrackingNumber = z["TrackingNumber"].ToString(),
-                            Pieces =  Convert.ToInt32(z["Pieces"].ToString()),
-                            WarehouseCode = z["WarehouseCode"].ToString(),
-                            InvoiceNumber = z["InvoiceNumber"].ToString(),
-                            InvoiceTotal = z.ContainsKey("InvoiceTotal")? z["InvoiceTotal"].ToString(): "0",
-                            GrossWeightLB = Convert.ToDouble(z["GrossWeightLB"].ToString()),
-                            CubicFeet = z.ContainsKey("VolumeCF") ? Convert.ToDouble(z["VolumeCF"].ToString()) : 0.0
+                            Consignee = z[nameof(ShipmentRiderDetails.Consignee)]?.ToString().Trim(),
+                            Code = z[nameof(ShipmentRiderDetails.Code)]?.ToString().Trim(),
+                            Shipper = z[nameof(ShipmentRiderDetails.Shipper)]?.ToString().Trim(),
+                            TrackingNumber = z[nameof(ShipmentRiderDetails.TrackingNumber)]?.ToString().Trim(),
+                            Pieces =  Convert.ToInt32(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim()),
+                            WarehouseCode = z[nameof(ShipmentRiderDetails.WarehouseCode)]?.ToString().Trim(),
+                            InvoiceNumber = z[nameof(ShipmentRiderDetails.InvoiceNumber)]?.ToString().Trim(),
+                            InvoiceTotal = z.ContainsKey(nameof(ShipmentRiderDetails.InvoiceTotal)) ? z[nameof(ShipmentRiderDetails.InvoiceTotal)]?.ToString().Trim() : "0",
+                            GrossWeightLB = Convert.ToDouble(z["GrossWeightLB"]?.ToString().Trim()),
+                            CubicFeet = z.ContainsKey("VolumeCF") ? Convert.ToDouble(z["VolumeCF"]?.ToString().Trim()) : 0.0
                             
 
                         }).ToList()
@@ -362,10 +362,12 @@ namespace WaterNut.DataSpace
 
                 if (fileType.Type == "Shipment Invoice")
                 {
+
+                    await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                     ProcessShipmentInvoice(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
                         droppedFilePath, eslst);
 
-                    await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+                    
                     //await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                     return true;
                 }
@@ -431,6 +433,7 @@ namespace WaterNut.DataSpace
                                                     TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
                                                     LineNumber = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1,
                                                     FileLineNumber = Convert.ToInt32(z["FileLineNumber"].ToString()),
+                                                    InventoryItemId = z.ContainsKey("InventoryItemId") ? (int)z["InventoryItemId"]: (int?)null,
                                                     TrackingState = TrackingState.Added,
 
                                                 }).ToList(),
@@ -451,16 +454,24 @@ namespace WaterNut.DataSpace
 
                     }).ToList();
 
+               
                 using (var ctx = new EntryDataDSContext())
                 {
-                    foreach (var manifest in lst)
+                    foreach (var invoice in lst)
                     {
                         var existingManifest =
                             ctx.ShipmentInvoice.FirstOrDefault(
-                                x => x.InvoiceNo == manifest.InvoiceNo);
+                                x => x.InvoiceNo == invoice.InvoiceNo);
                         if (existingManifest != null)
                             ctx.ShipmentInvoice.Remove(existingManifest);
-                        ctx.ShipmentInvoice.Add(manifest);
+
+                        if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
+                        {
+                            invoice.SubTotal = invoice.ImportedSubTotal;
+                        }
+
+
+                        ctx.ShipmentInvoice.Add(invoice);
 
                     }
 
@@ -836,7 +847,7 @@ namespace WaterNut.DataSpace
 
                 //Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
                 //    async item =>
-                    foreach (var item in ed)
+                    foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null))
 
                     {
                         string entryDataId = item.EntryData.EntryDataId;

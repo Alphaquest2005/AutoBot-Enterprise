@@ -492,6 +492,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private Boolean? _isImportableFilter;
+        public Boolean? IsImportableFilter
+        {
+            get
+            {
+                return _isImportableFilter;
+            }
+            set
+            {
+                _isImportableFilter = value;
+				NotifyPropertyChanged(x => IsImportableFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -564,6 +582,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(ReplicateHeaderRowFilter.HasValue)
 						res.Append(" && " + string.Format("ReplicateHeaderRow == {0}",  ReplicateHeaderRowFilter));						
+ 
+
+									if(IsImportableFilter.HasValue)
+						res.Append(" && " + string.Format("IsImportable == {0}",  IsImportableFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -617,7 +639,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     HasFiles = x.HasFiles ,
                     
  
-                    ReplicateHeaderRow = x.ReplicateHeaderRow 
+                    ReplicateHeaderRow = x.ReplicateHeaderRow ,
+                    
+ 
+                    IsImportable = x.IsImportable 
                     
                 }).ToList()
             };
@@ -661,6 +686,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> ReplicateHeaderRow { get; set; } 
+                    
+ 
+                    public Nullable<bool> IsImportable { get; set; } 
                     
         }
 

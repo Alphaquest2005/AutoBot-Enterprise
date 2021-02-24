@@ -205,8 +205,36 @@ namespace Core.Common.Extensions
 
         object IDictionary<string, object>.this[string key]
         {
-            get { return _dict[key]; }
-            set { _dict[key] = value; }
+            get
+            {
+                try
+                {
+                   
+                    return  _dict.ContainsKey(key)? _dict[key] : null;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+            set
+            {
+                try
+                {
+                    if(_dict.ContainsKey(key))
+                    _dict[key] = value;
+                    else
+                    {
+                        _dict.Add(key, value);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
         }
 
         ICollection<string> IDictionary<string, object>.Keys

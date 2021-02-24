@@ -35,6 +35,7 @@
               this.HasMany(t => t.ShipmentAttachedManifest).WithRequired(t => (Shipment)t.Shipment);
               this.HasMany(t => t.ShipmentAttachedRider).WithRequired(t => (Shipment)t.Shipment);
               this.HasMany(t => t.ShipmentAttachments).WithRequired(t => (Shipment)t.Shipment);
+              this.HasMany(t => t.ShipmentAttachedPOs).WithRequired(t => (Shipment)t.Shipment);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

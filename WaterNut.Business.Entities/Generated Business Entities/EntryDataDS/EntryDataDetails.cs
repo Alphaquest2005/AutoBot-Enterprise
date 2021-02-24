@@ -20,6 +20,11 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class EntryDataDetails : BaseEntity<EntryDataDetails>, ITrackable 
     {
+        partial void AutoGenStartUp() //EntryDataDetails()
+        {
+            this.INVItems = new List<ShipmentInvoicePOItemQueryMatches>();
+        }
+
         [DataMember]
         public int EntryDataDetailsId 
         {
@@ -463,6 +468,8 @@ namespace EntryDataDS.Business.Entities
         public EntryDataDetailsEx EntryDataDetailsEx { get; set; }
         [DataMember]
         public InventoryItems InventoryItems { get; set; }
+        [DataMember]
+        public List<ShipmentInvoicePOItemQueryMatches> INVItems { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

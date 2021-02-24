@@ -242,6 +242,19 @@ namespace CoreEntities.Client.DTO
 		}
         private Nullable<bool> _ReplicateHeaderRow;
 
+        [DataMember]
+        public Nullable<bool> IsImportable
+		{ 
+		    get { return _IsImportable; }
+			set
+			{
+			    if (value == _IsImportable) return;
+				_IsImportable = value;
+				NotifyPropertyChanged();//m => this.IsImportable
+			}
+		}
+        private Nullable<bool> _IsImportable;
+
        
         [DataMember]
         public ApplicationSettings ApplicationSettings

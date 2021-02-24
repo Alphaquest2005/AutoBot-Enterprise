@@ -27,6 +27,7 @@ namespace EntryDataDS.Business.Entities
             this.ShipmentRiderInvoice = new List<ShipmentRiderInvoice>();
             this.ShipmentAttachedInvoices = new List<ShipmentAttachedInvoices>();
             this.ShipmentInvoicePOs = new List<ShipmentInvoicePOs>();
+            this.ShipmentInvoiceRiderDetails = new List<ShipmentInvoiceRiderDetails>();
         }
 
         [DataMember]
@@ -294,6 +295,8 @@ namespace EntryDataDS.Business.Entities
         public List<ShipmentAttachedInvoices> ShipmentAttachedInvoices { get; set; }
         [DataMember]
         public List<ShipmentInvoicePOs> ShipmentInvoicePOs { get; set; }
+        [DataMember]
+        public List<ShipmentInvoiceRiderDetails> ShipmentInvoiceRiderDetails { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

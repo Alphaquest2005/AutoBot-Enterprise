@@ -18,10 +18,10 @@ namespace EntryDataDS.Business.Entities
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class ShipmentInvoiceDetailPOSSuggestions : BaseEntity<ShipmentInvoiceDetailPOSSuggestions>, ITrackable 
+    public partial class ShipmentMIS_Invoices : BaseEntity<ShipmentMIS_Invoices>, ITrackable 
     {
         [DataMember]
-        public int id 
+        public int Id 
         {
             get
             {
@@ -35,6 +35,96 @@ namespace EntryDataDS.Business.Entities
             }
         }
         int _id;
+        [DataMember]
+        public string InvoiceNo 
+        {
+            get
+            {
+                return _invoiceno;
+            }
+            set
+            {
+                _invoiceno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _invoiceno;
+        [DataMember]
+        public Nullable<System.DateTime> InvoiceDate 
+        {
+            get
+            {
+                return _invoicedate;
+            }
+            set
+            {
+                _invoicedate = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<System.DateTime> _invoicedate;
+        [DataMember]
+        public Nullable<double> SubTotal 
+        {
+            get
+            {
+                return _subtotal;
+            }
+            set
+            {
+                _subtotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _subtotal;
+        [DataMember]
+        public Nullable<double> InvoiceTotal 
+        {
+            get
+            {
+                return _invoicetotal;
+            }
+            set
+            {
+                _invoicetotal = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<double> _invoicetotal;
+        [DataMember]
+        public Nullable<int> ImportedLines 
+        {
+            get
+            {
+                return _importedlines;
+            }
+            set
+            {
+                _importedlines = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _importedlines;
+        [DataMember]
+        public int RiderID 
+        {
+            get
+            {
+                return _riderid;
+            }
+            set
+            {
+                _riderid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _riderid;
         [DataMember]
         public string SupplierCode 
         {
@@ -51,97 +141,20 @@ namespace EntryDataDS.Business.Entities
         }
         string _suppliercode;
         [DataMember]
-        public string POSCode 
+        public string SourceFile 
         {
             get
             {
-                return _poscode;
+                return _sourcefile;
             }
             set
             {
-                _poscode = value;
+                _sourcefile = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _poscode;
-        [DataMember]
-        public string SupplierDescription 
-        {
-            get
-            {
-                return _supplierdescription;
-            }
-            set
-            {
-                _supplierdescription = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _supplierdescription;
-        [DataMember]
-        public string ItemDescription 
-        {
-            get
-            {
-                return _itemdescription;
-            }
-            set
-            {
-                _itemdescription = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _itemdescription;
-        [DataMember]
-        public int InventoryItemId 
-        {
-            get
-            {
-                return _inventoryitemid;
-            }
-            set
-            {
-                _inventoryitemid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _inventoryitemid;
-        [DataMember]
-        public int InvoiceDetailId 
-        {
-            get
-            {
-                return _invoicedetailid;
-            }
-            set
-            {
-                _invoicedetailid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _invoicedetailid;
-        [DataMember]
-        public string TariffCode 
-        {
-            get
-            {
-                return _tariffcode;
-            }
-            set
-            {
-                _tariffcode = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _tariffcode;
-        [DataMember]
-        public InvoiceDetails InvoiceDetails { get; set; }
+        string _sourcefile;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

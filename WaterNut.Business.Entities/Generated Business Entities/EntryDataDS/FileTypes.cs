@@ -282,6 +282,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<bool> _replicateheaderrow;
         [DataMember]
+        public Nullable<bool> IsImportable 
+        {
+            get
+            {
+                return _isimportable;
+            }
+            set
+            {
+                _isimportable = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isimportable;
+        [DataMember]
         public List<EntryData> EntryData { get; set; }
         [DataMember]
         public List<FileTypes> FileTypes1 { get; set; }

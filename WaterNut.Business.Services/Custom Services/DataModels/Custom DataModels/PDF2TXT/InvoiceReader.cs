@@ -109,16 +109,32 @@ namespace WaterNut.DataSpace
                             List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt.ToString()));
                             if (csvLines.Count < 1 || !tmp.Success)
                             {
-                                var failedlines = tmp.Parts.SelectMany(x => x.AllLines).Where(z => z.FailedFields.Any() || !z.Values.Any()).ToList();
+                                var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z => z.FailedFields.Any() || !z.Values.Any()).ToList();
                                 
                                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                                     tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                                 {
-                                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), failedlines);
+                                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(),"Following fields failed to import", failedlines);
                                     return false;
                                 }
                                 continue;
                             }
+                            //
+                            // -------------------Plan to only report import failures ---------- data failures will be reported after import
+                            //
+
+                            //var invoiceLines = tmp.Lines.Where(x => x.Values.Any(v => v.Value.Any(f => f.Key.Field == "SubTotal" || f.Key.Field == "InvoiceTotal" || f.Key.EntityType == "InvoiceDetails"))).ToList();
+                            //var fields = invoiceLines.SelectMany(x => x.Values.ToList().SelectMany(v => v.Value).ToList()).ToList();
+                            //var invoiceTotal = fields.Where(x => x.Key.EntityType == "Invoice" && x.Key.Field == "InvoiceTotal").DistinctBy(x => x.Key.Id).Sum(x => Convert.ToDouble(x.Value));
+                            //var subTotal = fields.Where(x => x.Key.EntityType == "Invoice" && x.Key.Field == "SubTotal").DistinctBy(x => x.Key.Id).Sum(x => Convert.ToDouble(x.Value));
+                            //var importedTotal = fields.Where(x => x.Key.EntityType == "InvoiceDetails" && x.Key.Field == "TotalCost" && !string.IsNullOrEmpty(x.Value) ).Sum(x => Convert.ToDouble(x.Value));
+                            //if (Math.Abs(invoiceTotal - importedTotal) > 0.01)
+                            //{
+                                
+
+                            //    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(),"Invoice Totals don't Match Imported Total", invoiceLines);
+                            //    return false;
+                            //}
 
                             if (fileType.Id != tmp.OcrInvoices.FileTypeId)
                                 fileType = BaseDataModel.GetFileType(tmp.OcrInvoices.FileTypeId);
@@ -137,7 +153,7 @@ namespace WaterNut.DataSpace
 
                     }
 
-                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), new List<Line>());
+                    ReportUnImportedFile(file, emailId, client, pdftxt.ToString(), "No template found for this File", new List<Line>());
                     //SeeWhatSticks(pdftxt);
                 }
 
@@ -208,11 +224,11 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private static void ReportUnImportedFile(string file, int emailId, Client client, string pdftxt,
+        private static void ReportUnImportedFile(string file, int emailId, Client client, string pdftxt, string error,
             List<Line> failedlst)
         {
             var fileInfo = new FileInfo(file);
-            var body = $"Hey,\r\n\r\n No template found for this File-'{fileInfo.Name}'.\r\n" +
+            var body = $"Hey,\r\n\r\n {error}-'{fileInfo.Name}'.\r\n" +
                        $"{failedlst.Select(x => $"Line:{x.OCR_Lines.Name} - RegId: {x.OCR_Lines.RegularExpressions.Id} - Regex: '{x.OCR_Lines.RegularExpressions.RegEx}' - Fields: {x.FailedFields.SelectMany(z => z.ToList()).SelectMany(z => z.Value.ToList()).Select(z => $"{z.Key.Key} - '{z.Key.Field}'").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}").DefaultIfEmpty(string.Empty).Aggregate((o, c) => o + "\r\n" + c)}" +
                        "Thanks\r\n" +
                        $"AutoBot";
@@ -220,6 +236,8 @@ namespace WaterNut.DataSpace
             EmailDownloader.EmailDownloader.ForwardMsg(emailId, client, "Invoice Template Not found!", body,
                 new[] {"Joseph@auto-brokerage.com"}, new[] {file, file + ".txt"});
         }
+
+
 
         private static void SeeWhatSticks(string pdftext)
         {
@@ -250,7 +268,7 @@ namespace WaterNut.DataSpace
         public Invoices OcrInvoices { get; }
         public List<Part> Parts { get; set; }
         public bool Success => Parts.All(x => x.Success);
-        public List<Line> Lines => Parts.SelectMany(x => x.AllLines).ToList();
+        public List<Line> Lines => Parts.SelectMany(x => x.AllLines).DistinctBy(x => x.OCR_Lines.Id).ToList();
 
         public Invoice(Invoices ocrInvoices)
         {
@@ -286,6 +304,7 @@ namespace WaterNut.DataSpace
                     }
                 ).ToList();
 
+                
                 return new List<dynamic> {ores.SelectMany(x => x.ToList()).ToList()};
             }
             catch (Exception e)
@@ -330,7 +349,7 @@ namespace WaterNut.DataSpace
                                     case "Number":
                                     case "Numeric":
                                         ditm[field.Key.Field] =
-                                            Convert.ToDouble(ditm[field.Key.Field]) +
+                                            Convert.ToDouble(ditm[field.Key.Field]??"0") +
                                             Convert.ToDouble(GetValueByKey(value, field.Key.Key));
                                         break;
                                     default:
@@ -356,21 +375,38 @@ namespace WaterNut.DataSpace
 
                 foreach (var childPart in x.ChildParts)
                 {
-                    if (!childPart.Lines.Any()) continue;
+                   // if (!childPart.Lines.Any()) continue;
                     var childItms = SetPartLineValues(childPart);
-                    var fieldname = childPart.Lines.First().OCR_Lines.Fields.First().EntityType;
-                    if (childPart.OCR_Part.RecuringPart != null)
+                    var fieldname = childPart.AllLines.First().OCR_Lines.Fields.First().EntityType;
+                    if (childPart.OCR_Part.RecuringPart != null || !childPart.Lines.Any())
                     {
-                        ditm[fieldname] = childItms;
+                        if (!x.Lines.Any())
+                        {
+                            lst.AddRange(childItms);
+                        }
+                        else
+                        {
+                            ditm[fieldname] = childItms;
+                        }
+                            
                     }
                     else
                     {
-                        ditm[fieldname] = childItms.FirstOrDefault();
+                        if (!x.Lines.Any())
+                        {
+                            lst.Add(childItms.FirstOrDefault());
+                        }
+                        else
+                        {
+                            ditm[fieldname] = childItms.FirstOrDefault();
+                        }
+                        
                     }
 
                 }
 
-                if (x.OCR_Part.RecuringPart == null || x.OCR_Part.RecuringPart.IsComposite) lst.Add(itm);
+
+                if ((x.OCR_Part.RecuringPart == null || x.OCR_Part.RecuringPart.IsComposite) && ditm.Any()) lst.Add(itm);
                 return lst;
             }
             catch (Exception e)
@@ -511,7 +547,7 @@ namespace WaterNut.DataSpace
         private int StartCount { get; }
 
         public bool Success => Lines.All(x => !x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString()))) 
-                               && this.Lines.Any()
+                               //&& this.Lines.Any()
                                && !this.FailedLines.Any()
                                && ChildParts.All(x => x.Success == true);
         public List<Line> FailedLines => Lines.Where(x =>  x.OCR_Lines.Fields.Any(z => z.IsRequired) && !x.Values.Any()).ToList()
@@ -526,7 +562,7 @@ namespace WaterNut.DataSpace
         //                                                                        .ToDictionary(k => k.Key, v => v.ToList())
         //).ToList();
 
-        public List<Line> AllLines => Lines.Union(ChildParts.SelectMany(x => x.AllLines)).ToList();
+        public List<Line> AllLines => Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList();
         public bool WasStarted => this._startlines.Any();
 
         public void Read(InvoiceLine line)
@@ -622,7 +658,8 @@ namespace WaterNut.DataSpace
         public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields => this.Values
             .Where(x => x.Value.Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
             .SelectMany(x => x.Value.ToList())
-            .GroupBy(x => x.Key.Field)
+            .DistinctBy(x => x.Key.Id)
+            .GroupBy(x => x.Key.Key)
             .Select(x => x.ToDictionary(k => x.Key, v => x.ToList()))
             .ToList();
 

@@ -130,11 +130,13 @@ namespace AutoBot
                 {"SubmitEntryCIF", SubmitEntryCIF },
                 {"SubmitBlankLicenses", (ft,fs) => SubmitBlankLicenses(ft) },
                 {"ProcessUnknownCSVFileType", (ft,fs) => ProcessUnknownCSVFileType(ft, fs) },
-                {"ProcessUnknownPDFFileType", (ft,fs) => ProcessUnknownPDFFileType(ft, fs) }
+                {"ProcessUnknownPDFFileType", (ft,fs) => ProcessUnknownPDFFileType(ft, fs) },
+                {"ImportUnAttachedSummary", (ft,fs) => ImportUnAttachedSummary(ft, fs) },
+               
 
             };
 
-
+     
 
 
         public static Dictionary<string, Action> SessionActions =>
@@ -219,6 +221,18 @@ namespace AutoBot
 
             };
 
+        private static void ImportUnAttachedSummary(FileTypes ft, FileInfo[] fs)
+        {
+            foreach (var file in fs)
+            {
+                var reference = xlsxWriter.XlsxWriter.SaveUnAttachedSummary(file);
+                var res = reference.Split('-');
+                ft.EmailId = res[2];
+                CreateShipmentEmail(ft, fs);
+            }
+
+        }
+
         private static void ProcessUnknownPDFFileType(FileTypes ft, FileInfo[] fs)
         {
             
@@ -244,22 +258,62 @@ namespace AutoBot
                 using (var ctx = new EntryDataDSContext())
                 {
                     ctx.Database.ExecuteSqlCommand(@"INSERT INTO ShipmentInvoicePOs
-                                                                     (EntryData_Id, InvoiceId)
+                                                                    (EntryData_Id, InvoiceId)
                                                     SELECT EntryData_PurchaseOrders.EntryData_Id, ShipmentInvoice.Id
                                                     FROM    ShipmentInvoicePOManualMatches INNER JOIN
                                                                      EntryData_PurchaseOrders ON ShipmentInvoicePOManualMatches.PONumber = EntryData_PurchaseOrders.PONumber INNER JOIN
-                                                                     ShipmentInvoice ON ShipmentInvoicePOManualMatches.InvoiceNo = ShipmentInvoice.InvoiceNo LEFT OUTER JOIN
+                                                                     ShipmentInvoice ON ShipmentInvoicePOManualMatches.InvoiceNo = ShipmentInvoice.InvoiceNo INNER JOIN
+                                                                     EntryData ON EntryData_PurchaseOrders.EntryData_Id = EntryData.EntryData_Id AND ShipmentInvoice.ApplicationSettingsId = EntryData.ApplicationSettingsId LEFT OUTER JOIN
                                                                      ShipmentInvoicePOs ON EntryData_PurchaseOrders.EntryData_Id = ShipmentInvoicePOs.EntryData_Id AND ShipmentInvoice.Id = ShipmentInvoicePOs.InvoiceId
-                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)");
+                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
+
+                                                    INSERT INTO ShipmentInvoicePOs
+                                                                        (EntryData_Id, InvoiceId)
+                                                    SELECT distinct ShipmentPOs.EntryData_Id, ShipmentInvoice.Id
+                                                    FROM    ShipmentInvoicePOMatches INNER JOIN
+	                                                    ShipmentPOs ON ShipmentInvoicePOMatches.PONumber = ShipmentPOs.InvoiceNo INNER JOIN
+	                                                    ShipmentInvoice ON ShipmentInvoicePOMatches.InvoiceNo = ShipmentInvoice.InvoiceNo INNER JOIN
+	                                                    EntryData ON ShipmentPOs.EntryData_Id = EntryData.EntryData_Id AND ShipmentInvoice.ApplicationSettingsId = EntryData.ApplicationSettingsId LEFT OUTER JOIN
+	                                                    ShipmentInvoicePOs ON ShipmentPOs.EntryData_Id = ShipmentInvoicePOs.EntryData_Id AND ShipmentInvoice.Id = ShipmentInvoicePOs.InvoiceId
+                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
+
+                                                    INSERT INTO ShipmentInvoicePOs
+                                                                        (EntryData_Id, InvoiceId)
+                                                    SELECT [ShipmentInvoicePOMatches-Items].POId, [ShipmentInvoicePOMatches-Items].InvId
+                                                    FROM    [ShipmentInvoicePOMatches-Items] LEFT OUTER JOIN
+	                                                    ShipmentInvoicePOs ON [ShipmentInvoicePOMatches-Items].POId = ShipmentInvoicePOs.EntryData_Id AND [ShipmentInvoicePOMatches-Items].InvId = ShipmentInvoicePOs.InvoiceId
+                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
+
+                                                    INSERT INTO ShipmentInvoicePOs
+                                                                        (EntryData_Id, InvoiceId)
+                                                    SELECT [ShipmentInvoicePOMatches-Totals].EntryData_id, [ShipmentInvoicePOMatches-Totals].InvoiceId
+                                                    FROM    [ShipmentInvoicePOMatches-Totals] LEFT OUTER JOIN
+	                                                    ShipmentInvoicePOs ON [ShipmentInvoicePOMatches-Totals].EntryData_id = ShipmentInvoicePOs.EntryData_Id AND [ShipmentInvoicePOMatches-Totals].InvoiceId = ShipmentInvoicePOs.InvoiceId
+                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
+
+
+                                               INSERT INTO InventoryItemAlias
+                                                                 (InventoryItemId, AliasName, AliasItemId)
+                                                SELECT distinct ShipmentInvoicePOItemQueryMatches.POInventoryItemId, ShipmentInvoicePOItemQueryMatches.INVItemCode, ShipmentInvoicePOItemQueryMatches.INVInventoryItemId
+                                                FROM    ShipmentInvoicePOItemQueryMatches LEFT OUTER JOIN
+                                                                 InventoryItemAlias AS InventoryItemAlias_1 ON ShipmentInvoicePOItemQueryMatches.POInventoryItemId = InventoryItemAlias_1.InventoryItemId AND 
+                                                                 ShipmentInvoicePOItemQueryMatches.INVItemCode = InventoryItemAlias_1.AliasName
+                                                WHERE (InventoryItemAlias_1.AliasId IS NULL)
+
+
+                                                    ");
                 }
 
 
                 var shipments = new Shipment(){ShipmentName = "Next Shipment",EmailId = emailId, TrackingState = TrackingState.Added}
-                                    .ProcessEmailInvoices()
+                                    .LoadEmailPOs()
+                                    .LoadEmailInvoices()
                                     .LoadEmailRiders()
                                     .LoadEmailBL()
                                     .LoadEmailManifest()
                                     .LoadEmailFreight()
+                                    .LoadDBBL()
+                                    .LoadDBRiders()
                                     .LoadDBBL()
                                     .LoadDBRiders()
                                     .LoadDBFreight()
@@ -6471,7 +6525,7 @@ namespace AutoBot
                     sb.Append("\"");
             }
             sb.Append("\"");
-            return sb.ToString();
+            return sb.ToString().Trim();
             //}
 
             //return str;

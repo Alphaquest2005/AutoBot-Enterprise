@@ -284,6 +284,7 @@
           <Property Name="HasFiles" Type="bit" />
           <Property Name="OldFileTypeId" Type="int" />
           <Property Name="ReplicateHeaderRow" Type="bit" />
+          <Property Name="IsImportable" Type="bit" />
         </EntityType>
         <EntityType Name="InfoMapping">
           <Key>
@@ -4161,6 +4162,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="HasFiles" Type="Boolean" />
           <Property Name="OldFileTypeId" Type="Int32" />
           <Property Name="ReplicateHeaderRow" Type="Boolean" />
+          <Property Name="IsImportable" Type="Boolean" />
         </EntityType>
         <Association Name="FK_FileTypes_ApplicationSettings">
           <End Type="WaterNutDBModel.ApplicationSettings" Role="ApplicationSettings" Multiplicity="1">
@@ -6203,6 +6205,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySetMapping Name="FileTypes">
             <EntityTypeMapping TypeName="WaterNutDBModel.FileTypes">
               <MappingFragment StoreEntitySet="FileTypes">
+                <ScalarProperty Name="IsImportable" ColumnName="IsImportable" />
                 <ScalarProperty Name="ReplicateHeaderRow" ColumnName="ReplicateHeaderRow" />
                 <ScalarProperty Name="OldFileTypeId" ColumnName="OldFileTypeId" />
                 <ScalarProperty Name="HasFiles" ColumnName="HasFiles" />

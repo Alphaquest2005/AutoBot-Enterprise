@@ -459,6 +459,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentAttachedFreight.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentAttachedInvoices.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentAttachedManifest.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentAttachedPOs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentAttachedRider.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentAttachments.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentBL.cs
@@ -468,11 +469,18 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoice.cs
-..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoicePOManualMatches.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoicePOs.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoiceRiderDetails.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentInvoiceRiderManualMatches.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentManifestDetails.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentMIS_Invoices.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentMIS_POs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderDetails.cs
@@ -839,6 +847,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedFreight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedInvoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedManifest.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedPOs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedRider.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
@@ -848,11 +857,18 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemMISMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemQueryMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOManualMatches.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderManualMatches.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifest.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_POs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRider.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs
@@ -1228,6 +1244,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentAttachedFreight.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentAttachedInvoices.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentAttachedManifest.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentAttachedPOs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentAttachedRider.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentAttachments.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentBL.cs
@@ -1237,11 +1254,18 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoice.cs
-..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOs.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceRiderDetails.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceRiderManualMatches.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentManifestDetails.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentMIS_Invoices.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentMIS_POs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderDetails.cs
@@ -1595,6 +1619,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentAttachedFreight.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentAttachedInvoices.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentAttachedManifest.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentAttachedPOs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentAttachedRider.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentAttachments.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentBL.cs
@@ -1604,11 +1629,18 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoice.cs
-..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoicePOs.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoiceRiderDetails.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentInvoiceRiderManualMatches.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentManifestDetails.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentMIS_Invoices.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentMIS_POs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderDetails.cs
@@ -1962,6 +1994,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentAttachedFreight.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentAttachedInvoices.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentAttachedManifest.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentAttachedPOs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentAttachedRider.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentAttachments.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentBL.cs
@@ -1971,11 +2004,18 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoice.cs
-..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOs.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceRiderDetails.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceRiderManualMatches.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentManifestDetails.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentMIS_Invoices.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentMIS_POs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderDetails.cs
@@ -2329,6 +2369,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentAttachedFreight.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentAttachedInvoices.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentAttachedManifest.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentAttachedPOs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentAttachedRider.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentAttachments.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentBL.cs
@@ -2338,11 +2379,18 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightBLs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightDetails.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoice.cs
-..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOs.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceRiderDetails.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceRiderManualMatches.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifest.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifestBLs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentManifestDetails.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentMIS_Invoices.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentMIS_POs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderDetails.cs
@@ -3816,6 +3864,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedFreight.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedInvoices.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedManifest.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedPOs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachedRider.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentAttachments.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentBL.map.cs
@@ -3825,11 +3874,18 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs
-..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailPOSSuggestions.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemMISMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOItemQueryMatches.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOManualMatches.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoicePOs.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentInvoiceRiderManualMatches.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifest.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentManifestDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_Invoices.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentMIS_POs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRider.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs
@@ -4848,6 +4904,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentAttachedFreightService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentAttachedInvoicesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentAttachedManifestService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentAttachedPOsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentAttachedRiderService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentAttachmentsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentBLDetailsService.cs
@@ -4856,12 +4913,19 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightBLsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentFreightService.cs
-..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceDetailPOSSuggestionsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceDetailsItemAliasService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoicePOItemMISMatchesService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoicePOItemQueryMatchesService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoicePOManualMatchesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoicePOsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceRiderDetailsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceRiderManualMatchesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentInvoiceService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentManifestBLsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentManifestDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentManifestService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentMIS_InvoicesService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentMIS_POsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderBLsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderDetailsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderInvoiceService.cs
@@ -5215,6 +5279,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentAttachedFreightService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentAttachedInvoicesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentAttachedManifestService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentAttachedPOsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentAttachedRiderService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentAttachmentsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentBLDetailsService.cs
@@ -5223,12 +5288,19 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightBLsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentFreightService.cs
-..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceDetailPOSSuggestionsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceDetailsItemAliasService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoicePOItemMISMatchesService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoicePOItemQueryMatchesService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoicePOManualMatchesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoicePOsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceRiderDetailsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceRiderManualMatchesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentInvoiceService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentManifestBLsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentManifestDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentManifestService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentMIS_InvoicesService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentMIS_POsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderBLsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderDetailsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderInvoiceService.cs

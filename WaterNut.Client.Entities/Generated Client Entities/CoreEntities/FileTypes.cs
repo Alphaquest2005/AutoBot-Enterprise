@@ -306,6 +306,21 @@ public Nullable<bool> ReplicateHeaderRow
 		}
      
 
+       
+       
+public Nullable<bool> IsImportable
+		{ 
+		    get { return this.filetypes.IsImportable; }
+			set
+			{
+			    if (value == this.filetypes.IsImportable) return;
+				this.filetypes.IsImportable = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("IsImportable");
+			}
+		}
+     
+
        private ApplicationSettings _ApplicationSettings;
         public  ApplicationSettings ApplicationSettings
 		{

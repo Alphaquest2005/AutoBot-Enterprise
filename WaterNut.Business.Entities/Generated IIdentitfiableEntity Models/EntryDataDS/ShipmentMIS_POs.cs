@@ -10,7 +10,7 @@ using System;
 
 namespace EntryDataDS.Business.Entities
 {
-    public partial class ShipmentInvoiceDetailPOSSuggestions: IIdentifiableEntity
+    public partial class ShipmentMIS_POs: IIdentifiableEntity
     {
        
        #region IIdentifiable Entities
@@ -18,11 +18,11 @@ namespace EntryDataDS.Business.Entities
         {
             get
             {
-                return this.id.ToString();  // this.id == null?"0":
+                return this.EntryData_Id.ToString();  // this.EntryData_Id == null?"0":
             }
             set
             {
-                this.id = Convert.ToInt32(value);
+                this.EntryData_Id = Convert.ToInt32(value);
             }
         }
 

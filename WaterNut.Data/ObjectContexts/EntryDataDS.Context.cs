@@ -133,9 +133,25 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentBLFreight> ShipmentBLFreight { get; set; }
      
-        public DbSet<ShipmentInvoiceDetailPOSSuggestions> ShipmentInvoiceDetailPOSSuggestions { get; set; }
-     
         public DbSet<ShipmentInvoicePOs> ShipmentInvoicePOs { get; set; }
+     
+        public DbSet<ShipmentInvoicePOItemQueryMatches> ShipmentInvoicePOItemQueryMatches { get; set; }
+     
+        public DbSet<ShipmentInvoicePOItemMISMatches> ShipmentInvoicePOItemMISMatches { get; set; }
+     
+        public DbSet<ShipmentAttachedPOs> ShipmentAttachedPOs { get; set; }
+     
+        public DbSet<ShipmentInvoicePOManualMatches> ShipmentInvoicePOManualMatches { get; set; }
+     
+        public DbSet<ShipmentInvoiceRiderDetails> ShipmentInvoiceRiderDetails { get; set; }
+     
+        public DbSet<ShipmentInvoiceRiderManualMatches> ShipmentInvoiceRiderManualMatches { get; set; }
+     
+        public DbSet<ShipmentInvoiceDetailsItemAlias> ShipmentInvoiceDetailsItemAlias { get; set; }
+     
+        public DbSet<ShipmentMIS_Invoices> ShipmentMIS_Invoices { get; set; }
+     
+        public DbSet<ShipmentMIS_POs> ShipmentMIS_POs { get; set; }
      
 
 
@@ -227,9 +243,25 @@ namespace EntryDataDS.Business.Entities
          
             modelBuilder.Configurations.Add(new ShipmentBLFreightMap());
          
-            modelBuilder.Configurations.Add(new ShipmentInvoiceDetailPOSSuggestionsMap());
-         
             modelBuilder.Configurations.Add(new ShipmentInvoicePOsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoicePOItemQueryMatchesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoicePOItemMISMatchesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentAttachedPOsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoicePOManualMatchesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoiceRiderDetailsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoiceRiderManualMatchesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoiceDetailsItemAliasMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentMIS_InvoicesMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentMIS_POsMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

@@ -28,6 +28,7 @@
               this.HasRequired(t => t.ShipmentRider).WithMany(t =>(ICollection<ShipmentRiderDetails>) t.ShipmentRiderDetails).HasForeignKey(d => d.RiderId);
               this.HasMany(t => t.ShipmentRiderInvoice).WithRequired(t => (ShipmentRiderDetails)t.ShipmentRiderDetails);
               this.HasMany(t => t.ShipmentRiderBLs).WithRequired(t => (ShipmentRiderDetails)t.ShipmentRiderDetails);
+              this.HasMany(t => t.ShipmentInvoiceRiderDetails).WithRequired(t => (ShipmentRiderDetails)t.ShipmentRiderDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

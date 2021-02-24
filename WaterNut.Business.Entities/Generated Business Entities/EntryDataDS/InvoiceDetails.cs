@@ -22,7 +22,7 @@ namespace EntryDataDS.Business.Entities
     {
         partial void AutoGenStartUp() //InvoiceDetails()
         {
-            this.ShipmentInvoiceDetailPOSSuggestions = new List<ShipmentInvoiceDetailPOSSuggestions>();
+            this.POItems = new List<ShipmentInvoicePOItemQueryMatches>();
         }
 
         [DataMember]
@@ -176,9 +176,26 @@ namespace EntryDataDS.Business.Entities
         }
         int _shipmentinvoiceid;
         [DataMember]
+        public Nullable<int> InventoryItemId 
+        {
+            get
+            {
+                return _inventoryitemid;
+            }
+            set
+            {
+                _inventoryitemid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _inventoryitemid;
+        [DataMember]
         public ShipmentInvoice Invoice { get; set; }
         [DataMember]
-        public List<ShipmentInvoiceDetailPOSSuggestions> ShipmentInvoiceDetailPOSSuggestions { get; set; }
+        public List<ShipmentInvoicePOItemQueryMatches> POItems { get; set; }
+        [DataMember]
+        public ShipmentInvoiceDetailsItemAlias ItemAlias { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

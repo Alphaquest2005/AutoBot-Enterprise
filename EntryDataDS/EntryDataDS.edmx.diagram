@@ -9,7 +9,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.EntryData" Width="3.625" PointX="7.875" PointY="0.75" />
         <InheritanceConnector EntityType="WaterNutDBModel.Sales" />
         <EntityTypeShape EntityType="WaterNutDBModel.OpeningStock" Width="1.5" PointX="12.625" PointY="2.75" />
-        <EntityTypeShape EntityType="WaterNutDBModel.PurchaseOrders" Width="1.5" PointX="13" PointY="4.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.PurchaseOrders" Width="1.875" PointX="13" PointY="4.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryDataDetails" Width="2.5" PointX="8.25" PointY="8.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_PurchaseOrderDetails_PurchaseOrders" />
         <InheritanceConnector EntityType="WaterNutDBModel.OpeningStock" />
@@ -49,6 +49,10 @@
         <EntityTypeShape EntityType="WaterNutDBModel.WarehouseInfo" Width="1.5" PointX="15.375" PointY="4.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_WarehouseInfo_EntryData_PurchaseOrders" />
         <AssociationConnector Association="WaterNutDBModel.FK_EntryData_Suppliers" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedPOs" Width="1.5" PointX="7.875" PointY="16.125" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedPOs_EntryData_PurchaseOrders" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" Width="1.5" PointX="5.625" PointY="15.25" />
+        <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" />
         </Diagram>
       <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="86" >
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedBL" Width="2.5" PointX="6.625" PointY="6.25" />
@@ -104,15 +108,28 @@
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentBLFreight" Width="1.75" PointX="17" PointY="12" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentBLShipmentBLFreight" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentFreightShipmentBLFreight" />
-        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetailPOSSuggestions" Width="2.5" PointX="13.125" PointY="17.5" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetails" Width="1.5" PointX="10.25" PointY="14.125" />
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentInvoiceDetailsShipmentInvoiceDetailPOSSuggestions" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InvoiceDetails" Width="1.5" PointX="9.75" PointY="16.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InvoiceDetails" Width="2.25" PointX="9.75" PointY="16.875" />
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" />
-        <AssociationConnector Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailPOSSuggestions" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOs" Width="2.375" PointX="14.125" PointY="11.5" />
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoicePOs_ShipmentInvoice" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" Width="1.5" PointX="17.125" PointY="16.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemMISMatches" Width="1.5" PointX="20" PointY="11.75" />
+        <AssociationConnector Association="WaterNutDBModel.ShipmentInvoicePOsShipmentInvoicePOItemMISMatches" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedPOs" Width="1.5" PointX="9.375" PointY="21.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOManualMatches" Width="1.5" PointX="17.375" PointY="5.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceRiderDetails" Width="1.5" PointX="10.125" PointY="13.875" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceRiderManualMatches" Width="1.5" PointX="18.375" PointY="8.75" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedPOs_Shipment" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentInvoice" />
+        <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentRiderDetails" />
+        <AssociationConnector Association="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" Width="1.5" PointX="11.875" PointY="20.75" />
+        <AssociationConnector Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentMIS_Invoices" Width="2.125" PointX="20.25" PointY="20.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentMIS_POs" Width="2.125" PointX="20.25" PointY="17.25" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

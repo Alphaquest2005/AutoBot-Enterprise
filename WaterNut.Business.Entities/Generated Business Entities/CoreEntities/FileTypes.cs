@@ -286,6 +286,21 @@ namespace CoreEntities.Business.Entities
         }
         Nullable<bool> _replicateheaderrow;
         [DataMember]
+        public Nullable<bool> IsImportable 
+        {
+            get
+            {
+                return _isimportable;
+            }
+            set
+            {
+                _isimportable = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _isimportable;
+        [DataMember]
         public ApplicationSettings ApplicationSettings { get; set; }
         [DataMember]
         public AsycudaDocumentSetEx AsycudaDocumentSetEx { get; set; }

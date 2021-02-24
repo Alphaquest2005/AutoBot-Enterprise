@@ -20,6 +20,11 @@ namespace EntryDataDS.Business.Entities
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
     public partial class ShipmentInvoicePOs : BaseEntity<ShipmentInvoicePOs>, ITrackable 
     {
+        partial void AutoGenStartUp() //ShipmentInvoicePOs()
+        {
+            this.POMISMatches = new List<ShipmentInvoicePOItemMISMatches>();
+        }
+
         [DataMember]
         public int Id 
         {
@@ -69,6 +74,8 @@ namespace EntryDataDS.Business.Entities
         public PurchaseOrders PurchaseOrders { get; set; }
         [DataMember]
         public ShipmentInvoice ShipmentInvoice { get; set; }
+        [DataMember]
+        public List<ShipmentInvoicePOItemMISMatches> POMISMatches { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

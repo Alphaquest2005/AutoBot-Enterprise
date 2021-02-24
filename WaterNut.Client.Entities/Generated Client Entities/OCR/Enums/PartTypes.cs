@@ -36,7 +36,10 @@ namespace OCR.Client.Enums
         Details = 12,
 
       
-        Extrainfo = 13
+        Extrainfo = 13,
+
+      
+        Detailssection = 14
   }
 }
 

@@ -18,11 +18,11 @@ namespace EntryDataDS.Business.Entities
         {
             get
             {
-                return this.Id.ToString();  // this.Id == null?"0":
+                return this.InvoiceId.ToString();  // this.InvoiceId == null?"0":
             }
             set
             {
-                this.Id = Convert.ToInt32(value);
+                this.InvoiceId = Convert.ToInt32(value);
             }
         }
 

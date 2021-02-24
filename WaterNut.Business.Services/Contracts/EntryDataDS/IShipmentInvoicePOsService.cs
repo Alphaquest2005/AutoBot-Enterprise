@@ -107,10 +107,7 @@ namespace EntryDataDS.Business.Services
 
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByInvoiceId(string InvoiceId, List<string> includesLst = null);
-  		[OperationContract]
-        [FaultContract(typeof(ValidationFault))]
-        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsByEntryData_Id(string EntryData_Id, List<string> includesLst = null);
+        Task<IEnumerable<ShipmentInvoicePOs>> GetShipmentInvoicePOsById(string Id, List<string> includesLst = null);
   
 
 

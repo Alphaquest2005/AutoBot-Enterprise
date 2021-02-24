@@ -259,6 +259,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "INVItems":
+                                return
+                                    await
+                                        GetWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "EntryDataDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -770,6 +776,9 @@ namespace EntryDataDS.Business.Services
                             case "InventoryItems":
                                 return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "INVItems":
+                                return await CountWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "EntryDataDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.EntryDataDetails.Where(exp == "All" || exp == null ? "EntryDataDetailsId != null" : exp)
@@ -898,6 +907,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "INVItems":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentInvoicePOItemQueryMatches>(startIndex, count, dbContext, exp, itm.Value, "EntryDataDetails", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1113,6 +1128,7 @@ namespace EntryDataDS.Business.Services
                 var i = EntryDataId;
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
+                                                    // .Include(x => x.INVItems)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryDataId.ToString() == EntryDataId.ToString())
 										.ToListAsync()
@@ -1142,6 +1158,7 @@ namespace EntryDataDS.Business.Services
                 var i = Convert.ToInt32(InventoryItemId);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
+                                                    // .Include(x => x.INVItems)									  
                                       .AsNoTracking()
                                         .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
 										.ToListAsync()
@@ -1171,6 +1188,7 @@ namespace EntryDataDS.Business.Services
                 var i = Convert.ToInt32(EntryData_Id);
                 var set = AddIncludes(includesLst, dbContext);
                 IEnumerable<EntryDataDetails> entities = await set//dbContext.EntryDataDetails
+                                                    // .Include(x => x.INVItems)									  
                                       .AsNoTracking()
                                         .Where(x => x.EntryData_Id.ToString() == EntryData_Id.ToString())
 										.ToListAsync()
@@ -1257,6 +1275,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InventoryItems":
                                 return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "EntryDataDetails", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "INVItems":
+                                return await SumWhere<ShipmentInvoicePOItemQueryMatches>(dbContext, exp, itm.Value, "EntryDataDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

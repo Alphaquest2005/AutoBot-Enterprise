@@ -108,6 +108,9 @@ namespace EntryDataDS.Business.Services
 				[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<InvoiceDetails>> GetInvoiceDetailsByShipmentInvoiceId(string ShipmentInvoiceId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<InvoiceDetails>> GetInvoiceDetailsByInventoryItemId(string InventoryItemId, List<string> includesLst = null);
   
 
 

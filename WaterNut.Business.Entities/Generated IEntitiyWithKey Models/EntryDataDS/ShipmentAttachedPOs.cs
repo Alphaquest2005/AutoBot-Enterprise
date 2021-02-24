@@ -12,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace EntryDataDS.Business.Entities
 {
-    public partial class ShipmentInvoiceDetailPOSSuggestions: IEntityWithKey
+    public partial class ShipmentAttachedPOs: IEntityWithKey
     {
     #region "IEntityWithKey Implementation"
 

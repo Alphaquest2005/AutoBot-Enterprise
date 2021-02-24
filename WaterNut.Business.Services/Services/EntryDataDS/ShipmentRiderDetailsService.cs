@@ -253,6 +253,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentRiderDetails", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "ShipmentInvoiceRiderDetails":
+                                return
+                                    await
+                                        GetWhere<ShipmentInvoiceRiderDetails>(dbContext, exp, itm.Value, "ShipmentRiderDetails", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -761,6 +767,9 @@ namespace EntryDataDS.Business.Services
                             case "ShipmentRiderBLs":
                                 return await CountWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentRiderDetails", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentInvoiceRiderDetails":
+                                return await CountWhere<ShipmentInvoiceRiderDetails>(dbContext, exp, itm.Value, "ShipmentRiderDetails", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.ShipmentRiderDetails.Where(exp == "All" || exp == null ? "Id != null" : exp)
@@ -883,6 +892,12 @@ namespace EntryDataDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<ShipmentRiderBLs>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRiderDetails", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "ShipmentInvoiceRiderDetails":
+                                return
+                                    await
+                                        LoadRangeWhere<ShipmentInvoiceRiderDetails>(startIndex, count, dbContext, exp, itm.Value, "ShipmentRiderDetails", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1100,6 +1115,7 @@ namespace EntryDataDS.Business.Services
                 IEnumerable<ShipmentRiderDetails> entities = await set//dbContext.ShipmentRiderDetails
                                                     // .Include(x => x.ShipmentRiderInvoice)									  
                                                     // .Include(x => x.ShipmentRiderBLs)									  
+                                                    // .Include(x => x.ShipmentInvoiceRiderDetails)									  
                                       .AsNoTracking()
                                         .Where(x => x.RiderId.ToString() == RiderId.ToString())
 										.ToListAsync()
@@ -1183,6 +1199,9 @@ namespace EntryDataDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "ShipmentRiderBLs":
                                 return await SumWhere<ShipmentRiderBLs>(dbContext, exp, itm.Value, "ShipmentRiderDetails", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "ShipmentInvoiceRiderDetails":
+                                return await SumWhere<ShipmentInvoiceRiderDetails>(dbContext, exp, itm.Value, "ShipmentRiderDetails", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
