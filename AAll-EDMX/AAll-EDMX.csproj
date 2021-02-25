@@ -484,6 +484,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderDetails.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderEx.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\WarehouseInfo.cs
@@ -872,6 +873,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRider.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
@@ -1269,6 +1271,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderDetails.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderEx.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs
@@ -1644,6 +1647,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderDetails.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderEx.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\WarehouseInfo.cs
@@ -2019,6 +2023,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderDetails.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderEx.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs
@@ -2394,6 +2399,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRider.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderBLs.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderDetails.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderEx.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderInvoice.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs
@@ -3889,6 +3895,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRider.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderEx.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\Suppliers.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\WarehouseInfo.map.cs
@@ -4928,6 +4935,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentMIS_POsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderBLsService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderDetailsService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderExService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderInvoiceService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentRiderService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IShipmentService.cs
@@ -5303,6 +5311,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentMIS_POsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderBLsService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderDetailsService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderExService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderInvoiceService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentRiderService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\ShipmentService.cs

@@ -24,6 +24,7 @@
               this.HasMany(t => t.ShipmentRiderInvoice).WithRequired(t => (ShipmentRider)t.ShipmentRider);
               this.HasMany(t => t.ShipmentRiderBLs).WithRequired(t => (ShipmentRider)t.ShipmentRider);
               this.HasMany(t => t.ShipmentAttachedRider).WithRequired(t => (ShipmentRider)t.ShipmentRider);
+              this.HasOptional(t => t.ShipmentRiderEx).WithRequired(t => (ShipmentRider) t.ShipmentRider);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

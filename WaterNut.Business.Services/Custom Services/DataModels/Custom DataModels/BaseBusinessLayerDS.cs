@@ -26,6 +26,7 @@ using System.Data.Entity.SqlServer;
 using System.Globalization;
 using System.Net;
 using System.ServiceModel;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks.Schedulers;
@@ -38,7 +39,7 @@ using Core.Common.UI;
 using Core.Common.Utils;
 using InventoryDS.Business.Entities;
 using DocumentDS.Business.Services;
-
+using ExcelDataReader;
 using InventoryDS.Business.Services;
 using LicenseDS.Business.Entities;
 using MoreLinq.Extensions;
@@ -4172,6 +4173,8 @@ namespace WaterNut.DataSpace
                 return fileType != null ? BaseDataModel.GetFileType(fileType) : null;
             }
         }
+
+
     }
 
     public class SaleReportLine

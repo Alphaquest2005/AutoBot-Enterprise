@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Common.Extensions;
 using CoreEntities.Business.Entities;
 using EntryDataDS.Business.Entities;
 using MoreLinq;
@@ -20,6 +22,9 @@ namespace xlsxWriter
 {
     public class XlsxWriter
     {
+        private static string RideManualMatchesHeader = "WarehouseCode, RiderInvoiceNumber, InvoiceNo, Packages";
+        private static string RiderManualMatchesTag = "Manual Matches";
+
         public static List<(string reference, string filepath)> CreatCSV(ShipmentInvoice shipmentInvoice,
             int riderId)
         {
@@ -180,15 +185,151 @@ namespace xlsxWriter
             }
         }
 
-        public static Workbook CreateUnattachedShipmentWorkBook(string csvFilePath, UnAttachedWorkBookPkg summaryPkg )
+        public static string CreateUnattachedShipmentWorkBook(
+            Tuple<string, int> client, UnAttachedWorkBookPkg summaryPkg)
         {
-            Workbook workbook = new Workbook(csvFilePath, "Summary");
-            SetValue(workbook,0,0,"Reference:");
-            SetValue(workbook,0,1,summaryPkg.Reference);
+            var summaryWorkBook = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports",
+                $"Summary-{client.Item1.Split(' ').FirstOrDefault()}.xlsx");
+            if (File.Exists(summaryWorkBook)) File.Delete(summaryWorkBook);
+            Workbook workbook = new Workbook(summaryWorkBook, "Summary");
+            CreateSummarySheet(summaryPkg, workbook);
+            CreateRiderInvoiceSheet(summaryPkg, workbook);
             CreateUnMatchedWorkSheet(workbook, summaryPkg.UnMatchedPOs, summaryPkg.UnMatchedInvoices);
            
             workbook.Save();
-            return workbook;
+            return summaryWorkBook;
+        }
+
+        private static void CreateRiderInvoiceSheet(UnAttachedWorkBookPkg summaryPkg, Workbook workbook)
+        {
+            workbook.AddWorksheet("RiderInvoices");
+            var currentline = 0;
+
+            WriteTable(new List<dynamic>(){summaryPkg.RiderSummary}, workbook, currentline, "ETA, DocumentDate, Packages, WarehouseCode, InvoiceNumber, GrossWeightKg, CubicFeet, Code", "Rider Summary:");
+
+            currentline += 4;
+            
+            WriteTable(summaryPkg.RiderManualMatches.Select(x => (dynamic)x).ToList(), workbook, currentline, RideManualMatchesHeader, "Manual Matches");
+
+            currentline += 2 + summaryPkg.RiderManualMatches.Count;
+            WriteTable(summaryPkg.UnAttachedRiderDetails.Select(x => (dynamic)x).ToList(), workbook, currentline, "Shipper, WarehouseCode, InvoiceNumber, Pieces", "Rider Details with No Invoices");
+
+            currentline += 2 + summaryPkg.UnAttachedRiderDetails.Count;
+            WriteTable(summaryPkg.UnAttachedInvoices.Select(x => (dynamic)x).ToList(), workbook, currentline, "InvoiceNo, InvoiceTotal, ImportedLines, SupplierCode", "Invoices Not Linked To Rider");
+
+            currentline += 2 + summaryPkg.UnAttachedInvoices.Count;
+            WriteTable(summaryPkg.RiderDetails.Select(x => (dynamic)x).ToList(), workbook, currentline, "Shipper, WarehouseCode, InvoiceNumber, Pieces", "All Rider Details");
+
+            currentline += 2 + summaryPkg.RiderDetails.Count;
+            WriteTable(summaryPkg.Invoices.Select(x => (dynamic)x).ToList(), workbook, currentline, "InvoiceNo, InvoiceTotal, ImportedLines, SupplierCode", "All Invoices");
+
+            
+        }
+
+        private static void WriteTable(List<dynamic> table, Workbook workbook, int currentline, string headerString, string tableName)
+        {
+            SetValue(workbook, currentline, 0, tableName);
+            var header = headerString.Split(',').Select(x => x.Trim()).ToList();
+
+            header.ForEach(x =>
+            {
+                SetValue(workbook, currentline, header.IndexOf(x) + 1, x);
+                for (int i = 0; i < table.Count; i++)
+                {
+                    var itm = table[i];
+                    SetValue(workbook, currentline + i + 1, header.IndexOf(x) + 1,
+                        itm.GetType().GetProperty(x)?.GetValue(itm).ToString());
+                }
+            });
+        }
+
+        private static void ReadTable<T>(NanoXLSX.Workbook workbook, string sheetName, string headerString, string tableTag) where T : class, ITrackable, new()
+        {
+            workbook.SetCurrentWorksheet(sheetName);
+            var header = headerString.Split(',').Select(x => x.Trim()).ToList();
+            var currentRow = 0;
+            var currentColumn = 0;
+            var lst = new List<T>();
+            while (true)
+            {
+                if (currentRow > 100) break;
+               
+                if (workbook.CurrentWorksheet.HasCell(currentColumn, currentRow) &&
+                    workbook.CurrentWorksheet.GetCell(currentColumn, currentRow).Value.ToString() == tableTag)
+                {
+                    currentColumn++;
+                   
+                    if (header.All(x =>  workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow).Value.ToString() == x))
+                    {
+                        currentRow++;
+                        if (!workbook.CurrentWorksheet.HasCell(currentColumn, currentRow)) break;
+                        var itm = new T(){TrackingState = TrackingState.Added};
+                        header.ForEach(x =>
+                        {
+                            var prop = itm.GetType().GetProperty(x);
+                            prop?.SetValue(itm,
+                                   Convert.ChangeType(workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow)
+                                        .Value, prop.PropertyType));
+                        });
+                        lst.Add(itm);
+                    }
+                }
+                currentRow++;
+            }
+
+            if (!lst.Any()) return;
+            using (var ctx = new EntryDataDSContext())
+            {
+                ctx.Set<T>().AddRange(lst);
+                ctx.SaveChanges();
+            }
+
+        }
+
+        private static void CreateSummarySheet(UnAttachedWorkBookPkg summaryPkg, Workbook workbook)
+        {
+            workbook.SetCurrentWorksheet("Summary");
+            var currentline = 0;
+            SetValue(workbook, currentline, 0, "Reference:");
+            SetValue(workbook, currentline, 1, summaryPkg.Reference);
+
+            currentline += 2;
+            SetValue(workbook, currentline, 0, "List of Invoices");
+            
+            var invHeader =
+                "InvoiceNo, InvoiceDate, ImportedLines, SubTotal, InvoiceTotal, SupplierCode, SourceFile"
+                    .Split(',').Select(x => x.Trim()).ToList();
+            currentline++;
+            invHeader.ForEach(x => SetValue(workbook, currentline, invHeader.IndexOf(x), x));
+
+            currentline++;
+
+            var i = 0;
+            while (true)
+            {
+                if (i > summaryPkg.Invoices.Count() - 1) break;
+               
+                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.InvoiceNo)),
+                        summaryPkg.Invoices[i].InvoiceNo);
+                    SetValue(workbook, currentline , invHeader.IndexOf(nameof(ShipmentMIS_Invoices.InvoiceDate)),
+                        summaryPkg.Invoices[i].InvoiceDate);
+                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.ImportedLines)),
+                        summaryPkg.Invoices[i].ImportedLines);
+                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.SubTotal)),
+                        summaryPkg.Invoices[i].SubTotal);
+                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.InvoiceTotal)),
+                        summaryPkg.Invoices[i].InvoiceTotal);
+                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.SupplierCode)),
+                        summaryPkg.Invoices[i].SupplierCode);
+                    SetValue(workbook, currentline, invHeader.IndexOf(nameof(ShipmentMIS_Invoices.SourceFile)),
+                        new FileInfo(summaryPkg.Invoices[i].SourceFile).Name);
+                
+
+                i++;
+                currentline++;
+            }
+
+
         }
 
         private static void CreateUnMatchedWorkSheet(Workbook workbook, List<ShipmentMIS_POs> unMatchedPOs, List<ShipmentMIS_Invoices> unMatchedInvoices)
@@ -229,7 +370,7 @@ namespace xlsxWriter
                     SetValue(workbook, i+2, poheader.IndexOf(nameof(ShipmentMIS_POs.SourceFile)), new FileInfo(unMatchedPOs[i].SourceFile).Name);
                 }
                 i++;
-                if (i >= unMatchedInvoices.Count() && i >= unMatchedInvoices.Count()) isEnd = true;
+                if (i >= unMatchedInvoices.Count() && i >= unMatchedPOs.Count()) isEnd = true;
             }
         }
 
@@ -302,9 +443,12 @@ namespace xlsxWriter
             var reference = workBook.CurrentWorksheet.GetCell(1, 0).Value.ToString();
 
             ImportUnMatchedInvoicePOs(workBook);
+            ReadTable<ShipmentInvoiceRiderManualMatches>(workBook, "RiderInvoices", RideManualMatchesHeader, RiderManualMatchesTag);
 
             return reference;
         }
+
+      
 
         private static void ImportUnMatchedInvoicePOs(NanoXLSX.Workbook workBook)
         {
@@ -331,6 +475,8 @@ namespace xlsxWriter
                 ctx.SaveChanges();
             }
         }
+
+
     }
 
     public class UnAttachedWorkBookPkg
@@ -338,5 +484,11 @@ namespace xlsxWriter
         public List<ShipmentMIS_Invoices> UnMatchedInvoices { get; set; }
         public List<ShipmentMIS_POs> UnMatchedPOs { get; set; }
         public string Reference { get; set; }
+        public List<ShipmentInvoice> Invoices { get; set; }
+        public List<ShipmentInvoice> UnAttachedInvoices { get; set; }
+        public List<ShipmentInvoiceRiderDetails> UnAttachedRiderDetails { get; set; }
+        public List<ShipmentRiderDetails> RiderDetails { get; set; }
+        public List<ShipmentInvoiceRiderManualMatches> RiderManualMatches { get; set; }
+        public ShipmentRiderEx RiderSummary { get; set; }
     }
 }

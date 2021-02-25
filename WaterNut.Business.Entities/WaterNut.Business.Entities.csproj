@@ -444,6 +444,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderDetails.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\WarehouseInfo.cs" />
@@ -821,6 +822,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderDetails.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\WarehouseInfo.cs" />
@@ -1196,6 +1198,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderDetails.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\WarehouseInfo.cs" />
@@ -1571,6 +1574,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderDetails.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\WarehouseInfo.cs" />
@@ -1946,6 +1950,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRider.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderBLs.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderDetails.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentRiderInvoice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\Suppliers.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\WarehouseInfo.cs" />
@@ -2331,6 +2336,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRider.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderBLs.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderDetails.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentRiderInvoice.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\Suppliers.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\WarehouseInfo.map.cs" />

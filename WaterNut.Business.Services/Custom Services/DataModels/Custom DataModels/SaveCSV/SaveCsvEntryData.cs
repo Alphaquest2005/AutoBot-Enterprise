@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity;
 using System.Dynamic;
 using System.Globalization;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Linq.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Core.Common.CSV;
@@ -18,6 +20,7 @@ using CoreEntities.Business.Entities;
 using DocumentDS.Business.Entities;
 using EntryDataDS.Business.Entities;
 using EntryDataDS.Business.Services;
+using ExcelDataReader;
 using InventoryDS.Business.Entities;
 using InventoryDS.Business.Services;
 using MoreLinq;
@@ -114,8 +117,17 @@ namespace WaterNut.DataSpace
             {
                 const double kg = lb2Kg;
 
-                var rawRiders = eslst.Select(x => ((IDictionary<string, object>) x))
-                    .GroupBy(x => new {ETA = x[nameof(ShipmentRider.ETA)], Date = x["Date"]})
+                var csvRiders = eslst.Select(x => ((IDictionary<string, object>) x))
+                    .GroupBy(x => new
+                    {
+                        ETA = x[nameof(ShipmentRider.ETA)],
+                        Date = x["Date"],
+                        Code = x[nameof(ShipmentRiderDetails.Code)]?.ToString().Trim()
+                    }).ToList();
+
+
+
+                var rawRiders = csvRiders
                     .Select(x => new{
                         ETA = x.Key.Date,
                         DocumentDate = x.Key.Date,
@@ -142,8 +154,8 @@ namespace WaterNut.DataSpace
                     foreach (var rawRider in rawRiders)
                     {
                         DateTime eta = (DateTime) rawRider.ETA;
-                        var existingRider = ctx.ShipmentRider.FirstOrDefault(x => x.ETA == eta);
-                        if (existingRider != null) ctx.ShipmentRider.Remove(existingRider);
+                        var existingRider = ctx.ShipmentRider.Where(x => x.ETA == eta).ToList();
+                        if (existingRider.Any()) ctx.ShipmentRider.RemoveRange(existingRider);
                         
                         var invoiceLst = rawRider.ShipmentRiderDetails.Select(x => new
                             {
@@ -243,7 +255,7 @@ namespace WaterNut.DataSpace
 
                         }
 
-
+                        
 
                         ctx.ShipmentRider.Add(new ShipmentRider()
                         {
@@ -2251,84 +2263,9 @@ namespace WaterNut.DataSpace
             return val;
         }
 
-        public class CSVDataSummary
-        {
-            public string PONumber;
 
-            public string EntryDataId { get; set; }
-            public DateTime? EntryDataDate { get; set; }
-            public string ItemNumber { get; set; }
-            public string ItemAlias { get; set; }
-            public string ItemDescription { get; set; }
-            public double? Quantity { get; set; }
-            public double? Cost { get; set; }
-            public string Units { get; set; }
-            public string CustomerName { get; set; }
-            public double? Tax { get; set; }
-            public string TariffCode { get; set; }
 
-            public string SupplierCode { get; set; }
-
-            public double? Freight { get; set; }
-
-            public double? Weight { get; set; }
-
-            public double? InternalFreight { get; set; }
-            public double? Insurance { get; set; }
-            public double? OtherCost { get; set; }
-            public double? Deductions { get; set; }
-            public double? TotalFreight { get; set; }
-
-            public double? TotalWeight { get; set; }
-            public double? TotalInsurance { get; set; }
-            public double? TotalOtherCost { get; set; }
-            public double? TotalDeductions { get; set; }
-
-            public double? TotalInternalFreight { get; set; }
-            public string CNumber { get; set; }
-            public double? InvoiceQuantity { get; set; }
-            public double? ReceivedQuantity { get; set; }
-            public string Currency { get; set; }
-            public string Comment { get; set; }
-
-            public string PreviousInvoiceNumber { get; set; }
-            public DateTime? EffectiveDate { get; set; }
-
-            public string SupplierName { get; set; }
-            public string SupplierAddress { get; set; }
-            public string SupplierCountryCode { get; set; }
-            public double? InvoiceTotal { get; set; }
-            public string DocumentType { get; set; }
-            public string SupplierInvoiceNo { get; set; }
-            public double? TotalCost { get; set; }
-            public int? LineNumber { get; set; }
-            public int InventoryItemId { get; set; }
-            public string SourceRow { get; set; }
-
-            public string Instructions { get; set; }
-            public string InventorySource { get; set; }
-            public int Packages { get; set; }
-
-            public string WarehouseNo { get; set; }
-
-            public double? TotalTax { get; set; }
-            public string PreviousCNumber { get; set; }
-            public string FinancialInformation { get; set; }
-            public string Office { get; set; }
-            public string GeneralProcedure { get; set; }
-            public string AssessmentDate { get; set; }
-            public string AssessmentNumber { get; set; }
-            public string AssessmentSerial { get; set; }
-            public string RegistrationDate { get; set; }
-            public string RegistrationNumber { get; set; }
-            public string RegistrationSerial { get; set; }
-            public string Consignee { get; set; }
-            public string Exporter { get; set; }
-            public string DeclarantReference { get; set; }
-            public string DeclarantCode { get; set; }
-            public string ExpirationDate { get; set; }
-        }
-
+       
         private async Task ImportSuppliers(List<dynamic> eslst, int applicationSettingsId, FileTypes fileType)
         {
             try

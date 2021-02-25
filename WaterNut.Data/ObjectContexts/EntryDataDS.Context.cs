@@ -153,6 +153,8 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentMIS_POs> ShipmentMIS_POs { get; set; }
      
+        public DbSet<ShipmentRiderEx> ShipmentRiderEx { get; set; }
+     
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -262,6 +264,8 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ShipmentMIS_InvoicesMap());
          
             modelBuilder.Configurations.Add(new ShipmentMIS_POsMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentRiderExMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

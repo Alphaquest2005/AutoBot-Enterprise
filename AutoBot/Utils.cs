@@ -6141,6 +6141,27 @@ namespace AutoBot
             }
         }
 
+        public static string StringToCSVCell(string str)
+        {
+            //bool mustQuote = (str.Contains(",") || str.Contains("\"") || str.Contains("\r") 
+            //                  || str.Contains("\n") || str.Contains(".") || str.Contains("'") || str.Contains("#"));
+            //if (mustQuote)
+            //{
+            StringBuilder sb = new StringBuilder();
+            sb.Append("\"");
+            foreach (char nextChar in str)
+            {
+                sb.Append(nextChar);
+                if (nextChar == '"')
+                    sb.Append("\"");
+            }
+            sb.Append("\"");
+            return sb.ToString().Trim();
+            //}
+
+            //return str;
+        }
+
         public static void FixCsv(FileInfo file, FileTypes fileType,
             Dictionary<string, Func<Dictionary<string, string>, string>> dic)
         {
@@ -6510,26 +6531,7 @@ namespace AutoBot
         /// </summary>
         /// <param name="str">String to output</param>
         /// <returns>The CSV cell formatted string</returns>
-        public static string StringToCSVCell(string str)
-        {
-            //bool mustQuote = (str.Contains(",") || str.Contains("\"") || str.Contains("\r") 
-            //                  || str.Contains("\n") || str.Contains(".") || str.Contains("'") || str.Contains("#"));
-            //if (mustQuote)
-            //{
-            StringBuilder sb = new StringBuilder();
-            sb.Append("\"");
-            foreach (char nextChar in str)
-            {
-                sb.Append(nextChar);
-                if (nextChar == '"')
-                    sb.Append("\"");
-            }
-            sb.Append("\"");
-            return sb.ToString().Trim();
-            //}
 
-            //return str;
-        }
     }
 
    

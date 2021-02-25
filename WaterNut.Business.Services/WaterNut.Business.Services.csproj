@@ -94,6 +94,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="ExcelDataReader, Version=3.6.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.6.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
     <Reference Include="fontbox-1.8.9">
       <HintPath>Custom Services\DataModels\Custom DataModels\PDF2TXT\fontbox-1.8.9.dll</HintPath>
     </Reference>
@@ -654,6 +657,7 @@
     <Compile Include="Contracts\EntryDataDS\IShipmentMIS_POsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderBLsService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderDetailsService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IShipmentRiderExService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderInvoiceService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentRiderService.cs" />
     <Compile Include="Contracts\EntryDataDS\IShipmentService.cs" />
@@ -1239,6 +1243,7 @@
     <Compile Include="Services\EntryDataDS\ShipmentMIS_POsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderBLsService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderDetailsService.cs" />
+    <Compile Include="Services\EntryDataDS\ShipmentRiderExService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderInvoiceService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentRiderService.cs" />
     <Compile Include="Services\EntryDataDS\ShipmentService.cs" />
