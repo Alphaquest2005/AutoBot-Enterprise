@@ -6459,7 +6459,7 @@ namespace AutoBot
                 {
                     var value = fileType.FileTypeMappings.Any()
                                     ?fileType.FileTypeMappings.OrderBy(x => x.Id).Select(x => x.DestinationName).Where(x => !x.StartsWith("{")).Distinct()
-                                    .Select(x => row[x])
+                                    .Select(x => row.ContainsKey(x)? row[x]:"")
                                     .Aggregate((a, x) => a + "," + x) + "\n"
                         :row.Values.Aggregate((a, x) => a + "," + x) + "\n";
                     table.GetOrAdd(row_no, value);
