@@ -11,7 +11,7 @@
     {
         public TODO_SubmitPOInfoMap()
         {                        
-              this.HasKey(t => new {t.Id, t.AsycudaDocumentSetId});        
+              this.HasKey(t => t.Id);        
               this.ToTable("TODO-SubmitPOInfo");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Number).HasColumnName("Number").HasMaxLength(20);
@@ -33,7 +33,7 @@
               this.Property(t => t.PONumber).HasColumnName("PONumber").IsRequired().HasMaxLength(50);
               this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
               this.Property(t => t.Marks2_of_packages).HasColumnName("Marks2_of_packages").HasMaxLength(40);
-              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId");
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

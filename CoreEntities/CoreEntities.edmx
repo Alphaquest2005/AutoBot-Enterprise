@@ -1619,11 +1619,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does n
           <Key>
             <PropertyRef Name="Id" />
             
-            
-            
-            
-            
-            <PropertyRef Name="AsycudaDocumentSetId" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Number" Type="nvarchar" MaxLength="20" />
@@ -5676,8 +5671,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
         <EntityType Name="TODO_SubmitPOInfo">
           <Key>
             <PropertyRef Name="Id" />
-            <PropertyRef Name="AsycudaDocumentSetId" />
- 
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />

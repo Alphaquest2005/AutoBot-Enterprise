@@ -473,6 +473,34 @@ namespace CoreEntities.Client.Repositories
                 throw;
             }
         } 
+ 	 public async Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByAsycudaDocumentSetId(string AsycudaDocumentSetId, List<string> includesLst = null)
+        {
+             if (AsycudaDocumentSetId == "0") return null;
+            try
+            {
+                 using (TODO_SubmitPOInfoClient t = new TODO_SubmitPOInfoClient())
+                    {
+                        var res = await t.GetTODO_SubmitPOInfoByAsycudaDocumentSetId(AsycudaDocumentSetId, includesLst).ConfigureAwait(continueOnCapturedContext: false);
+                         if(res != null)
+                        {
+                            return res.Select(x => new TODO_SubmitPOInfo(x)).AsEnumerable();
+					    }                
+					    else
+					    {
+						    return null;
+					    }                    
+                    }
+            }
+            catch (FaultException<ValidationFault> e)
+            {
+                throw new Exception(e.Detail.Message, e.InnerException);
+            }
+            catch (Exception)
+            {
+                Debugger.Break();
+                throw;
+            }
+        } 
          
 		public decimal SumField(string whereExp, string sumExp)
         {
