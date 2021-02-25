@@ -551,7 +551,7 @@ namespace AutoBot
                             .Select(x => new TODO_SubmitPOInfo()
                         {
                             ApplicationSettingsId = docSet.ApplicationSettingsId,
-                            AssessedAsycuda_Id = x.AssessedAsycuda_Id,
+                            ASYCUDA_Id = x.AssessedAsycuda_Id,
                             CNumber = x.CNumber
                         }).ToList();
                     }
@@ -609,17 +609,25 @@ namespace AutoBot
                     if (!Directory.Exists(poInfo.Item2)) return;
                     foreach (var itm in pOs)
                     {
-                        
-                        var ndp = ctx.AsycudaDocument_Attachments
-                            .Where( x => x.AsycudaDocumentId == itm.NewAsycuda_Id)
-                            .GroupBy(x => x.Attachments.Reference)
-                            .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
-                            .Select(x => x.Attachments.FilePath)
-                            .Where(x => x.ToLower().EndsWith(".pdf"))
-                            .ToList();
+                        List<string> ndp = new List<string>();
+                        var newEntry = ctx.AsycudaDocuments.FirstOrDefault(x =>
+                            x.ReferenceNumber == itm.Reference &&
+                            (x.ImportComplete == null || x.ImportComplete == false));
+                        if (newEntry != null)
+                        {
+                            
+                            ndp = ctx.AsycudaDocument_Attachments
+                                .Where(x => x.AsycudaDocumentId == newEntry.ASYCUDA_Id)
+                                .GroupBy(x => x.Attachments.Reference)
+                                .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
+                                .Select(x => x.Attachments.FilePath)
+                                .Where(x => x.ToLower().EndsWith(".pdf"))
+                                .ToList();
+                        }
+
 
                         var adp = ctx.AsycudaDocument_Attachments
-                            .Where(x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id)
+                            .Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id)
                             .GroupBy(x => x.Attachments.Reference)
                             .Select(x => x.OrderByDescending(z => z.AttachmentId).FirstOrDefault())
                             .Select(x => x.Attachments.FilePath)
@@ -629,8 +637,8 @@ namespace AutoBot
 
                         if(!adp.Any())
                         {
-                            LinkPDFs(new List<int>() { itm.AssessedAsycuda_Id });
-                            adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.AssessedAsycuda_Id).Select(x => x.Attachments.FilePath).ToList();
+                            LinkPDFs(new List<int>() { itm.ASYCUDA_Id });
+                            adp = ctx.AsycudaDocument_Attachments.Where(x => x.AsycudaDocumentId == itm.ASYCUDA_Id).Select(x => x.Attachments.FilePath).ToList();
                         }
 
                         pdfs.AddRange(ndp);
@@ -658,7 +666,7 @@ namespace AutoBot
                             CNumber = x.CNumber,
                             Reference = x.Reference,
                             Date = x.Date,
-                            PONumber = x.EntryDataId,
+                            PONumber = x.PONumber,
                             Invoice = x.SupplierInvoiceNo,
                             Taxes = x.Totals_taxes.GetValueOrDefault().ToString("C"),
                             CIF = x.Total_CIF.ToString("C"),
@@ -708,7 +716,7 @@ namespace AutoBot
                     foreach (var item in pOs)
                     {
                         var sfile = Queryable.FirstOrDefault(ctx.AsycudaDocuments, x =>
-                            x.ASYCUDA_Id == item.AssessedAsycuda_Id &&
+                            x.ASYCUDA_Id == item.ASYCUDA_Id &&
                             x.ApplicationSettingsId == item.ApplicationSettingsId);
                         var eAtt = ctx.AsycudaDocumentSet_Attachments.FirstOrDefault(x =>
                             x.Attachments.FilePath == sfile.SourceFileName);

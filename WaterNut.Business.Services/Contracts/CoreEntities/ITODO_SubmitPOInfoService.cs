@@ -114,6 +114,9 @@ namespace CoreEntities.Business.Services
   		[OperationContract]
         [FaultContract(typeof(ValidationFault))]
         Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByFileTypeId(string FileTypeId, List<string> includesLst = null);
+  		[OperationContract]
+        [FaultContract(typeof(ValidationFault))]
+        Task<IEnumerable<TODO_SubmitPOInfo>> GetTODO_SubmitPOInfoByASYCUDA_Id(string ASYCUDA_Id, List<string> includesLst = null);
   
 
 

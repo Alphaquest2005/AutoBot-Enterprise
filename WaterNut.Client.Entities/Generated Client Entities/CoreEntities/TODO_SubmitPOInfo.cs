@@ -91,23 +91,6 @@ public string Date
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "EntryData is required")]
-       
-                
-                [MaxLength(50, ErrorMessage = "EntryDataId has a max length of 50 letters ")]
-public string EntryDataId
-		{ 
-		    get { return this.todo_submitpoinfo.EntryDataId; }
-			set
-			{
-			    if (value == this.todo_submitpoinfo.EntryDataId) return;
-				this.todo_submitpoinfo.EntryDataId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("EntryDataId");
-			}
-		}
-     
-
        
        
                 
@@ -125,9 +108,9 @@ public string SupplierInvoiceNo
 		}
      
 
+       [RequiredValidationAttribute(ErrorMessage= "ApplicationSettings is required")]
        
-       
-public Nullable<int> ApplicationSettingsId
+public int ApplicationSettingsId
 		{ 
 		    get { return this.todo_submitpoinfo.ApplicationSettingsId; }
 			set
@@ -136,21 +119,6 @@ public Nullable<int> ApplicationSettingsId
 				this.todo_submitpoinfo.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
-       
-public int AsycudaDocumentSetId
-		{ 
-		    get { return this.todo_submitpoinfo.AsycudaDocumentSetId; }
-			set
-			{
-			    if (value == this.todo_submitpoinfo.AsycudaDocumentSetId) return;
-				this.todo_submitpoinfo.AsycudaDocumentSetId = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("AsycudaDocumentSetId");
 			}
 		}
      
@@ -181,36 +149,6 @@ public Nullable<int> FileTypeId
 				this.todo_submitpoinfo.FileTypeId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("FileTypeId");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "NewAsycuda_ is required")]
-       
-public int NewAsycuda_Id
-		{ 
-		    get { return this.todo_submitpoinfo.NewAsycuda_Id; }
-			set
-			{
-			    if (value == this.todo_submitpoinfo.NewAsycuda_Id) return;
-				this.todo_submitpoinfo.NewAsycuda_Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("NewAsycuda_Id");
-			}
-		}
-     
-
-       [RequiredValidationAttribute(ErrorMessage= "AssessedAsycuda_ is required")]
-       
-public int AssessedAsycuda_Id
-		{ 
-		    get { return this.todo_submitpoinfo.AssessedAsycuda_Id; }
-			set
-			{
-			    if (value == this.todo_submitpoinfo.AssessedAsycuda_Id) return;
-				this.todo_submitpoinfo.AssessedAsycuda_Id = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("AssessedAsycuda_Id");
 			}
 		}
      
@@ -375,6 +313,70 @@ public Nullable<bool> IsSubmitted
 				this.todo_submitpoinfo.IsSubmitted = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("IsSubmitted");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "PONumber is required")]
+       
+                
+                [MaxLength(50, ErrorMessage = "PONumber has a max length of 50 letters ")]
+public string PONumber
+		{ 
+		    get { return this.todo_submitpoinfo.PONumber; }
+			set
+			{
+			    if (value == this.todo_submitpoinfo.PONumber) return;
+				this.todo_submitpoinfo.PONumber = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("PONumber");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "ASYCUDA_ is required")]
+       
+public int ASYCUDA_Id
+		{ 
+		    get { return this.todo_submitpoinfo.ASYCUDA_Id; }
+			set
+			{
+			    if (value == this.todo_submitpoinfo.ASYCUDA_Id) return;
+				this.todo_submitpoinfo.ASYCUDA_Id = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("ASYCUDA_Id");
+			}
+		}
+     
+
+       
+       
+                
+                [MaxLength(40, ErrorMessage = "Marks2_of_packages has a max length of 40 letters ")]
+public string Marks2_of_packages
+		{ 
+		    get { return this.todo_submitpoinfo.Marks2_of_packages; }
+			set
+			{
+			    if (value == this.todo_submitpoinfo.Marks2_of_packages) return;
+				this.todo_submitpoinfo.Marks2_of_packages = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("Marks2_of_packages");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "AsycudaDocumentSet is required")]
+       
+public int AsycudaDocumentSetId
+		{ 
+		    get { return this.todo_submitpoinfo.AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == this.todo_submitpoinfo.AsycudaDocumentSetId) return;
+				this.todo_submitpoinfo.AsycudaDocumentSetId = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("AsycudaDocumentSetId");
 			}
 		}
      

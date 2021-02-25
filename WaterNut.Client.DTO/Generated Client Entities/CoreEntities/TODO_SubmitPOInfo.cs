@@ -61,19 +61,6 @@ namespace CoreEntities.Client.DTO
         private string _Date;
 
         [DataMember]
-        public string EntryDataId
-		{ 
-		    get { return _EntryDataId; }
-			set
-			{
-			    if (value == _EntryDataId) return;
-				_EntryDataId = value;
-				NotifyPropertyChanged();//m => this.EntryDataId
-			}
-		}
-        private string _EntryDataId;
-
-        [DataMember]
         public string SupplierInvoiceNo
 		{ 
 		    get { return _SupplierInvoiceNo; }
@@ -87,7 +74,7 @@ namespace CoreEntities.Client.DTO
         private string _SupplierInvoiceNo;
 
         [DataMember]
-        public Nullable<int> ApplicationSettingsId
+        public int ApplicationSettingsId
 		{ 
 		    get { return _ApplicationSettingsId; }
 			set
@@ -97,20 +84,7 @@ namespace CoreEntities.Client.DTO
 				NotifyPropertyChanged();//m => this.ApplicationSettingsId
 			}
 		}
-        private Nullable<int> _ApplicationSettingsId;
-
-        [DataMember]
-        public int AsycudaDocumentSetId
-		{ 
-		    get { return _AsycudaDocumentSetId; }
-			set
-			{
-			    if (value == _AsycudaDocumentSetId) return;
-				_AsycudaDocumentSetId = value;
-				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
-			}
-		}
-        private int _AsycudaDocumentSetId;
+        private int _ApplicationSettingsId;
 
         [DataMember]
         public Nullable<int> EmailId
@@ -137,32 +111,6 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<int> _FileTypeId;
-
-        [DataMember]
-        public int NewAsycuda_Id
-		{ 
-		    get { return _NewAsycuda_Id; }
-			set
-			{
-			    if (value == _NewAsycuda_Id) return;
-				_NewAsycuda_Id = value;
-				NotifyPropertyChanged();//m => this.NewAsycuda_Id
-			}
-		}
-        private int _NewAsycuda_Id;
-
-        [DataMember]
-        public int AssessedAsycuda_Id
-		{ 
-		    get { return _AssessedAsycuda_Id; }
-			set
-			{
-			    if (value == _AssessedAsycuda_Id) return;
-				_AssessedAsycuda_Id = value;
-				NotifyPropertyChanged();//m => this.AssessedAsycuda_Id
-			}
-		}
-        private int _AssessedAsycuda_Id;
 
         [DataMember]
         public string Status
@@ -293,6 +241,58 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private Nullable<bool> _IsSubmitted;
+
+        [DataMember]
+        public string PONumber
+		{ 
+		    get { return _PONumber; }
+			set
+			{
+			    if (value == _PONumber) return;
+				_PONumber = value;
+				NotifyPropertyChanged();//m => this.PONumber
+			}
+		}
+        private string _PONumber;
+
+        [DataMember]
+        public int ASYCUDA_Id
+		{ 
+		    get { return _ASYCUDA_Id; }
+			set
+			{
+			    if (value == _ASYCUDA_Id) return;
+				_ASYCUDA_Id = value;
+				NotifyPropertyChanged();//m => this.ASYCUDA_Id
+			}
+		}
+        private int _ASYCUDA_Id;
+
+        [DataMember]
+        public string Marks2_of_packages
+		{ 
+		    get { return _Marks2_of_packages; }
+			set
+			{
+			    if (value == _Marks2_of_packages) return;
+				_Marks2_of_packages = value;
+				NotifyPropertyChanged();//m => this.Marks2_of_packages
+			}
+		}
+        private string _Marks2_of_packages;
+
+        [DataMember]
+        public int AsycudaDocumentSetId
+		{ 
+		    get { return _AsycudaDocumentSetId; }
+			set
+			{
+			    if (value == _AsycudaDocumentSetId) return;
+				_AsycudaDocumentSetId = value;
+				NotifyPropertyChanged();//m => this.AsycudaDocumentSetId
+			}
+		}
+        private int _AsycudaDocumentSetId;
 
        
    //     [DataMember]

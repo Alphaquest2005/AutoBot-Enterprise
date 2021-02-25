@@ -11,19 +11,15 @@
     {
         public TODO_SubmitPOInfoMap()
         {                        
-              this.HasKey(t => new {t.Id, t.EntryDataId, t.AsycudaDocumentSetId, t.NewAsycuda_Id, t.AssessedAsycuda_Id, t.Status, t.Total_CIF});        
+              this.HasKey(t => new {t.Id, t.AsycudaDocumentSetId});        
               this.ToTable("TODO-SubmitPOInfo");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Number).HasColumnName("Number").HasMaxLength(20);
               this.Property(t => t.Date).HasColumnName("Date").HasMaxLength(10);
-              this.Property(t => t.EntryDataId).HasColumnName("EntryDataId").IsRequired().HasMaxLength(50);
               this.Property(t => t.SupplierInvoiceNo).HasColumnName("SupplierInvoiceNo").HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
-              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.EmailId).HasColumnName("EmailId");
               this.Property(t => t.FileTypeId).HasColumnName("FileTypeId");
-              this.Property(t => t.NewAsycuda_Id).HasColumnName("NewAsycuda_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
-              this.Property(t => t.AssessedAsycuda_Id).HasColumnName("AssessedAsycuda_Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
               this.Property(t => t.Status).HasColumnName("Status").IsRequired().IsUnicode(false).HasMaxLength(11);
               this.Property(t => t.CustomsProcedure).HasColumnName("CustomsProcedure").HasMaxLength(11);
               this.Property(t => t.DocumentType).HasColumnName("DocumentType").HasMaxLength(40);
@@ -34,6 +30,10 @@
               this.Property(t => t.WarehouseNo).HasColumnName("WarehouseNo").HasMaxLength(50);
               this.Property(t => t.BillingLine).HasColumnName("BillingLine").HasMaxLength(113);
               this.Property(t => t.IsSubmitted).HasColumnName("IsSubmitted");
+              this.Property(t => t.PONumber).HasColumnName("PONumber").IsRequired().HasMaxLength(50);
+              this.Property(t => t.ASYCUDA_Id).HasColumnName("ASYCUDA_Id");
+              this.Property(t => t.Marks2_of_packages).HasColumnName("Marks2_of_packages").HasMaxLength(40);
+              this.Property(t => t.AsycudaDocumentSetId).HasColumnName("AsycudaDocumentSetId").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.None));
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

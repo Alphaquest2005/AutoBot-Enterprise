@@ -66,21 +66,6 @@ namespace CoreEntities.Business.Entities
         }
         string _date;
         [DataMember]
-        public string EntryDataId 
-        {
-            get
-            {
-                return _entrydataid;
-            }
-            set
-            {
-                _entrydataid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _entrydataid;
-        [DataMember]
         public string SupplierInvoiceNo 
         {
             get
@@ -96,7 +81,7 @@ namespace CoreEntities.Business.Entities
         }
         string _supplierinvoiceno;
         [DataMember]
-        public Nullable<int> ApplicationSettingsId 
+        public int ApplicationSettingsId 
         {
             get
             {
@@ -109,22 +94,7 @@ namespace CoreEntities.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        Nullable<int> _applicationsettingsid;
-        [DataMember]
-        public int AsycudaDocumentSetId 
-        {
-            get
-            {
-                return _asycudadocumentsetid;
-            }
-            set
-            {
-                _asycudadocumentsetid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _asycudadocumentsetid;
+        int _applicationsettingsid;
         [DataMember]
         public Nullable<int> EmailId 
         {
@@ -155,36 +125,6 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<int> _filetypeid;
-        [DataMember]
-        public int NewAsycuda_Id 
-        {
-            get
-            {
-                return _newasycuda_id;
-            }
-            set
-            {
-                _newasycuda_id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _newasycuda_id;
-        [DataMember]
-        public int AssessedAsycuda_Id 
-        {
-            get
-            {
-                return _assessedasycuda_id;
-            }
-            set
-            {
-                _assessedasycuda_id = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        int _assessedasycuda_id;
         [DataMember]
         public string Status 
         {
@@ -335,6 +275,66 @@ namespace CoreEntities.Business.Entities
             }
         }
         Nullable<bool> _issubmitted;
+        [DataMember]
+        public string PONumber 
+        {
+            get
+            {
+                return _ponumber;
+            }
+            set
+            {
+                _ponumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _ponumber;
+        [DataMember]
+        public int ASYCUDA_Id 
+        {
+            get
+            {
+                return _asycuda_id;
+            }
+            set
+            {
+                _asycuda_id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycuda_id;
+        [DataMember]
+        public string Marks2_of_packages 
+        {
+            get
+            {
+                return _marks2_of_packages;
+            }
+            set
+            {
+                _marks2_of_packages = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _marks2_of_packages;
+        [DataMember]
+        public int AsycudaDocumentSetId 
+        {
+            get
+            {
+                return _asycudadocumentsetid;
+            }
+            set
+            {
+                _asycudadocumentsetid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _asycudadocumentsetid;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

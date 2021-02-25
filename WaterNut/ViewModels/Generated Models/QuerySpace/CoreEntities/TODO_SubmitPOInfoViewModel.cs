@@ -225,24 +225,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _entryDataIdFilter;
-        public string EntryDataIdFilter
-        {
-            get
-            {
-                return _entryDataIdFilter;
-            }
-            set
-            {
-                _entryDataIdFilter = value;
-				NotifyPropertyChanged(x => EntryDataIdFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _supplierInvoiceNoFilter;
         public string SupplierInvoiceNoFilter
         {
@@ -440,6 +422,42 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _pONumberFilter;
+        public string PONumberFilter
+        {
+            get
+            {
+                return _pONumberFilter;
+            }
+            set
+            {
+                _pONumberFilter = value;
+				NotifyPropertyChanged(x => PONumberFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
+
+		private string _marks2_of_packagesFilter;
+        public string Marks2_of_packagesFilter
+        {
+            get
+            {
+                return _marks2_of_packagesFilter;
+            }
+            set
+            {
+                _marks2_of_packagesFilter = value;
+				NotifyPropertyChanged(x => Marks2_of_packagesFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -476,10 +494,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(DateFilter) == false)
 						res.Append(" && " + string.Format("Date.Contains(\"{0}\")",  DateFilter));						
- 
-
-									if(string.IsNullOrEmpty(EntryDataIdFilter) == false)
-						res.Append(" && " + string.Format("EntryDataId.Contains(\"{0}\")",  EntryDataIdFilter));						
  
 
 									if(string.IsNullOrEmpty(SupplierInvoiceNoFilter) == false)
@@ -522,6 +536,14 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(IsSubmittedFilter.HasValue)
 						res.Append(" && " + string.Format("IsSubmitted == {0}",  IsSubmittedFilter));						
+ 
+
+									if(string.IsNullOrEmpty(PONumberFilter) == false)
+						res.Append(" && " + string.Format("PONumber.Contains(\"{0}\")",  PONumberFilter));						
+ 
+
+									if(string.IsNullOrEmpty(Marks2_of_packagesFilter) == false)
+						res.Append(" && " + string.Format("Marks2_of_packages.Contains(\"{0}\")",  Marks2_of_packagesFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -549,9 +571,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     Date = x.Date ,
-                    
- 
-                    EntryDataId = x.EntryDataId ,
                     
  
                     SupplierInvoiceNo = x.SupplierInvoiceNo ,
@@ -584,7 +603,13 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     BillingLine = x.BillingLine ,
                     
  
-                    IsSubmitted = x.IsSubmitted 
+                    IsSubmitted = x.IsSubmitted ,
+                    
+ 
+                    PONumber = x.PONumber ,
+                    
+ 
+                    Marks2_of_packages = x.Marks2_of_packages 
                     
                 }).ToList()
             };
@@ -601,9 +626,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Date { get; set; } 
-                    
- 
-                    public string EntryDataId { get; set; } 
                     
  
                     public string SupplierInvoiceNo { get; set; } 
@@ -637,6 +659,12 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public Nullable<bool> IsSubmitted { get; set; } 
+                    
+ 
+                    public string PONumber { get; set; } 
+                    
+ 
+                    public string Marks2_of_packages { get; set; } 
                     
         }
 
