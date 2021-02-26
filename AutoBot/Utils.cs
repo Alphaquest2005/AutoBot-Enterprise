@@ -528,7 +528,7 @@ namespace AutoBot
                     var rlst = ctx.TODO_SubmitPOInfo
                         .Where(x => x.ApplicationSettingsId ==
                                     BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .Where(x => x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .Where(x => x.Reference.Contains(docSet.Declarant_Reference_Number))
 
                         .ToList();
                    List<TODO_SubmitPOInfo> lst;
