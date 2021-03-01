@@ -3425,7 +3425,7 @@ namespace AutoBot
                 while (ImportComplete(directoryName, redownload, out lcont) == false)
                 {
                     //RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
-                    RunSiKuLi(directoryName, "IM7", lcont.ToString());
+                    RunSiKuLi(directoryName, "IM7History", lcont.ToString());
                 }
             }
             catch (Exception e)
@@ -3448,7 +3448,7 @@ namespace AutoBot
                 for (int i = 0; i < trytimes; i++)
                 {
                     if (ImportComplete(directoryName, false, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
-                    RunSiKuLi(directoryName, "IM7", lcont.ToString());
+                    RunSiKuLi(directoryName, "IM7History", lcont.ToString());
                     if (ImportComplete(directoryName, false, out lcont)) break;
                 }
 

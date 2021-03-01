@@ -67,7 +67,7 @@ namespace WaterNut.DataSpace
                 var mapping = new Dictionary<FileTypeMappings, int>();
                 GetMappings(mapping, headings, fileType);
 
-                if (fileType.Type == "Sales" && mapping.Keys.Any(x => x.DestinationName == "Tax" || x.DestinationName == "TotalTax"))
+                if (fileType.Type == "Sales" && !mapping.Keys.Any(x => x.DestinationName == "Tax" || x.DestinationName == "TotalTax"))
                     throw new ApplicationException("Sales file dose not contain Tax");
 
 
