@@ -185,6 +185,15 @@
           <Property Name="ReplicateHeaderRow" Type="bit" />
           <Property Name="IsImportable" Type="bit" />
         </EntityType>
+        <EntityType Name="InventoryItemAlias">
+          <Key>
+            <PropertyRef Name="AliasId" />
+          </Key>
+          <Property Name="AliasId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InventoryItemId" Type="int" Nullable="false" />
+          <Property Name="AliasName" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="AliasItemId" Type="int" />
+        </EntityType>
         <EntityType Name="InventoryItems">
           <Key>
             <PropertyRef Name="Id" />
@@ -414,6 +423,7 @@
           <Property Name="TotalCost" Type="float" />
           <Property Name="FileLineNumber" Type="int" />
           <Property Name="InventoryItemId" Type="int" />
+          <Property Name="SalesFactor" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ShipmentInvoiceExtraInfo">
           <Key>
@@ -1093,6 +1103,20 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_InventoryItemAlias_InventoryItems">
+          <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="InventoryItemAlias" Type="Self.InventoryItemAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemAlias">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InventoryItems-NonStock_InventoryItems">
           <End Role="InventoryItems" Type="Self.InventoryItems" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -1513,6 +1537,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySet Name="EntryDataDetails" EntityType="Self.EntryDataDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="EntryDataFiles" EntityType="Self.EntryDataFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="FileTypes" EntityType="Self.FileTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InventoryItemAlias" EntityType="Self.InventoryItemAlias" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItems" EntityType="Self.InventoryItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItems-NonStock" EntityType="Self.InventoryItems-NonStock" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="InventoryItemSource" EntityType="Self.InventoryItemSource" Schema="dbo" store:Type="Tables" />
@@ -1841,6 +1866,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <AssociationSet Name="FK_FileTypes_FileTypes" Association="Self.FK_FileTypes_FileTypes">
             <End Role="FileTypes" EntitySet="FileTypes" />
             <End Role="FileTypes1" EntitySet="FileTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems" Association="Self.FK_InventoryItemAlias_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
           </AssociationSet>
           <AssociationSet Name="FK_InventoryItems-NonStock_InventoryItems" Association="Self.FK_InventoryItems-NonStock_InventoryItems">
             <End Role="InventoryItems" EntitySet="InventoryItems" />
@@ -2257,6 +2286,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <End Role="ShipmentRider" EntitySet="ShipmentRider" />
             <End Role="ShipmentRiderEx" EntitySet="ShipmentRiderEx" />
           </AssociationSet>
+          <EntitySet Name="InventoryItemAlias" EntityType="WaterNutDBModel.InventoryItemAlias" />
+          <AssociationSet Name="FK_InventoryItemAlias_InventoryItems" Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -2574,6 +2608,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="EntryDataDetails" Relationship="WaterNutDBModel.FK_EntryDataDetails_InventoryItems" FromRole="InventoryItems" ToRole="EntryDataDetails" />
           <NavigationProperty Name="InventoryItemSource" Relationship="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemSource" />
           <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InventoryItemAlias" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
         </EntityType>
         <Association Name="FK_InventoryItems_NonStock_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
@@ -3022,6 +3057,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="InventoryItemId" Type="Int32" />
           <NavigationProperty Name="POItems" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" FromRole="InvoiceDetails" ToRole="ShipmentInvoicePOItemQueryMatches" />
           <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
+          <Property Name="SalesFactor" Type="Int32" Nullable="false" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -3949,6 +3985,30 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="InventoryItemAlias">
+          <Key>
+            <PropertyRef Name="AliasId" />
+          </Key>
+          <Property Name="AliasId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InventoryItemId" Type="Int32" Nullable="false" />
+          <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AliasItemId" Type="Int32" />
+          <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
+        </EntityType>
+        <Association Name="FK_InventoryItemAlias_InventoryItems">
+          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="WaterNutDBModel.InventoryItemAlias" Role="InventoryItemAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemAlias">
+              <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -4438,6 +4498,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <EntitySetMapping Name="ShipmentInvoiceDetails">
             <EntityTypeMapping TypeName="WaterNutDBModel.InvoiceDetails">
               <MappingFragment StoreEntitySet="ShipmentInvoiceDetails">
+                <ScalarProperty Name="SalesFactor" ColumnName="SalesFactor" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="ShipmentInvoiceId" ColumnName="ShipmentInvoiceId" />
                 <ScalarProperty Name="FileLineNumber" ColumnName="FileLineNumber" />
@@ -4809,6 +4870,16 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
                 <ScalarProperty Name="DocumentDate" ColumnName="DocumentDate" />
                 <ScalarProperty Name="ETA" ColumnName="ETA" />
                 <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InventoryItemAlias">
+            <EntityTypeMapping TypeName="WaterNutDBModel.InventoryItemAlias">
+              <MappingFragment StoreEntitySet="InventoryItemAlias">
+                <ScalarProperty Name="AliasItemId" ColumnName="AliasItemId" />
+                <ScalarProperty Name="AliasName" ColumnName="AliasName" />
+                <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
+                <ScalarProperty Name="AliasId" ColumnName="AliasId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

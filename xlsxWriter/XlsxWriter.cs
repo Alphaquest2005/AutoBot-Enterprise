@@ -162,7 +162,7 @@ namespace xlsxWriter
             {
                 
                 workbook.AddWorksheet("MisMatches");
-                var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,POTotalCost,INVTotalCost".Split(',').ToList();
+                var header = "PONumber,InvoiceNo,POItemCode,INVItemCode,PODescription,INVDescription,POCost,INVCost,POQuantity,INVQuantity,POTotalCost,INVTotalCost,INVDetailsId,PODetailsId".Split(',').ToList();
                 header.ForEach(x => SetValue(workbook, 0, header.IndexOf(x), x));
                 var i = 1;
                 foreach (var mis in shipmentInvoice.ShipmentInvoicePOs.SelectMany(x => x.POMISMatches).ToList())
@@ -179,6 +179,8 @@ namespace xlsxWriter
                     SetValue(workbook, i, header.IndexOf("INVQuantity"), mis.INVQuantity);
                     SetValue(workbook, i, header.IndexOf("POTotalCost"), mis.POTotalCost);
                     SetValue(workbook, i, header.IndexOf("INVTotalCost"), mis.INVTotalCost);
+                    SetValue(workbook, i, header.IndexOf("INVDetailsId"), mis.INVDetailsId);
+                    SetValue(workbook, i, header.IndexOf("PODetailsId"), mis.PODetailsId);
                     i++;
                 }
                
@@ -226,68 +228,95 @@ namespace xlsxWriter
             
         }
 
-        private static void WriteTable(List<dynamic> table, Workbook workbook, int currentline, string headerString, string tableName)
+        private static void WriteTable(List<dynamic> table, Workbook workbook, int currentline, string headerString,
+            string tableName)
         {
-            SetValue(workbook, currentline, 0, tableName);
-            var header = headerString.Split(',').Select(x => x.Trim()).ToList();
-
-            header.ForEach(x =>
+            try
             {
-                SetValue(workbook, currentline, header.IndexOf(x) + 1, x);
-                for (int i = 0; i < table.Count; i++)
+                SetValue(workbook, currentline, 0, tableName);
+                var header = headerString.Split(',').Select(x => x.Trim()).ToList();
+
+                header.ForEach(x =>
                 {
-                    var itm = table[i];
-                    SetValue(workbook, currentline + i + 1, header.IndexOf(x) + 1,
-                        itm.GetType().GetProperty(x)?.GetValue(itm).ToString());
-                }
-            });
+                    SetValue(workbook, currentline, header.IndexOf(x) + 1, x);
+                    for (int i = 0; i < table.Count; i++)
+                    {
+                        var itm = table[i];
+                        SetValue(workbook, currentline + i + 1, header.IndexOf(x) + 1,
+                            itm.GetType().GetProperty(x)?.GetValue(itm)?.ToString());
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
-        private static void ReadTable<T>(NanoXLSX.Workbook workbook, string sheetName, string headerString, string tableTag) where T : class, ITrackable, new()
+        private static void ReadTable<T>(NanoXLSX.Workbook workbook, string sheetName, string headerString,
+            string tableTag) where T : class, ITrackable, new()
         {
-            workbook.SetCurrentWorksheet(sheetName);
-            var header = headerString.Split(',').Select(x => x.Trim()).ToList();
-            var currentRow = 0;
-            var currentColumn = 0;
-            var lst = new List<T>();
-            while (true)
+            try
             {
-                if (currentRow > 100) break;
-               
-                if (workbook.CurrentWorksheet.HasCell(currentColumn, currentRow) &&
-                    workbook.CurrentWorksheet.GetCell(currentColumn, currentRow).Value.ToString() == tableTag)
+
+                workbook.SetCurrentWorksheet(sheetName);
+                var header = headerString.Split(',').Select(x => x.Trim()).ToList();
+                var currentRow = 0;
+                var currentColumn = 0;
+                var lst = new List<T>();
+                while (true)
                 {
-                    currentColumn++;
-                   
-                    if (header.All(x =>  workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow).Value.ToString() == x))
+                    if (currentRow > 100) break;
+
+                    if (workbook.CurrentWorksheet.HasCell(currentColumn, currentRow) &&
+                        workbook.CurrentWorksheet.GetCell(currentColumn, currentRow).Value.ToString() == tableTag)
                     {
-                        currentRow++;
-                        if (!workbook.CurrentWorksheet.HasCell(currentColumn, currentRow)) break;
-                        var itm = new T(){TrackingState = TrackingState.Added};
-                        header.ForEach(x =>
+                        currentColumn++;
+
+                        if (header.All(x =>
+                            workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow).Value
+                                .ToString() == x))
                         {
-                            var prop = itm.GetType().GetProperty(x);
-                            prop?.SetValue(itm,
-                                   Convert.ChangeType(workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow)
+                            currentRow++;
+                            if (!workbook.CurrentWorksheet.HasCell(currentColumn, currentRow)) break;
+                            var itm = new T() {TrackingState = TrackingState.Added};
+                            header.ForEach(x =>
+                            {
+                                var prop = itm.GetType().GetProperty(x);
+                                prop?.SetValue(itm,
+                                    Convert.ChangeType(workbook.CurrentWorksheet
+                                        .GetCell(currentColumn + header.IndexOf(x), currentRow)
                                         .Value, prop.PropertyType));
-                        });
-                        lst.Add(itm);
+                            });
+                            lst.Add(itm);
+                        }
                     }
+
+                    currentRow++;
                 }
-                currentRow++;
-            }
 
-            if (!lst.Any()) return;
-            using (var ctx = new EntryDataDSContext())
+                if (!lst.Any()) return;
+                using (var ctx = new EntryDataDSContext())
+                {
+                    ctx.Set<T>().AddRange(lst);
+                    ctx.SaveChanges();
+                }
+            }
+            catch (Exception e)
             {
-                ctx.Set<T>().AddRange(lst);
-                ctx.SaveChanges();
+                Console.WriteLine(e);
+                throw;
             }
-
         }
 
         private static void CreateSummarySheet(UnAttachedWorkBookPkg summaryPkg, Workbook workbook)
         {
+            try
+            {
+
+           
             workbook.SetCurrentWorksheet("Summary");
             var currentline = 0;
             SetValue(workbook, currentline, 0, "Reference:");
@@ -329,11 +358,19 @@ namespace xlsxWriter
                 currentline++;
             }
 
-
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static void CreateUnMatchedWorkSheet(Workbook workbook, List<ShipmentMIS_POs> unMatchedPOs, List<ShipmentMIS_Invoices> unMatchedInvoices)
         {
+            try
+            {
+
             if (!unMatchedInvoices.Any() && !unMatchedPOs.Any()) return;
             workbook.AddWorksheet("UnMatchedInvoicePOs");
             var superHeader = ",Match POs/Invoice List,,,Invoice List,,,,,,,,,PO List".Split(',').ToList();
@@ -372,12 +409,23 @@ namespace xlsxWriter
                 i++;
                 if (i >= unMatchedInvoices.Count() && i >= unMatchedPOs.Count()) isEnd = true;
             }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static Workbook CreateShipmentWorkBook(int riderId, ShipmentInvoice shipmentInvoice, string csvFilePath,
             Dictionary<(string Column, int Index), FileTypeMappings> header,
             out int invoiceRow, out List<ShipmentRiderInvoice> riderdetails, out bool doRider)
         {
+            try
+            {
+
+
             Workbook workbook = new Workbook(csvFilePath, "POTemplate"); // Create new workbook with a worksheet called Sheet1
             var headerRow = 0;
 
@@ -426,6 +474,13 @@ namespace xlsxWriter
                 }
 
             return workbook;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
 

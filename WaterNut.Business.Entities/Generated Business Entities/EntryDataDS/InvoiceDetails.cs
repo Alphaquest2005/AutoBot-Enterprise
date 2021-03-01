@@ -191,6 +191,21 @@ namespace EntryDataDS.Business.Entities
         }
         Nullable<int> _inventoryitemid;
         [DataMember]
+        public int SalesFactor 
+        {
+            get
+            {
+                return _salesfactor;
+            }
+            set
+            {
+                _salesfactor = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        int _salesfactor;
+        [DataMember]
         public ShipmentInvoice Invoice { get; set; }
         [DataMember]
         public List<ShipmentInvoicePOItemQueryMatches> POItems { get; set; }

@@ -53,6 +53,8 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedPOs_EntryData_PurchaseOrders" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" Width="1.5" PointX="5.625" PointY="15.25" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="1.5" PointX="3.125" PointY="17.375" />
+        <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" />
         </Diagram>
       <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="86" >
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedBL" Width="2.5" PointX="6.625" PointY="6.25" />
