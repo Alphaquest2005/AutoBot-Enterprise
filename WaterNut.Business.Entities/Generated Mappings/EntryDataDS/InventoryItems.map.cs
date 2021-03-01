@@ -24,6 +24,7 @@
               this.HasOptional(t => t.InventoryItems_NonStock).WithRequired(t => (InventoryItems)t.InventoryItems);
               this.HasMany(t => t.EntryDataDetails).WithRequired(t => (InventoryItems)t.InventoryItems);
               this.HasMany(t => t.InventoryItemSource).WithRequired(t => (InventoryItems)t.InventoryItems);
+              this.HasMany(t => t.InventoryItemAlias).WithRequired(t => (InventoryItems)t.InventoryItems);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -441,6 +441,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\EntryDataExTotals.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\EntryDataFiles.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\FileTypes.cs
+..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\InventoryItems.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\InventoryItems_NonStock.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\EntryDataDS\InventoryItemsEx.cs
@@ -830,6 +831,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataExTotals.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataFiles.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\FileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemAlias.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems_NonStock.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemsEx.map.cs
@@ -1228,6 +1230,7 @@
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\EntryDataExTotals.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\EntryDataFiles.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\FileTypes.cs
+..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\InventoryItems.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\InventoryItems_NonStock.cs
 ..\WaterNut.Business.Entities\Generated ChangeTracking Models\EntryDataDS\InventoryItemsEx.cs
@@ -1604,6 +1607,7 @@
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\EntryDataExTotals.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\EntryDataFiles.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\FileTypes.cs
+..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\InventoryItems.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\InventoryItems_NonStock.cs
 ..\WaterNut.Business.Entities\Generated Constructors Models\EntryDataDS\InventoryItemsEx.cs
@@ -1980,6 +1984,7 @@
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\EntryDataExTotals.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\EntryDataFiles.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\FileTypes.cs
+..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\InventoryItems.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\InventoryItems_NonStock.cs
 ..\WaterNut.Business.Entities\Generated IEntitiyWithKey Models\EntryDataDS\InventoryItemsEx.cs
@@ -2356,6 +2361,7 @@
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataExTotals.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataFiles.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\FileTypes.cs
+..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItemAlias.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItems.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItems_NonStock.cs
 ..\WaterNut.Business.Entities\Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItemsEx.cs
@@ -3852,6 +3858,7 @@
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataExTotals.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\EntryDataFiles.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\FileTypes.map.cs
+..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemAlias.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItems_NonStock.map.cs
 ..\WaterNut.Business.Entities\Generated Mappings\EntryDataDS\InventoryItemsEx.map.cs
@@ -4894,6 +4901,7 @@
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IEntryDataFilesService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IEntryDataService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IFileTypesService.cs
+..\WaterNut.Business.Services\Contracts\EntryDataDS\IInventoryItemAliasService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IInventoryItems_NonStockService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IInventoryItemsExService.cs
 ..\WaterNut.Business.Services\Contracts\EntryDataDS\IInventoryItemSourceService.cs
@@ -5270,6 +5278,7 @@
 ..\WaterNut.Business.Services\Services\EntryDataDS\EntryDataFilesService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\EntryDataService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\FileTypesService.cs
+..\WaterNut.Business.Services\Services\EntryDataDS\InventoryItemAliasService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\InventoryItems_NonStockService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\InventoryItemsExService.cs
 ..\WaterNut.Business.Services\Services\EntryDataDS\InventoryItemSourceService.cs

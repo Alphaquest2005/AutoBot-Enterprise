@@ -616,6 +616,7 @@
     <Compile Include="Contracts\EntryDataDS\IEntryDataFilesService.cs" />
     <Compile Include="Contracts\EntryDataDS\IEntryDataService.cs" />
     <Compile Include="Contracts\EntryDataDS\IFileTypesService.cs" />
+    <Compile Include="Contracts\EntryDataDS\IInventoryItemAliasService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItemsExService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItemSourceService.cs" />
     <Compile Include="Contracts\EntryDataDS\IInventoryItemsService.cs" />
@@ -1202,6 +1203,7 @@
     <Compile Include="Services\EntryDataDS\EntryDataFilesService.cs" />
     <Compile Include="Services\EntryDataDS\EntryDataService.cs" />
     <Compile Include="Services\EntryDataDS\FileTypesService.cs" />
+    <Compile Include="Services\EntryDataDS\InventoryItemAliasService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItemsExService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItemSourceService.cs" />
     <Compile Include="Services\EntryDataDS\InventoryItemsService.cs" />

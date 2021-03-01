@@ -401,6 +401,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\Enums\InventorySources.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\InventoryItemAlias.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InventoryItemsEx.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\InventoryItemSource.cs" />
@@ -779,6 +780,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataExTotals.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItemAlias.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItemsEx.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\InventoryItemSource.cs" />
@@ -1155,6 +1157,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataExTotals.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItemAlias.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItemsEx.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\InventoryItemSource.cs" />
@@ -1531,6 +1534,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataExTotals.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItemAlias.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItemsEx.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\InventoryItemSource.cs" />
@@ -1907,6 +1911,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataExTotals.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\EntryDataFiles.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\FileTypes.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItemAlias.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItems.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItemsEx.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\InventoryItemSource.cs" />
@@ -2293,6 +2298,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataExTotals.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\EntryDataFiles.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\FileTypes.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\InventoryItemAlias.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InventoryItems.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InventoryItemsEx.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\InventoryItemSource.map.cs" />

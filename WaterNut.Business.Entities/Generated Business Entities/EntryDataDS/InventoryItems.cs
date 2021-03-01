@@ -24,6 +24,7 @@ namespace EntryDataDS.Business.Entities
         {
             this.EntryDataDetails = new List<EntryDataDetails>();
             this.InventoryItemSource = new List<InventoryItemSource>();
+            this.InventoryItemAlias = new List<InventoryItemAlias>();
         }
 
         [DataMember]
@@ -152,6 +153,8 @@ namespace EntryDataDS.Business.Entities
         public List<EntryDataDetails> EntryDataDetails { get; set; }
         [DataMember]
         public List<InventoryItemSource> InventoryItemSource { get; set; }
+        [DataMember]
+        public List<InventoryItemAlias> InventoryItemAlias { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

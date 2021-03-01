@@ -109,7 +109,7 @@ namespace WaterNut.DataSpace
                             List<dynamic> csvLines = tmp.Read(tmp.Format(pdftxt.ToString()));
                             if (csvLines.Count < 1 || !tmp.Success)
                             {
-                                var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z => z.FailedFields.Any() || !z.Values.Any()).ToList();
+                                var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z => z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
                                 
                                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                                     tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())

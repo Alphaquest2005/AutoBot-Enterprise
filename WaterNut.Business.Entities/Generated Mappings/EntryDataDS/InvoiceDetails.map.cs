@@ -24,6 +24,7 @@
               this.Property(t => t.FileLineNumber).HasColumnName("FileLineNumber");
               this.Property(t => t.ShipmentInvoiceId).HasColumnName("ShipmentInvoiceId");
               this.Property(t => t.InventoryItemId).HasColumnName("InventoryItemId");
+              this.Property(t => t.SalesFactor).HasColumnName("SalesFactor");
               this.HasRequired(t => t.Invoice).WithMany(t =>(ICollection<InvoiceDetails>) t.InvoiceDetails).HasForeignKey(d => d.ShipmentInvoiceId);
               this.HasMany(t => t.POItems).WithRequired(t => (InvoiceDetails)t.InvoiceDetails);
               this.HasOptional(t => t.ItemAlias).WithRequired(t => (InvoiceDetails) t.InvoiceDetails);

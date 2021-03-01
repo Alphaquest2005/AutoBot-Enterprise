@@ -32,19 +32,19 @@ using WaterNut.Interfaces;
 
 namespace EntryDataDS.Business.Services
 {
-   [Export (typeof(IInventoryItemsService))]
+   [Export (typeof(IInventoryItemAliasService))]
    [Export(typeof(IBusinessService))]
    [PartCreationPolicy(CreationPolicy.NonShared)]
    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall,
                     ConcurrencyMode = ConcurrencyMode.Multiple)]
    
-    public partial class InventoryItemsService : IInventoryItemsService, IDisposable
+    public partial class InventoryItemAliasService : IInventoryItemAliasService, IDisposable
     {
         //private readonly EntryDataDSContext dbContext;
 
         public bool StartTracking { get; set; }
 
-        public InventoryItemsService()
+        public InventoryItemAliasService()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InventoryItems>> GetInventoryItems(List<string> includesLst = null, bool tracking = true)
+        public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAlias(List<string> includesLst = null, bool tracking = true)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace EntryDataDS.Business.Services
                   using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                   {
 				    var set = AddIncludes(includesLst, dbContext);
-                    IEnumerable<InventoryItems> entities = await set.AsNoTracking().ToListAsync()
+                    IEnumerable<InventoryItemAlias> entities = await set.AsNoTracking().ToListAsync()
 													       .ConfigureAwait(continueOnCapturedContext: false);
                            //scope.Complete();
                             if(tracking) entities.AsParallel(new ParallelLinqOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount }).ForAll(x => x.StartTracking());
@@ -98,16 +98,16 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<InventoryItems> GetInventoryItemsByKey(string Id, List<string> includesLst = null, bool tracking = true)
+        public async Task<InventoryItemAlias> GetInventoryItemAliasByKey(string AliasId, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
-			   if(string.IsNullOrEmpty(Id))return null; 
+			   if(string.IsNullOrEmpty(AliasId))return null; 
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
+                var i = Convert.ToInt32(AliasId);
 				var set = AddIncludes(includesLst, dbContext);
-                InventoryItems entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.Id == i).ConfigureAwait(continueOnCapturedContext: false);
+                InventoryItemAlias entity = await set.AsNoTracking().SingleOrDefaultAsync(x => x.AliasId == i).ConfigureAwait(continueOnCapturedContext: false);
                 if(tracking && entity != null) entity.StartTracking();
                 return entity;
               }
@@ -127,14 +127,14 @@ namespace EntryDataDS.Business.Services
         }
 
 
-		 public async Task<IEnumerable<InventoryItems>> GetInventoryItemsByExpression(string exp, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByExpression(string exp, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems>();
+					if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemAlias>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (exp == "All")
                     {
@@ -170,14 +170,14 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		 public async Task<IEnumerable<InventoryItems>> GetInventoryItemsByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
+		 public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByExpressionLst(List<string> expLst, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItems>();
+					if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItemAlias>();
 					var set = AddIncludes(includesLst, dbContext);
                     if (expLst.FirstOrDefault() == "All")
                     {
@@ -212,7 +212,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		public async Task<IEnumerable<InventoryItems>> GetInventoryItemsByExpressionNav(string exp,
+		public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByExpressionNav(string exp,
 																							  Dictionary<string, string> navExp,
 																							  List<string> includesLst = null, bool tracking = true)
         {
@@ -221,7 +221,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemAlias>();
 
                     if (exp == "All" && navExp.Count == 0)
                     {
@@ -235,28 +235,10 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems_NonStock":
+                            case "InventoryItems":
                                 return
                                     await
-                                        GetWhere<InventoryItems_NonStock>(dbContext, exp, itm.Value, "InventoryItems", "SelectMany", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataDetails":
-                                return
-                                    await
-                                        GetWhere<EntryDataDetails>(dbContext, exp, itm.Value, "InventoryItems", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemSource":
-                                return
-                                    await
-                                        GetWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItems", "Select", includesLst)
-										.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemAlias":
-                                return
-                                    await
-                                        GetWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItems", "Select", includesLst)
+                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
                         }
@@ -285,17 +267,17 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<IEnumerable<InventoryItems>> GetInventoryItemsByBatch(string exp,
+        public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByBatch(string exp,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InventoryItems>>();
+                var res = new ConcurrentQueue<List<InventoryItemAlias>>();
 
 
 
-                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems>();
+                if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemAlias>();
 
 
                 var batchSize = 500;
@@ -316,14 +298,14 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InventoryItems> dset;
+                                IQueryable<InventoryItemAlias> dset;
                                 if (exp == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.AliasId);
                                 }
                                 else
                                 {
-                                    dset = set.OrderBy(x => x.Id).Where(exp);
+                                    dset = set.OrderBy(x => x.AliasId).Where(exp);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -360,17 +342,17 @@ namespace EntryDataDS.Business.Services
                 throw new FaultException<ValidationFault>(fault);
             }
         }
-        public async Task<IEnumerable<InventoryItems>> GetInventoryItemsByBatchExpressionLst(List<string> expLst,
+        public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByBatchExpressionLst(List<string> expLst,
             int totalrow, List<string> includesLst = null, bool tracking = true)
         {
             try
             {
 
-                var res = new ConcurrentQueue<List<InventoryItems>>();
+                var res = new ConcurrentQueue<List<InventoryItemAlias>>();
 
 
 
-                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItems>();
+                if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return new List<InventoryItemAlias>();
 
 
                 var batchSize = 500;
@@ -391,15 +373,15 @@ namespace EntryDataDS.Business.Services
                                 dbContext.Configuration.AutoDetectChangesEnabled = false;
                                 //dbContext.Configuration.LazyLoadingEnabled = true;
                                 var set = AddIncludes(includesLst, dbContext);
-                                IQueryable<InventoryItems> dset;
+                                IQueryable<InventoryItemAlias> dset;
                                 if (expLst.FirstOrDefault() == "All")
                                 {
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.AliasId);
                                 }
                                 else
                                 {
                                     set = AddWheres(expLst, set);
-                                    dset = set.OrderBy(x => x.Id);
+                                    dset = set.OrderBy(x => x.AliasId);
                                 }
 
                                 var lst = dset.AsNoTracking()
@@ -436,13 +418,13 @@ namespace EntryDataDS.Business.Services
         }
 
 
-        public async Task<InventoryItems> UpdateInventoryItems(InventoryItems entity)
+        public async Task<InventoryItemAlias> UpdateInventoryItemAlias(InventoryItemAlias entity)
         { 
             using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
                 try
                 {   
-                     var res = (InventoryItems) entity;
+                     var res = (InventoryItemAlias) entity;
                     if(res.TrackingState == TrackingState.Unchanged) res.TrackingState = TrackingState.Modified;                              
                     
                     dbContext.ApplyChanges(res);
@@ -518,14 +500,14 @@ namespace EntryDataDS.Business.Services
            return entity;
         }
 
-        public async Task<InventoryItems> CreateInventoryItems(InventoryItems entity)
+        public async Task<InventoryItemAlias> CreateInventoryItemAlias(InventoryItemAlias entity)
         {
             try
             {
-                var res = (InventoryItems) entity;
+                var res = (InventoryItemAlias) entity;
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                dbContext.InventoryItems.Add(res);
+                dbContext.InventoryItemAlias.Add(res);
                 await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                 res.AcceptChanges();
                 return res;
@@ -545,21 +527,21 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> DeleteInventoryItems(string Id)
+        public async Task<bool> DeleteInventoryItemAlias(string AliasId)
         {
             try
             {
               using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(Id);
-                InventoryItems entity = await dbContext.InventoryItems
-													.SingleOrDefaultAsync(x => x.Id == i)
+                var i = Convert.ToInt32(AliasId);
+                InventoryItemAlias entity = await dbContext.InventoryItemAlias
+													.SingleOrDefaultAsync(x => x.AliasId == i)
 													.ConfigureAwait(continueOnCapturedContext: false);
                 if (entity == null)
                     return false;
 
-                    dbContext.InventoryItems.Attach(entity);
-                    dbContext.InventoryItems.Remove(entity);
+                    dbContext.InventoryItemAlias.Attach(entity);
+                    dbContext.InventoryItemAlias.Remove(entity);
                     await dbContext.SaveChangesAsync().ConfigureAwait(continueOnCapturedContext: false);
                     return true;
               }
@@ -578,19 +560,19 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-        public async Task<bool> RemoveSelectedInventoryItems(IEnumerable<string> lst)
+        public async Task<bool> RemoveSelectedInventoryItemAlias(IEnumerable<string> lst)
         {
             try
             {
-                StatusModel.StartStatusUpdate("Removing InventoryItems", lst.Count());
+                StatusModel.StartStatusUpdate("Removing InventoryItemAlias", lst.Count());
                 var t = Task.Run(() =>
                 {
-                    using (var ctx = new InventoryItemsService())
+                    using (var ctx = new InventoryItemAliasService())
                     {
                         foreach (var item in lst.ToList())
                         {
 
-                            ctx.DeleteInventoryItems(item).Wait();
+                            ctx.DeleteInventoryItemAlias(item).Wait();
                             StatusModel.StatusUpdate();
                         }
                     }
@@ -625,7 +607,7 @@ namespace EntryDataDS.Business.Services
                 {
                     dbContext.Database.CommandTimeout = 0;
                     if (expLst.Count == 0 || expLst.FirstOrDefault() == "None") return 0;
-                    var set = (IQueryable<InventoryItems>)dbContext.InventoryItems; 
+                    var set = (IQueryable<InventoryItemAlias>)dbContext.InventoryItemAlias; 
                     if (expLst.FirstOrDefault() == "All")
                     {
                         return await set.AsNoTracking().CountAsync()
@@ -663,7 +645,7 @@ namespace EntryDataDS.Business.Services
                     if (string.IsNullOrEmpty(exp) || exp == "None") return 0;
                     if (exp == "All")
                     {
-                        return await dbContext.InventoryItems
+                        return await dbContext.InventoryItemAlias
                                     .AsNoTracking()
 									.CountAsync()
 									.ConfigureAwait(continueOnCapturedContext: false);
@@ -671,7 +653,7 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.InventoryItems
+                        return await dbContext.InventoryItemAlias
 									.AsNoTracking()
                                     .Where(exp)
 									.CountAsync()
@@ -693,19 +675,19 @@ namespace EntryDataDS.Business.Services
             }
         }
         
-        public async Task<IEnumerable<InventoryItems>> LoadRange(int startIndex, int count, string exp)
+        public async Task<IEnumerable<InventoryItemAlias>> LoadRange(int startIndex, int count, string exp)
         {
             try
             {
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItems>();
+                    if (string.IsNullOrEmpty(exp) || exp == "None") return new List<InventoryItemAlias>();
                     if (exp == "All")
                     {
-                        return await dbContext.InventoryItems
+                        return await dbContext.InventoryItemAlias
 										.AsNoTracking()
-                                        .OrderBy(y => y.Id)
+                                        .OrderBy(y => y.AliasId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -714,10 +696,10 @@ namespace EntryDataDS.Business.Services
                     else
                     {
                         
-                        return await dbContext.InventoryItems
+                        return await dbContext.InventoryItemAlias
 										.AsNoTracking()
                                         .Where(exp)
-										.OrderBy(y => y.Id)
+										.OrderBy(y => y.AliasId)
 										.Skip(startIndex)
 										.Take(count)
 										.ToListAsync()
@@ -749,7 +731,7 @@ namespace EntryDataDS.Business.Services
                     dbContext.Database.CommandTimeout = 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return await dbContext.InventoryItems
+                        return await dbContext.InventoryItemAlias
 										.AsNoTracking()
                                         .CountAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
@@ -758,21 +740,12 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems_NonStock":
-                                return await CountWhere<InventoryItems_NonStock>(dbContext, exp, itm.Value, "InventoryItems", "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataDetails":
-                                return await CountWhere<EntryDataDetails>(dbContext, exp, itm.Value, "InventoryItems", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemSource":
-                                return await CountWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItems", "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemAlias":
-                                return await CountWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItems", "Select")
+                            case "InventoryItems":
+                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return await dbContext.InventoryItems.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return await dbContext.InventoryItemAlias.Where(exp == "All" || exp == null ? "AliasId != null" : exp)
 											.AsNoTracking()
                                             .CountAsync()
 											.ConfigureAwait(continueOnCapturedContext: false);
@@ -814,10 +787,10 @@ namespace EntryDataDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<InventoryItemAlias>()
+                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AliasId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -835,10 +808,10 @@ namespace EntryDataDS.Business.Services
             return await dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<InventoryItemAlias>()
+                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AliasId")
                 .CountAsync()
 				.ConfigureAwait(continueOnCapturedContext: false);
 			}
@@ -849,7 +822,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		  public async Task<IEnumerable<InventoryItems>> LoadRangeNav(int startIndex, int count, string exp,
+		  public async Task<IEnumerable<InventoryItemAlias>> LoadRangeNav(int startIndex, int count, string exp,
                                                                                  Dictionary<string, string> navExp, IEnumerable<string> includeLst = null)
         {
             try
@@ -857,7 +830,7 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InventoryItems>();
+                    if ((string.IsNullOrEmpty(exp) && navExp.Count == 0) || exp == "None") return new List<InventoryItemAlias>();
                     var set = AddIncludes(includeLst, dbContext);
 
                     if (exp == "All" && navExp.Count == 0)
@@ -865,7 +838,7 @@ namespace EntryDataDS.Business.Services
                        
                         return await set
 									.AsNoTracking()
-                                    .OrderBy(y => y.Id)
+                                    .OrderBy(y => y.AliasId)
  
                                     .Skip(startIndex)
                                     .Take(count)
@@ -876,28 +849,10 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems_NonStock":
+                            case "InventoryItems":
                                 return
                                     await
-                                        LoadRangeWhere<InventoryItems_NonStock>(startIndex, count, dbContext, exp, itm.Value, "InventoryItems", "SelectMany")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "EntryDataDetails":
-                                return
-                                    await
-                                        LoadRangeWhere<EntryDataDetails>(startIndex, count, dbContext, exp, itm.Value, "InventoryItems", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemSource":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItemSource>(startIndex, count, dbContext, exp, itm.Value, "InventoryItems", "Select")
-													.ConfigureAwait(continueOnCapturedContext: false);
-
-                            case "InventoryItemAlias":
-                                return
-                                    await
-                                        LoadRangeWhere<InventoryItemAlias>(startIndex, count, dbContext, exp, itm.Value, "InventoryItems", "Select")
+                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -906,10 +861,10 @@ namespace EntryDataDS.Business.Services
 						}
 
                     }
-                    return await set//dbContext.InventoryItems
+                    return await set//dbContext.InventoryItemAlias
 								.AsNoTracking()
-                                .Where(exp == "All" || exp == null ? "Id != null" : exp)
-								.OrderBy(y => y.Id)
+                                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
+								.OrderBy(y => y.AliasId)
  
                                 .Skip(startIndex)
                                 .Take(count)
@@ -933,7 +888,7 @@ namespace EntryDataDS.Business.Services
             }
         }
 
-		private static async Task<IEnumerable<InventoryItems>> LoadRangeWhere<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InventoryItemAlias>> LoadRangeWhere<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, string rel, IEnumerable<string> includeLst = null) where T : class
         {
              switch (rel)
@@ -948,7 +903,7 @@ namespace EntryDataDS.Business.Services
 		    }
         }
 
-		private static async Task<IEnumerable<InventoryItems>> LoadRangeSelectMany<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InventoryItemAlias>> LoadRangeSelectMany<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -956,14 +911,14 @@ namespace EntryDataDS.Business.Services
             var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItems>();
+                .SelectMany(navProp).OfType<InventoryItemAlias>();
     
             if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm));            
 
             return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.AliasId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -977,7 +932,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItems>> LoadRangeSelect<T>(int startIndex, int count,
+		private static async Task<IEnumerable<InventoryItemAlias>> LoadRangeSelect<T>(int startIndex, int count,
             EntryDataDSContext dbContext, string exp, string navExp, string navProp, IEnumerable<string> includeLst = null) where T : class
         {
 			try
@@ -985,14 +940,14 @@ namespace EntryDataDS.Business.Services
               var set = dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItems>();
+                .Select(navProp).OfType<InventoryItemAlias>();
 
                if (includeLst != null) set = includeLst.Aggregate(set, (current, itm) => current.Include(itm)); 
                 
                return await set
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
-                .OrderBy(y => y.Id)
+                .OrderBy(y => y.AliasId)
  
                 .Skip(startIndex)
                 .Take(count)
@@ -1006,7 +961,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-        private static async Task<IEnumerable<InventoryItems>> GetWhere<T>(EntryDataDSContext dbContext,
+        private static async Task<IEnumerable<InventoryItemAlias>> GetWhere<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, string rel, List<string> includesLst = null) where T : class
         {
 			try
@@ -1030,7 +985,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItems>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<InventoryItemAlias>> GetWhereSelectMany<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1041,18 +996,18 @@ namespace EntryDataDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.SelectMany(navProp).OfType<InventoryItems>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.SelectMany(navProp).OfType<InventoryItemAlias>()
+							.Where(exp == "All" || exp == null?"AliasId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<InventoryItems>)dbContext.Set<T>()
+			var set = (DbQuery<InventoryItemAlias>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .SelectMany(navProp).OfType<InventoryItemAlias>()
+                .Where(exp == "All" || exp == null?"AliasId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1067,7 +1022,7 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-		private static async Task<IEnumerable<InventoryItems>> GetWhereSelect<T>(EntryDataDSContext dbContext,
+		private static async Task<IEnumerable<InventoryItemAlias>> GetWhereSelect<T>(EntryDataDSContext dbContext,
             string exp, string navExp, string navProp, List<string> includesLst = null) where T : class
         {
 			try
@@ -1078,18 +1033,18 @@ namespace EntryDataDS.Business.Services
 				return await dbContext.Set<T>()
 							.AsNoTracking()
                             .Where(navExp)
-							.Select(navProp).OfType<InventoryItems>()
-							.Where(exp == "All" || exp == null?"Id != null":exp)
+							.Select(navProp).OfType<InventoryItemAlias>()
+							.Where(exp == "All" || exp == null?"AliasId != null":exp)
 							.Distinct()
 							.ToListAsync()
 							.ConfigureAwait(continueOnCapturedContext: false);
 			}
 
-			var set = (DbQuery<InventoryItems>)dbContext.Set<T>()
+			var set = (DbQuery<InventoryItemAlias>)dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null?"Id != null":exp)
+                .Select(navProp).OfType<InventoryItemAlias>()
+                .Where(exp == "All" || exp == null?"AliasId != null":exp)
                 .Distinct();
 
 			set = includesLst.Aggregate(set, (current, itm) => current.Include(itm));
@@ -1104,20 +1059,46 @@ namespace EntryDataDS.Business.Services
 			}
         }
 
-			        public async Task<IEnumerable<InventoryItems>> GetInventoryItemsByApplicationSettingsId(string ApplicationSettingsId, List<string> includesLst = null)
+			        public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByInventoryItemId(string InventoryItemId, List<string> includesLst = null)
         {
             try
             {
                 using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
               {
-                var i = Convert.ToInt32(ApplicationSettingsId);
+                var i = Convert.ToInt32(InventoryItemId);
                 var set = AddIncludes(includesLst, dbContext);
-                IEnumerable<InventoryItems> entities = await set//dbContext.InventoryItems
-                                                    // .Include(x => x.EntryDataDetails)									  
-                                                    // .Include(x => x.InventoryItemSource)									  
-                                                    // .Include(x => x.InventoryItemAlias)									  
+                IEnumerable<InventoryItemAlias> entities = await set//dbContext.InventoryItemAlias
                                       .AsNoTracking()
-                                        .Where(x => x.ApplicationSettingsId.ToString() == ApplicationSettingsId.ToString())
+                                        .Where(x => x.InventoryItemId.ToString() == InventoryItemId.ToString())
+										.ToListAsync()
+										.ConfigureAwait(continueOnCapturedContext: false);
+                return entities;
+              }
+             }
+            catch (Exception updateEx)
+            {
+                System.Diagnostics.Debugger.Break();
+                //throw new FaultException(updateEx.Message);
+                    var fault = new ValidationFault
+                                {
+                                    Result = false,
+                                    Message = updateEx.Message,
+                                    Description = updateEx.StackTrace
+                                };
+                    throw new FaultException<ValidationFault>(fault);
+            }
+        }
+ 	        public async Task<IEnumerable<InventoryItemAlias>> GetInventoryItemAliasByAliasItemId(string AliasItemId, List<string> includesLst = null)
+        {
+            try
+            {
+                using ( var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
+              {
+                var i = Convert.ToInt32(AliasItemId);
+                var set = AddIncludes(includesLst, dbContext);
+                IEnumerable<InventoryItemAlias> entities = await set//dbContext.InventoryItemAlias
+                                      .AsNoTracking()
+                                        .Where(x => x.AliasItemId.ToString() == AliasItemId.ToString())
 										.ToListAsync()
 										.ConfigureAwait(continueOnCapturedContext: false);
                 return entities;
@@ -1148,11 +1129,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return 0;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToDecimal(dbContext.InventoryItems.AsNoTracking().Sum(field));
+                          res = Convert.ToDecimal(dbContext.InventoryItemAlias.AsNoTracking().Sum(field));
                      }
                      else
                      {
-                         res = Convert.ToDecimal(dbContext.InventoryItems.AsNoTracking().Where(whereExp).Sum(field));
+                         res = Convert.ToDecimal(dbContext.InventoryItemAlias.AsNoTracking().Where(whereExp).Sum(field));
                      }
                      
                      return res;
@@ -1180,10 +1161,10 @@ namespace EntryDataDS.Business.Services
                 using (var dbContext = new EntryDataDSContext(){StartTracking = StartTracking})
                 {
                     dbContext.Database.CommandTimeout = 0;
-                    if (!dbContext.InventoryItems.Any()) return 0;
+                    if (!dbContext.InventoryItemAlias.Any()) return 0;
                     if (exp == "All" && navExp.Count == 0)
                     {
-                        return Convert.ToDecimal(dbContext.InventoryItems
+                        return Convert.ToDecimal(dbContext.InventoryItemAlias
 										.AsNoTracking()
                                         .Sum(field)??0);
                     }
@@ -1191,21 +1172,12 @@ namespace EntryDataDS.Business.Services
                     {
                         switch (itm.Key)
                         {
-                            case "InventoryItems_NonStock":
-                                return await SumWhere<InventoryItems_NonStock>(dbContext, exp, itm.Value, "InventoryItems", field, "SelectMany")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "EntryDataDetails":
-                                return await SumWhere<EntryDataDetails>(dbContext, exp, itm.Value, "InventoryItems", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemSource":
-                                return await SumWhere<InventoryItemSource>(dbContext, exp, itm.Value, "InventoryItems", field, "Select")
-											.ConfigureAwait(continueOnCapturedContext: false);
-                            case "InventoryItemAlias":
-                                return await SumWhere<InventoryItemAlias>(dbContext, exp, itm.Value, "InventoryItems", field, "Select")
+                            case "InventoryItems":
+                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
-                    return Convert.ToDecimal(dbContext.InventoryItems.Where(exp == "All" || exp == null ? "Id != null" : exp)
+                    return Convert.ToDecimal(dbContext.InventoryItemAlias.Where(exp == "All" || exp == null ? "AliasId != null" : exp)
 											.AsNoTracking()
                                             .Sum(field)??0);
                 }
@@ -1245,10 +1217,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .SelectMany(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .SelectMany(navProp).OfType<InventoryItemAlias>()
+                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AliasId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1265,10 +1237,10 @@ namespace EntryDataDS.Business.Services
             return Convert.ToDecimal(dbContext.Set<T>()
 				.AsNoTracking()
                 .Where(navExp)
-                .Select(navProp).OfType<InventoryItems>()
-                .Where(exp == "All" || exp == null ? "Id != null" : exp)
+                .Select(navProp).OfType<InventoryItemAlias>()
+                .Where(exp == "All" || exp == null ? "AliasId != null" : exp)
                 .Distinct()
-                .OrderBy("Id")
+                .OrderBy("AliasId")
                 .Sum(field));
 			}
 			catch (Exception)
@@ -1291,11 +1263,11 @@ namespace EntryDataDS.Business.Services
                      if (string.IsNullOrEmpty(whereExp) || whereExp == "None") return res;
                      if (whereExp == "All")
                      {
-                          res = Convert.ToString(dbContext.InventoryItems.AsNoTracking().Min(field));
+                          res = Convert.ToString(dbContext.InventoryItemAlias.AsNoTracking().Min(field));
                      }
                      else
                      {
-                         res = Convert.ToString(dbContext.InventoryItems.AsNoTracking().Where(whereExp).Min(field));
+                         res = Convert.ToString(dbContext.InventoryItemAlias.AsNoTracking().Where(whereExp).Min(field));
                      }
                      
                      return res;
@@ -1316,12 +1288,12 @@ namespace EntryDataDS.Business.Services
          }
 
 		 
-		private static IQueryable<InventoryItems> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
+		private static IQueryable<InventoryItemAlias> AddIncludes(IEnumerable<string> includesLst, EntryDataDSContext dbContext)
        {
 		 try
 			{
 			   if (includesLst == null) includesLst = new List<string>();
-			   var set =(DbQuery<InventoryItems>) dbContext.InventoryItems; 
+			   var set =(DbQuery<InventoryItemAlias>) dbContext.InventoryItemAlias; 
 			   set = includesLst.Where(x => !string.IsNullOrEmpty(x))
                                 .Aggregate(set, (current, itm) => current.Include(itm));
 			   return set;
@@ -1332,7 +1304,7 @@ namespace EntryDataDS.Business.Services
 				throw;
 			}
        }
-	   private IQueryable<InventoryItems> AddWheres(List<string> expLst, IQueryable<InventoryItems> set)
+	   private IQueryable<InventoryItemAlias> AddWheres(List<string> expLst, IQueryable<InventoryItemAlias> set)
         {
             try
             {

@@ -163,7 +163,7 @@ namespace WaterNut.DataSpace
                                 Totalpkgs = x.Pieces,
                                 totalKgs = x.GrossWeightLB * kg,
                                 totalCF = x.CubicFeet,
-                                Number = x.InvoiceNumber.Contains(',') ? x.InvoiceNumber.Split(',') : x.InvoiceNumber.Split('/'),
+                                Number = (x.InvoiceNumber??"").Contains(',') ? x.InvoiceNumber.Split(',') : (x.InvoiceNumber??"").Split('/'),
                                 Total =  x.InvoiceTotal.Contains(',') ? x.InvoiceTotal.Split(',') : x.InvoiceTotal.Split('/'),
                                 
                         })
@@ -226,7 +226,7 @@ namespace WaterNut.DataSpace
                                    
                                     res = rawRider.ShipmentRiderDetails
                                         .Where(x => x.WarehouseCode == i.WarehouseCode &&
-                                                    x.InvoiceNumber.Contains(i.Number[j])).Select(
+                                                    (x.InvoiceNumber??"").Contains(i.Number[j])).Select(
                                             z =>
                                                 new ShipmentRiderDetails()
                                                 {
@@ -434,7 +434,7 @@ namespace WaterNut.DataSpace
                         TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null,
                         TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null,
                         InvoiceDetails = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
-                                                .Where(z => Convert.ToDouble(z["Quantity"].ToString()) > 0 && (z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString())) > 0)
+                                                .Where(z => z["Quantity"] != null && Convert.ToDouble(z["Quantity"].ToString()) > 0 && (z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString())) > 0)
                                                 .Select(z => new InvoiceDetails()
                                                 {
                                                     Quantity = Convert.ToDouble(z["Quantity"].ToString()),
@@ -443,6 +443,7 @@ namespace WaterNut.DataSpace
                                                     Units = z.ContainsKey("Units") ? z["Units"].ToString() : null,
                                                     Cost = Convert.ToDouble(z["Cost"].ToString()),
                                                     TotalCost = z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : (double?)null,
+                                                    SalesFactor = z.ContainsKey("SalesFactor") ? Convert.ToInt32(z["SalesFactor"].ToString()) : 1,
                                                     LineNumber = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).IndexOf(z) + 1,
                                                     FileLineNumber = Convert.ToInt32(z["FileLineNumber"].ToString()),
                                                     InventoryItemId = z.ContainsKey("InventoryItemId") ? (int)z["InventoryItemId"]: (int?)null,
@@ -1297,7 +1298,7 @@ namespace WaterNut.DataSpace
 
                         }
 
-                        using (var ctx = new InventoryDSContext() {StartTracking = true})
+                        using (var ctx = new InventoryDSContext() { StartTracking = true })
                         {
 
                             foreach (var e in item.InventoryItems
@@ -1331,7 +1332,7 @@ namespace WaterNut.DataSpace
                         }
 
 
-                    }//);
+                }//);
 
 
 
@@ -2000,7 +2001,13 @@ namespace WaterNut.DataSpace
                 },
                 {
                     "SupplierItemNumber",
-                    (c, mapping, splits) => c.ItemNumber = !string.IsNullOrEmpty(splits[mapping["POItemNumber"]]) ? splits[mapping["POItemNumber"]] : splits[mapping["SupplierItemNumber"]]
+                    (c, mapping, splits) =>
+                    {
+                        c.ItemNumber = !string.IsNullOrEmpty(splits[mapping["POItemNumber"]])
+                            ? splits[mapping["POItemNumber"]]
+                            : splits[mapping["SupplierItemNumber"]];
+                        
+                    }
                 },
                 {
                     "SupplierItemDescription",
@@ -2361,7 +2368,9 @@ namespace WaterNut.DataSpace
 
             using (var ctx = new InventoryDSContext() {StartTracking = true})
             {
-                var inventoryItems = ctx.InventoryItems.Include("InventoryItemSources.InventorySource")
+                var inventoryItems = ctx.InventoryItems
+                    .Include("InventoryItemSources.InventorySource")
+                    .Include("InventoryItemAlias")
                     .Where(x => x.ApplicationSettingsId == applicationSettingsId).ToList();
                 foreach (var item in itmlst)
                 {
@@ -2410,6 +2419,47 @@ namespace WaterNut.DataSpace
                         {
                             line.InventoryItemId = i.Id;
                         }
+
+                    var invItemCodes = item.Select(x => new {x.SupplierItemNumber, x.SupplierItemDescription}).Where(x => !string.IsNullOrEmpty(x.SupplierItemNumber) && i.ItemNumber != x.SupplierItemNumber )
+                        .DistinctBy(x => x.SupplierItemNumber).ToList();
+                    foreach (var invItemCode in invItemCodes)
+                    {
+                        string supplierItemNumber = invItemCode.SupplierItemNumber.ToString();
+                        var invItem = ctx.InventoryItems.FirstOrDefault(x => x.ItemNumber == supplierItemNumber);
+                        if(invItem == null)
+                        { invItem = new InventoryItem(true)
+                            {
+                                ApplicationSettingsId = applicationSettingsId,
+                                Description = invItemCode.SupplierItemDescription,
+                                ItemNumber = ((string)invItemCode.SupplierItemNumber).Truncate(20),
+                                InventoryItemSources = new List<InventoryItemSource>(){ new InventoryItemSource(true)
+                                {
+                                    InventorySourceId = inventorySource.Id,
+                                    TrackingState = TrackingState.Added
+                                }},
+                                TrackingState = TrackingState.Added
+                            };
+                            ctx.InventoryItems.Add(invItem);
+                            ctx.SaveChanges();
+                        } 
+                        if (i.InventoryItemAlias.FirstOrDefault(x => x.AliasName == supplierItemNumber) == null)
+                        {
+                            i.InventoryItemAlias.Add(new InventoryItemAlia(true)
+                            {
+                                InventoryItemId = i.Id,
+                                AliasName = supplierItemNumber.Truncate(20),
+                                AliasId = invItem.Id,
+                                TrackingState = TrackingState.Added
+
+                            });
+
+                        }
+                    }
+
+
+
+
+
                 }
 
                 ctx.SaveChanges();
