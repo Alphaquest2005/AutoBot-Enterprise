@@ -161,7 +161,7 @@ namespace AutoBot
                 {"ClearAllocations", ClearAllocations },
                 {"AssessDISEntries",() => AssessDISEntries("DIS") },
                 {"AssessADJEntries",() => AssessDISEntries("ADJ") },
-                {"DownloadSalesFiles",() => DownloadSalesFiles(3) },
+                {"DownloadSalesFiles",() => DownloadSalesFiles(20) },
                 {"ImportSalesEntries",ImportSalesEntries },
                 {"SubmitDiscrepanciesToCustoms",SubmitDiscrepanciesToCustoms },
                 {"DownloadPDFs",DownloadPDFs },
@@ -6180,6 +6180,7 @@ namespace AutoBot
                     }
                         
                     row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
+                    row[poHeaderRow.IndexOf("Date")] = poTemplate.Rows[1][poHeaderRow.IndexOf("Date")];
                     row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
                     row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;
                     row[poHeaderRow.IndexOf("PO Item Description")] = misMatch[misHeaderRow.IndexOf("PODescription")];

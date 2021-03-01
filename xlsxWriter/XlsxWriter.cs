@@ -434,7 +434,10 @@ namespace xlsxWriter
             SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceTotal)).Key.Index,
                 shipmentInvoice.InvoiceTotal.GetValueOrDefault());
 
-            SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)).Key.Index,
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.InvoiceDate)).Key.Index,
+                    shipmentInvoice.InvoiceDate.GetValueOrDefault());
+
+                SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.SupplierCode)).Key.Index,
                 shipmentInvoice.SupplierCode);
 
             SetValue(workbook, invoiceRow, header.First(x => x.Key.Column == nameof(shipmentInvoice.Currency)).Key.Index,
