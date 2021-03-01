@@ -49,7 +49,7 @@ namespace WaterNut.DataSpace
         }
 
         public async Task<bool> ExtractEntryData(FileTypes fileType, string[] lines, string[] headings, 
-            List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId,
+            List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, 
             string droppedFilePath)
         {
             try
@@ -67,7 +67,7 @@ namespace WaterNut.DataSpace
                 var mapping = new Dictionary<FileTypeMappings, int>();
                 GetMappings(mapping, headings, fileType);
 
-                if (fileType.Type == "Sales" && mapping.Keys.Any(x => x.DestinationName == "Tax" || x.DestinationName == "TotalTax"))
+                if (fileType.Type == "Sales" && !mapping.Keys.Any(x => x.DestinationName == "Tax" || x.DestinationName == "TotalTax"))
                     throw new ApplicationException("Sales file dose not contain Tax");
 
 
@@ -79,7 +79,7 @@ namespace WaterNut.DataSpace
                 if (eslst == null) return true;
                 
 
-                return await ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, fileTypeId,
+                return await ProcessCsvSummaryData(fileType, docSet, overWriteExisting, emailId, 
                     droppedFilePath, eslst).ConfigureAwait(false);
             }
             catch (Exception e)
@@ -110,8 +110,8 @@ namespace WaterNut.DataSpace
            
         }
 
-        private void ProcessCsvRider(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting,
-            int? emailId, int? fileTypeId, string droppedFilePath, List<dynamic> eslst)
+        private void ProcessCsvRider(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting,
+            int? emailId,  string droppedFilePath, List<dynamic> eslst)
         {
             try
             {
@@ -262,7 +262,7 @@ namespace WaterNut.DataSpace
                             ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                             ETA = (DateTime)rawRider.ETA,
                             DocumentDate = (DateTime)rawRider.DocumentDate,
-                            FileTypeId = fileTypeId.GetValueOrDefault(),
+                            FileTypeId =fileType.Id,
                             EmailId = emailId.GetValueOrDefault(),
                             SourceFile = droppedFilePath,
                             TrackingState = TrackingState.Added,
@@ -282,7 +282,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void ProcessCsvExpiredEntries(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath, List<dynamic> eslst)
+        private void ProcessCsvExpiredEntries(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int? emailId, string droppedFilePath, List<dynamic> eslst)
         {
             using (var ctx = new CoreEntitiesContext())
             {
@@ -325,8 +325,7 @@ namespace WaterNut.DataSpace
         
 
         public async Task<bool> ProcessCsvSummaryData(FileTypes fileType, List<AsycudaDocumentSet> docSet,
-            bool overWriteExisting, int emailId,
-            int fileTypeId, string droppedFilePath, List<dynamic> eslst)
+            bool overWriteExisting, int emailId, string droppedFilePath, List<dynamic> eslst)
         {
             try
             {
@@ -346,28 +345,28 @@ namespace WaterNut.DataSpace
 
                 if (fileType.Type == "Rider")
                 {
-                    ProcessCsvRider(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                    ProcessCsvRider(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
                     return true;
                 }
 
                 if (fileType.Type == "Manifest")
                 {
-                    ProcessManifest(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                    ProcessManifest(fileType, docSet, overWriteExisting, emailId,
                         droppedFilePath, eslst);
                     return true;
                 }
 
                 if (fileType.Type == "BL")
                 {
-                    ProcessBL(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                    ProcessBL(fileType, docSet, overWriteExisting, emailId, 
                         droppedFilePath, eslst);
                     return true;
                 }
 
                 if (fileType.Type == "Freight")
                 {
-                    ProcessFreight(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                    ProcessFreight(fileType, docSet, overWriteExisting, emailId, 
                         droppedFilePath, eslst);
                     return true;
                 }
@@ -376,7 +375,7 @@ namespace WaterNut.DataSpace
                 {
 
                     await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
-                    ProcessShipmentInvoice(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                    ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId, 
                         droppedFilePath, eslst);
 
                     
@@ -386,7 +385,7 @@ namespace WaterNut.DataSpace
 
                 if (fileType.Type == "ExpiredEntries")
                 {
-                    ProcessCsvExpiredEntries(fileType.Type, docSet, overWriteExisting, emailId, fileTypeId,
+                    ProcessCsvExpiredEntries(fileType, docSet, overWriteExisting, emailId, 
                         droppedFilePath, eslst);
                     return true;
                 }
@@ -397,8 +396,8 @@ namespace WaterNut.DataSpace
                 await ImportInventory(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                 await ImportSuppliers(eslst, docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                 await ImportEntryDataFile(fileType, eslst.Where(x => !string.IsNullOrEmpty(x.SourceRow)).ToList(),
-                    emailId, fileTypeId, droppedFilePath, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
-                if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId, fileTypeId,
+                    emailId, fileType.Id, droppedFilePath, docSet.First().ApplicationSettingsId).ConfigureAwait(false);
+                if (await ImportEntryData(fileType, eslst, docSet, overWriteExisting, emailId,
                         droppedFilePath)
                     .ConfigureAwait(false)) return true;
                 return false;
@@ -411,7 +410,7 @@ namespace WaterNut.DataSpace
 
         }
 
-        private void ProcessShipmentInvoice(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        private void ProcessShipmentInvoice(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, string droppedFilePath, List<object> eslst)
         {
             try
             {
@@ -462,7 +461,7 @@ namespace WaterNut.DataSpace
 
                         EmailId = emailId,
                         SourceFile = droppedFilePath,
-                        FileTypeId = fileTypeId,
+                        FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
 
                     }).ToList();
@@ -498,7 +497,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void ProcessFreight(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        private void ProcessFreight(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, string droppedFilePath, List<object> eslst)
         {
             try
             {
@@ -530,7 +529,7 @@ namespace WaterNut.DataSpace
 
                         EmailId = emailId,
                        // SourceFile = filename,
-                        FileTypeId = fileTypeId,
+                        FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
 
                     }).ToList();
@@ -562,7 +561,7 @@ namespace WaterNut.DataSpace
 
 
         double CF2M3 = 0.0283168;
-        private void ProcessBL(string fileTypeType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        private void ProcessBL(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId,  string droppedFilePath, List<object> eslst)
         {
             try
             {
@@ -611,7 +610,7 @@ namespace WaterNut.DataSpace
 
                         EmailId = emailId,
                        // SourceFile = droppedFilePath,
-                        FileTypeId = fileTypeId,
+                        FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
 
                     }).ToList();
@@ -644,7 +643,7 @@ namespace WaterNut.DataSpace
             }
         }
 
-        private void ProcessManifest(string fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, int fileTypeId, string droppedFilePath, List<object> eslst)
+        private void ProcessManifest(FileTypes fileType, List<AsycudaDocumentSet> docSet, bool overWriteExisting, int emailId, string droppedFilePath, List<object> eslst)
         {
             try
             {
@@ -681,7 +680,7 @@ namespace WaterNut.DataSpace
                         //Containers = Convert.ToInt32(x["Containers"].ToString()),
                         EmailId = emailId,
                        // SourceFile = filename,
-                        FileTypeId = fileTypeId,
+                        FileTypeId = fileType.Id,
                         TrackingState = TrackingState.Added,
 
                     }).ToList();
@@ -768,7 +767,7 @@ namespace WaterNut.DataSpace
 
         private async Task<bool> ImportEntryData(FileTypes fileType, List<dynamic> eslst,
             List<AsycudaDocumentSet> docSet,
-            bool overWriteExisting, int? emailId, int? fileTypeId, string droppedFilePath)
+            bool overWriteExisting, int? emailId,  string droppedFilePath)
         {
             try
             {
@@ -797,7 +796,7 @@ namespace WaterNut.DataSpace
                                     : g.Max(x => ((dynamic)x).SupplierCode?.ToUpper()),
                                 Currency = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).Currency != ""))?.Currency,
                                 EmailId = emailId,
-                                FileTypeId = fileTypeId,
+                                FileTypeId = fileType.Id,
                                 DocumentType = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).DocumentType != ""))?.DocumentType,
                                 SupplierInvoiceNo = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).SupplierInvoiceNo != ""))?.SupplierInvoiceNo,
                                 PreviousCNumber = ((dynamic)g.FirstOrDefault(x => ((dynamic)x).PreviousCNumber != ""))?.PreviousCNumber,
@@ -966,7 +965,7 @@ namespace WaterNut.DataSpace
                                         Currency = string.IsNullOrEmpty(item.EntryData.Currency)
                                             ? null
                                             : item.EntryData.Currency,
-                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
                                         SourceFile = item.EntryData.SourceFile,
                                         TrackingState = TrackingState.Added,
 

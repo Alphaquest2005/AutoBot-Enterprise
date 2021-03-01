@@ -106,7 +106,7 @@ namespace WaterNut.DataSpace
             try
             {
                 int? emailId = 0;
-                int? fileTypeId = 0;
+               
                 using (var ctx = new CoreEntitiesContext())
                 {
                     
@@ -114,7 +114,7 @@ namespace WaterNut.DataSpace
                                                                             || x.Attachments.FilePath == droppedFilePath) 
                         .Select(x => new{x.EmailUniqueId, x.FileTypeId}).FirstOrDefault();
                     emailId = res?.EmailUniqueId ?? Convert.ToInt32(fileType.EmailId);
-                    fileTypeId = res?.FileTypeId;
+                   
                 }
 
 
@@ -138,7 +138,7 @@ namespace WaterNut.DataSpace
                         return;
                     }
 
-                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings,  docSet, overWriteExisting, emailId.GetValueOrDefault(), fileTypeId.GetValueOrDefault(), droppedFilePath).ConfigureAwait(false)) return;
+                    if (await SaveCsvEntryData.Instance.ExtractEntryData(fileType, lines, headings,  docSet, overWriteExisting, emailId.GetValueOrDefault(), droppedFilePath).ConfigureAwait(false)) return;
                 }
             }
             catch (Exception Ex)

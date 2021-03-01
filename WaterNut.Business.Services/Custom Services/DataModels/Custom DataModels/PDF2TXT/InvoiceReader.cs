@@ -141,7 +141,7 @@ namespace WaterNut.DataSpace
 
                             SaveCsvEntryData.Instance.ProcessCsvSummaryData(fileType, docSet, overWriteExisting,
                                 emailId,
-                                fileType.Id, file, csvLines).Wait();
+                                 file, csvLines).Wait();
                             return true;
                         }
                         catch (Exception e)

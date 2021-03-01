@@ -6320,7 +6320,8 @@ namespace AutoBot
                 }
                 var dfile = new FileInfo(
                     $@"{file.DirectoryName}\{file.Name.Replace(".csv", "")}-Fixed{file.Extension}");
-                if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime) return;
+                //if (dfile.Exists && dfile.LastWriteTime >= file.LastWriteTime) return;
+                if(File.Exists(dfile.FullName))File.Delete(dfile.FullName);
                 // Reading from a binary Excel file (format; *.xlsx)
                 var dt = CSV2DataTable(file, "NO");
 
