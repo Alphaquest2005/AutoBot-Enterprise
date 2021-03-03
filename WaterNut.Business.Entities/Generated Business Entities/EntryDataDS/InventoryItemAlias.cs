@@ -82,6 +82,8 @@ namespace EntryDataDS.Business.Entities
         Nullable<int> _aliasitemid;
         [DataMember]
         public InventoryItems InventoryItems { get; set; }
+        [DataMember]
+        public InventoryItems AliasItem { get; set; }
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

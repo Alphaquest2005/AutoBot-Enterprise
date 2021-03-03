@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="830e4acdfbed420fa8c846dbc7f9f89f" Name="Diagram1" ZoomLevel="100">
+      <Diagram DiagramId="830e4acdfbed420fa8c846dbc7f9f89f" Name="Diagram1" ZoomLevel="72">
         <EntityTypeShape EntityType="WaterNutDBModel.Sales" Width="1.5" PointX="5.625" PointY="3.25" IsExpanded="true" />
         <EntityTypeShape EntityType="WaterNutDBModel.EntryData" Width="3.625" PointX="7.875" PointY="0.75" />
         <InheritanceConnector EntityType="WaterNutDBModel.Sales" />
@@ -53,8 +53,9 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentAttachedPOs_EntryData_PurchaseOrders" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemQueryMatches" Width="1.5" PointX="5.625" PointY="15.25" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsShipmentInvoicePOItemQueryMatches" />
-        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="1.5" PointX="3.125" PointY="17.375" />
+        <EntityTypeShape EntityType="WaterNutDBModel.InventoryItemAlias" Width="2" PointX="3.125" PointY="17.375" />
         <AssociationConnector Association="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" />
+        <AssociationConnector Association="WaterNutDBModel.InventoryItemsInventoryItemAlias" />
         </Diagram>
       <Diagram DiagramId="e6a676be76e44b88a3a806984a620f91" Name="Shipments" ZoomLevel="86" >
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentAttachedBL" Width="2.5" PointX="6.625" PointY="6.25" />

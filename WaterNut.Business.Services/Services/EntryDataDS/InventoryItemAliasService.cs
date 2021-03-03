@@ -241,6 +241,12 @@ namespace EntryDataDS.Business.Services
                                         GetWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "AliasItem":
+                                return
+                                    await
+                                        GetWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -743,6 +749,9 @@ namespace EntryDataDS.Business.Services
                             case "InventoryItems":
                                 return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AliasItem":
+                                return await CountWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.InventoryItemAlias.Where(exp == "All" || exp == null ? "AliasId != null" : exp)
@@ -850,6 +859,12 @@ namespace EntryDataDS.Business.Services
                         switch (itm.Key)
                         {
                             case "InventoryItems":
+                                return
+                                    await
+                                        LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "AliasItem":
                                 return
                                     await
                                         LoadRangeWhere<InventoryItems>(startIndex, count, dbContext, exp, itm.Value, "InventoryItemAlias", "SelectMany")
@@ -1173,6 +1188,9 @@ namespace EntryDataDS.Business.Services
                         switch (itm.Key)
                         {
                             case "InventoryItems":
+                                return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", field, "SelectMany")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "AliasItem":
                                 return await SumWhere<InventoryItems>(dbContext, exp, itm.Value, "InventoryItemAlias", field, "SelectMany")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}

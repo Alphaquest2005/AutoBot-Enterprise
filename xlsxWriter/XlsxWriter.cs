@@ -61,9 +61,10 @@ namespace xlsxWriter
                         csvFilePath = Path.Combine(pdfFile.DirectoryName, $"{pO.PurchaseOrders.PONumber}.xlsx");
                         var workbook = CreateShipmentWorkBook(riderId, shipmentInvoice, csvFilePath, header, out var invoiceRow, out var riderdetails, out var doRider);
                         var i = 1;
-                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails.Where(x => pO.POMISMatches.All(m => m.PODetailsId != x.EntryDataDetailsId)))
+                        foreach (var itm in pO.PurchaseOrders.EntryDataDetails.Where(x => pO.POMISMatches.All(m => m.POItemCode != x.ItemNumber && m.PODescription != x.ItemDescription /* m.PODetailsId != x.EntryDataDetailsId ---- Took this out because it Allowed the grouped po items to still show*/)))
                         {
                             var pOItem = itm.INVItems.FirstOrDefault();
+                            
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(pO.PurchaseOrders.PONumber)).Key.Index,
                                 pO.PurchaseOrders.PONumber);
                             SetValue(workbook, i,
@@ -74,7 +75,7 @@ namespace xlsxWriter
                             SetValue(workbook, i, header.First(x => x.Key.Column == "POItemDescription").Key.Index, itm.ItemDescription);
                             SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemDescription").Key.Index, pOItem?.INVDescription);
                             
-                            SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index, pOItem.INVItemCode);
+                            SetValue(workbook, i, header.First(x => x.Key.Column == "SupplierItemNumber").Key.Index, pOItem?.INVItemCode);
 
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Quantity)).Key.Index,
                                 itm.Quantity);

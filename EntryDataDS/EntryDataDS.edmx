@@ -2291,6 +2291,10 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
           </AssociationSet>
+          <AssociationSet Name="InventoryItemsInventoryItemAlias" Association="WaterNutDBModel.InventoryItemsInventoryItemAlias">
+            <End Role="InventoryItems" EntitySet="InventoryItems" />
+            <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
           <Property Name="INVNumber" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false"><a:EntityNameProperty xmlns:a="http://schemas.tempuri.com/EntityNameProperty">False</a:EntityNameProperty></Property>
@@ -2609,6 +2613,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="InventoryItemSource" Relationship="WaterNutDBModel.FK_InventoryItemSource_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemSource" />
           <Property Name="UpgradeKey" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="InventoryItemAlias" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
+          <NavigationProperty Name="AliasItems" Relationship="WaterNutDBModel.InventoryItemsInventoryItemAlias" FromRole="InventoryItems" ToRole="InventoryItemAlias" />
         </EntityType>
         <Association Name="FK_InventoryItems_NonStock_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
@@ -3994,6 +3999,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="AliasName" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="AliasItemId" Type="Int32" />
           <NavigationProperty Name="InventoryItems" Relationship="WaterNutDBModel.FK_InventoryItemAlias_InventoryItems" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
+          <NavigationProperty Name="AliasItem" Relationship="WaterNutDBModel.InventoryItemsInventoryItemAlias" FromRole="InventoryItemAlias" ToRole="InventoryItems" />
         </EntityType>
         <Association Name="FK_InventoryItemAlias_InventoryItems">
           <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="1">
@@ -4006,6 +4012,18 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Principal>
             <Dependent Role="InventoryItemAlias">
               <PropertyRef Name="InventoryItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="InventoryItemsInventoryItemAlias">
+          <End Type="WaterNutDBModel.InventoryItems" Role="InventoryItems" Multiplicity="0..1" />
+          <End Type="WaterNutDBModel.InventoryItemAlias" Role="InventoryItemAlias" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="InventoryItems">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="InventoryItemAlias">
+              <PropertyRef Name="AliasItemId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

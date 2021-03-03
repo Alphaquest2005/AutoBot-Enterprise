@@ -6185,7 +6185,10 @@ namespace AutoBot
                     row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;
                     row[poHeaderRow.IndexOf("PO Item Description")] = misMatch[misHeaderRow.IndexOf("PODescription")];
                     row[poHeaderRow.IndexOf("Supplier Item Description")] = misMatch[misHeaderRow.IndexOf("INVDescription")];
-                    row[poHeaderRow.IndexOf("Cost")] = misMatch[misHeaderRow.IndexOf("INVCost")];
+                    row[poHeaderRow.IndexOf("Cost")] = ((double)misMatch[misHeaderRow.IndexOf("INVCost")] / ((misHeaderRow.IndexOf("INVSalesFactor") > -1 
+                                                                                                              && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString())) 
+                                                                                                                    ? Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")]) 
+                                                                                                                    :1));
                     row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
                     row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
                    if(addrow)poTemplate.Rows.Add(row);
@@ -6196,7 +6199,8 @@ namespace AutoBot
                     InvoiceDetails invRow;
                     EntryDataDetails poRow;
 
-                    var invItm = ctx.InventoryItems.FirstOrDefault(x => x.ItemNumber == invItemCode);
+                    var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x => x.ItemNumber == invItemCode 
+                                                                                                   && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if(invItm == null){ invItm = new InventoryItems()
                     {
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
@@ -6206,7 +6210,7 @@ namespace AutoBot
                     };
                         ctx.InventoryItems.Add(invItm);
                     }
-                    var poItm = ctx.InventoryItems.FirstOrDefault(x => x.ItemNumber == poItemCode);
+                    var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x => x.ItemNumber == poItemCode && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
                     if (poItm == null)
                     {
                         poItm = new InventoryItems()
@@ -6219,8 +6223,19 @@ namespace AutoBot
                         ctx.InventoryItems.Add(poItm);
                     }
 
+                    if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
+                        !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
+                    {
+                        ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                        {
+                            InventoryItems = poItm,
+                            AliasItem = invItm,
+                            AliasName = invItm.ItemNumber,
+                            TrackingState = TrackingState.Added
+                        });
+                    }
                     //var itmAlias = ctx.InventoryItemAlias
-
+                    ctx.SaveChanges();
 
 
                     var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
@@ -6247,9 +6262,14 @@ namespace AutoBot
                     invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
                     invRow.Cost = (double)misMatch[misHeaderRow.IndexOf("INVCost")];
                     invRow.TotalCost = (double)misMatch[misHeaderRow.IndexOf("INVTotalCost")];
-                    if(misHeaderRow.IndexOf("INVSalesFactor") > -1 && string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                            invRow.SalesFactor = (int)misMatch[misHeaderRow.IndexOf("INVSalesFactor")];
+                    if(misHeaderRow.IndexOf("INVSalesFactor") > -1 && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
+                            invRow.SalesFactor = Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")]);
+                    else
+                    {
+                        invRow.SalesFactor = 1;
+                    }
                     invRow.Quantity = (double)misMatch[misHeaderRow.IndexOf("INVQuantity")];
+                    invRow.InventoryItemId = invItm.Id;
                     ctx.SaveChanges();
 
                     var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
@@ -6279,6 +6299,7 @@ namespace AutoBot
                     poRow.TotalCost = (double)misMatch[misHeaderRow.IndexOf("POTotalCost")];
                     //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
                     poRow.Quantity = (double)misMatch[misHeaderRow.IndexOf("POQuantity")];
+                    poRow.InventoryItemId = poItm.Id;
                     ctx.SaveChanges();
                 }
 
@@ -6410,8 +6431,12 @@ namespace AutoBot
                 var header = dRows[0];
                 for (int i = 0; i < header.ItemArray.Length - 1; i++)
                 {
+                    if (string.IsNullOrEmpty(header[i].ToString()))
+                    {
+                        deleteColumns.Add(dt.Columns[i]);
+                        continue;
+                    }
                     header[i] = header[i].ToString().ToUpper();
-                    if (string.IsNullOrEmpty(header[i].ToString())) deleteColumns.Add(dt.Columns[i]);
                 }
                 
                 deleteColumns.ForEach(x => dt.Columns.Remove(x));

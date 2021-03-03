@@ -180,7 +180,6 @@
   <ItemGroup>
     <Content Include="AllBusinessEntities.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AllBusinessEntities.cs</LastGenOutput>
       <LastOutputs>
 ..\WaterNut.Business.Entities\Generated Business Entities\AdjustmentQS\AdjustmentDetail.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\AdjustmentQS\AdjustmentEx.cs
@@ -560,6 +559,7 @@
 ..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\xC71_Seller_segment.cs
 ..\WaterNut.Business.Entities\Generated Business Entities\ValuationDS\xC71_Value_declaration_form.cs
 </LastOutputs>
+      <LastGenOutput>AllBusinessEntities.cs</LastGenOutput>
     </Content>
     <Content Include="AllBusinessMappings.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
