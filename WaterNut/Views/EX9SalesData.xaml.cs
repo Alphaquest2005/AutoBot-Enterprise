@@ -178,7 +178,7 @@ namespace WaterNut.Views
 
 	    private void AutoImportSales(object sender, MouseButtonEventArgs e)
 	    {
-	        Utils.DownloadSalesFiles(2);
+	        Utils.DownloadSalesFiles(2, "IM7History");
         }
 	}
 }

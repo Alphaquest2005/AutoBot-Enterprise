@@ -79,7 +79,7 @@ namespace AutoBot
                 {"ExportPOEntries",(ft, fs) => ExportPOEntries(ft.AsycudaDocumentSetId) },
                 {"AssessPOEntry",(ft, fs) => AssessPOEntry(ft.DocReference, ft.AsycudaDocumentSetId)},
                 {"EmailPOEntries",(ft, fs) => EmailPOEntries(ft.AsycudaDocumentSetId,ft.FileTypeContacts.Select(x => x.Contacts).ToList()) },
-                {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles(false) },
+                {"DownloadSalesFiles",(ft, fs) => DownloadSalesFiles(false, "IM7History") },
                 {"Xlsx2csv",(ft, fs) => Xlsx2csv(fs, ft) },
                 {"SaveInfo",(ft, fs) => TrySaveFileInfo(fs, ft) },
                 {"CleanupEntries",(ft, fs) => CleanupEntries() },
@@ -161,7 +161,7 @@ namespace AutoBot
                 {"ClearAllocations", ClearAllocations },
                 {"AssessDISEntries",() => AssessDISEntries("DIS") },
                 {"AssessADJEntries",() => AssessDISEntries("ADJ") },
-                {"DownloadSalesFiles",() => DownloadSalesFiles(20) },
+                {"DownloadSalesFiles",() => DownloadSalesFiles(20,"IM7History") },
                 {"ImportSalesEntries",ImportSalesEntries },
                 {"SubmitDiscrepanciesToCustoms",SubmitDiscrepanciesToCustoms },
                 {"DownloadPDFs",DownloadPDFs },
@@ -747,7 +747,7 @@ namespace AutoBot
 
         private static void DownloadPOFiles()
         {
-            DownloadSalesFiles(false); //download all for now
+            DownloadSalesFiles(false, "IM7"); //download all for now
         }
 
         private static void ImportPDF()
@@ -3407,10 +3407,10 @@ namespace AutoBot
             //var directoryName = CurrentSalesInfo().Item4;
             //var overview = Path.Combine(directoryName, "OverView.txt");
             //if(File.Exists(overview)) File.Delete(overview);
-            DownloadSalesFiles(true);
+            DownloadSalesFiles(true, "IM7History");
         }
 
-        public static void DownloadSalesFiles(bool redownload)
+        public static void DownloadSalesFiles(bool redownload, string script)
         {
             try
 
@@ -3425,7 +3425,7 @@ namespace AutoBot
                 while (ImportComplete(directoryName, redownload, out lcont) == false)
                 {
                     //RunSiKuLi(BaseDataModel.CurrentSalesInfo().Item3.AsycudaDocumentSetId, "IM7", lcont.ToString());
-                    RunSiKuLi(directoryName, "IM7History", lcont.ToString());
+                    RunSiKuLi(directoryName, script, lcont.ToString());
                 }
             }
             catch (Exception e)
@@ -3435,7 +3435,7 @@ namespace AutoBot
             }
         }
 
-        public static void DownloadSalesFiles(int trytimes)
+        public static void DownloadSalesFiles(int trytimes, string script)
         {
             try
 
@@ -3448,7 +3448,7 @@ namespace AutoBot
                 for (int i = 0; i < trytimes; i++)
                 {
                     if (ImportComplete(directoryName, false, out lcont)) break;//ImportComplete(directoryName,false, out lcont);
-                    RunSiKuLi(directoryName, "IM7History", lcont.ToString());
+                    RunSiKuLi(directoryName, script, lcont.ToString());
                     if (ImportComplete(directoryName, false, out lcont)) break;
                 }
 
