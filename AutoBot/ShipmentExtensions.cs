@@ -61,10 +61,11 @@ namespace AutoBotUtilities
                         .Include("InvoiceDetails.POItems")
                         .Where(x => x.EmailId == shipment.EmailId)
                         .ToList();
-
+                    var ctxShipmentInvoicePoItemMisMatches = ctx.ShipmentInvoicePOItemMISMatches.ToList();
                     foreach (var inv in invoices.SelectMany(x => x.ShipmentInvoicePOs))
                     {
-                        inv.POMISMatches = ctx.ShipmentInvoicePOItemMISMatches
+
+                        inv.POMISMatches = ctxShipmentInvoicePoItemMisMatches
                             .Where(x => x.POId == inv.EntryData_Id || x.INVId == inv.InvoiceId).ToList();
                     }
 

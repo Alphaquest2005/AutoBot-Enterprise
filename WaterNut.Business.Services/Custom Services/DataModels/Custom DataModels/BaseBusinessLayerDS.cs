@@ -159,27 +159,39 @@ namespace WaterNut.DataSpace
         }
 
         private static List<FileTypes> _fileTypes = null;
+
         public static FileTypes GetFileType(FileTypes fileTypes)
         {
-            if(_fileTypes == null)
+            try
             {
-                using (var ctx = new CoreEntitiesContext())
+
+
+                if (_fileTypes == null)
                 {
-                    _fileTypes =  ctx.FileTypes
-                        .Include("FileTypeContacts.Contacts")
-                        .Include("FileTypeActions.Actions")
-                        .Include("AsycudaDocumentSetEx")
-                        .Include("ChildFileTypes")
-                        .Include("FileTypeMappings.FileTypeMappingRegExs")
-                        .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                        .ToList();
-                        
-                       // .First(x => x.Id == fileTypes.Id);
+                    using (var ctx = new CoreEntitiesContext())
+                    {
+                        _fileTypes = ctx.FileTypes
+                            .Include("FileTypeContacts.Contacts")
+                            .Include("FileTypeActions.Actions")
+                            .Include("AsycudaDocumentSetEx")
+                            .Include("ChildFileTypes")
+                            .Include("FileTypeMappings.FileTypeMappingRegExs")
+                            .Where(x => x.ApplicationSettingsId ==
+                                        BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                            .ToList();
+
+                        // .First(x => x.Id == fileTypes.Id);
+                    }
                 }
-            }
-           
+
                 return _fileTypes.First(x => x.Id == fileTypes.Id);
-          
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public static Tuple<DateTime, DateTime, AsycudaDocumentSetEx, string> CurrentSalesInfo()
@@ -3669,8 +3681,8 @@ namespace WaterNut.DataSpace
                 var nonpdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
                         (!x.Attachment.FilePath.ToLower().EndsWith("pdf") 
                          && !x.Attachment.FilePath.ToLower().Contains("xml")
-                         && !x.Attachment.FilePath.ToLower().Contains("Info.txt".ToLower())) 
-                         && ((x.FileType.Type != "INV") && (x.FileType.Type != "PO")) &&
+                       && !x.Attachment.FilePath.ToLower().Contains("Info.txt".ToLower())) 
+                         && ((x.FileType.Type != "INV") && (x.FileType.Type != "PO") && (x.FileType.Type != "XLSX")) &&
                         x.AsycudaDocumentSetId == asycudaDocumentSetId)
                     .Select(x => x.Attachment).AsEnumerable().OrderByDescending(x => x.Id).Where(x => File.Exists(x.FilePath)).DistinctBy(x => new FileInfo( x.FilePath).Name).ToList();
 
