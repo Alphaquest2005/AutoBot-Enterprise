@@ -3681,9 +3681,10 @@ namespace WaterNut.DataSpace
                 var nonpdfs = ctx.AsycudaDocumentSet_Attachments.Include(x => x.Attachment).Where(x =>
                         (!x.Attachment.FilePath.ToLower().EndsWith("pdf") 
                          && !x.Attachment.FilePath.ToLower().Contains("xml")
-                       && !x.Attachment.FilePath.ToLower().Contains("Info.txt".ToLower())) 
-                         && ((x.FileType.Type != "INV") && (x.FileType.Type != "PO") && (x.FileType.Type != "XLSX")) &&
-                        x.AsycudaDocumentSetId == asycudaDocumentSetId)
+                       && !x.Attachment.FilePath.ToLower().Contains("Info.txt".ToLower()))
+                        && (x.FileType.DocumentSpecific != true)
+                        // && ((x.FileType.Type != "INV") && (x.FileType.Type != "PO") && (x.FileType.Type != "XLSX")) 
+                       && x.AsycudaDocumentSetId == asycudaDocumentSetId)
                     .Select(x => x.Attachment).AsEnumerable().OrderByDescending(x => x.Id).Where(x => File.Exists(x.FilePath)).DistinctBy(x => new FileInfo( x.FilePath).Name).ToList();
 
                 pdfs.AddRange(nonpdfs);
