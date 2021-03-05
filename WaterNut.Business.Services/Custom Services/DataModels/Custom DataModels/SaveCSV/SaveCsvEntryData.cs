@@ -62,8 +62,8 @@ namespace WaterNut.DataSpace
 
                 }
                 var mappingFileType = GetHeadingFileType(headings);
-                if (mappingFileType.Id != fileType.Id && mappingFileType.Id != fileType.ParentFileTypeId) fileType = mappingFileType;
-
+                if (mappingFileType != null && mappingFileType.Id != fileType.Id && mappingFileType.Id != fileType.ParentFileTypeId) fileType = mappingFileType;
+                if (mappingFileType == null) fileType = BaseDataModel.GetFileType(fileType);
                 var mapping = new Dictionary<FileTypeMappings, int>();
                 GetMappings(mapping, headings, fileType);
 
