@@ -151,7 +151,7 @@ namespace WaterNut.DataSpace
 
                 using (var ctx = new EntryDataDSContext())
                 {
-                    foreach (var rawRider in rawRiders)
+                    foreach (var rawRider in rawRiders.Where(x => x.ETA != null))
                     {
                         DateTime eta = (DateTime) rawRider.ETA;
                         var existingRider = ctx.ShipmentRider.Where(x => x.ETA == eta).ToList();
