@@ -74,23 +74,6 @@ public string Office
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "GeneraProcedure is required")]
-       
-                
-                [MaxLength(1, ErrorMessage = "GeneraProcedure has a max length of 1 letters ")]
-public string GeneraProcedure
-		{ 
-		    get { return this.expiredentrieslst.GeneraProcedure; }
-			set
-			{
-			    if (value == this.expiredentrieslst.GeneraProcedure) return;
-				this.expiredentrieslst.GeneraProcedure = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("GeneraProcedure");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "RegistrationSerial is required")]
        
                 
@@ -289,6 +272,23 @@ public int ApplicationSettingsId
 				this.expiredentrieslst.ApplicationSettingsId = value;
                 if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
 				NotifyPropertyChanged("ApplicationSettingsId");
+			}
+		}
+     
+
+       [RequiredValidationAttribute(ErrorMessage= "GeneralProcedure is required")]
+       
+                
+                [MaxLength(1, ErrorMessage = "GeneralProcedure has a max length of 1 letters ")]
+public string GeneralProcedure
+		{ 
+		    get { return this.expiredentrieslst.GeneralProcedure; }
+			set
+			{
+			    if (value == this.expiredentrieslst.GeneralProcedure) return;
+				this.expiredentrieslst.GeneralProcedure = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("GeneralProcedure");
 			}
 		}
      

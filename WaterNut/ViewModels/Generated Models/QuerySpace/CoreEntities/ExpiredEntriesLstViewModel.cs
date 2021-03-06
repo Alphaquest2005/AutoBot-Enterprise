@@ -207,24 +207,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
  
 
-		private string _generaProcedureFilter;
-        public string GeneraProcedureFilter
-        {
-            get
-            {
-                return _generaProcedureFilter;
-            }
-            set
-            {
-                _generaProcedureFilter = value;
-				NotifyPropertyChanged(x => GeneraProcedureFilter);
-                FilterData();
-                
-            }
-        }	
-
- 
-
 		private string _registrationSerialFilter;
         public string RegistrationSerialFilter
         {
@@ -422,6 +404,24 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         }	
 
  
+
+		private string _generalProcedureFilter;
+        public string GeneralProcedureFilter
+        {
+            get
+            {
+                return _generalProcedureFilter;
+            }
+            set
+            {
+                _generalProcedureFilter = value;
+				NotifyPropertyChanged(x => GeneralProcedureFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -454,10 +454,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(OfficeFilter) == false)
 						res.Append(" && " + string.Format("Office.Contains(\"{0}\")",  OfficeFilter));						
- 
-
-									if(string.IsNullOrEmpty(GeneraProcedureFilter) == false)
-						res.Append(" && " + string.Format("GeneraProcedure.Contains(\"{0}\")",  GeneraProcedureFilter));						
  
 
 									if(string.IsNullOrEmpty(RegistrationSerialFilter) == false)
@@ -502,6 +498,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
 
 									if(string.IsNullOrEmpty(ExpirationFilter) == false)
 						res.Append(" && " + string.Format("Expiration.Contains(\"{0}\")",  ExpirationFilter));						
+ 
+
+									if(string.IsNullOrEmpty(GeneralProcedureFilter) == false)
+						res.Append(" && " + string.Format("GeneralProcedure.Contains(\"{0}\")",  GeneralProcedureFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -526,9 +526,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                 {
  
                     Office = x.Office ,
-                    
- 
-                    GeneraProcedure = x.GeneraProcedure ,
                     
  
                     RegistrationSerial = x.RegistrationSerial ,
@@ -561,7 +558,10 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     Consignee = x.Consignee ,
                     
  
-                    Expiration = x.Expiration 
+                    Expiration = x.Expiration ,
+                    
+ 
+                    GeneralProcedure = x.GeneralProcedure 
                     
                 }).ToList()
             };
@@ -575,9 +575,6 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
         {
 		 
                     public string Office { get; set; } 
-                    
- 
-                    public string GeneraProcedure { get; set; } 
                     
  
                     public string RegistrationSerial { get; set; } 
@@ -611,6 +608,9 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
                     
  
                     public string Expiration { get; set; } 
+                    
+ 
+                    public string GeneralProcedure { get; set; } 
                     
         }
 

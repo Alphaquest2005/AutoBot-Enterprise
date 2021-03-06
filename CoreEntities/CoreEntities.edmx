@@ -204,7 +204,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Office" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="GeneraProcedure" Type="nvarchar" MaxLength="1" Nullable="false" />
+          <Property Name="GeneralProcedure" Type="nvarchar" MaxLength="1" Nullable="false" />
           <Property Name="RegistrationSerial" Type="nvarchar" MaxLength="1" Nullable="false" />
           <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="8" Nullable="false" />
           <Property Name="RegistrationDate" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -1618,6 +1618,11 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.TODO-SubmitPOInfo' does n
         <EntityType Name="TODO-SubmitPOInfo">
           <Key>
             <PropertyRef Name="Id" />
+            
+            
+            
+            
+            
             
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
@@ -3605,7 +3610,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <EntitySet Name="TODO_SubmitPOInfo" EntityType="WaterNutDBModel.TODO_SubmitPOInfo" />
           <EntitySet Name="AsycudaDocumentBasicInfo" EntityType="WaterNutDBModel.AsycudaDocumentBasicInfo" />
           <EntitySet Name="AsycudaItemBasicInfo" EntityType="WaterNutDBModel.AsycudaItemBasicInfo" />
-          <EntitySet Name="ExpiredEntriesLst" EntityType="WaterNutDBModel.ExpiredEntriesLst" />
           <EntitySet Name="TODO_LicenceAvailableQty" EntityType="WaterNutDBModel.TODO_LicenceAvailableQty" />
           <EntitySet Name="TODO_SubmitEntryCIF" EntityType="WaterNutDBModel.TODO_SubmitEntryCIF" />
           <EntitySet Name="AsycudaDocumentSetC71" EntityType="WaterNutDBModel.AsycudaDocumentSetC71" />
@@ -3616,6 +3620,7 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             <End Role="FileTypeMappings" EntitySet="FileTypeMappings" />
             <End Role="FileTypeMappingRegExs" EntitySet="FileTypeMappingRegExs" />
           </AssociationSet>
+          <EntitySet Name="ExpiredEntriesLst" EntityType="WaterNutDBModel.ExpiredEntriesLst" />
           </EntityContainer>
         <EntityType Name="ApplicationSettings">
           <Key>
@@ -5732,26 +5737,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
           <Property Name="CNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="RegistrationDate" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="ExpiredEntriesLst">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Office" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="GeneraProcedure" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationSerial" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="8" Unicode="true" FixedLength="false" />
-          <Property Name="RegistrationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="AssessmentSerial" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
-          <Property Name="AssessmentNumber" Type="String" Nullable="false" MaxLength="8" Unicode="true" FixedLength="false" />
-          <Property Name="AssessmentDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DeclarantCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="DeclarantReference" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Exporter" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Consignee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Expiration" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
-        </EntityType>
         <EntityType Name="TODO_LicenceAvailableQty">
           <Key>
             <PropertyRef Name="LicenseId" />
@@ -5876,6 +5861,26 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ExpiredEntriesLst">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Office" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationSerial" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationNumber" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="RegistrationDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentSerial" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentNumber" Type="String" Nullable="false" MaxLength="8" FixedLength="false" Unicode="true" />
+          <Property Name="AssessmentDate" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DeclarantCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DeclarantReference" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Exporter" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Consignee" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Expiration" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationSettingsId" Type="Int32" Nullable="false" />
+          <Property Name="GeneralProcedure" Type="String" Nullable="false" MaxLength="1" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -7308,27 +7313,6 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ExpiredEntriesLst">
-            <EntityTypeMapping TypeName="WaterNutDBModel.ExpiredEntriesLst">
-              <MappingFragment StoreEntitySet="ExpiredEntriesLst">
-                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
-                <ScalarProperty Name="Expiration" ColumnName="Expiration" />
-                <ScalarProperty Name="Consignee" ColumnName="Consignee" />
-                <ScalarProperty Name="Exporter" ColumnName="Exporter" />
-                <ScalarProperty Name="DeclarantReference" ColumnName="DeclarantReference" />
-                <ScalarProperty Name="DeclarantCode" ColumnName="DeclarantCode" />
-                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
-                <ScalarProperty Name="AssessmentNumber" ColumnName="AssessmentNumber" />
-                <ScalarProperty Name="AssessmentSerial" ColumnName="AssessmentSerial" />
-                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
-                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
-                <ScalarProperty Name="RegistrationSerial" ColumnName="RegistrationSerial" />
-                <ScalarProperty Name="GeneraProcedure" ColumnName="GeneraProcedure" />
-                <ScalarProperty Name="Office" ColumnName="Office" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="TODO_LicenceAvailableQty">
             <EntityTypeMapping TypeName="WaterNutDBModel.TODO_LicenceAvailableQty">
               <MappingFragment StoreEntitySet="TODO-LicenceAvailableQty">
@@ -7425,6 +7409,27 @@ FROM [dbo].[TODO-UnallocatedShorts] AS [TODO-UnallocatedShorts]</DefiningQuery>
                 <ScalarProperty Name="ReplacementValue" ColumnName="ReplacementValue" />
                 <ScalarProperty Name="ReplacementRegex" ColumnName="ReplacementRegex" />
                 <ScalarProperty Name="FileTypeMappingId" ColumnName="FileTypeMappingId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExpiredEntriesLst">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ExpiredEntriesLst">
+              <MappingFragment StoreEntitySet="ExpiredEntriesLst">
+                <ScalarProperty Name="GeneralProcedure" ColumnName="GeneralProcedure" />
+                <ScalarProperty Name="ApplicationSettingsId" ColumnName="ApplicationSettingsId" />
+                <ScalarProperty Name="Expiration" ColumnName="Expiration" />
+                <ScalarProperty Name="Consignee" ColumnName="Consignee" />
+                <ScalarProperty Name="Exporter" ColumnName="Exporter" />
+                <ScalarProperty Name="DeclarantReference" ColumnName="DeclarantReference" />
+                <ScalarProperty Name="DeclarantCode" ColumnName="DeclarantCode" />
+                <ScalarProperty Name="AssessmentDate" ColumnName="AssessmentDate" />
+                <ScalarProperty Name="AssessmentNumber" ColumnName="AssessmentNumber" />
+                <ScalarProperty Name="AssessmentSerial" ColumnName="AssessmentSerial" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+                <ScalarProperty Name="RegistrationSerial" ColumnName="RegistrationSerial" />
+                <ScalarProperty Name="Office" ColumnName="Office" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

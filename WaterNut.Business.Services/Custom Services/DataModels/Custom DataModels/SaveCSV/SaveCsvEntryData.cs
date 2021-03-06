@@ -63,7 +63,7 @@ namespace WaterNut.DataSpace
                 }
                 var mappingFileType = GetHeadingFileType(headings);
                 if (mappingFileType != null && mappingFileType.Id != fileType.Id && mappingFileType.Id != fileType.ParentFileTypeId) fileType = mappingFileType;
-                if (mappingFileType == null) fileType = BaseDataModel.GetFileType(fileType);
+                if (!fileType.FileTypeMappings.Any()) fileType = BaseDataModel.GetFileType(fileType);
                 var mapping = new Dictionary<FileTypeMappings, int>();
                 GetMappings(mapping, headings, fileType);
 
@@ -289,10 +289,10 @@ namespace WaterNut.DataSpace
                 ctx.Database.ExecuteSqlCommand("delete from ExpiredEntriesLst");
                 foreach (var itm in eslst)
                 {
-                    ctx.ExpiredEntriesLst.Add(new ExpiredEntriesLst(true)
+                    var expireditm = new ExpiredEntriesLst(true)
                     {
                         Office = itm.Office,
-                        GeneraProcedure = itm.GeneralProcedure,
+                        GeneralProcedure = itm.GeneralProcedure,
                         ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
                         AssessmentDate = itm.AssessmentDate,
                         AssessmentNumber = itm.AssessmentNumber,
@@ -304,10 +304,10 @@ namespace WaterNut.DataSpace
                         Exporter = itm.Exporter,
                         DeclarantCode = itm.DeclarantCode,
                         DeclarantReference = itm.DeclarantReference,
-                        Expiration = itm.ExpirationDate,
+                        Expiration = itm.Expiration,
                         TrackingState = TrackingState.Added
-                    });
-
+                    };
+                    ctx.ExpiredEntriesLst.Add(expireditm);
                 }
 
                 ctx.SaveChanges();

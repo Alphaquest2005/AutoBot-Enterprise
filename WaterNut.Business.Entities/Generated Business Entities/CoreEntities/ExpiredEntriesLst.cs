@@ -51,21 +51,6 @@ namespace CoreEntities.Business.Entities
         }
         string _office;
         [DataMember]
-        public string GeneraProcedure 
-        {
-            get
-            {
-                return _generaprocedure;
-            }
-            set
-            {
-                _generaprocedure = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _generaprocedure;
-        [DataMember]
         public string RegistrationSerial 
         {
             get
@@ -245,6 +230,21 @@ namespace CoreEntities.Business.Entities
             }
         }
         int _applicationsettingsid;
+        [DataMember]
+        public string GeneralProcedure 
+        {
+            get
+            {
+                return _generalprocedure;
+            }
+            set
+            {
+                _generalprocedure = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _generalprocedure;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

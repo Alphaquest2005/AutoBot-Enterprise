@@ -15,7 +15,6 @@
               this.ToTable("ExpiredEntriesLst");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.Office).HasColumnName("Office").IsRequired().HasMaxLength(50);
-              this.Property(t => t.GeneraProcedure).HasColumnName("GeneraProcedure").IsRequired().HasMaxLength(1);
               this.Property(t => t.RegistrationSerial).HasColumnName("RegistrationSerial").IsRequired().HasMaxLength(1);
               this.Property(t => t.RegistrationNumber).HasColumnName("RegistrationNumber").IsRequired().HasMaxLength(8);
               this.Property(t => t.RegistrationDate).HasColumnName("RegistrationDate").IsRequired().HasMaxLength(50);
@@ -28,6 +27,7 @@
               this.Property(t => t.Consignee).HasColumnName("Consignee").HasMaxLength(50);
               this.Property(t => t.Expiration).HasColumnName("Expiration").IsRequired().HasMaxLength(50);
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
+              this.Property(t => t.GeneralProcedure).HasColumnName("GeneralProcedure").IsRequired().HasMaxLength(1);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

@@ -48,19 +48,6 @@ namespace CoreEntities.Client.DTO
         private string _Office;
 
         [DataMember]
-        public string GeneraProcedure
-		{ 
-		    get { return _GeneraProcedure; }
-			set
-			{
-			    if (value == _GeneraProcedure) return;
-				_GeneraProcedure = value;
-				NotifyPropertyChanged();//m => this.GeneraProcedure
-			}
-		}
-        private string _GeneraProcedure;
-
-        [DataMember]
         public string RegistrationSerial
 		{ 
 		    get { return _RegistrationSerial; }
@@ -215,6 +202,19 @@ namespace CoreEntities.Client.DTO
 			}
 		}
         private int _ApplicationSettingsId;
+
+        [DataMember]
+        public string GeneralProcedure
+		{ 
+		    get { return _GeneralProcedure; }
+			set
+			{
+			    if (value == _GeneralProcedure) return;
+				_GeneralProcedure = value;
+				NotifyPropertyChanged();//m => this.GeneralProcedure
+			}
+		}
+        private string _GeneralProcedure;
 
        
    //     [DataMember]
