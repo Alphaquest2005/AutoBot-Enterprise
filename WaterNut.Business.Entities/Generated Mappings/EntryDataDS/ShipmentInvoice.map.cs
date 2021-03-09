@@ -32,7 +32,7 @@
               this.Property(t => t.ApplicationSettingsId).HasColumnName("ApplicationSettingsId");
               this.HasMany(t => t.InvoiceDetails).WithRequired(t => (ShipmentInvoice)t.Invoice);
               this.HasMany(t => t.InvoiceExtraInfo).WithRequired(t => (ShipmentInvoice)t.Invoice);
-              this.HasMany(t => t.ShipmentRiderInvoice).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);
+              this.HasMany(t => t.ShipmentRiderInvoice).WithOptional(t => t.ShipmentInvoice).HasForeignKey(d => d.InvoiceId);
               this.HasMany(t => t.ShipmentAttachedInvoices).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);
               this.HasMany(t => t.ShipmentInvoicePOs).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);
               this.HasMany(t => t.ShipmentInvoiceRiderDetails).WithRequired(t => (ShipmentInvoice)t.ShipmentInvoice);

@@ -23,8 +23,8 @@
               this.Property(t => t.Packages).HasColumnName("Packages");
               this.Property(t => t.rowNumber).HasColumnName("rowNumber");
               this.HasRequired(t => t.ShipmentRider).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.RiderID);
-              this.HasRequired(t => t.ShipmentInvoice).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.InvoiceId);
-              this.HasRequired(t => t.ShipmentRiderDetails).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.RiderLineID);
+              this.HasOptional(t => t.ShipmentInvoice).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.InvoiceId);
+              this.HasOptional(t => t.ShipmentRiderDetails).WithMany(t =>(ICollection<ShipmentRiderInvoice>) t.ShipmentRiderInvoice).HasForeignKey(d => d.RiderLineID);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

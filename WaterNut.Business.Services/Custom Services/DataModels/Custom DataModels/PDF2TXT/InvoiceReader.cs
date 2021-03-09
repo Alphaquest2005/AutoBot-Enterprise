@@ -479,11 +479,14 @@ namespace WaterNut.DataSpace
                         //    $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                         return DateTime.MinValue;
                 case "English Date":
-                    if (DateTime.TryParseExact(f.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
-                        out DateTime edate))
-                        return edate;
-                    else
-                        throw new ApplicationException(
+                    var formatStrings = new List<string>() { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy" };
+                    foreach (String formatString in formatStrings)
+                    {
+                        if (DateTime.TryParseExact(f.Value, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                            out DateTime edate))
+                            return edate;
+                    }
+                   throw new ApplicationException(
                             $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                 default:
                     return f.Value;

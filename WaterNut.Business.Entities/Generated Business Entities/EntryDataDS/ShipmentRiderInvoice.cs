@@ -36,7 +36,7 @@ namespace EntryDataDS.Business.Entities
         }
         int _id;
         [DataMember]
-        public int RiderLineID 
+        public Nullable<int> RiderLineID 
         {
             get
             {
@@ -49,7 +49,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _riderlineid;
+        Nullable<int> _riderlineid;
         [DataMember]
         public int RiderID 
         {
@@ -66,7 +66,7 @@ namespace EntryDataDS.Business.Entities
         }
         int _riderid;
         [DataMember]
-        public int InvoiceId 
+        public Nullable<int> InvoiceId 
         {
             get
             {
@@ -79,7 +79,7 @@ namespace EntryDataDS.Business.Entities
                 NotifyPropertyChanged();
             }
         }
-        int _invoiceid;
+        Nullable<int> _invoiceid;
         [DataMember]
         public string WarehouseCode 
         {

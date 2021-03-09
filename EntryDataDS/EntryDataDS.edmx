@@ -3125,9 +3125,9 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" />
-          <Property Name="RiderLineID" Type="Int32" Nullable="false" />
+          <Property Name="RiderLineID" Type="Int32" />
           <Property Name="RiderID" Type="Int32" Nullable="false" />
-          <Property Name="InvoiceId" Type="Int32" Nullable="false" />
+          <Property Name="InvoiceId" Type="Int32" />
           <Property Name="WarehouseCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="InvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -3150,7 +3150,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           </ReferentialConstraint>
         </Association>
         <Association Name="ShipmentInvoiceShipmentRiderInvoice">
-          <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="0..1" />
           <End Type="WaterNutDBModel.ShipmentRiderInvoice" Role="ShipmentRiderInvoice" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShipmentInvoice">
@@ -3423,7 +3423,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           </ReferentialConstraint>
         </Association>
         <Association Name="ShipmentRiderDetailsShipmentRiderInvoice">
-          <End Type="WaterNutDBModel.ShipmentRiderDetails" Role="ShipmentRiderDetails" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentRiderDetails" Role="ShipmentRiderDetails" Multiplicity="0..1" />
           <End Type="WaterNutDBModel.ShipmentRiderInvoice" Role="ShipmentRiderInvoice" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="ShipmentRiderDetails">

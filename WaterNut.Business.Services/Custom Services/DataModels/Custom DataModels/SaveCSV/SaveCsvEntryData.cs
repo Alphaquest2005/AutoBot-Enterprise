@@ -373,8 +373,8 @@ namespace WaterNut.DataSpace
 
                 if (fileType.Type == "Shipment Invoice")
                 {
-
-                    await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
+                    if(eslst.Any(x => ((List<IDictionary<string, object>>)x).Any(z => z.ContainsKey("InvoiceDetails"))))
+                        await ImportInventory(eslst.SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => z["InvoiceDetails"])).SelectMany(x => ((List<IDictionary<string, object>>)x).Select(z => (dynamic)z)).ToList(), docSet.First().ApplicationSettingsId, fileType).ConfigureAwait(false);
                     ProcessShipmentInvoice(fileType, docSet, overWriteExisting, emailId, 
                         droppedFilePath, eslst);
 
@@ -424,7 +424,7 @@ namespace WaterNut.DataSpace
                         InvoiceDate = x.ContainsKey("InvoiceDate") ?  DateTime.Parse(x["InvoiceDate"].ToString()) : DateTime.MinValue,
                         InvoiceTotal = x.ContainsKey("InvoiceTotal") ? Convert.ToDouble(x["InvoiceTotal"].ToString()) : (double?)null,//Because of MPI not 
                         SubTotal = x.ContainsKey("SubTotal") ? Convert.ToDouble(x["SubTotal"].ToString()) : (double?)null,
-                        ImportedLines = ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count,
+                        ImportedLines = !x.ContainsKey("InvoiceDetails") ? 0 : ((List<IDictionary<string, object>>)x["InvoiceDetails"]).Count,
                         SupplierCode = x.ContainsKey("SupplierCode") ? x["SupplierCode"].ToString() : null,
                         FileLineNumber = itms.IndexOf(x) + 1,
                         Currency = x.ContainsKey("Currency") ? x["Currency"].ToString() : null,
@@ -432,8 +432,9 @@ namespace WaterNut.DataSpace
                         TotalOtherCost = x.ContainsKey("TotalOtherCost")? Convert.ToDouble(x["TotalOtherCost"].ToString()): (double?) null,
                         TotalInsurance = x.ContainsKey("TotalInsurance") ? Convert.ToDouble(x["TotalInsurance"].ToString()) : (double?)null,
                         TotalDeduction = x.ContainsKey("TotalDeduction") ? Convert.ToDouble(x["TotalDeduction"].ToString()) : (double?)null,
-                        InvoiceDetails = ((List<IDictionary<string, object>>)x["InvoiceDetails"])
+                        InvoiceDetails = !x.ContainsKey("InvoiceDetails") ? new List<InvoiceDetails>() : ((List<IDictionary<string, object>>)x["InvoiceDetails"])
                                                 .Where(z => z["Quantity"] != null && Convert.ToDouble(z["Quantity"].ToString()) > 0 && (z.ContainsKey("TotalCost") ? Convert.ToDouble(z["TotalCost"].ToString()) : Convert.ToDouble(z["Cost"].ToString())) > 0)
+                                              
                                                 .Select(z => new InvoiceDetails()
                                                 {
                                                     Quantity = Convert.ToDouble(z["Quantity"].ToString()),
@@ -477,6 +478,10 @@ namespace WaterNut.DataSpace
                         if (existingManifest != null)
                             ctx.ShipmentInvoice.Remove(existingManifest);
 
+                        var details = invoice.InvoiceDetails;
+                        invoice.InvoiceDetails = details.DistinctBy(x => new {x.ItemNumber, x.Quantity, x.TotalCost})
+                            .ToList();
+
                         if (Math.Abs(invoice.SubTotal.GetValueOrDefault()) < 0.01)
                         {
                             invoice.SubTotal = invoice.ImportedSubTotal;
@@ -511,7 +516,7 @@ namespace WaterNut.DataSpace
                         Consignee = x["Consignee"].ToString(),
                         Currency = x["Currency"].ToString().Truncate(3),
                         InvoiceDate =(DateTime) x["ETA"],
-                        DueDate = (DateTime)x["DueDate"],
+                        DueDate = x.ContainsKey("DueDate") ? DateTime.Parse(x["DueDate"].ToString()) : DateTime.MinValue,
                         ETA = (DateTime)x["ETA"],
                         BLNumber = x["BLNumber"].ToString(),
                         InvoiceTotal = Convert.ToDouble(x["InvoiceTotal"].ToString()),
@@ -520,7 +525,7 @@ namespace WaterNut.DataSpace
                                                 {
                                                     Quantity = Convert.ToDouble(z["Quantity"].ToString()),
                                                     Description = z["Description"].ToString(),
-                                                    WarehouseCode = z["WarehouseCode"].ToString(),
+                                                    WarehouseCode = z["WarehouseCode"]?.ToString(),
                                                     Rate = Convert.ToDouble(z["Rate"].ToString()),
                                                     Total = Convert.ToDouble(z["Amount"].ToString()),
                                                     TrackingState = TrackingState.Added,
@@ -657,8 +662,8 @@ namespace WaterNut.DataSpace
                         RegistrationNumber = x["RegistrationNumber"].ToString(),
                         CustomsOffice = x["CustomsOffice"].ToString(),
                         Voyage = x["Voyage"].ToString(),
-                        ETD = DateTime.ParseExact(x["ETD"].ToString(),"dd/MM/yyyy", CultureInfo.InvariantCulture),
-                        ETA = DateTime.ParseExact(x["ETA"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture),
+                        ETD = DateTime.Parse(x["ETD"].ToString()),
+                        ETA = DateTime.Parse(x["ETA"].ToString()),
                         Vessel = x["Vessel"].ToString(),
                         WayBill = x["WayBill"].ToString(),
                         LineNumber = Convert.ToInt32(x["LineNumber"].ToString()),
