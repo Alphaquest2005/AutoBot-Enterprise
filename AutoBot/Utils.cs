@@ -1357,7 +1357,7 @@ namespace AutoBot
                         var directoryName = StringExtensions.UpdateToCurrentUser(Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports","C71"));
 
                     Console.WriteLine("Download C71 Files");
-                    var notries = 1;
+                    var notries = 5;
                     var tries = 0;
                     var lcont = 0;
                         while (ImportC71Complete(directoryName, out lcont) == false )
