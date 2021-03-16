@@ -52,6 +52,7 @@ namespace AutoBotUtilities
                 using (var ctx = new EntryDataDSContext())
                 {
                     var invoices = ctx.ShipmentInvoice
+                        .Include(x => x.ShipmentRiderInvoice)
                         .Include("ShipmentRiderInvoice.ShipmentRider")
                         .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
                         .Include("InvoiceDetails.ItemAlias")

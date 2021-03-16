@@ -108,15 +108,9 @@ namespace WaterNut.DataSpace
 
 
 
-            // _inventoryCache =
-            //     new DataCache<InventoryItem>(
-            //         await InventoryDS.DataModels.BaseDataModel.Instance.SearchInventoryItem(new List<string>() {"All"},
-            //             new List<string>()
-            //             {
-            //                 "InventoryItemAlias",
-            //                 "TariffCodes.TariffCategory.TariffSupUnitLkps"
-            //             }).ConfigureAwait(false));
-
+            _inventoryCache =
+                new DataCache<InventoryItem>(
+                    new InventoryDSContext().InventoryItems.Include(x => x.InventoryItemAlias).ToList());
             //_tariffCodeCache =
             //     new DataCache<TariffCode>(
             //         await
@@ -139,14 +133,14 @@ namespace WaterNut.DataSpace
             StatusModel.StopStatusUpdate();
         }
 
-        //public static DataCache<InventoryItem> _inventoryCache;
+        public static DataCache<InventoryItem> _inventoryCache;
         //public static DataCache<TariffCode> _tariffCodeCache;
         public static DataCache<Customs_Procedure> _customs_ProcedureCache;
         public static DataCache<Document_Type> _document_TypeCache;
 
 
 
-        //public DataCache<InventoryItem> InventoryCache { get { return BaseDataModel._inventoryCache; } }
+        public DataCache<InventoryItem> InventoryCache { get { return BaseDataModel._inventoryCache; } }
         //public DataCache<TariffCode> TariffCodeCache {  get { return BaseDataModel._tariffCodeCache; } }
         public DataCache<Customs_Procedure> Customs_ProcedureCache
         {
@@ -4073,7 +4067,7 @@ namespace WaterNut.DataSpace
                     //    .ToList();
 
 
-                    var xcudaAsycudas = ctx.xcuda_ASYCUDA.Include(x => x.xcuda_Declarant)
+                    var xcudaAsycudas = ctx.xcuda_ASYCUDA
                         .Where(
                             x => x != null &&/*(x.xcuda_Declarant == null && x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey) ||*/
                                 (x.xcuda_Declarant != null &&
@@ -4081,6 +4075,7 @@ namespace WaterNut.DataSpace
                                  (( x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId == docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == false) ||
                                   (x.xcuda_ASYCUDA_ExtendedProperties.AsycudaDocumentSetId != docKey && x.xcuda_ASYCUDA_ExtendedProperties.ImportComplete == true))
                                 )).ToList();
+                   
                     var res = xcudaAsycudas
                         .GroupBy(x => x.xcuda_Declarant.Number)
                         .ToList();
@@ -4106,6 +4101,10 @@ namespace WaterNut.DataSpace
         private static void RenameDuplicateDocuments(List<IGrouping<string, xcuda_ASYCUDA>> lst,
             ref AsycudaDocumentSet docSet)
         {
+            try
+            {
+
+
             var docSetAsycudaDocumentSetId = docSet.AsycudaDocumentSetId;
             using (var ctx = new DocumentDSContext() {StartTracking = true})
             {
@@ -4143,6 +4142,13 @@ namespace WaterNut.DataSpace
             }
 
             RenameDuplicateDocuments(docSetAsycudaDocumentSetId);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private static void UpdateNameDependentAttachments(int asycudaId, string oldRef, string newRef)

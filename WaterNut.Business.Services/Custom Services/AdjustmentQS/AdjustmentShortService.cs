@@ -560,6 +560,7 @@ namespace AdjustmentQS.Business.Services
                                 c.x.PreviousDocumentItem.xcuda_Goods_description.Country_of_origin_code,
                             Total_CIF_itm = c.x.PreviousDocumentItem.xcuda_Valuation_item.Total_CIF_itm,
                             Net_weight_itm = c.w.FirstOrDefault().Net_weight_itm,
+                            InventoryItemId = c.x.EntryDataDetails.InventoryItemId,
                             // Net_weight_itm = c.x.PreviousDocumentItem != null ? ctx.xcuda_Weight_itm.FirstOrDefault(q => q.Valuation_item_Id == x.PreviousItem_Id).Net_weight_itm: 0,
                             previousItems = c.x.PreviousDocumentItem.EntryPreviousItems
                                     .Select(y => y.xcuda_PreviousItem)

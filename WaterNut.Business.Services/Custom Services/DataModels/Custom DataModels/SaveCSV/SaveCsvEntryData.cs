@@ -2283,7 +2283,7 @@ namespace WaterNut.DataSpace
             {
                
                 var itmlst = eslst
-                    .GroupBy(x => new {x.SupplierCode, x.SupplierName, x.SupplierAddress, x.SupplierCountryCode})
+                    .GroupBy(x => new {x.SupplierCode, x.SupplierName, x.SupplierAddress, x.CountryCode})
                     .ToList();
 
                 if (BaseDataModel.Instance.CurrentApplicationSettings.AssessIM7 == true && fileType.Type == "PO")
@@ -2312,7 +2312,7 @@ namespace WaterNut.DataSpace
                             SupplierCode = item.Key.SupplierCode?.ToUpper() ?? item.Key.SupplierName.ToUpper(),
                             SupplierName = item.Key.SupplierName,
                             Street = item.Key.SupplierAddress,
-                            CountryCode = item.Key.SupplierCountryCode,
+                            CountryCode = item.Key.CountryCode,
 
                             TrackingState = TrackingState.Added
                         };

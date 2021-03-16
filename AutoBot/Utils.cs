@@ -2632,35 +2632,37 @@ namespace AutoBot
 
         public static void SubmitIncompleteSuppliers(FileTypes ft)
         {
-            
 
 
-            var info = BaseDataModel.CurrentSalesInfo();
-            var directory = info.Item4;
-
-
-
-
-            using (var ctx = new CoreEntitiesContext())
+            try
             {
 
-                var suppliers = ctx.TODO_SubmitIncompleteSupplierInfo
-                    .Where(x => x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
-                    .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
-                    .GroupBy(x => new { x.AsycudaDocumentSetId, x.SupplierCode }).ToList();
 
-                foreach (var sup in suppliers)
+                var info = BaseDataModel.CurrentSalesInfo();
+                var directory = info.Item4;
+
+
+                using (var ctx = new CoreEntitiesContext())
                 {
-                    if (GetDocSetActions(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers").Any()) continue;
+
+                    var suppliers = ctx.TODO_SubmitIncompleteSupplierInfo
+                        .Where(x => x.ApplicationSettingsId ==
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId)
+                        .Where(x => ft.AsycudaDocumentSetId == 0 || x.AsycudaDocumentSetId == ft.AsycudaDocumentSetId)
+                        .GroupBy(x => new {x.SupplierCode}).ToList();
+
+                    if (!suppliers.Any()) return;
+
+                    if (GetDocSetActions(ft.AsycudaDocumentSetId, "SubmitIncompleteSuppliers").Any()) return;
 
                     var errorfile = Path.Combine(directory, $"IncompleteSuppliers.csv");
-                    var errors = sup.Select(x => new IncompleteSupplier()
+                    var errors = suppliers.SelectMany(x => x.Select(z => new IncompleteSupplier()
                     {
-                        SupplierName = x.SupplierName,
-                        SupplierCode = x.SupplierCode,
-                        SupplierAddress = x.Street,
-                        CountryCode = x.CountryCode
-                    }).ToList();
+                        SupplierName = z.SupplierName,
+                        SupplierCode = z.SupplierCode,
+                        SupplierAddress = z.Street,
+                        CountryCode = z.CountryCode
+                    }).ToList()).ToList();
 
 
                     var res =
@@ -2679,13 +2681,18 @@ namespace AutoBot
                         EmailDownloader.EmailDownloader.SendEmail(Client, directory,
                             $"Error:InComplete Supplier Info", contacts.Select(x => x.EmailAddress).ToArray(),
                             "Please Fill out the attached Supplier Info and resend CSV...",
-                            new string[] { errorfile });
+                            new string[] {errorfile});
 
                     //LogDocSetAction(sup.Key.AsycudaDocumentSetId, "SubmitIncompleteSuppliers");
 
+
                 }
             }
-
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
 
 
         }
