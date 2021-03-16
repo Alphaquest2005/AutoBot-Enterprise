@@ -344,8 +344,8 @@ namespace WaterNut.DataSpace
                             }
                             else
                             {
-                               // ditm[field.Key.Field] = GetValue(value, field.Key.Field);
-                                ImportByDataType(field, ditm, value);
+                                ditm[field.Key.Field] = GetValue(value, field.Key.Field);
+                               //ImportByDataType(field, ditm, value);
                             }
 
                         }
