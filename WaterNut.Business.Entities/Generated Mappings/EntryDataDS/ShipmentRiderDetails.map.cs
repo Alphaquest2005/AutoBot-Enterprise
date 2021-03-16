@@ -26,7 +26,7 @@
               this.Property(t => t.RiderId).HasColumnName("RiderId");
               this.Property(t => t.InvoiceTotal).HasColumnName("InvoiceTotal");
               this.HasRequired(t => t.ShipmentRider).WithMany(t =>(ICollection<ShipmentRiderDetails>) t.ShipmentRiderDetails).HasForeignKey(d => d.RiderId);
-              this.HasMany(t => t.ShipmentRiderInvoice).WithRequired(t => (ShipmentRiderDetails)t.ShipmentRiderDetails);
+              this.HasMany(t => t.ShipmentRiderInvoice).WithOptional(t => t.ShipmentRiderDetails).HasForeignKey(d => d.RiderLineID);
               this.HasMany(t => t.ShipmentRiderBLs).WithRequired(t => (ShipmentRiderDetails)t.ShipmentRiderDetails);
               this.HasMany(t => t.ShipmentInvoiceRiderDetails).WithRequired(t => (ShipmentRiderDetails)t.ShipmentRiderDetails);
              // Tracking Properties

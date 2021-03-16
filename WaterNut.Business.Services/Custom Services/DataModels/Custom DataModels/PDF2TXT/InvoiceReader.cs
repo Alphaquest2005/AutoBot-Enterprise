@@ -110,7 +110,7 @@ namespace WaterNut.DataSpace
                             if (csvLines.Count < 1 || !tmp.Success)
                             {
                                 var failedlines = tmp.Lines.DistinctBy(x => x.OCR_Lines.Id).Where(z => z.FailedFields.Any() || (z.OCR_Lines.Fields.Any(f => f.IsRequired) && !z.Values.Any())).ToList();
-                                
+                                if (!tmp.Parts.Any(x => x.AllLines.Any(z => z.Values.Values.Any(v => v.Keys.Any(k => k.Field == "Name") && v.Values.Any(kv => kv == tmp.OcrInvoices.Name))))) continue;
                                 if (failedlines.Any() && failedlines.Count < tmp.Lines.Count &&
                                     tmp.Parts.First().WasStarted && tmp.Lines.SelectMany(x => x.Values.Values).Any())
                                 {
@@ -148,7 +148,7 @@ namespace WaterNut.DataSpace
                         {
                             var ex = new ApplicationException($"Problem importing file:{file} --- {e.Message}", e);
                             Console.WriteLine(ex);
-                            throw ex;
+                            continue;
                         }
 
                     }
@@ -340,27 +340,12 @@ namespace WaterNut.DataSpace
                             if (ditm.ContainsKey(field.Key.Field) && line.OCR_Lines.Fields.Select(z => z.Field)
                                     .Count(f => f == field.Key.Field) > 1)
                             {
-                                switch (field.Key.DataType)
-                                {
-                                    case "String":
-                                        ditm[field.Key.Field] =
-                                            (ditm[field.Key.Field] + " " + GetValueByKey(value, field.Key.Key)).Trim();
-                                        break;
-                                    case "Number":
-                                    case "Numeric":
-                                        ditm[field.Key.Field] =
-                                            Convert.ToDouble(ditm[field.Key.Field]??"0") +
-                                            Convert.ToDouble(GetValueByKey(value, field.Key.Key));
-                                        break;
-                                    default:
-                                        ditm[field.Key.Field] = GetValueByKey(value, field.Key.Key);
-                                        break;
-                                }
-
+                                ImportByDataType(field, ditm, value);
                             }
                             else
                             {
                                 ditm[field.Key.Field] = GetValue(value, field.Key.Field);
+                               //ImportByDataType(field, ditm, value);
                             }
 
                         }
@@ -413,6 +398,27 @@ namespace WaterNut.DataSpace
             {
                 Console.WriteLine(e);
                 throw;
+            }
+        }
+
+        private void ImportByDataType(KeyValuePair<Fields, string> field, IDictionary<string, object> ditm, KeyValuePair<int, Dictionary<Fields, string>> value)
+        {
+            switch (field.Key.DataType)
+            {
+                case "String":
+                    ditm[field.Key.Field] =
+                        (ditm[field.Key.Field] + " " + GetValueByKey(value, field.Key.Key)).Trim();
+                    break;
+                case "Number":
+                case "Numeric":
+
+                    ditm[field.Key.Field] =
+                        Convert.ToDouble(ditm[field.Key.Field] ?? "0") +
+                        Convert.ToDouble(GetValueByKey(value, field.Key.Key));
+                    break;
+                default:
+                    ditm[field.Key.Field] = GetValueByKey(value, field.Key.Key);
+                    break;
             }
         }
 
@@ -479,11 +485,14 @@ namespace WaterNut.DataSpace
                         //    $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                         return DateTime.MinValue;
                 case "English Date":
-                    if (DateTime.TryParseExact(f.Value, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None,
-                        out DateTime edate))
-                        return edate;
-                    else
-                        throw new ApplicationException(
+                    var formatStrings = new List<string>() { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy" };
+                    foreach (String formatString in formatStrings)
+                    {
+                        if (DateTime.TryParseExact(f.Value, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                            out DateTime edate))
+                            return edate;
+                    }
+                   throw new ApplicationException(
                             $"{f.Key.Field} can not convert to {f.Key.DataType} for Value:{f.Value}");
                 default:
                     return f.Value;

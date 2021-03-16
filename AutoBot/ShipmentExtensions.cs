@@ -52,6 +52,7 @@ namespace AutoBotUtilities
                 using (var ctx = new EntryDataDSContext())
                 {
                     var invoices = ctx.ShipmentInvoice
+                        .Include(x => x.ShipmentRiderInvoice)
                         .Include("ShipmentRiderInvoice.ShipmentRider")
                         .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
                         .Include("InvoiceDetails.ItemAlias")
@@ -147,8 +148,10 @@ namespace AutoBotUtilities
             using (var ctx = new EntryDataDSContext())
             {
                 var freights = ctx.ShipmentFreight
-                        .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
-                    .Where(x => x.EmailId == shipment.EmailId)
+                    .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
+                    .Include(x => x.ShipmentBLFreight)
+                    .Where(x => x.EmailId == shipment.EmailId).AsEnumerable()
+                    .DistinctBy(x => x.Id)
                     .ToList();
 
                 shipment.ShipmentAttachedFreight.AddRange(freights.Select(x => new ShipmentAttachedFreight()
@@ -174,8 +177,9 @@ namespace AutoBotUtilities
                 using (var ctx = new EntryDataDSContext())
                 {
                     var invoices = shipment.ShipmentAttachedRider
-                        .SelectMany(x => x.ShipmentRider.ShipmentRiderInvoice.Select(z => z.InvoiceId))
+                        .SelectMany(x => x.ShipmentRider.ShipmentRiderInvoice.Select(z => z.InvoiceId).Where(z => z != null))
                         .Distinct()
+                        
                         .Where(x => shipment.ShipmentAttachedInvoices.All(z => z.ShipmentInvoiceId != x))
                         .Select(x => ctx.ShipmentInvoice
                             .Include("ShipmentRiderInvoice.ShipmentRider")
@@ -357,10 +361,23 @@ namespace AutoBotUtilities
                         .Where(x => freightList.All(z => z.Id != x.FreightId))
                         .SelectMany(x => ctx.ShipmentFreight
                             .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
+                            .Include(z => z.ShipmentBLFreight)
                             .Where(z => z.Id == x.FreightId))
                         .DistinctBy(x => x.Id)
                         .ToList();
                     freightList.AddRange(frightDetailBls);
+
+                    var frightBls = shipment.ShipmentAttachedBL
+                        .SelectMany(x => x.ShipmentBL.ShipmentBLFreight)
+                        .DistinctBy(x => x.Id)
+                        .Where(x => freightList.All(z => z.Id != x.FreightInvoiceId))
+                        .SelectMany(x => ctx.ShipmentFreight
+                            .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
+                            .Include(z => z.ShipmentBLFreight)
+                            .Where(z => z.Id == x.FreightInvoiceId))
+                        .DistinctBy(x => x.Id)
+                        .ToList();
+                    freightList.AddRange(frightBls);
 
                     var riderfrightDetail = shipment.ShipmentAttachedRider
                         .SelectMany(x => x.ShipmentRider.ShipmentRiderDetails.Select(z => z))
@@ -368,6 +385,7 @@ namespace AutoBotUtilities
                         .ToList()
                         .SelectMany(x => ctx.ShipmentFreight
                             .Include("ShipmentFreightDetails.ShipmentFreightBLs.ShipmentBLDetails")
+                            .Include(z => z.ShipmentBLFreight)
                             .Where(z => z.ShipmentFreightDetails.Any(f => f.WarehouseCode == x.WarehouseCode))
                             .ToList()
                             .DistinctBy(f => f.Id)
@@ -754,7 +772,7 @@ namespace AutoBotUtilities
                         var otherBls = bls.Where(x => x.BLNumber != bl.BLNumber)
                             .SelectMany(x => x.ShipmentBLDetails.Select(z => z.Marks)).ToList();
                         var marks = bl.ShipmentBLDetails.Select(x => x.Marks).ToList();
-                        if (otherBls.All(x => marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any())))
+                        if (otherBls.All(x => !marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any())))
                         {
                             masterBL = bl;
                             break;
@@ -773,7 +791,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null)
                         .ToList();
 
-                    var clients = riderDetails.GroupBy(x => new Tuple<string, int>(x.Code, x.RiderId)).ToList();
+                    var clients = riderDetails.DistinctBy(x => x.Id).GroupBy(x => new Tuple<string, int>(x.Code, x.RiderId)).ToList();
                     foreach (var client in clients)
                     {
 
@@ -788,13 +806,18 @@ namespace AutoBotUtilities
                         var manifests = masterShipment.ShipmentAttachedManifest
                             .Where(x => x.ShipmentManifest.WayBill == bl.BLNumber).Select(x => x.ShipmentManifest)
                             .ToList();
-                        var freightInvoices = masterShipment.ShipmentAttachedFreight
-                            .Where(x => //x.ShipmentFreight.BLNumber == bl.BLNumber ||
-                                x.ShipmentFreight.ShipmentFreightDetails.Any(z =>
-                                    z.ShipmentFreightBLs.Any(f => f.BLNumber == bl.BLNumber)))
-                            .Where(x => x.ShipmentFreight.ShipmentFreightDetails.Any(z =>
+                        var freightInvoicesbyBL = masterShipment.ShipmentAttachedFreight
+                            .Where(x => x.ShipmentFreight.ShipmentBLFreight.Any(f => f.BLNumber == bl.BLNumber))
+                            .DistinctBy(x => x.FreightInvoiceId).Select(x => x.ShipmentFreight).ToList();
+                        var freightInvoicesbyDetails = masterShipment.ShipmentAttachedFreight
+                           .Where(x => x.ShipmentFreight.ShipmentFreightDetails.Any(z =>
                                 client.Any(q => q.WarehouseCode == z.WarehouseCode)))
                             .DistinctBy(x => x.FreightInvoiceId).Select(x => x.ShipmentFreight).ToList();
+                        var freightInvoices = new List<ShipmentFreight>();
+                        freightInvoices.AddRange(freightInvoicesbyBL);
+                        freightInvoices.AddRange(freightInvoicesbyDetails.Where(x => freightInvoices.All(z => z.Id != x.Id)).ToList());
+
+
                         var blDetails = bl.ShipmentBLDetails
                             .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentBLDetails)).DistinctBy(x => x.Id)
                             .Where(x => x.ShipmentBL.ShipmentBLDetails.Any(z =>
