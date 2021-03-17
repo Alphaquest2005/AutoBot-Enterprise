@@ -27,7 +27,7 @@
               this.Property(t => t.SalesFactor).HasColumnName("SalesFactor");
               this.HasRequired(t => t.Invoice).WithMany(t =>(ICollection<InvoiceDetails>) t.InvoiceDetails).HasForeignKey(d => d.ShipmentInvoiceId);
               this.HasMany(t => t.POItems).WithRequired(t => (InvoiceDetails)t.InvoiceDetails);
-              this.HasOptional(t => t.ItemAlias).WithRequired(t => (InvoiceDetails) t.InvoiceDetails);
+              this.HasOptional(t => t.ItemAlias).WithRequired(t => (InvoiceDetails)t.InvoiceDetails);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

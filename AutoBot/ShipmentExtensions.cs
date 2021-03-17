@@ -206,8 +206,29 @@ namespace AutoBotUtilities
                             .Where(x => x.POId == inv.EntryData_Id || x.INVId == inv.InvoiceId).ToList();
                     }
 
+                    var emailLst = invoices.Select(x => x.ShipmentInvoice.EmailId).Distinct().ToList();
+                    var invoiceLst = invoices.Select(x => x.ShipmentInvoice.Id).Distinct().ToList();
+                   var inattachedInvoices = ctx.ShipmentInvoice
+                        .Include("ShipmentRiderInvoice.ShipmentRider")
+                        .Include("ShipmentRiderInvoice.ShipmentRiderDetails")
+                        .Include("InvoiceDetails.ItemAlias")
+                        .Include("InvoiceDetails.POItems")
+                        // .Include("ShipmentInvoicePOs.POMISMatches")
+                        .Include("ShipmentInvoicePOs.PurchaseOrders.EntryDataDetails.INVItems")
+                        .Where(z => !invoiceLst.Contains(z.Id) && emailLst.Contains(z.EmailId))
+                       .ToList()
+                        .Select(x => new ShipmentAttachedInvoices()
+                        {
+                            Shipment = shipment,
+                            ShipmentInvoice = x,
+                            ShipmentInvoiceId = x.Id,
+                            TrackingState = TrackingState.Added
+                        })
+                        .ToList();
+
                     shipment.ShipmentAttachedInvoices.AddRange(invoices);
-                    
+                    shipment.ShipmentAttachedInvoices.AddRange(inattachedInvoices);
+
                 }
 
                 return shipment;
@@ -767,12 +788,13 @@ namespace AutoBotUtilities
                 var bls = masterShipment.ShipmentAttachedBL.Select(x => x.ShipmentBL)
                     .OrderByDescending(x => x.ShipmentBLDetails.Count).ToList();
                 if (bls.Count > 1)
-                    foreach (var bl in bls)
+                    foreach (var bl in bls.OrderBy(x => x.BLNumber))
                     {
                         var otherBls = bls.Where(x => x.BLNumber != bl.BLNumber)
                             .SelectMany(x => x.ShipmentBLDetails.Select(z => z.Marks)).ToList();
                         var marks = bl.ShipmentBLDetails.Select(x => x.Marks).ToList();
-                        if (otherBls.All(x => !marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any())))
+                        var mismatches = otherBls.Where(x => !marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any())).ToList();
+                        if (!mismatches.Any())
                         {
                             masterBL = bl;
                             break;
@@ -791,7 +813,7 @@ namespace AutoBotUtilities
                         .SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).Where(x => x != null)
                         .ToList();
 
-                    var clients = riderDetails.DistinctBy(x => x.Id).GroupBy(x => new Tuple<string, int>(x.Code, x.RiderId)).ToList();
+                    var clients = riderDetails.DistinctBy(x => x.Id).GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId, bl.BLNumber)).ToList();
                     foreach (var client in clients)
                     {
 
@@ -837,9 +859,10 @@ namespace AutoBotUtilities
                             .ToList();
 
                         var invoiceLst = invoices.Select(r => r.Id).ToList();
+                       
 
                         var unAttachedInvoices = masterShipment.ShipmentAttachedInvoices
-                            .Where(x => !x.ShipmentInvoice.ShipmentRiderInvoice.Any())
+                            .Where(x => !invoiceLst.Contains(x.ShipmentInvoiceId))
                             .Select(x => x.ShipmentInvoice).DistinctBy(x => x.InvoiceNo).ToList();
 
                         var unAttachedRiderDetails = client.SelectMany(x =>
@@ -850,9 +873,19 @@ namespace AutoBotUtilities
                             .Where(x => invoiceLst.Any(z => z == x.Id)).ToList();
                         var allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
 
+                        var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
+                        invoiceNOs.AddRange(unAttachedInvoices.Select(x => x.InvoiceNo));
+                        var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber)).ToList();
+                        poNOs.AddRange(allUnMatchedPOs.Select(x => x.InvoiceNo).ToList());
+                        var classifications = new EntryDataDSContext().ShipmentInvoicePOItemData
+                            .Where(x => invoiceNOs.Contains(x.InvoiceNo) || poNOs.Contains(x.PONumber)).ToList();
+                        summaryPkg.Classifications = classifications;
+
+
                         summaryPkg.UnMatchedInvoices = allUnMatchedInvoices;
                         summaryPkg.UnMatchedPOs = allUnMatchedPOs;
                         summaryPkg.Invoices = invoices;
+                        
                         summaryPkg.UnAttachedInvoices = unAttachedInvoices;
                         summaryPkg.UnAttachedRiderDetails = unAttachedRiderDetails;
                         summaryPkg.RiderDetails = client.ToList();
@@ -1005,7 +1038,7 @@ namespace AutoBotUtilities
                     {
                         var rider = sRider.ShipmentRider;
 
-                        var clients = rider.ShipmentRiderDetails.GroupBy(x => new Tuple<string, int>(x.Code, x.RiderId))
+                        var clients = rider.ShipmentRiderDetails.GroupBy(x => new Tuple<string, int, string>(x.Code, x.RiderId,"Next Shipment"))
                             .ToList().ToList();
 
                         foreach (var client in clients)
@@ -1057,6 +1090,14 @@ namespace AutoBotUtilities
                             var allUnMatchedInvoices = new EntryDataDSContext().ShipmentMIS_Invoices
                                 .Where(x => invoiceLst.Any(z => z == x.Id)).ToList();
                             var allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
+
+                            var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
+                        var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber)).ToList();
+                        poNOs.AddRange(allUnMatchedPOs.Select(x => x.InvoiceNo).ToList());
+                        var classifications = new EntryDataDSContext().ShipmentInvoicePOItemData
+                            .Where(x => invoiceNOs.Contains(x.InvoiceNo) || poNOs.Contains(x.PONumber)).ToList();
+                        summaryPkg.Classifications = classifications;
+
 
                             summaryPkg.UnMatchedInvoices = allUnMatchedInvoices;
                             summaryPkg.UnMatchedPOs = allUnMatchedPOs;

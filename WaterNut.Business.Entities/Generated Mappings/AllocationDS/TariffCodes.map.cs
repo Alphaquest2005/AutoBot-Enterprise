@@ -29,6 +29,7 @@
               this.Property(t => t.LicenseDescription).HasColumnName("LicenseDescription").HasMaxLength(50);
               this.HasOptional(t => t.TariffCategory).WithMany(t =>(ICollection<TariffCodes>) t.TariffCodes).HasForeignKey(d => d.TariffCategoryCode);
               this.HasMany(t => t.InventoryItemsEx).WithOptional(t => t.TariffCodes).HasForeignKey(d => d.TariffCode);
+              this.HasMany(t => t.xcuda_HScode).WithRequired(t => (TariffCodes)t.TariffCodes);
              // Tracking Properties
     			this.Ignore(t => t.TrackingState);
     			this.Ignore(t => t.ModifiedProperties);

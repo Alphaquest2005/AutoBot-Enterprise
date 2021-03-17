@@ -189,18 +189,26 @@ namespace xlsxWriter
         }
 
         public static string CreateUnattachedShipmentWorkBook(
-            Tuple<string, int> client, UnAttachedWorkBookPkg summaryPkg)
+            Tuple<string, int, string> client, UnAttachedWorkBookPkg summaryPkg)
         {
             var summaryWorkBook = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports",
-                $"Summary-{client.Item1.Split(' ').FirstOrDefault()}.xlsx");
+                $"Summary-{client.Item3}.xlsx");
             if (File.Exists(summaryWorkBook)) File.Delete(summaryWorkBook);
             Workbook workbook = new Workbook(summaryWorkBook, "Summary");
             CreateSummarySheet(summaryPkg, workbook);
             CreateRiderInvoiceSheet(summaryPkg, workbook);
             CreateUnMatchedWorkSheet(workbook, summaryPkg.UnMatchedPOs, summaryPkg.UnMatchedInvoices);
-           
+            CreateClassificationsSheet(workbook, summaryPkg.Classifications);
             workbook.Save();
             return summaryWorkBook;
+        }
+
+        private static void CreateClassificationsSheet(Workbook workbook, List<ShipmentInvoicePOItemData> summaryPkgClassifications)
+        {
+            workbook.AddWorksheet("Classifications");
+            var currentline = 0;
+
+            WriteTable( summaryPkgClassifications.Select(x => (dynamic)x).ToList() , workbook, currentline, "PONumber, InvoiceNo, POItemCode, INVItemCode, PODescription, INVDescription, TariffCode, POCost, INVCost, POQuantity, INVQuantity, POTotalCost, INVTotalCost", "Classifications:");
         }
 
         private static void CreateRiderInvoiceSheet(UnAttachedWorkBookPkg summaryPkg, Workbook workbook)
@@ -549,5 +557,6 @@ namespace xlsxWriter
         public List<ShipmentRiderDetails> RiderDetails { get; set; }
         public List<ShipmentInvoiceRiderManualMatches> RiderManualMatches { get; set; }
         public ShipmentRiderEx RiderSummary { get; set; }
+        public List<ShipmentInvoicePOItemData> Classifications { get; set; }
     }
 }

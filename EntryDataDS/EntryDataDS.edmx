@@ -739,13 +739,36 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoiceDetailsIte
         <EntityType Name="ShipmentInvoiceDetailsItemAlias">
           <Key>
             <PropertyRef Name="Id" />
-            
-            
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="INVItemCode" Type="nvarchar" MaxLength="20" />
           <Property Name="POItemCode" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="POItemDescription" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemData' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ShipmentInvoicePOItemData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="PODetailsId" Type="int" />
+          <Property Name="INVDetailsId" Type="int" />
+          <Property Name="POId" Type="int" />
+          <Property Name="INVId" Type="int" />
+          <Property Name="PONumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="InvoiceNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="POItemCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="INVItemCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="PODescription" Type="nvarchar" MaxLength="255" />
+          <Property Name="INVDescription" Type="nvarchar" MaxLength="255" />
+          <Property Name="TariffCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="POCost" Type="float" />
+          <Property Name="INVCost" Type="float" />
+          <Property Name="POQuantity" Type="float" />
+          <Property Name="INVQuantity" Type="float" />
+          <Property Name="POTotalCost" Type="float" />
+          <Property Name="INVTotalCost" Type="float" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoicePOItemMISMatches' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -1697,6 +1720,28 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
     [ShipmentInvoiceDetailsItemAlias].[POItemDescription] AS [POItemDescription]
     FROM [dbo].[ShipmentInvoiceDetailsItemAlias] AS [ShipmentInvoiceDetailsItemAlias]</DefiningQuery>
           </EntitySet>
+          <EntitySet Name="ShipmentInvoicePOItemData" EntityType="Self.ShipmentInvoicePOItemData" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ShipmentInvoicePOItemData].[Id] AS [Id], 
+    [ShipmentInvoicePOItemData].[PODetailsId] AS [PODetailsId], 
+    [ShipmentInvoicePOItemData].[INVDetailsId] AS [INVDetailsId], 
+    [ShipmentInvoicePOItemData].[POId] AS [POId], 
+    [ShipmentInvoicePOItemData].[INVId] AS [INVId], 
+    [ShipmentInvoicePOItemData].[PONumber] AS [PONumber], 
+    [ShipmentInvoicePOItemData].[InvoiceNo] AS [InvoiceNo], 
+    [ShipmentInvoicePOItemData].[POItemCode] AS [POItemCode], 
+    [ShipmentInvoicePOItemData].[INVItemCode] AS [INVItemCode], 
+    [ShipmentInvoicePOItemData].[PODescription] AS [PODescription], 
+    [ShipmentInvoicePOItemData].[INVDescription] AS [INVDescription], 
+    [ShipmentInvoicePOItemData].[TariffCode] AS [TariffCode], 
+    [ShipmentInvoicePOItemData].[POCost] AS [POCost], 
+    [ShipmentInvoicePOItemData].[INVCost] AS [INVCost], 
+    [ShipmentInvoicePOItemData].[POQuantity] AS [POQuantity], 
+    [ShipmentInvoicePOItemData].[INVQuantity] AS [INVQuantity], 
+    [ShipmentInvoicePOItemData].[POTotalCost] AS [POTotalCost], 
+    [ShipmentInvoicePOItemData].[INVTotalCost] AS [INVTotalCost]
+    FROM [dbo].[ShipmentInvoicePOItemData] AS [ShipmentInvoicePOItemData]</DefiningQuery>
+          </EntitySet>
           <EntitySet Name="ShipmentInvoicePOItemMISMatches" EntityType="Self.ShipmentInvoicePOItemMISMatches" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [ShipmentInvoicePOItemMISMatches].[Id] AS [Id], 
@@ -2274,11 +2319,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             <End Role="EntryDataDetails" EntitySet="EntryDataDetails" />
             <End Role="ShipmentInvoicePOItemQueryMatches" EntitySet="ShipmentInvoicePOItemQueryMatches" />
           </AssociationSet>
-          <EntitySet Name="ShipmentInvoiceDetailsItemAlias" EntityType="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" />
-          <AssociationSet Name="InvoiceDetailsShipmentInvoiceDetailsItemAlias" Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias">
-            <End Role="InvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
-            <End Role="ShipmentInvoiceDetailsItemAlias" EntitySet="ShipmentInvoiceDetailsItemAlias" />
-          </AssociationSet>
           <EntitySet Name="ShipmentMIS_Invoices" EntityType="WaterNutDBModel.ShipmentMIS_Invoices" />
           <EntitySet Name="ShipmentMIS_POs" EntityType="WaterNutDBModel.ShipmentMIS_POs" />
           <EntitySet Name="ShipmentRiderEx" EntityType="WaterNutDBModel.ShipmentRiderEx" />
@@ -2294,6 +2334,12 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <AssociationSet Name="InventoryItemsInventoryItemAlias" Association="WaterNutDBModel.InventoryItemsInventoryItemAlias">
             <End Role="InventoryItems" EntitySet="InventoryItems" />
             <End Role="InventoryItemAlias" EntitySet="InventoryItemAlias" />
+          </AssociationSet>
+          <EntitySet Name="ShipmentInvoicePOItemData" EntityType="WaterNutDBModel.ShipmentInvoicePOItemData" />
+          <EntitySet Name="ShipmentInvoiceDetailsItemAlias" EntityType="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" />
+          <AssociationSet Name="InvoiceDetailsShipmentInvoiceDetailsItemAlias" Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias">
+            <End Role="InvoiceDetails" EntitySet="ShipmentInvoiceDetails" />
+            <End Role="ShipmentInvoiceDetailsItemAlias" EntitySet="ShipmentInvoiceDetailsItemAlias" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Sales" BaseType="WaterNutDBModel.EntryData">
@@ -3061,8 +3107,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <NavigationProperty Name="Invoice" Relationship="WaterNutDBModel.FK_ShipmentInvoiceDetails_ShipmentInvoice1" FromRole="ShipmentInvoiceDetails" ToRole="ShipmentInvoice" />
           <Property Name="InventoryItemId" Type="Int32" />
           <NavigationProperty Name="POItems" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" FromRole="InvoiceDetails" ToRole="ShipmentInvoicePOItemQueryMatches" />
-          <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
           <Property Name="SalesFactor" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ItemAlias" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="InvoiceDetails" ToRole="ShipmentInvoiceDetailsItemAlias" />
         </EntityType>
         <Association Name="FK_ShipmentInvoiceDetails_ShipmentInvoice1">
           <End Type="WaterNutDBModel.ShipmentInvoice" Role="ShipmentInvoice" Multiplicity="1">
@@ -3911,28 +3957,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ShipmentInvoiceDetailsItemAlias">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="INVItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="POItemCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="POItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="InvoiceDetails" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="ShipmentInvoiceDetailsItemAlias" ToRole="InvoiceDetails" />
-        </EntityType>
-        <Association Name="InvoiceDetailsShipmentInvoiceDetailsItemAlias">
-          <End Type="WaterNutDBModel.InvoiceDetails" Role="InvoiceDetails" Multiplicity="1" />
-          <End Type="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" Role="ShipmentInvoiceDetailsItemAlias" Multiplicity="1" />
-          <ReferentialConstraint>
-            <Principal Role="InvoiceDetails">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ShipmentInvoiceDetailsItemAlias">
-              <PropertyRef Name="Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="ShipmentMIS_Invoices">
           <Key>
             <PropertyRef Name="Id" />
@@ -4024,6 +4048,51 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
             </Principal>
             <Dependent Role="InventoryItemAlias">
               <PropertyRef Name="AliasItemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="ShipmentInvoicePOItemData">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="PODetailsId" Type="Int32" />
+          <Property Name="INVDetailsId" Type="Int32" />
+          <Property Name="POId" Type="Int32" />
+          <Property Name="INVId" Type="Int32" />
+          <Property Name="PONumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="InvoiceNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="INVItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="PODescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="INVDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TariffCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="POCost" Type="Double" />
+          <Property Name="INVCost" Type="Double" />
+          <Property Name="POQuantity" Type="Double" />
+          <Property Name="INVQuantity" Type="Double" />
+          <Property Name="POTotalCost" Type="Double" />
+          <Property Name="INVTotalCost" Type="Double" />
+        </EntityType>
+        <EntityType Name="ShipmentInvoiceDetailsItemAlias">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="INVItemCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="POItemCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="POItemDescription" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="InvoiceDetails" Relationship="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" FromRole="ShipmentInvoiceDetailsItemAlias" ToRole="InvoiceDetails" />
+        </EntityType>
+        <Association Name="InvoiceDetailsShipmentInvoiceDetailsItemAlias">
+          <End Type="WaterNutDBModel.InvoiceDetails" Role="InvoiceDetails" Multiplicity="1" />
+          <End Type="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" Role="ShipmentInvoiceDetailsItemAlias" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="InvoiceDetails">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ShipmentInvoiceDetailsItemAlias">
+              <PropertyRef Name="Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -4835,16 +4904,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ShipmentInvoiceDetailsItemAlias">
-            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias">
-              <MappingFragment StoreEntitySet="ShipmentInvoiceDetailsItemAlias">
-                <ScalarProperty Name="POItemDescription" ColumnName="POItemDescription" />
-                <ScalarProperty Name="POItemCode" ColumnName="POItemCode" />
-                <ScalarProperty Name="INVItemCode" ColumnName="INVItemCode" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="ShipmentMIS_Invoices">
             <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentMIS_Invoices">
               <MappingFragment StoreEntitySet="ShipmentMIS-Invoices">
@@ -4898,6 +4957,40 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
                 <ScalarProperty Name="AliasName" ColumnName="AliasName" />
                 <ScalarProperty Name="InventoryItemId" ColumnName="InventoryItemId" />
                 <ScalarProperty Name="AliasId" ColumnName="AliasId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoicePOItemData">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoicePOItemData">
+              <MappingFragment StoreEntitySet="ShipmentInvoicePOItemData">
+                <ScalarProperty Name="INVTotalCost" ColumnName="INVTotalCost" />
+                <ScalarProperty Name="POTotalCost" ColumnName="POTotalCost" />
+                <ScalarProperty Name="INVQuantity" ColumnName="INVQuantity" />
+                <ScalarProperty Name="POQuantity" ColumnName="POQuantity" />
+                <ScalarProperty Name="INVCost" ColumnName="INVCost" />
+                <ScalarProperty Name="POCost" ColumnName="POCost" />
+                <ScalarProperty Name="TariffCode" ColumnName="TariffCode" />
+                <ScalarProperty Name="INVDescription" ColumnName="INVDescription" />
+                <ScalarProperty Name="PODescription" ColumnName="PODescription" />
+                <ScalarProperty Name="INVItemCode" ColumnName="INVItemCode" />
+                <ScalarProperty Name="POItemCode" ColumnName="POItemCode" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
+                <ScalarProperty Name="PONumber" ColumnName="PONumber" />
+                <ScalarProperty Name="INVId" ColumnName="INVId" />
+                <ScalarProperty Name="POId" ColumnName="POId" />
+                <ScalarProperty Name="INVDetailsId" ColumnName="INVDetailsId" />
+                <ScalarProperty Name="PODetailsId" ColumnName="PODetailsId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShipmentInvoiceDetailsItemAlias">
+            <EntityTypeMapping TypeName="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias">
+              <MappingFragment StoreEntitySet="ShipmentInvoiceDetailsItemAlias">
+                <ScalarProperty Name="POItemDescription" ColumnName="POItemDescription" />
+                <ScalarProperty Name="POItemCode" ColumnName="POItemCode" />
+                <ScalarProperty Name="INVItemCode" ColumnName="INVItemCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

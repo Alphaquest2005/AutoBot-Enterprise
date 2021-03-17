@@ -13,19 +13,178 @@ using Core.Common.Business.Entities;
 using WaterNut.Interfaces;
 using TrackableEntities;
 
-namespace AllocationDS.Business.Entities
+namespace EntryDataDS.Business.Entities
 {
 
     //[JsonObject(IsReference = true)]
     [DataContract(IsReference = true, Namespace="http://www.insight-software.com/WaterNut")]
-    public partial class TariffCodes : BaseEntity<TariffCodes>, ITrackable 
+    public partial class ShipmentInvoicePOItemData : BaseEntity<ShipmentInvoicePOItemData>, ITrackable 
     {
-        partial void AutoGenStartUp() //TariffCodes()
+        [DataMember]
+        public int Id 
         {
-            this.InventoryItemsEx = new List<InventoryItem>();
-            this.xcuda_HScode = new List<xcuda_HScode>();
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
         }
-
+        int _id;
+        [DataMember]
+        public Nullable<int> PODetailsId 
+        {
+            get
+            {
+                return _podetailsid;
+            }
+            set
+            {
+                _podetailsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _podetailsid;
+        [DataMember]
+        public Nullable<int> INVDetailsId 
+        {
+            get
+            {
+                return _invdetailsid;
+            }
+            set
+            {
+                _invdetailsid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _invdetailsid;
+        [DataMember]
+        public Nullable<int> POId 
+        {
+            get
+            {
+                return _poid;
+            }
+            set
+            {
+                _poid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _poid;
+        [DataMember]
+        public Nullable<int> INVId 
+        {
+            get
+            {
+                return _invid;
+            }
+            set
+            {
+                _invid = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<int> _invid;
+        [DataMember]
+        public string PONumber 
+        {
+            get
+            {
+                return _ponumber;
+            }
+            set
+            {
+                _ponumber = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _ponumber;
+        [DataMember]
+        public string InvoiceNo 
+        {
+            get
+            {
+                return _invoiceno;
+            }
+            set
+            {
+                _invoiceno = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _invoiceno;
+        [DataMember]
+        public string POItemCode 
+        {
+            get
+            {
+                return _poitemcode;
+            }
+            set
+            {
+                _poitemcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _poitemcode;
+        [DataMember]
+        public string INVItemCode 
+        {
+            get
+            {
+                return _invitemcode;
+            }
+            set
+            {
+                _invitemcode = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _invitemcode;
+        [DataMember]
+        public string PODescription 
+        {
+            get
+            {
+                return _podescription;
+            }
+            set
+            {
+                _podescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _podescription;
+        [DataMember]
+        public string INVDescription 
+        {
+            get
+            {
+                return _invdescription;
+            }
+            set
+            {
+                _invdescription = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        string _invdescription;
         [DataMember]
         public string TariffCode 
         {
@@ -42,206 +201,95 @@ namespace AllocationDS.Business.Entities
         }
         string _tariffcode;
         [DataMember]
-        public string Description 
+        public Nullable<double> POCost 
         {
             get
             {
-                return _description;
+                return _pocost;
             }
             set
             {
-                _description = value;
+                _pocost = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _description;
+        Nullable<double> _pocost;
         [DataMember]
-        public string RateofDuty 
+        public Nullable<double> INVCost 
         {
             get
             {
-                return _rateofduty;
+                return _invcost;
             }
             set
             {
-                _rateofduty = value;
+                _invcost = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _rateofduty;
+        Nullable<double> _invcost;
         [DataMember]
-        public string EnvironmentalLevy 
+        public Nullable<double> POQuantity 
         {
             get
             {
-                return _environmentallevy;
+                return _poquantity;
             }
             set
             {
-                _environmentallevy = value;
+                _poquantity = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _environmentallevy;
+        Nullable<double> _poquantity;
         [DataMember]
-        public string CustomsServiceCharge 
+        public Nullable<double> INVQuantity 
         {
             get
             {
-                return _customsservicecharge;
+                return _invquantity;
             }
             set
             {
-                _customsservicecharge = value;
+                _invquantity = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _customsservicecharge;
+        Nullable<double> _invquantity;
         [DataMember]
-        public string ExciseTax 
+        public Nullable<double> POTotalCost 
         {
             get
             {
-                return _excisetax;
+                return _pototalcost;
             }
             set
             {
-                _excisetax = value;
+                _pototalcost = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _excisetax;
+        Nullable<double> _pototalcost;
         [DataMember]
-        public string VatRate 
+        public Nullable<double> INVTotalCost 
         {
             get
             {
-                return _vatrate;
+                return _invtotalcost;
             }
             set
             {
-                _vatrate = value;
+                _invtotalcost = value;
                 //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
                 NotifyPropertyChanged();
             }
         }
-        string _vatrate;
-        [DataMember]
-        public string PetrolTax 
-        {
-            get
-            {
-                return _petroltax;
-            }
-            set
-            {
-                _petroltax = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _petroltax;
-        [DataMember]
-        public string Units 
-        {
-            get
-            {
-                return _units;
-            }
-            set
-            {
-                _units = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _units;
-        [DataMember]
-        public string SiteRev3 
-        {
-            get
-            {
-                return _siterev3;
-            }
-            set
-            {
-                _siterev3 = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _siterev3;
-        [DataMember]
-        public string TariffCategoryCode 
-        {
-            get
-            {
-                return _tariffcategorycode;
-            }
-            set
-            {
-                _tariffcategorycode = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _tariffcategorycode;
-        [DataMember]
-        public Nullable<bool> LicenseRequired 
-        {
-            get
-            {
-                return _licenserequired;
-            }
-            set
-            {
-                _licenserequired = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<bool> _licenserequired;
-        [DataMember]
-        public Nullable<bool> Invalid 
-        {
-            get
-            {
-                return _invalid;
-            }
-            set
-            {
-                _invalid = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        Nullable<bool> _invalid;
-        [DataMember]
-        public string LicenseDescription 
-        {
-            get
-            {
-                return _licensedescription;
-            }
-            set
-            {
-                _licensedescription = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        string _licensedescription;
-        [DataMember]
-        public TariffCategory TariffCategory { get; set; }
-        [DataMember]
-        public List<InventoryItem> InventoryItemsEx { get; set; }
-        [DataMember]
-        public List<xcuda_HScode> xcuda_HScode { get; set; }
+        Nullable<double> _invtotalcost;
 
  //       [DataMember]
  //       public TrackingState TrackingState { get; set; }

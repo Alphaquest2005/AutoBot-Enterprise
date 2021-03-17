@@ -205,7 +205,7 @@ namespace WaterNut.DataSpace
                                             Shipper = riderDetail.Shipper,
                                             TrackingNumber = riderDetail.TrackingNumber,
                                             Pieces = 1,
-                                            WarehouseCode = riderDetail.WarehouseCode,
+                                            WarehouseCode = i.WarehouseCode.Trim(),//riderDetail.WarehouseCode,
                                             InvoiceNumber = i.Number[j].Trim(),
                                             InvoiceTotal = j >= totalst.Count 
                                             ? 0 : totalst[j],
@@ -862,9 +862,9 @@ namespace WaterNut.DataSpace
 
                 List<EntryData> eLst = null;
 
-                //Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
-                //    async item =>
-                    foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null))
+                Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
+                    async item =>
+                    //  foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null))
 
                     {
                         string entryDataId = item.EntryData.EntryDataId;
@@ -1336,7 +1336,7 @@ namespace WaterNut.DataSpace
                         }
 
 
-                }//);
+                });
 
 
 

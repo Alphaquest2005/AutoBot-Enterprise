@@ -1951,7 +1951,7 @@ namespace WaterNut.DataSpace
             {
 
 
-                var tariffSupUnitLkps = pod.TariffSupUnitLkps;
+                var tariffSupUnitLkps = pod.TariffSupUnitLkps.DistinctBy(s => s.SuppUnitCode2).ToList();
                 if (tariffSupUnitLkps != null)
                     foreach (var item in tariffSupUnitLkps.ToList())
                     {

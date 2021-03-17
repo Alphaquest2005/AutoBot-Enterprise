@@ -147,8 +147,6 @@ namespace EntryDataDS.Business.Entities
      
         public DbSet<ShipmentInvoiceRiderManualMatches> ShipmentInvoiceRiderManualMatches { get; set; }
      
-        public DbSet<ShipmentInvoiceDetailsItemAlias> ShipmentInvoiceDetailsItemAlias { get; set; }
-     
         public DbSet<ShipmentMIS_Invoices> ShipmentMIS_Invoices { get; set; }
      
         public DbSet<ShipmentMIS_POs> ShipmentMIS_POs { get; set; }
@@ -156,6 +154,10 @@ namespace EntryDataDS.Business.Entities
         public DbSet<ShipmentRiderEx> ShipmentRiderEx { get; set; }
      
         public DbSet<InventoryItemAlias> InventoryItemAlias { get; set; }
+     
+        public DbSet<ShipmentInvoicePOItemData> ShipmentInvoicePOItemData { get; set; }
+     
+        public DbSet<ShipmentInvoiceDetailsItemAlias> ShipmentInvoiceDetailsItemAlias { get; set; }
      
 
 
@@ -261,8 +263,6 @@ namespace EntryDataDS.Business.Entities
          
             modelBuilder.Configurations.Add(new ShipmentInvoiceRiderManualMatchesMap());
          
-            modelBuilder.Configurations.Add(new ShipmentInvoiceDetailsItemAliasMap());
-         
             modelBuilder.Configurations.Add(new ShipmentMIS_InvoicesMap());
          
             modelBuilder.Configurations.Add(new ShipmentMIS_POsMap());
@@ -270,6 +270,10 @@ namespace EntryDataDS.Business.Entities
             modelBuilder.Configurations.Add(new ShipmentRiderExMap());
          
             modelBuilder.Configurations.Add(new InventoryItemAliasMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoicePOItemDataMap());
+         
+            modelBuilder.Configurations.Add(new ShipmentInvoiceDetailsItemAliasMap());
          
             modelBuilder.Configurations.Add(new AdjustmentsMap());
       

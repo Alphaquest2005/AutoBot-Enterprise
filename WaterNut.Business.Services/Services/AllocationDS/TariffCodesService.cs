@@ -247,6 +247,12 @@ namespace AllocationDS.Business.Services
                                         GetWhere<InventoryItem>(dbContext, exp, itm.Value, "TariffCodes", "Select", includesLst)
 										.ConfigureAwait(continueOnCapturedContext: false);
 
+                            case "xcuda_HScode":
+                                return
+                                    await
+                                        GetWhere<xcuda_HScode>(dbContext, exp, itm.Value, "TariffCodes", "Select", includesLst)
+										.ConfigureAwait(continueOnCapturedContext: false);
+
                         }
 
                     }
@@ -752,6 +758,9 @@ namespace AllocationDS.Business.Services
                             case "InventoryItemsEx":
                                 return await CountWhere<InventoryItem>(dbContext, exp, itm.Value, "TariffCodes", "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_HScode":
+                                return await CountWhere<xcuda_HScode>(dbContext, exp, itm.Value, "TariffCodes", "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }
                     return await dbContext.TariffCodes.Where(exp == "All" || exp == null ? "TariffCode != null" : exp)
@@ -868,6 +877,12 @@ namespace AllocationDS.Business.Services
                                 return
                                     await
                                         LoadRangeWhere<InventoryItem>(startIndex, count, dbContext, exp, itm.Value, "TariffCodes", "Select")
+													.ConfigureAwait(continueOnCapturedContext: false);
+
+                            case "xcuda_HScode":
+                                return
+                                    await
+                                        LoadRangeWhere<xcuda_HScode>(startIndex, count, dbContext, exp, itm.Value, "TariffCodes", "Select")
 													.ConfigureAwait(continueOnCapturedContext: false);
 
                           
@@ -1134,6 +1149,9 @@ namespace AllocationDS.Business.Services
 											.ConfigureAwait(continueOnCapturedContext: false);
                             case "InventoryItemsEx":
                                 return await SumWhere<InventoryItem>(dbContext, exp, itm.Value, "TariffCodes", field, "Select")
+											.ConfigureAwait(continueOnCapturedContext: false);
+                            case "xcuda_HScode":
+                                return await SumWhere<xcuda_HScode>(dbContext, exp, itm.Value, "TariffCodes", field, "Select")
 											.ConfigureAwait(continueOnCapturedContext: false);
 						}
                     }

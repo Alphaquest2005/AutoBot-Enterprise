@@ -1923,6 +1923,10 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             <End Role="CustomsOperations" EntitySet="CustomsOperations" />
             <End Role="Customs_Procedure" EntitySet="Customs_Procedure" />
           </AssociationSet>
+          <AssociationSet Name="TariffCodesxcuda_HScode" Association="WaterNutDBModel.TariffCodesxcuda_HScode">
+            <End Role="TariffCodes" EntitySet="TariffCodes" />
+            <End Role="xcuda_HScode" EntitySet="xcuda_HScode" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="AsycudaSalesAllocations">
           <Key>
@@ -2318,7 +2322,9 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <NavigationProperty Name="TariffCategory" Relationship="WaterNutDBModel.FK_TariffCodes_TariffCategory" FromRole="TariffCodes" ToRole="TariffCategory"><a:ImplementsNavigationProperty xmlns:a="http://schemas.tempuri.com/ImplementsNavigationProperty"></a:ImplementsNavigationProperty></NavigationProperty>
           <Property Name="Invalid" Type="Boolean" />
           <NavigationProperty Name="InventoryItemsEx" Relationship="WaterNutDBModel.TariffCodesInventoryItemsEx" FromRole="TariffCodes" ToRole="InventoryItemsEx" />
-          <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" /><a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
+          <Property Name="LicenseDescription" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="xcuda_HScode" Relationship="WaterNutDBModel.TariffCodesxcuda_HScode" FromRole="TariffCodes" ToRole="xcuda_HScode" />
+          <a:DomainInterfaceProperty xmlns:a="http://schemas.tempuri.com/DomainInterfaceProperty"></a:DomainInterfaceProperty>
         </EntityType>
         <EntityType Name="TariffSupUnitLkps">
           <Key>
@@ -2362,6 +2368,7 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
           <Property Name="Precision_4" Type="String" MaxLength="50" FixedLength="false" Unicode="true"><a:ImplementsProperty xmlns:a="http://schemas.tempuri.com/ImplementsProperty">IDocumentItem.ItemNumber</a:ImplementsProperty></Property>
           <Property Name="Item_Id" Type="Int32" Nullable="false" />
           <NavigationProperty Name="xcuda_Tarification" Relationship="WaterNutDBModel.FK_Tarification_HScode" FromRole="xcuda_HScode" ToRole="xcuda_Tarification" />
+          <NavigationProperty Name="TariffCodes" Relationship="WaterNutDBModel.TariffCodesxcuda_HScode" FromRole="xcuda_HScode" ToRole="TariffCodes" />
         </EntityType>
         <EntityType Name="xcuda_Item_Invoice">
           <Key>
@@ -3297,6 +3304,18 @@ FROM [dbo].[PreviousItemsEx] AS [PreviousItemsEx]</DefiningQuery>
             </Principal>
             <Dependent Role="Customs_Procedure">
               <PropertyRef Name="CustomsOperationId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="TariffCodesxcuda_HScode">
+          <End Type="WaterNutDBModel.TariffCodes" Role="TariffCodes" Multiplicity="1" />
+          <End Type="WaterNutDBModel.xcuda_HScode" Role="xcuda_HScode" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TariffCodes">
+              <PropertyRef Name="TariffCode" />
+            </Principal>
+            <Dependent Role="xcuda_HScode">
+              <PropertyRef Name="Commodity_code" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

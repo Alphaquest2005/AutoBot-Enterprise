@@ -63,7 +63,7 @@
         <EntityTypeShape EntityType="WaterNutDBModel.Adjustments" Width="1.5" PointX="12.375" PointY="1.5" />
         <InheritanceConnector EntityType="WaterNutDBModel.Adjustments" />
         <AssociationConnector Association="WaterNutDBModel.EntryData_AdjustmentsEntryDataDetails" />
-        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails" Width="3" PointX="17.875" PointY="15.25" />
+        <EntityTypeShape EntityType="WaterNutDBModel.AsycudaDocumentItemEntryDataDetails" Width="3" PointX="27.375" PointY="15.875" />
         <AssociationConnector Association="WaterNutDBModel.EntryDataDetailsAsycudaDocumentItemEntryDataDetails" />
         <EntityTypeShape EntityType="WaterNutDBModel.AscyudaItemPiQuantity" Width="2.75" PointX="14.5" PointY="15.125" />
         <AssociationConnector Association="WaterNutDBModel.AscyudaItemPiQuantityAdjustmentShortAllocations" />
@@ -91,6 +91,7 @@
         <AssociationConnector Association="WaterNutDBModel.Customs_ProcedureAsycudaDocument" />
         <EntityTypeShape EntityType="WaterNutDBModel.CustomsOperations" Width="1.5" PointX="22.125" PointY="21.25" />
         <AssociationConnector Association="WaterNutDBModel.FK_Customs_Procedure_CustomsOperations" />
+        <AssociationConnector Association="WaterNutDBModel.TariffCodesxcuda_HScode" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

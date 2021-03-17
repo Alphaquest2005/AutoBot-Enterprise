@@ -129,12 +129,13 @@
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentInvoice" />
         <AssociationConnector Association="WaterNutDBModel.FK_ShipmentInvoiceRiderDetails_ShipmentRiderDetails" />
         <AssociationConnector Association="WaterNutDBModel.InvoiceDetailsShipmentInvoicePOItemQueryMatches" />
-        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" Width="1.5" PointX="11.875" PointY="20.75" />
-        <AssociationConnector Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentMIS_Invoices" Width="2.125" PointX="20.25" PointY="20.375" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentMIS_POs" Width="2.125" PointX="20.25" PointY="17.25" />
         <EntityTypeShape EntityType="WaterNutDBModel.ShipmentRiderEx" Width="2" PointX="0.5" PointY="0.5" />
         <AssociationConnector Association="WaterNutDBModel.ShipmentRiderShipmentRiderEx" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoicePOItemData" Width="1.5" PointX="13.375" PointY="17.75" />
+        <EntityTypeShape EntityType="WaterNutDBModel.ShipmentInvoiceDetailsItemAlias" Width="2.75" PointX="11.375" PointY="21.75" />
+        <AssociationConnector Association="WaterNutDBModel.InvoiceDetailsShipmentInvoiceDetailsItemAlias" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

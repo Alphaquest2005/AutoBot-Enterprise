@@ -431,6 +431,7 @@
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
+    <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemData.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs" />
     <Compile Include="Generated Business Entities\EntryDataDS\ShipmentInvoicePOManualMatches.cs" />
@@ -810,6 +811,7 @@
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
+    <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs" />
     <Compile Include="Generated ChangeTracking Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs" />
@@ -1187,6 +1189,7 @@
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
+    <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs" />
     <Compile Include="Generated Constructors Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs" />
@@ -1564,6 +1567,7 @@
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
+    <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs" />
     <Compile Include="Generated IEntitiyWithKey Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs" />
@@ -1941,6 +1945,7 @@
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentFreightDetails.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoice.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoiceDetailsItemAlias.cs" />
+    <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemData.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemMISMatches.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOItemQueryMatches.cs" />
     <Compile Include="Generated IIdentitfiableEntity Models\EntryDataDS\ShipmentInvoicePOManualMatches.cs" />
@@ -2328,6 +2333,7 @@
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentFreightDetails.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoice.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoiceDetailsItemAlias.map.cs" />
+    <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoicePOItemData.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoicePOItemMISMatches.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoicePOItemQueryMatches.map.cs" />
     <Compile Include="Generated Mappings\EntryDataDS\ShipmentInvoicePOManualMatches.map.cs" />
