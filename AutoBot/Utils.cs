@@ -284,12 +284,13 @@ namespace AutoBot
 	                                                    ShipmentInvoicePOs ON [ShipmentInvoicePOMatches-Items].POId = ShipmentInvoicePOs.EntryData_Id AND [ShipmentInvoicePOMatches-Items].InvId = ShipmentInvoicePOs.InvoiceId
                                                     WHERE (ShipmentInvoicePOs.Id IS NULL)
 
-                                                    INSERT INTO ShipmentInvoicePOs
+                                /* --------------     INSERT INTO ShipmentInvoicePOs
                                                                         (EntryData_Id, InvoiceId)
                                                     SELECT [ShipmentInvoicePOMatches-Totals].EntryData_id, [ShipmentInvoicePOMatches-Totals].InvoiceId
                                                     FROM    [ShipmentInvoicePOMatches-Totals] LEFT OUTER JOIN
 	                                                    ShipmentInvoicePOs ON [ShipmentInvoicePOMatches-Totals].EntryData_id = ShipmentInvoicePOs.EntryData_Id AND [ShipmentInvoicePOMatches-Totals].InvoiceId = ShipmentInvoicePOs.InvoiceId
-                                                    WHERE (ShipmentInvoicePOs.Id IS NULL)
+                                                    WHERE (ShipmentInvoicePOs.Id IS NULL) 
+                                ----------------*/
 
 
                                                INSERT INTO InventoryItemAlias

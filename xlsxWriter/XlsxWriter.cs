@@ -275,6 +275,7 @@ namespace xlsxWriter
                 var currentRow = 0;
                 var currentColumn = 0;
                 var lst = new List<T>();
+                var readStarted = false;
                 while (true)
                 {
                     if (currentRow > 100) break;
@@ -283,12 +284,20 @@ namespace xlsxWriter
                         workbook.CurrentWorksheet.GetCell(currentColumn, currentRow).Value.ToString() == tableTag)
                     {
                         currentColumn++;
-
                         if (header.All(x =>
                             workbook.CurrentWorksheet.GetCell(currentColumn + header.IndexOf(x), currentRow).Value
                                 .ToString() == x))
                         {
+                            readStarted = true;
                             currentRow++;
+                        }
+                    }
+
+                    if (readStarted)
+                    {
+                        
+                        
+                            
                             if (!workbook.CurrentWorksheet.HasCell(currentColumn, currentRow)) break;
                             var itm = new T() {TrackingState = TrackingState.Added};
                             header.ForEach(x =>
@@ -300,7 +309,8 @@ namespace xlsxWriter
                                         .Value, prop.PropertyType));
                             });
                             lst.Add(itm);
-                        }
+
+                        
                     }
 
                     currentRow++;

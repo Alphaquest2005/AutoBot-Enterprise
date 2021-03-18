@@ -541,26 +541,30 @@ namespace WaterNut.DataSpace
 
         public Part(Parts part)
         {
-             StartCount = part.Start.Select(x => x.RegularExpressions.RegEx).Count();
-             EndCount = part.End.Select(x => x.RegularExpressions.RegEx).Count();
+            StartCount = part.Start.Select(x => x.RegularExpressions.RegEx).Count();
+            EndCount = part.End.Select(x => x.RegularExpressions.RegEx).Count();
             OCR_Part = part;
             ChildParts = part.ParentParts.Select(x => new Part(x.ChildPart)).ToList();
             Lines = part.Lines.Select(x => new Line(x)).ToList();
 
         }
 
-        public List<Part> ChildParts { get;  }
-        public List<Line> Lines { get; } 
+        public List<Part> ChildParts { get; }
+        public List<Line> Lines { get; }
         private int EndCount { get; }
 
         private int StartCount { get; }
 
-        public bool Success => Lines.All(x => !x.Values.SelectMany(z => z.Value).Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString()))) 
+        public bool Success => Lines.All(x =>
+                                   !x.Values.SelectMany(z => z.Value).Any(z =>
+                                       z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
                                //&& this.Lines.Any()
                                && !this.FailedLines.Any()
                                && ChildParts.All(x => x.Success == true);
-        public List<Line> FailedLines => Lines.Where(x =>  x.OCR_Lines.Fields.Any(z => z.IsRequired) && !x.Values.Any()).ToList()
-                                         .Union(ChildParts.SelectMany(x =>x.FailedLines)).ToList();
+
+        public List<Line> FailedLines => Lines.Where(x => x.OCR_Lines.Fields.Any(z => z.IsRequired) && !x.Values.Any())
+            .ToList()
+            .Union(ChildParts.SelectMany(x => x.FailedLines)).ToList();
 
         public List<Dictionary<string, List<KeyValuePair<Fields, string>>>> FailedFields =>
             Lines.SelectMany(x => x.FailedFields).ToList();
@@ -571,61 +575,76 @@ namespace WaterNut.DataSpace
         //                                                                        .ToDictionary(k => k.Key, v => v.ToList())
         //).ToList();
 
-        public List<Line> AllLines => Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList();
+        public List<Line> AllLines =>
+            Lines.Union(ChildParts.SelectMany(x => x.AllLines)).DistinctBy(x => x.OCR_Lines.Id).ToList();
+
         public bool WasStarted => this._startlines.Any();
 
         public void Read(InvoiceLine line)
         {
-            if ((_endlines.Count == EndCount && EndCount > 0) 
-                || (EndCount == 0 && _startlines.Count > StartCount && StartCount > 0))//attempting to do start to start
+            try
             {
-                if (OCR_Part.RecuringPart != null)
+               
+                if ((_endlines.Count == EndCount && EndCount > 0)
+                    || (EndCount == 0 && _startlines.Count > StartCount && StartCount > 0)
+                ) //attempting to do start to start
                 {
-                    _startlines.Clear();
-                    _endlines.Clear();
-                    _bodylines.Clear();
+                    if (OCR_Part.RecuringPart != null)
+                    {
+                        _startlines.Clear();
+                        _endlines.Clear();
+                        _bodylines.Clear();
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+
                 }
-                else
+
+                if (OCR_Part.Start.Any(z => Regex
+                    .Match(line.Line,
+                        z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
                 {
-                    return;
+                    if (!WasStarted || (WasStarted && OCR_Part.RecuringPart != null))
+                        if (_startlines.Count() < StartCount)
+                            _startlines.Add(line);
+                        else if (_startlines.Count() == StartCount) // treat as start tot start
+                        {
+                            _startlines.Clear();
+                            _endlines.Clear();
+                            _bodylines.Clear();
+                            _startlines.Add(line);
+                        }
                 }
 
-
-            }
-            if (OCR_Part.Start.Any(z => Regex.Match(line.Line,
-                    z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
-            {
-                if(!WasStarted  || (WasStarted && OCR_Part.RecuringPart != null))
-                if(_startlines.Count() < StartCount)
-                    _startlines.Add(line);
-                else if (_startlines.Count() == StartCount) // treat as start tot start
+                if (_startlines.Count() == StartCount &&
+                    ((_endlines.Count < EndCount && EndCount > 0) || EndCount == 0))
                 {
-                    _startlines.Clear();
-                    _endlines.Clear();
-                    _bodylines.Clear();
-                    _startlines.Add(line);
+                    _bodylines.Add(line);
+                    ChildParts.ForEach(x => x.Read(line));
+                    Lines.ForEach(x => x.Read(x.MultiLine ? _bodylines : new List<InvoiceLine>() {line}));
+
                 }
-            }
 
-            if (_startlines.Count() == StartCount && ((_endlines.Count < EndCount && EndCount > 0)  || EndCount == 0))
+                if (_startlines.Count() == StartCount
+                    && _startlines.All(x => x.LineNumber != line.LineNumber)
+                    && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex.Match(line.Line,
+                        z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
+                {
+                    _endlines.Add(line);
+                }
+
+            }
+            catch (Exception e)
             {
-                _bodylines.Add(line);
-                ChildParts.ForEach(x => x.Read(line));
-                Lines.ForEach(x => x.Read(x.MultiLine ? _bodylines : new List<InvoiceLine>() { line }));
-
+                Console.WriteLine(e);
+                throw;
             }
-
-            if (_startlines.Count() == StartCount 
-                && _startlines.All(x => x.LineNumber != line.LineNumber)
-                && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex.Match(line.Line,
-                    z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
-            {
-                _endlines.Add(line);
-            }
-
-
 
         }
+
     }
 
     public class Line
@@ -637,12 +656,12 @@ namespace WaterNut.DataSpace
             OCR_Lines = lines;
         }
 
-        public void Read(List<InvoiceLine> lines)
+        public bool Read(List<InvoiceLine> lines)
         {
             var line = lines.Select(x => x.Line).Aggregate((c, n) => c +"\r\n" + n);
             var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
                 RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-            if (!match.Success) return;
+            if (!match.Success) return false;
 
             var values = new Dictionary<Fields, string>();
             
@@ -659,6 +678,7 @@ namespace WaterNut.DataSpace
             }
 
             Values[lines.First().LineNumber] = values;
+            return true;
         }
 
         public Dictionary<int, Dictionary<Fields, string>> Values { get; } = new Dictionary<int, Dictionary<Fields, string>>();
