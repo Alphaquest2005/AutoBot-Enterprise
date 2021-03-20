@@ -3707,7 +3707,7 @@ namespace AutoBot
             {
 
 
-                if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddHours(-1)) return false;
+                if (File.GetLastWriteTime(overviewFile) <= DateTime.Now.AddMinutes(-10)) return false;
                 var lines = File.ReadAllText(Path.Combine(directoryName, "C71OverView-PDF.txt"))
                     .Split(new[] { $"\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 if (lines.Length == 0)

@@ -2019,7 +2019,7 @@ namespace WaterNut.DataSpace
                 },
                 {
                     "SupplierInvoiceNo",
-                    (c, mapping, splits) => c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]]) ? splits[mapping["EntryDataId"]] : splits[mapping["SupplierInvoiceNo"]]
+                    (c, mapping, splits) => c.EntryDataId = !string.IsNullOrEmpty(splits[mapping["EntryDataId"]]) ? splits[mapping["EntryDataId"]].Trim().Replace("PO/GD/","").Replace("SHOP/GR_","") : splits[mapping["SupplierInvoiceNo"]]
                 },
                 {
                     "POItemNumber",
