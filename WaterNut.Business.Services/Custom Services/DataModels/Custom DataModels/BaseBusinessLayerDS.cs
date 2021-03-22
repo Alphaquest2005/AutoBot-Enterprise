@@ -1949,7 +1949,7 @@ namespace WaterNut.DataSpace
 
             if (pod.TariffCode != null)
             {
-
+                if (pod.TariffSupUnitLkps == null || !pod.TariffSupUnitLkps.Any()) return;
 
                 var tariffSupUnitLkps = pod.TariffSupUnitLkps.DistinctBy(s => s.SuppUnitCode2).ToList();
                 if (tariffSupUnitLkps != null)
