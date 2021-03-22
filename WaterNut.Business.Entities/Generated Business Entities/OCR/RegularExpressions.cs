@@ -62,6 +62,21 @@ namespace OCR.Business.Entities
         }
         string _regex;
         [DataMember]
+        public Nullable<bool> MultiLine 
+        {
+            get
+            {
+                return _multiline;
+            }
+            set
+            {
+                _multiline = value;
+                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
+                NotifyPropertyChanged();
+            }
+        }
+        Nullable<bool> _multiline;
+        [DataMember]
         public List<End> End { get; set; }
         [DataMember]
         public List<Lines> Lines { get; set; }

@@ -818,7 +818,7 @@ namespace WaterNut.DataSpace
                                 //Can't set entrydata_id here cuz this is from data
                                 ItemNumber = x.ItemNumber.ToUpper(),
                                 ItemDescription = x.ItemDescription,
-                                Cost = Convert.ToDouble(x.Cost ?? 0.0),
+                                Cost = x.Cost,
                                 TotalCost = Convert.ToDouble(x.TotalCost ?? 0.0),
                                 Quantity = Convert.ToDouble(x.Quantity ?? 0.0),
                                 FileLineNumber = x.LineNumber,

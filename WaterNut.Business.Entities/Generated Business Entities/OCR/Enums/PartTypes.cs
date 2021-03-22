@@ -42,7 +42,16 @@ namespace OCR.Business.Enums
         Detailssection = 14,
 
       
-        DetailsSection = 15
+        DetailsSection = 15,
+
+      
+        Sparsedetailssection = 16,
+
+      
+        Sparsedetails = 17,
+
+      
+        DetailsLine = 18
   }
 }
 

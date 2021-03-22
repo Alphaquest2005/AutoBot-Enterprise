@@ -15,6 +15,7 @@
               this.ToTable("OCR-RegularExpressions");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.RegEx).HasColumnName("RegEx").IsRequired();
+              this.Property(t => t.MultiLine).HasColumnName("MultiLine");
               this.HasMany(t => t.End).WithRequired(t => (RegularExpressions)t.RegularExpressions);
               this.HasMany(t => t.Lines).WithRequired(t => (RegularExpressions)t.RegularExpressions);
               this.HasMany(t => t.Start).WithRequired(t => (RegularExpressions)t.RegularExpressions);

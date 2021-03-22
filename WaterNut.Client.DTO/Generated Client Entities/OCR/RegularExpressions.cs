@@ -47,6 +47,19 @@ namespace OCR.Client.DTO
 		}
         private string _RegEx;
 
+        [DataMember]
+        public Nullable<bool> MultiLine
+		{ 
+		    get { return _MultiLine; }
+			set
+			{
+			    if (value == _MultiLine) return;
+				_MultiLine = value;
+				NotifyPropertyChanged();//m => this.MultiLine
+			}
+		}
+        private Nullable<bool> _MultiLine;
+
        
         [DataMember]
         public ChangeTrackingCollection<End> End
