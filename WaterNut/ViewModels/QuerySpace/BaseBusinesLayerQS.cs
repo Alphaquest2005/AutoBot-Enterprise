@@ -26,8 +26,8 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 using (var ctx = new ApplicationSettingsRepository())
                 {
-                    ApplicationSettings = ctx.ApplicationSettings().Result.ToList();
-                    CurrentApplicationSettings = ctx.ApplicationSettings().Result.FirstOrDefault();
+                    ApplicationSettings = ctx.ApplicationSettings().Result.Where(x => x.IsActive).ToList();
+                    CurrentApplicationSettings = ApplicationSettings.FirstOrDefault();
                 }
 
                 if (CurrentApplicationSettings == null)

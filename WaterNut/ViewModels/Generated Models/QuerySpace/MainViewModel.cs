@@ -17,7 +17,7 @@ namespace WaterNut.QuerySpace.CoreEntities.ViewModels
             {
                 using (ApplicationSettingsRepository ctx = new ApplicationSettingsRepository())
                 {
-                    BaseViewModel.Instance.CurrentApplicationSettings = ctx.ApplicationSettings().Result.FirstOrDefault(x => x.Description == "WaterNut");
+                    BaseViewModel.Instance.CurrentApplicationSettings = ctx.ApplicationSettings().Result.Where(x => x.IsActive).FirstOrDefault(x => x.Description == "WaterNut");
                 }
             }
             catch (Exception ex)

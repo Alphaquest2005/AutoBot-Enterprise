@@ -51,6 +51,7 @@ namespace AutoBot
                         .Include("EmailMapping.EmailInfoMappings.InfoMapping.InfoMappingRegEx")
                         //.Include("FileTypes.ChildFileTypes")
                         //.Include("FileTypes.FileTypeMappings")
+                        .Where(x => x.IsActive)
                         .ToList();
 
                   

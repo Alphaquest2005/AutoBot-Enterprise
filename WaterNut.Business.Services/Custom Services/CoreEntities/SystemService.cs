@@ -62,7 +62,7 @@ namespace CoreEntities.Business.Services
             using (var ctx = new CoreEntitiesContext())
             {
                 BaseDataModel.Instance.CurrentApplicationSettings =
-                    ctx.ApplicationSettings.First(x => x.ApplicationSettingsId == applicationSettingId);
+                    ctx.ApplicationSettings.Where(x => x.IsActive).First(x => x.ApplicationSettingsId == applicationSettingId);
             }
         }
 

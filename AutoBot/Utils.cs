@@ -4995,8 +4995,9 @@ namespace AutoBot
                     .Include("FileTypes.FileTypeContacts.Contacts")
                     .Include("FileTypes.FileTypeActions.Actions")
                     .Include(x => x.EmailMapping)
-
-                    .Include("FileTypes.FileTypeMappings").First(x => x.ApplicationSettingsId == id);
+                    .Include("FileTypes.FileTypeMappings")
+                    .Where(x => x.IsActive)
+                    .First(x => x.ApplicationSettingsId == id);
 
                 // set BaseDataModel CurrentAppSettings
                 BaseDataModel.Instance.CurrentApplicationSettings = appSetting;
