@@ -999,14 +999,14 @@ namespace WaterNut.DataSpace
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
-                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
+                                        TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => (double)x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => (double)x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => (double)x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => (double)x.TotalDeductions),
                                         Packages = item.f.Sum(x => x.Packages),
-                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        InvoiceTotal = item.f.Sum(x => (double) x.InvoiceTotal),
 
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
@@ -1105,13 +1105,13 @@ namespace WaterNut.DataSpace
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         OPSNumber = entryDataId,
                                         TrackingState = TrackingState.Added,
-                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => (double)x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => (double)x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => (double)x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => (double)x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
@@ -1137,13 +1137,13 @@ namespace WaterNut.DataSpace
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         TrackingState = TrackingState.Added,
                                         SupplierCode = item.EntryData.Supplier,
-                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => (double)x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => (double)x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => (double)x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => (double)x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
@@ -1170,13 +1170,13 @@ namespace WaterNut.DataSpace
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         SupplierCode = item.EntryData.Supplier,
                                         TrackingState = TrackingState.Added,
-                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                        TotalOtherCost = item.f.Sum(x => x.TotalOtherCost),
-                                        TotalInsurance = item.f.Sum(x => x.TotalInsurance),
-                                        TotalDeduction = item.f.Sum(x => x.TotalDeductions),
-                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => (double)x.TotalWeight),
+                                        TotalOtherCost = item.f.Sum(x => (double)x.TotalOtherCost),
+                                        TotalInsurance = item.f.Sum(x => (double)x.TotalInsurance),
+                                        TotalDeduction = item.f.Sum(x => (double)x.TotalDeductions),
+                                        InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
@@ -1202,10 +1202,10 @@ namespace WaterNut.DataSpace
                                         EntryDataId = entryDataId,
                                         EntryDataDate = (DateTime) item.EntryData.EntryDataDate,
                                         TrackingState = TrackingState.Added,
-                                        TotalFreight = item.f.Sum(x => x.TotalFreight),
-                                        TotalInternalFreight = item.f.Sum(x => x.TotalInternalFreight),
-                                        TotalWeight = item.f.Sum(x => x.TotalWeight),
-                                        InvoiceTotal = item.f.Sum(x => x.InvoiceTotal),
+                                        TotalFreight = item.f.Sum(x => (double)x.TotalFreight),
+                                        TotalInternalFreight = item.f.Sum(x => (double)x.TotalInternalFreight),
+                                        TotalWeight = item.f.Sum(x => (double)x.TotalWeight),
+                                        InvoiceTotal = item.f.Sum(x => (double)x.InvoiceTotal),
                                         EmailId = item.EntryData.EmailId == 0 ? null : item.EntryData.EmailId,
                                         FileTypeId = item.EntryData.FileTypeId,
                                         SourceFile = item.EntryData.SourceFile,
@@ -2240,38 +2240,48 @@ namespace WaterNut.DataSpace
             return null;
         }
 
-      
+
 
         private object GetMappingValue(FileTypeMappings key, string[] splits, int index)
         {
-            var val = splits[index];
-            foreach (var regEx in key.FileTypeMappingRegExs)
+            try
             {
-                val = Regex.Replace(val, regEx.ReplacementRegex, regEx.ReplacementValue??"",
-                    RegexOptions.IgnoreCase);
-            }
 
-            if (key.DataType == "Date")
-            {
-                DateTime rdate;
-                if (DateTime.TryParse(val, out rdate))
+
+                var val = splits[index];
+                foreach (var regEx in key.FileTypeMappingRegExs)
                 {
-                    return rdate;
+                    val = Regex.Replace(val, regEx.ReplacementRegex, regEx.ReplacementValue ?? "",
+                        RegexOptions.IgnoreCase);
                 }
 
-                var formatStrings = new List<string>() {"M/y", "M/d/y", "M-d-y", "dd/MM/yyyy", "dd/M/yyyy" };
-                foreach (String formatString in formatStrings)
+                if (key.DataType == "Date")
                 {
-                    if (DateTime.TryParseExact(val, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                        out rdate))
+                    DateTime rdate;
+                    if (DateTime.TryParse(val, out rdate))
+                    {
                         return rdate;
+                    }
+
+                    var formatStrings = new List<string>() { "M/y", "M/d/y", "M-d-y", "dd/MM/yyyy", "dd/M/yyyy" };
+                    foreach (String formatString in formatStrings)
+                    {
+                        if (DateTime.TryParseExact(val, formatString, CultureInfo.InvariantCulture, DateTimeStyles.None,
+                            out rdate))
+                            return rdate;
+                    }
+
+                    return rdate; //DateTime.Parse(val);
                 }
 
-                return rdate; //DateTime.Parse(val);
+                if (key.DataType == "Number") return Convert.ToSingle(string.IsNullOrEmpty(val) ? "0" : val);
+                return val;
             }
+            catch (Exception)
+            {
 
-            if (key.DataType == "Number") return Convert.ToSingle(string.IsNullOrEmpty(val)?"0":val);
-            return val;
+                throw;
+            }
         }
 
 
