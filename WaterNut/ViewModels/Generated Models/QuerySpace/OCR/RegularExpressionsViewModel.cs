@@ -190,6 +190,24 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         }	
 
  
+
+		private Boolean? _multiLineFilter;
+        public Boolean? MultiLineFilter
+        {
+            get
+            {
+                return _multiLineFilter;
+            }
+            set
+            {
+                _multiLineFilter = value;
+				NotifyPropertyChanged(x => MultiLineFilter);
+                FilterData();
+                
+            }
+        }	
+
+ 
 		internal bool DisableBaseFilterData = false;
         public virtual void FilterData()
 	    {
@@ -222,6 +240,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
 
 									if(string.IsNullOrEmpty(RegExFilter) == false)
 						res.Append(" && " + string.Format("RegEx.Contains(\"{0}\")",  RegExFilter));						
+ 
+
+									if(MultiLineFilter.HasValue)
+						res.Append(" && " + string.Format("MultiLine == {0}",  MultiLineFilter));						
 			return res.ToString().StartsWith(" &&") || res.Length == 0 ? res:  res.Insert(0," && ");		
 		}
 
@@ -245,7 +267,10 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
                 dataToPrint = lst.Select(x => new RegularExpressionsExcelLine
                 {
  
-                    RegEx = x.RegEx 
+                    RegEx = x.RegEx ,
+                    
+ 
+                    MultiLine = x.MultiLine 
                     
                 }).ToList()
             };
@@ -259,6 +284,9 @@ namespace WaterNut.QuerySpace.OCR.ViewModels
         {
 		 
                     public string RegEx { get; set; } 
+                    
+ 
+                    public Nullable<bool> MultiLine { get; set; } 
                     
         }
 

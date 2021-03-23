@@ -192,7 +192,7 @@ namespace xlsxWriter
             Tuple<string, int, string> client, UnAttachedWorkBookPkg summaryPkg)
         {
             var summaryWorkBook = Path.Combine(BaseDataModel.Instance.CurrentApplicationSettings.DataFolder, "Imports",
-                $"Summary-{client.Item3}.xlsx");
+                $"Summary-{client.Item3}-{client.Item2}.xlsx");
             if (File.Exists(summaryWorkBook)) File.Delete(summaryWorkBook);
             Workbook workbook = new Workbook(summaryWorkBook, "Summary");
             CreateSummarySheet(summaryPkg, workbook);

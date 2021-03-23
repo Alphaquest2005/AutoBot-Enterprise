@@ -61,19 +61,6 @@ namespace OCR.Client.DTO
         private string _Name;
 
         [DataMember]
-        public bool MultiLine
-		{ 
-		    get { return _MultiLine; }
-			set
-			{
-			    if (value == _MultiLine) return;
-				_MultiLine = value;
-				NotifyPropertyChanged();//m => this.MultiLine
-			}
-		}
-        private bool _MultiLine;
-
-        [DataMember]
         public int RegExId
 		{ 
 		    get { return _RegExId; }

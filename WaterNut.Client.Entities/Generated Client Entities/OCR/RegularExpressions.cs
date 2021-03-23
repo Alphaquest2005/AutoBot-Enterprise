@@ -77,6 +77,21 @@ public string RegEx
 		}
      
 
+       
+       
+public Nullable<bool> MultiLine
+		{ 
+		    get { return this.regularexpressions.MultiLine; }
+			set
+			{
+			    if (value == this.regularexpressions.MultiLine) return;
+				this.regularexpressions.MultiLine = value;
+                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
+				NotifyPropertyChanged("MultiLine");
+			}
+		}
+     
+
         ObservableCollection<End> _End = null;
         public  ObservableCollection<End> End
 		{

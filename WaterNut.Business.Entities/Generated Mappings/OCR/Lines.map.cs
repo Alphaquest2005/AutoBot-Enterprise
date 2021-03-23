@@ -16,7 +16,6 @@
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.PartId).HasColumnName("PartId");
               this.Property(t => t.Name).HasColumnName("Name").IsRequired().HasMaxLength(50);
-              this.Property(t => t.MultiLine).HasColumnName("MultiLine");
               this.Property(t => t.RegExId).HasColumnName("RegExId");
               this.HasRequired(t => t.Parts).WithMany(t =>(ICollection<Lines>) t.Lines).HasForeignKey(d => d.PartId);
               this.HasRequired(t => t.RegularExpressions).WithMany(t =>(ICollection<Lines>) t.Lines).HasForeignKey(d => d.RegExId);

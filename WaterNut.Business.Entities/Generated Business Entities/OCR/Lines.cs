@@ -71,21 +71,6 @@ namespace OCR.Business.Entities
         }
         string _name;
         [DataMember]
-        public bool MultiLine 
-        {
-            get
-            {
-                return _multiline;
-            }
-            set
-            {
-                _multiline = value;
-                //if(this.TrackingState == TrackingState.Unchanged) this.TrackingState = TrackingState.Modified;  
-                NotifyPropertyChanged();
-            }
-        }
-        bool _multiline;
-        [DataMember]
         public int RegExId 
         {
             get

@@ -92,21 +92,6 @@ public string Name
 		}
      
 
-       [RequiredValidationAttribute(ErrorMessage= "MultiLine is required")]
-       
-public bool MultiLine
-		{ 
-		    get { return this.lines.MultiLine; }
-			set
-			{
-			    if (value == this.lines.MultiLine) return;
-				this.lines.MultiLine = value;
-                if(this.TrackingState == TrackableEntities.TrackingState.Unchanged)this.TrackingState = TrackableEntities.TrackingState.Modified;
-				NotifyPropertyChanged("MultiLine");
-			}
-		}
-     
-
        [RequiredValidationAttribute(ErrorMessage= "RegEx is required")]
        
 public int RegExId

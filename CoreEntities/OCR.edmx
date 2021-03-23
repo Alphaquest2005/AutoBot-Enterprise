@@ -86,7 +86,6 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           <Property Name="PartId" Type="int" Nullable="false" />
           <Property Name="RegExId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="MultiLine" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="OCR-Parts">
           <Key>
@@ -116,6 +115,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.OCRInvoicesFileTypes' doe
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RegEx" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="MultiLine" Type="bit" />
         </EntityType>
         <EntityType Name="OCR-Start">
           <Key>
@@ -671,6 +671,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <NavigationProperty Name="InvoiceRepRegEx" Relationship="WaterNutDBModel.FK_OCR_InvoiceRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_InvoiceRegEx" />
           <NavigationProperty Name="FieldFormatRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
           <NavigationProperty Name="FieldFormatRepRegEx" Relationship="WaterNutDBModel.FK_OCR_FieldFormatRegEx_OCR_RegularExpressions1" FromRole="RegularExpressions" ToRole="OCR_FieldFormatRegEx" />
+          <Property Name="MultiLine" Type="Boolean" />
         </EntityType>
         <EntityType Name="Start">
           <Key>
@@ -747,7 +748,6 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <NavigationProperty Name="Fields" Relationship="WaterNutDBModel.FK_OCR_Fields_OCR_Lines" FromRole="OCR_Lines" ToRole="Fields" />
           <NavigationProperty Name="Parts" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_Parts" FromRole="OCR_Lines" ToRole="Parts" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MultiLine" Type="Boolean" Nullable="false" />
           <Property Name="RegExId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="RegularExpressions" Relationship="WaterNutDBModel.FK_OCR_Lines_OCR_RegularExpressions" FromRole="Lines" ToRole="RegularExpressions" />
         </EntityType>
@@ -1079,6 +1079,7 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
           <EntitySetMapping Name="RegularExpressions">
             <EntityTypeMapping TypeName="WaterNutDBModel.RegularExpressions">
               <MappingFragment StoreEntitySet="OCR-RegularExpressions">
+                <ScalarProperty Name="MultiLine" ColumnName="MultiLine" />
                 <ScalarProperty Name="RegEx" ColumnName="RegEx" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -1097,7 +1098,6 @@ FROM [dbo].[OCRInvoicesFileTypes] AS [OCRInvoicesFileTypes]</DefiningQuery>
             <EntityTypeMapping TypeName="WaterNutDBModel.Lines">
               <MappingFragment StoreEntitySet="OCR-Lines">
                 <ScalarProperty Name="RegExId" ColumnName="RegExId" />
-                <ScalarProperty Name="MultiLine" ColumnName="MultiLine" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="PartId" ColumnName="PartId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

@@ -847,65 +847,7 @@ namespace AutoBotUtilities
                             .ToList();
 
 
-
-
-
-                        var invoices = masterShipment.ShipmentAttachedInvoices
-                            .Where(x => x.ShipmentInvoice.ShipmentRiderInvoice.Any(z =>
-                                client.Any(q => q.Id == z.RiderLineID))) // 
-                            //Todo: add to unmaped bl rider lines invoice "client.Where(riderDetail => !riderDetail.ShipmentRiderInvoice.Any())"
-                            .Select(x => x.ShipmentInvoice)
-                            .DistinctBy(x => x.InvoiceNo)
-                            .ToList();
-
-                        var invoiceLst = invoices.Select(r => r.Id).ToList();
-                       
-
-                        var unAttachedInvoices = masterShipment.ShipmentAttachedInvoices
-                            .Where(x => !invoiceLst.Contains(x.ShipmentInvoiceId))
-                            .Select(x => x.ShipmentInvoice).DistinctBy(x => x.InvoiceNo).ToList();
-
-                        var unAttachedRiderDetails = client.SelectMany(x =>
-                            x.ShipmentInvoiceRiderDetails.Where(r => r.ShipmentInvoice == null)).ToList();
-
-
-                        var allUnMatchedInvoices = new EntryDataDSContext().ShipmentMIS_Invoices
-                            .Where(x => invoiceLst.Any(z => z == x.Id)).ToList();
-                        var allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
-
-                        var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
-                        invoiceNOs.AddRange(unAttachedInvoices.Select(x => x.InvoiceNo));
-                        var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber)).ToList();
-                        poNOs.AddRange(allUnMatchedPOs.Select(x => x.InvoiceNo).ToList());
-                        var classifications = new EntryDataDSContext().ShipmentInvoicePOItemData
-                            .Where(x => invoiceNOs.Contains(x.InvoiceNo) || poNOs.Contains(x.PONumber)).ToList();
-                        summaryPkg.Classifications = classifications;
-
-
-                        summaryPkg.UnMatchedInvoices = allUnMatchedInvoices;
-                        summaryPkg.UnMatchedPOs = allUnMatchedPOs;
-                        summaryPkg.Invoices = invoices;
-                        
-                        summaryPkg.UnAttachedInvoices = unAttachedInvoices;
-                        summaryPkg.UnAttachedRiderDetails = unAttachedRiderDetails;
-                        summaryPkg.RiderDetails = client.ToList();
-
-                        var riderMatchKeyCode = client.Select(x => x.WarehouseCode.Trim()).ToList();
-                        var riderMatchKeyInv = client.Select(x => x.InvoiceNumber.Trim()).ToList();
-
-                        summaryPkg.RiderSummary = client.First().ShipmentRider.ShipmentRiderEx;
-
-
-                        summaryPkg.RiderManualMatches = new EntryDataDSContext().ShipmentInvoiceRiderManualMatches
-                            .Where(x => riderMatchKeyCode.Any(z => z == x.WarehouseCode) &&
-                                        riderMatchKeyInv.Any(z => z == x.RiderInvoiceNumber)).AsEnumerable()
-                            .DistinctBy(x => new {x.WarehouseCode, x.RiderInvoiceNumber, x.InvoiceNo})
-                            .ToList();
-
-
-
-
-                        var summaryFile = XlsxWriter.CreateUnattachedShipmentWorkBook(client.Key, summaryPkg);
+                        var invoices = DoRiderInvoices(masterShipment, client, summaryPkg, out var summaryFile);
 
                         var attachments = new List<Attachments>();
 
@@ -1043,11 +985,7 @@ namespace AutoBotUtilities
 
                         foreach (var client in clients)
                         {
-
-                            //var unattachedShippment = masterShipment.CreateUnattachedShipment(client.Key);
-                            //shipments.Add(unattachedShippment);
-
-
+                            
                             var summaryPkg = new UnAttachedWorkBookPkg()
                             {
                                 Reference = $"{client.Key.Item1}-{client.Key.Item2}-{masterShipment.EmailId}"
@@ -1058,70 +996,8 @@ namespace AutoBotUtilities
                                 .Where(x => x.ShipmentFreight.ShipmentFreightDetails.Any(z =>
                                     client.Any(q => q.WarehouseCode == z.WarehouseCode)))
                                 .DistinctBy(x => x.FreightInvoiceId).Select(x => x.ShipmentFreight).ToList();
-                            //var blDetails = bl.ShipmentBLDetails.SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentBLDetails)).DistinctBy(x => x.Id).ToList();
-
-                            // var riderDetails = bl.ShipmentBLDetails.SelectMany(x => x.ShipmentRiderBLs.Select(z => z.ShipmentRiderDetails)).DistinctBy(x => x.Id).ToList();
-
-                            // riderDetails.FirstOrDefault()?.Code;
-
-                            //var invoices = masterShipment.ShipmentAttachedInvoices
-                            //    .Where(x => x.ShipmentInvoice.ShipmentRiderInvoice.Any(z =>
-                            //        client.Any(q => q.InvoiceNumber == x.ShipmentInvoice.InvoiceNo)))
-                            //    .Select(x => x.ShipmentInvoice).DistinctBy(x => x.InvoiceNo).ToList();
-
-                            var invoices = masterShipment.ShipmentAttachedInvoices
-                                .Where(x => x.ShipmentInvoice.ShipmentRiderInvoice.Any(z =>
-                                    client.Any(q => q.Id == z.RiderLineID))) // 
-                                //Todo: add to unmaped bl rider lines invoice "client.Where(riderDetail => !riderDetail.ShipmentRiderInvoice.Any())"
-                                .Select(x => x.ShipmentInvoice)
-                                .DistinctBy(x => x.InvoiceNo)
-                                .ToList();
-
-                            var invoiceLst = invoices.Select(r => r.Id).ToList();
-
-                            var unAttachedInvoices = masterShipment.ShipmentAttachedInvoices
-                                .Where(x => !x.ShipmentInvoice.ShipmentRiderInvoice.Any())
-                                .Select(x => x.ShipmentInvoice).DistinctBy(x => x.InvoiceNo).ToList();
-
-                            var unAttachedRiderDetails = client.SelectMany(x =>
-                                x.ShipmentInvoiceRiderDetails.Where(r => r.ShipmentInvoice == null)).ToList();
-
-
-                            var allUnMatchedInvoices = new EntryDataDSContext().ShipmentMIS_Invoices
-                                .Where(x => invoiceLst.Any(z => z == x.Id)).ToList();
-                            var allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
-
-                            var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
-                        var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber)).ToList();
-                        poNOs.AddRange(allUnMatchedPOs.Select(x => x.InvoiceNo).ToList());
-                        var classifications = new EntryDataDSContext().ShipmentInvoicePOItemData
-                            .Where(x => invoiceNOs.Contains(x.InvoiceNo) || poNOs.Contains(x.PONumber)).ToList();
-                        summaryPkg.Classifications = classifications;
-
-
-                            summaryPkg.UnMatchedInvoices = allUnMatchedInvoices;
-                            summaryPkg.UnMatchedPOs = allUnMatchedPOs;
-                            summaryPkg.Invoices = invoices;
-                            summaryPkg.UnAttachedInvoices = unAttachedInvoices;
-                            summaryPkg.UnAttachedRiderDetails = unAttachedRiderDetails;
-                            summaryPkg.RiderDetails = client.ToList();
-
-                            var riderMatchKeyCode = client.Select(x => x.WarehouseCode.Trim()).ToList();
-                            var riderMatchKeyInv = client.Select(x => x.InvoiceNumber.Trim()).ToList();
-
-                            summaryPkg.RiderSummary = client.First().ShipmentRider.ShipmentRiderEx;
-
-
-                            summaryPkg.RiderManualMatches = new EntryDataDSContext().ShipmentInvoiceRiderManualMatches
-                                .Where(x => riderMatchKeyCode.Any(z => z == x.WarehouseCode) &&
-                                            riderMatchKeyInv.Any(z => z == x.RiderInvoiceNumber)).AsEnumerable()
-                                .DistinctBy(x => new {x.WarehouseCode, x.RiderInvoiceNumber, x.InvoiceNo})
-                                .ToList();
-
-
-
-
-                            var summaryFile = XlsxWriter.CreateUnattachedShipmentWorkBook(client.Key, summaryPkg);
+                            
+                            var invoices = DoRiderInvoices(masterShipment, client, summaryPkg, out var summaryFile);
 
                             var attachments = new List<Attachments>();
 
@@ -1237,6 +1113,66 @@ namespace AutoBotUtilities
                 Console.WriteLine(e);
                 throw;
             }
+        }
+
+        private static List<ShipmentInvoice> DoRiderInvoices(Shipment masterShipment, IGrouping<Tuple<string, int, string>, ShipmentRiderDetails> client, UnAttachedWorkBookPkg summaryPkg,
+            out string summaryFile)
+        {
+            var invoices = masterShipment.ShipmentAttachedInvoices
+                .Where(x => x.ShipmentInvoice.ShipmentRiderInvoice.Any(z =>
+                    client.Any(q => q.Id == z.RiderLineID))) // 
+                //Todo: add to unmaped bl rider lines invoice "client.Where(riderDetail => !riderDetail.ShipmentRiderInvoice.Any())"
+                .Select(x => x.ShipmentInvoice)
+                .DistinctBy(x => x.InvoiceNo)
+                .ToList();
+
+            var invoiceLst = invoices.Select(r => r.Id).ToList();
+
+
+            var unAttachedInvoices = masterShipment.ShipmentAttachedInvoices
+                .Where(x => !invoiceLst.Contains(x.ShipmentInvoiceId))
+                .Select(x => x.ShipmentInvoice).DistinctBy(x => x.InvoiceNo).ToList();
+
+            var unAttachedRiderDetails = client.SelectMany(x =>
+                x.ShipmentInvoiceRiderDetails.Where(r => r.ShipmentInvoice == null)).ToList();
+
+
+            var allUnMatchedInvoices = new EntryDataDSContext().ShipmentMIS_Invoices
+                .Where(x => invoiceLst.Any(z => z == x.Id)).ToList();
+            var allUnMatchedPOs = new EntryDataDSContext().ShipmentMIS_POs.ToList();
+
+            var invoiceNOs = invoices.Select(r => r.InvoiceNo).ToList();
+            invoiceNOs.AddRange(unAttachedInvoices.Select(x => x.InvoiceNo));
+            var poNOs = invoices.SelectMany(r => r.ShipmentInvoicePOs.Select(z => z.PurchaseOrders.PONumber)).ToList();
+            poNOs.AddRange(allUnMatchedPOs.Select(x => x.InvoiceNo).ToList());
+            var classifications = new EntryDataDSContext().ShipmentInvoicePOItemData
+                .Where(x => invoiceNOs.Contains(x.InvoiceNo) || poNOs.Contains(x.PONumber)).ToList();
+            summaryPkg.Classifications = classifications;
+
+
+            summaryPkg.UnMatchedInvoices = allUnMatchedInvoices;
+            summaryPkg.UnMatchedPOs = allUnMatchedPOs;
+            summaryPkg.Invoices = invoices;
+
+            summaryPkg.UnAttachedInvoices = unAttachedInvoices;
+            summaryPkg.UnAttachedRiderDetails = unAttachedRiderDetails;
+            summaryPkg.RiderDetails = client.ToList();
+
+            var riderMatchKeyCode = client.Select(x => x.WarehouseCode.Trim()).ToList();
+            var riderMatchKeyInv = client.Select(x => x.InvoiceNumber.Trim()).ToList();
+
+            summaryPkg.RiderSummary = client.First().ShipmentRider.ShipmentRiderEx;
+
+
+            summaryPkg.RiderManualMatches = new EntryDataDSContext().ShipmentInvoiceRiderManualMatches
+                .Where(x => riderMatchKeyCode.Any(z => z == x.WarehouseCode) &&
+                            riderMatchKeyInv.Any(z => z == x.RiderInvoiceNumber)).AsEnumerable()
+                .DistinctBy(x => new {x.WarehouseCode, x.RiderInvoiceNumber, x.InvoiceNo})
+                .ToList();
+
+
+            summaryFile = XlsxWriter.CreateUnattachedShipmentWorkBook(client.Key, summaryPkg);
+            return invoices;
         }
 
         public static List<Shipment> SaveShipment(this List<Shipment> shipments)
