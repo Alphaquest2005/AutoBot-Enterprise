@@ -6160,160 +6160,186 @@ namespace AutoBot
             }
         }
 
-        private static void  ReadMISMatches(DataTable misMatches, DataTable poTemplate)
+        private static void ReadMISMatches(DataTable misMatches, DataTable poTemplate)
         {
-            var misHeaderRow = misMatches.Rows[0].ItemArray.ToList();
-            var poHeaderRow = poTemplate.Rows[0].ItemArray.ToList();
-            foreach (DataRow misMatch in misMatches.Rows)
+            try
             {
-                if (misMatch == misMatches.Rows[0]) continue;
-                var InvoiceNo = misMatch[misHeaderRow.IndexOf("InvoiceNo")].ToString();
-                var invItemCode = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
-                var poItemCode = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
-                if (!string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("PONumber")].ToString()) &&
-                    !string.IsNullOrEmpty(InvoiceNo) &&
-                    !string.IsNullOrEmpty(poItemCode) &&
-                    !string.IsNullOrEmpty(invItemCode))
+
+                var misHeaderRow = misMatches.Rows[0].ItemArray.ToList();
+                var poHeaderRow = poTemplate.Rows[0].ItemArray.ToList();
+                foreach (DataRow misMatch in misMatches.Rows)
                 {
+                    if (misMatch == misMatches.Rows[0]) continue;
+                    var InvoiceNo = misMatch[misHeaderRow.IndexOf("InvoiceNo")].ToString();
+                    var invItemCode = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
+                    var poItemCode = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
+                    if (!string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("PONumber")].ToString()) &&
+                        !string.IsNullOrEmpty(InvoiceNo) &&
+                        !string.IsNullOrEmpty(poItemCode) &&
+                        !string.IsNullOrEmpty(invItemCode))
+                    {
 
-                    DataRow row;
-                    var addrow = true;
-                    if (string.IsNullOrEmpty(poTemplate.Rows[1][poHeaderRow.IndexOf("PO Number")].ToString()))
-                    {
-                        row = poTemplate.Rows[1];
-                        addrow = false;
-                    }
-                    else
-                    {
-                        row = poTemplate.NewRow();
-                    }
-                        
-                    row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
-                    row[poHeaderRow.IndexOf("Date")] = poTemplate.Rows[1][poHeaderRow.IndexOf("Date")];
-                    row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
-                    row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;
-                    row[poHeaderRow.IndexOf("PO Item Description")] = misMatch[misHeaderRow.IndexOf("PODescription")];
-                    row[poHeaderRow.IndexOf("Supplier Item Description")] = misMatch[misHeaderRow.IndexOf("INVDescription")];
-                    row[poHeaderRow.IndexOf("Cost")] = ((double)misMatch[misHeaderRow.IndexOf("INVCost")] / ((misHeaderRow.IndexOf("INVSalesFactor") > -1 
-                                                                                                              && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString())) 
-                                                                                                                    ? Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")]) 
-                                                                                                                    :1));
-                    row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
-                    row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
-                   if(addrow)poTemplate.Rows.Add(row);
-                }
-
-                using (var ctx = new EntryDataDSContext())
-                {
-                    InvoiceDetails invRow;
-                    EntryDataDetails poRow;
-
-                    var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x => x.ItemNumber == invItemCode 
-                                                                                                   && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                    if(invItm == null){ invItm = new InventoryItems()
-                    {
-                        ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                        Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
-                        ItemNumber = invItemCode,
-                        TrackingState = TrackingState.Added
-                    };
-                        ctx.InventoryItems.Add(invItm);
-                    }
-                    var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x => x.ItemNumber == poItemCode && x.ApplicationSettingsId == BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
-                    if (poItm == null)
-                    {
-                        poItm = new InventoryItems()
+                        DataRow row;
+                        var addrow = true;
+                        if (string.IsNullOrEmpty(poTemplate.Rows[1][poHeaderRow.IndexOf("PO Number")].ToString()))
                         {
-                            ApplicationSettingsId = BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
-                            Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
-                            ItemNumber = poItemCode,
-                            TrackingState = TrackingState.Added
-                        };
-                        ctx.InventoryItems.Add(poItm);
-                    }
-
-                    if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
-                        !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
-                    {
-                        ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                            row = poTemplate.Rows[1];
+                            addrow = false;
+                        }
+                        else
                         {
-                            InventoryItems = poItm,
-                            AliasItem = invItm,
-                            AliasName = invItm.ItemNumber,
-                            TrackingState = TrackingState.Added
-                        });
+                            row = poTemplate.NewRow();
+                        }
+
+                        row[poHeaderRow.IndexOf("PO Number")] = misMatch[misHeaderRow.IndexOf("PONumber")];
+                        row[poHeaderRow.IndexOf("Date")] = poTemplate.Rows[1][poHeaderRow.IndexOf("Date")];
+                        row[poHeaderRow.IndexOf("PO Item Number")] = poItemCode;
+                        row[poHeaderRow.IndexOf("Supplier Item Number")] = invItemCode;
+                        row[poHeaderRow.IndexOf("PO Item Description")] =
+                            misMatch[misHeaderRow.IndexOf("PODescription")];
+                        row[poHeaderRow.IndexOf("Supplier Item Description")] =
+                            misMatch[misHeaderRow.IndexOf("INVDescription")];
+                        row[poHeaderRow.IndexOf("Cost")] =
+                            ((double) misMatch[misHeaderRow.IndexOf("INVCost")] /
+                             ((misHeaderRow.IndexOf("INVSalesFactor") > -1
+                               && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
+                                 ? Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")])
+                                 : 1));
+                        row[poHeaderRow.IndexOf("Quantity")] = misMatch[misHeaderRow.IndexOf("POQuantity")];
+                        row[poHeaderRow.IndexOf("Total Cost")] = misMatch[misHeaderRow.IndexOf("INVTotalCost")];
+                        if (addrow) poTemplate.Rows.Add(row);
                     }
-                    //var itmAlias = ctx.InventoryItemAlias
-                    ctx.SaveChanges();
 
-
-                    var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
-                    if (string.IsNullOrEmpty(INVDetailsId))
+                    using (var ctx = new EntryDataDSContext())
                     {
+                        InvoiceDetails invRow;
+                        EntryDataDetails poRow;
 
-                        invRow = new InvoiceDetails() {TrackingState = TrackingState.Added};
-                        var inv = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == InvoiceNo);
-                        if (inv == null) continue;
-                        invRow.ShipmentInvoiceId = inv.Id;
-                        ctx.ShipmentInvoiceDetails.Add(invRow);
+                        var invItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                            x.ItemNumber == invItemCode
+                            && x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                        if (invItm == null)
+                        {
+                            invItm = new InventoryItems()
+                            {
+                                ApplicationSettingsId =
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                                Description = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString(),
+                                ItemNumber = invItemCode,
+                                TrackingState = TrackingState.Added
+                            };
+                            ctx.InventoryItems.Add(invItm);
+                        }
 
+                        var poItm = ctx.InventoryItems.Include(x => x.AliasItems).FirstOrDefault(x =>
+                            x.ItemNumber == poItemCode && x.ApplicationSettingsId ==
+                            BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId);
+                        if (poItm == null)
+                        {
+                            poItm = new InventoryItems()
+                            {
+                                ApplicationSettingsId =
+                                    BaseDataModel.Instance.CurrentApplicationSettings.ApplicationSettingsId,
+                                Description = misMatch[misHeaderRow.IndexOf("PODescription")].ToString(),
+                                ItemNumber = poItemCode,
+                                TrackingState = TrackingState.Added
+                            };
+                            ctx.InventoryItems.Add(poItm);
+                        }
+
+                        if (!poItm.AliasItems.Any(x => x.AliasItemId == invItm.Id) &&
+                            !invItm.AliasItems.Any(x => x.InventoryItemId == poItm.Id))
+                        {
+                            ctx.InventoryItemAlias.Add(new InventoryItemAlias(true)
+                            {
+                                InventoryItems = poItm,
+                                AliasItem = invItm,
+                                AliasName = invItm.ItemNumber,
+                                TrackingState = TrackingState.Added
+                            });
+                        }
+
+                        //var itmAlias = ctx.InventoryItemAlias
+                        ctx.SaveChanges();
+
+
+                        var INVDetailsId = misMatch[misHeaderRow.IndexOf("INVDetailsId")].ToString();
+                        if (string.IsNullOrEmpty(INVDetailsId))
+                        {
+
+                            invRow = new InvoiceDetails() {TrackingState = TrackingState.Added};
+                            var inv = ctx.ShipmentInvoice.FirstOrDefault(x => x.InvoiceNo == InvoiceNo);
+                            if (inv == null) continue;
+                            invRow.ShipmentInvoiceId = inv.Id;
+                            ctx.ShipmentInvoiceDetails.Add(invRow);
+
+                        }
+                        else
+                        {
+
+                            invRow = ctx.ShipmentInvoiceDetails.FirstOrDefault(x =>
+                                x.Id.ToString() == INVDetailsId);
+                            if (invRow == null) continue;
+
+                        }
+
+                        invRow.ItemDescription = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString();
+                        invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
+                        invRow.Cost = (double) misMatch[misHeaderRow.IndexOf("INVCost")];
+                        invRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("INVTotalCost")];
+                        if (misHeaderRow.IndexOf("INVSalesFactor") > -1 &&
+                            !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
+                            invRow.SalesFactor = (int) (misMatch[misHeaderRow.IndexOf("INVSalesFactor")]);
+                        else
+                        {
+                            invRow.SalesFactor = 1;
+                        }
+
+                        invRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("INVQuantity")];
+                        invRow.InventoryItemId = invItm.Id;
+                        ctx.SaveChanges();
+
+                        var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
+                        if (string.IsNullOrEmpty(PODetailsId))
+                        {
+
+                            poRow = new EntryDataDetails() {TrackingState = TrackingState.Added};
+                            var pO = ctx.EntryData.FirstOrDefault(x =>
+                                x.EntryDataId == misMatch[misHeaderRow.IndexOf("PONumber")].ToString());
+                            if (pO == null) continue;
+                            poRow.EntryData_Id = pO.EntryData_Id;
+                            ctx.EntryDataDetails.Add(poRow);
+
+                        }
+                        else
+                        {
+
+                            poRow = ctx.EntryDataDetails.FirstOrDefault(x =>
+                                x.EntryDataDetailsId.ToString() == PODetailsId);
+                            if (poRow == null) continue;
+
+                        }
+
+                        poRow.ItemDescription = misMatch[misHeaderRow.IndexOf("PODescription")].ToString();
+                        poRow.ItemNumber = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
+                        poRow.Cost = (double) misMatch[misHeaderRow.IndexOf("POCost")];
+                        poRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("POTotalCost")];
+                        //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
+                        poRow.Quantity = (double) misMatch[misHeaderRow.IndexOf("POQuantity")];
+                        poRow.InventoryItemId = poItm.Id;
+                        ctx.SaveChanges();
                     }
-                    else
-                    {
 
-                        invRow = ctx.ShipmentInvoiceDetails.FirstOrDefault(x =>
-                            x.Id.ToString() == INVDetailsId);
-                        if (invRow == null) continue;
-
-                    }
-
-                    invRow.ItemDescription = misMatch[misHeaderRow.IndexOf("INVDescription")].ToString();
-                    invRow.ItemNumber = misMatch[misHeaderRow.IndexOf("INVItemCode")].ToString();
-                    invRow.Cost = (double)misMatch[misHeaderRow.IndexOf("INVCost")];
-                    invRow.TotalCost = (double)misMatch[misHeaderRow.IndexOf("INVTotalCost")];
-                    if(misHeaderRow.IndexOf("INVSalesFactor") > -1 && !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                            invRow.SalesFactor = Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")]);
-                    else
-                    {
-                        invRow.SalesFactor = 1;
-                    }
-                    invRow.Quantity = (double)misMatch[misHeaderRow.IndexOf("INVQuantity")];
-                    invRow.InventoryItemId = invItm.Id;
-                    ctx.SaveChanges();
-
-                    var PODetailsId = misMatch[misHeaderRow.IndexOf("PODetailsId")].ToString();
-                    if (string.IsNullOrEmpty(PODetailsId))
-                    {
-
-                        poRow = new EntryDataDetails() { TrackingState = TrackingState.Added };
-                        var pO = ctx.EntryData.FirstOrDefault(x =>
-                            x.EntryDataId == misMatch[misHeaderRow.IndexOf("PONumber")].ToString());
-                        if (pO == null) continue;
-                        poRow.EntryData_Id = pO.EntryData_Id;
-                        ctx.EntryDataDetails.Add(poRow);
-
-                    }
-                    else
-                    {
-
-                        poRow = ctx.EntryDataDetails.FirstOrDefault(x =>
-                            x.EntryDataDetailsId.ToString() == PODetailsId);
-                        if (poRow == null) continue;
-
-                    }
-
-                    poRow.ItemDescription = misMatch[misHeaderRow.IndexOf("PODescription")].ToString();
-                    poRow.ItemNumber = misMatch[misHeaderRow.IndexOf("POItemCode")].ToString();
-                    poRow.Cost = (double)misMatch[misHeaderRow.IndexOf("POCost")];
-                    poRow.TotalCost = (double)misMatch[misHeaderRow.IndexOf("POTotalCost")];
-                    //poRow.SalesFactor = (int)misMatch["INVSalesFactor"];
-                    poRow.Quantity = (double)misMatch[misHeaderRow.IndexOf("POQuantity")];
-                    poRow.InventoryItemId = poItm.Id;
-                    ctx.SaveChanges();
                 }
 
             }
-            
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
 
         public static string StringToCSVCell(string str)

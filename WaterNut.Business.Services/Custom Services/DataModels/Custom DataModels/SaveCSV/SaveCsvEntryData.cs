@@ -137,7 +137,7 @@ namespace WaterNut.DataSpace
                             Code = z[nameof(ShipmentRiderDetails.Code)]?.ToString().Trim(),
                             Shipper = z[nameof(ShipmentRiderDetails.Shipper)]?.ToString().Trim(),
                             TrackingNumber = z[nameof(ShipmentRiderDetails.TrackingNumber)]?.ToString().Trim(),
-                            Pieces =  Convert.ToInt32(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim()),
+                            Pieces = int.TryParse(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim(),out var test)? test : 0,//Convert.ToInt32(z[nameof(ShipmentRiderDetails.Pieces)]?.ToString().Trim())
                             WarehouseCode = z[nameof(ShipmentRiderDetails.WarehouseCode)]?.ToString().Trim(),
                             InvoiceNumber = z[nameof(ShipmentRiderDetails.InvoiceNumber)]?.ToString().Trim(),
                             InvoiceTotal = z.ContainsKey(nameof(ShipmentRiderDetails.InvoiceTotal)) ? z[nameof(ShipmentRiderDetails.InvoiceTotal)]?.ToString().Trim() : "0",
@@ -163,8 +163,8 @@ namespace WaterNut.DataSpace
                                 Totalpkgs = x.Pieces,
                                 totalKgs = x.GrossWeightLB * kg,
                                 totalCF = x.CubicFeet,
-                                Number = (x.InvoiceNumber??"").Contains(',') ? x.InvoiceNumber.Split(',') : (x.InvoiceNumber??"").Split('/'),
-                                Total =  x.InvoiceTotal.Contains(',') ? x.InvoiceTotal.Split(',') : x.InvoiceTotal.Split('/'),
+                                Number = (x.InvoiceNumber??"").Contains(',') ? x.InvoiceNumber.Split(',').Where(z => !string.IsNullOrEmpty(z)).ToArray() : (x.InvoiceNumber??"").Split('/').Where(z => !string.IsNullOrEmpty(z)).ToArray(),
+                                Total =  x.InvoiceTotal.Contains(',') ? x.InvoiceTotal.Split(',').Where(z => !string.IsNullOrEmpty(z)).ToArray() : x.InvoiceTotal.Split('/').Where(z => !string.IsNullOrEmpty(z)).ToArray(),
                                 
                         })
                             .ToList();
@@ -677,11 +677,11 @@ namespace WaterNut.DataSpace
                         Packages = Convert.ToInt32(x["Packages"].ToString()),
                         PackageType = x["PackageType"].ToString(),
                         GrossWeightKG = Convert.ToDouble(x["GrossWeightKG"].ToString()),
-                        Volume = Convert.ToDouble(x["Volume"].ToString()),
+                        Volume = x.ContainsKey("Volume") ? Convert.ToDouble(x["Volume"].ToString()):0.0,
                         //Freight = Convert.ToDouble(x["Freight"].ToString()),
                         LocationOfGoods = x["LocationOfGoods"].ToString(),
-                        Goods = x["Goods"].ToString(),
-                        Marks = x["Marks"].ToString(),
+                        Goods = x.ContainsKey("Goods")?x["Goods"].ToString():"",
+                        Marks = x.ContainsKey("Marks") ? x["Marks"].ToString() : "",
                         //Containers = Convert.ToInt32(x["Containers"].ToString()),
                         EmailId = emailId,
                        // SourceFile = filename,

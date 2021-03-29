@@ -81,7 +81,7 @@ namespace xlsxWriter
                                 itm.Quantity);
                             SetValue(workbook, i, header.First(x => x.Key.Column == "POItemNumber").Key.Index, itm.ItemNumber);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.TotalCost)).Key.Index,
-                                itm.TotalCost);
+                                itm.TotalCost == 0 ? pOItem.INVTotalCost : itm.TotalCost);
                             SetValue(workbook, i, header.First(x => x.Key.Column == nameof(itm.Units)).Key.Index,
                                 itm.Units);
                             if (doRider && i < riderdetails.Count)

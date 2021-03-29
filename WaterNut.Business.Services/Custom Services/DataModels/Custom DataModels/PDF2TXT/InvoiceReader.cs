@@ -585,20 +585,27 @@ namespace WaterNut.DataSpace
         {
             try
             {
-               
+
                 if ((_endlines.Count == EndCount && EndCount > 0)
-                    || ( EndCount == 0 && OCR_Part.Start.Any(x => x.RegularExpressions?.MultiLine == true)? _startlines.Count >= StartCount : _startlines.Count > StartCount && StartCount > 0)
+                    || (EndCount == 0 && OCR_Part.Start.Any(x => x.RegularExpressions?.MultiLine == true)
+                        ? _startlines.Count >= StartCount
+                        : _startlines.Count > StartCount && StartCount > 0)
                 ) //attempting to do start to start
                 {
                     if (OCR_Part.RecuringPart != null)
                     {
-                        _startlines.Clear();
-                        _endlines.Clear();
-                        _bodylines.Clear();
-                       _lines.Clear();
+                        if (!OCR_Part.RecuringPart.IsComposite)
+                        {
+                            _startlines.Clear();
+                            _endlines.Clear();
+                            _bodylines.Clear();
+                            _lines.Clear();
+                        }
+
                     }
                     else
                     {
+
                         return;
                     }
 
@@ -618,14 +625,14 @@ namespace WaterNut.DataSpace
                             _startlines.Clear();
                             _endlines.Clear();
                             _bodylines.Clear();
-                            if(StartCount != 0) _startlines.Add(_lines.First());
+                            if (StartCount != 0) _startlines.Add(_lines.First());
                         }
                 }
 
                 if (_startlines.Count() == StartCount &&
                     ((_endlines.Count < EndCount && EndCount > 0) || EndCount == 0))
                 {
-                    
+
 
                     _bodylines.AddRange(_lines);
                     ChildParts.ForEach(x => x.Read(_lines));
@@ -635,8 +642,12 @@ namespace WaterNut.DataSpace
 
                 if (_startlines.Count() == StartCount
                     && _startlines.All(x => _lines.All(l => l.LineNumber != x.LineNumber))
-                    && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex.Match(_lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
-                        z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase).Success))
+                    && _endlines.Count() < EndCount && OCR_Part.End.Any(z => Regex
+                        .Match(_lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
+                            z.RegularExpressions.RegEx,
+                            z.RegularExpressions.MultiLine == true
+                                ? RegexOptions.Multiline
+                                : RegexOptions.Singleline | RegexOptions.IgnoreCase).Success))
                 {
                     _endlines.Add(_lines.LastOrDefault());
                 }
@@ -655,36 +666,53 @@ namespace WaterNut.DataSpace
 
         private bool FindStart()
         {
-            if (!OCR_Part.Start.Any()) return true;
-            foreach (var z in OCR_Part.Start)
+            try
             {
-                var match = Regex
-                    .Match( _lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
-                        z.RegularExpressions.RegEx, RegexOptions.Multiline | RegexOptions.IgnoreCase);
-                if (match.Success)
+
+
+                if (!OCR_Part.Start.Any()) return true;
+                foreach (var z in OCR_Part.Start)
                 {
-                    
-                    if (z.RegularExpressions?.MultiLine == true)
+                    var match = Regex
+                        .Match(_lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n),
+                            z.RegularExpressions.RegEx,
+                            z.RegularExpressions.MultiLine == true
+                                ? RegexOptions.Multiline
+                                : RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    if (match.Success)
                     {
-                        var sline = new List<InvoiceLine>();
-                        var lines = _lines.OrderByDescending(x => x.LineNumber).ToList();
-                        for (var index = 0; index < lines.Count; index++)
+
+                        if (z.RegularExpressions?.MultiLine == true)
                         {
-                            var line = lines[index];
-                            sline.Add(line);
-                            if (sline.OrderBy(x => x.LineNumber).Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n) != match.Value) continue;
+                            var sline = new List<InvoiceLine>();
+                            var lines = _lines.OrderByDescending(x => x.LineNumber).ToList();
+                            for (var index = 0; index < lines.Count; index++)
+                            {
+                                var line = lines[index];
+                                sline.Add(line);
+                                if (!sline.OrderBy(x => x.LineNumber).Select(x => x.Line).DefaultIfEmpty("")
+                                    .Aggregate((c, n) => c + "\r\n" + n).Contains(match.Value)) continue;
 
-                            _lines.Clear();
-                            _lines.AddRange(sline.OrderBy(x => x.LineNumber));
-                            return true;
+                                _lines.Clear();
+                                _lines.AddRange(sline.OrderBy(x => x.LineNumber));
+                                return true;
 
+                            }
                         }
+
+                        return true;
                     }
-                    return true;
                 }
+
+                return false;
             }
-            return false;
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
+
     }
 
     public class Line
@@ -698,9 +726,9 @@ namespace WaterNut.DataSpace
 
         public bool Read(List<InvoiceLine> lines)
         {
-            var line = lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c +"\r\n" + n);
+            var line = OCR_Lines.RegularExpressions.MultiLine == true ? lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c +"\r\n" + n) : lines.Last().Line;
             var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
-                RegexOptions.Multiline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                OCR_Lines.RegularExpressions.MultiLine == true ? RegexOptions.Multiline : RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
             if (!match.Success) return false;
 
             var values = new Dictionary<Fields, string>();
@@ -711,7 +739,7 @@ namespace WaterNut.DataSpace
                 foreach (var reg in field.FormatRegEx)
                 {
                     value = Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
-                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.ExplicitCapture);
+                         OCR_Lines.RegularExpressions.MultiLine == true ? RegexOptions.Multiline : RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
                 };
                
                 values.Add(field, value.Trim());//$"\"{}\""
@@ -728,7 +756,8 @@ namespace WaterNut.DataSpace
             .Where(x => x.Value.Any(z => z.Key.IsRequired && string.IsNullOrEmpty(z.Value.ToString())))
             .SelectMany(x => x.Value.ToList())
             .DistinctBy(x => x.Key.Id)
-            .GroupBy(x => x.Key.Key)
+            .GroupBy(x => $"{x.Key.Field}-{x.Key.Key}")
+            .DistinctBy(x => x.Key)
             .Select(x => x.ToDictionary(k => x.Key, v => x.ToList()))
             .ToList();
 
