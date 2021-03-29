@@ -3909,8 +3909,8 @@ namespace AutoBot
                 if (File.Exists(instrFile))
                 {
                     if (!File.Exists(resultsFile)) return false;
-                    var lines = File.ReadAllLines(instrFile).Where(x => x.Contains("File")).ToArray();
-                    var res = File.ReadAllLines(resultsFile).Where(x => x.Contains("File")).ToArray();
+                    var lines = File.ReadAllLines(instrFile).Where(x => x.StartsWith("File\t")).ToArray();
+                    var res = File.ReadAllLines(resultsFile).Where(x => x.StartsWith("File\t")).ToArray();
                     if (res.Length == 0)
                     {
 
@@ -3932,6 +3932,13 @@ namespace AutoBot
                             if ( r.Length == 3 && p[1] == r[1] && r[2] == "Success")
                             {
                                if(r[0] == "File") lcont = rcount-1;
+                                isSuccess = true;
+                                break;
+                            }
+
+                            if (r.Length == 3 && p[1] == r[0] && r[2] == "Success") // for file
+                            {
+                                lcont += 1;
                                 isSuccess = true;
                                 break;
                             }
@@ -4721,7 +4728,7 @@ namespace AutoBot
                     var t3 = Task.Run(() =>
                     {
                         new AdjustmentOverService()
-                            .CreateOPS(filterExpressionf, false, doc.Key, entryDataDetailsIds, emailId)
+                            .CreateOPS(filterExpressionf, false, doc.Key, adjustmentType, entryDataDetailsIds, emailId)
                             .Wait();
                     });
                     if (entryDataDetailsIds.Count > 7)
@@ -5688,6 +5695,7 @@ namespace AutoBot
                     string dbStatement = "";
                     foreach (var line in fileTxt)
                     {
+                        if (line.ToLower().Contains("Not Found".ToLower())) continue;
                         var im = fileType.EmailInfoMappings.SelectMany(x => x.InfoMapping.InfoMappingRegEx.Select(z => new
                         {
                             Em = x,

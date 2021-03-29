@@ -826,8 +826,8 @@ namespace WaterNut.DataSpace
                                 Freight = Convert.ToDouble(x.Freight ?? 0.0),
                                 Weight = Convert.ToDouble(x.Weight ?? 0.0),
                                 InternalFreight = Convert.ToDouble(x.InternalFreight ?? 0.0),
-                                InvoiceQty = Convert.ToDouble(x.InvoiceQty ?? 0.0),
-                                ReceivedQty = Convert.ToDouble(x.ReceivedQty ?? 0.0),
+                                InvoiceQty = Convert.ToDouble(x.InvoiceQuantity ?? 0.0),
+                                ReceivedQty = Convert.ToDouble(x.ReceivedQuantity ?? 0.0),
                                 TaxAmount = x.Tax,
                                 CNumber = x.CNumber,
                                 PreviousInvoiceNumber = x.PreviousInvoiceNumber,
@@ -862,9 +862,9 @@ namespace WaterNut.DataSpace
 
                 List<EntryData> eLst = null;
 
-                Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
-                    async item =>
-                    //  foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null))
+                //Parallel.ForEach(ed, new ParallelOptions() { MaxDegreeOfParallelism = 3 },//Environment.ProcessorCount * 1
+                //    async item =>
+                    foreach (var item in ed.Where(x => x.EntryData.EntryDataId != null))
 
                     {
                         string entryDataId = item.EntryData.EntryDataId;
@@ -1336,7 +1336,7 @@ namespace WaterNut.DataSpace
                         }
 
 
-                });
+                }//);
 
 
 
