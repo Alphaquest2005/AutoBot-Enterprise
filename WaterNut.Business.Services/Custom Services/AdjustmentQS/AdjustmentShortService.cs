@@ -222,7 +222,7 @@ namespace AdjustmentQS.Business.Services
                                 && x.AsycudaDocument.ImportComplete == true
                                 && x.ApplicationSettingsId == applicationSettingsId &&
                                 (x.PreviousInvoiceNumber.ToUpper().Trim() == sPreviousInvoiceNumber.ToUpper().Trim()
-                                 || x.PreviousInvoiceNumber.ToUpper().Trim().Contains(sEntryDataId.ToUpper().Trim())));
+                                 || sEntryDataId.ToUpper().Trim().Contains(x.PreviousInvoiceNumber.ToUpper().Trim())));
                 var res = aItem.ToList();
 
 

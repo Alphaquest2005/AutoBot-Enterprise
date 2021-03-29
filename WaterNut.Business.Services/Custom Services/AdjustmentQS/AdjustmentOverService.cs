@@ -23,7 +23,7 @@ namespace AdjustmentQS.Business.Services
         /// <summary>
         /// one entry for kim
 
-        public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId,
+        public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId, string adjustmentType,
             List<int> entryDataDetailsIds = null, string emailId = null)
         {
             try
@@ -46,13 +46,27 @@ namespace AdjustmentQS.Business.Services
                 using (var ctx = new AdjustmentQSContext())
                 {
                     ctx.Database.CommandTimeout = 0;
-
-                    var olst = ctx.TODO_AdjustmentOversToXML
+                    IOrderedQueryable<TODO_AdjustmentOversToXML> lst;
+                    if (adjustmentType == "DIS")
+                    {
+                        lst = ctx.TODO_AdjustmentOversToXML
+                                                .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
+                                                .Where(filterExpression)
+                                                .Where(x => !entryDataDetailsIds.Any() || entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId))
+                                                //.Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
+                                                .OrderBy(x => x.EntryDataDetailsId);
+                    }
+                    else
+                    {
+                        lst = ctx.TODO_AdjustmentOversToXML
                         .Where(x => x.ApplicationSettingsId == docSet.ApplicationSettingsId)
                         .Where(filterExpression)
-                      //  .Where(x => !entryDataDetailsIds.Any() || entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId))
+                        //.Where(x => !entryDataDetailsIds.Any() || entryDataDetailsIds.Any(z => z == x.EntryDataDetailsId))
                         .Where(x => (x.EffectiveDate != null || x.EffectiveDate > DateTime.MinValue))
-                        .OrderBy(x => x.EffectiveDate)
+                        .OrderBy(x => x.EffectiveDate);
+                    }
+                        
+                    var olst = lst
                         .Select(x => new EntryDataDetails()
                         {
                             EntryDataDetailsId = x.EntryDataDetailsId,
@@ -146,7 +160,7 @@ namespace AdjustmentQS.Business.Services
        
         public async Task CreateOPS(string filterExpression, bool perInvoice, int asycudaDocumentSetId)
         {
-            await CreateOPS(filterExpression, perInvoice, asycudaDocumentSetId, null).ConfigureAwait(false);
+            await CreateOPS(filterExpression, perInvoice, asycudaDocumentSetId,"ADJ", null).ConfigureAwait(false);
         }
     }
 }
