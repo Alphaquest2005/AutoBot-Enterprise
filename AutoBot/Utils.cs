@@ -4571,8 +4571,8 @@ namespace AutoBot
             Console.WriteLine($"Clear {fileType.Type} Entries");
 
             // var saleInfo = CurrentSalesInfo();
-            BaseDataModel.Instance.ClearAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Wait();
-            BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(fileType.AsycudaDocumentSetId, 0);
+            //BaseDataModel.Instance.ClearAsycudaDocumentSet(fileType.AsycudaDocumentSetId).Wait();
+            //BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(fileType.AsycudaDocumentSetId, 0);
 
             ClearDocSetEntryData(fileType.AsycudaDocumentSetId);
 
@@ -4677,8 +4677,8 @@ namespace AutoBot
                 foreach (var doc in lst.Select(x => x.Key).Distinct<int>())
                 {
                    
-                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
-                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+                   // BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                   // BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                 }
             }
 
