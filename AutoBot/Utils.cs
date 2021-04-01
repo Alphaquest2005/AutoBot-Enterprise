@@ -6298,7 +6298,7 @@ namespace AutoBot
                         invRow.TotalCost = (double) misMatch[misHeaderRow.IndexOf("INVTotalCost")];
                         if (misHeaderRow.IndexOf("INVSalesFactor") > -1 &&
                             !string.IsNullOrEmpty(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString()))
-                            invRow.SalesFactor = (int) (misMatch[misHeaderRow.IndexOf("INVSalesFactor")]);
+                            invRow.SalesFactor = Convert.ToInt32(misMatch[misHeaderRow.IndexOf("INVSalesFactor")].ToString());
                         else
                         {
                             invRow.SalesFactor = 1;
