@@ -5633,13 +5633,15 @@ namespace AutoBot
 
                     foreach (var file in csvFiles)
                     {
+                        var newReference = file.Name.Replace(file.Extension, "");
 
                         var attachment =
                             ctx.AsycudaDocumentSet_Attachments
                                 .Include(x => x.Attachments)
                                 .FirstOrDefault(x => x.Attachments.FilePath == file.FullName 
                                                      && x.AsycudaDocumentSetId == fileType.AsycudaDocumentSetId);
-
+                        var existingRefCount = ctx.Attachments.Select(x => x.Reference).Where(x => x == newReference).Count();
+                        if (existingRefCount > 0) newReference = $"{existingRefCount + 1}-{newReference}";
                         using (var ctx1 = new CoreEntitiesContext() { StartTracking = true })
                         {
                             var oldemail = ctx1.Emails.FirstOrDefault(x => x.EmailUniqueId == email.EmailId);
@@ -5655,6 +5657,7 @@ namespace AutoBot
                                 ctx.SaveChanges();
                             }
 
+                            
                             if (attachment == null)
                             {
                                 ctx1.AsycudaDocumentSet_Attachments.Add(
@@ -5665,7 +5668,7 @@ namespace AutoBot
                                         {
                                             FilePath = file.FullName,
                                             DocumentCode = fileType.DocumentCode,
-                                            Reference = file.Name.Replace(file.Extension, ""),
+                                            Reference = newReference,
                                             EmailId = email.EmailId.ToString(),
                                         },
                                         DocumentSpecific = fileType.DocumentSpecific,
@@ -5682,7 +5685,7 @@ namespace AutoBot
                                 attachment.FileDate = file.LastWriteTime;
                                 attachment.EmailUniqueId = email.EmailId;
                                 attachment.FileTypeId = fileType.Id;
-                                attachment.Attachments.Reference = file.Name.Replace(file.Extension, "");
+                                attachment.Attachments.Reference = newReference;
                                 attachment.Attachments.DocumentCode = fileType.DocumentCode;
                                 attachment.Attachments.EmailId = email.EmailId.ToString();
                             }
