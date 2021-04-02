@@ -726,27 +726,45 @@ namespace WaterNut.DataSpace
 
         public bool Read(List<InvoiceLine> lines)
         {
-            var line = OCR_Lines.RegularExpressions.MultiLine == true ? lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c +"\r\n" + n) : lines.Last().Line;
-            var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
-                OCR_Lines.RegularExpressions.MultiLine == true ? RegexOptions.Multiline : RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-            if (!match.Success) return false;
-
-            var values = new Dictionary<Fields, string>();
-            
-            foreach (var field in OCR_Lines.Fields)
+            try
             {
-                var value = field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim();
-                foreach (var reg in field.FormatRegEx)
-                {
-                    value = Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
-                         OCR_Lines.RegularExpressions.MultiLine == true ? RegexOptions.Multiline : RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-                };
-               
-                values.Add(field, value.Trim());//$"\"{}\""
-            }
 
-            Values[lines.First().LineNumber] = values;
-            return true;
+
+                var line = OCR_Lines.RegularExpressions.MultiLine == true
+                    ? lines.Select(x => x.Line).DefaultIfEmpty("").Aggregate((c, n) => c + "\r\n" + n)
+                    : lines.Last().Line;
+                var match = Regex.Match(line, OCR_Lines.RegularExpressions.RegEx,
+                    OCR_Lines.RegularExpressions.MultiLine == true
+                        ? RegexOptions.Multiline
+                        : RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                if (!match.Success) return false;
+
+                var values = new Dictionary<Fields, string>();
+
+                foreach (var field in OCR_Lines.Fields)
+                {
+                    var value = field.FieldValue?.Value ?? match.Groups[field.Key].Value.Trim();
+                    foreach (var reg in field.FormatRegEx)
+                    {
+                        value = Regex.Replace(value, reg.RegEx.RegEx, reg.ReplacementRegEx.RegEx,
+                            OCR_Lines.RegularExpressions.MultiLine == true
+                                ? RegexOptions.Multiline
+                                : RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+                    }
+
+                    ;
+
+                    values.Add(field, value.Trim()); //$"\"{}\""
+                }
+
+                Values[lines.First().LineNumber] = values;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public Dictionary<int, Dictionary<Fields, string>> Values { get; } = new Dictionary<int, Dictionary<Fields, string>>();
