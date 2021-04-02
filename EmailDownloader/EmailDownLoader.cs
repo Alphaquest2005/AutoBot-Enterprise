@@ -304,11 +304,16 @@ namespace EmailDownloader
             var part = (MimePart) a;
             var fileName = CleanFileName(part.FileName);
             var file = Path.Combine(dataFolder, fileName);
-            if(File.Exists(file)) File.Delete(file);
+            if(File.Exists(file)) file = GetNextFileName(file);
             
             using (var stream = File.Create(file))
                 part.Content.DecodeTo(stream);
             lst.Add(fileName);
+        }
+
+        private static string GetNextFileName(string file)
+        {
+            throw new NotImplementedException();
         }
 
         private static string CleanFileName(string partFileName)

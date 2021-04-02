@@ -4538,6 +4538,22 @@ namespace AutoBot
             }
         }
 
+        private static void ClearDocSetAttachments(int asycudaDocumentSetId, int? emailId = null)
+        {
+            using (var dtx = new DocumentDSContext())
+            {
+                var res = dtx.AsycudaDocumentSet_Attachments.Where(x =>
+                    x.AsycudaDocumentSet.SystemDocumentSet == null
+                    && x.AsycudaDocumentSetId == asycudaDocumentSetId && emailId == null ? true : x.EmailUniqueId != emailId);
+                if (res.Any())
+                {
+                    dtx.AsycudaDocumentSet_Attachments.RemoveRange(res);
+                    dtx.SaveChanges();
+                }
+
+            }
+        }
+
         public static void ClearAllAdjustmentEntries(string adjustmentType)
         {
             Console.WriteLine($"Clear {adjustmentType} Entries");
@@ -4575,6 +4591,7 @@ namespace AutoBot
             //BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(fileType.AsycudaDocumentSetId, 0);
 
             ClearDocSetEntryData(fileType.AsycudaDocumentSetId);
+            ClearDocSetAttachments(fileType.AsycudaDocumentSetId, fileType.EmailId == null? null :(int?) Convert.ToInt32(fileType.EmailId) );
 
 
         }
@@ -4637,7 +4654,7 @@ namespace AutoBot
 
         public static void RecreateDocSetDiscrepanciesEntries(FileTypes fileType)
         {
-            CreateAdjustmentEntries(true,"DIS", fileType);
+            CreateAdjustmentEntries(false,"DIS", fileType);
         }
 
         public static void CreateAdjustmentEntries(bool overwrite, string adjustmentType)
@@ -4676,9 +4693,9 @@ namespace AutoBot
             {
                 foreach (var doc in lst.Select(x => x.Key).Distinct<int>())
                 {
-                   
-                   // BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
-                   // BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
+
+                    BaseDataModel.Instance.ClearAsycudaDocumentSet(doc).Wait();
+                    BaseDataModel.Instance.UpdateAsycudaDocumentSetLastNumber(doc, 0);
                 }
             }
 
@@ -6691,6 +6708,7 @@ namespace AutoBot
                 {
                     var fileTypes = BaseDataModel.GetFileType(fileType.ChildFileTypes.First());
                     fileTypes.AsycudaDocumentSetId = fileType.AsycudaDocumentSetId;
+                    fileTypes.EmailId = fileType.EmailId;
                     SaveCsv(new FileInfo[] { new FileInfo(output) }, fileTypes);
                 }
 

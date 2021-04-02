@@ -525,10 +525,10 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public void IntCdoc(DocumentCT cdoc, AsycudaDocumentSet ads)
+        public void IntCdoc(DocumentCT cdoc, AsycudaDocumentSet ads, string prefix = "F")
         {
 
-            cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + "-F" +
+            cdoc.Document.xcuda_Declarant.Number = ads.Declarant_Reference_Number + $"-{prefix}" +
                                                    cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.FileNumber
                                                        .ToString();
             cdoc.Document.xcuda_Declarant.Declarant_code = CurrentApplicationSettings.DeclarantCode;
@@ -804,7 +804,7 @@ namespace WaterNut.DataSpace
 
         public async Task<List<DocumentCT>> CreateEntryItems(List<EntryDataDetails> slstSource,
             AsycudaDocumentSet currentAsycudaDocumentSet, bool perInvoice, bool autoUpdate, bool autoAssess,
-            bool combineEntryDataInSameFile, bool groupItems, bool checkPackages)
+            bool combineEntryDataInSameFile, bool groupItems, bool checkPackages, string prefix = null)
         {
             var docList = new List<DocumentCT>();
             var itmcount = 0;
@@ -813,7 +813,7 @@ namespace WaterNut.DataSpace
             var cdoc = new DocumentCT {Document = CreateNewAsycudaDocument(currentAsycudaDocumentSet)};
 
             //BaseDataModel.Instance.CurrentAsycudaDocumentSet.xcuda_ASYCUDA_ExtendedProperties.Add(cdoc.xcuda_ASYCUDA_ExtendedProperties);
-            IntCdoc(cdoc, currentAsycudaDocumentSet);
+            IntCdoc(cdoc, currentAsycudaDocumentSet, prefix);
 
             cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = autoUpdate;
             if (autoAssess) cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.IsManuallyAssessed = true;
@@ -4125,8 +4125,10 @@ namespace WaterNut.DataSpace
 
                         var declarant = ctx.xcuda_Declarant.First(x => x.ASYCUDA_Id == doc.ASYCUDA_Id);
                         var oldRef = declarant.Number;
+                        var letter = oldRef.Substring(oldRef.IndexOf(prop.FileNumber.ToString()) - 1, 1);
                         declarant.Number =
                             declarant.Number?.Replace(prop.FileNumber.ToString(), docSet.LastFileNumber.ToString());
+                        
                         var newRef = declarant.Number;
                         declarant.TrackingState = TrackingState.Modified;
                         prop.FileNumber = docSet.LastFileNumber;

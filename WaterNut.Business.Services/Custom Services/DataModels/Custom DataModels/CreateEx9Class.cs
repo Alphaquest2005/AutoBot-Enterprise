@@ -359,7 +359,7 @@ namespace WaterNut.DataSpace
             AsycudaDocumentSet docSet, string documentType, bool isGrouped, List<ItemSalesPiSummary> itemSalesPiSummaryLst,
             bool checkQtyAllocatedGreaterThanPiQuantity, bool checkForMultipleMonths, 
             bool applyEx9Bucket, string ex9BucketType, bool applyHistoricChecks, bool applyCurrentChecks,
-            bool autoAssess, bool perInvoice, bool overPIcheck, bool universalPIcheck)
+            bool autoAssess, bool perInvoice, bool overPIcheck, bool universalPIcheck, string prefix = null)
         {
             try
             {
@@ -386,7 +386,7 @@ namespace WaterNut.DataSpace
                 StatusModel.StatusUpdate($"Creating xBond Entries - {dfp}");
 
                 var cdoc = await BaseDataModel.Instance.CreateDocumentCt(docSet).ConfigureAwait(false);
-                Ex9InitializeCdoc(dfp, cdoc, docSet, documentType);
+                Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, prefix);
                 var effectiveAssessmentDate =
                     slst.SelectMany(x =>x.Allocations).Select(x =>
                                             x.EffectiveDate == DateTime.MinValue || x.EffectiveDate == null
@@ -436,7 +436,7 @@ namespace WaterNut.DataSpace
                                 }
                             }
 
-                            Ex9InitializeCdoc(dfp, cdoc, docSet, documentType);
+                            Ex9InitializeCdoc(dfp, cdoc, docSet, documentType, prefix);
                             if (PerIM7)
                                 cdoc.Document.xcuda_Declarant.Number =
                                     cdoc.Document.xcuda_Declarant.Number.Replace(
@@ -1883,13 +1883,13 @@ namespace WaterNut.DataSpace
             }
         }
 
-        public void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string DocumentType)
+        public void Ex9InitializeCdoc(string dfp, DocumentCT cdoc, AsycudaDocumentSet ads, string DocumentType,string prefix = null)
         {
             try
             {
 
                 cdoc.Document.xcuda_ASYCUDA_ExtendedProperties.AutoUpdate = false;
-                BaseDataModel.Instance.IntCdoc(cdoc, ads);
+                BaseDataModel.Instance.IntCdoc(cdoc, ads, prefix);
                 Customs_Procedure customsProcedure;
                 var isPaid = dfp == "Duty Paid" ;
                 Func<Customs_Procedure, bool> dtpredicate = x => false;

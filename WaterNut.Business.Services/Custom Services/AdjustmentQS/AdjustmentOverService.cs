@@ -100,7 +100,7 @@ namespace AdjustmentQS.Business.Services
                         }).ToList();
 
                     var docList = await BaseDataModel.Instance
-                        .CreateEntryItems(olst, docSet, perInvoice, false, true, false, false, false)
+                        .CreateEntryItems(olst, docSet, perInvoice, false, true, false, false, false, "O")
                         .ConfigureAwait(false);
                     
                     if (emailId != null)
