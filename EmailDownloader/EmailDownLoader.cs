@@ -314,9 +314,9 @@ namespace EmailDownloader
         private static string GetNextFileName(string file)
         {
             var fileinfo = new FileInfo(file);
-            for (int i = 0; i < 1000; i++)
+            for (int i = 1; i < 1000; i++)
             {
-                var nfileName = Path.Combine(fileinfo.DirectoryName, fileinfo.Name, $"({i})", fileinfo.Extension);
+                var nfileName = Path.Combine(fileinfo.DirectoryName,  $"{fileinfo.Name.Replace(fileinfo.Extension,"")}({i}){fileinfo.Extension.ToLower()}" );
                 if (!File.Exists(nfileName)) return nfileName;
             }
 

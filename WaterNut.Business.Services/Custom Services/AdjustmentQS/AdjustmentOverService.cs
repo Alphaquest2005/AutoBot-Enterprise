@@ -111,7 +111,7 @@ namespace AdjustmentQS.Business.Services
                     }
                     BaseDataModel.SetInvoicePerline(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
                     BaseDataModel.RenameDuplicateDocumentCodes(docList.Select(x => x.Document.ASYCUDA_Id).ToList());
-                    ConvertFirstInvoicetoWarehouseCode(docList);
+                   //ConvertFirstInvoicetoWarehouseCode(docList);
 
 
 

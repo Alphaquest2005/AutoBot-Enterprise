@@ -5682,6 +5682,7 @@ namespace AutoBot
                                 attachment.FileDate = file.LastWriteTime;
                                 attachment.EmailUniqueId = email.EmailId;
                                 attachment.FileTypeId = fileType.Id;
+                                attachment.Attachments.Reference = file.Name.Replace(file.Extension, "");
                                 attachment.Attachments.DocumentCode = fileType.DocumentCode;
                                 attachment.Attachments.EmailId = email.EmailId.ToString();
                             }

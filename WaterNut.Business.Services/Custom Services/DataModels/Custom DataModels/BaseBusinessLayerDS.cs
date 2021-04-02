@@ -1114,7 +1114,9 @@ namespace WaterNut.DataSpace
                      && x.EmailUniqueId == pod.EntryData.EmailId
                      && !cdoc.Document.AsycudaDocument_Attachments.Any(z =>
                          z.AttachmentId == x.AttachmentId))*/)
-                .Select(x => x.Attachment).ToList();
+                .Select(x => x.Attachment)
+                .DistinctBy(x => x.Id)
+                .ToList();
             if ((pod.EntryData is PurchaseOrders p))
             {
                 if (p.PreviousCNumber != null)

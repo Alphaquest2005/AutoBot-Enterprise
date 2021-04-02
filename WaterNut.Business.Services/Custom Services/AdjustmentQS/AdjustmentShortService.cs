@@ -340,6 +340,7 @@ namespace AdjustmentQS.Business.Services
                     }
                     
                     BaseDataModel.StripAttachments(doclst, emailId);
+                    BaseDataModel.AttachEmailPDF(asycudaDocumentSetId, emailId);
                     BaseDataModel.SetInvoicePerline(doclst.Select(x => x.Document.ASYCUDA_Id).ToList());
                     BaseDataModel.RenameDuplicateDocumentCodes(doclst.Select(x => x.Document.ASYCUDA_Id).ToList());
 
