@@ -783,6 +783,7 @@ namespace AutoBotUtilities
             try
             {
                 var shipments = new List<Shipment>();
+                var sendMaster = true;
 
                 ShipmentBL masterBL = null;
                 var bls = masterShipment.ShipmentAttachedBL.Select(x => x.ShipmentBL)
@@ -793,8 +794,8 @@ namespace AutoBotUtilities
                         var otherBls = bls.Where(x => x.BLNumber != bl.BLNumber)
                             .SelectMany(x => x.ShipmentBLDetails.Select(z => z.Marks)).ToList();
                         var marks = bl.ShipmentBLDetails.Select(x => x.Marks).ToList();
-                        var mismatches = otherBls.Where(x => !marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any())).ToList();
-                        if (!mismatches.Any())
+                        var matches = otherBls.Where(x => marks.Any(z => z.ToCharArray().Except(x.ToCharArray()).Any())).ToList();
+                        if (matches.Count() == otherBls.Count())
                         {
                             masterBL = bl;
                             break;
@@ -806,7 +807,7 @@ namespace AutoBotUtilities
                         BaseDataModel.SetFilename(masterBL.SourceFile, masterBL.BLNumber, "-MasterBL.pdf");
 
                 foreach (var aBl in masterShipment.ShipmentAttachedBL.Where(x =>
-                    x.ShipmentBL.BLNumber != masterBL?.BLNumber))
+                   sendMaster ? true : x.ShipmentBL.BLNumber != masterBL?.BLNumber))
                 {
                     var bl = aBl.ShipmentBL;
                     var riderDetails = bl.ShipmentBLDetails

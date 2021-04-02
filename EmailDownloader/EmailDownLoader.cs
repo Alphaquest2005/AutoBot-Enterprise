@@ -313,7 +313,14 @@ namespace EmailDownloader
 
         private static string GetNextFileName(string file)
         {
-            throw new NotImplementedException();
+            var fileinfo = new FileInfo(file);
+            for (int i = 0; i < 1000; i++)
+            {
+                var nfileName = Path.Combine(fileinfo.DirectoryName, fileinfo.Name, $"({i})", fileinfo.Extension);
+                if (!File.Exists(nfileName)) return nfileName;
+            }
+
+            return null;
         }
 
         private static string CleanFileName(string partFileName)

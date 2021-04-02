@@ -217,6 +217,25 @@ namespace WaterNut.DataSpace
                                     }
                                     else
                                     {
+                                        res = rawRider.ShipmentRiderDetails
+                                            .Where(x => x.WarehouseCode == i.WarehouseCode &&
+                                                        (x.InvoiceNumber ?? "").Contains(i.Number[j])).Select(
+                                                z =>
+                                                    new ShipmentRiderDetails()
+                                                    {
+                                                        Consignee = z.Consignee,
+                                                        Code = z.Code,
+                                                        Shipper = z.Shipper,
+                                                        TrackingNumber = z.TrackingNumber,
+                                                        Pieces = pkgs,
+                                                        WarehouseCode = z.WarehouseCode.Trim(),
+                                                        InvoiceNumber = i.Number[j].Trim(),
+                                                        InvoiceTotal = j >= totalst.Count ? 0 : totalst[j],
+                                                        GrossWeightKg = kgs,
+                                                        CubicFeet = cf,
+                                                        TrackingState = TrackingState.Added
+
+                                                    }).ToList();
 
                                     }
 
@@ -235,8 +254,8 @@ namespace WaterNut.DataSpace
                                                     Shipper = z.Shipper,
                                                     TrackingNumber = z.TrackingNumber,
                                                     Pieces = pkgs,
-                                                    WarehouseCode = z.WarehouseCode,
-                                                    InvoiceNumber = i.Number[j],
+                                                    WarehouseCode = z.WarehouseCode.Trim(),
+                                                    InvoiceNumber = i.Number[j].Trim(),
                                                     InvoiceTotal = j >= totalst.Count ? 0 : totalst[j],
                                                     GrossWeightKg = kgs,
                                                     CubicFeet = cf,

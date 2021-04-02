@@ -15,7 +15,7 @@
               this.ToTable("ShipmentManifestDetails");
               this.Property(t => t.Id).HasColumnName("Id").HasDatabaseGeneratedOption(new Nullable<DatabaseGeneratedOption>(DatabaseGeneratedOption.Identity));
               this.Property(t => t.ManifestId).HasColumnName("ManifestId");
-              this.Property(t => t.ContainerID).HasColumnName("ContainerID").IsRequired().HasMaxLength(50);
+              this.Property(t => t.ContainerID).HasColumnName("ContainerID").HasMaxLength(50);
               this.Property(t => t.Description).HasColumnName("Description").IsRequired().HasMaxLength(255);
               this.HasRequired(t => t.ShipmentManifest).WithMany(t =>(ICollection<ShipmentManifestDetails>) t.ShipmentManifestDetails).HasForeignKey(d => d.ManifestId);
              // Tracking Properties

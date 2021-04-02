@@ -497,7 +497,7 @@
           <Property Name="Freight" Type="float" />
           <Property Name="LocationOfGoods" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Goods" Type="nvarchar" MaxLength="1000" Nullable="false" />
-          <Property Name="Marks" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Marks" Type="nvarchar" MaxLength="1000" Nullable="false" />
           <Property Name="Containers" Type="int" />
           <Property Name="EmailId" Type="int" Nullable="false" />
           <Property Name="SourceFile" Type="nvarchar(max)" Nullable="false" />
@@ -510,7 +510,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ManifestId" Type="int" Nullable="false" />
-          <Property Name="ContainerID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ContainerID" Type="nvarchar" MaxLength="50" />
           <Property Name="Description" Type="nvarchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <EntityType Name="ShipmentRider">
@@ -739,6 +739,8 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentInvoiceDetailsIte
         <EntityType Name="ShipmentInvoiceDetailsItemAlias">
           <Key>
             <PropertyRef Name="Id" />
+            
+            
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="INVItemCode" Type="nvarchar" MaxLength="20" />
@@ -3317,7 +3319,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ManifestId" Type="Int32" Nullable="false" />
-          <Property Name="ContainerID" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ContainerID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ShipmentManifest" Relationship="WaterNutDBModel.FK_ShipmentManifestDetails_ShipmentManifest" FromRole="ShipmentManifestDetails" ToRole="ShipmentManifest" />
         </EntityType>
@@ -3570,7 +3572,7 @@ warning 6002: The table/view 'AutoBot-EnterpriseDB.dbo.ShipmentRiderInvoice' doe
           <Property Name="Freight" Type="Double" />
           <Property Name="LocationOfGoods" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="Goods" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="Marks" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Marks" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="Containers" Type="Int32" />
           <Property Name="EmailId" Type="Int32" Nullable="false" />
           <Property Name="SourceFile" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
