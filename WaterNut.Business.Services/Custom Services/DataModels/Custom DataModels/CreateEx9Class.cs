@@ -309,7 +309,7 @@ namespace WaterNut.DataSpace
             if (_universalData == null)
             {
                 _universalData = ctx.ItemSalesAsycudaPiSummary
-                    .GroupJoin(ctx.AsycudaItemPiQuantityData, pis => (pis.PreviousItem_Id, pis.DutyFreePaid), pid => (pid.Item_Id, pid.DutyFreePaid),
+                    .GroupJoin(ctx.AsycudaItemPiQuantityData, pis => new { PreviousItem_Id = pis.PreviousItem_Id.GetValueOrDefault(), pis.DutyFreePaid}, pid => new { PreviousItem_Id = pid.Item_Id, pid.DutyFreePaid},
                         (pis, pid) => new SummaryData {Summary = pis, pIData = pid})
                     //.Where(x => x.ItemNumber == "14479" || x.ItemNumber == "014479")
                     .Where(x => x.Summary.ApplicationSettingsId == applicationSettingsId)
